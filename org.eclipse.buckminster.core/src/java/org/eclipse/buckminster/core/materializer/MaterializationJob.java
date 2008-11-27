@@ -40,6 +40,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * A job that will materialize according to specifications.
+ * 
  * @author Thomas Hallgren
  */
 public class MaterializationJob extends Job
@@ -48,37 +49,12 @@ public class MaterializationJob extends Job
 
 	public static final int MAX_PARALLEL_JOBS_DEFAULT = 4;
 
-	public static void setUp()
-	{
-		IEclipsePreferences defaultNode = BuckminsterPreferences.getDefaultNode();
-		defaultNode.putInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
-		try
-		{
-			defaultNode.flush();
-		}
-		catch(BackingStoreException e)
-		{
-			Buckminster.getLogger().error(e, e.toString());
-		}		
-	}
-
 	public static int getMaxParallelJobs()
 	{
 		return BuckminsterPreferences.getNode().getInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
 	}
 
-	public static void setMaxParallelJobs(int maxJobs)
-	{
-		if(maxJobs > 0 && maxJobs <= 20)
-			BuckminsterPreferences.getNode().putInt(MAX_PARALLEL_JOBS, maxJobs);
-	}
-
-	private final MaterializationContext m_context;
-
-	private final boolean m_waitForInstall;
-
-	public static void run(MaterializationContext context, boolean waitForInstall)
-	throws CoreException
+	public static void run(MaterializationContext context, boolean waitForInstall) throws CoreException
 	{
 		try
 		{
@@ -113,9 +89,9 @@ public class MaterializationJob extends Job
 	}
 
 	/**
-	 * Runs this job immediately without scheduling. This method is intended to be called
-	 * when the materialization is done from the GUI and uses a <code>IRunnableWithProgress</code>
-	 *
+	 * Runs this job immediately without scheduling. This method is intended to be called when the materialization is
+	 * done from the GUI and uses a <code>IRunnableWithProgress</code>
+	 * 
 	 * @param context
 	 * @param monitor
 	 * @throws CoreException
@@ -125,6 +101,30 @@ public class MaterializationJob extends Job
 		MaterializationJob mbJob = new MaterializationJob(context, false);
 		mbJob.internalRun(monitor);
 	}
+
+	public static void setMaxParallelJobs(int maxJobs)
+	{
+		if(maxJobs > 0 && maxJobs <= 20)
+			BuckminsterPreferences.getNode().putInt(MAX_PARALLEL_JOBS, maxJobs);
+	}
+
+	public static void setUp()
+	{
+		IEclipsePreferences defaultNode = BuckminsterPreferences.getDefaultNode();
+		defaultNode.putInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
+		try
+		{
+			defaultNode.flush();
+		}
+		catch(BackingStoreException e)
+		{
+			Buckminster.getLogger().error(e, e.toString());
+		}
+	}
+
+	private final MaterializationContext m_context;
+
+	private final boolean m_waitForInstall;
 
 	public MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
 	{
@@ -139,12 +139,17 @@ public class MaterializationJob extends Job
 		this.setPriority(LONG);
 	}
 
+	protected MaterializationContext getMaterializationContext()
+	{
+		return m_context;
+	}
+
 	protected void internalRun(final IProgressMonitor monitor) throws CoreException
 	{
 		BillOfMaterials bom = m_context.getBillOfMaterials();
 
 		Queue<MaterializerJob> allJobs = prepareJobs(monitor, bom);
-		
+
 		if(allJobs != null)
 		{
 			triggerJobs(monitor, allJobs);
@@ -164,12 +169,12 @@ public class MaterializationJob extends Job
 				throw new OperationCanceledException();
 			}
 		}
-	}	
+	}
 
 	protected Queue<MaterializerJob> prepareJobs(IProgressMonitor monitor, BillOfMaterials bom) throws CoreException
 	{
 		CorePlugin corePlugin = CorePlugin.getDefault();
-		Map<String,List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
+		Map<String, List<Resolution>> resPerMat = new LinkedHashMap<String, List<Resolution>>();
 		MaterializationSpec mspec = m_context.getMaterializationSpec();
 		for(Resolution cr : bom.findMaterializationCandidates(m_context, mspec))
 		{
@@ -196,15 +201,35 @@ public class MaterializationJob extends Job
 				// Start one job for each resolution
 				//
 				for(Resolution res : resolutions)
-					allJobs.offer(new MaterializerJob(entry.getKey(), materializer, Collections.singletonList(res), m_context));
+					allJobs.offer(new MaterializerJob(entry.getKey(), materializer, Collections.singletonList(res),
+							m_context));
 			}
 			else
 				allJobs.offer(new MaterializerJob(entry.getKey(), materializer, resolutions, m_context));
 		}
-		
+
 		return allJobs;
 	}
-	
+
+	@Override
+	public IStatus run(IProgressMonitor monitor)
+	{
+		try
+		{
+			internalRun(monitor);
+			return Status.OK_STATUS;
+		}
+		catch(CoreException e)
+		{
+			CorePlugin.getLogger().error(e, e.getMessage());
+			return e.getStatus();
+		}
+		catch(OperationCanceledException e)
+		{
+			return Status.CANCEL_STATUS;
+		}
+	}
+
 	protected void triggerJobs(final IProgressMonitor monitor, final Queue<MaterializerJob> allJobs)
 	{
 		// -- Schedule at most m_maxParallelJobs. After that, let the termination of
@@ -217,7 +242,8 @@ public class MaterializationJob extends Job
 			@Override
 			public void aboutToRun(IJobChangeEvent event)
 			{
-				if(monitor.isCanceled() || (!m_context.isContinueOnError() && m_context.getStatus().getSeverity() == IStatus.ERROR))
+				if(monitor.isCanceled()
+						|| (!m_context.isContinueOnError() && m_context.getStatus().getSeverity() == IStatus.ERROR))
 					cancel();
 			}
 
@@ -232,7 +258,7 @@ public class MaterializationJob extends Job
 						mjob.addJobChangeListener(this);
 						mjob.schedule();
 					}
-				}	
+				}
 			}
 		};
 
@@ -247,8 +273,9 @@ public class MaterializationJob extends Job
 			job.schedule();
 		}
 	}
-	
-	protected void waitForJobs(IProgressMonitor monitor, Queue<MaterializerJob> allJobs, BillOfMaterials bom) throws CoreException
+
+	protected void waitForJobs(IProgressMonitor monitor, Queue<MaterializerJob> allJobs, BillOfMaterials bom)
+			throws CoreException
 	{
 		// Wait until all jobs have completed
 		//
@@ -275,30 +302,6 @@ public class MaterializationJob extends Job
 		{
 			m_context.clearStatus();
 			throw new CoreException(status);
-		}
-	}
-
-	protected MaterializationContext getMaterializationContext()
-	{
-		return m_context;
-	}
-	
-	@Override
-	public IStatus run(IProgressMonitor monitor)
-	{
-		try
-		{
-			internalRun(monitor);
-			return Status.OK_STATUS;
-		}
-		catch(CoreException e)
-		{
-			CorePlugin.getLogger().error(e, e.getMessage());
-			return e.getStatus();
-		}
-		catch(OperationCanceledException e)
-		{
-			return Status.CANCEL_STATUS;
 		}
 	}
 }

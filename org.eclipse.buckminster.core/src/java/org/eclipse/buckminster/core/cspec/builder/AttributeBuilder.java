@@ -47,7 +47,9 @@ public class AttributeBuilder extends CSpecElementBuilder implements IAttribute
 
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
 	{
-		return specBuilder == getCSpecBuilder() ? this : new AttributeBuilder(specBuilder);
+		return specBuilder == getCSpecBuilder()
+				? this
+				: new AttributeBuilder(specBuilder);
 	}
 
 	public Documentation getDocumentation()

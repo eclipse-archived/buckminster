@@ -12,11 +12,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Filip Hrbek
- *
- * This class is used for reporting a good progress information even if the download is stalled
- * for a while. If specified timeout expires before something is read from the input, a new
- * progress message is generated. This enables e.g. reporting recalculated download speed which
- * would be frozen if we simply waited for data.
+ * 
+ *         This class is used for reporting a good progress information even if the download is stalled for a while. If
+ *         specified timeout expires before something is read from the input, a new progress message is generated. This
+ *         enables e.g. reporting recalculated download speed which would be frozen if we simply waited for data.
  */
 public class ProgressReporter extends Thread
 {
@@ -30,8 +29,8 @@ public class ProgressReporter extends Thread
 
 	private boolean m_running;
 
-	public ProgressReporter(IProgressMonitor reporterMonitor,
-			ProgressStatistics reporterProgress, String format, int timeout)
+	public ProgressReporter(IProgressMonitor reporterMonitor, ProgressStatistics reporterProgress, String format,
+			int timeout)
 	{
 		m_reporterMonitor = reporterMonitor;
 		m_reporterProgress = reporterProgress;

@@ -8,14 +8,13 @@
 
 package org.eclipse.buckminster.core.common.model;
 
-
-
 /**
  * @author Thomas Hallgren
  */
 public class TaggedRxPattern extends RxPattern
 {
 	public static final String TAGGED_PREFIX = "tagged.";
+
 	private final String m_tag;
 
 	public TaggedRxPattern(String tag, String name, boolean optional, String pattern, String prefix, String suffix)

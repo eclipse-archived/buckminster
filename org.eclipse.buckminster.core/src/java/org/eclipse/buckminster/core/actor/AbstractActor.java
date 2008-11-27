@@ -33,6 +33,26 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 {
 	private static InheritableThreadLocal<Stack<IActionContext>> s_actionContext = new InheritableThreadLocal<Stack<IActionContext>>();
 
+	public static IActionContext getActiveContext()
+	{
+		Stack<IActionContext> ctxStack = s_actionContext.get();
+		if(ctxStack == null || ctxStack.isEmpty())
+			throw new IllegalStateException("No active IActionContext");
+		return ctxStack.peek();
+	}
+
+	public static boolean getBooleanProperty(Map<String, String> properties, String key, boolean dflt)
+	{
+		String propVal = properties.get(key);
+		if(propVal == null)
+			return dflt;
+		if("true".equalsIgnoreCase(propVal))
+			return true;
+		if("false".equalsIgnoreCase(propVal))
+			return false;
+		throw new IllegalArgumentException('\'' + propVal + "' is not a valid value of a boolean property");
+	}
+
 	private String m_name;
 
 	private String m_id;
@@ -46,29 +66,19 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		m_logger = CorePlugin.getLogger();
 	}
 
-	public static IActionContext getActiveContext()
+	protected final String getActorProperty(String key)
 	{
-		Stack<IActionContext> ctxStack = s_actionContext.get();
-		if(ctxStack == null || ctxStack.isEmpty())
-			throw new IllegalStateException("No active IActionContext");
-		return ctxStack.peek();
-	}
-
-	public static boolean getBooleanProperty(Map<String,String> properties, String key, boolean dflt)
-	{
-		String propVal = properties.get(key);
-		if(propVal == null)
-			return dflt;
-		if("true".equalsIgnoreCase(propVal))
-			return true;
-		if("false".equalsIgnoreCase(propVal))
-			return false;
-		throw new IllegalArgumentException('\'' + propVal + "' is not a valid value of a boolean property");
+		return m_action.getActorProperties().get(key);
 	}
 
 	public final String getId()
 	{
 		return m_id;
+	}
+
+	protected final Logger getLogger()
+	{
+		return m_logger;
 	}
 
 	public final String getName()
@@ -93,9 +103,53 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		this.internalInit();
 	}
 
+	protected void internalInit() throws CoreException
+	{
+		// noop
+	}
+
+	abstract protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
+
 	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
 	{
 		return false;
+	}
+
+	private void loggableActionInfo(StringBuilder sb)
+	{
+		if(m_action.getPrerequisitesAlias() != null)
+		{
+			sb.append("\n  Prerequisite alias = ");
+			sb.append(m_action.getPrerequisitesAlias());
+		}
+		if(m_action.getPrerequisiteRebase() != null)
+		{
+			sb.append("\n  Prerequisite rebase = ");
+			sb.append(m_action.getPrerequisiteRebase().toOSString());
+		}
+		if(m_action.getProductAlias() != null)
+		{
+			sb.append("\n  Product alias = ");
+			sb.append(m_action.getProductAlias());
+		}
+		if(m_action.getProductBase() != null)
+		{
+			sb.append("\n  Product base = ");
+			sb.append(m_action.getProductBase().toOSString());
+		}
+	}
+
+	private void loggableProps(StringBuilder sb, Map<String, String> props)
+	{
+		Properties sysProps = System.getProperties();
+		for(Map.Entry<String, String> entry : props.entrySet())
+		{
+			if(sysProps.getProperty(entry.getKey()) == null)
+			{
+				sb.append("\n  ");
+				sb.append(entry.getKey()).append('=').append(entry.getValue());
+			}
+		}
 	}
 
 	public final synchronized IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
@@ -103,7 +157,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		// the stored context is per perform only; if referenced otherwise we ensure that
 		// null is received, triggering a NPE
 		//
-		Map<String,String> props = ctx.getProperties();
+		Map<String, String> props = ctx.getProperties();
 		Stack<IActionContext> ctxStack = s_actionContext.get();
 		if(ctxStack == null)
 		{
@@ -159,59 +213,5 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 	{
 		m_name = config.getAttribute(ActorFactory.ACTOR_NAME_ATTR);
 		m_id = config.getAttribute(ActorFactory.ACTOR_ID_ATTR);
-	}
-
-	protected final Logger getLogger()
-	{
-		return m_logger;
-	}
-
-	protected final String getActorProperty(String key)
-	{
-		return m_action.getActorProperties().get(key);
-	}
-
-	protected void internalInit() throws CoreException
-	{
-		// noop
-	}
-
-	abstract protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
-
-	private void loggableProps(StringBuilder sb, Map<String, String> props)
-	{
-		Properties sysProps = System.getProperties();
-		for(Map.Entry<String, String> entry : props.entrySet())
-		{
-			if(sysProps.getProperty(entry.getKey()) == null)
-			{
-				sb.append("\n  ");
-				sb.append(entry.getKey()).append('=').append(entry.getValue());
-			}
-		}
-	}
-
-	private void loggableActionInfo(StringBuilder sb)
-	{
-		if(m_action.getPrerequisitesAlias() != null)
-		{
-			sb.append("\n  Prerequisite alias = ");
-			sb.append(m_action.getPrerequisitesAlias());
-		}
-		if(m_action.getPrerequisiteRebase() != null)
-		{
-			sb.append("\n  Prerequisite rebase = ");
-			sb.append(m_action.getPrerequisiteRebase().toOSString());
-		}
-		if(m_action.getProductAlias() != null)
-		{
-			sb.append("\n  Product alias = ");
-			sb.append(m_action.getProductAlias());
-		}
-		if(m_action.getProductBase() != null)
-		{
-			sb.append("\n  Product base = ");
-			sb.append(m_action.getProductBase().toOSString());
-		}
 	}
 }

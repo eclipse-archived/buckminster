@@ -32,38 +32,21 @@ import org.xml.sax.SAXException;
 public class ComponentQueryParser extends AbstractParser<ComponentQuery> implements ChildPoppedListener
 {
 	private ComponentQuery m_componentQuery;
+
 	private URL m_contextURL;
 
 	public ComponentQueryParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
-		super(parserExtensions, new String[]
- 		{
-			XMLConstants.XHTML_NS,
-			XMLConstants.XML_NS,
-			XMLConstants.BM_COMMON_NS,
-			XMLConstants.BM_CSPEC_NS,
-			XMLConstants.BM_CQUERY_NS
- 		}, new String[]
-  		{
-			XMLConstants.XHTML_RESOURCE,
-			XMLConstants.XML_RESOURCE,
-			XMLConstants.BM_COMMON_RESOURCE,
-			XMLConstants.BM_CSPEC_RESOURCE,
-			XMLConstants.BM_CQUERY_RESOURCE
-  		}, validating);
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
+				XMLConstants.BM_CSPEC_NS, XMLConstants.BM_CQUERY_NS }, new String[] { XMLConstants.XHTML_RESOURCE,
+				XMLConstants.XML_RESOURCE, XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE,
+				XMLConstants.BM_CQUERY_RESOURCE }, validating);
 	}
 
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(ComponentQuery.TAG.equals(localName))
-		{
-			ComponentQueryHandler rmh = new ComponentQueryHandler(this, m_contextURL);
-			this.pushHandler(rmh, attrs);
-		}
-		else
-			super.startElement(uri, localName, qName, attrs);
+		m_componentQuery = ((ComponentQueryHandler)child).getComponentQuery();
 	}
 
 	public ComponentQuery parse(String systemId, InputStream input) throws CoreException
@@ -80,9 +63,15 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 		return m_componentQuery;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
-		m_componentQuery = ((ComponentQueryHandler)child).getComponentQuery();
+		if(ComponentQuery.TAG.equals(localName))
+		{
+			ComponentQueryHandler rmh = new ComponentQueryHandler(this, m_contextURL);
+			this.pushHandler(rmh, attrs);
+		}
+		else
+			super.startElement(uri, localName, qName, attrs);
 	}
 }
-

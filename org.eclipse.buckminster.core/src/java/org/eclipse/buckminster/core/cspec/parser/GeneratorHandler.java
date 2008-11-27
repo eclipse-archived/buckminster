@@ -27,24 +27,23 @@ class GeneratorHandler extends CSpecElementHandler
 	}
 
 	@Override
+	protected NamedElementBuilder createBuilder()
+	{
+		return this.getCSpecBuilder().createGeneratorBuilder();
+	}
+
+	@Override
+	protected String getNameAttribute(Attributes attrs) throws SAXException
+	{
+		return this.getStringValue(attrs, Generator.ATTR_GENERATES);
+	}
+
+	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
 		GeneratorBuilder builder = (GeneratorBuilder)getBuilder();
 		builder.setComponent(getStringValue(attrs, Generator.ATTR_COMPONENT));
 		builder.setAttribute(getStringValue(attrs, Generator.ATTR_ATTRIBUTE));
-	}
-
-	@Override
-	protected String getNameAttribute(Attributes attrs)
-	throws SAXException
-	{
-		return this.getStringValue(attrs, Generator.ATTR_GENERATES);
-	}
-
-	@Override
-	protected NamedElementBuilder createBuilder()
-	{
-		return this.getCSpecBuilder().createGeneratorBuilder();
 	}
 }

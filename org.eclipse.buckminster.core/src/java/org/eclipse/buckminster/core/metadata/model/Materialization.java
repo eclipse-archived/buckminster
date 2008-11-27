@@ -32,9 +32,11 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 	public static final String TAG = "materialization";
 
 	public static final String ATTR_LOCATION = "location";
+
 	public static final int SEQUENCE_NUMBER = 3;
 
 	private final IPath m_componentLocation;
+
 	private final ComponentIdentifier m_componentIdentifier;
 
 	public Materialization(IPath destination, ComponentIdentifier componentIdentifier)
@@ -45,6 +47,28 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 		m_componentIdentifier = componentIdentifier;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
+		String tmp = m_componentIdentifier.getComponentTypeID();
+		if(tmp != null)
+			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
+
+		IVersion version = m_componentIdentifier.getVersion();
+		if(version != null)
+		{
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
+		}
+	}
+
+	public ComponentIdentifier getComponentIdentifier()
+	{
+		return m_componentIdentifier;
+	}
+
 	public final IPath getComponentLocation()
 	{
 		return m_componentLocation;
@@ -53,11 +77,6 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 	public String getDefaultTag()
 	{
 		return TAG;
-	}
-
-	public ComponentIdentifier getComponentIdentifier()
-	{
-		return m_componentIdentifier;
 	}
 
 	public Resolution getResolution() throws CoreException
@@ -72,9 +91,9 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 	}
 
 	/**
-	 * Returns <code>true</code> if this <code>MaterializationInfo</code> is
-	 * valid. It will be considered valid if the destination appoints an
-	 * existing file or a directory that is not empty.
+	 * Returns <code>true</code> if this <code>MaterializationInfo</code> is valid. It will be considered valid if the
+	 * destination appoints an existing file or a directory that is not empty.
+	 * 
 	 * @return <code>true</code> if the destination is not empty.
 	 */
 	public boolean isValid()
@@ -86,7 +105,9 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 		// as few system calls as possible.
 		//
 		String[] list = destFile.list();
-		return (list == null) ? destFile.length() > 0 : list.length > 0;
+		return (list == null)
+				? destFile.length() > 0
+				: list.length > 0;
 	}
 
 	public synchronized void remove(StorageManager sm) throws CoreException
@@ -107,22 +128,4 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		receiver.endDocument();
 	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
-		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
-		String tmp = m_componentIdentifier.getComponentTypeID();
-		if(tmp != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
-
-		IVersion version = m_componentIdentifier.getVersion();
-		if(version != null)
-		{
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
-		}
-	}
 }
-

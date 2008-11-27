@@ -22,233 +22,83 @@ import org.eclipse.core.runtime.CoreException;
  */
 public abstract class VersionDesignator implements IVersionDesignator
 {
-	private final IVersion m_version;
-
-	protected VersionDesignator(IVersion version)
+	static class GreaterOrEqual extends VersionDesignator
 	{
-		m_version = version;
-	}
-
-	public final boolean designates(String version) throws VersionSyntaxException
-	{
-		return version == null ? false : internalDesignates(m_version.getType().fromString(version));
-	}
-
-	public boolean designates(IVersion version)
-	{
-		return version == null
-			? false : (version.getType().isComparableTo(m_version.getType())
-				? internalDesignates(version) : false);
-	}
-
-	public final ComparisonResult compare(IVersionDesignator designator)
-	{
-		return designator.getVersion().getType().isComparableTo(m_version.getType())
-			? internalCompare(designator) : ComparisonResult.Disparate;
-	}
-
-	@Override
-	public final boolean equals(Object o)
-	{
-		return o instanceof IVersionDesignator
-			&& compare((IVersionDesignator)o) == ComparisonResult.Equal;
-	}
-
-	public IVersion getVersion()
-	{
-		return m_version;
-	}
-
-	public IVersion getToVersion()
-	{
-		return m_version;
-	}
-
-	public boolean hasUpperBound()
-	{
-		return true;
-	}
-
-	public boolean includesLowerBound()
-	{
-		return true;
-	}
-
-	public boolean includesUpperBound()
-	{
-		return true;
-	}
-
-	public boolean isExplicit()
-	{
-		return false;
-	}
-
-	public IVersionDesignator merge(IVersionDesignator that) throws CoreException
-	{
-		// In case an OSGiVersion is merged with something else like
-		// the TripletVersion, we must first make sure that the merged
-		// version can express itself as an OSGiVersion and convert it.
-		//
-		IVersionDesignator self = this;
-		IVersionType thisType = getVersion().getType();
-		IVersionType thatType = that.getVersion().getType();
-
-		if(thisType instanceof OSGiVersionType)
+		GreaterOrEqual(IVersion version)
 		{
-			if(!(thatType instanceof OSGiVersionType))
-				that = VersionFactory.createDesignator(thisType, that.toString());
-		}
-		else
-		{
-			if(thatType instanceof OSGiVersionType)
-				self = VersionFactory.createDesignator(thatType, toString());
+			super(version);
 		}
 
-		switch(self.compare(that))
+		@Override
+		public IVersion getToVersion()
 		{
-		case Equal:
-		case ContainedBy:
-			return self;
-		case Contains:
-			return that;
-		case IntersectHigh:
-			return create(self.getVersion(), self.includesLowerBound(), that.getToVersion(),
-				that.includesUpperBound());
-		case IntersectLow:
-			return create(that.getVersion(), that.includesLowerBound(), self.getToVersion(),
-				self.includesUpperBound());
-		default:
 			return null;
 		}
-	}
 
-	public static IVersionDesignator create(IVersion low, boolean includeLow, IVersion high,
-		boolean includeHigh)
-	{
-		if(includeLow)
+		@Override
+		public int hashCode()
 		{
-			if(high == null)
-				return new GreaterOrEqual(low);
-
-			int cmp = low.compareTo(high);
-			if(cmp == 0)
-				return includeHigh
-					? new PerfectMatch(low) : null;
-
-			return cmp < 0
-				? new Range(low, includeLow, high, includeHigh) : null;
+			return getVersion().hashCode();
 		}
 
-		if(high == null)
-			return null;
-
-		int cmp = low.compareTo(high);
-		if(cmp == 0)
-			return null;
-
-		return cmp < 0
-			? new Range(low, includeLow, high, includeHigh) : null;
-	}
-
-	abstract ComparisonResult internalCompare(IVersionDesignator designator);
-
-	abstract boolean internalDesignates(IVersion version);
-
-	@SuppressWarnings("fallthrough")
-	public static IVersionDesignator fromString(IVersionType versionType, String versionString)
-	throws VersionSyntaxException
-	{
-		if(versionString == null)
-			throw new IllegalArgumentException("Version string cannot be null");
-
-		int top = versionString.length();
-		if(top == 0)
-			throw new IllegalArgumentException("Version string cannot be empty");
-
-		int idx = 0;
-		while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
-			++idx;
-
-		IVersionDesignator result;
-		boolean fromInclusive = false;
-		int[] endPosHolder = new int[1];
-		switch(versionString.charAt(idx))
+		@Override
+		public boolean hasUpperBound()
 		{
-		case '[':
-			fromInclusive = true;
-			// Fall through
-		case '(':
-			++idx;
-			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
-				++idx;
+			return false;
+		}
 
-			IVersion fromVersion = versionType.fromString(versionString, idx, endPosHolder);
-			idx = endPosHolder[0];
-			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
-				++idx;
+		@Override
+		public boolean includesUpperBound()
+		{
+			return false;
+		}
 
-			if(idx >= top || versionString.charAt(idx) != ',')
+		@Override
+		ComparisonResult internalCompare(IVersionDesignator o)
+		{
+			IVersion tVersion = getVersion();
+
+			int cr = tVersion.compareTo(o.getVersion());
+			if(o instanceof GreaterOrEqual)
 			{
-				if(fromInclusive && versionString.charAt(idx) == ']')
-				{
-					// Short form [<version>] of perfect match
-					//
-					result = new PerfectMatch(fromVersion);
-					break;
-				}
-				throw new VersionSyntaxException("expected ','", versionString, idx);
+				return cr < 0
+						? ComparisonResult.Contains
+						: (cr == 0
+								? ComparisonResult.Equal
+								: ComparisonResult.ContainedBy);
 			}
-			++idx;
-			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
-				++idx;
 
-			IVersion toVersion = versionType.fromString(versionString, idx, endPosHolder);
-			idx = endPosHolder[0];
-			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
-				++idx;
+			if(o instanceof PerfectMatch)
+				return cr > 0
+						? ComparisonResult.Disparate
+						: ComparisonResult.Contains;
 
-			char endChar = idx < top
-				? versionString.charAt(idx) : 0;
-			boolean toInclusive = false;
-			switch(endChar)
-			{
-			case ']':
-				toInclusive = true;
-				// fall through
-			case ')':
-				int compare = fromVersion.compareTo(toVersion);
-				if(compare > 0 || (compare == 0 && !(fromInclusive && toInclusive)))
-					throw new VersionSyntaxException("Negative version range", versionString, 0);
-				result =
-					(compare == 0)
-						? new PerfectMatch(fromVersion) : new Range(fromVersion, fromInclusive, toVersion,
-							toInclusive);
-				break;
-			default:
-				throw new VersionSyntaxException("expected ']' or ')'", versionString, idx);
-			}
-			break;
-		default:
-			result = new GreaterOrEqual(versionType.fromString(versionString));
+			if(cr > 0)
+				return o.designates(tVersion)
+						? ComparisonResult.IntersectLow
+						: ComparisonResult.Disparate;
+
+			return ComparisonResult.Contains;
 		}
-		return result;
-	}
 
-	public static IVersionDesignator explicitFromString(IVersionType versionType, String versionString)
-	throws VersionSyntaxException
-	{
-		return explicit(versionType.fromString(versionString));
-	}
+		@Override
+		boolean internalDesignates(IVersion version)
+		{
+			return version.compareTo(getVersion()) >= 0;
+		}
 
-	public static IVersionDesignator explicit(IVersion version)
-	{
-		return new PerfectMatch(version);
-	}
+		public boolean isIdeal(IVersion version)
+		{
+			// Since there's no upper bound, we don't know.
+			//
+			return false;
+		}
 
-	public static IVersionDesignator GTEqual(IVersion version)
-	{
-		return new GreaterOrEqual(version);
+		@Override
+		public String toString()
+		{
+			return getVersion().toString();
+		}
 	}
 
 	static class PerfectMatch extends VersionDesignator
@@ -263,6 +113,22 @@ public abstract class VersionDesignator implements IVersionDesignator
 		{
 			int hash = getVersion().hashCode();
 			return hash * 31 ^ hash;
+		}
+
+		@Override
+		ComparisonResult internalCompare(IVersionDesignator o)
+		{
+			return o.designates(getVersion())
+					? (o instanceof PerfectMatch
+							? ComparisonResult.Equal
+							: ComparisonResult.ContainedBy)
+					: ComparisonResult.Disparate;
+		}
+
+		@Override
+		boolean internalDesignates(IVersion version)
+		{
+			return getVersion().compareTo(version) == 0;
 		}
 
 		@Override
@@ -288,95 +154,6 @@ public abstract class VersionDesignator implements IVersionDesignator
 			bld.append(']');
 			return bld.toString();
 		}
-
-		@Override
-		ComparisonResult internalCompare(IVersionDesignator o)
-		{
-			return o.designates(getVersion())
-				? (o instanceof PerfectMatch
-					? ComparisonResult.Equal : ComparisonResult.ContainedBy) : ComparisonResult.Disparate;
-		}
-
-		@Override
-		boolean internalDesignates(IVersion version)
-		{
-			return getVersion().compareTo(version) == 0;
-		}
-	}
-
-	static class GreaterOrEqual extends VersionDesignator
-	{
-		GreaterOrEqual(IVersion version)
-		{
-			super(version);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return getVersion().hashCode();
-		}
-
-		@Override
-		public boolean hasUpperBound()
-		{
-			return false;
-		}
-
-		@Override
-		public IVersion getToVersion()
-		{
-			return null;
-		}
-
-		@Override
-		public boolean includesUpperBound()
-		{
-			return false;
-		}
-
-		public boolean isIdeal(IVersion version)
-		{
-			// Since there's no upper bound, we don't know.
-			//
-			return false;
-		}
-
-		@Override
-		ComparisonResult internalCompare(IVersionDesignator o)
-		{
-			IVersion tVersion = getVersion();
-
-			int cr = tVersion.compareTo(o.getVersion());
-			if(o instanceof GreaterOrEqual)
-			{
-				return cr < 0
-					? ComparisonResult.Contains : (cr == 0
-						? ComparisonResult.Equal : ComparisonResult.ContainedBy);
-			}
-
-			if(o instanceof PerfectMatch)
-				return cr > 0
-					? ComparisonResult.Disparate : ComparisonResult.Contains;
-
-			if(cr > 0)
-				return o.designates(tVersion)
-					? ComparisonResult.IntersectLow : ComparisonResult.Disparate;
-
-			return ComparisonResult.Contains;
-		}
-
-		@Override
-		public String toString()
-		{
-			return getVersion().toString();
-		}
-
-		@Override
-		boolean internalDesignates(IVersion version)
-		{
-			return version.compareTo(getVersion()) >= 0;
-		}
 	}
 
 	static class Range extends VersionDesignator
@@ -396,6 +173,12 @@ public abstract class VersionDesignator implements IVersionDesignator
 		}
 
 		@Override
+		public IVersion getToVersion()
+		{
+			return m_toVersion;
+		}
+
+		@Override
 		public int hashCode()
 		{
 			int hash = getVersion().hashCode();
@@ -409,12 +192,6 @@ public abstract class VersionDesignator implements IVersionDesignator
 		}
 
 		@Override
-		public IVersion getToVersion()
-		{
-			return m_toVersion;
-		}
-
-		@Override
 		public boolean includesLowerBound()
 		{
 			return m_fromInclusive;
@@ -424,11 +201,6 @@ public abstract class VersionDesignator implements IVersionDesignator
 		public boolean includesUpperBound()
 		{
 			return m_toInclusive;
-		}
-
-		public boolean isIdeal(IVersion version)
-		{
-			return m_toInclusive && m_toVersion.equals(version);
 		}
 
 		@Override
@@ -497,34 +269,24 @@ public abstract class VersionDesignator implements IVersionDesignator
 			if(compareFrom < 0)
 			{
 				return compareTo >= 0
-					? ComparisonResult.Contains : ComparisonResult.IntersectHigh;
+						? ComparisonResult.Contains
+						: ComparisonResult.IntersectHigh;
 			}
 
 			if(compareFrom > 0)
 			{
 				return compareTo <= 0
-					? ComparisonResult.ContainedBy : ComparisonResult.IntersectLow;
+						? ComparisonResult.ContainedBy
+						: ComparisonResult.IntersectLow;
 			}
 
 			// Range starts are equal
 			//
 			return compareTo == 0
-				? ComparisonResult.Equal : (compareTo < 0
-					? ComparisonResult.ContainedBy : ComparisonResult.Contains);
-		}
-
-		@Override
-		public String toString()
-		{
-			StringBuilder bld = new StringBuilder();
-			bld.append(m_fromInclusive
-				? '[' : '(');
-			bld.append(getVersion());
-			bld.append(',');
-			bld.append(m_toVersion);
-			bld.append(m_toInclusive
-				? ']' : ')');
-			return bld.toString();
+					? ComparisonResult.Equal
+					: (compareTo < 0
+							? ComparisonResult.ContainedBy
+							: ComparisonResult.Contains);
 		}
 
 		@Override
@@ -539,6 +301,260 @@ public abstract class VersionDesignator implements IVersionDesignator
 
 			compare = m_toVersion.compareTo(version);
 			return compare > 0 || (compare == 0 && m_toInclusive);
+		}
+
+		public boolean isIdeal(IVersion version)
+		{
+			return m_toInclusive && m_toVersion.equals(version);
+		}
+
+		@Override
+		public String toString()
+		{
+			StringBuilder bld = new StringBuilder();
+			bld.append(m_fromInclusive
+					? '['
+					: '(');
+			bld.append(getVersion());
+			bld.append(',');
+			bld.append(m_toVersion);
+			bld.append(m_toInclusive
+					? ']'
+					: ')');
+			return bld.toString();
+		}
+	}
+
+	public static IVersionDesignator create(IVersion low, boolean includeLow, IVersion high, boolean includeHigh)
+	{
+		if(includeLow)
+		{
+			if(high == null)
+				return new GreaterOrEqual(low);
+
+			int cmp = low.compareTo(high);
+			if(cmp == 0)
+				return includeHigh
+						? new PerfectMatch(low)
+						: null;
+
+			return cmp < 0
+					? new Range(low, includeLow, high, includeHigh)
+					: null;
+		}
+
+		if(high == null)
+			return null;
+
+		int cmp = low.compareTo(high);
+		if(cmp == 0)
+			return null;
+
+		return cmp < 0
+				? new Range(low, includeLow, high, includeHigh)
+				: null;
+	}
+
+	public static IVersionDesignator explicit(IVersion version)
+	{
+		return new PerfectMatch(version);
+	}
+
+	public static IVersionDesignator explicitFromString(IVersionType versionType, String versionString)
+			throws VersionSyntaxException
+	{
+		return explicit(versionType.fromString(versionString));
+	}
+
+	@SuppressWarnings("fallthrough")
+	public static IVersionDesignator fromString(IVersionType versionType, String versionString)
+			throws VersionSyntaxException
+	{
+		if(versionString == null)
+			throw new IllegalArgumentException("Version string cannot be null");
+
+		int top = versionString.length();
+		if(top == 0)
+			throw new IllegalArgumentException("Version string cannot be empty");
+
+		int idx = 0;
+		while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+			++idx;
+
+		IVersionDesignator result;
+		boolean fromInclusive = false;
+		int[] endPosHolder = new int[1];
+		switch(versionString.charAt(idx))
+		{
+		case '[':
+			fromInclusive = true;
+			// Fall through
+		case '(':
+			++idx;
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			IVersion fromVersion = versionType.fromString(versionString, idx, endPosHolder);
+			idx = endPosHolder[0];
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			if(idx >= top || versionString.charAt(idx) != ',')
+			{
+				if(fromInclusive && versionString.charAt(idx) == ']')
+				{
+					// Short form [<version>] of perfect match
+					//
+					result = new PerfectMatch(fromVersion);
+					break;
+				}
+				throw new VersionSyntaxException("expected ','", versionString, idx);
+			}
+			++idx;
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			IVersion toVersion = versionType.fromString(versionString, idx, endPosHolder);
+			idx = endPosHolder[0];
+			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
+				++idx;
+
+			char endChar = idx < top
+					? versionString.charAt(idx)
+					: 0;
+			boolean toInclusive = false;
+			switch(endChar)
+			{
+			case ']':
+				toInclusive = true;
+				// fall through
+			case ')':
+				int compare = fromVersion.compareTo(toVersion);
+				if(compare > 0 || (compare == 0 && !(fromInclusive && toInclusive)))
+					throw new VersionSyntaxException("Negative version range", versionString, 0);
+				result = (compare == 0)
+						? new PerfectMatch(fromVersion)
+						: new Range(fromVersion, fromInclusive, toVersion, toInclusive);
+				break;
+			default:
+				throw new VersionSyntaxException("expected ']' or ')'", versionString, idx);
+			}
+			break;
+		default:
+			result = new GreaterOrEqual(versionType.fromString(versionString));
+		}
+		return result;
+	}
+
+	public static IVersionDesignator GTEqual(IVersion version)
+	{
+		return new GreaterOrEqual(version);
+	}
+
+	private final IVersion m_version;
+
+	protected VersionDesignator(IVersion version)
+	{
+		m_version = version;
+	}
+
+	public final ComparisonResult compare(IVersionDesignator designator)
+	{
+		return designator.getVersion().getType().isComparableTo(m_version.getType())
+				? internalCompare(designator)
+				: ComparisonResult.Disparate;
+	}
+
+	public boolean designates(IVersion version)
+	{
+		return version == null
+				? false
+				: (version.getType().isComparableTo(m_version.getType())
+						? internalDesignates(version)
+						: false);
+	}
+
+	public final boolean designates(String version) throws VersionSyntaxException
+	{
+		return version == null
+				? false
+				: internalDesignates(m_version.getType().fromString(version));
+	}
+
+	@Override
+	public final boolean equals(Object o)
+	{
+		return o instanceof IVersionDesignator && compare((IVersionDesignator)o) == ComparisonResult.Equal;
+	}
+
+	public IVersion getToVersion()
+	{
+		return m_version;
+	}
+
+	public IVersion getVersion()
+	{
+		return m_version;
+	}
+
+	public boolean hasUpperBound()
+	{
+		return true;
+	}
+
+	public boolean includesLowerBound()
+	{
+		return true;
+	}
+
+	public boolean includesUpperBound()
+	{
+		return true;
+	}
+
+	abstract ComparisonResult internalCompare(IVersionDesignator designator);
+
+	abstract boolean internalDesignates(IVersion version);
+
+	public boolean isExplicit()
+	{
+		return false;
+	}
+
+	public IVersionDesignator merge(IVersionDesignator that) throws CoreException
+	{
+		// In case an OSGiVersion is merged with something else like
+		// the TripletVersion, we must first make sure that the merged
+		// version can express itself as an OSGiVersion and convert it.
+		//
+		IVersionDesignator self = this;
+		IVersionType thisType = getVersion().getType();
+		IVersionType thatType = that.getVersion().getType();
+
+		if(thisType instanceof OSGiVersionType)
+		{
+			if(!(thatType instanceof OSGiVersionType))
+				that = VersionFactory.createDesignator(thisType, that.toString());
+		}
+		else
+		{
+			if(thatType instanceof OSGiVersionType)
+				self = VersionFactory.createDesignator(thatType, toString());
+		}
+
+		switch(self.compare(that))
+		{
+		case Equal:
+		case ContainedBy:
+			return self;
+		case Contains:
+			return that;
+		case IntersectHigh:
+			return create(self.getVersion(), self.includesLowerBound(), that.getToVersion(), that.includesUpperBound());
+		case IntersectLow:
+			return create(that.getVersion(), that.includesLowerBound(), self.getToVersion(), self.includesUpperBound());
+		default:
+			return null;
 		}
 	}
 }

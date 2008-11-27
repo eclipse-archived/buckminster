@@ -22,4 +22,3 @@ public class CircularExpansionException extends RuntimeException
 		super(propVal);
 	}
 }
-

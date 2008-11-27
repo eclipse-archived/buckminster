@@ -22,13 +22,24 @@ import org.xml.sax.SAXException;
  */
 public class WorkspaceBindingParser extends MetaDataParser<WorkspaceBinding>
 {
+	private WorkspaceBinding m_wsBinding;
+
 	public WorkspaceBindingParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
 		super(parserExtensions, validating);
 	}
 
-	private WorkspaceBinding m_wsBinding;
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_wsBinding = ((WorkspaceBindingHandler)child).getWorkspaceBinding();
+	}
+
+	public WorkspaceBinding parse(String systemID, InputStream input) throws CoreException
+	{
+		this.parseInput(systemID, input);
+		return m_wsBinding;
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
@@ -38,17 +49,4 @@ public class WorkspaceBindingParser extends MetaDataParser<WorkspaceBinding>
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public WorkspaceBinding parse(String systemID, InputStream input) throws CoreException
-	{
-		this.parseInput(systemID, input);
-		return m_wsBinding;
-	}
-
-	public void childPopped(ChildHandler child)
-	throws SAXException
-	{
-		m_wsBinding = ((WorkspaceBindingHandler)child).getWorkspaceBinding();
-	}
 }
-

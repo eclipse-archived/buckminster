@@ -25,16 +25,24 @@ import org.xml.sax.SAXException;
  */
 public class DocumentationParser extends AbstractParser<Documentation> implements ChildPoppedListener
 {
-	public DocumentationParser()
-	throws CoreException
+	private Documentation m_documentation;
+
+	public DocumentationParser() throws CoreException
 	{
-		super(Collections.<ParserFactory.ParserExtension>emptyList(),
-			new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS },
-			new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE },
-			true);
+		super(Collections.<ParserFactory.ParserExtension> emptyList(), new String[] { XMLConstants.XHTML_NS,
+				XMLConstants.XML_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE }, true);
 	}
 
-	private Documentation m_documentation;
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_documentation = ((DocumentationHandler)child).createDocumentation();
+	}
+
+	public Documentation parse(String systemID, InputStream input) throws CoreException
+	{
+		this.parseInput(systemID, input);
+		return m_documentation;
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
@@ -47,17 +55,4 @@ public class DocumentationParser extends AbstractParser<Documentation> implement
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public Documentation parse(String systemID, InputStream input) throws CoreException
-	{
-		this.parseInput(systemID, input);
-		return m_documentation;
-	}
-
-	public void childPopped(ChildHandler child)
-	throws SAXException
-	{
-		m_documentation = ((DocumentationHandler)child).createDocumentation();
-	}
 }
-

@@ -19,26 +19,29 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class MaterializerEndPoint
 {
+	public static MaterializerEndPoint create(IPath location, String remoteName, Resolution resolution,
+			MaterializationContext ctx) throws CoreException
+	{
+		String suffixedName = ctx.getSuffixedName(resolution, remoteName);
+		Installer installer = (suffixedName == null)
+				? Installer.getPlainInstaller()
+				: Installer.getInstaller(suffixedName, ctx.getMaterializationSpec().isExpand(
+						resolution.getComponentIdentifier()));
+		return new MaterializerEndPoint(location, installer);
+	}
+
 	private final IPath m_finalDestination;
+
 	private final Installer m_installer;
 
 	MaterializerEndPoint(IPath finalLocation, Installer installer)
 	{
 		m_finalDestination = finalLocation;
 		m_installer = installer;
-	}
-
-	public static MaterializerEndPoint create(IPath location, String remoteName, Resolution resolution, MaterializationContext ctx) throws CoreException
-	{
-		String suffixedName = ctx.getSuffixedName(resolution, remoteName);
-		Installer installer = (suffixedName == null)
-			? Installer.getPlainInstaller()
-			: Installer.getInstaller(suffixedName, ctx.getMaterializationSpec().isExpand(resolution.getComponentIdentifier()));
-		return new MaterializerEndPoint(location, installer);
 	}
 
 	public IPath getFinalDestination()

@@ -46,16 +46,15 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 {
-	private final HashMap<UUID,TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();
-
 	public static class Lock
 	{
 		public static Lock lock(File file, boolean exclusive) throws CoreException
 		{
 			return new Lock(file, exclusive);
 		}
+
 		private final RandomAccessFile m_lockFile;
-		
+
 		private FileLock m_lock;
 
 		private Lock(File file, boolean exclusive) throws CoreException
@@ -115,6 +114,8 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 		}
 	}
 
+	private final HashMap<UUID, TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();
+
 	private static final String SEQUENCE_FILE = ".sqfile";
 
 	private final Class<T> m_class;
@@ -130,7 +131,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 	private transient T[] m_allElements;
 
 	private HashMap<String, Method> m_getters;
-	
+
 	private final IParser<T> m_parser;
 
 	private long m_cacheTime;
@@ -155,8 +156,8 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 			bf.order(ByteOrder.LITTLE_ENDIAN);
 			FileChannel fc = lock.getLockChannel();
 			int foundSequenceNumber = fc.read(bf) == 4
-				? bf.getInt(0)
-				: -1;
+					? bf.getInt(0)
+					: -1;
 
 			m_sequenceChanged = (foundSequenceNumber >= 0 && foundSequenceNumber != sequenceNumber);
 			if(foundSequenceNumber < 0 || m_sequenceChanged)
@@ -192,6 +193,55 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 		}
 		m_cacheTime = m_sqFile.lastModified();
 		m_lastChecked = System.currentTimeMillis();
+	}
+
+	private void checkCache()
+	{
+		// The lastModified() call is an IO call. We don't want that to happen
+		// too frequently so we use the m_lastChecked to limit it to no more then
+		// once a second.
+		//
+		long now = System.currentTimeMillis();
+		if(now - m_lastChecked < 1000)
+			return;
+
+		if(m_cacheTime >= m_sqFile.lastModified())
+		{
+			m_lastChecked = now;
+			return;
+		}
+
+		try
+		{
+			Lock lock = Lock.lock(m_sqFile, false);
+			try
+			{
+				m_timestamps.clear();
+				m_parsed.clear();
+				m_allElements = null;
+				File[] files = m_folder.listFiles();
+				int idx = files.length;
+				while(--idx >= 0)
+				{
+					File file = files[idx];
+					String name = file.getName();
+					if(name.charAt(0) == '.')
+						continue;
+					UUID id = UUID.fromString(name);
+					m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
+				}
+				m_cacheTime = m_sqFile.lastModified();
+				m_lastChecked = System.currentTimeMillis();
+			}
+			finally
+			{
+				lock.release();
+			}
+		}
+		catch(CoreException e)
+		{
+			CorePlugin.getLogger().error(e, e.getMessage());
+		}
 	}
 
 	public synchronized void clear()
@@ -265,6 +315,11 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 		}
 	}
 
+	private File getElementFile(UUID elementId)
+	{
+		return new File(m_folder, elementId.toString());
+	}
+
 	@SuppressWarnings("unchecked")
 	public synchronized T[] getElements() throws CoreException
 	{
@@ -284,7 +339,8 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 				}
 				catch(CoreException e)
 				{
-					CorePlugin.getLogger().warning(BuckminsterException.unwind(e), "Unable to read %s", m_class.getName());
+					CorePlugin.getLogger().warning(BuckminsterException.unwind(e), "Unable to read %s",
+							m_class.getName());
 					if(badKeys == null)
 						badKeys = new HashSet<UUID>();
 					badKeys.add(key);
@@ -309,6 +365,43 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 			m_allElements = elems;
 		}
 		return m_allElements;
+	}
+
+	private synchronized Method getGetter(String keyName) throws CoreException
+	{
+		String key = keyName.toLowerCase();
+		if(m_getters == null)
+			m_getters = new HashMap<String, Method>();
+		else
+		{
+			Method getter = m_getters.get(key);
+			if(getter != null)
+				return getter;
+		}
+
+		Class<UUID> retType = UUID.class;
+		for(Method method : m_class.getMethods())
+		{
+			// The method has to be a non static, public method that
+			// returns an UUID and takes no arguments.
+			//
+			int mod = method.getModifiers();
+			if(Modifier.isPublic(mod) && !Modifier.isStatic(mod) && method.getReturnType().equals(retType)
+					&& method.getParameterTypes().length == 0)
+			{
+				String name = method.getName().toLowerCase();
+				if(name.length() > 3 && name.startsWith("get"))
+				{
+					name = name.substring(3);
+					if(name.equals(key))
+					{
+						m_getters.put(key, method);
+						return method;
+					}
+				}
+			}
+		}
+		throw BuckminsterException.fromMessage("No such foreign key: %s", keyName);
 	}
 
 	public synchronized UUID[] getKeys()
@@ -357,149 +450,6 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 		return values.toArray(new TimestampedKey[values.size()]);
 	}
 
-	public synchronized void putElement(T element) throws CoreException
-	{
-		UUID id = element.getId();
-		long timestamp;
-		if(!m_timestamps.containsKey(id))
-		{
-			m_parsed.put(id, element);
-			persistImage(id, element.getImage());
-			timestamp = System.currentTimeMillis();
-		}
-		else
-		{
-			timestamp = System.currentTimeMillis();
-			getElementFile(id).setLastModified(timestamp);
-		}
-		m_timestamps.put(id, new TimestampedKey(id, timestamp));
-	}
-
-	public synchronized void putElement(UUID id, T element) throws CoreException
-	{
-		UUID realId = element.getId();
-		putElement(element);
-		if(id.equals(realId))
-			return;
-
-		// A discreprancy has occured between elements. Likely due to
-		// different XML versions.
-		//
-		CorePlugin.getLogger().debug(
-			"Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id);
-
-		if(m_timestamps.containsKey(id))
-			return;
-
-		m_parsed.put(id, element);
-		persistImage(id, element.getImage());
-		m_timestamps.put(id, new TimestampedKey(id, System.currentTimeMillis()));
-	}
-
-	public synchronized void removeElement(UUID elementId) throws CoreException
-	{
-		m_parsed.remove(elementId);
-		persistImage(elementId, null);
-	}
-
-	public boolean sequenceChanged()
-	{
-		return m_sequenceChanged;
-	}
-
-	private void checkCache()
-	{
-		// The lastModified() call is an IO call. We don't want that to happen
-		// too frequently so we use the m_lastChecked to limit it to no more then
-		// once a second.
-		//
-		long now = System.currentTimeMillis();
-		if(now - m_lastChecked < 1000)
-			return;
-
-		if(m_cacheTime >= m_sqFile.lastModified())
-		{
-			m_lastChecked = now;
-			return;
-		}
-
-		try
-		{
-			Lock lock = Lock.lock(m_sqFile, false);
-			try
-			{
-				m_timestamps.clear();
-				m_parsed.clear();
-				m_allElements = null;
-				File[] files = m_folder.listFiles();
-				int idx = files.length;
-				while(--idx >= 0)
-				{
-					File file = files[idx];
-					String name = file.getName();
-					if(name.charAt(0) == '.')
-						continue;
-					UUID id = UUID.fromString(name);
-					m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
-				}
-				m_cacheTime = m_sqFile.lastModified();
-				m_lastChecked = System.currentTimeMillis();
-			}
-			finally
-			{
-				lock.release();
-			}
-		}
-		catch(CoreException e)
-		{
-			CorePlugin.getLogger().error(e, e.getMessage());
-		}
-	}
-
-	private File getElementFile(UUID elementId)
-	{
-		return new File(m_folder, elementId.toString());
-	}
-
-	private synchronized Method getGetter(String keyName) throws CoreException
-	{
-		String key = keyName.toLowerCase();
-		if(m_getters == null)
-			m_getters = new HashMap<String, Method>();
-		else
-		{
-			Method getter = m_getters.get(key);
-			if(getter != null)
-				return getter;
-		}
-
-		Class<UUID> retType = UUID.class;
-		for(Method method : m_class.getMethods())
-		{
-			// The method has to be a non static, public method that
-			// returns an UUID and takes no arguments.
-			//
-			int mod = method.getModifiers();
-			if(Modifier.isPublic(mod)
-			&& !Modifier.isStatic(mod)
-			&& method.getReturnType().equals(retType)
-			&& method.getParameterTypes().length == 0)
-			{
-				String name = method.getName().toLowerCase();
-				if(name.length() > 3 && name.startsWith("get"))
-				{
-					name = name.substring(3);
-					if(name.equals(key))
-					{
-						m_getters.put(key, method);
-						return method;						
-					}
-				}
-			}
-		}
-		throw BuckminsterException.fromMessage("No such foreign key: %s", keyName);
-	}
-
 	private void persistImage(UUID elementId, byte[] image) throws CoreException
 	{
 		Lock lock = Lock.lock(m_sqFile, true);
@@ -540,5 +490,55 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 		{
 			lock.release();
 		}
+	}
+
+	public synchronized void putElement(T element) throws CoreException
+	{
+		UUID id = element.getId();
+		long timestamp;
+		if(!m_timestamps.containsKey(id))
+		{
+			m_parsed.put(id, element);
+			persistImage(id, element.getImage());
+			timestamp = System.currentTimeMillis();
+		}
+		else
+		{
+			timestamp = System.currentTimeMillis();
+			getElementFile(id).setLastModified(timestamp);
+		}
+		m_timestamps.put(id, new TimestampedKey(id, timestamp));
+	}
+
+	public synchronized void putElement(UUID id, T element) throws CoreException
+	{
+		UUID realId = element.getId();
+		putElement(element);
+		if(id.equals(realId))
+			return;
+
+		// A discreprancy has occured between elements. Likely due to
+		// different XML versions.
+		//
+		CorePlugin.getLogger()
+				.debug("Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id);
+
+		if(m_timestamps.containsKey(id))
+			return;
+
+		m_parsed.put(id, element);
+		persistImage(id, element.getImage());
+		m_timestamps.put(id, new TimestampedKey(id, System.currentTimeMillis()));
+	}
+
+	public synchronized void removeElement(UUID elementId) throws CoreException
+	{
+		m_parsed.remove(elementId);
+		persistImage(elementId, null);
+	}
+
+	public boolean sequenceChanged()
+	{
+		return m_sequenceChanged;
 	}
 }

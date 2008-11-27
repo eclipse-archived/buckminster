@@ -27,8 +27,6 @@ import org.xml.sax.SAXParseException;
  */
 class AlterProductsHandler extends AlterHandler
 {
-	public static final String TAG = AlterAction.ELEM_ALTER_PRODUCTS;
-
 	class AlterActionArtifactHandler extends AlterArtifactHandler
 	{
 		AlterActionArtifactHandler(AbstractHandler parent, boolean publ)
@@ -42,9 +40,15 @@ class AlterProductsHandler extends AlterHandler
 			return new AlterActionArtifactBuilder((ActionArtifactBuilder)baseBuilder);
 		}
 	}
+
+	public static final String TAG = AlterAction.ELEM_ALTER_PRODUCTS;
+
 	private final RemoveHandler m_removeProductPathHandler = new RemoveHandler(this, "removeProductPath", "path");
+
 	private final RemoveHandler m_removeAttributeHandler = new RemoveHandler(this, "removeAttribute", "name");
+
 	private final AlterArtifactHandler m_publicAlterArtifactHandler = new AlterActionArtifactHandler(this, true);
+
 	private final AlterArtifactHandler m_privateAlterArtifactHandler = new AlterActionArtifactHandler(this, false);
 
 	AlterProductsHandler(AbstractHandler parent)
@@ -55,7 +59,8 @@ class AlterProductsHandler extends AlterHandler
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_removeProductPathHandler)
-			this.getAlterActionBuilder().addRemoveProductPath(Path.fromPortableString(m_removeProductPathHandler.getValue()));
+			this.getAlterActionBuilder().addRemoveProductPath(
+					Path.fromPortableString(m_removeProductPathHandler.getValue()));
 		else if(child == m_removeAttributeHandler)
 			this.getAlterCSpecBuilder().addRemoveAttribute(m_removeAttributeHandler.getValue());
 		else if(child instanceof AlterActionArtifactHandler)
@@ -70,8 +75,7 @@ class AlterProductsHandler extends AlterHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(m_removeProductPathHandler.getTAG().equals(localName))

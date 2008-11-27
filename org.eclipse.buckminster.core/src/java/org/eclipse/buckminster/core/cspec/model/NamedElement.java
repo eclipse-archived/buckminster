@@ -11,7 +11,6 @@ import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -31,6 +30,13 @@ public abstract class NamedElement extends AbstractSaxableElement
 		m_name = name;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		if(m_name != null)
+			Utils.addAttribute(attrs, this.getNameAttributeName(), m_name);
+	}
+
 	public String getName()
 	{
 		return m_name;
@@ -44,13 +50,8 @@ public abstract class NamedElement extends AbstractSaxableElement
 	@Override
 	public String toString()
 	{
-		return m_name == null ? "null" : m_name;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		if(m_name != null)
-			Utils.addAttribute(attrs, this.getNameAttributeName(), m_name);
+		return m_name == null
+				? "null"
+				: m_name;
 	}
 }

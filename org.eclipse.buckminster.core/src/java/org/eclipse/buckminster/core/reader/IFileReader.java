@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A file reader can read one single file that constitutes the component.
+ * 
  * @author Thomas Hallgren
  */
 public interface IFileReader extends IComponentReader
@@ -29,11 +30,6 @@ public interface IFileReader extends IComponentReader
 	boolean exists(IProgressMonitor monitor) throws CoreException, IOException;;
 
 	/**
-	 * Returns the input stream that was created at the call to {@link #open()}
-	 */
-	InputStream open(IProgressMonitor monitor) throws CoreException, IOException;
-	
-	/**
 	 * Returns the info about the file, or null if it's not available.
 	 * 
 	 * @return file info associated with the stream, or null if no info is available
@@ -41,10 +37,19 @@ public interface IFileReader extends IComponentReader
 	IFileInfo getFileInfo();
 
 	/**
+	 * Returns the input stream that was created at the call to {@link #open()}
+	 */
+	InputStream open(IProgressMonitor monitor) throws CoreException, IOException;
+
+	/**
 	 * Read a file and send the result to the <code>consumer</code>.
-	 * @param fileName The name of the file relative to the root of this reader.
-	 * @param consumer The consumer that will be handed the InputStream.
-	 * @param monitor The progress monitor.
+	 * 
+	 * @param fileName
+	 *            The name of the file relative to the root of this reader.
+	 * @param consumer
+	 *            The consumer that will be handed the InputStream.
+	 * @param monitor
+	 *            The progress monitor.
 	 * @return The value returned by the consumer.
 	 * @throws CoreException
 	 */

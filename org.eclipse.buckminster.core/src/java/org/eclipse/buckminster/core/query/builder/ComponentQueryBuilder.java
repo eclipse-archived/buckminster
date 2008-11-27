@@ -84,6 +84,13 @@ public class ComponentQueryBuilder implements IComponentQuery
 		return m_contextURL;
 	}
 
+	public Map<String, String> getDeclaredProperties()
+	{
+		if(m_properties == null)
+			m_properties = new HashMap<String, String>();
+		return m_properties;
+	}
+
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
@@ -96,13 +103,6 @@ public class ComponentQueryBuilder implements IComponentQuery
 					&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentType))
 				return node;
 		return null;
-	}
-
-	public Map<String, String> getDeclaredProperties()
-	{
-		if(m_properties == null)
-			m_properties = new HashMap<String,String>();
-		return m_properties;
 	}
 
 	public String getPropertiesURL()
@@ -140,9 +140,9 @@ public class ComponentQueryBuilder implements IComponentQuery
 			m_advisorNodes.add(bld);
 		}
 
-		Map<String,String> props = query.getDeclaredProperties();
+		Map<String, String> props = query.getDeclaredProperties();
 		if(props.size() > 0)
-			m_properties = new HashMap<String,String>(props);
+			m_properties = new HashMap<String, String>(props);
 
 		m_contextURL = query.getContextURL();
 		m_propertiesURL = query.getPropertiesURL();
@@ -182,7 +182,7 @@ public class ComponentQueryBuilder implements IComponentQuery
 		}
 		else
 		{
-			Map<String,String> props = getDeclaredProperties();
+			Map<String, String> props = getDeclaredProperties();
 			props.put(TargetPlatform.TARGET_OS, FilterUtils.MATCH_ALL);
 			props.put(TargetPlatform.TARGET_WS, FilterUtils.MATCH_ALL);
 			props.put(TargetPlatform.TARGET_ARCH, FilterUtils.MATCH_ALL);

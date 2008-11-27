@@ -20,20 +20,17 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWrapper>
 {
 	public static final String TAG = "idwrapper";
+
 	public static final String ATTR_ID = "id";
 
 	private final UUID m_id;
-	private final UUIDKeyed m_wrapped;
 
-	public IDWrapper(UUIDKeyed wrapped)
-	{
-		this(wrapped.getId(), wrapped);
-	}
+	private final UUIDKeyed m_wrapped;
 
 	public IDWrapper(UUID id, UUIDKeyed wrapped)
 	{
@@ -41,9 +38,38 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 		m_wrapped = wrapped;
 	}
 
+	public IDWrapper(UUIDKeyed wrapped)
+	{
+		this(wrapped.getId(), wrapped);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_ID, m_id.toString());
+	}
+
 	public int compareTo(IDWrapper o)
 	{
 		return m_id.compareTo(o.m_id);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		if(m_wrapped instanceof BillOfMaterials)
+			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped)
+					.getDefaultTag());
+		else if(m_wrapped instanceof ComponentQuery)
+		{
+			// Relative paths must be resolved prior to inclusion
+			//
+			ComponentQuery query = ((ComponentQuery)m_wrapped).resolve();
+			query.toSax(receiver, namespace, prefix, query.getDefaultTag());
+		}
+		else
+			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped)
+					.getDefaultTag());
 	}
 
 	public String getDefaultTag()
@@ -59,27 +85,5 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 	public UUIDKeyed getWrapped()
 	{
 		return m_wrapped;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_ID, m_id.toString());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_wrapped instanceof BillOfMaterials)
-			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
-		else if(m_wrapped instanceof ComponentQuery)
-		{
-			// Relative paths must be resolved prior to inclusion
-			//
-			ComponentQuery query = ((ComponentQuery)m_wrapped).resolve();
-			query.toSax(receiver, namespace, prefix, query.getDefaultTag());
-		}
-		else
-			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped).getDefaultTag());
 	}
 }

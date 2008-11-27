@@ -10,6 +10,75 @@ package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.helpers.TextUtils;
 
+class Branch extends VersionSelector
+{
+	Branch(String name)
+	{
+		super(name);
+	}
+
+	@Override
+	public int getType()
+	{
+		return BRANCH;
+	}
+
+	@Override
+	public boolean isDefault()
+	{
+		return getName().equals(DEFAULT_BRANCH);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
+	}
+
+	@Override
+	public void viewNameToString(StringBuilder bld)
+	{
+		bld.append("Branch: ");
+		bld.append(getName());
+	}
+}
+
+class Tag extends VersionSelector
+{
+	Tag(String name)
+	{
+		super(name);
+	}
+
+	@Override
+	public int getType()
+	{
+		return TAG;
+	}
+
+	@Override
+	public boolean isDefault()
+	{
+		// There is no default tag
+		//
+		return false;
+	}
+
+	@Override
+	public void toString(StringBuilder bld)
+	{
+		bld.append('/');
+		super.toString(bld);
+	}
+
+	@Override
+	public void viewNameToString(StringBuilder bld)
+	{
+		bld.append("Tag: ");
+		bld.append(getName());
+	}
+}
+
 /**
  * An instance of this class represents a branch or a tag in a Source Code Control System such as CVS, Subversion, or
  * Perforce.
@@ -30,6 +99,18 @@ public abstract class VersionSelector
 	public static final int TAG = 1;
 
 	public static final char TAG_PREFIX = '/';
+
+	/**
+	 * Create an branch instance from a String.
+	 * 
+	 * @param The
+	 *            string representation of the branch
+	 * @return A BranchOrTag instance that reflects a branch
+	 */
+	public static VersionSelector branch(String string)
+	{
+		return fromString(string, false);
+	}
 
 	/**
 	 * Create an array from a comma separated String.
@@ -66,26 +147,6 @@ public abstract class VersionSelector
 		return fromString(string, isTag);
 	}
 
-	/**
-	 * Create an branch instance from a String.
-	 * @param The string representation of the branch
-	 * @return A BranchOrTag instance that reflects a branch
-	 */
-	public static VersionSelector branch(String string)
-	{
-		return fromString(string, false);
-	}
-
-	/**
-	 * Create an tag instance from a String.
-	 * @param The string representation of the tag
-	 * @return A BranchOrTag instance that reflects a tag
-	 */
-	public static VersionSelector tag(String string)
-	{
-		return fromString(string, true);
-	}
-
 	private static VersionSelector fromString(String string, boolean isTag)
 	{
 		if(string != null)
@@ -102,7 +163,9 @@ public abstract class VersionSelector
 					throw new IllegalArgumentException("The '" + c + "' character is illegal in a branch/tag qualifier");
 			}
 			if(top > 0)
-				return isTag ? new Tag(string) : new Branch(string);
+				return isTag
+						? new Tag(string)
+						: new Branch(string);
 		}
 		throw new IllegalArgumentException("A branch/tag qualifier cannot be empty");
 	}
@@ -136,6 +199,18 @@ public abstract class VersionSelector
 				break;
 		}
 		return idx;
+	}
+
+	/**
+	 * Create an tag instance from a String.
+	 * 
+	 * @param The
+	 *            string representation of the tag
+	 * @return A BranchOrTag instance that reflects a tag
+	 */
+	public static VersionSelector tag(String string)
+	{
+		return fromString(string, true);
 	}
 
 	/**
@@ -210,6 +285,7 @@ public abstract class VersionSelector
 
 	/**
 	 * Returns true if this instance is the default branch
+	 * 
 	 * @return <code>true</code> if this is the default branch
 	 */
 	public abstract boolean isDefault();
@@ -259,73 +335,4 @@ public abstract class VersionSelector
 	 *            The buffer that will receive the verbose string representation
 	 */
 	public abstract void viewNameToString(StringBuilder bld);
-}
-
-class Branch extends VersionSelector
-{
-	Branch(String name)
-	{
-		super(name);
-	}
-
-	@Override
-	public int getType()
-	{
-		return BRANCH;
-	}
-
-	@Override
-	public boolean isDefault()
-	{
-		return getName().equals(DEFAULT_BRANCH);
-	}
-
-	@Override
-	public String toString()
-	{
-		return getName();
-	}
-
-	@Override
-	public void viewNameToString(StringBuilder bld)
-	{
-		bld.append("Branch: ");
-		bld.append(getName());
-	}
-}
-
-class Tag extends VersionSelector
-{
-	Tag(String name)
-	{
-		super(name);
-	}
-
-	@Override
-	public int getType()
-	{
-		return TAG;
-	}
-
-	@Override
-	public boolean isDefault()
-	{
-		// There is no default tag
-		//
-		return false;
-	}
-
-	@Override
-	public void toString(StringBuilder bld)
-	{
-		bld.append('/');
-		super.toString(bld);
-	}
-
-	@Override
-	public void viewNameToString(StringBuilder bld)
-	{
-		bld.append("Tag: ");
-		bld.append(getName());
-	}
 }

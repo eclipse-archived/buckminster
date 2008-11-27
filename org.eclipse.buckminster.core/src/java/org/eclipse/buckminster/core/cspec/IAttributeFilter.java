@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @author Thomas Hallgren
  */
 public interface IAttributeFilter
-{	
+{
 	Pattern getExcludePattern();
 
 	Pattern getIncludePattern();

@@ -42,108 +42,6 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 
 	private static Pattern s_whitespaceAndQuotationMarkPattern = Pattern.compile("\\s\"");
 
-	@Override
-	protected IProject[] doBuild(int kind, Map<String,String> args, IProgressMonitor monitor) throws CoreException
-	{
-		File launcherDefinitionsFile = getLauncherDefinitionsFile(args, this.getProject());
-		LauncherDefinition[] launcherDefinitions = getLauncherDefinitions(launcherDefinitionsFile);
-		String defToUse = getDefinitionToUse(args);
-		String addArgs = AbstractBuckminsterBuilder.getValue(args, ADDITIONAL_ARGUMENTS_KEY);
-		String fullCommandLine = getCommandLine(launcherDefinitions, defToUse, addArgs, this.getProject(), kind);
-
-		if (fullCommandLine == null)
-			throw BuckminsterException.fromMessage("Couldn't resolve to a command line");
-
-		Logger logger = CorePlugin.getLogger();
-		logger.info("Command line: '%s'", fullCommandLine);
-
-		String[] splitCommandLine = this.splitCommandLine(fullCommandLine);
-
-		if(logger.isDebugEnabled())
-		{
-			logger.debug("Split cmd line:");
-			for (String s : splitCommandLine)
-				logger.debug("=> " + s);
-		}
-
-		ProcessBuilder pb = new ProcessBuilder(splitCommandLine);
-		pb.redirectErrorStream(true);
-		pb.directory(launcherDefinitionsFile.getParentFile());
-		try
-		{
-			Process p = pb.start();
-			StreamPump thrStdOut = new StreamPump(p.getInputStream(), this.getOutStream());
-			thrStdOut.start();
-			thrStdOut.join();
-			int exitValue = p.waitFor();
-			if (exitValue != 0)
-				throw BuckminsterException.fromMessage("External command '%s' exited with %d", fullCommandLine, Integer.valueOf(exitValue));
-		}
-		catch (Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-
-		return null;
-	}
-
-	public static File getLauncherDefinitionsFile(Map<String,String> args, IProject project) throws CoreException
-	{
-		String launcherDefinitionsFile = AbstractBuckminsterBuilder.getValue(args, LAUNCHERDEFINITIONS_FILE_KEY);
-		if (launcherDefinitionsFile == null || launcherDefinitionsFile.length() == 0)
-			launcherDefinitionsFile = DEFAULT_LAUNCHERDEFINITIONS_FILE;
-
-		// file name must always be relative to project root
-		//
-		IPath relativePath = new Path(launcherDefinitionsFile);
-		if (relativePath.isAbsolute())
-			throw BuckminsterException.fromMessage("The launcher definitions file name must be relative to the project root: %s",
-					launcherDefinitionsFile);
-		IPath fullPath = project.getLocation().append(relativePath);
-
-		return fullPath.toFile();
-	}
-
-	public static LauncherDefinition[] getLauncherDefinitions(File launcherDefinitionsFile) throws CoreException
-	{
-		List<LauncherDefinition> defs = new ArrayList<LauncherDefinition>();
-		if (launcherDefinitionsFile.exists())
-		{
-			BufferedReader br = null;
-			try
-			{
-				br = new BufferedReader(new FileReader(launcherDefinitionsFile));
-				String pattern;
-				while ((pattern = br.readLine()) != null)
-				{
-					String commandLine = br.readLine();
-					if (commandLine == null)
-						break;
-					defs.add(new LauncherDefinition(pattern, commandLine));
-				}
-				br.close();
-			}
-			catch (Throwable t)
-			{
-				throw BuckminsterException.wrap(t);
-			}
-			finally
-			{
-				if (br != null)
-					try
-					{
-						br.close();
-					}
-					catch (Exception e)
-					{
-						// noop
-					}
-			}
-		}
-
-		return defs.toArray(new LauncherDefinition[0]);
-	}
-
 	public static String getCommandLine(LauncherDefinition[] launcherDefs, String defToUse, String addArgs,
 			IProject project, int kind) throws CoreException
 	{
@@ -161,7 +59,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			String rawCommandLine = null;
 			try
 			{
-				if (defToUse == null || defToUse.length() == 0)
+				if(defToUse == null || defToUse.length() == 0)
 					throw BuckminsterException.fromMessage("Missing value for 'definition to use'");
 
 				String resolvedDefsToUse = svm.performStringSubstitution(defToUse);
@@ -173,12 +71,12 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 					logger.debug("Definition to use, after: '%s'", resolvedDefsToUse);
 				}
 
-				for (LauncherDefinition ld : launcherDefs)
+				for(LauncherDefinition ld : launcherDefs)
 				{
-					if (Pattern.matches(ld.getPattern(), resolvedDefsToUse))
+					if(Pattern.matches(ld.getPattern(), resolvedDefsToUse))
 					{
 						StringBuilder sb = new StringBuilder(ld.getCommandLine());
-						if (addArgs != null && addArgs.length() > 0)
+						if(addArgs != null && addArgs.length() > 0)
 							sb.append(" ").append(addArgs);
 						rawCommandLine = sb.toString();
 						break;
@@ -186,7 +84,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 				}
 
 				String commandLine = null;
-				if (rawCommandLine != null)
+				if(rawCommandLine != null)
 				{
 					commandLine = svm.performStringSubstitution(rawCommandLine);
 					if(logger.isDebugEnabled())
@@ -197,11 +95,11 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 				}
 				return commandLine;
 			}
-			catch (CoreException ce)
+			catch(CoreException ce)
 			{
 				throw ce;
 			}
-			catch (Exception e)
+			catch(Exception e)
 			{
 				throw BuckminsterException.wrap(e);
 			}
@@ -212,42 +110,146 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		}
 	}
 
-	public static String getDefinitionToUse(Map<String,String> args)
+	public static String getDefinitionToUse(Map<String, String> args)
 	{
 		String s = AbstractBuckminsterBuilder.getValue(args, LAUNCHERDEFINITION_TO_USE_KEY);
-		if (s == null)
+		if(s == null)
 			s = DEFAULT_LAUNCHERDEFINITION_TO_USE;
 		return s;
+	}
+
+	public static LauncherDefinition[] getLauncherDefinitions(File launcherDefinitionsFile) throws CoreException
+	{
+		List<LauncherDefinition> defs = new ArrayList<LauncherDefinition>();
+		if(launcherDefinitionsFile.exists())
+		{
+			BufferedReader br = null;
+			try
+			{
+				br = new BufferedReader(new FileReader(launcherDefinitionsFile));
+				String pattern;
+				while((pattern = br.readLine()) != null)
+				{
+					String commandLine = br.readLine();
+					if(commandLine == null)
+						break;
+					defs.add(new LauncherDefinition(pattern, commandLine));
+				}
+				br.close();
+			}
+			catch(Throwable t)
+			{
+				throw BuckminsterException.wrap(t);
+			}
+			finally
+			{
+				if(br != null)
+					try
+					{
+						br.close();
+					}
+					catch(Exception e)
+					{
+						// noop
+					}
+			}
+		}
+
+		return defs.toArray(new LauncherDefinition[0]);
+	}
+
+	public static File getLauncherDefinitionsFile(Map<String, String> args, IProject project) throws CoreException
+	{
+		String launcherDefinitionsFile = AbstractBuckminsterBuilder.getValue(args, LAUNCHERDEFINITIONS_FILE_KEY);
+		if(launcherDefinitionsFile == null || launcherDefinitionsFile.length() == 0)
+			launcherDefinitionsFile = DEFAULT_LAUNCHERDEFINITIONS_FILE;
+
+		// file name must always be relative to project root
+		//
+		IPath relativePath = new Path(launcherDefinitionsFile);
+		if(relativePath.isAbsolute())
+			throw BuckminsterException.fromMessage(
+					"The launcher definitions file name must be relative to the project root: %s",
+					launcherDefinitionsFile);
+		IPath fullPath = project.getLocation().append(relativePath);
+
+		return fullPath.toFile();
+	}
+
+	@Override
+	protected IProject[] doBuild(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException
+	{
+		File launcherDefinitionsFile = getLauncherDefinitionsFile(args, this.getProject());
+		LauncherDefinition[] launcherDefinitions = getLauncherDefinitions(launcherDefinitionsFile);
+		String defToUse = getDefinitionToUse(args);
+		String addArgs = AbstractBuckminsterBuilder.getValue(args, ADDITIONAL_ARGUMENTS_KEY);
+		String fullCommandLine = getCommandLine(launcherDefinitions, defToUse, addArgs, this.getProject(), kind);
+
+		if(fullCommandLine == null)
+			throw BuckminsterException.fromMessage("Couldn't resolve to a command line");
+
+		Logger logger = CorePlugin.getLogger();
+		logger.info("Command line: '%s'", fullCommandLine);
+
+		String[] splitCommandLine = this.splitCommandLine(fullCommandLine);
+
+		if(logger.isDebugEnabled())
+		{
+			logger.debug("Split cmd line:");
+			for(String s : splitCommandLine)
+				logger.debug("=> " + s);
+		}
+
+		ProcessBuilder pb = new ProcessBuilder(splitCommandLine);
+		pb.redirectErrorStream(true);
+		pb.directory(launcherDefinitionsFile.getParentFile());
+		try
+		{
+			Process p = pb.start();
+			StreamPump thrStdOut = new StreamPump(p.getInputStream(), this.getOutStream());
+			thrStdOut.start();
+			thrStdOut.join();
+			int exitValue = p.waitFor();
+			if(exitValue != 0)
+				throw BuckminsterException.fromMessage("External command '%s' exited with %d", fullCommandLine, Integer
+						.valueOf(exitValue));
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+
+		return null;
 	}
 
 	private String[] splitCommandLine(String arg)
 	{
 		String trimmedArg = arg.trim();
-		if (trimmedArg.length() == 0)
+		if(trimmedArg.length() == 0)
 			return Trivial.EMPTY_STRING_ARRAY;
 
 		Matcher wsAndQMmatcher = s_whitespaceAndQuotationMarkPattern.matcher(trimmedArg);
 
 		List<String> parsed = new ArrayList<String>();
 
-		if (trimmedArg.startsWith("\""))
+		if(trimmedArg.startsWith("\""))
 		{
 			// now extract the first item from the string (skipping the citation
 			// marks)
 			// recursively parse the rest of the line (if any)
 			//
 			Matcher extractQIMatcher = s_extractQuotedItemPattern.matcher(trimmedArg);
-			if (extractQIMatcher.find())
+			if(extractQIMatcher.find())
 			{
 				parsed.add(extractQIMatcher.group(1));
 				int end = extractQIMatcher.end(1);
-				if (trimmedArg.length() > end)
+				if(trimmedArg.length() > end)
 					Collections.addAll(parsed, this.splitCommandLine(trimmedArg.substring(end + 1)));
 			}
 			else
 				throw new RuntimeException("Unexpected non match");
 		}
-		else if (wsAndQMmatcher.find())
+		else if(wsAndQMmatcher.find())
 		{
 			// divvy it up into two parts
 			// the left part can be split on simple whitespace only

@@ -19,8 +19,7 @@ public class MissingVersionTypeException extends LocalizedException
 
 	public MissingVersionTypeException(String versionTypeId)
 	{
-		super("No version type with id %s has been registered with extension-point %s",
-				versionTypeId, CorePlugin.VERSION_TYPES_POINT);
+		super("No version type with id %s has been registered with extension-point %s", versionTypeId,
+				CorePlugin.VERSION_TYPES_POINT);
 	}
 }
-

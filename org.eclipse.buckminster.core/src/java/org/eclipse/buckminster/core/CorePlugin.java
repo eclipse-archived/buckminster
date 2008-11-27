@@ -158,10 +158,11 @@ public class CorePlugin extends LogAwarePlugin
 					System.out.println(status.getMessage());
 				}
 			}
+
 			public void removeLogListener(ILogListener listener)
 			{
 			}
-		}); 
+		});
 	}
 
 	/**
@@ -189,6 +190,48 @@ public class CorePlugin extends LogAwarePlugin
 		catch(MissingResourceException e)
 		{
 			return key;
+		}
+	}
+
+	public static void logWarningsAndErrors(IStatus status)
+	{
+		logWarningsAndErrors(status, new StringBuilder(), 0);
+	}
+
+	private static void logWarningsAndErrors(IStatus status, StringBuilder line, int indent)
+	{
+		switch(status.getSeverity())
+		{
+		case IStatus.CANCEL:
+			throw new OperationCanceledException();
+		case IStatus.OK:
+			break;
+		default:
+			line.setLength(0);
+			for(int idx = 0; idx < indent; ++idx)
+				line.append(' ');
+
+			String msg = status.getMessage();
+			if(msg != null)
+				line.append(msg);
+
+			Throwable reason = status.getException();
+			if(reason != null)
+			{
+				String reasonMsg = reason.getMessage();
+				if(reasonMsg == null)
+					reasonMsg = reason.toString();
+				if(msg == null)
+					line.append(reasonMsg);
+				else if(!msg.equals(reasonMsg))
+				{
+					line.append(": ");
+					line.append(reasonMsg);
+				}
+			}
+			getLogger().log(status.getSeverity(), line.toString());
+			for(IStatus child : status.getChildren())
+				logWarningsAndErrors(child, line, indent + 2);
 		}
 	}
 
@@ -288,8 +331,8 @@ public class CorePlugin extends LogAwarePlugin
 	}
 
 	/**
-	 * Returns the absolute path in the local filesystem for the <code>.buckminster</code> project The project need
-	 * not exist.
+	 * Returns the absolute path in the local filesystem for the <code>.buckminster</code> project The project need not
+	 * exist.
 	 * 
 	 * @return The location of the .buckminster project.
 	 */
@@ -385,17 +428,21 @@ public class CorePlugin extends LogAwarePlugin
 		return ids;
 	}
 
+	public IMaterializer getMaterializer(String materializerId) throws CoreException
+	{
+		if(materializerId == null)
+			materializerId = IMaterializer.WORKSPACE;
+
+		IMaterializer mat = getExecutableExtension(IMaterializer.class, IMaterializer.MATERIALIZERS_POINT,
+				materializerId, true);
+		if(mat != null)
+			return mat;
+		throw new MissingMaterializerException(materializerId);
+	}
+
 	public IParserFactory getParserFactory()
 	{
 		return ParserFactory.getDefault();
-	}
-
-	public IReaderType getReaderType(String readerType) throws CoreException
-	{
-		IReaderType vm = getExecutableExtension(IReaderType.class, READER_TYPE_POINT, readerType, true);
-		if(vm != null)
-			return vm;
-		throw new MissingReaderTypeException(readerType);
 	}
 
 	public IQualifierGenerator getQualifierGenerator(String qualifierGenerator) throws CoreException
@@ -405,6 +452,14 @@ public class CorePlugin extends LogAwarePlugin
 		if(vm != null)
 			return vm;
 		throw BuckminsterException.fromMessage("Missing qualifier generator for id %s", qualifierGenerator);
+	}
+
+	public IReaderType getReaderType(String readerType) throws CoreException
+	{
+		IReaderType vm = getExecutableExtension(IReaderType.class, READER_TYPE_POINT, readerType, true);
+		if(vm != null)
+			return vm;
+		throw new MissingReaderTypeException(readerType);
 	}
 
 	/**
@@ -464,18 +519,6 @@ public class CorePlugin extends LogAwarePlugin
 		throw new MissingVersionTypeException(versionType);
 	}
 
-	public IMaterializer getMaterializer(String materializerId) throws CoreException
-	{
-		if(materializerId == null)
-			materializerId = IMaterializer.WORKSPACE;
-
-		IMaterializer mat = getExecutableExtension(IMaterializer.class, IMaterializer.MATERIALIZERS_POINT,
-				materializerId, true);
-		if(mat != null)
-			return mat;
-		throw new MissingMaterializerException(materializerId);
-	}
-
 	/**
 	 * Opens a remote file using the short duration cache maintained by this plugin.
 	 * 
@@ -497,7 +540,8 @@ public class CorePlugin extends LogAwarePlugin
 	 * @return input stream for the url
 	 * @throws IOException
 	 */
-	public InputStream openCachedURL(URL url, IConnectContext cctx, IProgressMonitor monitor) throws IOException, CoreException
+	public InputStream openCachedURL(URL url, IConnectContext cctx, IProgressMonitor monitor) throws IOException,
+			CoreException
 	{
 		return m_urlCache.openURL(url, cctx, monitor);
 	}
@@ -571,48 +615,6 @@ public class CorePlugin extends LogAwarePlugin
 			m_updatePrefsJob.cancel();
 			m_updatePrefsJob.join();
 			m_updatePrefsJob = null;
-		}
-	}
-
-	public static void logWarningsAndErrors(IStatus status)
-	{
-		logWarningsAndErrors(status, new StringBuilder(), 0);
-	}
-
-	private static void logWarningsAndErrors(IStatus status, StringBuilder line, int indent)
-	{
-		switch(status.getSeverity())
-		{
-		case IStatus.CANCEL:
-			throw new OperationCanceledException();
-		case IStatus.OK:
-			break;
-		default:
-			line.setLength(0);
-			for(int idx = 0; idx < indent; ++idx)
-				line.append(' ');
-
-			String msg = status.getMessage();
-			if(msg != null)
-				line.append(msg);
-
-			Throwable reason = status.getException();
-			if(reason != null)
-			{
-				String reasonMsg = reason.getMessage();
-				if(reasonMsg == null)
-					reasonMsg = reason.toString();
-				if(msg == null)
-					line.append(reasonMsg);
-				else if(!msg.equals(reasonMsg))
-				{
-					line.append(": ");
-					line.append(reasonMsg);
-				}
-			}
-			getLogger().log(status.getSeverity(), line.toString());
-			for(IStatus child : status.getChildren())
-				logWarningsAndErrors(child, line, indent + 2);
 		}
 	}
 }

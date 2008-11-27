@@ -25,14 +25,31 @@ public class PathGroup
 	public static final PathGroup[] EMPTY_ARRAY = new PathGroup[0];
 
 	private final IPath m_base;
+
 	private final IPath[] m_paths;
-	
+
 	public PathGroup(IPath base, IPath[] paths)
 	{
 		if(base == null)
 			throw new IllegalArgumentException("base cannot be null");
 		m_base = base;
 		m_paths = paths;
+	}
+
+	public void appendRelativeFiles(Map<String, Long> fileNames)
+	{
+		int idx = m_paths.length;
+		if(idx == 0)
+		{
+			// We don't have any paths. Use everything below base
+			//
+			FileUtils.appendRelativeFiles(m_base.toFile(), fileNames);
+			return;
+		}
+
+		File baseDir = m_base.toFile();
+		while(--idx >= 0)
+			FileUtils.appendRelativeFiles(baseDir, m_paths[idx].toFile(), fileNames);
 	}
 
 	public boolean containsPath(IPath path)
@@ -58,16 +75,13 @@ public class PathGroup
 		//
 		for(IPath rel : m_paths)
 		{
-			IPath cmpPath = rel.isAbsolute() ? path : relPath;
+			IPath cmpPath = rel.isAbsolute()
+					? path
+					: relPath;
 			if(rel.equals(cmpPath) || rel.hasTrailingSeparator() && rel.isPrefixOf(cmpPath))
 				return true;
 		}
 		return false;
-	}
-
-	public final IPath getBase()
-	{
-		return m_base;
 	}
 
 	public void copyTo(IPath destination, IProgressMonitor monitor) throws CoreException
@@ -95,7 +109,7 @@ public class PathGroup
 		while(--idx >= 0)
 		{
 			String fileName = null;
-			File basedDestDir = null; 
+			File basedDestDir = null;
 			IPath path = m_paths[idx];
 			if(!path.hasTrailingSeparator())
 			{
@@ -114,8 +128,9 @@ public class PathGroup
 				File sourceFile = path.toFile();
 				if(sourceFile.exists())
 				{
-					FileUtils.prepareDestination(basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor,20));
-					FileUtils.copyFile(sourceFile, basedDestDir, fileName, MonitorUtils.subMonitor(monitor,80));
+					FileUtils.prepareDestination(basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(
+							monitor, 20));
+					FileUtils.copyFile(sourceFile, basedDestDir, fileName, MonitorUtils.subMonitor(monitor, 80));
 				}
 			}
 			else
@@ -129,10 +144,16 @@ public class PathGroup
 				}
 				File sourceDir = path.toFile();
 				if(sourceDir.exists())
-					FileUtils.deepCopy(sourceDir, basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 100));
+					FileUtils.deepCopy(sourceDir, basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(
+							monitor, 100));
 			}
 		}
 		monitor.done();
+	}
+
+	public final IPath getBase()
+	{
+		return m_base;
 	}
 
 	public long getFirstModified(int expectedCount, int[] fileCount)
@@ -162,22 +183,6 @@ public class PathGroup
 			}
 		}
 		return firstMod;
-	}
-
-	public void appendRelativeFiles(Map<String,Long> fileNames)
-	{
-		int idx = m_paths.length;
-		if(idx == 0)
-		{
-			// We don't have any paths. Use everything below base
-			//
-			FileUtils.appendRelativeFiles(m_base.toFile(), fileNames);
-			return;
-		}
-
-		File baseDir = m_base.toFile();
-		while(--idx >= 0)
-			FileUtils.appendRelativeFiles(baseDir, m_paths[idx].toFile(), fileNames);
 	}
 
 	public long getLastModified(long threshold, int[] fileCount)

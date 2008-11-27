@@ -28,132 +28,6 @@ public class RxPattern extends RxPart
 
 	public static final String ATTR_SUFFIX = "suffix";
 
-	private final String m_pattern;
-
-	private final String m_prefix;
-
-	private final String m_suffix;
-
-	public RxPattern(String name, boolean optional, String pattern, String prefix, String suffix)
-	{
-		super(name, optional);
-		m_pattern = pattern;
-		m_prefix = prefix;
-		m_suffix = suffix;
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public String getPattern()
-	{
-		return m_pattern;
-	}
-
-	public String getPrefix()
-	{
-		return m_prefix;
-	}
-
-	public String getSuffix()
-	{
-		return m_suffix;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern);
-		if(m_prefix != null)
-			Utils.addAttribute(attrs, ATTR_PREFIX, m_prefix);
-		if(m_suffix != null)
-			Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
-	}
-
-	@Override
-	public void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException
-	{
-		if(!isOptional())
-		{
-			addInnerPattern(bld, namedParts, false);
-			return;
-		}
-
-		// Everything must be in a group that is marked as optional
-		//
-		bld.append('(');
-		if(m_prefix == null && m_suffix == null)
-		{
-			String name = getName();
-			if(name == null)
-				bld.append("?:"); // Non capturing group
-			else
-				namedParts.add(this);
-			addEscapedPattern(bld, m_pattern, true);
-		}
-		else
-		{
-			// Group as a whole must be a non capturing group
-			//
-			bld.append("?:");
-			addInnerPattern(bld, namedParts, true);
-		}
-		bld.append(")?");
-	}
-
-	private void addInnerPattern(StringBuilder bld, List<RxPart> namedParts, boolean willBeGroup) throws CoreException
-	{
-		if(m_prefix != null)
-			addQuotedString(bld, m_prefix);
-
-		String name = getName();
-		if(name != null)
-		{
-			// Pattern must be a capturing group
-			//
-			bld.append('(');
-			addEscapedPattern(bld, m_pattern, true);
-			bld.append(')');
-			namedParts.add(this);
-		}
-		else
-			addEscapedPattern(bld, m_pattern, willBeGroup && m_prefix == null && m_suffix == null);
-
-		if(m_suffix != null)
-			addQuotedString(bld, m_suffix);
-	}
-
-	private static void addQuotedString(StringBuilder bld, String str) throws CoreException
-	{
-		int top = str.length();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			char c = str.charAt(idx);
-			switch(c)
-			{
-			case '\\':
-			case '(':
-			case ')':
-			case '[':
-			case ']':
-			case '{':
-			case '}':
-			case '.':
-			case '?':
-			case '+':
-			case '*':
-			case '|':
-			case '^':
-			case '$':
-				bld.append('\\');
-			}
-			bld.append(c);
-		}
-	}
-
 	private static void addEscapedPattern(StringBuilder bld, String pattern, boolean willBeGroup) throws CoreException
 	{
 		// No capturing groups permitted. All groups must therefore be converted
@@ -253,5 +127,131 @@ public class RxPattern extends RxPart
 			bld.append(subExpr);
 			bld.append(')');
 		}
+	}
+
+	private static void addQuotedString(StringBuilder bld, String str) throws CoreException
+	{
+		int top = str.length();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = str.charAt(idx);
+			switch(c)
+			{
+			case '\\':
+			case '(':
+			case ')':
+			case '[':
+			case ']':
+			case '{':
+			case '}':
+			case '.':
+			case '?':
+			case '+':
+			case '*':
+			case '|':
+			case '^':
+			case '$':
+				bld.append('\\');
+			}
+			bld.append(c);
+		}
+	}
+
+	private final String m_pattern;
+
+	private final String m_prefix;
+
+	private final String m_suffix;
+
+	public RxPattern(String name, boolean optional, String pattern, String prefix, String suffix)
+	{
+		super(name, optional);
+		m_pattern = pattern;
+		m_prefix = prefix;
+		m_suffix = suffix;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern);
+		if(m_prefix != null)
+			Utils.addAttribute(attrs, ATTR_PREFIX, m_prefix);
+		if(m_suffix != null)
+			Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
+	}
+
+	private void addInnerPattern(StringBuilder bld, List<RxPart> namedParts, boolean willBeGroup) throws CoreException
+	{
+		if(m_prefix != null)
+			addQuotedString(bld, m_prefix);
+
+		String name = getName();
+		if(name != null)
+		{
+			// Pattern must be a capturing group
+			//
+			bld.append('(');
+			addEscapedPattern(bld, m_pattern, true);
+			bld.append(')');
+			namedParts.add(this);
+		}
+		else
+			addEscapedPattern(bld, m_pattern, willBeGroup && m_prefix == null && m_suffix == null);
+
+		if(m_suffix != null)
+			addQuotedString(bld, m_suffix);
+	}
+
+	@Override
+	public void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException
+	{
+		if(!isOptional())
+		{
+			addInnerPattern(bld, namedParts, false);
+			return;
+		}
+
+		// Everything must be in a group that is marked as optional
+		//
+		bld.append('(');
+		if(m_prefix == null && m_suffix == null)
+		{
+			String name = getName();
+			if(name == null)
+				bld.append("?:"); // Non capturing group
+			else
+				namedParts.add(this);
+			addEscapedPattern(bld, m_pattern, true);
+		}
+		else
+		{
+			// Group as a whole must be a non capturing group
+			//
+			bld.append("?:");
+			addInnerPattern(bld, namedParts, true);
+		}
+		bld.append(")?");
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public String getPattern()
+	{
+		return m_pattern;
+	}
+
+	public String getPrefix()
+	{
+		return m_prefix;
+	}
+
+	public String getSuffix()
+	{
+		return m_suffix;
 	}
 }

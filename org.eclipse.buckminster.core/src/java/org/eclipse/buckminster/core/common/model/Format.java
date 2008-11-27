@@ -14,16 +14,16 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
- * An instance of this class acts as a {@link java.text.MessageFormat} that
- * gets its values from a {@link CollectionHolder} instance.
- *
+ * An instance of this class acts as a {@link java.text.MessageFormat} that gets its values from a
+ * {@link CollectionHolder} instance.
+ * 
  * @author Thomas Hallgren
  */
 public class Format extends ValueHolderFilter
 {
 	public static final String ATTR_FORMAT = "format";
+
 	public static final String TAG = "format";
 
 	private final String m_format;
@@ -34,27 +34,7 @@ public class Format extends ValueHolderFilter
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && m_format.equals(((Format)o).m_format);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + m_format.hashCode();
-		return hc;
-	}
-
-	public String getFormat()
-	{
-		return m_format;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	throws SAXException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_FORMAT, m_format);
 	}
@@ -67,9 +47,28 @@ public class Format extends ValueHolderFilter
 		return messageFormat.format(this.checkedGetSourceValues(properties, recursionGuard + 1));
 	}
 
+	@Override
+	public boolean equals(Object o)
+	{
+		return super.equals(o) && m_format.equals(((Format)o).m_format);
+	}
+
 	public String getDefaultTag()
 	{
 		return TAG;
+	}
+
+	public String getFormat()
+	{
+		return m_format;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + m_format.hashCode();
+		return hc;
 	}
 
 	@Override
@@ -78,4 +77,3 @@ public class Format extends ValueHolderFilter
 		return getFormat();
 	}
 }
-

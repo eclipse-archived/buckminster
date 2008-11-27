@@ -20,7 +20,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -40,8 +39,13 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	protected CSpecElementBuilder createBuilder()
+	{
+		return getCSpecBuilder().createAttributeBuilder();
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(DocumentationHandler.TAG.equals(localName))
@@ -71,11 +75,5 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}
-	}
-
-	@Override
-	protected CSpecElementBuilder createBuilder()
-	{
-		return getCSpecBuilder().createAttributeBuilder();
 	}
 }

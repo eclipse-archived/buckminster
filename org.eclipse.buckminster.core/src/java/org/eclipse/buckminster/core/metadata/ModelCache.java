@@ -22,24 +22,19 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class ModelCache implements IModelCache
 {
-	private Map<String,String> m_properties;
+	private Map<String, String> m_properties;
+
 	private Map<String, PathGroup[]> m_pathGroupsCache;
+
 	private Map<ComponentRequest, CSpec> m_cspecCache;
 
 	public ModelCache()
 	{
 	}
 
-	public ModelCache(Map<String,String> properties)
+	public ModelCache(Map<String, String> properties)
 	{
 		m_properties = properties;
-	}
-
-	public synchronized Map<String, PathGroup[]> getPathGroupsCache()
-	{
-		if(m_pathGroupsCache == null)
-			m_pathGroupsCache = new HashMap<String, PathGroup[]>();
-		return m_pathGroupsCache;
 	}
 
 	public synchronized CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException
@@ -56,6 +51,13 @@ public class ModelCache implements IModelCache
 			m_cspecCache.put(request, cspec);
 		}
 		return cspec;
+	}
+
+	public synchronized Map<String, PathGroup[]> getPathGroupsCache()
+	{
+		if(m_pathGroupsCache == null)
+			m_pathGroupsCache = new HashMap<String, PathGroup[]>();
+		return m_pathGroupsCache;
 	}
 
 	public synchronized Map<String, String> getProperties()

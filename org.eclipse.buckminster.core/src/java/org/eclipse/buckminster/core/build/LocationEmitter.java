@@ -33,82 +33,40 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 /**
- * A Builder that emits the location of all components that are contained in, or referenced by, the
- * current project.
+ * A Builder that emits the location of all components that are contained in, or referenced by, the current project.
+ * 
  * @author Thomas Hallgren
  */
 public class LocationEmitter extends PropertiesEmitter
 {
 	public static final String ARG_PURPOSE = "purpose";
+
 	public static final String ARG_FORMAT_LOCATION = "format.location";
+
 	public static final String ARG_FORMAT_ARTIFACTS = "format.artifacts";
 
 	public static final Format FORMAT_LOCATION = new MessageFormat("bm.location.{0}");
+
 	public static final Format FORMAT_LOCATION_ARTIFACT = new MessageFormat("bm.artifacts.{0}.{1}");
 
-	@Override
-	protected void addFormatters()
-	{
-		addFormat(ARG_FORMAT_LOCATION, FORMAT_LOCATION);
-		addFormat(ARG_FORMAT_ARTIFACTS, FORMAT_LOCATION_ARTIFACT);
-	}
+	private static boolean s_stateKnown = false;
 
-	@Override
-	protected void appendProperties() throws CoreException
+	private static Method s_getDefaultOutputFolder;
+
+	public static IPath getDefaultOutputFolder(IProject project) throws CoreException
 	{
+		if(!isJDTPresent())
+			return null;
+
 		try
 		{
-			IModelCache cache = new ModelCache();
-			CSpec cspec = WorkspaceInfo.getCSpec(getProject());
-			String attr = getArgument(ARG_PURPOSE);
-			Set<String> attrs = attr == null ? Collections.<String>emptySet() : Collections.singleton(attr);
-			appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
+			return (IPath)s_getDefaultOutputFolder.invoke(null, new Object[] { project });
 		}
-		catch(MissingComponentException e)
+		catch(Exception e)
 		{
+			throw BuckminsterException.wrap(e);
 		}
 	}
-
-	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache, HashSet<ComponentIdentifier> seenIds) throws CoreException
-	{
-		IComponentIdentifier cid = cspec.getComponentIdentifier();
-		if(seenIds.contains(cid))
-			return;
-
-		IPath location = cspec.getComponentLocation();
-
-		String componentName = cspec.getName();
-		if(location.toFile().isFile())
-		{
-			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location.removeLastSegments(1)) );
-			addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment());
-		}
-		else
-		{
-			IProject project = WorkspaceInfo.getProject(cid);
-			if(project != null)
-			{
-				// If this is a java project with a default output folder, then emitt that as a default
-				// artifact.
-				//
-				IPath dfltOutput = getDefaultOutputFolder(project);
-				if(dfltOutput != null)
-					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput.toOSString());
-			}
-			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location) );
-		}
-
-		// Emit properties of all dependencies
-		//
-		cspec = cspec.prune(null, RMContext.getGlobalPropertyAdditions(), false, attributes);
-		for(QualifiedDependency dep : cspec.getQualifiedDependencies(false))
-		{
-			CSpec childSpec = cache.findCSpec(cspec, dep.getRequest());
-			appendComponentProperties(childSpec, dep.getAttributeNames(), cache, seenIds);
-		}
-	}
-	private static boolean s_stateKnown = false;
-	private static Method s_getDefaultOutputFolder;
 
 	public static synchronized boolean isJDTPresent()
 	{
@@ -123,8 +81,10 @@ public class LocationEmitter extends PropertiesEmitter
 
 			try
 			{
-				Class<?> classpathEmitterClass = bundle.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter");
-				s_getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder", new Class[] { IProject.class });
+				Class<?> classpathEmitterClass = bundle
+						.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter");
+				s_getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder",
+						new Class[] { IProject.class });
 			}
 			catch(Exception e)
 			{
@@ -134,19 +94,69 @@ public class LocationEmitter extends PropertiesEmitter
 		return s_getDefaultOutputFolder != null;
 	}
 
-	public static IPath getDefaultOutputFolder(IProject project)
-	throws CoreException
+	@Override
+	protected void addFormatters()
 	{
-		if(!isJDTPresent())
-			return null;
+		addFormat(ARG_FORMAT_LOCATION, FORMAT_LOCATION);
+		addFormat(ARG_FORMAT_ARTIFACTS, FORMAT_LOCATION_ARTIFACT);
+	}
 
+	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache,
+			HashSet<ComponentIdentifier> seenIds) throws CoreException
+	{
+		IComponentIdentifier cid = cspec.getComponentIdentifier();
+		if(seenIds.contains(cid))
+			return;
+
+		IPath location = cspec.getComponentLocation();
+
+		String componentName = cspec.getName();
+		if(location.toFile().isFile())
+		{
+			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location.removeLastSegments(1)));
+			addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment());
+		}
+		else
+		{
+			IProject project = WorkspaceInfo.getProject(cid);
+			if(project != null)
+			{
+				// If this is a java project with a default output folder, then emitt that as a default
+				// artifact.
+				//
+				IPath dfltOutput = getDefaultOutputFolder(project);
+				if(dfltOutput != null)
+					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput
+							.toOSString());
+			}
+			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location));
+		}
+
+		// Emit properties of all dependencies
+		//
+		cspec = cspec.prune(null, RMContext.getGlobalPropertyAdditions(), false, attributes);
+		for(QualifiedDependency dep : cspec.getQualifiedDependencies(false))
+		{
+			CSpec childSpec = cache.findCSpec(cspec, dep.getRequest());
+			appendComponentProperties(childSpec, dep.getAttributeNames(), cache, seenIds);
+		}
+	}
+
+	@Override
+	protected void appendProperties() throws CoreException
+	{
 		try
 		{
-			return (IPath)s_getDefaultOutputFolder.invoke(null, new Object[] { project });
+			IModelCache cache = new ModelCache();
+			CSpec cspec = WorkspaceInfo.getCSpec(getProject());
+			String attr = getArgument(ARG_PURPOSE);
+			Set<String> attrs = attr == null
+					? Collections.<String> emptySet()
+					: Collections.singleton(attr);
+			appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
 		}
-		catch(Exception e)
+		catch(MissingComponentException e)
 		{
-			throw BuckminsterException.wrap(e);
 		}
 	}
 

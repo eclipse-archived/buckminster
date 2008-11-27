@@ -21,8 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class SetPreference extends WorkspaceCommand
 {
-	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test",
-		OptionValueType.NONE);
+	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
 
 	private boolean m_test = false;
 

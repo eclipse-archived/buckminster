@@ -85,12 +85,12 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				MonitorUtils.complete(monitor);
 				return Status.OK_STATUS;
 			}
-			monitor.beginTask(null,ticks);
+			monitor.beginTask(null, ticks);
 			try
 			{
 				StorageManager sm = StorageManager.getDefault();
 				boolean didSomething = true;
-				for(;didSomething && s_default != null;)
+				for(; didSomething && s_default != null;)
 				{
 					didSomething = false;
 					IPath removedEntry;
@@ -116,7 +116,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 										res.remove(sm);
 									}
 									catch(ReferentialIntegrityException e)
-									{}
+									{
+									}
 									mat.remove(sm);
 								}
 								break;
@@ -136,7 +137,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						catch(Exception e)
 						{
 							if(s_default != null && project.isAccessible())
-								CorePlugin.getLogger().error(e, "Project refresh on %s failed: %s", project.getName(), e.getMessage());
+								CorePlugin.getLogger().error(e, "Project refresh on %s failed: %s", project.getName(),
+										e.getMessage());
 						}
 					}
 				}
@@ -212,7 +214,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				}
 			}
 
-			if(kind == IResourceDelta.ADDED || (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
+			if(kind == IResourceDelta.ADDED
+					|| (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
 			{
 				IResource resource = delta.getResource();
 				IPath path = resource.getProjectRelativePath();
@@ -281,7 +284,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				monitor.done();
 			}
 			return Status.OK_STATUS;
-		}	
+		}
 	}
 
 	private static MetadataSynchronizer s_default = new MetadataSynchronizer();
@@ -411,14 +414,15 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					//
 					Thread.sleep(500);
 				}
-				catch (InterruptedException e)
+				catch(InterruptedException e)
 				{
 				}
 			}
 		}
 	}
 
-	private static void updateProjectReferences(IProject project, ICSpecData cspec, IProgressMonitor monitor) throws CoreException
+	private static void updateProjectReferences(IProject project, ICSpecData cspec, IProgressMonitor monitor)
+			throws CoreException
 	{
 		Collection<? extends IComponentRequest> crefs = cspec.getDependencies().values();
 		if(crefs.size() == 0)
@@ -494,15 +498,66 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		monitor.done();
 	}
 
-	private final HashMap<String,Pattern> m_cspecSources = new HashMap<String,Pattern>();
+	private final HashMap<String, Pattern> m_cspecSources = new HashMap<String, Pattern>();
 
 	private MetadataRefreshJob m_currentRefreshJob;
 
-	private final HashMap<String,IPath> m_deletedProjectLocations = new HashMap<String,IPath>();
+	private final HashMap<String, IPath> m_deletedProjectLocations = new HashMap<String, IPath>();
 
 	private final Set<IProject> m_projectsNeedingUpdate = new HashSet<IProject>();
 
 	private final Set<IPath> m_removedEntries = new HashSet<IPath>();
+
+	synchronized IProject getNextProjectNeedingUpdate()
+	{
+		if(m_projectsNeedingUpdate.isEmpty())
+			return null;
+		IProject entry = m_projectsNeedingUpdate.iterator().next();
+		m_projectsNeedingUpdate.remove(entry);
+		return entry;
+	}
+
+	synchronized IPath getNextRemovedEntry()
+	{
+		if(m_removedEntries.isEmpty())
+			return null;
+		IPath entry = m_removedEntries.iterator().next();
+		m_removedEntries.remove(entry);
+		return entry;
+	}
+
+	private boolean isCSpecSource(IResource resource, IPath path)
+	{
+		String pathStr = path.toPortableString();
+		for(Pattern pattern : m_cspecSources.values())
+		{
+			Matcher m = pattern.matcher(pathStr);
+			if(m.matches())
+				return true;
+		}
+		IProject project = resource.getProject();
+		if(project == null)
+			return false;
+
+		ProjectScope scope = new ProjectScope(project);
+		IEclipsePreferences prefs = scope.getNode(CorePlugin.getID());
+
+		String tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEC_FILE,
+				CorePlugin.CSPEC_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		tmp = AbstractResolutionBuilder
+				.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		return false;
+	}
 
 	public void registerCSpecSource(String path)
 	{
@@ -589,8 +644,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				m_currentRefreshJob.addJobChangeListener(new JobChangeAdapter()
 				{
 					@Override
-	                public void done(IJobChangeEvent ev)
-	                {
+					public void done(IJobChangeEvent ev)
+					{
 						// I'm about to terminate. First make absolutely sure that there's nothing
 						// left to do
 						//
@@ -611,59 +666,10 @@ public class MetadataSynchronizer implements IResourceChangeListener
 							else
 								m_currentRefreshJob.schedule();
 						}
-	                }
-	            });		 
+					}
+				});
 				m_currentRefreshJob.schedule();
 			}
 		}
-	}
-
-	synchronized IProject getNextProjectNeedingUpdate()
-	{
-		if(m_projectsNeedingUpdate.isEmpty())
-			return null;
-		IProject entry = m_projectsNeedingUpdate.iterator().next();
-		m_projectsNeedingUpdate.remove(entry);
-		return entry;
-	}
-
-	synchronized IPath getNextRemovedEntry()
-	{
-		if(m_removedEntries.isEmpty())
-			return null;
-		IPath entry = m_removedEntries.iterator().next();
-		m_removedEntries.remove(entry);
-		return entry;
-	}
-
-	private boolean isCSpecSource(IResource resource, IPath path)
-	{
-		String pathStr = path.toPortableString();
-		for(Pattern pattern : m_cspecSources.values())
-		{
-			Matcher m = pattern.matcher(pathStr);
-			if(m.matches())
-				return true;
-		}
-		IProject project = resource.getProject();
-		if(project == null)
-			return false;
-
-		ProjectScope scope = new ProjectScope(project);
-		IEclipsePreferences prefs = scope.getNode(CorePlugin.getID());
-
-		String tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-		
-		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-
-		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-
-		return false;
 	}
 }

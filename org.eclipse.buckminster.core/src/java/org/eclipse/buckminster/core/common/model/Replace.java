@@ -21,35 +21,28 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
-
 /**
- * The Replace class will perform a regular expression based match
- * and replace on its source. The pattern can be quoted in order to
- * make the replace function as a normal (non expression based)
- * replace.
- *
+ * The Replace class will perform a regular expression based match and replace on its source. The pattern can be quoted
+ * in order to make the replace function as a normal (non expression based) replace.
+ * 
  * @author Thomas Hallgren
  */
 public class Replace extends ValueHolderFilter
 {
-	public static final String TAG = "replace";
-	public static final String MATCH_TAG = "match";
-	public static final String ATTR_PATTERN = "pattern";
-	public static final String ATTR_REPLACEMENT = "replacement";
-	public static final String ATTR_QUOTE_PATTERN = "quotePattern";
-
 	public static final class Match extends AbstractSaxableElement
 	{
-		private final Pattern		m_pattern;
-		private final String		m_patternString;
-		private final String		m_replacement;
-		private final boolean		m_quotePattern;
+		private final Pattern m_pattern;
+
+		private final String m_patternString;
+
+		private final String m_replacement;
+
+		private final boolean m_quotePattern;
 
 		/**
-		 * Create a Replace.Match that will replace every subsequence of the value
-		 * provided by a <code>valueProvider</code> that matches the
-		 * <code>pattern</code> with the given <code>replacement</code> string.
+		 * Create a Replace.Match that will replace every subsequence of the value provided by a
+		 * <code>valueProvider</code> that matches the <code>pattern</code> with the given <code>replacement</code>
+		 * string.
 		 * 
 		 * @param pattern
 		 *            The pattern that defines the replacement
@@ -70,6 +63,14 @@ public class Replace extends ValueHolderFilter
 			m_pattern = Pattern.compile(pattern);
 		}
 
+		@Override
+		protected void addAttributes(AttributesImpl attrs) throws SAXException
+		{
+			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
+			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);
+			if(m_quotePattern)
+				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true");
+		}
 
 		@Override
 		public boolean equals(Object o)
@@ -80,18 +81,8 @@ public class Replace extends ValueHolderFilter
 			if(!(o instanceof Match))
 				return false;
 
-			return m_quotePattern == ((Match)o).m_quotePattern
-				&& m_patternString.equals(((Match)o).m_patternString)
-				&& m_replacement.equals(((Match)o).m_replacement);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			int hc = m_patternString.hashCode();
-			hc = 37 * hc + m_replacement.hashCode();
-			hc = 37 * hc + (m_quotePattern ? 17 : 0);
-			return hc;
+			return m_quotePattern == ((Match)o).m_quotePattern && m_patternString.equals(((Match)o).m_patternString)
+					&& m_replacement.equals(((Match)o).m_replacement);
 		}
 
 		public String getDefaultTag()
@@ -100,12 +91,14 @@ public class Replace extends ValueHolderFilter
 		}
 
 		@Override
-		protected void addAttributes(AttributesImpl attrs) throws SAXException
+		public int hashCode()
 		{
-			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
-			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);
-			if(m_quotePattern)
-				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true");
+			int hc = m_patternString.hashCode();
+			hc = 37 * hc + m_replacement.hashCode();
+			hc = 37 * hc + (m_quotePattern
+					? 17
+					: 0);
+			return hc;
 		}
 
 		String match(String resolved)
@@ -125,25 +118,31 @@ public class Replace extends ValueHolderFilter
 		}
 	}
 
+	public static final String TAG = "replace";
+
+	public static final String MATCH_TAG = "match";
+
+	public static final String ATTR_PATTERN = "pattern";
+
+	public static final String ATTR_REPLACEMENT = "replacement";
+
+	public static final String ATTR_QUOTE_PATTERN = "quotePattern";
+
 	private final ArrayList<Match> m_matchers = new ArrayList<Match>();
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		// If we have exactly one, then use attributes instead of
+		// subelements
+		//
+		if(m_matchers.size() == 1)
+			m_matchers.get(0).addAttributes(attrs);
+	}
 
 	public void addMatch(Match match)
 	{
 		m_matchers.add(match);
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && m_matchers.equals(((Replace)o).m_matchers);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + m_matchers.hashCode();
-		return hc;
 	}
 
 	@Override
@@ -162,25 +161,8 @@ public class Replace extends ValueHolderFilter
 		return resolved;
 	}
 
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	throws SAXException
-	{
-		// If we have exactly one, then use attributes instead of
-		// subelements
-		//
-		if(m_matchers.size() == 1)
-			m_matchers.get(0).addAttributes(attrs);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix)
-	throws SAXException
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		super.emitElements(handler, namespace, prefix);
 		int top = m_matchers.size();
@@ -196,5 +178,23 @@ public class Replace extends ValueHolderFilter
 			}
 		}
 	}
-}
 
+	@Override
+	public boolean equals(Object o)
+	{
+		return super.equals(o) && m_matchers.equals(((Replace)o).m_matchers);
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + m_matchers.hashCode();
+		return hc;
+	}
+}

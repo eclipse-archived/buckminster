@@ -37,17 +37,8 @@ import org.eclipse.ecf.core.security.IConnectContext;
 public class ResourceMapResolverFactory extends AbstractExtension implements IResourceMapResolverFactory
 {
 	private static final IEclipsePreferences s_prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
+
 	private static final IEclipsePreferences s_defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
-
-	public static void addListener(IPreferenceChangeListener listener)
-	{
-		s_prefsNode.addPreferenceChangeListener(listener);
-	}
-
-	public static void removeListener(IPreferenceChangeListener listener)
-	{
-		s_prefsNode.removePreferenceChangeListener(listener);
-	}
 
 	public static final String RESOURCE_MAP_URL_PARAM = "resourceMapURL";
 
@@ -63,6 +54,16 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	public static final int RESOLVER_THREADS_MAX_DEFAULT = 4;
 
+	public static void addListener(IPreferenceChangeListener listener)
+	{
+		s_prefsNode.addPreferenceChangeListener(listener);
+	}
+
+	public static void removeListener(IPreferenceChangeListener listener)
+	{
+		s_prefsNode.removePreferenceChangeListener(listener);
+	}
+
 	private IEclipsePreferences m_prefsNode;
 
 	private String m_resourceMapURL;
@@ -73,14 +74,22 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	private int m_resolverThreadsMax = RESOLVER_THREADS_MAX_DEFAULT;
 
-	public synchronized IEclipsePreferences getPreferences()
+	private static final UUID CACHE_KEY_RESOURCE_MAP = UUID.randomUUID();
+
+	@SuppressWarnings("unchecked")
+	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache)
 	{
-		if(m_prefsNode == null)
+		synchronized(ctxUserCache)
 		{
-			m_prefsNode = (IEclipsePreferences)s_prefsNode.node(getId());
-			initDefaultPreferences();
+			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>)ctxUserCache
+					.get(CACHE_KEY_RESOURCE_MAP);
+			if(resourceMapCache == null)
+			{
+				resourceMapCache = Collections.synchronizedMap(new HashMap<String, ResourceMap>());
+				ctxUserCache.put(CACHE_KEY_RESOURCE_MAP, resourceMapCache);
+			}
+			return resourceMapCache;
 		}
-		return m_prefsNode;
 	}
 
 	public IResolver createResolver(ResolutionContext context) throws CoreException
@@ -114,21 +123,24 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		return pds;
 	}
 
-	private static final UUID CACHE_KEY_RESOURCE_MAP = UUID.randomUUID();
-
-	@SuppressWarnings("unchecked")
-	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache)
+	public synchronized IEclipsePreferences getPreferences()
 	{
-		synchronized(ctxUserCache)
+		if(m_prefsNode == null)
 		{
-			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>)ctxUserCache.get(CACHE_KEY_RESOURCE_MAP);
-			if(resourceMapCache == null)
-			{
-				resourceMapCache = Collections.synchronizedMap(new HashMap<String, ResourceMap>());
-				ctxUserCache.put(CACHE_KEY_RESOURCE_MAP, resourceMapCache);
-			}
-			return resourceMapCache;
+			m_prefsNode = (IEclipsePreferences)s_prefsNode.node(getId());
+			initDefaultPreferences();
 		}
+		return m_prefsNode;
+	}
+
+	public int getResolutionPriority()
+	{
+		return 0;
+	}
+
+	public int getResolverThreadsMax()
+	{
+		return getPreferences().getInt(RESOLVER_THREADS_MAX_PARAM, m_resolverThreadsMax);
 	}
 
 	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException
@@ -150,11 +162,6 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		}
 	}
 
-	public int getResolverThreadsMax()
-	{
-		return getPreferences().getInt(RESOLVER_THREADS_MAX_PARAM, m_resolverThreadsMax);
-	}
-
 	/**
 	 * Obtains the {@link #RESOURCE_MAP_URL_PARAM} setting for this factory from the preference store. If not found
 	 * there, it defaults to the value set in the extension definition.
@@ -170,6 +177,19 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		catch(MalformedURLException e)
 		{
 			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public void initDefaultPreferences()
+	{
+		IEclipsePreferences defaultNode = (IEclipsePreferences)s_defaultNode.node(getId());
+		if(defaultNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0)
+		{
+			// Defaults not initialized. Do it now
+			//
+			defaultNode.putBoolean(OVERRIDE_QUERY_URL_PARAM, OVERRIDE_QUERY_URL_DEFAULT);
+			defaultNode.putBoolean(LOCAL_RESOLVE_PARAM, LOCAL_RESOLVE_DEFAULT);
+			defaultNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
 		}
 	}
 
@@ -236,23 +256,5 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	public void setResourceMapURL(URL resourceMapURL)
 	{
 		getPreferences().put(RESOURCE_MAP_URL_PARAM, resourceMapURL.toExternalForm());
-	}
-
-	public void initDefaultPreferences()
-	{
-		IEclipsePreferences defaultNode = (IEclipsePreferences)s_defaultNode.node(getId());
-		if(defaultNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0)
-		{
-			// Defaults not initialized. Do it now
-			//
-			defaultNode.putBoolean(OVERRIDE_QUERY_URL_PARAM, OVERRIDE_QUERY_URL_DEFAULT);
-			defaultNode.putBoolean(LOCAL_RESOLVE_PARAM, LOCAL_RESOLVE_DEFAULT);
-			defaultNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
-		}
-	}
-
-	public int getResolutionPriority()
-	{
-		return 0;
 	}
 }

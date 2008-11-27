@@ -19,7 +19,6 @@ public class ReferentialIntegrityException extends LocalizedException
 
 	public ReferentialIntegrityException(IUUIDPersisted instance, String operation, String reason)
 	{
-		super("Unable to %s the %s with id %s: %s",
-			operation, instance.getClass().getName(), instance.getId(), reason);
+		super("Unable to %s the %s with id %s: %s", operation, instance.getClass().getName(), instance.getId(), reason);
 	}
 }

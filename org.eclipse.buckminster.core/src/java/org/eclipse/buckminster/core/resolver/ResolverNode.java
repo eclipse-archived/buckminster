@@ -74,7 +74,7 @@ public class ResolverNode
 			// Re-resolve might be necessary
 			//
 			if((newVd == null || newVd.designates(m_resolution.getVersion()))
-				&& m_query.getQualifiedDependency().hasAllAttributes(query.getRequiredAttributes()))
+					&& m_query.getQualifiedDependency().hasAllAttributes(query.getRequiredAttributes()))
 			{
 				// Nope, the resolution is still valid for this new query
 				//
@@ -93,8 +93,13 @@ public class ResolverNode
 		m_invalidateRun = true;
 	}
 
+	synchronized void clearInvalidationFlag()
+	{
+		m_invalidateRun = false;
+	}
+
 	public BOMNode collectNodes(Map<UUID, BOMNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop)
-	throws CoreException
+			throws CoreException
 	{
 		if(m_query.skipComponent())
 			return null;
@@ -180,9 +185,34 @@ public class ResolverNode
 		return node;
 	}
 
+	NodeQuery getQuery()
+	{
+		return m_query;
+	}
+
+	String getTagInfo()
+	{
+		return m_tagInfo;
+	}
+
+	boolean isInvalidated()
+	{
+		return m_invalidateRun;
+	}
+
 	public boolean isResolved()
 	{
 		return m_resolution != null;
+	}
+
+	void setGeneratorNode(GeneratorNode generatorNode)
+	{
+		m_generatorNode = generatorNode;
+	}
+
+	void setQuery(NodeQuery query)
+	{
+		m_query = query;
 	}
 
 	public synchronized void setResolution(Resolution resolution, ResolverNode[] children)
@@ -190,7 +220,9 @@ public class ResolverNode
 		if(!m_invalidateRun)
 		{
 			m_resolution = resolution;
-			m_children = (children == null) ? s_noChildren : children;
+			m_children = (children == null)
+					? s_noChildren
+					: children;
 		}
 	}
 
@@ -207,7 +239,7 @@ public class ResolverNode
 			context = new ResolutionContext(cquery, context);
 
 		CSpec cspec = resolution.getCSpec();
-		Map<String,? extends IGenerator> generators = cspec.getGenerators();
+		Map<String, ? extends IGenerator> generators = cspec.getGenerators();
 		if(generators.size() > 0)
 		{
 			if(context == originalContext)
@@ -218,35 +250,5 @@ public class ResolverNode
 		if(context != originalContext)
 			m_query = context.getNodeQuery(m_query.getQualifiedDependency());
 		return context;
-	}
-
-	synchronized void clearInvalidationFlag()
-	{
-		m_invalidateRun = false;
-	}
-
-	String getTagInfo()
-	{
-		return m_tagInfo;
-	}
-
-	NodeQuery getQuery()
-	{
-		return m_query;
-	}
-
-	boolean isInvalidated()
-	{
-		return m_invalidateRun;
-	}
-
-	void setGeneratorNode(GeneratorNode generatorNode)
-	{
-		m_generatorNode = generatorNode;
-	}
-
-	void setQuery(NodeQuery query)
-	{
-		m_query = query;
 	}
 }

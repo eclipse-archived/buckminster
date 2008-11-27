@@ -37,15 +37,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<CSpec>
 {
-	public CSpec consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws CoreException
-	{
-		IParser<CSpec> cspecParser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
-		return cspecParser.parse(streamName, stream);
-	}
-
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
 		IComponentReader reader = readerHandle[0];
@@ -56,7 +49,8 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 			if(reader instanceof ICatalogReader)
 			{
 				ICatalogReader catRdr = (ICatalogReader)reader;
-				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE, MonitorUtils.subMonitor(monitor, 100));
+				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE,
+						MonitorUtils.subMonitor(monitor, 100));
 				cspecBld.initFrom(catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100)));
 
 				fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, null);
@@ -90,5 +84,11 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 			monitor.done();
 		}
 	}
-}
 
+	public CSpec consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException
+	{
+		IParser<CSpec> cspecParser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
+		return cspecParser.parse(streamName, stream);
+	}
+}

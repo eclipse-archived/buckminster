@@ -70,11 +70,12 @@ public class LocalReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return nodeQuery.useWorkspace() || nodeQuery.useMaterialization()
-			? new DefaultVersionFinder(provider, ctype, nodeQuery)
-			: s_blindFinder;
+				? new DefaultVersionFinder(provider, ctype, nodeQuery)
+				: s_blindFinder;
 	}
 }

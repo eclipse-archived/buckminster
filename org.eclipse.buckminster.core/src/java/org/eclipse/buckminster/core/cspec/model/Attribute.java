@@ -35,7 +35,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 	public static final String TAG = "define";
 
 	public static final String ATTR_FILTER = "filter";
-	
+
 	private final Documentation m_documentation;
 
 	private final Filter m_filter;
@@ -56,8 +56,21 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 		m_filter = null;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
+	}
+
+	public void addDynamicProperties(Map<String, String> properties) throws CoreException
+	{
+	}
+
 	/**
 	 * Create a copy of this Attribute with the owner set to <code>null</code>.
+	 * 
 	 * @return A copy that has no cspec owner assigned.
 	 */
 	public IAttribute copy()
@@ -75,9 +88,16 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 		return copy;
 	}
 
-	public void addDynamicProperties(Map<String, String> properties)
-	throws CoreException
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
 	{
+		return cspecBuilder.createAttributeBuilder();
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 	}
 
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder cspecBuilder)
@@ -153,6 +173,19 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 		return true;
 	}
 
+	/**
+	 * It would be wonderful if we could have everything final. Double references does however create a hen and egg
+	 * problem. This is the hen telling the egg that it is its mother.
+	 * 
+	 * @param cspec
+	 *            The owner cspec
+	 */
+	void setCSPec(CSpec cspec)
+	{
+		assert m_cspec == null;
+		m_cspec = cspec;
+	}
+
 	@Override
 	public final String toString()
 	{
@@ -166,36 +199,5 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 		getCSpec().getComponentIdentifier().toString(bld);
 		bld.append('#');
 		bld.append(getName());
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
-	}
-
-	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
-		return cspecBuilder.createAttributeBuilder();
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-	}
-
-	/**
-	 * It would be wonderful if we could have everything final. Double references does however
-	 * create a hen and egg problem. This is the hen telling the egg that it is its mother.
-	 * @param cspec The owner cspec
-	 */
-	void setCSPec(CSpec cspec)
-	{
-		assert m_cspec == null;
-		m_cspec = cspec;
 	}
 }

@@ -16,25 +16,33 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
- * The Split class will perform a regular expression based split on its source.
- * The pattern can be quoted in order to make the split function as a normal
- * (non expression based) split.
+ * The Split class will perform a regular expression based split on its source. The pattern can be quoted in order to
+ * make the split function as a normal (non expression based) split.
+ * 
  * @author Thomas Hallgren
  */
 public class GroupSplit extends AbstractSplit
 {
 	/**
-	 * Create a <code>GroupSplit</code> that will split the value provided by
-	 * a source using regexp group constructs in <code>pattern</code>.
-	 * @param pattern The delimiting pattern
+	 * Create a <code>GroupSplit</code> that will split the value provided by a source using regexp group constructs in
+	 * <code>pattern</code>.
+	 * 
+	 * @param pattern
+	 *            The delimiting pattern
 	 * @see java.util.regex.Pattern#matches(CharSequence) Pattern.matches
 	 * @see java.util.regex.Pattern#quote(String) Pattern.quote
 	 */
 	public GroupSplit(String pattern)
 	{
 		super(pattern);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_STYLE, "group");
 	}
 
 	protected String[] checkedGetValues(IProperties properties, int recursionGuard)
@@ -47,12 +55,4 @@ public class GroupSplit extends AbstractSplit
 			result[nGroups] = m.group(nGroups + 1);
 		return result;
 	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_STYLE, "group");
-	}
 }
-

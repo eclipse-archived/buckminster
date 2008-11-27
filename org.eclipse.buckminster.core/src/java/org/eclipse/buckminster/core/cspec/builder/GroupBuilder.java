@@ -33,7 +33,7 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup
 				return idx;
 		return -1;
 	}
-	
+
 	private final ArrayList<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
 
 	private IPath m_rebase;
@@ -74,18 +74,24 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup
 	@Override
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
 	{
-		return specBuilder == getCSpecBuilder() ? this : new GroupBuilder(specBuilder);
+		return specBuilder == getCSpecBuilder()
+				? this
+				: new GroupBuilder(specBuilder);
 	}
 
 	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
 	{
 		int idx = indexOfPrerequisite(m_prerequisites, prerequisteName);
-		return (idx < 0) ? null : m_prerequisites.get(idx);
+		return (idx < 0)
+				? null
+				: m_prerequisites.get(idx);
 	}
 
 	public List<Prerequisite> getPrerequisiteList()
 	{
-		int top = (m_prerequisites == null) ? 0 : m_prerequisites.size();
+		int top = (m_prerequisites == null)
+				? 0
+				: m_prerequisites.size();
 		if(top == 0)
 			return Collections.emptyList();
 
@@ -96,15 +102,15 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup
 	}
 
 	@Override
-	public List<PrerequisiteBuilder> getPrerequisites()
-	{
-		return m_prerequisites;
-	}
-
-	@Override
 	public IPath getPrerequisiteRebase()
 	{
 		return m_rebase;
+	}
+
+	@Override
+	public List<PrerequisiteBuilder> getPrerequisites()
+	{
+		return m_prerequisites;
 	}
 
 	@Override
@@ -131,6 +137,8 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup
 
 	public void setPrerequisiteRebase(IPath rebase)
 	{
-		m_rebase = rebase == null ? null : rebase.addTrailingSeparator();
+		m_rebase = rebase == null
+				? null
+				: rebase.addTrailingSeparator();
 	}
 }

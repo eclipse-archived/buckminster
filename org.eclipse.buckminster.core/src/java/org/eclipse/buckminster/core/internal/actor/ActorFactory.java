@@ -61,6 +61,28 @@ public class ActorFactory
 		m_fixedActionActorMappings = Collections.unmodifiableMap(mappings);
 	}
 
+	public String findInternalActionActorName(String actionName) throws CoreException
+	{
+		// first try the fixed mappings
+		//
+
+		String aname = m_fixedActionActorMappings.get(actionName);
+		if(aname != null)
+			return aname;
+
+		// not a fixed wellknown - check if someone has provided an extension
+		// for it
+		//
+		for(IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(
+				CorePlugin.INTERNAL_ACTORS_POINT))
+			if(elem.getAttribute(INTERNAL_ACTION_ATTR).equals(actionName))
+				return elem.getAttribute(INTERNAL_ACTOR_ATTR);
+
+		// sorry, it's neither here nor there...
+		//
+		return null;
+	}
+
 	public synchronized IActor getActor(Action action) throws CoreException
 	{
 		// try to find an existing actor for the component/action...
@@ -88,28 +110,6 @@ public class ActorFactory
 		//
 		m_liveActors.put(action, actor);
 		return actor;
-	}
-
-	public String findInternalActionActorName(String actionName) throws CoreException
-	{
-		// first try the fixed mappings
-		//
-
-		String aname = m_fixedActionActorMappings.get(actionName);
-		if(aname != null)
-			return aname;
-
-		// not a fixed wellknown - check if someone has provided an extension
-		// for it
-		//
-		for(IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(
-				CorePlugin.INTERNAL_ACTORS_POINT))
-			if(elem.getAttribute(INTERNAL_ACTION_ATTR).equals(actionName))
-				return elem.getAttribute(INTERNAL_ACTOR_ATTR);
-
-		// sorry, it's neither here nor there...
-		//
-		return null;
 	}
 
 	private IActor internalCreateActor(String actorName) throws CoreException

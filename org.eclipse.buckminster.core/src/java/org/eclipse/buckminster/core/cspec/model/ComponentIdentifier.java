@@ -18,22 +18,17 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * A Component Identifier is something that uniquely identifies a
- * component.
- *
+ * A Component Identifier is something that uniquely identifies a component.
+ * 
  * @author Thomas Hallgren
  */
 public class ComponentIdentifier extends ComponentName implements IComponentIdentifier
 {
 	private final IVersion m_version;
-	public static final String ATTR_VERSION_TYPE = "versionType";
-	public static final String ATTR_VERSION = "version";
 
-	public ComponentIdentifier(String name, String componentTypeID, IVersion version)
-	{
-		super(name, componentTypeID);
-		m_version = version;
-	}
+	public static final String ATTR_VERSION_TYPE = "versionType";
+
+	public static final String ATTR_VERSION = "version";
 
 	public static ComponentIdentifier parse(String componentIdentifierStr) throws CoreException
 	{
@@ -43,7 +38,7 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 		{
 			String versionStr = componentIdentifierStr.substring(verIdx + 1);
 			componentIdentifierStr = componentIdentifierStr.substring(0, verIdx);
-			
+
 			String versionType = null;
 			int typeIdx = versionStr.indexOf('#');
 			if(typeIdx > 0)
@@ -65,20 +60,42 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 		return new ComponentIdentifier(componentIdentifierStr, componentType, version);
 	}
 
+	public ComponentIdentifier(String name, String componentTypeID, IVersion version)
+	{
+		super(name, componentTypeID);
+		m_version = version;
+	}
+
+	@Override
+	public int compareTo(IComponentName o)
+	{
+		int cmp = super.compareTo(o);
+		if(cmp == 0)
+			cmp = o instanceof IComponentIdentifier
+					? Trivial.compareAllowNull(m_version, ((IComponentIdentifier)o).getVersion())
+					: 1;
+		return cmp;
+	}
+
 	@Override
 	public boolean equals(Object o)
 	{
 		if(this == o)
 			return true;
 
-		return this == o
-			|| (super.equals(o) && Trivial.equalsAllowNull(m_version, ((ComponentIdentifier)o).m_version));
+		return this == o || (super.equals(o) && Trivial.equalsAllowNull(m_version, ((ComponentIdentifier)o).m_version));
 	}
 
 	@Override
-	public Map<String,String> getProperties()
+	public String getDefaultTag()
 	{
-		Map<String,String> p = super.getProperties();
+		return null;
+	}
+
+	@Override
+	public Map<String, String> getProperties()
+	{
+		Map<String, String> p = super.getProperties();
 		if(m_version != null)
 		{
 			p.put(KeyConstants.COMPONENT_VERSION, m_version.toString());
@@ -105,23 +122,25 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 	}
 
 	/**
-	 * <p>Match this identifier with another identifier. The match is done as
-	 * follows</p>
+	 * <p>
+	 * Match this identifier with another identifier. The match is done as follows
+	 * </p>
 	 * <ul>
 	 * <li>If names are not equal, the match is always false</li>
 	 * <li>If both instances have a componentType, it must be equal</li>
 	 * <li>If one instance lacks a componentType, the types are not considered part of the match</p>
 	 * <li>If both instances have a version, it must be equal</li>
 	 * <li>If one instance lacks a version, the versions are not considered part of the match</p>
-	 * @param o The identifier to match with this one
+	 * 
+	 * @param o
+	 *            The identifier to match with this one
 	 * @return <code>true</code> if the identifiers match
 	 */
 	public boolean matches(ComponentIdentifier o)
 	{
-		return super.matches(o)
-			&& (m_version == null || o.m_version == null || m_version.equals(o.m_version));
+		return super.matches(o) && (m_version == null || o.m_version == null || m_version.equals(o.m_version));
 	}
-	
+
 	@Override
 	public ComponentName toPureComponentName()
 	{
@@ -139,22 +158,5 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 			bld.append('#');
 			bld.append(m_version.getType().getId());
 		}
-	}
-
-	@Override
-	public int compareTo(IComponentName o)
-	{
-		int cmp = super.compareTo(o);
-		if(cmp == 0)
-			cmp = o instanceof IComponentIdentifier
-				? Trivial.compareAllowNull(m_version, ((IComponentIdentifier)o).getVersion())
-				: 1;
-		return cmp;
-	}
-
-	@Override
-	public String getDefaultTag()
-	{
-		return null;
 	}
 }

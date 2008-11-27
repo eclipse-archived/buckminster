@@ -18,8 +18,6 @@ public class PrerequisiteAlreadyDefinedException extends LocalizedException
 
 	public PrerequisiteAlreadyDefinedException(String name, String attribute, String prerequisite)
 	{
-		super("CSpec %s, attribute %s already has a prerequisite named %s",
-			name, attribute, prerequisite);
+		super("CSpec %s, attribute %s already has a prerequisite named %s", name, attribute, prerequisite);
 	}
 }
-

@@ -38,7 +38,7 @@ public class UnsetPreference extends WorkspaceCommand
 	@Override
 	protected void handleOption(Option option) throws Exception
 	{
-		if (option.is(TEST_DESCRIPTOR))
+		if(option.is(TEST_DESCRIPTOR))
 			m_test = true;
 	}
 
@@ -46,16 +46,16 @@ public class UnsetPreference extends WorkspaceCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		int len = unparsed.length;
-		if (len > 1)
+		if(len > 1)
 			throw new SimpleErrorExitException("Too many arguments");
-		if (len == 1)
+		if(len == 1)
 			m_name = unparsed[0];
 	}
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
-		if (m_name == null)
+		if(m_name == null)
 			throw new UsageException("You must provide a preference name");
 
 		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);

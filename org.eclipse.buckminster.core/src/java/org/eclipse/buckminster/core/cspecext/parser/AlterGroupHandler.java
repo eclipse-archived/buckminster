@@ -29,7 +29,9 @@ import org.xml.sax.SAXParseException;
  */
 class AlterGroupHandler extends AlterAttributeHandler
 {
-	private final RemoveHandler m_removeHandler = new RemoveHandler(this, AlterGroup.ELEM_REMOVE, NamedElement.ATTR_NAME);
+	private final RemoveHandler m_removeHandler = new RemoveHandler(this, AlterGroup.ELEM_REMOVE,
+			NamedElement.ATTR_NAME);
+
 	private final PrerequisiteHandler m_alterHandler = new PrerequisiteHandler(this)
 	{
 		@Override
@@ -42,6 +44,16 @@ class AlterGroupHandler extends AlterAttributeHandler
 	AlterGroupHandler(AbstractHandler parent, boolean publ)
 	{
 		super(parent, new GroupHandler(parent, publ));
+	}
+
+	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
+	{
+		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
+	}
+
+	void addRemovePrerequisite(String key)
+	{
+		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
 	}
 
 	@Override
@@ -65,8 +77,13 @@ class AlterGroupHandler extends AlterAttributeHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
+	{
+		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(m_removeHandler.getTAG().equals(localName))
@@ -76,21 +93,5 @@ class AlterGroupHandler extends AlterAttributeHandler
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
-	{
-		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
-	}
-	
-	void addRemovePrerequisite(String key)
-	{
-		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
-	}
-
-	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
 	}
 }

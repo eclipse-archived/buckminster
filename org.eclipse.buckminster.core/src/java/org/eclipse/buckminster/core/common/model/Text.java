@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class Text implements ISaxableElement
 {
@@ -29,8 +29,7 @@ public class Text implements ISaxableElement
 		return "p";
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-	throws SAXException
+	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
 		receiver.characters(m_content, 0, m_content.length);
 	}

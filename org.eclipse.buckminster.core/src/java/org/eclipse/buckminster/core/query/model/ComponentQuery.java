@@ -54,7 +54,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -72,7 +71,8 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 
 	public static final String TAG = "componentQuery";
 
-	public static ComponentQuery fromStream(URL url, IConnectContext cctx, InputStream stream, boolean validating) throws CoreException
+	public static ComponentQuery fromStream(URL url, IConnectContext cctx, InputStream stream, boolean validating)
+			throws CoreException
 	{
 		try
 		{
@@ -103,7 +103,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		finally
 		{
 			IOUtils.close(stream);
-		}		
+		}
 	}
 
 	private final List<AdvisorNode> m_advisorNodes;
@@ -145,39 +145,79 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			m_advisorNodes = Collections.unmodifiableList(advisorNodes);
 		}
 
-		Map<String,String> properties = bld.getDeclaredProperties();
+		Map<String, String> properties = bld.getDeclaredProperties();
 		if(properties == null || properties.size() == 0)
 			m_properties = Collections.emptyMap();
 		else
 			m_properties = Collections.unmodifiableMap(new ExpandingProperties(properties));
-		
+
 		m_contextURL = bld.getContextURL();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		if(m_resourceMapURL != null)
+			Utils.addAttribute(attrs, ATTR_RESOURCE_MAP, m_resourceMapURL.toString());
+		if(m_propertiesURL != null)
+			Utils.addAttribute(attrs, ATTR_PROPERTIES, m_propertiesURL.toString());
+		if(m_shortDesc != null)
+			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
 	}
 
 	public boolean allowCircularDependency(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? false : node.allowCircularDependency();
+		return node == null
+				? false
+				: node.allowCircularDependency();
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		m_rootRequest.toSax(handler, namespace, prefix, ELEM_ROOT_REQUEST);
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
+		for(AdvisorNode node : m_advisorNodes)
+			node.toSax(handler, namespace, prefix, node.getDefaultTag());
 	}
 
 	public List<? extends IAdvisorNode> getAdvisoryNodes()
 	{
 		return m_advisorNodes;
 	}
-	
+
 	public List<String> getAttributes(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? Collections.<String>emptyList() : node.getAttributes();
+		return node == null
+				? Collections.<String> emptyList()
+				: node.getAttributes();
 	}
 
 	public VersionSelector[] getBranchTagPath(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? VersionSelector.EMPTY_PATH : node.getBranchTagPath();
+		return node == null
+				? VersionSelector.EMPTY_PATH
+				: node.getBranchTagPath();
 	}
 
-	public Map<String,String> getDeclaredProperties()
+	public IConnectContext getConnectContext()
+	{
+		return m_connectContext;
+	}
+
+	public URL getContextURL()
+	{
+		return m_contextURL;
+	}
+
+	public Map<String, String> getDeclaredProperties()
 	{
 		return m_properties;
 	}
@@ -190,6 +230,18 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return BM_CQUERY_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return BM_CQUERY_PREFIX;
 	}
 
 	public synchronized Map<String, String> getGlobalProperties()
@@ -207,7 +259,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			try
 			{
 				input = DownloadManager.read(propsURL, getConnectContext());
-				Map<String,String> urlProps = new BMProperties(input);
+				Map<String, String> urlProps = new BMProperties(input);
 				if(urlProps.size() > 0)
 				{
 					m_allProperties = new ExpandingProperties(m_allProperties);
@@ -254,7 +306,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	{
 		for(IAdvisorNode node : m_advisorNodes)
 			if(node.getNamePattern().toString().equals(pattern)
-			&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentTypeID))
+					&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentTypeID))
 				return node;
 		return null;
 	}
@@ -262,37 +314,14 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	public URL getOverlayFolder(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? null : node.getOverlayFolder();
-	}
-
-	public IConnectContext getConnectContext()
-	{
-		return m_connectContext;
-	}
-
-	public URL getContextURL()
-	{
-		return m_contextURL;
+		return node == null
+				? null
+				: node.getOverlayFolder();
 	}
 
 	public String getPropertiesURL()
 	{
 		return m_propertiesURL;
-	}
-
-	public String getResourceMapURL()
-	{
-		return m_resourceMapURL;
-	}
-
-	public URL getResolvedPropertiesURL()
-	{
-		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_propertiesURL, 0));
-	}
-
-	public URL getResolvedResourceMapURL()
-	{
-		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_resourceMapURL, 0));
 	}
 
 	public ProviderScore getProviderScore(ComponentName cName, boolean mutable, boolean source)
@@ -310,10 +339,14 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			mutableScore = ProviderScore.PREFERRED;
 			break;
 		case DESIRE:
-			mutableScore = mutable ? ProviderScore.GOOD : ProviderScore.BAD;
+			mutableScore = mutable
+					? ProviderScore.GOOD
+					: ProviderScore.BAD;
 			break;
 		case AVOID:
-			mutableScore = mutable ? ProviderScore.BAD : ProviderScore.GOOD;
+			mutableScore = mutable
+					? ProviderScore.BAD
+					: ProviderScore.GOOD;
 			break;
 		case REJECT:
 			if(mutable)
@@ -332,10 +365,14 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			sourceScore = ProviderScore.PREFERRED;
 			break;
 		case DESIRE:
-			sourceScore = source ? ProviderScore.GOOD : ProviderScore.BAD;
+			sourceScore = source
+					? ProviderScore.GOOD
+					: ProviderScore.BAD;
 			break;
 		case AVOID:
-			sourceScore = source ? ProviderScore.BAD : ProviderScore.GOOD;
+			sourceScore = source
+					? ProviderScore.BAD
+					: ProviderScore.GOOD;
 			break;
 		case REJECT:
 			if(source)
@@ -350,13 +387,34 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	public int[] getResolutionPrio(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? IAdvisorNode.DEFAULT_RESOLUTION_PRIO : node.getResolutionPrio();
+		return node == null
+				? IAdvisorNode.DEFAULT_RESOLUTION_PRIO
+				: node.getResolutionPrio();
+	}
+
+	public URL getResolvedPropertiesURL()
+	{
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
+				m_propertiesURL, 0));
+	}
+
+	public URL getResolvedResourceMapURL()
+	{
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
+				m_resourceMapURL, 0));
+	}
+
+	public String getResourceMapURL()
+	{
+		return m_resourceMapURL;
 	}
 
 	public long getRevision(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? -1 : node.getRevision();
+		return node == null
+				? -1
+				: node.getRevision();
 	}
 
 	public ComponentRequest getRootRequest()
@@ -377,13 +435,17 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	public Date getTimestamp(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? null : node.getTimestamp();
+		return node == null
+				? null
+				: node.getTimestamp();
 	}
 
 	public IVersionDesignator getVersionOverride(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? null : node.getVersionOverride();
+		return node == null
+				? null
+				: node.getVersionOverride();
 	}
 
 	public boolean isPersisted(StorageManager sm) throws CoreException
@@ -394,7 +456,9 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	public boolean isPrune(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? false : node.isPrune();
+		return node == null
+				? false
+				: node.isPrune();
 	}
 
 	public void remove(StorageManager sm) throws CoreException
@@ -421,10 +485,17 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return bld.createComponentQuery();
 	}
 
+	private void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
+	}
+
 	public boolean skipComponent(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? false : node.skipComponent();
+		return node == null
+				? false
+				: node.skipComponent();
 	}
 
 	public void store(StorageManager sm) throws CoreException
@@ -446,69 +517,36 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		super.toSax(handler, namespace, prefix, localName);
 		handler.endPrefixMapping(BM_CQUERY_PREFIX);
 	}
-	
+
 	public boolean useMaterialization(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.isUseMaterialization();
+		return node == null
+				? true
+				: node.isUseMaterialization();
 	}
 
 	public boolean useResolutionService(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.isUseRemoteResolution();
+		return node == null
+				? true
+				: node.isUseRemoteResolution();
 	}
 
 	public boolean useTargetPlatform(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.isUseTargetPlatform();
+		return node == null
+				? true
+				: node.isUseTargetPlatform();
 	}
 
 	public boolean useWorkspace(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
-		return node == null ? true : node.isUseWorkspace();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_resourceMapURL != null)
-			Utils.addAttribute(attrs, ATTR_RESOURCE_MAP, m_resourceMapURL.toString());
-		if(m_propertiesURL != null)
-			Utils.addAttribute(attrs, ATTR_PROPERTIES, m_propertiesURL.toString());
-		if(m_shortDesc != null)
-			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-
-		m_rootRequest.toSax(handler, namespace, prefix, ELEM_ROOT_REQUEST);
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-
-		for(AdvisorNode node : m_advisorNodes)
-			node.toSax(handler, namespace, prefix, node.getDefaultTag());
-	}
-
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return BM_CQUERY_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return BM_CQUERY_PREFIX;
-	}
-
-	private void setConnectContext(IConnectContext cctx)
-	{
-		m_connectContext = cctx;
+		return node == null
+				? true
+				: node.isUseWorkspace();
 	}
 }

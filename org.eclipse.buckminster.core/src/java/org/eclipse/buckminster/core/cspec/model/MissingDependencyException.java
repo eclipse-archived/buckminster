@@ -18,7 +18,6 @@ public class MissingDependencyException extends LocalizedException
 
 	public MissingDependencyException(String componentName, String dependencyName)
 	{
-		super("Component %s has no declared dependency to component %s",
-			componentName, dependencyName);
+		super("Component %s has no declared dependency to component %s", componentName, dependencyName);
 	}
 }

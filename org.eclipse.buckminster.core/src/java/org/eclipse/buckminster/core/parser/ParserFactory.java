@@ -58,11 +58,43 @@ import org.xml.sax.SAXParseException;
 
 public class ParserFactory implements IParserFactory
 {
+	static class OPMLParserExt extends OPMLParser implements IParser<OPML>
+	{
+		OPMLParserExt(boolean validating) throws SAXException
+		{
+			super(validating);
+		}
+
+		public OPML parse(String systemId, InputStream input) throws CoreException
+		{
+			IFile[] files = AbstractParser.clearMarkers(systemId);
+			try
+			{
+				return parseInput(systemId, input);
+			}
+			catch(SAXParseException e)
+			{
+				AbstractParser.setMarkers(files, e);
+				throw BuckminsterException.wrap(e);
+			}
+			catch(Exception e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				getXMLReader().setContentHandler(this);
+			}
+		}
+	}
+
 	public static class ParserExtension
 	{
 		private final String m_namespace;
+
 		private final URL m_resource;
-		private final Map<String,Class<? extends ChildHandler>> m_handlers = new HashMap<String,Class<? extends ChildHandler>>();
+
+		private final Map<String, Class<? extends ChildHandler>> m_handlers = new HashMap<String, Class<? extends ChildHandler>>();
 
 		public ParserExtension(String namespace, URL resource)
 		{
@@ -70,12 +102,18 @@ public class ParserFactory implements IParserFactory
 			m_resource = resource;
 		}
 
+		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
+		{
+			m_handlers.put(xsiType, clazz);
+		}
+
 		public final ChildHandler getHandler(AbstractHandler parent, String xsiType) throws CoreException
 		{
 			Class<? extends ChildHandler> handlerClass = m_handlers.get(xsiType);
 			try
 			{
-				Constructor<? extends ChildHandler> ctor = handlerClass.getConstructor(new Class[] { AbstractHandler.class });
+				Constructor<? extends ChildHandler> ctor = handlerClass
+						.getConstructor(new Class[] { AbstractHandler.class });
 				return ctor.newInstance(new Object[] { parent });
 			}
 			catch(Exception e)
@@ -93,17 +131,12 @@ public class ParserFactory implements IParserFactory
 		{
 			return m_resource;
 		}
-
-		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
-		{
-			m_handlers.put(xsiType, clazz);
-		}
 	}
 
 	public static final String PARSER_EXTENSIONS_POINT = CorePlugin.CORE_NAMESPACE + ".parserExtensions";
 
 	private static final ParserFactory s_instance = new ParserFactory();
-	
+
 	public static IParserFactory getDefault()
 	{
 		return s_instance;
@@ -111,16 +144,15 @@ public class ParserFactory implements IParserFactory
 
 	private Map<String, List<ParserExtension>> m_parserExtensions;
 
-	public IParser<CSpecExtension> getAlterCSpecParser(boolean validating)
-	throws CoreException
+	public IParser<CSpecExtension> getAlterCSpecParser(boolean validating) throws CoreException
 	{
 		return new AlterCSpecParser(getParserExtensions(CSpec.TAG, CSpecExtension.TAG), validating);
 	}
 
-	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating)
-	throws CoreException
+	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating) throws CoreException
 	{
-		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG, BOMNode.TAG), validating);
+		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG,
+				CSpec.TAG, Resolution.TAG, BOMNode.TAG), validating);
 	}
 
 	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException
@@ -128,54 +160,39 @@ public class ParserFactory implements IParserFactory
 		return new ComponentQueryParser(getParserExtensions(ComponentQuery.TAG), validating);
 	}
 
-	public IParser<CSpec> getCSpecParser(boolean validating)
-	throws CoreException
+	public IParser<CSpec> getCSpecParser(boolean validating) throws CoreException
 	{
 		return new CSpecParser(getParserExtensions(CSpec.TAG), validating);
 	}
 
-	public IParser<BOMNode> getDepNodeParser()
-	throws CoreException
+	public IParser<BOMNode> getDepNodeParser() throws CoreException
 	{
 		return new DepNodeParser(getParserExtensions(Resolution.TAG, BOMNode.TAG));
 	}
 
-	public IParser<Materialization> getMaterializationParser()
-	throws CoreException
+	public IParser<Materialization> getMaterializationParser() throws CoreException
 	{
 		return new MaterializationParser(getParserExtensions(Materialization.TAG));
 	}
 
-	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating)
-	throws CoreException
+	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException
 	{
 		return new MaterializationSpecParser(getParserExtensions(MaterializationSpec.TAG), validating);
 	}
 
-	public IParser<Provider> getProviderParser(boolean validating) throws CoreException
+	public IParser<OPML> getOPMLParser(boolean validating) throws CoreException
 	{
-		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
+		try
+		{
+			return new OPMLParserExt(validating);
+		}
+		catch(SAXException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
-	public IParser<Resolution> getResolutionParser()
-	throws CoreException
-	{
-		return new ResolutionParser(getParserExtensions(Resolution.TAG));
-	}
-
-	public IParser<ResourceMap> getResourceMapParser(boolean validating)
-	throws CoreException
-	{
-		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
-	}
-
-	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating)
-	throws CoreException
-	{
-		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
-	}
-
-	private synchronized List<ParserExtension> getParserExtensions(String ...parserIds)
+	private synchronized List<ParserExtension> getParserExtensions(String... parserIds)
 	{
 		if(m_parserExtensions == null)
 		{
@@ -213,13 +230,35 @@ public class ParserFactory implements IParserFactory
 			}
 			result.addAll(pel);
 		}
-		return (result == null || result.size() == 0) ? Collections.<ParserExtension>emptyList() : result;
+		return (result == null || result.size() == 0)
+				? Collections.<ParserExtension> emptyList()
+				: result;
+	}
+
+	public IParser<Provider> getProviderParser(boolean validating) throws CoreException
+	{
+		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
+	}
+
+	public IParser<Resolution> getResolutionParser() throws CoreException
+	{
+		return new ResolutionParser(getParserExtensions(Resolution.TAG));
+	}
+
+	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException
+	{
+		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
+	}
+
+	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException
+	{
+		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
 	}
 
 	private Map<String, List<ParserExtension>> loadParserExtensions() throws CoreException
 	{
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		HashMap<String,List<ParserExtension>> peMap = new HashMap<String,List<ParserExtension>>();
+		HashMap<String, List<ParserExtension>> peMap = new HashMap<String, List<ParserExtension>>();
 		for(IConfigurationElement namespace : exReg.getConfigurationElementsFor(PARSER_EXTENSIONS_POINT))
 		{
 			Bundle bundle = Platform.getBundle(namespace.getNamespaceIdentifier());
@@ -229,9 +268,8 @@ public class ParserFactory implements IParserFactory
 			{
 				try
 				{
-					pe.addHandler(
-						handler.getAttribute("type"),
-						((Class<?>)bundle.loadClass(handler.getAttribute("class"))).asSubclass(ChildHandler.class));
+					pe.addHandler(handler.getAttribute("type"), ((Class<?>)bundle.loadClass(handler
+							.getAttribute("class"))).asSubclass(ChildHandler.class));
 				}
 				catch(ClassNotFoundException e)
 				{
@@ -252,47 +290,4 @@ public class ParserFactory implements IParserFactory
 		}
 		return peMap;
 	}
-
-	static class OPMLParserExt extends OPMLParser implements IParser<OPML>
-	{
-		OPMLParserExt(boolean validating) throws SAXException
-		{
-			super(validating);
-		}
-
-		public OPML parse(String systemId, InputStream input) throws CoreException
-		{
-			IFile[] files = AbstractParser.clearMarkers(systemId);
-			try
-			{
-				return parseInput(systemId, input);
-			}
-			catch(SAXParseException e)
-			{
-				AbstractParser.setMarkers(files, e);
-				throw BuckminsterException.wrap(e);
-			}
-			catch(Exception e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				getXMLReader().setContentHandler(this);
-			}
-		}
-	}
-
-	public IParser<OPML> getOPMLParser(boolean validating) throws CoreException
-	{
-		try
-		{
-			return new OPMLParserExt(validating);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
 }
-

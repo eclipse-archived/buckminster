@@ -24,31 +24,6 @@ import java.util.Set;
  */
 public class MapUnion<K, V> extends AbstractMap<K, V>
 {
-	class UnionEntry implements Map.Entry<K, V>
-	{
-		private final K m_key;
-
-		public UnionEntry(K key)
-		{
-			m_key = key;
-		}
-
-		public K getKey()
-		{
-			return m_key;
-		}
-
-		public V getValue()
-		{
-			return MapUnion.this.get(m_key);
-		}
-
-		public V setValue(V value)
-		{
-			return MapUnion.this.put(m_key, value);
-		}
-	}
-
 	abstract class AbstractIterator<X> implements Iterator<X>
 	{
 		private Iterator<K> m_currentIterator = m_overlay.keySet().iterator();
@@ -56,27 +31,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 		private K m_currentKey = null;
 
 		private boolean m_phase1 = true;
-
-		public boolean hasNext()
-		{
-			m_currentKey = this.getValidKey(m_currentKey);
-			return m_currentKey != null;
-		}
-
-		public void remove()
-		{
-			throw new UnsupportedOperationException();
-		}
-
-		K nextKey()
-		{
-			K key = this.getValidKey(m_currentKey);
-			if(key == null)
-				throw new NoSuchElementException();
-
-			m_currentKey = null; // Force retrieval of next key
-			return key;
-		}
 
 		private K getValidKey(K key)
 		{
@@ -111,6 +65,27 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 			}
 			return null;
 		}
+
+		public boolean hasNext()
+		{
+			m_currentKey = this.getValidKey(m_currentKey);
+			return m_currentKey != null;
+		}
+
+		K nextKey()
+		{
+			K key = this.getValidKey(m_currentKey);
+			if(key == null)
+				throw new NoSuchElementException();
+
+			m_currentKey = null; // Force retrieval of next key
+			return key;
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	class EntryIterator extends AbstractIterator<Map.Entry<K, V>>
@@ -129,6 +104,31 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 		}
 	}
 
+	class UnionEntry implements Map.Entry<K, V>
+	{
+		private final K m_key;
+
+		public UnionEntry(K key)
+		{
+			m_key = key;
+		}
+
+		public K getKey()
+		{
+			return m_key;
+		}
+
+		public V getValue()
+		{
+			return MapUnion.this.get(m_key);
+		}
+
+		public V setValue(V value)
+		{
+			return MapUnion.this.put(m_key, value);
+		}
+	}
+
 	class ValueIterator extends AbstractIterator<V>
 	{
 		public V next()
@@ -137,21 +137,22 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 		}
 	}
 
-	private final HashMap<K,K> m_antiMap;
+	private final HashMap<K, K> m_antiMap;
 
-	private final Map<K,V> m_immutable;
+	private final Map<K, V> m_immutable;
 
-	private final Map<K,V> m_overlay;
+	private final Map<K, V> m_overlay;
 
-	@SuppressWarnings("unchecked")	// safe anyway, since the map is immutable
-	public MapUnion(Map<K,V> mutable, Map<? extends K, ? extends V> immutable)
+	@SuppressWarnings("unchecked")
+	// safe anyway, since the map is immutable
+	public MapUnion(Map<K, V> mutable, Map<? extends K, ? extends V> immutable)
 	{
 		m_overlay = mutable;
-		m_immutable = (Map<K,V>)immutable;
+		m_immutable = (Map<K, V>)immutable;
 		m_antiMap = new HashMap<K, K>();
 	}
 
-	private MapUnion(Map<K,V> mutable, Map<K,V> immutable, HashMap<K,K> antiMap)
+	private MapUnion(Map<K, V> mutable, Map<K, V> immutable, HashMap<K, K> antiMap)
 	{
 		m_overlay = mutable;
 		m_immutable = immutable;
@@ -177,6 +178,16 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 			K key = itor.next();
 			m_antiMap.put(key, key);
 		}
+	}
+
+	@Override
+	public Object clone()
+	{
+		HashMap<K, V> mutable = new HashMap<K, V>();
+		mutable.putAll(m_overlay);
+		HashMap<K, K> antiMap = new HashMap<K, K>();
+		antiMap.putAll(m_antiMap);
+		return new MapUnion<K, V>(mutable, m_immutable, antiMap);
 	}
 
 	@Override
@@ -217,11 +228,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 		return value;
 	}
 
-	public Set<K> overlayKeySet()
-	{
-		return m_overlay.keySet();
-	}
-
 	@Override
 	public Set<K> keySet()
 	{
@@ -239,6 +245,11 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 				return MapUnion.this.size();
 			}
 		};
+	}
+
+	public Set<K> overlayKeySet()
+	{
+		return m_overlay.keySet();
 	}
 
 	@Override
@@ -268,16 +279,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 			}
 		}
 		return value;
-	}
-
-	@Override
-	public Object clone()
-	{
-		HashMap<K,V> mutable = new HashMap<K, V>();
-		mutable.putAll(m_overlay);
-		HashMap<K,K> antiMap = new HashMap<K, K>();
-		antiMap.putAll(m_antiMap);
-		return new MapUnion<K,V>(mutable, m_immutable, antiMap);
 	}
 
 	@Override

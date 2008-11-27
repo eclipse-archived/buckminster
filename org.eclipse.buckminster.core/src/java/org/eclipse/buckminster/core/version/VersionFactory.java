@@ -49,25 +49,20 @@ public class VersionFactory
 		return VersionDesignator.fromString(versionType, versionString);
 	}
 
-	public static IVersionDesignator createExplicitDesignator(IVersionType versionType, String versionString)
-			throws VersionSyntaxException
+	public static IVersionDesignator createDesignator(String versionType, String versionString) throws CoreException
 	{
-		return VersionDesignator.explicitFromString(versionType, versionString);
-	}
-
-	public static IVersionDesignator createRangeDesignator(IVersion low, boolean includeLow, IVersion high, boolean includeHigh)
-	{
-		return VersionDesignator.create(low, includeLow, high, includeHigh);
-	}
-
-	public static IVersionDesignator createGTEqualDesignator(IVersion version)
-	{
-		return VersionDesignator.GTEqual(version);
+		return createDesignator(CorePlugin.getDefault().getVersionType(versionType), versionString);
 	}
 
 	public static IVersionDesignator createExplicitDesignator(IVersion version)
 	{
 		return VersionDesignator.explicit(version);
+	}
+
+	public static IVersionDesignator createExplicitDesignator(IVersionType versionType, String versionString)
+			throws VersionSyntaxException
+	{
+		return VersionDesignator.explicitFromString(versionType, versionString);
 	}
 
 	public static IVersionDesignator createExplicitDesignator(String versionType, String versionString)
@@ -76,9 +71,15 @@ public class VersionFactory
 		return createExplicitDesignator(CorePlugin.getDefault().getVersionType(versionType), versionString);
 	}
 
-	public static IVersionDesignator createDesignator(String versionType, String versionString) throws CoreException
+	public static IVersionDesignator createGTEqualDesignator(IVersion version)
 	{
-		return createDesignator(CorePlugin.getDefault().getVersionType(versionType), versionString);
+		return VersionDesignator.GTEqual(version);
+	}
+
+	public static IVersionDesignator createRangeDesignator(IVersion low, boolean includeLow, IVersion high,
+			boolean includeHigh)
+	{
+		return VersionDesignator.create(low, includeLow, high, includeHigh);
 	}
 
 	public static IVersion createVersion(String versionType, String versionString) throws CoreException

@@ -50,15 +50,15 @@ public class RxGroup extends RxPart
 			bld.append(")?");
 	}
 
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
 	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		for(RxPart part : m_parts)
 			part.toSax(handler, namespace, prefix, part.getDefaultTag());
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
 	}
 }

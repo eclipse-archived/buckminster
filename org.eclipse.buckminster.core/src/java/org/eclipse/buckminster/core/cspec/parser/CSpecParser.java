@@ -21,7 +21,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -29,40 +28,11 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 {
 	private CSpec m_cSpec;
 
-	public CSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+	public CSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException
 	{
-		super(parserExtensions, new String[]
- 		{
- 			XMLConstants.BM_COMMON_NS,
- 			XMLConstants.BM_CSPEC_NS,
- 			XMLConstants.XHTML_NS,
- 			XMLConstants.XML_NS
- 		}, new String[]
-  		{
-  			XMLConstants.BM_COMMON_RESOURCE,
-  			XMLConstants.BM_CSPEC_RESOURCE,
-  			XMLConstants.XHTML_RESOURCE,
-  			XMLConstants.XML_RESOURCE
-  		}, validating);
-	}
-
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(CSpecHandler.TAG.equals(localName))
-		{
-			CSpecHandler rmh = new CSpecHandler(this);
-			this.pushHandler(rmh, attrs);
-		}
-		else
-			super.startElement(uri, localName, qName, attrs);
-	}
-
-	public CSpec parse(String systemId, InputStream input) throws CoreException
-	{
-		this.parseInput(systemId, input);
-		return m_cSpec;
+		super(parserExtensions, new String[] { XMLConstants.BM_COMMON_NS, XMLConstants.BM_CSPEC_NS,
+				XMLConstants.XHTML_NS, XMLConstants.XML_NS }, new String[] { XMLConstants.BM_COMMON_RESOURCE,
+				XMLConstants.BM_CSPEC_RESOURCE, XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE }, validating);
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -77,5 +47,22 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 	}
-}
 
+	public CSpec parse(String systemId, InputStream input) throws CoreException
+	{
+		this.parseInput(systemId, input);
+		return m_cSpec;
+	}
+
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
+	{
+		if(CSpecHandler.TAG.equals(localName))
+		{
+			CSpecHandler rmh = new CSpecHandler(this);
+			this.pushHandler(rmh, attrs);
+		}
+		else
+			super.startElement(uri, localName, qName, attrs);
+	}
+}

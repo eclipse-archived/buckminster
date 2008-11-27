@@ -17,8 +17,8 @@ public interface IBuckminsterExtension
 {
 	/**
 	 * Returns the extension-point id used when this instance was created.
+	 * 
 	 * @return the extension-point id.
 	 */
 	String getId();
 }
-

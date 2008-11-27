@@ -20,6 +20,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class Clean extends WorkspaceCommand
 {
 	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		if(unparsed.length > 0)
+			throw new UsageException("Too many arguments");
+	}
+
+	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
@@ -36,13 +43,6 @@ public class Clean extends WorkspaceCommand
 		}
 
 		return 0;
-	}
-
-    @Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length > 0)
-			throw new UsageException("Too many arguments");
 	}
 
 }

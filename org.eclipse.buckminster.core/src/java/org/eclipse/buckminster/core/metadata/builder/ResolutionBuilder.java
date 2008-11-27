@@ -119,11 +119,6 @@ public class ResolutionBuilder implements IResolution
 		return m_attributes;
 	}
 
-	public VersionSelector getMatchedBranchOrTag()
-	{
-		return m_branchOrTag;
-	}
-
 	public String getComponentTypeId()
 	{
 		return m_componentTypeId;
@@ -149,14 +144,16 @@ public class ResolutionBuilder implements IResolution
 		return m_lastModified;
 	}
 
-	public String getRemoteName()
+	public VersionSelector getMatchedBranchOrTag()
 	{
-		return m_remoteName;
+		return m_branchOrTag;
 	}
 
 	public OPML getOPML()
 	{
-		return m_opml == null ? null : new OPML(m_opml);
+		return m_opml == null
+				? null
+				: new OPML(m_opml);
 	}
 
 	public OPMLBuilder getOPMLBuilder()
@@ -164,6 +161,11 @@ public class ResolutionBuilder implements IResolution
 		if(m_opml == null)
 			m_opml = new OPMLBuilder();
 		return m_opml;
+	}
+
+	public String getPersistentId()
+	{
+		return m_persistentId;
 	}
 
 	public Provider getProvider()
@@ -181,6 +183,11 @@ public class ResolutionBuilder implements IResolution
 	public String getReaderTypeId()
 	{
 		return m_readerTypeId;
+	}
+
+	public String getRemoteName()
+	{
+		return m_remoteName;
 	}
 
 	public String getRepository()
@@ -203,14 +210,14 @@ public class ResolutionBuilder implements IResolution
 		return m_revision;
 	}
 
-	public long getSize()
-	{
-		return m_size;
-	}
-
 	public Date getSelectedTimestamp()
 	{
 		return m_timestamp;
+	}
+
+	public long getSize()
+	{
+		return m_size;
 	}
 
 	public VersionMatch getVersionMatch()
@@ -313,9 +320,9 @@ public class ResolutionBuilder implements IResolution
 		m_materializable = materializable;
 	}
 
-	public void setRemoteName(String remoteName)
+	public void setPersistentId(String persistentId)
 	{
-		m_remoteName = remoteName;
+		m_persistentId = persistentId;
 	}
 
 	public void setProvider(Provider provider)
@@ -326,6 +333,11 @@ public class ResolutionBuilder implements IResolution
 	public void setReaderTypeId(String readerTypeId)
 	{
 		m_readerTypeId = readerTypeId;
+	}
+
+	public void setRemoteName(String remoteName)
+	{
+		m_remoteName = remoteName;
 	}
 
 	public void setRepository(String repository)
@@ -374,15 +386,5 @@ public class ResolutionBuilder implements IResolution
 			m_revision = versionMatch.getRevision();
 			m_timestamp = versionMatch.getTimestamp();
 		}
-	}
-
-	public void setPersistentId(String persistentId)
-	{
-		m_persistentId = persistentId;
-	}
-
-	public String getPersistentId()
-	{
-		return m_persistentId;
 	}
 }

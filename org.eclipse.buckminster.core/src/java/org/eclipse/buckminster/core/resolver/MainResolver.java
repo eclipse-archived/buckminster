@@ -7,7 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.resolver;
 
-
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -24,7 +23,7 @@ import org.eclipse.core.runtime.IStatus;
  */
 public class MainResolver implements IResolver
 {
-	private static final int MAX_ITERATIONS = 8;	// TODO: Perhaps this should be a preference setting
+	private static final int MAX_ITERATIONS = 8; // TODO: Perhaps this should be a preference setting
 
 	private final ResolutionContext m_context;
 
@@ -45,20 +44,21 @@ public class MainResolver implements IResolver
 		return m_recursiveResolve;
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
-		return m_context.logDecision(decisionType, args);
-	}
-
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
 	{
 		return m_context.logDecision(request, decisionType, args);
 	}
 
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return m_context.logDecision(decisionType, args);
+	}
+
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query = m_context.getNodeQuery(request);
-		BillOfMaterials bom = BillOfMaterials.create(new UnresolvedNode(query.getQualifiedDependency()), m_context.getComponentQuery());
+		BillOfMaterials bom = BillOfMaterials.create(new UnresolvedNode(query.getQualifiedDependency()), m_context
+				.getComponentQuery());
 		return resolveRemaining(bom, monitor);
 	}
 
@@ -150,10 +150,10 @@ public class MainResolver implements IResolver
 					int top = unresolvedList.size();
 					if(top == 0)
 						throw new CoreException(status);
-					
+
 					StringBuilder bld = new StringBuilder();
 					bld.append("Unable to resolve: ");
-					
+
 					for(int idx = 0; idx < top; ++idx)
 					{
 						if(idx > 0)

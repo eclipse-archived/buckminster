@@ -28,8 +28,8 @@ public abstract class WellknownActions
 		},
 
 		/**
-		 * The prebind action is executed just prior to when a component is bound into the Eclipse
-		 * workspace. The result of the prebind action is ignored.
+		 * The prebind action is executed just prior to when a component is bound into the Eclipse workspace. The result
+		 * of the prebind action is ignored.
 		 */
 		PREBIND
 		{
@@ -41,9 +41,9 @@ public abstract class WellknownActions
 		},
 
 		/**
-		 * Similar to the {@link #PREBIND}, this action is executed just prior to when a component
-		 * is bound into the Eclipse workspace. The difference is that the result of this action
-		 * will be bound to the workspace instead of the component root.
+		 * Similar to the {@link #PREBIND}, this action is executed just prior to when a component is bound into the
+		 * Eclipse workspace. The difference is that the result of this action will be bound to the workspace instead of
+		 * the component root.
 		 */
 		BIND_ENTRYPOINT
 		{
@@ -128,8 +128,6 @@ public abstract class WellknownActions
 			}
 		};
 
-		public abstract int kind();
-
 		public static int name2Kind(String name)
 		{
 			for(ECLIPSE e : ECLIPSE.values())
@@ -137,5 +135,7 @@ public abstract class WellknownActions
 					return e.kind();
 			throw new InternalError("Unexpected name: " + name);
 		}
+
+		public abstract int kind();
 	}
 }

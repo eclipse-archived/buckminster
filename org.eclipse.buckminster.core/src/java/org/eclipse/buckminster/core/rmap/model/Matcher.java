@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -28,6 +27,7 @@ public abstract class Matcher extends AbstractSaxableElement
 	public static final String ATTR_PATTERN = "pattern";
 
 	private final ResourceMap m_owner;
+
 	private final Pattern m_pattern;
 
 	public Matcher(ResourceMap owner, String pattern)
@@ -36,9 +36,10 @@ public abstract class Matcher extends AbstractSaxableElement
 		m_pattern = Pattern.compile(pattern);
 	}
 
-	public final boolean matches(String componentName)
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		return m_pattern.matcher(componentName).find();
+		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
 	}
 
 	public final ResourceMap getOwner()
@@ -51,13 +52,10 @@ public abstract class Matcher extends AbstractSaxableElement
 		return m_pattern;
 	}
 
-	public abstract SearchPath getSearchPath(NodeQuery query)
-	throws CoreException;
+	public abstract SearchPath getSearchPath(NodeQuery query) throws CoreException;
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	public final boolean matches(String componentName)
 	{
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
+		return m_pattern.matcher(componentName).find();
 	}
 }
-

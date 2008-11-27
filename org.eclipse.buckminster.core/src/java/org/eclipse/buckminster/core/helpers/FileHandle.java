@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * 
  * @author Thomas Hallgren
- *
+ * 
  */
 public class FileHandle
 {
@@ -29,14 +29,14 @@ public class FileHandle
 		m_isTemporary = isTemporary;
 	}
 
-	public String getName()
-	{
-		return m_name;
-	}
-
 	public File getFile()
 	{
 		return m_file;
+	}
+
+	public String getName()
+	{
+		return m_name;
 	}
 
 	public boolean isTemporary()

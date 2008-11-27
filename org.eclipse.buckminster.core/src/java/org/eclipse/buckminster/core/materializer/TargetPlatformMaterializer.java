@@ -50,18 +50,18 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 
 	private static ISite getDefaultInstallSite() throws CoreException
 	{
-		IConfiguredSite installSite = null;		
+		IConfiguredSite installSite = null;
 		IConfiguredSite[] configuredSites = SiteManager.getLocalSite().getCurrentConfiguration().getConfiguredSites();
 		for(int idx = 0; idx < configuredSites.length; ++idx)
 		{
 			IConfiguredSite configuredSite = configuredSites[idx];
-			if (configuredSite.isProductSite() && configuredSite.isUpdatable())
+			if(configuredSite.isProductSite() && configuredSite.isUpdatable())
 			{
 				installSite = configuredSite;
 				break;
 			}
 		}
-		if (installSite == null)
+		if(installSite == null)
 			throw BuckminsterException.fromMessage("Could not find a site to install to");
 		return installSite.getSite();
 	}
@@ -73,13 +73,8 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 	}
 
 	@Override
-	public String getMaterializerRootDir()
-	{
-		return "downloads";
-	}
-
-	@Override
-	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor) throws CoreException
+	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor)
+			throws CoreException
 	{
 		monitor.beginTask(null, 100);
 		try
@@ -90,10 +85,10 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 					return getDefaultInstallSite();
 
 				File folder = destination.hasTrailingSeparator()
-					? destination.toFile()
-					: destination.removeLastSegments(1).toFile();
+						? destination.toFile()
+						: destination.removeLastSegments(1).toFile();
 
-				FileUtils.prepareDestination(folder, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 5));					
+				FileUtils.prepareDestination(folder, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 5));
 				String destStr = destination.toPortableString();
 				if(!destStr.startsWith("/"))
 					//
@@ -129,6 +124,12 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		{
 			monitor.done();
 		}
+	}
+
+	@Override
+	public String getMaterializerRootDir()
+	{
+		return "downloads";
 	}
 
 	@Override

@@ -23,29 +23,40 @@ import java.util.TimerTask;
 /**
  * @author thhal
  */
-public class TimedHashMap<K,V> implements Map<K,V>
+public class TimedHashMap<K, V> implements Map<K, V>
 {
-	public interface EvictionPolicy<EK,EV>
+	public interface EvictionPolicy<EK, EV>
 	{
-		void evict(Entry<EK,EV> entry);
+		void evict(Entry<EK, EV> entry);
 	}
 
-	private static final Timer s_timer = new Timer();
-	
-	private final long m_keepAliveTime;
-	private final EvictionPolicy<K,V> m_evictionPolicy;
-
-	private final HashMap<K,TimedEntry> m_map = new HashMap<K,TimedEntry>();
-
-	final class TimedEntry extends TimerTask implements Map.Entry<K,V>
+	final class TimedEntry extends TimerTask implements Map.Entry<K, V>
 	{
 		private final K m_key;
+
 		private V m_value;
 
 		TimedEntry(K key, V value)
 		{
 			m_key = key;
 			m_value = value;
+		}
+
+		public K getKey()
+		{
+			return m_key;
+		}
+
+		public V getValue()
+		{
+			return m_value;
+		}
+
+		void remove()
+		{
+			this.cancel();
+			if(m_evictionPolicy != null)
+				m_evictionPolicy.evict(this);
 		}
 
 		@Override
@@ -60,16 +71,6 @@ public class TimedHashMap<K,V> implements Map<K,V>
 				m_evictionPolicy.evict(val);
 		}
 
-		public K getKey()
-		{
-			return m_key;
-		}
-
-		public V getValue()
-		{
-			return m_value;
-		}
-
 		public V setValue(V value)
 		{
 			V old = m_value;
@@ -78,16 +79,17 @@ public class TimedHashMap<K,V> implements Map<K,V>
 			s_timer.schedule(this, m_keepAliveTime);
 			return old;
 		}
-
-		void remove()
-		{
-			this.cancel();
-			if(m_evictionPolicy != null)
-				m_evictionPolicy.evict(this);
-		}
 	}
 
-	public TimedHashMap(long keepAliveTime, EvictionPolicy<K,V> evictionPolicy)
+	private static final Timer s_timer = new Timer();
+
+	private final long m_keepAliveTime;
+
+	private final EvictionPolicy<K, V> m_evictionPolicy;
+
+	private final HashMap<K, TimedEntry> m_map = new HashMap<K, TimedEntry>();
+
+	public TimedHashMap(long keepAliveTime, EvictionPolicy<K, V> evictionPolicy)
 	{
 		m_keepAliveTime = keepAliveTime;
 		m_evictionPolicy = evictionPolicy;
@@ -98,6 +100,100 @@ public class TimedHashMap<K,V> implements Map<K,V>
 		TimedEntry entry = m_map.get(key);
 		if(entry != null)
 			entry.cancel();
+	}
+
+	public void clear()
+	{
+		synchronized(m_map)
+		{
+			for(TimedEntry entry : m_map.values())
+				entry.remove();
+			m_map.clear();
+		}
+	}
+
+	public boolean containsKey(Object key)
+	{
+		synchronized(m_map)
+		{
+			return m_map.containsKey(key);
+		}
+	}
+
+	public boolean containsValue(Object value)
+	{
+		synchronized(m_map)
+		{
+			for(Entry<K, V> te : m_map.values())
+			{
+				Object tv = te.getValue();
+				if(value == null)
+				{
+					if(tv == null)
+						return true;
+				}
+				else if(value.equals(tv))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	public Set<Entry<K, V>> entrySet()
+	{
+		final Iterator<TimedEntry> entries = m_map.values().iterator();
+		return new AbstractSet<Entry<K, V>>()
+		{
+			@Override
+			public Iterator<Entry<K, V>> iterator()
+			{
+				return new Iterator<Entry<K, V>>()
+				{
+
+					public boolean hasNext()
+					{
+						return entries.hasNext();
+					}
+
+					public Entry<K, V> next()
+					{
+						return entries.next();
+					}
+
+					public void remove()
+					{
+						entries.remove();
+					}
+				};
+			}
+
+			@Override
+			public int size()
+			{
+				return m_map.size();
+			}
+		};
+	}
+
+	public V get(Object key)
+	{
+		synchronized(m_map)
+		{
+			Entry<K, V> te = m_map.get(key);
+			return te == null
+					? null
+					: te.getValue();
+		}
+	}
+
+	public boolean isEmpty()
+	{
+		return m_map.isEmpty();
+	}
+
+	public Set<K> keySet()
+	{
+		return m_map.keySet();
 	}
 
 	public V put(K key, V value)
@@ -123,62 +219,10 @@ public class TimedHashMap<K,V> implements Map<K,V>
 		return oldVal;
 	}
 
-	public void schedule(K key)
+	public void putAll(Map<? extends K, ? extends V> t)
 	{
-		TimedEntry entry = m_map.get(key);
-		if(entry != null)
-			s_timer.schedule(entry, m_keepAliveTime);
-	}
-
-	public boolean scheduleOnPut()
-	{
-		return true;
-	}
-
-	public int size()
-	{
-		return m_map.size();
-	}
-
-	public boolean isEmpty()
-	{
-		return m_map.isEmpty();
-	}
-
-	public boolean containsKey(Object key)
-	{
-		synchronized(m_map)
-		{
-			return m_map.containsKey(key);
-		}
-	}
-
-	public boolean containsValue(Object value)
-	{
-		synchronized(m_map)
-		{
-			for(Entry<K,V> te : m_map.values())
-			{
-				Object tv = te.getValue();
-				if(value == null)
-				{
-					if(tv == null)
-						return true;
-				}
-				else if(value.equals(tv))
-					return true;
-			}
-		}
-		return false;
-	}
-
-	public V get(Object key)
-	{
-		synchronized(m_map)
-		{
-			Entry<K,V> te = m_map.get(key);
-			return te == null ? null : te.getValue();
-		}
+		for(Entry<? extends K, ? extends V> entry : t.entrySet())
+			this.put(entry.getKey(), entry.getValue());
 	}
 
 	public V remove(Object key)
@@ -194,25 +238,21 @@ public class TimedHashMap<K,V> implements Map<K,V>
 		}
 	}
 
-	public void putAll(Map<? extends K, ? extends V> t)
+	public void schedule(K key)
 	{
-		for(Entry<? extends K,? extends V> entry : t.entrySet())
-			this.put(entry.getKey(), entry.getValue());
+		TimedEntry entry = m_map.get(key);
+		if(entry != null)
+			s_timer.schedule(entry, m_keepAliveTime);
 	}
 
-	public void clear()
+	public boolean scheduleOnPut()
 	{
-		synchronized(m_map)
-		{
-			for(TimedEntry entry : m_map.values())
-				entry.remove();
-			m_map.clear();
-		}
+		return true;
 	}
 
-	public Set<K> keySet()
+	public int size()
 	{
-		return m_map.keySet();
+		return m_map.size();
 	}
 
 	public Collection<V> values()
@@ -250,42 +290,4 @@ public class TimedHashMap<K,V> implements Map<K,V>
 			}
 		};
 	}
-
-	public Set<Entry<K, V>> entrySet()
-	{
-		final Iterator<TimedEntry> entries = m_map.values().iterator();
-		return new AbstractSet<Entry<K, V>>()
-		{
-			@Override
-			public Iterator<Entry<K, V>> iterator()
-			{
-				return new Iterator<Entry<K,V>>()
-				{
-
-					public boolean hasNext()
-					{
-						return entries.hasNext();
-					}
-
-					public Entry<K,V> next()
-					{
-						return entries.next();
-					}
-
-					public void remove()
-					{
-						entries.remove();
-					}
-				};
-			}
-
-			@Override
-			public int size()
-			{
-				return m_map.size();
-			}			
-		};
-	}
 }
-
-

@@ -19,38 +19,19 @@ import org.eclipse.core.runtime.CoreException;
 public abstract class AbstractConverter extends AbstractExtension implements IVersionConverter
 {
 	private static final BidirectionalTransformer[] s_noTransformers = new BidirectionalTransformer[0];
+
 	private BidirectionalTransformer[] m_transformers = s_noTransformers;
+
 	private IVersionType m_versionType = getDefaultVersionType();
 
 	/**
-	 * Assigns the transformer used when converting between plain versions and a
-	 * version component.
-	 * 
-	 * @param transformer
-	 */
-	public final void setTransformers(BidirectionalTransformer[] transformers)
-	{
-		m_transformers = transformers == null ? s_noTransformers : transformers;
-	}
-
-	/**
-	 * Assings the version type that is used when creating versions
-	 *
-	 * @param versionType
-	 */
-	public final void setVersionType(IVersionType versionType)
-	{
-		m_versionType = versionType == null ? getDefaultVersionType() : versionType;
-	}
-
-	/**
-	 * Converts the version into a selector component, i.e. a branch or a
-	 * branch qualifier such as a tag, timestamp, or change number.
+	 * Converts the version into a selector component, i.e. a branch or a branch qualifier such as a tag, timestamp, or
+	 * change number.
 	 * 
 	 * @param source
 	 *            The version to convert.
-	 * @return The converted result or <code>null</code> if <code>source</code> did not match the
-	 * <code>from</code> pattern of any of the contained transformers.
+	 * @return The converted result or <code>null</code> if <code>source</code> did not match the <code>from</code>
+	 *         pattern of any of the contained transformers.
 	 * @throws CoreException
 	 */
 	protected String createSelectorComponent(IVersion source) throws CoreException
@@ -76,13 +57,13 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 
 	/**
 	 * Converts a selector component, i.e. a branch or tag into a version
-	 *
+	 * 
 	 * @param versionType
 	 *            The version type for the version to create.
 	 * @param source
 	 *            The selector component to convert.
-	 * @return The converted result or <code>null</code> if <code>source</code> did not match the
-	 * <code>to</code> pattern of any of the contained transformers.
+	 * @return The converted result or <code>null</code> if <code>source</code> did not match the <code>to</code>
+	 *         pattern of any of the contained transformers.
 	 * @throws CoreException
 	 */
 	protected IVersion createVersionFromSelectorComponent(String source) throws CoreException
@@ -105,10 +86,34 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 		return m_versionType.fromString(source);
 	}
 
+	protected abstract IVersionType getDefaultVersionType();
+
 	public IVersionType getVersionType()
 	{
 		return m_versionType;
 	}
 
-	protected abstract IVersionType getDefaultVersionType();
+	/**
+	 * Assigns the transformer used when converting between plain versions and a version component.
+	 * 
+	 * @param transformer
+	 */
+	public final void setTransformers(BidirectionalTransformer[] transformers)
+	{
+		m_transformers = transformers == null
+				? s_noTransformers
+				: transformers;
+	}
+
+	/**
+	 * Assings the version type that is used when creating versions
+	 * 
+	 * @param versionType
+	 */
+	public final void setVersionType(IVersionType versionType)
+	{
+		m_versionType = versionType == null
+				? getDefaultVersionType()
+				: versionType;
+	}
 }

@@ -28,6 +28,18 @@ public interface IResolver extends IResolverBackchannel
 	boolean isRecursiveResolve();
 
 	/**
+	 * Resolve the component denoted by <code>request</code>.
+	 * 
+	 * @param request
+	 *            The request that denotes the desired top component of the resulting <code>BillOfMaterials</code>.
+	 * @param monitor
+	 *            The monitor used for progress reporting
+	 * @return The resulting bill of materials. Might be partly resolved.
+	 * @throws CoreException
+	 */
+	BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * This method performs the same task as
 	 * 
 	 * <pre>
@@ -42,21 +54,9 @@ public interface IResolver extends IResolverBackchannel
 	BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Resolve the component denoted by <code>request</code>.
-	 * 
-	 * @param request
-	 *            The request that denotes the desired top component of the resulting <code>BillOfMaterials</code>.
-	 * @param monitor
-	 *            The monitor used for progress reporting
-	 * @return The resulting bill of materials. Might be partly resolved.
-	 * @throws CoreException
-	 */
-	BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException;
-
-	/**
 	 * Attemt to resolve unresolved nodes of the <code>bom</code>. The resolution process will use the
-	 * {@link org.eclipse.buckminster.core.query.model.ComponentQuery ComponentQuery} passed in the <code>context</code>,
-	 * not the one stored in the <code>bom</code>.
+	 * {@link org.eclipse.buckminster.core.query.model.ComponentQuery ComponentQuery} passed in the <code>context</code>
+	 * , not the one stored in the <code>bom</code>.
 	 * 
 	 * @param monitor
 	 *            The monitor used for progress reporting

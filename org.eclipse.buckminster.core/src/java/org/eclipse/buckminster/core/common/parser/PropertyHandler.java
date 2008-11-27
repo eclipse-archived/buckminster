@@ -17,10 +17,10 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public abstract class PropertyHandler extends ExtensionAwareHandler
 {
 	private String m_key;
+
 	private boolean m_mutable;
 
 	public PropertyHandler(AbstractHandler parent)
@@ -28,13 +28,7 @@ public abstract class PropertyHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_key = this.getStringValue(attrs, "key");
-		m_mutable = getOptionalBooleanValue(attrs, "mutable", false);
-	}
+	abstract void addYourself(Map<String, String> props);
 
 	final String getKey()
 	{
@@ -46,6 +40,10 @@ public abstract class PropertyHandler extends ExtensionAwareHandler
 		return m_mutable;
 	}
 
-	abstract void addYourself(Map<String,String> props);
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_key = this.getStringValue(attrs, "key");
+		m_mutable = getOptionalBooleanValue(attrs, "mutable", false);
+	}
 }
-

@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class DestinationChangeException extends LocalizedException
 {
@@ -21,6 +21,6 @@ public class DestinationChangeException extends LocalizedException
 	public DestinationChangeException(IPath fixedDest, IPath wantedDest)
 	{
 		super("An attempt was made to change the fixed materialization location %s to %s",
-			fixedDest.toPortableString(), wantedDest.toPortableString());
+				fixedDest.toPortableString(), wantedDest.toPortableString());
 	}
 }

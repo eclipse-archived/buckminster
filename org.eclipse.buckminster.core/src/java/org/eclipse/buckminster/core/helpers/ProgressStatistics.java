@@ -16,6 +16,36 @@ import java.util.Map.Entry;
 
 public class ProgressStatistics
 {
+	public interface AmountConverter
+	{
+		String convert(long amount);
+	}
+
+	static class FileSizeConverter implements AmountConverter
+	{
+
+		public String convert(long amount)
+		{
+			if(amount < 1024)
+				return String.format(Locale.US, "%dB", Long.valueOf(amount));
+			else if(amount < 1024 * 1024)
+				return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024));
+			else
+				return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024)));
+		}
+
+	}
+
+	static class TrivialConverter implements AmountConverter
+	{
+
+		public String convert(long amount)
+		{
+			return "" + amount;
+		}
+
+	}
+
 	public static final AmountConverter TRIVIAL_CONVERTER = new TrivialConverter();
 
 	public static final AmountConverter FILESIZE_CONVERTER = new FileSizeConverter();
@@ -67,25 +97,6 @@ public class ProgressStatistics
 		m_total = total;
 	}
 
-	public void setConverter(AmountConverter converter)
-	{
-		if(converter == null)
-			setConverter(TRIVIAL_CONVERTER);
-		else
-			m_converter = converter;
-	}
-
-	public void increase(long inc)
-	{
-		registerRecentSpeed(getDuration() / m_recentSpeedResolution, inc);
-		m_current += inc;
-	}
-
-	public long getDuration()
-	{
-		return (new Date()).getTime() - m_startTime.getTime();
-	}
-
 	public long getAverageSpeed()
 	{
 		long dur = getDuration();
@@ -94,6 +105,19 @@ public class ProgressStatistics
 			return m_current / (dur / 1000);
 
 		return 0L;
+	}
+
+	public long getDuration()
+	{
+		return (new Date()).getTime() - m_startTime.getTime();
+	}
+
+	public double getPercentage()
+	{
+		if(m_total > 0)
+			return ((double)m_current) / ((double)m_total);
+
+		return 0.0;
 	}
 
 	synchronized public long getRecentSpeed()
@@ -120,32 +144,9 @@ public class ProgressStatistics
 		return m_recentSpeedInterval;
 	}
 
-	public void setRecentSpeedInterval(int recentSpeedInterval)
-	{
-		if(recentSpeedInterval <= 0)
-			recentSpeedInterval = DEFAULT_RECENT_SPEED_INTERVAL;
-		m_recentSpeedInterval = recentSpeedInterval;
-	}
-
 	public int getRecentSpeedResolution()
 	{
 		return m_recentSpeedResolution;
-	}
-
-	public void setRecentSpeedResolution(int recentSpeedResolution)
-	{
-		if(recentSpeedResolution <= 0)
-			recentSpeedResolution = DEFULAT_RECENT_SPEED_RESOLUTION;
-
-		m_recentSpeedResolution = recentSpeedResolution;
-	}
-
-	public double getPercentage()
-	{
-		if(m_total > 0)
-			return ((double)m_current) / ((double)m_total);
-
-		return 0.0;
 	}
 
 	public int getReportInterval()
@@ -153,35 +154,10 @@ public class ProgressStatistics
 		return m_reportInterval;
 	}
 
-	public void setReportInterval(int reportInterval)
+	public void increase(long inc)
 	{
-		m_reportInterval = reportInterval;
-	}
-
-	public boolean shouldReport()
-	{
-		Date current = new Date();
-
-		if(m_lastReportTime == null || current.getTime() - m_lastReportTime.getTime() >= m_reportInterval)
-		{
-			m_lastReportTime = current;
-			return true;
-		}
-
-		return false;
-	}
-
-	public String report()
-	{
-		return m_converter.convert(m_current) + (m_total != -1
-				? " of " + m_converter.convert(m_total)
-				: "") + " at " + m_converter.convert(getRecentSpeed()) + "/s";
-	}
-
-	@Override
-	public String toString()
-	{
-		return report();
+		registerRecentSpeed(getDuration() / m_recentSpeedResolution, inc);
+		m_current += inc;
 	}
 
 	synchronized private void registerRecentSpeed(long key, long inc)
@@ -207,33 +183,57 @@ public class ProgressStatistics
 		m_recentSpeedMap.headMap(Long.valueOf(threshold)).clear();
 	}
 
-	public interface AmountConverter
+	public String report()
 	{
-		String convert(long amount);
+		return m_converter.convert(m_current) + (m_total != -1
+				? " of " + m_converter.convert(m_total)
+				: "") + " at " + m_converter.convert(getRecentSpeed()) + "/s";
 	}
 
-	static class TrivialConverter implements AmountConverter
+	public void setConverter(AmountConverter converter)
 	{
-
-		public String convert(long amount)
-		{
-			return "" + amount;
-		}
-
+		if(converter == null)
+			setConverter(TRIVIAL_CONVERTER);
+		else
+			m_converter = converter;
 	}
 
-	static class FileSizeConverter implements AmountConverter
+	public void setRecentSpeedInterval(int recentSpeedInterval)
 	{
+		if(recentSpeedInterval <= 0)
+			recentSpeedInterval = DEFAULT_RECENT_SPEED_INTERVAL;
+		m_recentSpeedInterval = recentSpeedInterval;
+	}
 
-		public String convert(long amount)
+	public void setRecentSpeedResolution(int recentSpeedResolution)
+	{
+		if(recentSpeedResolution <= 0)
+			recentSpeedResolution = DEFULAT_RECENT_SPEED_RESOLUTION;
+
+		m_recentSpeedResolution = recentSpeedResolution;
+	}
+
+	public void setReportInterval(int reportInterval)
+	{
+		m_reportInterval = reportInterval;
+	}
+
+	public boolean shouldReport()
+	{
+		Date current = new Date();
+
+		if(m_lastReportTime == null || current.getTime() - m_lastReportTime.getTime() >= m_reportInterval)
 		{
-			if(amount < 1024)
-				return String.format(Locale.US, "%dB", Long.valueOf(amount));
-			else if(amount < 1024 * 1024)
-				return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024));
-			else
-				return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024)));
+			m_lastReportTime = current;
+			return true;
 		}
 
+		return false;
+	}
+
+	@Override
+	public String toString()
+	{
+		return report();
 	}
 }

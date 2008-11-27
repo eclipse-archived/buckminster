@@ -61,6 +61,11 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 		return ch;
 	}
 
+	MaterializationDirectiveBuilder getBuilder()
+	{
+		return m_builder;
+	}
+
 	@Override
 	public Map<String, String> getProperties()
 	{
@@ -91,13 +96,9 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw new SAXParseException("Invalid value for attribute \"" + MaterializationDirective.ATTR_CONFLICT_RESOLUTION + '"', this.getDocumentLocator());
+				throw new SAXParseException("Invalid value for attribute \""
+						+ MaterializationDirective.ATTR_CONFLICT_RESOLUTION + '"', this.getDocumentLocator());
 			}
 		}
-	}
-
-	MaterializationDirectiveBuilder getBuilder()
-	{
-		return m_builder;
 	}
 }

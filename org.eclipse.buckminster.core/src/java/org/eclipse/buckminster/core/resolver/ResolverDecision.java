@@ -10,15 +10,16 @@ package org.eclipse.buckminster.core.resolver;
 
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 
-
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class ResolverDecision
 {
 	private final IComponentRequest m_request;
+
 	private final ResolverDecisionType m_type;
+
 	private final Object[] m_args;
 
 	public ResolverDecision(IComponentRequest request, ResolverDecisionType type, Object[] args)

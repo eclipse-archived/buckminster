@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 public class AttributeRefHandler extends ExtensionAwareHandler
 {
 	public static final String TAG = UnresolvedNode.ELEM_ATTRIBUTE;
+
 	private String m_name;
 
 	public AttributeRefHandler(AbstractHandler parent)
@@ -27,15 +28,14 @@ public class AttributeRefHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_name = getStringValue(attrs, NamedElement.ATTR_NAME);
-	}
-
 	final String getName()
 	{
 		return m_name;
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_name = getStringValue(attrs, NamedElement.ATTR_NAME);
 	}
 }

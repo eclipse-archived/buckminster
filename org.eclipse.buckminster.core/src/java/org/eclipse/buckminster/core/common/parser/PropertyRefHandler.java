@@ -15,7 +15,6 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public class PropertyRefHandler extends ValueHandler
 {
 	static final String TAG = PropertyRef.TAG;
@@ -26,10 +25,8 @@ public class PropertyRefHandler extends ValueHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		this.setValueHolder(new PropertyRef(this.getStringValue(attrs, PropertyRef.ATTR_KEY)));
 	}
 }
-

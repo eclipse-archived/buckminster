@@ -23,7 +23,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -32,11 +31,17 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 	public static final String TAG = CSpec.TAG;
 
 	private DocumentationHandler m_documentationHandler;
+
 	private DependenciesHandler m_dependenciesHandler;
+
 	private GeneratorsHandler m_generatorsHandler;
+
 	private ArtifactsHandler m_artifactsHandler;
+
 	private ActionsHandler m_actionsHandler;
+
 	private GroupsHandler m_groupsHandler;
+
 	private CSpecBuilder m_builder;
 
 	public CSpecHandler(AbstractHandler parent)
@@ -44,19 +49,14 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		super(parent);
 	}
 
-	public final CSpec getCSpec()
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		return m_builder.createCSpec();
-	}
-
-	public final CSpecBuilder getCSpecBuilder()
-	{
-		return m_builder;
+		if(child instanceof DocumentationHandler)
+			m_builder.setDocumentation(((DocumentationHandler)child).createDocumentation());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(DocumentationHandler.TAG.equals(localName))
@@ -93,16 +93,25 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		{
 			if(m_groupsHandler == null)
 				m_groupsHandler = new GroupsHandler(this);
-			ch = m_groupsHandler;			
+			ch = m_groupsHandler;
 		}
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
+	public final CSpec getCSpec()
+	{
+		return m_builder.createCSpec();
+	}
+
+	public final CSpecBuilder getCSpecBuilder()
+	{
+		return m_builder;
+	}
+
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
 
@@ -114,7 +123,8 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 
 		try
 		{
-			m_builder.setVersion(getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION), getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE));
+			m_builder.setVersion(getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION),
+					getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE));
 		}
 		catch(CoreException e)
 		{
@@ -134,11 +144,4 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 			}
 		}
 	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof DocumentationHandler)
-			m_builder.setDocumentation(((DocumentationHandler)child).createDocumentation());
-	}
 }
-

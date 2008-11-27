@@ -19,7 +19,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -30,17 +29,6 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 	DependenciesHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		ChildHandler ch;
-		if(CSpec.ELEM_DEPENDENCY.equals(localName))
-			ch = new ComponentRequestHandler(this, new ComponentRequestBuilder());
-		else
-			ch = super.createHandler(uri, localName, attrs);
-		return ch;
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -56,6 +44,17 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
 		}
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		ChildHandler ch;
+		if(CSpec.ELEM_DEPENDENCY.equals(localName))
+			ch = new ComponentRequestHandler(this, new ComponentRequestBuilder());
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
 	}
 
 	public CSpecBuilder getCSpecBuilder()

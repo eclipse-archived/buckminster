@@ -39,37 +39,6 @@ public class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
 		m_maxSize = maxSize;
 	}
 
-	@Override
-    public void write(int b)
-	{
-		super.write(b);
-		if(m_maxSize > 0 && count >= m_maxSize)
-			throw new IllegalStateException("Max size " + m_maxSize + " exceeded");
-	}
-	
-	@Override
-    public void write(byte b[], int off, int len)
-	{
-		super.write(b, off, len);
-		if(m_maxSize > 0 && count >= m_maxSize)
-			throw new IllegalStateException("Max size " + m_maxSize + " exceeded");
-	}
-
-	/**
-	 * Returns an InputStream that can read the content of this output
-	 * stream up to the point where this call was issued. Further writes
-	 * on this OutputStream will not be available for the returned
-	 * InputStream. The typical scenario is that some byte image is
-	 * built with a series of writes and an InputStream is desired
-	 * that can read this image without copying it (as would have been
-	 * done using {@link ByteArrayOutputStream#toByteArray()}.
-	 * @return
-	 */
-	public InputStream getInputStream()
-	{
-		return new ByteArrayInputStream(buf, 0, count);
-	}
-
 	/**
 	 * Reset the counter to zero so that the stream can be reused.
 	 */
@@ -77,5 +46,34 @@ public class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
 	public void close() throws IOException
 	{
 		count = 0;
-    }
+	}
+
+	/**
+	 * Returns an InputStream that can read the content of this output stream up to the point where this call was
+	 * issued. Further writes on this OutputStream will not be available for the returned InputStream. The typical
+	 * scenario is that some byte image is built with a series of writes and an InputStream is desired that can read
+	 * this image without copying it (as would have been done using {@link ByteArrayOutputStream#toByteArray()}.
+	 * 
+	 * @return
+	 */
+	public InputStream getInputStream()
+	{
+		return new ByteArrayInputStream(buf, 0, count);
+	}
+
+	@Override
+	public void write(byte b[], int off, int len)
+	{
+		super.write(b, off, len);
+		if(m_maxSize > 0 && count >= m_maxSize)
+			throw new IllegalStateException("Max size " + m_maxSize + " exceeded");
+	}
+
+	@Override
+	public void write(int b)
+	{
+		super.write(b);
+		if(m_maxSize > 0 && count >= m_maxSize)
+			throw new IllegalStateException("Max size " + m_maxSize + " exceeded");
+	}
 }

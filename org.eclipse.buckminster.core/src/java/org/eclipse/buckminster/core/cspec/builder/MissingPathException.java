@@ -22,4 +22,3 @@ public class MissingPathException extends LocalizedException
 		super("CSpec {0}, attribute {1} does not define path {2}", name, attribute, path);
 	}
 }
-

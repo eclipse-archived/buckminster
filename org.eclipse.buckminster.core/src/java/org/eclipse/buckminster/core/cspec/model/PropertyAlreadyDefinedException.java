@@ -15,8 +15,6 @@ public class PropertyAlreadyDefinedException extends LocalizedException
 
 	public PropertyAlreadyDefinedException(String name, String attribute, String propertyCategory, String propertyName)
 	{
-		super("CSpec %s, attribute %s already has a %s named %s",
-				name, attribute, propertyCategory, propertyName);
+		super("CSpec %s, attribute %s already has a %s named %s", name, attribute, propertyCategory, propertyName);
 	}
 }
-

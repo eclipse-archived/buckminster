@@ -18,16 +18,22 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public abstract class MaterializationDirectiveBuilder implements IMaterializationDirective
 {
 	private Documentation m_documentation;
+
 	private IPath m_installLocation;
+
 	private IPath m_workspaceLocation;
+
 	private String m_materializerID;
-	private final HashMap<String,String> m_properties = new HashMap<String,String>();
+
+	private final HashMap<String, String> m_properties = new HashMap<String, String>();
+
 	private ConflictResolution m_conflictResolution;
+
 	private int m_maxParallelJobs = -1;
 
 	public void clear()
@@ -39,6 +45,11 @@ public abstract class MaterializationDirectiveBuilder implements IMaterializatio
 		m_conflictResolution = null;
 		m_documentation = null;
 		m_properties.clear();
+	}
+
+	public ConflictResolution getConflictResolution()
+	{
+		return m_conflictResolution;
 	}
 
 	public Documentation getDocumentation()
@@ -61,14 +72,9 @@ public abstract class MaterializationDirectiveBuilder implements IMaterializatio
 		return m_maxParallelJobs;
 	}
 
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		return m_properties;
-	}
-
-	public ConflictResolution getConflictResolution()
-	{
-		return m_conflictResolution;
 	}
 
 	public IPath getWorkspaceLocation()
@@ -86,6 +92,11 @@ public abstract class MaterializationDirectiveBuilder implements IMaterializatio
 		m_maxParallelJobs = md.getMaxParallelJobs();
 		m_conflictResolution = md.getConflictResolution();
 		m_properties.putAll(md.getProperties());
+	}
+
+	public void setConflictResolution(ConflictResolution whenPresent)
+	{
+		m_conflictResolution = whenPresent;
 	}
 
 	public void setDocumentation(Documentation documentation)
@@ -106,11 +117,6 @@ public abstract class MaterializationDirectiveBuilder implements IMaterializatio
 	public void setMaxParallelJobs(int maxParallelJobs)
 	{
 		m_maxParallelJobs = maxParallelJobs;
-	}
-
-	public void setConflictResolution(ConflictResolution whenPresent)
-	{
-		m_conflictResolution = whenPresent;
 	}
 
 	public void setWorkspaceLocation(IPath workspaceLocation)

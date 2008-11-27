@@ -105,7 +105,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	private final String m_remoteName;
 
 	private final String m_repository;
-	
+
 	private final ComponentRequest m_request;
 
 	private final long m_size;
@@ -134,8 +134,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	public Resolution(CSpec cspec, OPML opml, String componentTypeId, VersionMatch versionMatch, Provider provider,
-		boolean materializeable, ComponentRequest request, List<String> attributes, String persistentId,
-		String repository, String remoteName, String contentType, long lastModified, long size, boolean unpack)
+			boolean materializeable, ComponentRequest request, List<String> attributes, String persistentId,
+			String repository, String remoteName, String contentType, long lastModified, long size, boolean unpack)
 	{
 		m_cspec = cspec;
 		m_opml = opml;
@@ -193,11 +193,43 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	@Override
-	public void emitElements(ContentHandler handler, String namespace, String prefix)
-	throws SAXException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
+		if(m_opml != null)
+			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
+
+		String tmp = TextUtils.concat(m_attributes, ",");
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
+		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable
+				? "true"
+				: "false");
+		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_provider.getId().toString());
+		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
+
+		if(m_componentTypeId != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
+		if(m_persistentId != null)
+			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, m_persistentId);
+		if(m_remoteName != null)
+			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
+		if(m_contentType != null)
+			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
+		if(m_lastModified != 0L)
+			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
+		if(m_size != -1L)
+			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
+		if(m_unpack)
+			Utils.addAttribute(attrs, ATTR_UNPACK, "true");
+	}
+
+	@Override
+	public void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
-		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch.getDefaultTag());
+		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch
+				.getDefaultTag());
 	}
 
 	public String getArtifactInfo()
@@ -215,13 +247,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return m_attributes;
 	}
 
-	public VersionSelector getMatchedBranchOrTag()
-	{
-		return m_versionMatch.getBranchOrTag();
-	}
-
 	/**
 	 * Returns the identifier of the contained <code>CSpec</code>.
+	 * 
 	 * @return The component identifier
 	 * @throws CoreException
 	 */
@@ -246,8 +274,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	/**
-	 * Returns the CSpec at the time when this resolution was created. The actual cspec in the
-	 * workspace might have changed since then.
+	 * Returns the CSpec at the time when this resolution was created. The actual cspec in the workspace might have
+	 * changed since then.
+	 * 
 	 * @return The resolved cspec.
 	 */
 	public CSpec getCSpec()
@@ -257,6 +286,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the id of the contained CSpec.
+	 * 
 	 * @return The id of the contained CSpec.
 	 */
 	public UUID getCSpecId()
@@ -269,13 +299,31 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return TAG;
 	}
 
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_METADATA_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_METADATA_PREFIX;
+	}
+
 	public long getLastModified()
 	{
 		return m_lastModified;
 	}
 
+	public VersionSelector getMatchedBranchOrTag()
+	{
+		return m_versionMatch.getBranchOrTag();
+	}
+
 	/**
 	 * Returns the name of the component.
+	 * 
 	 * @return the name.
 	 */
 	public final String getName()
@@ -285,6 +333,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the OPML document
+	 * 
 	 * @return The OPML or <code>null</code> if no OPML was present
 	 */
 	public OPML getOPML()
@@ -294,11 +343,14 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the id of the contained OPML.
+	 * 
 	 * @return The id of the contained OPML or null if no OPML exists.
 	 */
 	public UUID getOPMLId()
 	{
-		return m_opml == null ? null : m_opml.getId();
+		return m_opml == null
+				? null
+				: m_opml.getId();
 	}
 
 	public String getPersistentId()
@@ -308,6 +360,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the provider used when reading the repository.
+	 * 
 	 * @return the repository provider.
 	 */
 	public Provider getProvider()
@@ -317,6 +370,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the id of the contained provider
+	 * 
 	 * @return the id of the contained provider
 	 */
 	public UUID getProviderId()
@@ -326,9 +380,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	public ProviderMatch getProviderMatch(RMContext context) throws CoreException
 	{
-		ProviderMatch pm = new ProviderMatch(
-			m_provider, getComponentType(), getVersionMatch(),
-			context.getNodeQuery(getQualifiedDependency()));
+		ProviderMatch pm = new ProviderMatch(m_provider, getComponentType(), getVersionMatch(), context
+				.getNodeQuery(getQualifiedDependency()));
 		pm.setRepositoryURI(m_repository);
 		return pm;
 	}
@@ -371,6 +424,11 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return m_versionMatch.getRevision();
 	}
 
+	public Date getSelectedTimestamp()
+	{
+		return getVersionMatch().getTimestamp();
+	}
+
 	public long getSize()
 	{
 		return m_size;
@@ -378,6 +436,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the final version that was used when the specification was obtained.
+	 * 
 	 * @return the version used when retrieving the spec.
 	 */
 	public final IVersion getVersion()
@@ -387,6 +446,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Returns the original version designator.
+	 * 
 	 * @return The original (unresolved) version designator
 	 */
 	public final IVersionDesignator getVersionDesignator() throws CoreException
@@ -401,7 +461,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	/**
 	 * Check if the request designates the versioned component that this component info represents.
-	 * @param request the request that might appoint the component
+	 * 
+	 * @param request
+	 *            the request that might appoint the component
 	 * @return <code>true</code> if the versioned component is designated
 	 * @throws CoreException
 	 */
@@ -417,14 +479,17 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			return false;
 
 		IVersionDesignator vd = request.getVersionDesignator();
-		return vd == null ? true : vd.designates(getVersion());
+		return vd == null
+				? true
+				: vd.designates(getVersion());
 	}
 
 	/**
-	 * Returns true if this resolution is a match for the given <code>query</code> with respect
-	 * to provided properties. The method will update the filter attributes map of the query
-	 * context.
-	 * @param The query to match
+	 * Returns true if this resolution is a match for the given <code>query</code> with respect to provided properties.
+	 * The method will update the filter attributes map of the query context.
+	 * 
+	 * @param The
+	 *            query to match
 	 * @return True if this resolution is a match for the given query.
 	 * @see RMContext#getFilterAttributeUsageMap()
 	 */
@@ -434,24 +499,26 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	/**
-	 * Returns true if this resolution is a match for the given <code>query</code> with respect
-	 * to provided properties. The method will update the filter attributes map of the query
-	 * context.
-	 * @param The query to match
-	 * @param A one element array that will receive the failing filter. Can be <code>null</code>.
+	 * Returns true if this resolution is a match for the given <code>query</code> with respect to provided properties.
+	 * The method will update the filter attributes map of the query context.
+	 * 
+	 * @param The
+	 *            query to match
+	 * @param A
+	 *            one element array that will receive the failing filter. Can be <code>null</code>.
 	 * @return True if this resolution is a match for the given query.
 	 * @see RMContext#getFilterAttributeUsageMap()
 	 */
 	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter)
 	{
-		Map<String,String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
+		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
 		Filter resFilter = getProvider().getResolutionFilter();
 		FilterUtils.addConsultedAttributes(resFilter, attributeUsageMap);
 
 		Filter cspecFilter = getCSpec().getFilter();
 		FilterUtils.addConsultedAttributes(cspecFilter, attributeUsageMap);
 
-		Map<String,String> properties = query.getProperties();
+		Map<String, String> properties = query.getProperties();
 		if(!FilterUtils.isMatch(resFilter, properties))
 		{
 			if(failingFilter != null)
@@ -467,12 +534,12 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Returns <code>true</code> if the reader associated with the component will be able to
-	 * materialized the component. Readers that check for the existence of pre-installed components
-	 * (such as Eclipse plugins that are already present in the running eclipse installation) will
-	 * return <code>false</code>.
+	 * Returns <code>true</code> if the reader associated with the component will be able to materialized the component.
+	 * Readers that check for the existence of pre-installed components (such as Eclipse plugins that are already
+	 * present in the running eclipse installation) will return <code>false</code>.
+	 * 
 	 * @return <code>true</code> if the component can be materialized on disk.
 	 */
 	public boolean isMaterializable()
@@ -481,8 +548,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	/**
-	 * Returns <code>true</code> if the component is materialized at the given location according
-	 * to the workspace meta-data.
+	 * Returns <code>true</code> if the component is materialized at the given location according to the workspace
+	 * meta-data.
+	 * 
 	 * @return <code>true</code> if the component is materialized.
 	 */
 	public boolean isMaterialized(IPath location) throws CoreException
@@ -497,12 +565,12 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			return false;
 		}
 	}
-	
+
 	public boolean isPersisted(StorageManager sm) throws CoreException
 	{
 		return sm.getResolutions().contains(this);
 	}
-	
+
 	public boolean isUnpack()
 	{
 		return m_unpack;
@@ -527,14 +595,12 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public void toSax(ContentHandler receiver) throws SAXException
 	{
 		receiver.startDocument();
-		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX,
-			getDefaultTag());
+		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		receiver.endDocument();
 	}
 
 	@Override
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName)
-	throws SAXException
+	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
 	{
 		handler.startPrefixMapping(XMLConstants.BM_METADATA_PREFIX, XMLConstants.BM_METADATA_NS);
 		super.toSax(handler, namespace, prefix, localName);
@@ -550,52 +616,5 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		result.append(", ");
 		m_versionMatch.toString(result);
 		return result.toString();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
-		if(m_opml != null)
-			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
-
-		String tmp = TextUtils.concat(m_attributes, ",");
-		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
-		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable ? "true" : "false");
-		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_provider.getId().toString());
-		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
-
-		if(m_componentTypeId != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
-		if(m_persistentId != null)
-			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, m_persistentId);
-		if(m_remoteName != null)
-			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
-		if(m_contentType != null)
-			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
-		if(m_lastModified != 0L)
-			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
-		if(m_size != -1L)
-			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
-		if(m_unpack)
-			Utils.addAttribute(attrs, ATTR_UNPACK, "true");
-	}
-
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return XMLConstants.BM_METADATA_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return XMLConstants.BM_METADATA_PREFIX;
-	}
-
-	public Date getSelectedTimestamp()
-	{
-		return getVersionMatch().getTimestamp();
 	}
 }

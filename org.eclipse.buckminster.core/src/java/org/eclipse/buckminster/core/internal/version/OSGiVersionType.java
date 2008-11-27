@@ -28,8 +28,8 @@ public class OSGiVersionType extends TripletVersionType
 	// allow a qualifier unless all three numbers precedes it and the only
 	// valid separator between the last digit and the qualifier is the dot.
 	//
-	private static final Pattern s_OSGiVersionPattern = Pattern.compile(
-			"^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.([^\\(\\)\\[\\],]+))?)?)?([\\)\\],]|$)");
+	private static final Pattern s_OSGiVersionPattern = Pattern
+			.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.([^\\(\\)\\[\\],]+))?)?)?([\\)\\],]|$)");
 
 	@Override
 	public IVersion coerce(Object object)
@@ -42,7 +42,8 @@ public class OSGiVersionType extends TripletVersionType
 		if(object instanceof PluginVersionIdentifier)
 		{
 			PluginVersionIdentifier pvi = (PluginVersionIdentifier)object;
-			return new OSGiVersion(this, pvi.getMajorComponent(), pvi.getMinorComponent(), pvi.getServiceComponent(), pvi.getQualifierComponent());
+			return new OSGiVersion(this, pvi.getMajorComponent(), pvi.getMinorComponent(), pvi.getServiceComponent(),
+					pvi.getQualifierComponent());
 		}
 		if(object instanceof VersionedIdentifier)
 			return coerce(((VersionedIdentifier)object).getVersion());

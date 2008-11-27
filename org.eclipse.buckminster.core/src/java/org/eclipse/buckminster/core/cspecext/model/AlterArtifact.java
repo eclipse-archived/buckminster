@@ -27,7 +27,8 @@ public class AlterArtifact extends AlterAttribute<Artifact>
 
 	private final Set<IPath> m_removedPaths;
 
-	public AlterArtifact(Artifact base, Set<String> removedHints, Map<String, String> alteredHints, Set<IPath> removedPaths)
+	public AlterArtifact(Artifact base, Set<String> removedHints, Map<String, String> alteredHints,
+			Set<IPath> removedPaths)
 	{
 		super(base, removedHints, alteredHints);
 		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
@@ -47,7 +48,7 @@ public class AlterArtifact extends AlterAttribute<Artifact>
 
 	protected void alterPaths(ArtifactBuilder original) throws CoreException
 	{
-		alterPaths(original.getCSpecName(), original.getName(),
-				original.getPaths(), this.getBase().getPaths(), m_removedPaths);
+		alterPaths(original.getCSpecName(), original.getName(), original.getPaths(), this.getBase().getPaths(),
+				m_removedPaths);
 	}
 }

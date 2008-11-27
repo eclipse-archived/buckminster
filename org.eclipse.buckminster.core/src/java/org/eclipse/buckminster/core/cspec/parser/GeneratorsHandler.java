@@ -19,7 +19,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -34,17 +33,6 @@ class GeneratorsHandler extends ExtensionAwareHandler implements ChildPoppedList
 		super(parent);
 	}
 
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		ChildHandler ch;
-		if(GeneratorHandler.TAG.equals(localName))
-			ch = m_generatorHandler;
-		else
-			ch = super.createHandler(uri, localName, attrs);
-		return ch;
-	}
-
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_generatorHandler)
@@ -56,6 +44,17 @@ class GeneratorsHandler extends ExtensionAwareHandler implements ChildPoppedList
 			{
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		ChildHandler ch;
+		if(GeneratorHandler.TAG.equals(localName))
+			ch = m_generatorHandler;
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
 	}
 
 	public CSpecBuilder getCSpecBuilder()

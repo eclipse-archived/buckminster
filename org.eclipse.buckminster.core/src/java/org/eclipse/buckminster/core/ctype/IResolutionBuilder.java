@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * An implementation of a IResolutionBuilder Creates a
- * {@link org.eclipse.buckminster.core.metadata.model.BOMNode DepNode} based on the dependency information that it can
- * read using a {@link org.eclipse.buckminster.core.reader.IComponentReader IRemoteReader}. The
- * <code>CSPecPacking</code> is delivered as a sequence of SAX events
+ * An implementation of a IResolutionBuilder Creates a {@link org.eclipse.buckminster.core.metadata.model.BOMNode
+ * DepNode} based on the dependency information that it can read using a
+ * {@link org.eclipse.buckminster.core.reader.IComponentReader IRemoteReader}. The <code>CSPecPacking</code> is
+ * delivered as a sequence of SAX events
  * 
  * @author Thomas Hallgren
  */
@@ -53,23 +53,28 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	 * @return The created node
 	 * @throws CoreException
 	 */
-	BOMNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException;
+	BOMNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
+			throws CoreException;
+
+	/**
+	 * Returns a resolved node.
+	 * 
+	 * @param reader
+	 *            The <code>reader</code> to use when creating the result.
+	 * @param cspecBuilder
+	 *            The <code>CSPEC</code> for the resolution.
+	 * @param opmlBuilder
+	 *            The optional <code>OPML</code> for the resolution. Might be <code>null</code>.
+	 * @return The component information.
+	 * @throws CoreException
+	 */
+	ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+			throws CoreException;
 
 	/**
 	 * Returns the component type of the cspec built by this builder.
 	 */
 	String getComponentTypeID();
-
-	/**
-	 * Returns a resolved node.
-	 * @param reader
-	 *            The <code>reader</code> to use when creating the result.
-	 * @param cspecBuilder The <code>CSPEC</code> for the resolution.
-	 * @param opmlBuilder The optional <code>OPML</code> for the resolution. Might be <code>null</code>.
-	 * @return The component information.
-	 * @throws CoreException
-	 */
-	ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException;
 
 	/**
 	 * Returns the nature for which this builder will create a configuration spec or <code>null</code> if no nature is

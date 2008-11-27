@@ -26,10 +26,15 @@ import org.eclipse.core.runtime.CoreException;
 public class AlterCSpecBuilder
 {
 	private final CSpecBuilder m_baseBuilder;
+
 	private final HashSet<String> m_removedDependencies = new HashSet<String>();
+
 	private final HashSet<String> m_removedAttributes = new HashSet<String>();
+
 	private final Map<String, AlterAttributeBuilder> m_alteredAttributes = new HashMap<String, AlterAttributeBuilder>();
+
 	private final Map<String, AlterDependencyBuilder> m_alteredDependencies = new HashMap<String, AlterDependencyBuilder>();
+
 	private String m_name;
 
 	public AlterCSpecBuilder(CSpecBuilder baseBuilder)
@@ -37,31 +42,12 @@ public class AlterCSpecBuilder
 		m_baseBuilder = baseBuilder;
 	}
 
-	public void clear()
+	public void addAlterAttribute(AlterAttributeBuilder value) throws AttributeAlreadyDefinedException
 	{
-		m_removedAttributes.clear();
-		m_alteredAttributes.clear();
-		m_removedDependencies.clear();
-		m_alteredDependencies.clear();
-		m_baseBuilder.clear();
-		m_name = null;
-	}
-
-	public CSpecExtension createAlteredCSpec() throws CoreException
-	{
-		HashMap<String,AlterAttribute<? extends TopLevelAttribute>> alterAttributes = new HashMap<String, AlterAttribute<? extends TopLevelAttribute>>(m_alteredAttributes.size());
-		for(Map.Entry<String,AlterAttributeBuilder> entry : m_alteredAttributes.entrySet())
-			alterAttributes.put(entry.getKey(), entry.getValue().createAlterAttribute());
-		
-		HashMap<String,AlterDependency> alterDependencies = new HashMap<String, AlterDependency>(m_alteredDependencies.size());
-		for(Map.Entry<String, AlterDependencyBuilder> entry : m_alteredDependencies.entrySet())
-			alterDependencies.put(entry.getKey(), entry.getValue().createAlterDependency());
-		return new CSpecExtension(m_baseBuilder.createCSpec(), m_removedDependencies, alterDependencies, m_removedAttributes, alterAttributes);
-	}
-
-	public void addRemoveDependency(String key)
-	{
-		m_removedDependencies.add(key);
+		String key = value.getName();
+		if(m_alteredAttributes.containsKey(key))
+			throw new AttributeAlreadyDefinedException(m_name, key);
+		m_alteredAttributes.put(key, value);
 	}
 
 	public void addAlterDependency(AlterDependencyBuilder value) throws DependencyAlreadyDefinedException
@@ -77,24 +63,46 @@ public class AlterCSpecBuilder
 		m_removedAttributes.add(key);
 	}
 
-	public void addAlterAttribute(AlterAttributeBuilder value) throws AttributeAlreadyDefinedException
+	public void addRemoveDependency(String key)
 	{
-		String key = value.getName();
-		if(m_alteredAttributes.containsKey(key))
-			throw new AttributeAlreadyDefinedException(m_name, key);
-		m_alteredAttributes.put(key, value);
+		m_removedDependencies.add(key);
+	}
+
+	public void clear()
+	{
+		m_removedAttributes.clear();
+		m_alteredAttributes.clear();
+		m_removedDependencies.clear();
+		m_alteredDependencies.clear();
+		m_baseBuilder.clear();
+		m_name = null;
+	}
+
+	public CSpecExtension createAlteredCSpec() throws CoreException
+	{
+		HashMap<String, AlterAttribute<? extends TopLevelAttribute>> alterAttributes = new HashMap<String, AlterAttribute<? extends TopLevelAttribute>>(
+				m_alteredAttributes.size());
+		for(Map.Entry<String, AlterAttributeBuilder> entry : m_alteredAttributes.entrySet())
+			alterAttributes.put(entry.getKey(), entry.getValue().createAlterAttribute());
+
+		HashMap<String, AlterDependency> alterDependencies = new HashMap<String, AlterDependency>(m_alteredDependencies
+				.size());
+		for(Map.Entry<String, AlterDependencyBuilder> entry : m_alteredDependencies.entrySet())
+			alterDependencies.put(entry.getKey(), entry.getValue().createAlterDependency());
+		return new CSpecExtension(m_baseBuilder.createCSpec(), m_removedDependencies, alterDependencies,
+				m_removedAttributes, alterAttributes);
 	}
 
 	public CSpecBuilder getBaseBuilder()
 	{
 		return m_baseBuilder;
 	}
-	
+
 	public final String getName()
 	{
 		return m_name;
 	}
-	
+
 	public void setName(String name)
 	{
 		m_name = name;

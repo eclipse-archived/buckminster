@@ -24,14 +24,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * This class will generate qualifiers based on component revisions. The revision is obtained using the same {@ IReaderType}
- * that was used when the component was first materialized
- *
+ * This class will generate qualifiers based on component revisions. The revision is obtained using the same @
+ * IReaderType} that was used when the component was first materialized
+ * 
  * @author Thomas Hallgren
  */
 public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static String FORMAT_PROPERTY = "generator.lastRevision.format";
+
 	public static String DEFAULT_FORMAT = "r{0,number,##################}";
 
 	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
@@ -52,7 +53,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 			if(revision == -1)
 				return currentVersion;
 
-			Map<String,String> props = context.getProperties();
+			Map<String, String> props = context.getProperties();
 			String format = props.get(FORMAT_PROPERTY);
 			if(format == null)
 				format = DEFAULT_FORMAT;

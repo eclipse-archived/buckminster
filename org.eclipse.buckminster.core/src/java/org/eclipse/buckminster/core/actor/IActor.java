@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface IActor
 {
+	String getId();
+
+	String getName();
+
 	void init(Action action) throws CoreException;
 
 	boolean isUpToDate(Action action, IModelCache ctx) throws CoreException;
 
 	IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
-
-	String getName();
-
-	String getId();
 }

@@ -27,14 +27,15 @@ import org.eclipse.core.runtime.CoreException;
 public class AlterGroup extends AlterAttribute<Group>
 {
 	public static final String ELEM_ALTER_ATTRIBUTE = "alterAttribute";
+
 	public static final String ELEM_REMOVE = "remove";
 
-	private final Map<String,Prerequisite> m_alteredPrerequisites;
+	private final Map<String, Prerequisite> m_alteredPrerequisites;
+
 	private final Set<String> m_removedPrerequisites;
 
-	public AlterGroup(Group base,
-			Set<String> removedHints, Map<String,String> alteredHints,
-			Set<String> removedPrerequisites, Map<String,Prerequisite> alteredPrerequisites)
+	public AlterGroup(Group base, Set<String> removedHints, Map<String, String> alteredHints,
+			Set<String> removedPrerequisites, Map<String, Prerequisite> alteredPrerequisites)
 	{
 		super(base, removedHints, alteredHints);
 		m_removedPrerequisites = Utils.createUnmodifiableSet(removedPrerequisites);
@@ -49,7 +50,8 @@ public class AlterGroup extends AlterAttribute<Group>
 		alterInstallerHints(gBld);
 		alterPrerequisiteMap(gBld);
 		alterDocumentation(gBld);
-		gBld.setPrerequisiteRebase(CSpecExtension.overrideCheckNull(gBld.getPrerequisiteRebase(), base.getPrerequisiteRebase()));
+		gBld.setPrerequisiteRebase(CSpecExtension.overrideCheckNull(gBld.getPrerequisiteRebase(), base
+				.getPrerequisiteRebase()));
 	}
 
 	protected void alterPrerequisiteMap(GroupBuilder original) throws CoreException
@@ -68,7 +70,7 @@ public class AlterGroup extends AlterAttribute<Group>
 
 			for(String pqName : m_alteredPrerequisites.keySet())
 				if(GroupBuilder.indexOfPrerequisite(pqs, pqName) < 0)
-					throw new MissingPrerequisiteException(compName,attrName, pqName);
+					throw new MissingPrerequisiteException(compName, attrName, pqName);
 
 			for(IPrerequisite pq : addedPqs)
 			{
@@ -76,7 +78,7 @@ public class AlterGroup extends AlterAttribute<Group>
 				if(GroupBuilder.indexOfPrerequisite(pqs, pqName) >= 0)
 					throw new PrerequisiteAlreadyDefinedException(compName, attrName, pqName);
 			}
-			
+
 			for(String pqName : m_removedPrerequisites)
 				pqs.remove(pqName);
 			for(IPrerequisite pq : m_alteredPrerequisites.values())
@@ -89,5 +91,5 @@ public class AlterGroup extends AlterAttribute<Group>
 			}
 		}
 	}
-	
+
 }

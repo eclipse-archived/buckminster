@@ -25,6 +25,7 @@ import org.xml.sax.SAXParseException;
 public class BidirectionalTransformerHandler extends ExtensionAwareHandler
 {
 	static final String TAG = BidirectionalTransformer.TAG;
+
 	private BidirectionalTransformer m_transformer;
 
 	public BidirectionalTransformerHandler(AbstractHandler parent)
@@ -32,27 +33,25 @@ public class BidirectionalTransformerHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
+	public BidirectionalTransformer getTransformer()
+	{
+		return m_transformer;
+	}
+
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		try
 		{
-			m_transformer = new BidirectionalTransformer(
-				getPatternValue(attrs, BidirectionalTransformer.ATTR_TO_PATTERN),
-				getStringValue(attrs, BidirectionalTransformer.ATTR_TO_REPLACEMENT),
-				getPatternValue(attrs, BidirectionalTransformer.ATTR_FROM_PATTERN),
-				getStringValue(attrs, BidirectionalTransformer.ATTR_FROM_REPLACEMENT));
+			m_transformer = new BidirectionalTransformer(getPatternValue(attrs,
+					BidirectionalTransformer.ATTR_TO_PATTERN), getStringValue(attrs,
+					BidirectionalTransformer.ATTR_TO_REPLACEMENT), getPatternValue(attrs,
+					BidirectionalTransformer.ATTR_FROM_PATTERN), getStringValue(attrs,
+					BidirectionalTransformer.ATTR_FROM_REPLACEMENT));
 		}
 		catch(PatternSyntaxException e)
 		{
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
 	}
-
-	public BidirectionalTransformer getTransformer()
-	{
-		return m_transformer;
-	}
 }
-

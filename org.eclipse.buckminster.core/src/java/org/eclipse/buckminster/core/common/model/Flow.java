@@ -17,11 +17,12 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class Flow implements ISaxableElement
 {
 	private final String m_tag;
+
 	private final ISaxableElement[] m_children;
 
 	public Flow(String tag, ISaxableElement[] children)
@@ -45,18 +46,19 @@ public class Flow implements ISaxableElement
 		return m_tag;
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-	throws SAXException
+	String[] getKeyNamePairs()
 	{
-		String qName = (prefix == null) ? localName : Utils.makeQualifiedName(prefix, localName);
+		return Trivial.EMPTY_STRING_ARRAY;
+	}
+
+	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
+	{
+		String qName = (prefix == null)
+				? localName
+				: Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, getAttributes());
 		for(ISaxableElement child : m_children)
 			child.toSax(receiver, XMLConstants.XHTML_NS, null, child.getDefaultTag());
 		receiver.endElement(namespace, localName, qName);
-	}
-
-	String[] getKeyNamePairs()
-	{
-		return Trivial.EMPTY_STRING_ARRAY;
 	}
 }

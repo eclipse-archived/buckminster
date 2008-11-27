@@ -19,7 +19,6 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -34,13 +33,10 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 		super(parent);
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		super.handleAttributes(attrs);
-		ResourceMap rmap = ((ResourceMapHandler)getParentHandler()).getResourceMap();
-		m_searchPath = new SearchPath(rmap, getStringValue(attrs, SearchPath.ATTR_NAME));
-		rmap.addSearchPath(m_searchPath);
+		if(child instanceof ProviderHandler)
+			m_searchPath.addProvider(((ProviderHandler)child).getProvider());
 	}
 
 	@Override
@@ -59,9 +55,12 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 		return m_searchPath;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		if(child instanceof ProviderHandler)
-			m_searchPath.addProvider(((ProviderHandler)child).getProvider());
+		super.handleAttributes(attrs);
+		ResourceMap rmap = ((ResourceMapHandler)getParentHandler()).getResourceMap();
+		m_searchPath = new SearchPath(rmap, getStringValue(attrs, SearchPath.ATTR_NAME));
+		rmap.addSearchPath(m_searchPath);
 	}
 }

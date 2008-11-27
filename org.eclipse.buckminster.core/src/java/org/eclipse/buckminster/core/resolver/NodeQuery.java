@@ -36,9 +36,8 @@ import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * The <code>NodeQuery</code> combines the {@link IComponentQuery} with one
- * specific {@link IComponentRequest} during recursive resolution of a
- * dependency tree.
+ * The <code>NodeQuery</code> combines the {@link IComponentQuery} with one specific {@link IComponentRequest} during
+ * recursive resolution of a dependency tree.
  * 
  * @author Thomas Hallgren
  */
@@ -65,22 +64,27 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	}
 
 	/**
-	 * Merges the version designator and the attributes of the new dependency with the current
-	 * one. The method will return this instance if the merge is a no-op.
-	 * @param newQDep the new qualified depenency
+	 * Merges the version designator and the attributes of the new dependency with the current one. The method will
+	 * return this instance if the merge is a no-op.
+	 * 
+	 * @param newQDep
+	 *            the new qualified depenency
 	 * @return This instance or a new instance if modifications where necessary.
-	 * @throws CoreException if the qualification is in conflict with the previously
-	 * defined dependency with respect to its version designator
+	 * @throws CoreException
+	 *             if the qualification is in conflict with the previously defined dependency with respect to its
+	 *             version designator
 	 */
 	public NodeQuery addDependencyQualification(QualifiedDependency newQDep) throws CoreException
 	{
 		QualifiedDependency qDep = m_qDep.mergeDependency(newQDep);
-		return qDep == m_qDep ? this : m_context.getNodeQuery(qDep);
+		return qDep == m_qDep
+				? this
+				: m_context.getNodeQuery(qDep);
 	}
 
 	/**
-	 * Checks if the advice for this node indicates that a circular dependency
-	 * is allowed.
+	 * Checks if the advice for this node indicates that a circular dependency is allowed.
+	 * 
 	 * @return <code>true</code> only if an advice indicates that a circular dependency is allowed.
 	 */
 	public boolean allowCircularDependency() throws CoreException
@@ -94,7 +98,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			return 0;
 
 		int cmp = 0;
-		
+
 		// Compare the revision. If it is present, all revisions higher
 		// than it are invalid
 		//
@@ -110,7 +114,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			{
 				if(vm2Rev == -1 || revision < vm2Rev)
 					cmp = 1; // vm1 is greater since vm2 is invalid
-				
+
 				// Both revisions are valid so the revision doesn't
 				// rule anything out. We compare the revisions further
 				// down.
@@ -172,7 +176,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 				cmp = compareSelectors(vm1, vm2);
 				break;
 			default:
-				cmp = compareVersions(vm1, vm2);			
+				cmp = compareVersions(vm1, vm2);
 			}
 			if(cmp != 0)
 				return cmp;
@@ -182,11 +186,44 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			//
 			// Not same revision. The higher revision wins
 			//
-			return vm1Rev < vm2Rev ? -1 : 1;
+			return vm1Rev < vm2Rev
+					? -1
+					: 1;
 
 		if(vm1Ts != null && vm2Ts != null)
 			cmp = vm1Ts.compareTo(vm2Ts);
 
+		return cmp;
+	}
+
+	private int compareSelectors(VersionMatch vm1, VersionMatch vm2)
+	{
+		int cmp = 0;
+		VersionSelector[] branchTagPath = getBranchTagPath();
+		if(branchTagPath.length > 0)
+		{
+			// The match with the lower index is considered greater. A match
+			// with no index (-1) will always loose
+			//
+			int v1idx = VersionSelector.indexOf(branchTagPath, vm1.getBranchOrTag());
+			int v2idx = VersionSelector.indexOf(branchTagPath, vm2.getBranchOrTag());
+			if(v1idx >= 0)
+			{
+				if(v2idx >= 0)
+					cmp = (v1idx < v2idx)
+							? 1
+							: ((v1idx == v2idx)
+									? 0
+									: -1);
+				else
+					cmp = 1;
+			}
+			else
+			{
+				if(v2idx >= 0)
+					cmp = -1;
+			}
+		}
 		return cmp;
 	}
 
@@ -233,39 +270,14 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return cmp;
 	}
 
-	private int compareSelectors(VersionMatch vm1, VersionMatch vm2)
-	{
-		int cmp = 0;
-		VersionSelector[] branchTagPath = getBranchTagPath();
-		if(branchTagPath.length > 0)
-		{
-			// The match with the lower index is considered greater. A match
-			// with no index (-1) will always loose
-			//
-			int v1idx = VersionSelector.indexOf(branchTagPath, vm1.getBranchOrTag());
-			int v2idx = VersionSelector.indexOf(branchTagPath, vm2.getBranchOrTag());
-			if(v1idx >= 0)
-			{
-				if(v2idx >= 0)
-					cmp = (v1idx < v2idx) ? 1 : ((v1idx == v2idx) ? 0 : -1);
-				else
-					cmp = 1;
-			}
-			else
-			{
-				if(v2idx >= 0)
-					cmp = -1;
-			}
-		}
-		return cmp;
-	}
-
 	/**
 	 * Returns the attributes designated by this query.
-	 * @param cspec The cspec containing the needed attributes.
+	 * 
+	 * @param cspec
+	 *            The cspec containing the needed attributes.
 	 * @return An array of attributes, possibly empty but never <code>null</code>.
-	 * @throws CoreException when this query declares an attribute
-	 * that cannot be found in <code>cspec</code>.
+	 * @throws CoreException
+	 *             when this query declares an attribute that cannot be found in <code>cspec</code>.
 	 */
 	public IAttribute[] getAttributes(CSpec cspec) throws CoreException
 	{
@@ -336,18 +348,15 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	}
 
 	/**
-	 * When the resolver finds a provider, that provider will state that it can
-	 * produce mutable or immutable artifacts and that those artifacts are in
-	 * source or binary form. The resolver will use this method to find out how
-	 * good the provider is based on those facts.
+	 * When the resolver finds a provider, that provider will state that it can produce mutable or immutable artifacts
+	 * and that those artifacts are in source or binary form. The resolver will use this method to find out how good the
+	 * provider is based on those facts.
 	 * 
 	 * @param mutable
-	 *            <code>true</code> if the provider will provide a mutable
-	 *            artifact.
+	 *            <code>true</code> if the provider will provide a mutable artifact.
 	 * @param source
 	 *            <code>true</code> if the provider will provide source.
-	 * @return A score that the resolver will use when it compares the provider
-	 *         to other providers.
+	 * @return A score that the resolver will use when it compares the provider to other providers.
 	 */
 	public ProviderScore getProviderScore(boolean mutable, boolean source)
 	{
@@ -356,6 +365,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 
 	/**
 	 * Returns the qualified dependency (i.e. the request plus required attributes).
+	 * 
 	 * @return The qualified dependency.
 	 */
 	public QualifiedDependency getQualifiedDependency()
@@ -365,6 +375,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 
 	/**
 	 * Checks if there is a matching advice that declares specific actions
+	 * 
 	 * @return The names of the adviced actions or an empty array.
 	 */
 	public List<String> getRequiredAttributes()
@@ -375,7 +386,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public ResolutionContext getResolutionContext()
 	{
 		if(m_context instanceof ResolutionContext)
-			return (ResolutionContext)m_context;		
+			return (ResolutionContext)m_context;
 		throw new IllegalStateException("ResolutionContext requested during Materialization");
 	}
 
@@ -405,8 +416,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	}
 
 	/**
-	 * Returns the, possibly overriden, version designator of the component
-	 * request.
+	 * Returns the, possibly overriden, version designator of the component request.
 	 * 
 	 * @return A version selector or <code>null</code>.
 	 */
@@ -418,7 +428,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			vds = request.getVersionDesignator();
 		if(vds == null)
 			return vds;
-		
+
 		IComponentType ctype = getComponentType();
 		if(ctype == null && IVersionType.TRIPLET.equals(vds.getVersion().getType().getId()))
 		{
@@ -431,32 +441,23 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 				return vds;
 			}
 		}
-		return ctype == null ? vds : ctype.getTypeSpecificDesignator(vds);
+		return ctype == null
+				? vds
+				: ctype.getTypeSpecificDesignator(vds);
 	}
 
 	/**
-	 * Returns true if the given <code>versionMatch</code> will match this query with respect to
-	 * the current version designator, branchTag path, and space path.
-	 *
-	 * @param versionMatch The version match to match
-	 * @param spacePathResolver the space path resolver to use when expanding the space path.
-	 * @return true if the given values matches this query
-	 */
-	public boolean isMatch(VersionMatch versionMatch)
-	{
-		if(versionMatch == null)
-			versionMatch = VersionMatch.DEFAULT;
-		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag());
-	}
-
-	/**
-	 * Returns true if the given version will match this query with respect to
-	 * the current version designator, branchTag path, and space path.
-	 *
-	 * @param version The version to match or <code>null</code> if not applicable
-	 * @param branchOrTag The branch or tag to match or <code>null</code> if not applicable
-	 * @param space The space to match or <code>null</code> if not applicable
-	 * @param spacePathResolver the space path resolver to use when expanding the space path.
+	 * Returns true if the given version will match this query with respect to the current version designator, branchTag
+	 * path, and space path.
+	 * 
+	 * @param version
+	 *            The version to match or <code>null</code> if not applicable
+	 * @param branchOrTag
+	 *            The branch or tag to match or <code>null</code> if not applicable
+	 * @param space
+	 *            The space to match or <code>null</code> if not applicable
+	 * @param spacePathResolver
+	 *            the space path resolver to use when expanding the space path.
 	 * @return true if the given values matches this query
 	 */
 	public boolean isMatch(IVersion version, VersionSelector branchOrTag)
@@ -470,8 +471,9 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			if(VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
 			{
 				logDecision(branchOrTag == null || branchOrTag.getType() == VersionSelector.BRANCH
-					? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED,
-							branchOrTag, String.format("not in path '%s'", VersionSelector.toString(branchTagPath)));
+						? ResolverDecisionType.BRANCH_REJECTED
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, String.format("not in path '%s'",
+						VersionSelector.toString(branchTagPath)));
 				return false;
 			}
 		}
@@ -479,29 +481,39 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		IVersionDesignator designator = getVersionDesignator();
 		if(designator != null && !designator.designates(version))
 		{
-			logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("Not designated by %s", designator));
+			logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("Not designated by %s",
+					designator));
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * Checks if there is an advice to prune the external dependencies from the
-	 * requested component. Pruning means that all dependencies that has no
-	 * declared purposes will be omitted. The default is to not prune the
-	 * dependencies.
+	 * Returns true if the given <code>versionMatch</code> will match this query with respect to the current version
+	 * designator, branchTag path, and space path.
 	 * 
-	 * @return <code>true</code> if the external dependencies of the requested
-	 *         component should be pruned.
+	 * @param versionMatch
+	 *            The version match to match
+	 * @param spacePathResolver
+	 *            the space path resolver to use when expanding the space path.
+	 * @return true if the given values matches this query
+	 */
+	public boolean isMatch(VersionMatch versionMatch)
+	{
+		if(versionMatch == null)
+			versionMatch = VersionMatch.DEFAULT;
+		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag());
+	}
+
+	/**
+	 * Checks if there is an advice to prune the external dependencies from the requested component. Pruning means that
+	 * all dependencies that has no declared purposes will be omitted. The default is to not prune the dependencies.
+	 * 
+	 * @return <code>true</code> if the external dependencies of the requested component should be pruned.
 	 */
 	public boolean isPrune()
 	{
 		return getComponentQuery().isPrune(getComponentRequest());
-	}
-
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
-		return getResolutionContext().logDecision(getComponentRequest(), decisionType, args);
 	}
 
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
@@ -509,9 +521,14 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return getResolutionContext().logDecision(request, decisionType, args);
 	}
 
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return getResolutionContext().logDecision(getComponentRequest(), decisionType, args);
+	}
+
 	/**
-	 * Checks if there is an advice to skip the requested component and not
-	 * include it in the resolvment. The default is to include the component.
+	 * Checks if there is an advice to skip the requested component and not include it in the resolvment. The default is
+	 * to include the component.
 	 * 
 	 * @return <code>true</code> if the requested component should be skipped.
 	 */
@@ -521,34 +538,8 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	}
 
 	/**
-	 * When the resolver finds a project that represents the component it tries
-	 * to resolve, it will ask if it can be used to fulfill the request.
-	 * 
-	 * @param props
-	 *            The properties that contains the component request.
-	 * @return <code>true</code> if an existing project can be used.
-	 */
-	public boolean useWorkspace()
-	{
-		return getComponentQuery().useWorkspace(getComponentRequest());
-	}
-
-	/**
-	 * When the resolver finds an installed feature, plugin, or fragment that
-	 * represents the component it tries to resolve, it will ask if it can be
-	 * used to fulfill the request.
-	 * 
-	 * @return <code>true</code> if installed feature or plugin can be used.
-	 */
-	public boolean useTargetPlatform()
-	{
-		return getComponentQuery().useTargetPlatform(getComponentRequest());
-	}
-
-	/**
-	 * When the resolver finds a materialized component that is not bound to the
-	 * workspace it will call this method to decide wether to use that
-	 * materialization or if it should be overwritten.
+	 * When the resolver finds a materialized component that is not bound to the workspace it will call this method to
+	 * decide wether to use that materialization or if it should be overwritten.
 	 * 
 	 * @return <code>true</code> if an existing materialization can be used.
 	 */
@@ -565,5 +556,29 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public boolean useResolutionService()
 	{
 		return getComponentQuery().useResolutionService(getComponentRequest());
+	}
+
+	/**
+	 * When the resolver finds an installed feature, plugin, or fragment that represents the component it tries to
+	 * resolve, it will ask if it can be used to fulfill the request.
+	 * 
+	 * @return <code>true</code> if installed feature or plugin can be used.
+	 */
+	public boolean useTargetPlatform()
+	{
+		return getComponentQuery().useTargetPlatform(getComponentRequest());
+	}
+
+	/**
+	 * When the resolver finds a project that represents the component it tries to resolve, it will ask if it can be
+	 * used to fulfill the request.
+	 * 
+	 * @param props
+	 *            The properties that contains the component request.
+	 * @return <code>true</code> if an existing project can be used.
+	 */
+	public boolean useWorkspace()
+	{
+		return getComponentQuery().useWorkspace(getComponentRequest());
 	}
 }

@@ -13,9 +13,8 @@ package org.eclipse.buckminster.core.common.model;
 import java.util.Map;
 
 /**
- * The ToLower class will translate all upper case letters in its source
- * to lower case.
- *
+ * The ToLower class will translate all upper case letters in its source to lower case.
+ * 
  * @author Thomas Hallgren
  */
 public class ToLower extends ValueHolderFilter
@@ -26,7 +25,9 @@ public class ToLower extends ValueHolderFilter
 	public String checkedGetValue(Map<String, String> props, int recursionGuard)
 	{
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
-		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toLowerCase();
+		return (resolved == null || NO_VALUE.equals(resolved))
+				? NO_VALUE
+				: resolved.toLowerCase();
 	}
 
 	public String getDefaultTag()
@@ -34,4 +35,3 @@ public class ToLower extends ValueHolderFilter
 		return TAG;
 	}
 }
-

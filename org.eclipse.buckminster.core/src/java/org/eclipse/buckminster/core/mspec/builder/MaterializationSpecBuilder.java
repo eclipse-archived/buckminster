@@ -24,15 +24,26 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder implements IMaterializationSpec
 {
 	private final List<MaterializationNodeBuilder> m_nodes = new ArrayList<MaterializationNodeBuilder>();
+
 	private String m_shortDesc;
+
 	private String m_name;
+
 	private String m_url;
+
 	private URL m_contextURL;
+
+	public MaterializationNodeBuilder addNodeBuilder()
+	{
+		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
+		m_nodes.add(node);
+		return node;
+	}
 
 	@Override
 	public void clear()
@@ -43,13 +54,6 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		m_url = null;
 		m_contextURL = null;
 		m_nodes.clear();
-	}
-
-	public MaterializationNodeBuilder addNodeBuilder()
-	{
-		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
-		m_nodes.add(node);
-		return node;
 	}
 
 	public MaterializationSpec createMaterializationSpec()
@@ -98,14 +102,19 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return m_name;
 	}
 
+	public List<MaterializationNodeBuilder> getNodeBuilders()
+	{
+		return m_nodes;
+	}
+
 	public List<? extends IMaterializationNode> getNodes()
 	{
 		return getNodeBuilders();
 	}
 
-	public List<MaterializationNodeBuilder> getNodeBuilders()
+	public URL getResolvedURL()
 	{
-		return m_nodes;
+		return URLUtils.resolveURL(m_contextURL, m_url);
 	}
 
 	public String getShortDesc()
@@ -157,10 +166,5 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 	{
 		MaterializationSpec mspec = new MaterializationSpec(this);
 		mspec.toSax(receiver);
-	}
-
-	public URL getResolvedURL()
-	{
-		return URLUtils.resolveURL(m_contextURL, m_url);
 	}
 }

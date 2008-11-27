@@ -19,16 +19,16 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 {
 	private String m_actionName;
 
+	ActionArtifactBuilder(CSpecBuilder cspecBuilder)
+	{
+		super(cspecBuilder);
+	}
+
 	@Override
 	public void clear()
 	{
 		super.clear();
 		m_actionName = null;
-	}
-
-	ActionArtifactBuilder(CSpecBuilder cspecBuilder)
-	{
-		super(cspecBuilder);
 	}
 
 	@Override
@@ -37,15 +37,17 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 		return new ActionArtifact(this);
 	}
 
-	@Override
-	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
-	{
-		return specBuilder == getCSpecBuilder() ? this : new ActionArtifactBuilder(specBuilder);
-	}
-
 	public String getActionName()
 	{
 		return m_actionName;
+	}
+
+	@Override
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
+	{
+		return specBuilder == getCSpecBuilder()
+				? this
+				: new ActionArtifactBuilder(specBuilder);
 	}
 
 	@Override

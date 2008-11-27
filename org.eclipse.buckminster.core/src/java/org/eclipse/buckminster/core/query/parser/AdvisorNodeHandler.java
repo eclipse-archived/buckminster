@@ -75,6 +75,11 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		return ch;
 	}
 
+	AdvisorNodeBuilder getAdvisorNodeBuilder()
+	{
+		return m_builder;
+	}
+
 	@Override
 	public Map<String, String> getProperties()
 	{
@@ -226,10 +231,5 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 			logAttributeDeprecation(TAG, "spacePath", "property buckminster.spacePath=");
 			getProperties().put("buckminster.spacepath", spacePath);
 		}
-	}
-
-	AdvisorNodeBuilder getAdvisorNodeBuilder()
-	{
-		return m_builder;
 	}
 }

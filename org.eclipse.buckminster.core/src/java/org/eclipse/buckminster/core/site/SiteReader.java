@@ -35,28 +35,43 @@ import org.eclipse.update.internal.core.SiteFileContentProvider;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
- * A IStreamConsumer responsible for reading and parsing a
- * <code>site.xml</code> type files.
- *
+ * A IStreamConsumer responsible for reading and parsing a <code>site.xml</code> type files.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class SiteReader implements IStreamConsumer<SaxableSite>
 {
-	public static SaxableSite getSite(URL siteURL, IConnectContext cctx) throws CoreException, IOException
+	static class ExtendedDefaultSiteParser extends DefaultSiteParser
 	{
-		InputStream input = null;
-		try
+		private boolean m_atTop = true;
+
+		private String m_mirrorsURL;
+
+		private String m_associateSitesURL;
+
+		String getAssociateSitesURL()
 		{
-			input = DownloadManager.read(siteURL, cctx);
-			SaxableSite site = parseSite(input, siteURL);
-			return site;
+			return m_associateSitesURL;
 		}
-		finally
+
+		String getMirrorsURL()
 		{
-			IOUtils.close(input);
+			return m_mirrorsURL;
+		}
+
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+		{
+			super.startElement(uri, localName, qName, attributes);
+			if(m_atTop)
+			{
+				m_mirrorsURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_MIRRORS_URL));
+				m_associateSitesURL = TextUtils.notEmptyTrimmedString(attributes
+						.getValue(SaxableSite.ATTR_ASSOCIATE_SITES_URL));
+				m_atTop = false;
+			}
 		}
 	}
 
@@ -75,54 +90,18 @@ public class SiteReader implements IStreamConsumer<SaxableSite>
 		}
 	}
 
-	public SaxableSite consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws CoreException
+	public static SaxableSite getSite(URL siteURL, IConnectContext cctx) throws CoreException, IOException
 	{
-		monitor = MonitorUtils.ensureNotNull(monitor);
-		monitor.beginTask(null, 1);
+		InputStream input = null;
 		try
 		{
-			monitor.subTask("Loading site definition");
-			SaxableSite site = parseSite(stream, URLUtils.normalizeToURL(streamName));
-			MonitorUtils.worked(monitor, 1);
+			input = DownloadManager.read(siteURL, cctx);
+			SaxableSite site = parseSite(input, siteURL);
 			return site;
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{
-			monitor.done();
-		}
-	}
-
-	static class ExtendedDefaultSiteParser extends DefaultSiteParser
-	{
-		private boolean m_atTop = true;
-		private String m_mirrorsURL;
-		private String m_associateSitesURL;
-
-		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-		{
-			super.startElement(uri, localName, qName, attributes);
-			if(m_atTop)
-			{
-				m_mirrorsURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_MIRRORS_URL));
-				m_associateSitesURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_ASSOCIATE_SITES_URL));
-				m_atTop = false;
-			}
-		}
-
-		String getAssociateSitesURL()
-		{
-			return m_associateSitesURL;
-		}
-
-		String getMirrorsURL()
-		{
-			return m_mirrorsURL;
+			IOUtils.close(input);
 		}
 	}
 
@@ -148,5 +127,26 @@ public class SiteReader implements IStreamConsumer<SaxableSite>
 			throw BuckminsterException.wrap(e);
 		}
 	}
-}
 
+	public SaxableSite consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws CoreException
+	{
+		monitor = MonitorUtils.ensureNotNull(monitor);
+		monitor.beginTask(null, 1);
+		try
+		{
+			monitor.subTask("Loading site definition");
+			SaxableSite site = parseSite(stream, URLUtils.normalizeToURL(streamName));
+			MonitorUtils.worked(monitor, 1);
+			return site;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+}

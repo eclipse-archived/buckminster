@@ -29,7 +29,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -42,7 +41,7 @@ public class SearchPath extends AbstractSaxableElement
 	private final String m_name;
 
 	private final ArrayList<Provider> m_providers = new ArrayList<Provider>();
-	
+
 	private final ResourceMap m_resourceMap;
 
 	public SearchPath(ResourceMap rmap, String name)
@@ -51,9 +50,28 @@ public class SearchPath extends AbstractSaxableElement
 		m_name = name;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_NAME, m_name);
+	}
+
+	public void addPrefixMappings(HashMap<String, String> prefixMappings)
+	{
+		for(Provider provider : m_providers)
+			provider.addPrefixMappings(prefixMappings);
+	}
+
 	public final void addProvider(Provider provider)
 	{
 		m_providers.add(provider);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		for(Provider provider : m_providers)
+			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
 	}
 
 	public String getDefaultTag()
@@ -70,20 +88,11 @@ public class SearchPath extends AbstractSaxableElement
 	}
 
 	/**
-	 * Returns the resource map in which this search path is defined
-	 * @return the resource map
+	 * Find a provider that meets the requirements as closely as possible. All requirements has to be met but too much
+	 * capabilities is considered a minus.
 	 */
-	public ResourceMap getResourceMap()
-	{
-		return m_resourceMap;
-	}
-
-	/**
-	 * Find a provider that meets the requirements as closely as possible. All
-	 * requirements has to be met but too much capabilities is considered a
-	 * minus.
-	 */
-	public ProviderMatch getProvider(NodeQuery query, List<Provider> noGoodList, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException
+	public ProviderMatch getProvider(NodeQuery query, List<Provider> noGoodList, MultiStatus problemCollector,
+			IProgressMonitor monitor) throws CoreException
 	{
 		int provCnt = m_providers.size();
 		if(provCnt == 0)
@@ -101,7 +110,8 @@ public class SearchPath extends AbstractSaxableElement
 					continue;
 
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, provider.getReaderTypeId(), provider.getURI());
-				ProviderMatch match = provider.findMatch(query, problemCollector, MonitorUtils.subMonitor(monitor, 1000));
+				ProviderMatch match = provider.findMatch(query, problemCollector, MonitorUtils
+						.subMonitor(monitor, 1000));
 				if(match == null)
 				{
 					noGoodList.add(provider);
@@ -112,7 +122,8 @@ public class SearchPath extends AbstractSaxableElement
 				ProviderScore score = match.getProviderScore();
 
 				if((score.ordinal() >= ProviderScore.FAIR.ordinal() && IReaderType.LOCAL.equals(readerType))
-				|| (score.ordinal() >= ProviderScore.GOOD.ordinal() && desiredVersion != null && desiredVersion.isIdeal(match.getVersionMatch().getVersion())))
+						|| (score.ordinal() >= ProviderScore.GOOD.ordinal() && desiredVersion != null && desiredVersion
+								.isIdeal(match.getVersionMatch().getVersion())))
 				{
 					// No use continuing the search. It won't get better
 					// than this.
@@ -126,18 +137,18 @@ public class SearchPath extends AbstractSaxableElement
 					if(bestMatch != null)
 					{
 						Provider rejected = bestMatch.getOriginalProvider();
-						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
-							rejected.getReaderTypeId(), rejected.getURI(),
-							String.format("%s(%s) is producing a better match", provider.getReaderTypeId(), provider.getURI()));
+						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), rejected
+								.getURI(), String.format("%s(%s) is producing a better match", provider
+								.getReaderTypeId(), provider.getURI()));
 					}
 					bestMatch = match;
 					continue;
 				}
 
 				Provider best = bestMatch.getOriginalProvider();
-				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
-						provider.getReaderTypeId(), provider.getURI(),
-						String.format("%s(%s) is producing a better match", best.getReaderTypeId(), best.getURI()));
+				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), provider
+						.getURI(), String.format("%s(%s) is producing a better match", best.getReaderTypeId(), best
+						.getURI()));
 			}
 			if(bestMatch == null)
 			{
@@ -160,22 +171,13 @@ public class SearchPath extends AbstractSaxableElement
 		return m_providers;
 	}
 
-	public void addPrefixMappings(HashMap<String, String> prefixMappings)
+	/**
+	 * Returns the resource map in which this search path is defined
+	 * 
+	 * @return the resource map
+	 */
+	public ResourceMap getResourceMap()
 	{
-		for(Provider provider : m_providers)
-			provider.addPrefixMappings(prefixMappings);
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(Provider provider : m_providers)
-			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
+		return m_resourceMap;
 	}
 }

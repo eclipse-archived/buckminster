@@ -28,30 +28,36 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 {
 	@SuppressWarnings("hiding")
 	public static final int SEQUENCE_NUMBER = 1;
+
 	@SuppressWarnings("hiding")
 	public static final String TAG = "workspaceBinding";
 
 	public static final String ATTR_WS_RELATIVE_PATH = "workspaceRelativePath";
+
 	public static final String ATTR_WS_LOCATION = "workspaceLocation";
+
 	public static final String ATTR_TIMESTAMP = "timestamp";
+
 	public static final String ATTR_RESOLUTION_ID = "resolutionId";
 
 	private final long m_timestamp;
+
 	private final IPath m_workspaceRoot;
+
 	private final IPath m_workspaceRelativePath;
-	private final Map<String,String> m_properties;
+
+	private final Map<String, String> m_properties;
+
 	private final UUID m_resolutionId;
 
 	private static long s_lastTS = System.currentTimeMillis();
 
 	/**
-	 * Returns the next timestamp. This is typically the value of
-	 * {@link System#currentTimeMillis()} but if several calls arrive
-	 * on the same millisecond, this method will increase the timestamp
-	 * to a later time in order to ensure that each call returns a unique
-	 * timestamp.
-	 * @return A timestamp that is guaranteed to be unique for each call
-	 * and equal or very close to the current time.
+	 * Returns the next timestamp. This is typically the value of {@link System#currentTimeMillis()} but if several
+	 * calls arrive on the same millisecond, this method will increase the timestamp to a later time in order to ensure
+	 * that each call returns a unique timestamp.
+	 * 
+	 * @return A timestamp that is guaranteed to be unique for each call and equal or very close to the current time.
 	 */
 	public static long getNextTimestamp()
 	{
@@ -63,12 +69,8 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		return now;
 	}
 
-	public WorkspaceBinding(IPath componentLocation, Resolution res, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties)
-	{
-		this(componentLocation, res.getComponentIdentifier(), res.getId(), workspaceRoot, workspaceRelativePath, properties, getNextTimestamp());
-	}
-
-	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, UUID resId, IPath workspaceRoot, IPath workspaceRelativePath, Map<String,String> properties, long timestamp)
+	public WorkspaceBinding(IPath componentLocation, ComponentIdentifier cid, UUID resId, IPath workspaceRoot,
+			IPath workspaceRelativePath, Map<String, String> properties, long timestamp)
 	{
 		super(componentLocation, cid);
 		m_resolutionId = resId;
@@ -78,9 +80,37 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		m_properties = ExpandingProperties.createUnmodifiableProperties(properties);
 	}
 
+	public WorkspaceBinding(IPath componentLocation, Resolution res, IPath workspaceRoot, IPath workspaceRelativePath,
+			Map<String, String> properties)
+	{
+		this(componentLocation, res.getComponentIdentifier(), res.getId(), workspaceRoot, workspaceRelativePath,
+				properties, getNextTimestamp());
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
+		Utils.addAttribute(attrs, ATTR_WS_LOCATION, m_workspaceRoot.toPortableString());
+		Utils.addAttribute(attrs, ATTR_TIMESTAMP, Long.toString(m_timestamp));
+		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
+	}
+
 	public int compareTo(WorkspaceBinding o)
 	{
-		return m_timestamp < o.m_timestamp ? -1 : (m_timestamp == o.m_timestamp ? 0 : 1);
+		return m_timestamp < o.m_timestamp
+				? -1
+				: (m_timestamp == o.m_timestamp
+						? 0
+						: 1);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(receiver, namespace, prefix);
+		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
 	}
 
 	@Override
@@ -89,19 +119,19 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		return TAG;
 	}
 
-	public Resolution getResolution(StorageManager sm) throws CoreException
-	{
-		return sm.getResolutions().getElement(m_resolutionId);
-	}
-
 	public Materialization getMaterialization()
 	{
 		return new Materialization(getComponentLocation(), getComponentIdentifier());
 	}
 
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		return m_properties;
+	}
+
+	public Resolution getResolution(StorageManager sm) throws CoreException
+	{
+		return sm.getResolutions().getElement(m_resolutionId);
 	}
 
 	public IPath getWorkspaceRelativePath()
@@ -131,22 +161,4 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	{
 		sm.getWorkspaceBindings().putElement(this);
 	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
-		Utils.addAttribute(attrs, ATTR_WS_LOCATION, m_workspaceRoot.toPortableString());
-		Utils.addAttribute(attrs, ATTR_TIMESTAMP, Long.toString(m_timestamp));
-		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(receiver, namespace, prefix);
-		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
-	}
 }
-

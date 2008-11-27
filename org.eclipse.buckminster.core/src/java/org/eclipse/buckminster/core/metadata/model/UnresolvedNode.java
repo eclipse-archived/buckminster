@@ -41,9 +41,49 @@ public class UnresolvedNode extends BOMNode
 	}
 
 	@Override
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
+	{
+		try
+		{
+			ComponentRequest request = getRequest();
+			if(!(query.skipComponent(request) || mspec.isExcluded(request)))
+				throw new UnresolvedNodeException(request);
+		}
+		catch(CoreException e)
+		{
+			if(!context.isContinueOnError())
+				throw e;
+			context.addRequestStatus(getRequest(), e.getStatus());
+		}
+	}
+
+	@Override
 	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
 	{
 		unresolved.add(m_dependency.getRequest());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		ComponentRequest request = m_dependency.getRequest();
+		request.toSax(receiver, namespace, prefix, request.getDefaultTag());
+		Set<String> names = m_dependency.getAttributeNames();
+		int top = names.size();
+		if(top > 0)
+		{
+			String[] attrNames = names.toArray(new String[top]);
+			Arrays.sort(attrNames);
+			String qName = Utils.makeQualifiedName(prefix, ELEM_ATTRIBUTE);
+			for(int idx = 0; idx < top; ++idx)
+			{
+				AttributesImpl attrs = new AttributesImpl();
+				Utils.addAttribute(attrs, NamedElement.ATTR_NAME, attrNames[idx]);
+				receiver.startElement(namespace, ELEM_ATTRIBUTE, qName, attrs);
+				receiver.endElement(namespace, ELEM_ATTRIBUTE, qName);
+			}
+		}
 	}
 
 	public String getDefaultTag()
@@ -67,46 +107,5 @@ public class UnresolvedNode extends BOMNode
 	public String getViewName() throws CoreException
 	{
 		return getRequest().getViewName() + ":unresolved";
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix)
-	throws SAXException
-	{
-		ComponentRequest request = m_dependency.getRequest();
-		request.toSax(receiver, namespace, prefix, request.getDefaultTag());
-		Set<String> names = m_dependency.getAttributeNames();
-		int top = names.size();
-		if(top > 0)
-		{
-			String[] attrNames = names.toArray(new String[top]);
-			Arrays.sort(attrNames);
-			String qName = Utils.makeQualifiedName(prefix, ELEM_ATTRIBUTE);
-			for(int idx = 0; idx < top; ++idx)
-			{
-				AttributesImpl attrs = new AttributesImpl();
-				Utils.addAttribute(attrs, NamedElement.ATTR_NAME, attrNames[idx]);
-				receiver.startElement(namespace, ELEM_ATTRIBUTE, qName, attrs);
-				receiver.endElement(namespace, ELEM_ATTRIBUTE, qName);
-			}
-		}
-	}
-
-	@Override
-	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
-	throws CoreException
-	{
-		try
-		{
-			ComponentRequest request = getRequest();
-			if(!(query.skipComponent(request) || mspec.isExcluded(request)))
-				throw new UnresolvedNodeException(request);
-		}
-		catch(CoreException e)
-		{
-			if(!context.isContinueOnError())
-				throw e;
-			context.addRequestStatus(getRequest(), e.getStatus());
-		}
 	}
 }

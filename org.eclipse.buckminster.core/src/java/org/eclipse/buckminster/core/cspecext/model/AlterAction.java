@@ -28,10 +28,15 @@ import org.eclipse.core.runtime.IPath;
 public class AlterAction extends AlterAttribute<Action>
 {
 	public static final String ELEM_ALTER_PREREQUISITES = "alterPrerequisites";
+
 	public static final String ELEM_ALTER_ACTOR_PROPERTIES = "alterActorProperties";
+
 	public static final String ELEM_ALTER_PROPERTIES = "alterProperties";
+
 	public static final String ELEM_ALTER_PRODUCTS = "alterProducts";
+
 	public static final String ELEM_REMOVE_PRODUCT_PATH = "removeProductPath";
+
 	public static final String ELEM_REMOVE_ATTRIBUTE = "removeAttribute";
 
 	private final Map<String, String> m_alteredActorProperties;
@@ -44,11 +49,12 @@ public class AlterAction extends AlterAttribute<Action>
 
 	private final Set<IPath> m_removedPaths;
 
-	private final Map<String,Prerequisite> m_alteredPrerequisites;
+	private final Map<String, Prerequisite> m_alteredPrerequisites;
+
 	private final Set<String> m_removedPrerequisites;
 
 	public AlterAction(Action base, Set<String> removedHints, Map<String, String> alteredHints,
-			Set<String> removedPrerequisites, Map<String,Prerequisite> alteredPrerequisites, 
+			Set<String> removedPrerequisites, Map<String, Prerequisite> alteredPrerequisites,
 			Set<String> removedActorProperties, Map<String, String> alteredActorProperties,
 			Set<String> removedProperties, Map<String, String> alteredProperties, Set<IPath> removedPaths)
 	{
@@ -62,6 +68,13 @@ public class AlterAction extends AlterAttribute<Action>
 		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
+	protected void alterActorProperties(ActionBuilder original) throws CoreException
+	{
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original
+				.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
+				m_removedActorProperties);
+	}
+
 	@Override
 	public void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException
 	{
@@ -69,9 +82,8 @@ public class AlterAction extends AlterAttribute<Action>
 		IAction base = getBase();
 
 		GroupBuilder groupBld = actionBld.getPrerequisitesBuilder();
-		AlterGroup ag = new AlterGroup(
-								this.getBase().getPrerequisiteGroup(), null, null,
-								m_removedPrerequisites, m_alteredPrerequisites);
+		AlterGroup ag = new AlterGroup(this.getBase().getPrerequisiteGroup(), null, null, m_removedPrerequisites,
+				m_alteredPrerequisites);
 		ag.alterAttribute(groupBld);
 
 		alterProductPaths(actionBld);
@@ -80,30 +92,20 @@ public class AlterAction extends AlterAttribute<Action>
 		alterProperties(actionBld);
 		alterDocumentation(actionBld);
 
-		actionBld.setProductAlias(CSpecExtension.overrideCheckNull(actionBld.getProductAlias(), base.getProductAlias()));
+		actionBld
+				.setProductAlias(CSpecExtension.overrideCheckNull(actionBld.getProductAlias(), base.getProductAlias()));
 		actionBld.setProductBase(CSpecExtension.overrideCheckNull(actionBld.getProductBase(), base.getProductBase()));
 	}
 
 	protected void alterProductPaths(ActionBuilder original) throws CoreException
 	{
-		alterPaths(
-				original.getCSpecName(), original.getName(),
-				original.getProductPaths(), getBase().getProductPaths(), m_removedPaths);
-	}
-
-	protected void alterActorProperties(ActionBuilder original) throws CoreException
-	{
-		performPropertyAlterations(
-				original.getCSpecName(), original.getName(), "actorProperty",
-				original.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
-				m_removedActorProperties);
+		alterPaths(original.getCSpecName(), original.getName(), original.getProductPaths(),
+				getBase().getProductPaths(), m_removedPaths);
 	}
 
 	protected void alterProperties(ActionBuilder original) throws CoreException
 	{
-		performPropertyAlterations(
-				original.getCSpecName(), original.getName(), "property",
-				original.getProperties(), m_alteredProperties, this.getBase().getProperties(),
-				m_removedProperties);
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "property", original.getProperties(),
+				m_alteredProperties, this.getBase().getProperties(), m_removedProperties);
 	}
 }

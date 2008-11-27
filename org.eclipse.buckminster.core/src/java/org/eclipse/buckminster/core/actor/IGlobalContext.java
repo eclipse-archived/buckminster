@@ -19,28 +19,34 @@ import org.eclipse.core.runtime.IStatus;
 public interface IGlobalContext extends IModelCache
 {
 	/**
-	 * Returns the cache that is in effect for the whole top level invocation
-	 * @return A cache that various actions can use for arbitrary purposes
-	 */
-	Map<UUID,Object> getInvocationCache();
-
-	/**
 	 * Returns the property set to use when performing <code>attribute</code>.
-	 * @param attribute The attribute for which we need the properties
+	 * 
+	 * @param attribute
+	 *            The attribute for which we need the properties
 	 * @return The properties to use for attribute.
 	 */
-	Map<String,String> getExecutionProperties(Attribute attribute) throws CoreException;
+	Map<String, String> getExecutionProperties(Attribute attribute) throws CoreException;
+
+	/**
+	 * Returns the cache that is in effect for the whole top level invocation
+	 * 
+	 * @return A cache that various actions can use for arbitrary purposes
+	 */
+	Map<UUID, Object> getInvocationCache();
 
 	/**
 	 * Returns the status of the last perform issued using this context
+	 * 
 	 * @return The status of the last perform.
 	 */
 	IStatus getStatus();
 
 	/**
-	 * Schedule the removal of <code>path</code> when the top build invocation
-	 * ends. The <code>path</code> must be an absolute path.
-	 * @param path The absolute path of the file or directory to remove
+	 * Schedule the removal of <code>path</code> when the top build invocation ends. The <code>path</code> must be an
+	 * absolute path.
+	 * 
+	 * @param path
+	 *            The absolute path of the file or directory to remove
 	 */
 	void scheduleRemoval(IPath path) throws CoreException;
 }

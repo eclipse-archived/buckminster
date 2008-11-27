@@ -42,6 +42,17 @@ public class CSpecExtension
 
 	public static final String ELEM_ALTER_GROUPS = "alterGroups";
 
+	public static <T> T overrideCheckNull(T a, T b)
+	{
+		if(a == null)
+			return b;
+		if(b == null)
+			return a;
+		if(b.toString().equalsIgnoreCase("null"))
+			return null;
+		return b;
+	}
+
 	private final ICSpecData m_base;
 
 	private final Set<String> m_removedDependencies;
@@ -63,22 +74,6 @@ public class CSpecExtension
 		m_alteredDependencies = Utils.createUnmodifiableMap(alteredDependencies);
 	}
 
-	/**
-	 * Returns the CSPEC base that contains the top element attribute overrides and
-	 * all pure additions
-	 * @return A Cspec that acts as the base for the extension
-	 */
-	public void alterTopElement(CSpecBuilder bld) throws CoreException
-	{
-		IVersion extVersion = m_base.getVersion();
-		if(extVersion != null)
-			bld.setVersion(extVersion);
-
-		String ctype = m_base.getComponentTypeID();
-		if(ctype != null)
-			bld.setComponentTypeID(ctype);
-	}
-
 	public void alterCSpec(CSpecBuilder cspecBuilder) throws CoreException
 	{
 		for(String removedDep : m_removedDependencies)
@@ -94,7 +89,7 @@ public class CSpecExtension
 		for(IComponentRequest addedDep : addedDeps.values())
 			cspecBuilder.addDependency(addedDep);
 
-		Map<String,? extends IGenerator> addedGenerators = m_base.getGenerators();
+		Map<String, ? extends IGenerator> addedGenerators = m_base.getGenerators();
 		for(IGenerator addedGenerator : addedGenerators.values())
 		{
 			GeneratorBuilder bld = cspecBuilder.createGeneratorBuilder();
@@ -130,22 +125,30 @@ public class CSpecExtension
 		// On the top element, we never override a value with NULL unless it is
 		// explicitly set to the string "null"
 		//
-		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(), m_base.getComponentTypeID()));
+		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(), m_base
+				.getComponentTypeID()));
 		cspecBuilder.setVersion(overrideCheckNull(cspecBuilder.getVersion(), m_base.getVersion()));
 
 		Documentation origDoc = cspecBuilder.getDocumentation();
 		Documentation baseDoc = m_base.getDocumentation();
-		cspecBuilder.setDocumentation(origDoc == null ? baseDoc : origDoc.merge(baseDoc));
+		cspecBuilder.setDocumentation(origDoc == null
+				? baseDoc
+				: origDoc.merge(baseDoc));
 	}
 
-	public static <T> T overrideCheckNull(T a, T b)
+	/**
+	 * Returns the CSPEC base that contains the top element attribute overrides and all pure additions
+	 * 
+	 * @return A Cspec that acts as the base for the extension
+	 */
+	public void alterTopElement(CSpecBuilder bld) throws CoreException
 	{
-		if(a == null)
-			return b;
-		if(b == null)
-			return a;
-		if(b.toString().equalsIgnoreCase("null"))
-			return null;
-		return b;
+		IVersion extVersion = m_base.getVersion();
+		if(extVersion != null)
+			bld.setVersion(extVersion);
+
+		String ctype = m_base.getComponentTypeID();
+		if(ctype != null)
+			bld.setComponentTypeID(ctype);
 	}
 }

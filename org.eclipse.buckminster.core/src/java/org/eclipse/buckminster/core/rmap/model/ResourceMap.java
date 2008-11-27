@@ -64,21 +64,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "rmap";
 
-	private final ArrayList<Matcher> m_matchers = new ArrayList<Matcher>();
-
-	private final HashMap<String, SearchPath> m_searchPaths = new HashMap<String, SearchPath>();
-
-	private final Map<String, String> m_properties = new ExpandingProperties(null);
-
-	private Documentation m_documentation;
-
-	private final URL m_contextURL;
-
-	public ResourceMap(URL contextURL)
-	{
-		m_contextURL = contextURL;
-	}
-
 	public static ResourceMap fromURL(URL url, IConnectContext cctx) throws CoreException
 	{
 		IParserFactory pf = CorePlugin.getDefault().getParserFactory();
@@ -97,6 +82,21 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		{
 			IOUtils.close(input);
 		}
+	}
+
+	private final ArrayList<Matcher> m_matchers = new ArrayList<Matcher>();
+
+	private final HashMap<String, SearchPath> m_searchPaths = new HashMap<String, SearchPath>();
+
+	private final Map<String, String> m_properties = new ExpandingProperties(null);
+
+	private Documentation m_documentation;
+
+	private final URL m_contextURL;
+
+	public ResourceMap(URL contextURL)
+	{
+		m_contextURL = contextURL;
 	}
 
 	public void addMatcher(Matcher matcher)
@@ -125,6 +125,26 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		m_documentation = null;
 	}
 
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
+		for(SearchPath searchPath : m_searchPaths.values())
+			searchPath.toSax(handler, namespace, prefix, searchPath.getDefaultTag());
+
+		for(Matcher matcher : m_matchers)
+			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
+	}
+
+	public URL getContextURL()
+	{
+		return m_contextURL;
+	}
+
 	public String getDefaultTag()
 	{
 		return TAG;
@@ -135,109 +155,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		return m_documentation;
 	}
 
-	public Map<String,String> getProperties()
-	{
-		return m_properties;
-	}
-
-	public Map<String,String> getProperties(Map<String,String> properties)
-	{
-		if(!m_properties.isEmpty())
-			properties = new MapUnion<String, String>(properties, m_properties);
-		return properties;
-	}
-
-	public Collection<SearchPath> getSearchPaths()
-	{
-		return m_searchPaths.values();
-	}
-
-	public void removeMatcher(Matcher matcher)
-	{
-		m_matchers.remove(matcher);
-	}
-
-	public BOMNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 2000);
-		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
-		SearchPath searchPath = getSearchPath(query);
-		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR,
-				String.format("No suitable provider for component %s was found in searchPath %s",
-						query.getComponentRequest(), searchPath.getName()), null);
-
-		try
-		{
-			for(boolean first = true;; first = false)
-			{
-				ProviderMatch providerMatch = searchPath.getProvider(query, noGoodList, problemCollector, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
-				MonitorUtils.testCancelStatus(monitor);
-
-				Provider provider = providerMatch.getProvider();
-				IComponentType cType = providerMatch.getComponentType();
-				try
-				{
-					BOMNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
-					Resolution resolution = node.getResolution();
-					MonitorUtils.testCancelStatus(monitor);
-					Filter[] filterHandle = new Filter[1];
-					if(!resolution.isFilterMatchFor(query, filterHandle))
-					{
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);						
-						noGoodList.add(providerMatch.getOriginalProvider());
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
-						continue;
-					}
-
-					CSpec cspec = resolution.getCSpec();
-
-					// Assert that the cspec can handle required actions and
-					// exports
-					//
-					IVersion version = cspec.getVersion();
-					IVersionDesignator versionDesignator = query.getVersionDesignator();
-					if(versionDesignator != null && provider.getVersionConverterDesc() == null)
-					{
-						// A missing version converter means that the actual version check is deferred
-						// and later performed on the retreived CSpec. Later is now ...
-						//
-						if(!versionDesignator.designates(version))
-						{
-							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));						
-							noGoodList.add(providerMatch.getOriginalProvider());
-							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
-							continue;
-						}
-					}
-
-					// Verify that all required attributes are in this cspec
-					//
-					cspec.getAttributes(query.getRequiredAttributes());
-					if(version != null)
-					{
-						// Replace the resolution version if it is default and
-						// a non default version is present in the CSpec
-						//
-						VersionMatch vm = resolution.getVersionMatch();
-						if(vm.getVersion() == null)
-							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
-					}
-					return node;
-				}
-				catch(CoreException e)
-				{
-					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());						
-					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), e));
-					noGoodList.add(providerMatch.getOriginalProvider());
-				}
-			}
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
 	public SearchPath getLocalSearchPath(String componentName) throws CoreException
 	{
 		for(Matcher matcher : m_matchers)
@@ -246,6 +163,23 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 				return matcher.getSearchPath(null);
 		}
 		return null;
+	}
+
+	public List<Matcher> getMatchers()
+	{
+		return m_matchers;
+	}
+
+	public Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
+	public Map<String, String> getProperties(Map<String, String> properties)
+	{
+		if(!m_properties.isEmpty())
+			properties = new MapUnion<String, String>(properties, m_properties);
+		return properties;
 	}
 
 	public SearchPath getSearchPath(NodeQuery query) throws CoreException
@@ -273,14 +207,110 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		return sp;
 	}
 
+	public Collection<SearchPath> getSearchPaths()
+	{
+		return m_searchPaths.values();
+	}
+
+	public void removeMatcher(Matcher matcher)
+	{
+		m_matchers.remove(matcher);
+	}
+
+	public BOMNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 2000);
+		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
+		SearchPath searchPath = getSearchPath(query);
+		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, String.format(
+				"No suitable provider for component %s was found in searchPath %s", query.getComponentRequest(),
+				searchPath.getName()), null);
+
+		try
+		{
+			for(boolean first = true;; first = false)
+			{
+				ProviderMatch providerMatch = searchPath.getProvider(query, noGoodList, problemCollector, MonitorUtils
+						.subMonitor(monitor, first
+								? 1000
+								: 0));
+				MonitorUtils.testCancelStatus(monitor);
+
+				Provider provider = providerMatch.getProvider();
+				IComponentType cType = providerMatch.getComponentType();
+				try
+				{
+					BOMNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first
+							? 1000
+							: 0));
+					Resolution resolution = node.getResolution();
+					MonitorUtils.testCancelStatus(monitor);
+					Filter[] filterHandle = new Filter[1];
+					if(!resolution.isFilterMatchFor(query, filterHandle))
+					{
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH,
+								filterHandle[0]);
+						noGoodList.add(providerMatch.getOriginalProvider());
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
+								.toString(), null));
+						continue;
+					}
+
+					CSpec cspec = resolution.getCSpec();
+
+					// Assert that the cspec can handle required actions and
+					// exports
+					//
+					IVersion version = cspec.getVersion();
+					IVersionDesignator versionDesignator = query.getVersionDesignator();
+					if(versionDesignator != null && provider.getVersionConverterDesc() == null)
+					{
+						// A missing version converter means that the actual version check is deferred
+						// and later performed on the retreived CSpec. Later is now ...
+						//
+						if(!versionDesignator.designates(version))
+						{
+							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED,
+									version, String.format("not designated by %s", versionDesignator));
+							noGoodList.add(providerMatch.getOriginalProvider());
+							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
+									.toString(), null));
+							continue;
+						}
+					}
+
+					// Verify that all required attributes are in this cspec
+					//
+					cspec.getAttributes(query.getRequiredAttributes());
+					if(version != null)
+					{
+						// Replace the resolution version if it is default and
+						// a non default version is present in the CSpec
+						//
+						VersionMatch vm = resolution.getVersionMatch();
+						if(vm.getVersion() == null)
+							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
+					}
+					return node;
+				}
+				catch(CoreException e)
+				{
+					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());
+					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(),
+							e));
+					noGoodList.add(providerMatch.getOriginalProvider());
+				}
+			}
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
 	public void setDocumentation(Documentation documentation)
 	{
 		m_documentation = documentation;
-	}
-
-	public List<Matcher> getMatchers()
-	{
-		return m_matchers;
 	}
 
 	/**
@@ -301,33 +331,13 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 	@Override
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
 	{
-		HashMap<String,String> prefixMappings = new HashMap<String,String>();
+		HashMap<String, String> prefixMappings = new HashMap<String, String>();
 		addPrefixMappings(prefixMappings);
-		Set<Map.Entry<String,String>> pfxMappings = prefixMappings.entrySet();
-		for(Map.Entry<String,String> pfxMapping : pfxMappings)
+		Set<Map.Entry<String, String>> pfxMappings = prefixMappings.entrySet();
+		for(Map.Entry<String, String> pfxMapping : pfxMappings)
 			handler.startPrefixMapping(pfxMapping.getKey(), pfxMapping.getValue());
 		super.toSax(handler, namespace, prefix, localName);
-		for(Map.Entry<String,String> pfxMapping : pfxMappings)
+		for(Map.Entry<String, String> pfxMapping : pfxMappings)
 			handler.endPrefixMapping(pfxMapping.getKey());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-
-		for(SearchPath searchPath : m_searchPaths.values())
-			searchPath.toSax(handler, namespace, prefix, searchPath.getDefaultTag());
-
-		for(Matcher matcher : m_matchers)
-			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
-	}
-
-	public URL getContextURL()
-	{
-		return m_contextURL;
 	}
 }

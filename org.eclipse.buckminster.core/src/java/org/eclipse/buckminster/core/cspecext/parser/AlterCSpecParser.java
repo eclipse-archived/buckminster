@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -29,21 +28,22 @@ public class AlterCSpecParser extends AbstractParser<CSpecExtension> implements 
 	private CSpecExtension m_cSpecExtension;
 
 	public AlterCSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
-		super(parserExtensions, new String[]
- 		{
-			XMLConstants.XHTML_NS,
-			XMLConstants.XML_NS,
- 			XMLConstants.BM_COMMON_NS,
- 			XMLConstants.BM_CSPEC_NS
- 		}, new String[]
-  		{
-			XMLConstants.XHTML_RESOURCE,
-			XMLConstants.XML_RESOURCE,
-  			XMLConstants.BM_COMMON_RESOURCE,
-  			XMLConstants.BM_CSPEC_RESOURCE
-  		}, validating);
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
+				XMLConstants.BM_CSPEC_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
+				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE }, validating);
+	}
+
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_cSpecExtension = ((AlterCSpecHandler)child).getCSpecExtension();
+	}
+
+	public CSpecExtension parse(String systemId, InputStream input) throws CoreException
+	{
+		this.parseInput(systemId, input);
+		return m_cSpecExtension;
 	}
 
 	@Override
@@ -57,16 +57,4 @@ public class AlterCSpecParser extends AbstractParser<CSpecExtension> implements 
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public CSpecExtension parse(String systemId, InputStream input) throws CoreException
-	{
-		this.parseInput(systemId, input);
-		return m_cSpecExtension;
-	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_cSpecExtension = ((AlterCSpecHandler)child).getCSpecExtension();
-	}
 }
-

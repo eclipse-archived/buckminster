@@ -27,6 +27,8 @@ public class PrerequisitesBuilder extends GroupBuilder
 	@Override
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
 	{
-		return specBuilder == getCSpecBuilder() ? this : new PrerequisitesBuilder(specBuilder);
+		return specBuilder == getCSpecBuilder()
+				? this
+				: new PrerequisitesBuilder(specBuilder);
 	}
 }

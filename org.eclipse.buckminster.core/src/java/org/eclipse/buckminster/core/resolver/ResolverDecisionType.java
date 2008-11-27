@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.core.resolver;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -67,7 +66,7 @@ public enum ResolverDecisionType
 			return "Match %s was rejected: %s";
 		}
 	},
-	
+
 	MAIN_REJECTED
 	{
 		@Override
@@ -284,7 +283,7 @@ public enum ResolverDecisionType
 		}
 	};
 
-	public final String getMessage(Object...args)
+	public final String getMessage(Object... args)
 	{
 		return String.format(toString(), args);
 	}

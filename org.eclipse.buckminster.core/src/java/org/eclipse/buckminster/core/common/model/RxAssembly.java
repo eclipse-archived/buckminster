@@ -32,10 +32,13 @@ import org.xml.sax.SAXException;
 public class RxAssembly extends AbstractSaxableElement
 {
 	public static final String TAG = "rxAssembly";
+
 	public static final String ATTR_REPLACEMENT = "replacement";
 
 	private final List<RxPart> m_parts;
+
 	private final Pattern m_pattern;
+
 	private final List<RxPart> m_parameters = new ArrayList<RxPart>();
 
 	public RxAssembly(List<RxPart> parts) throws CoreException, PatternSyntaxException
@@ -47,10 +50,17 @@ public class RxAssembly extends AbstractSaxableElement
 		for(RxPart part : parts)
 			part.addPattern(bld, m_parameters);
 		bld.append('$');
-		
+
 		String patternStr = bld.toString();
 		m_pattern = Pattern.compile(patternStr);
 		CorePlugin.getLogger().debug("URI pattern %s created", patternStr);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		for(RxPart part : m_parts)
+			part.toSax(handler, namespace, prefix, part.getDefaultTag());
 	}
 
 	public String getDefaultTag()
@@ -58,7 +68,7 @@ public class RxAssembly extends AbstractSaxableElement
 		return TAG;
 	}
 
-	public Map<String,String> getMatchMap(CharSequence input)
+	public Map<String, String> getMatchMap(CharSequence input)
 	{
 		if(input == null)
 			return null;
@@ -80,15 +90,16 @@ public class RxAssembly extends AbstractSaxableElement
 
 		if(top != groupCount)
 		{
-			logger.warning("URI pattern group count was %d, expected %d", Integer.valueOf(groupCount), Integer.valueOf(top));
+			logger.warning("URI pattern group count was %d, expected %d", Integer.valueOf(groupCount), Integer
+					.valueOf(top));
 			top = groupCount;
 		}
 
 		if(top == 0)
 			return Collections.emptyMap();
 
-		HashMap<String,String> matchMap = new HashMap<String, String>();
-		
+		HashMap<String, String> matchMap = new HashMap<String, String>();
+
 		for(int idx = 0; idx < top; ++idx)
 		{
 			RxPart param = m_parameters.get(idx);
@@ -105,12 +116,5 @@ public class RxAssembly extends AbstractSaxableElement
 	public Pattern getPattern()
 	{
 		return m_pattern;
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(RxPart part : m_parts)
-			part.toSax(handler, namespace, prefix, part.getDefaultTag());
 	}
 }

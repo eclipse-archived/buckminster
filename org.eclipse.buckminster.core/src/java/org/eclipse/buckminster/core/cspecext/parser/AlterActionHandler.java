@@ -24,36 +24,37 @@ import org.xml.sax.SAXException;
  */
 class AlterActionHandler extends AlterAttributeHandler
 {
-	private final AlterPropertiesHandler m_alterActorPropertiesHandler = new AlterPropertiesHandler(this, AlterAction.ELEM_ALTER_ACTOR_PROPERTIES)
+	private final AlterPropertiesHandler m_alterActorPropertiesHandler = new AlterPropertiesHandler(this,
+			AlterAction.ELEM_ALTER_ACTOR_PROPERTIES)
 	{
+		@Override
+		protected void addRemovedProperty(String key) throws SAXException
+		{
+			getAlterActionBuilder().addRemoveActorProperty(key);
+		}
+
 		@Override
 		public ExpandingProperties getProperties()
 		{
 			return getAlterActionBuilder().getAlterActorProperties();
 		}
+	};
 
+	private final AlterPropertiesHandler m_alterPropertiesHandler = new AlterPropertiesHandler(this,
+			AlterAction.ELEM_ALTER_PROPERTIES)
+	{
 		@Override
 		protected void addRemovedProperty(String key) throws SAXException
 		{
-			getAlterActionBuilder().addRemoveActorProperty(key);
-		}		
-	};
+			getAlterActionBuilder().addRemoveProperty(key);
+		}
 
-	private final AlterPropertiesHandler m_alterPropertiesHandler = new AlterPropertiesHandler(this, AlterAction.ELEM_ALTER_PROPERTIES)
-	{
 		@Override
 		public ExpandingProperties getProperties()
 		{
 			return getAlterActionBuilder().getAlterProperties();
 		}
-
-		@Override
-		protected void addRemovedProperty(String key) throws SAXException
-		{
-			getAlterActionBuilder().addRemoveProperty(key);
-		}		
 	};
-
 
 	private final AlterPrerequisitesHandler m_alterPrerequisitesHandler = new AlterPrerequisitesHandler(this);
 
@@ -64,14 +65,14 @@ class AlterActionHandler extends AlterAttributeHandler
 		super(parent, new ActionHandler(parent, publ));
 	}
 
-	public ActionBuilder getActionBuilder()
+	@Override
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
 	{
-		return (ActionBuilder)this.getBaseHandler().getAttributeBuilder();
+		return new AlterActionBuilder((ActionBuilder)baseBuilder);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(m_alterActorPropertiesHandler.getTAG().equals(localName))
@@ -87,10 +88,9 @@ class AlterActionHandler extends AlterAttributeHandler
 		return ch;
 	}
 
-	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
+	public ActionBuilder getActionBuilder()
 	{
-		return new AlterActionBuilder((ActionBuilder)baseBuilder);
+		return (ActionBuilder)this.getBaseHandler().getAttributeBuilder();
 	}
 
 	AlterActionBuilder getAlterActionBuilder()

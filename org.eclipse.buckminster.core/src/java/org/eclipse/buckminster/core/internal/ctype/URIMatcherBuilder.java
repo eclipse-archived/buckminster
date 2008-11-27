@@ -28,10 +28,11 @@ public class URIMatcherBuilder extends AbstractResolutionBuilder
 		m_pm = pm;
 	}
 
-	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly,
-			IProgressMonitor mon) throws CoreException
+	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly, IProgressMonitor mon)
+			throws CoreException
 	{
 		MonitorUtils.complete(mon);
-		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm), Collections.<BOMNode>emptyList());
+		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm), Collections
+				.<BOMNode> emptyList());
 	}
 }

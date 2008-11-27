@@ -41,39 +41,32 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		BuckminsterPreferences.addListener(s_instance);
 	}
 
+	private static IResolverFactory[] createFactoriesByExtension()
+	{
+		Logger logger = CorePlugin.getLogger();
+		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
+
+		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(elems.length);
+		for(IConfigurationElement elem : elems)
+		{
+			try
+			{
+				IResolverFactory factory = (IResolverFactory)elem
+						.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
+				factories.add(factory);
+			}
+			catch(CoreException e)
+			{
+				logger.error(e, "Unable to instantiate Query Resolver Factory %s", elem.getAttribute("id"));
+			}
+		}
+		return factories.toArray(new IResolverFactory[factories.size()]);
+	}
+
 	public static ResolverFactoryMaintainer getInstance()
 	{
 		return s_instance;
-	}
-
-	private IResolverFactory[] m_resolverFactories;
-
-	public synchronized void preferenceChange(PreferenceChangeEvent event)
-	{
-		if(IBuckminsterPreferenceConstants.QUERY_RESOLVER_SORT_ORDER.equals(event.getKey()))
-		{
-			m_resolverFactories = null;
-		}
-	}
-
-	public synchronized IResolverFactory[] getResolverFactories()
-	{
-		if(m_resolverFactories == null)
-		{
-			IResolverFactory[] fcs = createFactoriesByExtension();
-			m_resolverFactories = fcs;
-			if(!BuckminsterPreferences.isCustomQuerySortOrder())
-			{
-				setDefaultResolutionOrder();
-				m_resolverFactories = fcs; // Restore since they are cleared by the pref change
-			}
-		}
-		return m_resolverFactories;
-	}
-
-	public synchronized void setResolverFactories(IResolverFactory[] resolverFactories)
-	{
-		m_resolverFactories = resolverFactories;
 	}
 
 	public static String[] getRegisterFactoryIDs()
@@ -87,40 +80,7 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		return factoryIDs;
 	}
 
-	public void setDefaultResolutionOrder()
-	{
-		Map<Integer,String> activeFactories = new TreeMap<Integer, String>();
-		for(IResolverFactory factory : getResolverFactories())
-		{
-			int prio = factory.getResolutionPriority();
-			if(prio >= 0)
-				activeFactories.put(new Integer(prio), factory.getId());
-		}
-		BuckminsterPreferences.setQueryResolverSortOrder(activeFactories.values().toArray(new String[activeFactories.size()]));
-		BuckminsterPreferences.setCustomQueryResolverSortOrder(false);
-	}
-
-	private static IResolverFactory[] createFactoriesByExtension()
-	{
-		Logger logger = CorePlugin.getLogger();
-		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
-
-		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(elems.length);
-		for(IConfigurationElement elem : elems)
-		{
-			try
-			{
-				IResolverFactory factory = (IResolverFactory)elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
-				factories.add(factory);
-			}
-			catch(CoreException e)
-			{
-				logger.error(e, "Unable to instantiate Query Resolver Factory %s", elem.getAttribute("id"));
-			}
-		}
-		return factories.toArray(new IResolverFactory[factories.size()]);
-	}
+	private IResolverFactory[] m_resolverFactories;
 
 	public IResolverFactory[] getActiveResolverFactories()
 	{
@@ -140,5 +100,47 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 				factories.add(factory);
 		}
 		return factories.toArray(new IResolverFactory[factories.size()]);
+	}
+
+	public synchronized IResolverFactory[] getResolverFactories()
+	{
+		if(m_resolverFactories == null)
+		{
+			IResolverFactory[] fcs = createFactoriesByExtension();
+			m_resolverFactories = fcs;
+			if(!BuckminsterPreferences.isCustomQuerySortOrder())
+			{
+				setDefaultResolutionOrder();
+				m_resolverFactories = fcs; // Restore since they are cleared by the pref change
+			}
+		}
+		return m_resolverFactories;
+	}
+
+	public synchronized void preferenceChange(PreferenceChangeEvent event)
+	{
+		if(IBuckminsterPreferenceConstants.QUERY_RESOLVER_SORT_ORDER.equals(event.getKey()))
+		{
+			m_resolverFactories = null;
+		}
+	}
+
+	public void setDefaultResolutionOrder()
+	{
+		Map<Integer, String> activeFactories = new TreeMap<Integer, String>();
+		for(IResolverFactory factory : getResolverFactories())
+		{
+			int prio = factory.getResolutionPriority();
+			if(prio >= 0)
+				activeFactories.put(new Integer(prio), factory.getId());
+		}
+		BuckminsterPreferences.setQueryResolverSortOrder(activeFactories.values().toArray(
+				new String[activeFactories.size()]));
+		BuckminsterPreferences.setCustomQueryResolverSortOrder(false);
+	}
+
+	public synchronized void setResolverFactories(IResolverFactory[] resolverFactories)
+	{
+		m_resolverFactories = resolverFactories;
 	}
 }

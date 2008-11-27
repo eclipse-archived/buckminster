@@ -21,4 +21,3 @@ public class AmbigousComponentException extends LocalizedException
 		super("More then one version of component %s is known to Buckminster", componentName);
 	}
 }
-

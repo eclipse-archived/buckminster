@@ -28,10 +28,15 @@ public class VersionMatch extends AbstractSaxableElement
 	public static final String TAG = "versionMatch";
 
 	public static final String ATTR_ARTIFACT_INFO = "artifactInfo";
+
 	public static final String ATTR_BRANCH_OR_TAG = "branchOrTag";
+
 	public static final String ATTR_REVISION = "revision";
+
 	public static final String ATTR_TIMESTAMP = "timestamp";
+
 	public static final String ATTR_VERSION = "version";
+
 	public static final String ATTR_VERSION_TYPE = "versionType";
 
 	private final String m_artifactInfo;
@@ -44,10 +49,11 @@ public class VersionMatch extends AbstractSaxableElement
 
 	private final IVersion m_version;
 
-	public VersionMatch(IVersion version, VersionSelector branchOrTag, long revision, Date timestamp, String artifactInfo)
+	public VersionMatch(IVersion version, VersionSelector branchOrTag, long revision, Date timestamp,
+			String artifactInfo)
 	{
 		m_version = version;
-		
+
 		if(branchOrTag != null && branchOrTag.isDefault())
 			branchOrTag = null;
 
@@ -57,11 +63,33 @@ public class VersionMatch extends AbstractSaxableElement
 		m_artifactInfo = artifactInfo;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		if(m_artifactInfo != null)
+			Utils.addAttribute(attrs, ATTR_ARTIFACT_INFO, m_artifactInfo);
+
+		if(m_branchOrTag != null)
+			Utils.addAttribute(attrs, ATTR_BRANCH_OR_TAG, m_branchOrTag.toString());
+
+		if(m_revision != -1)
+			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
+
+		if(m_timestamp != null)
+			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
+
+		if(m_version != null)
+		{
+			Utils.addAttribute(attrs, ATTR_VERSION, m_version.toString());
+			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_version.getType().getId());
+		}
+	}
+
 	public VersionMatch copyWithVersion(IVersion version)
 	{
 		if(Trivial.equalsAllowNull(version, m_version))
 			return this;
-		
+
 		return new VersionMatch(version, m_branchOrTag, -1, null, m_artifactInfo);
 	}
 
@@ -73,6 +101,11 @@ public class VersionMatch extends AbstractSaxableElement
 	public VersionSelector getBranchOrTag()
 	{
 		return m_branchOrTag;
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
 	}
 
 	public long getRevision()
@@ -123,33 +156,6 @@ public class VersionMatch extends AbstractSaxableElement
 		{
 			bld.append(':');
 			bld.append(DateAndTimeUtils.toISOFormat(m_timestamp));
-		}
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_artifactInfo != null)
-			Utils.addAttribute(attrs, ATTR_ARTIFACT_INFO, m_artifactInfo);
-
-		if(m_branchOrTag != null)
-			Utils.addAttribute(attrs, ATTR_BRANCH_OR_TAG, m_branchOrTag.toString());
-
-		if(m_revision != -1)
-			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
-
-		if(m_timestamp != null)
-			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
-
-		if(m_version != null)
-		{
-			Utils.addAttribute(attrs, ATTR_VERSION, m_version.toString());
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_version.getType().getId());
 		}
 	}
 }

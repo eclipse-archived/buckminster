@@ -22,13 +22,23 @@ import org.xml.sax.SAXException;
  */
 public class ResolutionParser extends MetaDataParser<Resolution>
 {
-	public ResolutionParser(List<ParserFactory.ParserExtension> parserExtensions)
-	throws CoreException
+	private Resolution m_resolution;
+
+	public ResolutionParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
 	{
 		super(parserExtensions);
 	}
 
-	private Resolution m_resolution;
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_resolution = ((ResolutionHandler)child).getResolution();
+	}
+
+	public Resolution parse(String systemID, InputStream input) throws CoreException
+	{
+		this.parseInput(systemID, input);
+		return m_resolution;
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
@@ -41,17 +51,4 @@ public class ResolutionParser extends MetaDataParser<Resolution>
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public Resolution parse(String systemID, InputStream input) throws CoreException
-	{
-		this.parseInput(systemID, input);
-		return m_resolution;
-	}
-
-	public void childPopped(ChildHandler child)
-	throws SAXException
-	{
-		m_resolution = ((ResolutionHandler)child).getResolution();
-	}
 }
-

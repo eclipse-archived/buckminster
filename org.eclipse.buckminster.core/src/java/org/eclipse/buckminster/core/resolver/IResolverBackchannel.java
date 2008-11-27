@@ -15,7 +15,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
  */
 public interface IResolverBackchannel
 {
-	ResolverDecision logDecision(ResolverDecisionType decisionType, Object...args);
+	ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args);
 
-	ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object...args);
+	ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args);
 }

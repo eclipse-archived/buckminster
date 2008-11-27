@@ -22,7 +22,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -57,14 +56,17 @@ public abstract class AbstractRemoteReader extends AbstractCatalogReader
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
+			throws CoreException, IOException
 	{
 		InputStream input = null;
 		monitor.beginTask(fileName, 2000);
 		try
 		{
-			input = CorePlugin.getDefault().openCachedRemoteFile(this, fileName, MonitorUtils.subMonitor(monitor, 1000));
-			return consumer.consumeStream(this, this.toString() + ',' + fileName, input, MonitorUtils.subMonitor(monitor, 1000));
+			input = CorePlugin.getDefault()
+					.openCachedRemoteFile(this, fileName, MonitorUtils.subMonitor(monitor, 1000));
+			return consumer.consumeStream(this, this.toString() + ',' + fileName, input, MonitorUtils.subMonitor(
+					monitor, 1000));
 		}
 		finally
 		{
@@ -73,4 +75,3 @@ public abstract class AbstractRemoteReader extends AbstractCatalogReader
 		}
 	}
 }
-

@@ -7,10 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.internal.actor;
 
-
 /**
  * @author ken1
- *
+ * 
  */
 public class EclipseCleanActor extends AbstractBuildIntegrationActor
 {

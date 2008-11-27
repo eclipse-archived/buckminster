@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * A IComponentType knows how to find dependency information in the components that it represents,
- * often in combination with a {@link IResolutionBuilder}. A good example is the
- * <code>eclipse.project</code> type that will choose a <code>IResolutionBuilder</code> depending on
- * the natures it finds in the .project file.
+ * A IComponentType knows how to find dependency information in the components that it represents, often in combination
+ * with a {@link IResolutionBuilder}. A good example is the <code>eclipse.project</code> type that will choose a
+ * <code>IResolutionBuilder</code> depending on the natures it finds in the .project file.
+ * 
  * @see org.eclipse.buckminster.core.CorePlugin#getComponentType(String)
  * @author Thomas Hallgren
  */
@@ -60,60 +60,46 @@ public interface IComponentType extends IBuckminsterExtension
 	public static final String PREF_OPML_FILE = CorePlugin.getID() + ".opml.file";
 
 	/**
-	 * Extracts the component version from artifacts found inside of the component. Component
-	 * types where this is not applicable will return <code>null</code>.
-	 * @param providerMatch The information needed to find the source.
-	 * @param monitor monitor for cancellation and progress reporting
+	 * Extracts the component version from artifacts found inside of the component. Component types where this is not
+	 * applicable will return <code>null</code>.
+	 * 
+	 * @param providerMatch
+	 *            The information needed to find the source.
+	 * @param monitor
+	 *            monitor for cancellation and progress reporting
 	 * @return the component version or <code>null</code> if not applicable
 	 * @throws CoreException
 	 */
-	IVersion getComponentVersion(ProviderMatch providerMatch, IProgressMonitor monitor)
-	throws CoreException;
+	IVersion getComponentVersion(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Creates a {@link BOMNode} based on the dependency information in
-	 * <code>providerMatch</code>. A provider will normally create a node where only the
-	 * top element is resolved but a provider can also find a previously resolved
-	 * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}. When it
-	 * does that instance will be returned.
-	 * @param providerMatch The information needed to find the source.
-	 * @param monitor monitor for cancellation and progress reporting
-	 * @return The resolved node. This entry is never <code>null</code>.
-	 * @throws CoreException If the node could not be resolved.
-	 */
-	BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
-
-	/**
-	 * Returns the builder used when building the Resolution
-	 */
-	IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-	throws CoreException;
-
-	/**
-	 * A regular expression that should match the name of the component. The project name
-	 * will be subject to name substitution using the {@link #getSubstituteNamePattern()}
-	 * and {@link #getNameSubstitution()} when the name does not match.
+	 * A regular expression that should match the name of the component. The project name will be subject to name
+	 * substitution using the {@link #getSubstituteNamePattern()} and {@link #getNameSubstitution()} when the name does
+	 * not match.
+	 * 
 	 * @return The regular expression that controls if name substitution is needed or not.
 	 */
 	Pattern getDesiredNamePattern();
 
 	/**
 	 * Returns the meta files that this component make use of when creating the resolution
+	 * 
 	 * @return An array of meta files
 	 */
 	IMetaFile[] getMetaFiles();
 
 	/**
 	 * The substitution string for the pattern returned by {@link #getSubstituteNamePattern()}
+	 * 
 	 * @return The substitution string
 	 */
 	String getNameSubstitution();
 
 	/**
-	 * Returns what this component type would like to call a project containing the
-	 * component named componentName.
-	 *
-	 * @param componentName The name of the component
+	 * Returns what this component type would like to call a project containing the component named componentName.
+	 * 
+	 * @param componentName
+	 *            The name of the component
 	 * @return The suggested name for the project
 	 */
 	String getProjectName(String componentName) throws CoreException;
@@ -121,36 +107,61 @@ public interface IComponentType extends IBuckminsterExtension
 	/**
 	 * Suggested Workspace relative location to use when materializing, i.e. suggest
 	 * &amp;lt;workspace&amp;gt;/&amp;lt;relativeLocation&amp;gt;/&amp;lt;component name&amp;gt;
+	 * 
 	 * @return The suggested workspace relative location
 	 */
 	IPath getRelativeLocation();
 
 	/**
-	 * Returns a designator that has been converted to suit the specific component type. Some
-	 * component types put special meaning to the qualifier of a version that affects the
-	 * semantics of the designator (a typical example is Mavens use of the keyword SNAPSHOT).
-	 * @return The converted designator
+	 * Creates a {@link BOMNode} based on the dependency information in <code>providerMatch</code>. A provider will
+	 * normally create a node where only the top element is resolved but a provider can also find a previously resolved
+	 * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}. When it does that instance
+	 * will be returned.
+	 * 
+	 * @param providerMatch
+	 *            The information needed to find the source.
+	 * @param monitor
+	 *            monitor for cancellation and progress reporting
+	 * @return The resolved node. This entry is never <code>null</code>.
+	 * @throws CoreException
+	 *             If the node could not be resolved.
 	 */
-	IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator);
+	BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * A regular expression used for substitution when the pattern returned by {@link #getDesiredNamePattern()}
-	 * does not match.
+	 * Returns the builder used when building the Resolution
+	 */
+	IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * A regular expression used for substitution when the pattern returned by {@link #getDesiredNamePattern()} does not
+	 * match.
+	 * 
 	 * @return The expression to use for the name substitution
 	 */
 	Pattern getSubstituteNamePattern();
 
 	/**
-	 * Returns true if the component type can find all required meta files under
-	 * the given <code>path</code>.
-	 * @param productPath The folder to scan for meta files
+	 * Returns a designator that has been converted to suit the specific component type. Some component types put
+	 * special meaning to the qualifier of a version that affects the semantics of the designator (a typical example is
+	 * Mavens use of the keyword SNAPSHOT).
+	 * 
+	 * @return The converted designator
+	 */
+	IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator);
+
+	/**
+	 * Returns true if the component type can find all required meta files under the given <code>path</code>.
+	 * 
+	 * @param productPath
+	 *            The folder to scan for meta files
 	 * @return <code>true</code> if all required meta files are found.
 	 */
 	boolean hasAllRequiredMetaFiles(IPath path);
 
 	/**
-	 * Returns true if this component type is producing a cspec based on other
-	 * meta-data files found in the component.
+	 * Returns true if this component type is producing a cspec based on other meta-data files found in the component.
+	 * 
 	 * @return true if a cspec is produced based on meta-files.
 	 */
 	boolean isMetaFileBased();

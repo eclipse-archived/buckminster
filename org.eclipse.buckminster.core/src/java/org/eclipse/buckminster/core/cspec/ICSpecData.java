@@ -15,19 +15,19 @@ public interface ICSpecData extends IAdaptable
 
 	Map<String, ? extends IAttribute> getAttributes();
 
-	String getComponentTypeID();
-
 	IComponentIdentifier getComponentIdentifier();
 
+	String getComponentTypeID();
+
 	Map<String, ? extends IComponentRequest> getDependencies();
-
-	Filter getFilter();
-
-	Map<String, ? extends IGenerator> getGenerators();
 
 	IComponentRequest getDependency(String dependencyName) throws MissingDependencyException;
 
 	Documentation getDocumentation();
+
+	Filter getFilter();
+
+	Map<String, ? extends IGenerator> getGenerators();
 
 	String getName();
 

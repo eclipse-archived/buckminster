@@ -31,12 +31,12 @@ public class TimestampVersion extends AbstractVersion
 	/**
 	 * Compares this <code>Version</code> object to another object.
 	 * 
-	 * @param object The <code>Version</code> object to be compared.
-	 * @return A negative integer, zero, or a positive integer if this object is
-	 *         less than, equal to, or greater than the specified
-	 *         <code>Version</code> object.
-	 * @throws ClassCastException If the specified object is not a
-	 *         <code>TimestampVersion</code>.
+	 * @param object
+	 *            The <code>Version</code> object to be compared.
+	 * @return A negative integer, zero, or a positive integer if this object is less than, equal to, or greater than
+	 *         the specified <code>Version</code> object.
+	 * @throws ClassCastException
+	 *             If the specified object is not a <code>TimestampVersion</code>.
 	 */
 	public int compareTo(IVersion o)
 	{
@@ -52,14 +52,14 @@ public class TimestampVersion extends AbstractVersion
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
-		if (!(o instanceof TimestampVersion))
+		if(!(o instanceof TimestampVersion))
 			return false;
 		TimestampVersion that = (TimestampVersion)o;
 
-		if (this.compareTo(that) != 0)
+		if(this.compareTo(that) != 0)
 			return false;
 
 		return true;
@@ -83,10 +83,9 @@ public class TimestampVersion extends AbstractVersion
 	}
 
 	/**
-	 * Returns the string representation of this version identifier. The format
-	 * of the version string will be <code>major.minor.micro</code> if
-	 * qualifier is the <code>null</code> or
-	 * <code>major.minor.micro.qualifier</code> otherwise.
+	 * Returns the string representation of this version identifier. The format of the version string will be
+	 * <code>major.minor.micro</code> if qualifier is the <code>null</code> or <code>major.minor.micro.qualifier</code>
+	 * otherwise.
 	 * 
 	 * @return The string representation of this version identifier.
 	 */

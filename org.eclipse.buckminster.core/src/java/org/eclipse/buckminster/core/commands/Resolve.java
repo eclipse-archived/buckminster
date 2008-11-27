@@ -43,11 +43,9 @@ import org.eclipse.ecf.core.security.IConnectContext;
  */
 public class Resolve extends WorkspaceInitCommand
 {
-	static private final OptionDescriptor BOM_FILE = new OptionDescriptor('B', "bomfile",
-		OptionValueType.REQUIRED);
+	static private final OptionDescriptor BOM_FILE = new OptionDescriptor('B', "bomfile", OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport",
-		OptionValueType.NONE);
+	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport", OptionValueType.NONE);
 
 	private File m_bomFile;
 
@@ -56,26 +54,6 @@ public class Resolve extends WorkspaceInitCommand
 	private URL m_url;
 
 	private IConnectContext m_connectContext;
-
-	public void setBomFile(File bomFile)
-	{
-		m_bomFile = bomFile;
-	}
-
-	public void setConnectContext(IConnectContext cctx)
-	{
-		m_connectContext = cctx;
-	}
-
-	public void setResolveOnly(boolean flag)
-	{
-		m_resolveOnly = flag;
-	}
-
-	public void setURL(URL url)
-	{
-		m_url = url;
-	}
 
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
@@ -124,8 +102,10 @@ public class Resolve extends WorkspaceInitCommand
 				// be created and loose a completed resolve.
 				//
 				bomOut = new BufferedOutputStream(new FileOutputStream(m_bomFile));
-				
-			MonitorUtils.begin(monitor, m_resolveOnly ? 40 : 100);
+
+			MonitorUtils.begin(monitor, m_resolveOnly
+					? 40
+					: 100);
 			try
 			{
 				ComponentQuery query = ComponentQuery.fromURL(m_url, m_connectContext, true);
@@ -148,7 +128,8 @@ public class Resolve extends WorkspaceInitCommand
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
-					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
+					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder
+							.createMaterializationSpec(), context);
 					MaterializationJob.run(matCtx, true);
 					if(matCtx.emitWarningAndErrorTags())
 						return 1;
@@ -164,10 +145,31 @@ public class Resolve extends WorkspaceInitCommand
 		{
 			CoreException be = BuckminsterException.wrap(t);
 			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
-				logger.error("An SSL handshake exception occurred - are all server certificates available in your keystore?");
+				logger
+						.error("An SSL handshake exception occurred - are all server certificates available in your keystore?");
 			throw be;
 		}
 		logger.info("Query complete.");
 		return 0;
+	}
+
+	public void setBomFile(File bomFile)
+	{
+		m_bomFile = bomFile;
+	}
+
+	public void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
+	}
+
+	public void setResolveOnly(boolean flag)
+	{
+		m_resolveOnly = flag;
+	}
+
+	public void setURL(URL url)
+	{
+		m_url = url;
 	}
 }

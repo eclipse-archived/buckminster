@@ -19,7 +19,6 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public class SplitHandler extends ValueFilterHandler
 {
 	static final String TAG = AbstractSplit.TAG;
@@ -30,8 +29,7 @@ public class SplitHandler extends ValueFilterHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		String pattern = this.getStringValue(attrs, AbstractSplit.ATTR_PATTERN);
 		String style = getOptionalStringValue(attrs, AbstractSplit.ATTR_STYLE);
@@ -45,4 +43,3 @@ public class SplitHandler extends ValueFilterHandler
 		}
 	}
 }
-

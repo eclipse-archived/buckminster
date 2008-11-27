@@ -27,14 +27,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
-public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport, IAttributeBuilderSupport
+public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport,
+		IAttributeBuilderSupport
 {
-	public static final String TAG = Action.ELEM_PRODUCTS;
-
 	public static class ProductArtifactHandler extends ArtifactHandler
 	{
 		public ProductArtifactHandler(AbstractHandler parent, boolean publ)
@@ -43,27 +41,43 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		}
 
 		@Override
-		public void handleAttributes(Attributes attrs) throws SAXException
-		{
-			super.handleAttributes(attrs);
-			((ActionArtifactBuilder)this.getBuilder()).setActionName(((ProductsHandler)this.getParentHandler()).getActionName());
-		}
-
-		@Override
 		protected TopLevelAttributeBuilder createAttributeBuilder()
 		{
 			return getCSpecBuilder().createActionArtifactBuilder();
 		}
+
+		@Override
+		public void handleAttributes(Attributes attrs) throws SAXException
+		{
+			super.handleAttributes(attrs);
+			((ActionArtifactBuilder)this.getBuilder()).setActionName(((ProductsHandler)this.getParentHandler())
+					.getActionName());
+		}
 	}
 
+	public static final String TAG = Action.ELEM_PRODUCTS;
+
 	private final PathHandler m_pathHandler = new PathHandler(this);
+
 	private final ProductArtifactHandler m_privateHandler = new ProductArtifactHandler(this, false);
 
 	private final ProductArtifactHandler m_publicHandler = new ProductArtifactHandler(this, true);
-	
+
 	ProductsHandler(AbstractHandler parent)
 	{
 		super(parent);
+	}
+
+	final void addProductArtifact(AttributeBuilder artifact) throws SAXException
+	{
+		try
+		{
+			this.getCSpecBuilder().addAttribute(artifact);
+		}
+		catch(AttributeAlreadyDefinedException e)
+		{
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -91,6 +105,21 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		return ch;
 	}
 
+	final String getActionName()
+	{
+		return ((CSpecElementHandler)this.getParentHandler()).getBuilder().getName();
+	}
+
+	public TopLevelAttributeBuilder getAttributeBuilder()
+	{
+		return ((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
+	}
+
+	public CSpecBuilder getCSpecBuilder()
+	{
+		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+	}
+
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
@@ -112,32 +141,5 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 				throw new SAXParseException('\'' + tmp + "' is not a valid UpToDatePolicy", getDocumentLocator());
 			}
 		}
-	}
-
-	final String getActionName()
-	{
-		return ((CSpecElementHandler)this.getParentHandler()).getBuilder().getName();
-	}
-
-	final void addProductArtifact(AttributeBuilder artifact) throws SAXException
-	{
-		try
-		{
-			this.getCSpecBuilder().addAttribute(artifact);
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
-	}
-
-	public TopLevelAttributeBuilder getAttributeBuilder()
-	{
-		return ((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
-	}
-
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
 	}
 }

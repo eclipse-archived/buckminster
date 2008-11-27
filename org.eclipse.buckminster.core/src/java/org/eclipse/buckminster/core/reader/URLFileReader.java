@@ -36,11 +36,13 @@ import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * A reader that reads one singleton file denoted by its URL.
+ * 
  * @author Thomas Hallgren
  */
 public class URLFileReader extends AbstractReader implements IFileReader
 {
 	private final URI m_uri;
+
 	private IFileInfo m_fileInfo;
 
 	protected URLFileReader(IReaderType readerType, ProviderMatch rInfo, URI uri) throws CoreException
@@ -68,8 +70,30 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		}
 	}
 
+	public IFileInfo getFileInfo()
+	{
+		return m_fileInfo;
+	}
+
+	protected final URI getURI()
+	{
+		return m_uri;
+	}
+
+	protected URL getURL() throws CoreException
+	{
+		try
+		{
+			return m_uri.toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
 	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		URL url = getURL();
 		IConnectContext cctx = getConnectContext();
@@ -84,7 +108,8 @@ public class URLFileReader extends AbstractReader implements IFileReader
 			in = DownloadManager.getCache().open(url, cctx, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 			m_fileInfo = fiHandle[0];
 
-			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getRemoteName(), resolution, ctx);
+			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getRemoteName(),
+					resolution, ctx);
 			File destFile = unpacker.getFinalDestination().toFile();
 
 			if(destFile.toURI().toURL().equals(url))
@@ -119,17 +144,14 @@ public class URLFileReader extends AbstractReader implements IFileReader
 	{
 		ICache cache = DownloadManager.getCache();
 		IFileInfo[] fiHandle = new IFileInfo[1];
-		InputStream input = cache.open(getURL(), getConnectContext(), null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+		InputStream input = cache.open(getURL(), getConnectContext(), null, fiHandle, MonitorUtils.subMonitor(monitor,
+				800));
 		m_fileInfo = fiHandle[0];
 		return input;
 	}
 
-	public IFileInfo getFileInfo()
-	{
-		return m_fileInfo;
-	}
-
-	public final <T> T readFile(IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException
+	public final <T> T readFile(IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException,
+			IOException
 	{
 		monitor.beginTask(null, 100);
 		InputStream input = null;
@@ -150,22 +172,4 @@ public class URLFileReader extends AbstractReader implements IFileReader
 	{
 		return m_uri.toString();
 	}
-
-	protected final URI getURI()
-	{
-		return m_uri;
-	}
-
-	protected URL getURL() throws CoreException
-	{
-		try
-		{
-			return m_uri.toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
 }
-

@@ -11,6 +11,8 @@ public interface IAction extends IAttribute
 {
 	String getActorName();
 
+	Map<String, String> getActorProperties();
+
 	Group getPrerequisiteGroup();
 
 	String getProductAlias();
@@ -21,15 +23,13 @@ public interface IAction extends IAttribute
 
 	Set<IPath> getProductPaths();
 
-	UpToDatePolicy getUpToDatePolicy();
-
-	Map<String, String> getActorProperties();
-
 	Map<String, String> getProperties();
 
-	boolean isAssignConsoleSupport();
+	UpToDatePolicy getUpToDatePolicy();
 
 	boolean isAlways();
+
+	boolean isAssignConsoleSupport();
 
 	boolean isInternal();
 }

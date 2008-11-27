@@ -20,7 +20,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-
 public abstract class ExtensionAwareHandler extends ChildHandler
 {
 	protected ExtensionAwareHandler(AbstractHandler parent)
@@ -29,57 +28,10 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	}
 
 	public <H extends ChildHandler> H createContentHandler(Class<H> instanceClass, String namespace, Attributes attrs)
-	throws SAXException
+			throws SAXException
 	{
 		String xsiType = attrs.getValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
 		return ((AbstractParser<?>)this.getTopHandler()).createContentHandler(this, instanceClass, namespace, xsiType);
-	}
-
-	protected void logAttributeValueDeprecation(String elementName, String attrName, String oldValue, String useInstead)
-	{
-		Locator locator = this.getDocumentLocator();
-		warningOnce(String.format(
-			"Use of deprecated value for attribute <%s %s>. Was '%s', should be '%s' : %s, line %s. ",
-				elementName, attrName, oldValue, useInstead,
-				locator.getSystemId(), new Integer(locator.getLineNumber())));
-	}
-
-	protected void logAttributeDeprecation(String elementName, String attrName, String useInstead)
-	{
-		Locator locator = this.getDocumentLocator();
-		warningOnce(String.format(
-			"Use of deprecated attribute <%s %s> Use attribute '%s' instead : %s, line %s. ",
-				elementName, attrName, useInstead,
-				locator.getSystemId(), new Integer(locator.getLineNumber())));
-	}
-
-	protected void logAttributeIgnored(String elementName, String attrName, String useInstead)
-	{
-		Locator locator = this.getDocumentLocator();
-		warningOnce(String.format(
-			"Use of deprecated attribute <%s %s> was ignored. Use attribute '%s' instead : %s, line %s. ",
-				elementName, attrName, useInstead,
-				locator.getSystemId(), new Integer(locator.getLineNumber())));
-	}
-
-	protected void logElementDeprecated(String elementName, String useInstead)
-	{
-		Locator locator = this.getDocumentLocator();
-		warningOnce(String.format(
-			"Use of deprecated element <%s>. Use element <%s> instead : %s, line %s. ",
-			elementName, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber())));
-	}
-
-	protected void logElementIgnored(String elementName)
-	{
-		Locator locator = this.getDocumentLocator();
-		warningOnce(String.format("Use of deprecated element %s was ignored : %s, line %s. ",
-				elementName, locator.getSystemId(), new Integer(locator.getLineNumber())));
-	}
-
-	protected void warningOnce(String warning)
-	{
-		((AbstractParser<?>)getTopHandler()).warningOnce(warning);
 	}
 
 	protected String getComponentType(Attributes attrs) throws SAXException
@@ -100,5 +52,47 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 			}
 		}
 		return tmp;
+	}
+
+	protected void logAttributeDeprecation(String elementName, String attrName, String useInstead)
+	{
+		Locator locator = this.getDocumentLocator();
+		warningOnce(String.format("Use of deprecated attribute <%s %s> Use attribute '%s' instead : %s, line %s. ",
+				elementName, attrName, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber())));
+	}
+
+	protected void logAttributeIgnored(String elementName, String attrName, String useInstead)
+	{
+		Locator locator = this.getDocumentLocator();
+		warningOnce(String.format(
+				"Use of deprecated attribute <%s %s> was ignored. Use attribute '%s' instead : %s, line %s. ",
+				elementName, attrName, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber())));
+	}
+
+	protected void logAttributeValueDeprecation(String elementName, String attrName, String oldValue, String useInstead)
+	{
+		Locator locator = this.getDocumentLocator();
+		warningOnce(String.format(
+				"Use of deprecated value for attribute <%s %s>. Was '%s', should be '%s' : %s, line %s. ", elementName,
+				attrName, oldValue, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber())));
+	}
+
+	protected void logElementDeprecated(String elementName, String useInstead)
+	{
+		Locator locator = this.getDocumentLocator();
+		warningOnce(String.format("Use of deprecated element <%s>. Use element <%s> instead : %s, line %s. ",
+				elementName, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber())));
+	}
+
+	protected void logElementIgnored(String elementName)
+	{
+		Locator locator = this.getDocumentLocator();
+		warningOnce(String.format("Use of deprecated element %s was ignored : %s, line %s. ", elementName, locator
+				.getSystemId(), new Integer(locator.getLineNumber())));
+	}
+
+	protected void warningOnce(String warning)
+	{
+		((AbstractParser<?>)getTopHandler()).warningOnce(warning);
 	}
 }

@@ -32,11 +32,15 @@ import org.xml.sax.SAXParseException;
 public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppedListener
 {
 	public static final String TAG = BillOfMaterials.TAG;
-	
-	private final Map<UUID,IDWrapper> m_wrapperMap = new HashMap<UUID,IDWrapper>();
+
+	private final Map<UUID, IDWrapper> m_wrapperMap = new HashMap<UUID, IDWrapper>();
+
 	private final IDWrapperHandler m_idWrapperHandler = new IDWrapperHandler(this);
+
 	private UUID m_topNodeId;
+
 	private UUID m_queryId;
+
 	private Date m_timestamp;
 
 	public BillOfMaterialsHandler(AbstractHandler parent)
@@ -44,25 +48,12 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 		super(parent);
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		super.handleAttributes(attrs);
-		m_wrapperMap.clear();
-		try
+		if(child == m_idWrapperHandler)
 		{
-			String tmp = getOptionalStringValue(attrs, BillOfMaterials.ATTR_TOP_NODE_ID);
-			m_topNodeId = tmp == null ? null : UUID.fromString(tmp);
-			m_queryId = UUID.fromString(this.getStringValue(attrs, BillOfMaterials.ATTR_QUERY_ID));
-			m_timestamp = DateAndTimeUtils.fromISOFormat(this.getStringValue(attrs, BillOfMaterials.ATTR_TIMESTAMP));
-		}
-		catch(IllegalArgumentException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
-		catch(ParseException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+			IDWrapper wrapper = m_idWrapperHandler.getWrapper();
+			m_wrapperMap.put(wrapper.getId(), wrapper);
 		}
 	}
 
@@ -77,12 +68,21 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 		return ch;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
+	@Override
+	BOMNode getDepNode() throws SAXException
 	{
-		if(child == m_idWrapperHandler)
+		return new BillOfMaterials((BOMNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
+	}
+
+	ComponentQuery getQuery(UUID queryId) throws SAXException
+	{
+		try
 		{
-			IDWrapper wrapper = m_idWrapperHandler.getWrapper();
-			m_wrapperMap.put(wrapper.getId(), wrapper);
+			return (ComponentQuery)getWrapped(queryId);
+		}
+		catch(ClassCastException e)
+		{
+			throw new SAXParseException("wrapper " + queryId + " does not wrap a query", getDocumentLocator());
 		}
 	}
 
@@ -105,21 +105,27 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 		return wrapper.getWrapped();
 	}
 
-	ComponentQuery getQuery(UUID queryId) throws SAXException
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
+		super.handleAttributes(attrs);
+		m_wrapperMap.clear();
 		try
 		{
-			return (ComponentQuery)getWrapped(queryId);
+			String tmp = getOptionalStringValue(attrs, BillOfMaterials.ATTR_TOP_NODE_ID);
+			m_topNodeId = tmp == null
+					? null
+					: UUID.fromString(tmp);
+			m_queryId = UUID.fromString(this.getStringValue(attrs, BillOfMaterials.ATTR_QUERY_ID));
+			m_timestamp = DateAndTimeUtils.fromISOFormat(this.getStringValue(attrs, BillOfMaterials.ATTR_TIMESTAMP));
 		}
-		catch(ClassCastException e)
+		catch(IllegalArgumentException e)
 		{
-			throw new SAXParseException("wrapper " + queryId + " does not wrap a query", getDocumentLocator());
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
-	}
-
-	@Override
-	BOMNode getDepNode() throws SAXException
-	{
-		return new BillOfMaterials((BOMNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
+		catch(ParseException e)
+		{
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
 	}
 }

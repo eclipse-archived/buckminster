@@ -15,16 +15,13 @@ import java.util.Map;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 
 /**
- * Abstract class for holder of values. The holder will produce either exactly
- * one value (holders such as {@link Format}, {@link Replace}, or
- * {@link PropertyRef}) or it may produce multiple values (currently true only
- * for {@link Split}.<br/> If the {@link #getValue(Map<String,String>}} method is
- * called on a holder that produces multiple values and if the result is exactly
- * one value, that value is returned. If the result is zero values, the empty
- * string is returned. If the result is more then one value, the result of
- * concatenating those values is returned.<br/> Calling
- * {@link #getValues(Map<String,String>)} on a holder that produces a single value will
- * result in a one element array.
+ * Abstract class for holder of values. The holder will produce either exactly one value (holders such as {@link Format}
+ * , {@link Replace}, or {@link PropertyRef}) or it may produce multiple values (currently true only for {@link Split}.<br/>
+ * If the {@link #getValue(Map<String,String>} method is called on a holder that produces multiple values and if the
+ * result is exactly one value, that value is returned. If the result is zero values, the empty string is returned. If
+ * the result is more then one value, the result of concatenating those values is returned.<br/>
+ * Calling {@link #getValues(Map<String,String>)} on a holder that produces a single value will result in a one element
+ * array.
  * 
  * @author Thomas Hallgren
  */
@@ -40,8 +37,42 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	}
 
 	/**
-	 * Returns the resolved value of this holder using <code>properties</code>
-	 * as the scope.
+	 * Returns the resolved value of this holder using <code>properties</code> as the scope.
+	 * 
+	 * @param properties
+	 *            The scope used when resolving the value.
+	 * @param recursionGuard
+	 *            A guard that is increased for each recursive expansion that is made.
+	 * @return A string representing the resolved value.
+	 * @throws CircularExpansionException
+	 *             if the <code>recursionGuard</code> reaches its threshold.
+	 */
+	protected abstract String checkedGetValue(Map<String, String> properties, int recursionGuard);
+
+	/**
+	 * Returns resolved value array of this holder using <code>properties</code> as the scope.
+	 * 
+	 * @param properties
+	 *            The scope used when resolving the values
+	 * @param recursionGuard
+	 *            A guard that is increased for each recursive expansion that is made.
+	 * @return A string array representing the resolved values
+	 * @throws CircularExpansionException
+	 *             if the <code>recursionGuard</code> reaches its threshold.
+	 */
+	protected String[] checkedGetValues(Map<String, String> properties, int recursionGuard)
+	{
+		return new String[] { this.checkedGetValue(properties, recursionGuard) };
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return o == this || (o != null && o.getClass() == this.getClass() && m_mutable == ((ValueHolder)o).m_mutable);
+	}
+
+	/**
+	 * Returns the resolved value of this holder using <code>properties</code> as the scope.
 	 * 
 	 * @param properties
 	 *            The scope used when resolving the value.
@@ -55,8 +86,7 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	}
 
 	/**
-	 * Returns resolved value array of this holder using <code>properties</code>
-	 * as the scope.
+	 * Returns resolved value array of this holder using <code>properties</code> as the scope.
 	 * 
 	 * @param properties
 	 *            The scope used when resolving the values.
@@ -70,21 +100,17 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return o == this || (o != null && o.getClass() == this.getClass() && m_mutable == ((ValueHolder)o).m_mutable);
-	}
-
-	@Override
 	public int hashCode()
 	{
-		return m_mutable ? 17 : 61;
+		return m_mutable
+				? 17
+				: 61;
 	}
 
 	/**
-	 * This method will return <code>false</code> for all holders that
-	 * produces exactly one value and <code>true</code> if the holder
-	 * may produce zero or many values.
+	 * This method will return <code>false</code> for all holders that produces exactly one value and <code>true</code>
+	 * if the holder may produce zero or many values.
+	 * 
 	 * @return <code>true</code> if the producer may produce zero or many values.
 	 */
 	public boolean isMultiValueProducer()
@@ -94,6 +120,7 @@ public abstract class ValueHolder extends AbstractSaxableElement
 
 	/**
 	 * Returns <code>true</code> if this value is considered mutable
+	 * 
 	 * @return <code>true</code> if the value is mutable
 	 */
 	public boolean isMutable()
@@ -108,38 +135,4 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	{
 		m_mutable = flag;
 	}
-
-	/**
-	 * Returns the resolved value of this holder using <code>properties</code>
-	 * as the scope.
-	 * 
-	 * @param properties
-	 *            The scope used when resolving the value.
-	 * @param recursionGuard
-	 *            A guard that is increased for each recursive expansion that is
-	 *            made.
-	 * @return A string representing the resolved value.
-	 * @throws CircularExpansionException
-	 *             if the <code>recursionGuard</code> reaches its threshold.
-	 */
-	protected abstract String checkedGetValue(Map<String, String> properties, int recursionGuard);
-
-	/**
-	 * Returns resolved value array of this holder using <code>properties</code>
-	 * as the scope.
-	 * 
-	 * @param properties
-	 *            The scope used when resolving the values
-	 * @param recursionGuard
-	 *            A guard that is increased for each recursive expansion that is
-	 *            made.
-	 * @return A string array representing the resolved values
-	 * @throws CircularExpansionException
-	 *             if the <code>recursionGuard</code> reaches its threshold.
-	 */
-	protected String[] checkedGetValues(Map<String, String> properties, int recursionGuard)
-	{
-		return new String[]{this.checkedGetValue(properties, recursionGuard)};
-	}
 }
-

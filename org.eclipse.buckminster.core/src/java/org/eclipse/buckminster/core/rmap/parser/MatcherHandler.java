@@ -23,8 +23,6 @@ import org.xml.sax.SAXException;
  */
 abstract class MatcherHandler extends ExtensionAwareHandler
 {
-	private String m_pattern;
-
 	static class LocatorHandler extends MatcherHandler
 	{
 		static final String TAG = Locator.TAG;
@@ -35,16 +33,11 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 		}
 
 		@Override
-		public void handleAttributes(Attributes attrs)
-		throws SAXException
+		public void handleAttributes(Attributes attrs) throws SAXException
 		{
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
-			rmap.addMatcher(
-				new Locator(
-					rmap,
-					getPattern(),
-					getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF)));
+			rmap.addMatcher(new Locator(rmap, getPattern(), getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF)));
 		}
 	}
 
@@ -58,8 +51,7 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 		}
 
 		@Override
-		public void handleAttributes(Attributes attrs)
-		throws SAXException
+		public void handleAttributes(Attributes attrs) throws SAXException
 		{
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
@@ -68,16 +60,11 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 		}
 	}
 
+	private String m_pattern;
+
 	public MatcherHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_pattern = getStringValue(attrs, "pattern");
 	}
 
 	final String getPattern()
@@ -89,5 +76,10 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 	{
 		return ((ResourceMapHandler)getParentHandler()).getResourceMap();
 	}
-}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_pattern = getStringValue(attrs, "pattern");
+	}
+}

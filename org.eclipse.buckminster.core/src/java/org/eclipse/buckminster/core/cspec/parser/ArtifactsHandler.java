@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.sax.AbstractHandler;
 
-
 /**
  * @author Thomas Hallgren
  */

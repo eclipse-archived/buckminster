@@ -46,70 +46,66 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 {
 	public static final String TAG = Resolution.TAG;
 
-	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
+	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this,
+			new ComponentRequestBuilder());
+
 	private final VersionMatchHandler m_versionMatchHandler = new VersionMatchHandler(this);
+
 	private final ArrayList<String> m_attributes = new ArrayList<String>();
+
 	private UUID m_cspecId;
+
 	private UUID m_opmlId;
+
 	private UUID m_providerId;
+
 	private ComponentRequest m_request;
+
 	private String m_componentType;
+
 	private VersionMatch m_versionMatch;
+
 	private boolean m_materializable;
+
 	private String m_persistentId;
+
 	private String m_repository;
+
 	private String m_remoteName;
+
 	private String m_contentType;
+
 	private long m_lastModified;
+
 	private long m_size;
+
 	private boolean m_unpack;
 
 	// For backward compatibility with the 0.1.0 Resolution
 	//
 	private String m_version;
+
 	private String m_versionType;
+
 	private String m_fixedVersionSelector;
+
+	private static final Pattern s_versionExp = Pattern.compile("^\\s*(.*?)([@/#][^@/#]*?)?(?:\\|(.+))?\\s*$");
+
+	private static final Pattern s_numberExp = Pattern.compile("^#(\\d+)$");
+
+	private static final Pattern s_tagExp = Pattern.compile("^/(.*)$");
 
 	public ResolutionHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		m_versionMatch = null;
-		m_cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
-		m_materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
-		m_providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
-		String tmp = getOptionalStringValue(attrs, Resolution.ATTR_OPML_ID);
-		m_opmlId = (tmp == null) ? null : UUID.fromString(tmp);
-		m_componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
-		m_persistentId = getOptionalStringValue(attrs, Resolution.ATTR_PERSISTENT_ID);
-		m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
-		m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
-		m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
-		m_size = getOptionalLongValue(attrs, Resolution.ATTR_SIZE, -1);
-		m_lastModified = getOptionalLongValue(attrs, Resolution.ATTR_LAST_MODIFIED, -1);
-		m_unpack = getOptionalBooleanValue(attrs, Resolution.ATTR_UNPACK, false);
-		m_request = null;
-
-		m_attributes.clear();
-		String attributes = getOptionalStringValue(attrs, Resolution.ATTR_ATTRIBUTES);
-		if(attributes != null)
-		{
-			for(String attr : attributes.split(","))
-			{
-				if(!m_attributes.contains(attr))
-					m_attributes.add(attr);
-			}
-		}
-
-		// For backward compatibility with the 0.1.0 Resolution
-		//
-		m_version = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION);
-		m_versionType = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION_TYPE);
-		m_fixedVersionSelector = getOptionalStringValue(attrs, "fixedVersionSelector");
+		if(child == m_componentRequestHandler)
+			m_request = m_componentRequestHandler.getBuilder().createComponentRequest();
+		else if(child == m_versionMatchHandler)
+			m_versionMatch = m_versionMatchHandler.getVersionMatch();
 	}
 
 	@Override
@@ -128,16 +124,14 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	public Resolution getResolution() throws SAXException
 	{
 		if(m_request == null)
-			throw new SAXParseException("Missing required element <" +
-					XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST + '>',
-					this.getDocumentLocator());
+			throw new SAXParseException("Missing required element <" + XMLConstants.BM_METADATA_PREFIX + '.'
+					+ Resolution.ELEM_REQUEST + '>', this.getDocumentLocator());
 
 		if(m_versionMatch == null)
 		{
 			if(m_version == null && m_fixedVersionSelector == null)
-				throw new SAXParseException("Missing required element <" +
-						XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG + '>',
-						this.getDocumentLocator());
+				throw new SAXParseException("Missing required element <" + XMLConstants.BM_METADATA_PREFIX + '.'
+						+ VersionMatch.TAG + '>', this.getDocumentLocator());
 
 			m_versionMatch = legacyVersionMatch();
 		}
@@ -172,37 +166,49 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			}
 		}
 
-		return new Resolution(
-				cspec,
-				opml,
-				m_componentType,
-				m_versionMatch,
-				provider,
-				m_materializable,
-				m_request,
-				m_attributes,
-				m_persistentId,
-				m_repository,
-				m_remoteName,
-				m_contentType,
-				m_lastModified,
-				m_size,
+		return new Resolution(cspec, opml, m_componentType, m_versionMatch, provider, m_materializable, m_request,
+				m_attributes, m_persistentId, m_repository, m_remoteName, m_contentType, m_lastModified, m_size,
 				m_unpack);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		if(child == m_componentRequestHandler)
-			m_request = m_componentRequestHandler.getBuilder().createComponentRequest();
-		else if(child == m_versionMatchHandler)
-			m_versionMatch = m_versionMatchHandler.getVersionMatch();
+		m_versionMatch = null;
+		m_cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
+		m_materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
+		m_providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
+		String tmp = getOptionalStringValue(attrs, Resolution.ATTR_OPML_ID);
+		m_opmlId = (tmp == null)
+				? null
+				: UUID.fromString(tmp);
+		m_componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
+		m_persistentId = getOptionalStringValue(attrs, Resolution.ATTR_PERSISTENT_ID);
+		m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
+		m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
+		m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
+		m_size = getOptionalLongValue(attrs, Resolution.ATTR_SIZE, -1);
+		m_lastModified = getOptionalLongValue(attrs, Resolution.ATTR_LAST_MODIFIED, -1);
+		m_unpack = getOptionalBooleanValue(attrs, Resolution.ATTR_UNPACK, false);
+		m_request = null;
+
+		m_attributes.clear();
+		String attributes = getOptionalStringValue(attrs, Resolution.ATTR_ATTRIBUTES);
+		if(attributes != null)
+		{
+			for(String attr : attributes.split(","))
+			{
+				if(!m_attributes.contains(attr))
+					m_attributes.add(attr);
+			}
+		}
+
+		// For backward compatibility with the 0.1.0 Resolution
+		//
+		m_version = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION);
+		m_versionType = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION_TYPE);
+		m_fixedVersionSelector = getOptionalStringValue(attrs, "fixedVersionSelector");
 	}
-
-	private static final Pattern s_versionExp = Pattern.compile("^\\s*(.*?)([@/#][^@/#]*?)?(?:\\|(.+))?\\s*$");
-
-	private static final Pattern s_numberExp = Pattern.compile("^#(\\d+)$");
-
-	private static final Pattern s_tagExp = Pattern.compile("^/(.*)$");
 
 	private String legacyComponentType() throws SAXException
 	{
@@ -236,14 +242,13 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		if(ctype != null)
 			return ctype;
 
-		if(ctypeIDs.length == 3
-		&& ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE)
-		&& ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE)
-		&& ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
+		if(ctypeIDs.length == 3 && ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE)
+				&& ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE) && ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
 			return IComponentType.BUCKMINSTER;
 
 		return IComponentType.UNKNOWN;
 	}
+
 	private VersionMatch legacyVersionMatch() throws SAXException
 	{
 		IVersion version = null;
@@ -271,7 +276,9 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 			String qualifier = m.group(2);
 			String artifactType = m.group(3);
-			VersionSelector btag = (branch == null) ? null : VersionSelector.branch(branch);
+			VersionSelector btag = (branch == null)
+					? null
+					: VersionSelector.branch(branch);
 			if(qualifier == null)
 				return new VersionMatch(version, btag, -1, null, artifactType);
 
@@ -280,7 +287,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			{
 				String tag = m.group(1);
 				if(tag != null && !"LATEST".equals(tag)) // The LATEST comparison is for backward compatibility
-					btag = VersionSelector.tag(tag);				
+					btag = VersionSelector.tag(tag);
 				return new VersionMatch(version, btag, -1, null, artifactType);
 			}
 
@@ -290,13 +297,15 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				return new VersionMatch(version, btag, -1, d, artifactType);
 			}
 			catch(ParseException e)
-			{}
+			{
+			}
 
 			m = s_numberExp.matcher(qualifier);
 			if(m.matches())
 				return new VersionMatch(version, btag, Long.parseLong(m.group(1)), null, artifactType);
 		}
-		throw new SAXParseException("Unable to parse legacy version selector string \"" + m_fixedVersionSelector + "\"", getDocumentLocator());
+		throw new SAXParseException(
+				"Unable to parse legacy version selector string \"" + m_fixedVersionSelector + "\"",
+				getDocumentLocator());
 	}
 }
-

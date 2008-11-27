@@ -17,7 +17,6 @@ import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -33,9 +32,18 @@ public abstract class TopLevelAttributeHandler extends AttributeHandler
 		m_public = publ;
 	}
 
+	protected abstract TopLevelAttributeBuilder createAttributeBuilder();
+
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	protected CSpecElementBuilder createBuilder()
+	{
+		TopLevelAttributeBuilder bld = createAttributeBuilder();
+		bld.setPublic(m_public);
+		return bld;
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(TopLevelAttribute.ELEM_INSTALLER_HINTS.equals(localName))
@@ -61,14 +69,4 @@ public abstract class TopLevelAttributeHandler extends AttributeHandler
 	{
 		return (TopLevelAttributeBuilder)getBuilder();
 	}
-
-	@Override
-	protected CSpecElementBuilder createBuilder()
-	{
-		TopLevelAttributeBuilder bld = createAttributeBuilder();
-		bld.setPublic(m_public);
-		return bld;
-	}
-
-	protected abstract TopLevelAttributeBuilder createAttributeBuilder();
 }

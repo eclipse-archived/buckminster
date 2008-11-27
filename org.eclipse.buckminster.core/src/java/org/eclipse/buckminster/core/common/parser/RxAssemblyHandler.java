@@ -31,42 +31,6 @@ import org.xml.sax.SAXParseException;
  */
 public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
-	private final HashMap<String, RxPartHandler> m_partHandlers = new HashMap<String, RxPartHandler>();
-
-	private ArrayList<RxPart> m_parts;
-
-	public RxAssemblyHandler(AbstractHandler parent)
-	{
-		super(parent);
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		return getPartHandler(this, localName, m_partHandlers);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_parts = null;
-	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof RxPartHandler)
-		{
-			if(m_parts == null)
-				m_parts = new ArrayList<RxPart>();
-			m_parts.add(((RxPartHandler)child).createPart());
-		}
-	}
-
-	protected ArrayList<RxPart> getParts()
-	{
-		return m_parts;
-	}
-
 	static RxPartHandler getPartHandler(ExtensionAwareHandler parent, String localName,
 			Map<String, RxPartHandler> handlerCache)
 	{
@@ -88,6 +52,25 @@ public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPop
 		}
 	}
 
+	private final HashMap<String, RxPartHandler> m_partHandlers = new HashMap<String, RxPartHandler>();
+
+	private ArrayList<RxPart> m_parts;
+
+	public RxAssemblyHandler(AbstractHandler parent)
+	{
+		super(parent);
+	}
+
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		if(child instanceof RxPartHandler)
+		{
+			if(m_parts == null)
+				m_parts = new ArrayList<RxPart>();
+			m_parts.add(((RxPartHandler)child).createPart());
+		}
+	}
+
 	public RxAssembly createAssembly() throws SAXException
 	{
 		try
@@ -98,5 +81,22 @@ public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPop
 		{
 			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 		}
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		return getPartHandler(this, localName, m_partHandlers);
+	}
+
+	protected ArrayList<RxPart> getParts()
+	{
+		return m_parts;
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_parts = null;
 	}
 }

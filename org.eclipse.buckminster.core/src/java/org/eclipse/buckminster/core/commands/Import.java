@@ -43,14 +43,15 @@ public class Import extends WorkspaceInitCommand
 
 	private IConnectContext m_connectContext;
 
-	public void setConnectContext(IConnectContext cctx)
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
-		m_connectContext = cctx;
-	}
-
-	public void setURL(URL url)
-	{
-		m_url = url;
+		int len = unparsed.length;
+		if(len > 1)
+			throw new UsageException("Too many arguments");
+		else if(len < 1)
+			throw new UsageException("Missing BOM URL");
+		setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class Import extends WorkspaceInitCommand
 
 			AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
 			DownloadManager.readInto(url, m_connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
-	
+
 			// Assume that the URL is pointing to an MSPEC.
 			//
 			MaterializationSpec mspec;
@@ -149,14 +150,13 @@ public class Import extends WorkspaceInitCommand
 		return 0;
 	}
 
-	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
+	public void setConnectContext(IConnectContext cctx)
 	{
-		int len = unparsed.length;
-		if(len > 1)
-			throw new UsageException("Too many arguments");
-		else if(len < 1)
-			throw new UsageException("Missing BOM URL");
-		setURL(URLUtils.normalizeToURL(unparsed[0]));
+		m_connectContext = cctx;
+	}
+
+	public void setURL(URL url)
+	{
+		m_url = url;
 	}
 }

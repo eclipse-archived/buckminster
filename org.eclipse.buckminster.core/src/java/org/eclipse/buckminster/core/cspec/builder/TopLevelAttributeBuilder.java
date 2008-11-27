@@ -44,7 +44,7 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		getInstallerHintsForAdd().put(key, hint, mutable);
 	}
 
-	public void addInstallerHints(Map<String,String> hints)
+	public void addInstallerHints(Map<String, String> hints)
 	{
 		if(hints != null && hints.size() > 0)
 			getInstallerHintsForAdd().putAll(hints, true);
@@ -81,13 +81,22 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	@Override
 	public abstract Attribute createAttribute();
 
+	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias)
+	{
+		PrerequisiteBuilder bld = createPrerequisiteBuilder();
+		bld.setComponentName(component);
+		bld.setName(name);
+		bld.setAlias(alias);
+		return bld;
+	}
+
 	public PrerequisiteBuilder createPrerequisiteBuilder()
 	{
 		return new PrerequisiteBuilder(this);
 	}
 
 	@Override
-	public Map<String,String> getInstallerHints()
+	public Map<String, String> getInstallerHints()
 	{
 		return m_installerHints;
 	}
@@ -100,17 +109,6 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	}
 
 	@Override
-	public boolean isPublic()
-	{
-		return m_public;
-	}
-
-	public void setPublic(boolean flag)
-	{
-		m_public = flag;
-	}
-
-	@Override
 	public void initFrom(IAttribute attribute)
 	{
 		super.initFrom(attribute);
@@ -119,13 +117,10 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		addInstallerHints(attribute.getInstallerHints());
 	}
 
-	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias)
+	@Override
+	public boolean isPublic()
 	{
-		PrerequisiteBuilder bld = createPrerequisiteBuilder();
-		bld.setComponentName(component);
-		bld.setName(name);
-		bld.setAlias(alias);
-		return bld;
+		return m_public;
 	}
 
 	public void removePrerequisite(IPrerequisite pq)
@@ -136,5 +131,10 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	public void removePrerequisite(String prerequisiteName)
 	{
 		throw new UnsupportedOperationException();
+	}
+
+	public void setPublic(boolean flag)
+	{
+		m_public = flag;
 	}
 }

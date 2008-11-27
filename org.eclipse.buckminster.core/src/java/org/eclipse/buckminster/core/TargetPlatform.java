@@ -31,6 +31,18 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 
 	public static final String TARGET_PLATFORM_PROVIDERS_POINT = CorePlugin.CORE_NAMESPACE + ".targetPlatformProviders";
 
+	public static final String TARGET_PREFIX = "target";
+
+	public static final String TARGET_OS = TARGET_PREFIX + ".os";
+
+	public static final String TARGET_WS = TARGET_PREFIX + ".ws";
+
+	public static final String TARGET_ARCH = TARGET_PREFIX + ".arch";
+
+	public static final String TARGET_NL = TARGET_PREFIX + ".nl";
+
+	public static final String TARGET_LOCATION = TARGET_PREFIX + ".location";
+
 	public static synchronized ITargetPlatform getInstance() throws CoreException
 	{
 		if(s_instance == null)
@@ -65,48 +77,12 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 			}
 
 			if(candidate == null)
-				throw BuckminsterException.fromMessage("No targetPlatformProvider has been registered with the targetPlatformProviders extension point");
+				throw BuckminsterException
+						.fromMessage("No targetPlatformProvider has been registered with the targetPlatformProviders extension point");
 			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class");
 			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass());
 		}
 		return s_instance;
-	}
-
-	public static final String TARGET_PREFIX = "target";
-
-	public static final String TARGET_OS = TARGET_PREFIX + ".os";
-
-	public static final String TARGET_WS = TARGET_PREFIX + ".ws";
-
-	public static final String TARGET_ARCH = TARGET_PREFIX + ".arch";
-
-	public static final String TARGET_NL = TARGET_PREFIX + ".nl";
-
-	public static final String TARGET_LOCATION = TARGET_PREFIX + ".location";
-
-	public String getArch()
-	{
-		return Platform.getOSArch();
-	}
-
-	public String getNL()
-	{
-		return Platform.getNL();
-	}
-
-	public String getOS()
-	{
-		return Platform.getOS();
-	}
-
-	public String getWS()
-	{
-		return Platform.getWS();
-	}
-
-	public File getLocation()
-	{
-		return getPlatformInstallLocation();
 	}
 
 	public static File getPlatformInstallLocation()
@@ -123,8 +99,33 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 		return FileUtils.getFile(eclipseHome);
 	}
 
+	public String getArch()
+	{
+		return Platform.getOSArch();
+	}
+
 	public final List<ComponentIdentifier> getComponents() throws CoreException
 	{
 		return Collections.emptyList();
+	}
+
+	public File getLocation()
+	{
+		return getPlatformInstallLocation();
+	}
+
+	public String getNL()
+	{
+		return Platform.getNL();
+	}
+
+	public String getOS()
+	{
+		return Platform.getOS();
+	}
+
+	public String getWS()
+	{
+		return Platform.getWS();
 	}
 }

@@ -25,9 +25,9 @@ public interface IAttribute
 
 	Map<String, String> getInstallerHints();
 
-	List<? extends IPrerequisite> getPrerequisites();
-
 	String getName();
+
+	List<? extends IPrerequisite> getPrerequisites();
 
 	String getQualifiedName();
 

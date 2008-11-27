@@ -14,7 +14,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class FlowWithAttributes extends Flow
 {
@@ -32,7 +32,7 @@ public class FlowWithAttributes extends Flow
 		AttributesImpl attrs = new AttributesImpl();
 		int top = m_keyNamePairs.length;
 		for(int idx = 0; idx < top; idx += 2)
-			Utils.addAttribute(attrs, m_keyNamePairs[idx], m_keyNamePairs[idx+1]);
+			Utils.addAttribute(attrs, m_keyNamePairs[idx], m_keyNamePairs[idx + 1]);
 		return attrs;
 	}
 

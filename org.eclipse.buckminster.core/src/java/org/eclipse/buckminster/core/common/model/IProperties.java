@@ -20,6 +20,14 @@ import java.util.Set;
 public interface IProperties extends Map<String, String>
 {
 	/**
+	 * Returns the set of keys that are immutable in this map. If the implementation doesn't support immutable keys, it
+	 * will return an empty set.
+	 * 
+	 * @return A set of immutable keys.
+	 */
+	Set<String> immutableKeySet();
+
+	/**
 	 * Returns true if the value stored by key is either mutable or does not exist.
 	 * 
 	 * @param key
@@ -27,14 +35,6 @@ public interface IProperties extends Map<String, String>
 	 * @return true if its permitted to change or add this value.
 	 */
 	boolean isMutable(String key);
-
-	/**
-	 * Returns the set of keys that are immutable in this map. If the implementation doesn't support immutable keys, it
-	 * will return an empty set.
-	 * 
-	 * @return A set of immutable keys.
-	 */
-	Set<String> immutableKeySet();
 
 	/**
 	 * Returns the set of keys that are mutable in this map. If the implementation doesn't support immutable keys, it
@@ -53,7 +53,7 @@ public interface IProperties extends Map<String, String>
 	 */
 	Set<String> overlayKeySet();
 
-	/**
+/**
 	 * Just like {@link java.util.Map#put(Object,Object) but with an additional argument that defines the mutability of
 	 * the added value.
 	 * 
@@ -70,8 +70,8 @@ public interface IProperties extends Map<String, String>
 	String put(String key, String value, boolean mutable);
 
 	/**
-	 * Provided this map supports mutability and holds a value with the name <code>key</code>, the status of that
-	 * value will be changed according to <code>flag</code>.
+	 * Provided this map supports mutability and holds a value with the name <code>key</code>, the status of that value
+	 * will be changed according to <code>flag</code>.
 	 * 
 	 * @param key
 	 * @param flag

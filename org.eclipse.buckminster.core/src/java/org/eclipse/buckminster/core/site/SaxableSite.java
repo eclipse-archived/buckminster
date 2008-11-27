@@ -32,92 +32,10 @@ import org.xml.sax.helpers.AttributesImpl;
 public class SaxableSite extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "site";
+
 	public static final String ATTR_ASSOCIATE_SITES_URL = "associateSitesURL";
+
 	public static final String ATTR_MIRRORS_URL = "mirrorsURL";
-
-	private final Site m_site;
-
-	private final String m_mirrorsURL;
-	private final String m_associateSitesURL;
-
-	public SaxableSite(Site site)
-	{
-		this(site, null, null);
-	}
-
-	public SaxableSite(Site site, String mirrorsURL, String associateSitesURL)
-	{
-		m_site = site;
-		m_mirrorsURL = mirrorsURL;
-		m_associateSitesURL = associateSitesURL;
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public Site getSite()
-	{
-		return m_site;
-	}
-
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
-		receiver.startDocument();
-		toSax(receiver, "", "", TAG);
-		receiver.endDocument();
-	}
-	
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		String type = m_site.getType();
-		if(type != null)
-			Utils.addAttribute(attrs, "type", type);
-
-		String urlStr = m_site.getLocationURLString();
-		if(urlStr != null)
-			Utils.addAttribute(attrs, "url", urlStr);
-
-		if(m_mirrorsURL != null)
-			Utils.addAttribute(attrs, ATTR_MIRRORS_URL, m_mirrorsURL);
-
-		if(m_associateSitesURL != null)
-			Utils.addAttribute(attrs, ATTR_ASSOCIATE_SITES_URL, m_associateSitesURL);
-
-		if(m_site instanceof ExtendedSite)
-		{
-			ExtendedSite extSite = (ExtendedSite)m_site;
-			if(extSite.supportsPack200())
-				Utils.addAttribute(attrs, "pack200", "true");
-			
-			String digestURL = Trivial.trim(extSite.getDigestURL());
-			if(digestURL != null)
-				Utils.addAttribute(attrs, "digestURL", digestURL);
-
-			String[] availableLocales = extSite.getAvailableLocals();
-			if(availableLocales != null)
-			{
-				StringBuilder bld = new StringBuilder();
-				TextUtils.concat(bld, availableLocales, ",");
-				if(bld.length() > 0)
-					Utils.addAttribute(attrs, "availableLocales", bld.toString());
-			}
-		}
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		URLEntryModel description = m_site.getDescriptionModel();
-		if(description != null)
-			writeDescription(handler, description);
-
-		writeFeatures(handler, m_site.getFeatureReferenceModels());
-		writeCategories(handler, m_site.getCategoryModels());
-		writeArchives(handler, m_site.getArchiveReferenceModels());
-	}
 
 	private static void addOptionalAttribute(AttributesImpl attrs, String name, String value)
 	{
@@ -125,7 +43,8 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 			Utils.addAttribute(attrs, name, value);
 	}
 
-	private static void writeArchives(ContentHandler handler, ArchiveReferenceModel[] archiveReferenceModels) throws SAXException
+	private static void writeArchives(ContentHandler handler, ArchiveReferenceModel[] archiveReferenceModels)
+			throws SAXException
 	{
 		int top = archiveReferenceModels.length;
 		for(int idx = 0; idx < top; ++idx)
@@ -139,7 +58,6 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		}
 	}
 
-	
 	private static void writeCategories(ContentHandler handler, CategoryModel[] categoryModels) throws SAXException
 	{
 		int top = categoryModels.length;
@@ -182,7 +100,8 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		}
 	}
 
-	private static void writeFeatures(ContentHandler handler, SiteFeatureReferenceModel[] featureReferenceModels) throws SAXException
+	private static void writeFeatures(ContentHandler handler, SiteFeatureReferenceModel[] featureReferenceModels)
+			throws SAXException
 	{
 		int top = featureReferenceModels.length;
 		for(int idx = 0; idx < top; ++idx)
@@ -212,5 +131,90 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 			}
 			handler.endElement("", "", "feature");
 		}
+	}
+
+	private final Site m_site;
+
+	private final String m_mirrorsURL;
+
+	private final String m_associateSitesURL;
+
+	public SaxableSite(Site site)
+	{
+		this(site, null, null);
+	}
+
+	public SaxableSite(Site site, String mirrorsURL, String associateSitesURL)
+	{
+		m_site = site;
+		m_mirrorsURL = mirrorsURL;
+		m_associateSitesURL = associateSitesURL;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		String type = m_site.getType();
+		if(type != null)
+			Utils.addAttribute(attrs, "type", type);
+
+		String urlStr = m_site.getLocationURLString();
+		if(urlStr != null)
+			Utils.addAttribute(attrs, "url", urlStr);
+
+		if(m_mirrorsURL != null)
+			Utils.addAttribute(attrs, ATTR_MIRRORS_URL, m_mirrorsURL);
+
+		if(m_associateSitesURL != null)
+			Utils.addAttribute(attrs, ATTR_ASSOCIATE_SITES_URL, m_associateSitesURL);
+
+		if(m_site instanceof ExtendedSite)
+		{
+			ExtendedSite extSite = (ExtendedSite)m_site;
+			if(extSite.supportsPack200())
+				Utils.addAttribute(attrs, "pack200", "true");
+
+			String digestURL = Trivial.trim(extSite.getDigestURL());
+			if(digestURL != null)
+				Utils.addAttribute(attrs, "digestURL", digestURL);
+
+			String[] availableLocales = extSite.getAvailableLocals();
+			if(availableLocales != null)
+			{
+				StringBuilder bld = new StringBuilder();
+				TextUtils.concat(bld, availableLocales, ",");
+				if(bld.length() > 0)
+					Utils.addAttribute(attrs, "availableLocales", bld.toString());
+			}
+		}
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		URLEntryModel description = m_site.getDescriptionModel();
+		if(description != null)
+			writeDescription(handler, description);
+
+		writeFeatures(handler, m_site.getFeatureReferenceModels());
+		writeCategories(handler, m_site.getCategoryModels());
+		writeArchives(handler, m_site.getArchiveReferenceModels());
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public Site getSite()
+	{
+		return m_site;
+	}
+
+	public void toSax(ContentHandler receiver) throws SAXException
+	{
+		receiver.startDocument();
+		toSax(receiver, "", "", TAG);
+		receiver.endDocument();
 	}
 }

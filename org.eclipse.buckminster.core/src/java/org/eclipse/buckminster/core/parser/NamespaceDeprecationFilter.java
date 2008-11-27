@@ -7,9 +7,11 @@ import org.xml.sax.helpers.XMLFilterImpl;
 public class NamespaceDeprecationFilter extends XMLFilterImpl
 {
 	private final String m_oldNamespace;
+
 	private final String m_newNamespace;
+
 	private final String m_systemID;
-	
+
 	public NamespaceDeprecationFilter(String systemID, String oldNamespace, String newNamespace)
 	{
 		m_oldNamespace = oldNamespace;
@@ -22,11 +24,8 @@ public class NamespaceDeprecationFilter extends XMLFilterImpl
 	{
 		if(m_oldNamespace.equals(namespace))
 		{
-			CorePlugin.getLogger().warning(
-					"XML namespace %s is deprecated. Use %s instead: %s",
-						m_oldNamespace,
-						m_newNamespace,
-						m_systemID);
+			CorePlugin.getLogger().warning("XML namespace %s is deprecated. Use %s instead: %s", m_oldNamespace,
+					m_newNamespace, m_systemID);
 			namespace = m_newNamespace;
 		}
 		super.startPrefixMapping(prefix, namespace);

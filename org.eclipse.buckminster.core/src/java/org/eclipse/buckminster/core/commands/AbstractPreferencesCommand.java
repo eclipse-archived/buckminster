@@ -34,38 +34,82 @@ import org.eclipse.core.runtime.preferences.PreferenceFilterEntry;
  */
 public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 {
-	static private final OptionDescriptor SCOPE_OPTION = new OptionDescriptor('S', "scope", OptionValueType.REQUIRED);
-
-	static private final OptionDescriptor FILE_OPTION = new OptionDescriptor('F', "file", OptionValueType.REQUIRED);
-
 	class PreferenceFilter implements IPreferenceFilter
 	{
 		private final String[] m_scopes;
 
-		private final Map<String,PreferenceFilterEntry[]> m_mapping;
+		private final Map<String, PreferenceFilterEntry[]> m_mapping;
 
-		PreferenceFilter(String[] scopes, Map<String,PreferenceFilterEntry[]> mapping)
+		PreferenceFilter(String[] scopes, Map<String, PreferenceFilterEntry[]> mapping)
 		{
 			m_scopes = scopes;
 			m_mapping = mapping;
+		}
+
+		public Map<String, PreferenceFilterEntry[]> getMapping(String scope)
+		{
+			return m_mapping;
 		}
 
 		public String[] getScopes()
 		{
 			return m_scopes;
 		}
-
-		public Map<String,PreferenceFilterEntry[]> getMapping(String scope)
-		{
-			return m_mapping;
-		}
 	}
+
+	static private final OptionDescriptor SCOPE_OPTION = new OptionDescriptor('S', "scope", OptionValueType.REQUIRED);
+
+	static private final OptionDescriptor FILE_OPTION = new OptionDescriptor('F', "file", OptionValueType.REQUIRED);
 
 	private IScopeContext m_scope;
 
 	private HashMap<String, ArrayList<PreferenceFilterEntry>> m_includes;
 
 	private File m_prefsFile;
+
+	File getFile()
+	{
+		return m_prefsFile;
+	}
+
+	IPreferenceFilter[] getFilter()
+	{
+		HashMap<String, PreferenceFilterEntry[]> pfess = null;
+		if(m_includes != null)
+		{
+			// Qualify the filter with specific includes
+			//
+			pfess = new HashMap<String, PreferenceFilterEntry[]>();
+			Iterator<Map.Entry<String, ArrayList<PreferenceFilterEntry>>> entries = m_includes.entrySet().iterator();
+			while(entries.hasNext())
+			{
+				Map.Entry<String, ArrayList<PreferenceFilterEntry>> entry = entries.next();
+				ArrayList<PreferenceFilterEntry> pfes = entry.getValue();
+				if(pfes != null)
+					pfess.put(entry.getKey(), pfes.toArray(new PreferenceFilterEntry[pfes.size()]));
+				else
+					pfess.put(entry.getKey(), null);
+			}
+		}
+
+		PreferenceFilter filter;
+		if(m_scope == null)
+			filter = new PreferenceFilter(new String[] { InstanceScope.SCOPE, ConfigurationScope.SCOPE }, pfess);
+		else
+			filter = new PreferenceFilter(new String[] { m_scope.getName() }, pfess);
+		return new IPreferenceFilter[] { filter };
+	}
+
+	IEclipsePreferences getNode()
+	{
+		IPreferencesService prefService = Platform.getPreferencesService();
+		IEclipsePreferences node;
+		if(m_scope == null)
+			node = prefService.getRootNode();
+		else
+			node = (IEclipsePreferences)prefService.getRootNode().node(m_scope.getName());
+		return node;
+	}
 
 	protected OptionDescriptor[] getOptionDescriptors() throws Exception
 	{
@@ -86,7 +130,8 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 			else if(scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
 				m_scope = new ConfigurationScope();
 			else
-				throw new UsageException("Invalid scope. Valid scopes are " + ConfigurationScope.SCOPE + " and " + InstanceScope.SCOPE);
+				throw new UsageException("Invalid scope. Valid scopes are " + ConfigurationScope.SCOPE + " and "
+						+ InstanceScope.SCOPE);
 		}
 		else if(option.is(FILE_OPTION))
 		{
@@ -101,7 +146,7 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 	{
 		if(unparsed.length == 0)
 			return;
-		
+
 		if(m_includes == null)
 			m_includes = new HashMap<String, ArrayList<PreferenceFilterEntry>>();
 
@@ -136,7 +181,7 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 			ArrayList<PreferenceFilterEntry> pfes = m_includes.get(rootKey);
 			if(pfes == null)
 				pfes = new ArrayList<PreferenceFilterEntry>();
-			
+
 			for(int subIdx = 0; subIdx < subKeys.length; ++subIdx)
 			{
 				String subKey = subKeys[subIdx];
@@ -154,49 +199,5 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 			if(pfes.size() > 0)
 				m_includes.put(rootKey, pfes);
 		}
-	}
-
-	IEclipsePreferences getNode()
-	{
-		IPreferencesService prefService = Platform.getPreferencesService();
-		IEclipsePreferences node;
-		if(m_scope == null)
-			node = prefService.getRootNode();
-		else
-			node = (IEclipsePreferences)prefService.getRootNode().node(m_scope.getName());
-		return node;
-	}
-
-	File getFile()
-	{
-		return m_prefsFile;
-	}
-
-	IPreferenceFilter[] getFilter()
-	{
-		HashMap<String,PreferenceFilterEntry[]> pfess = null;
-		if(m_includes != null)
-		{
-			// Qualify the filter with specific includes
-			//
-			pfess = new HashMap<String,PreferenceFilterEntry[]>();
-			Iterator<Map.Entry<String, ArrayList<PreferenceFilterEntry>>> entries = m_includes.entrySet().iterator();
-			while(entries.hasNext())
-			{
-				Map.Entry<String, ArrayList<PreferenceFilterEntry>> entry = entries.next();
-				ArrayList<PreferenceFilterEntry> pfes = entry.getValue();
-				if(pfes != null)
-					pfess.put(entry.getKey(), pfes.toArray(new PreferenceFilterEntry[pfes.size()]));
-				else
-					pfess.put(entry.getKey(), null);
-			}
-		}
-
-		PreferenceFilter filter;
-		if(m_scope == null)
-			filter = new PreferenceFilter(new String[] { InstanceScope.SCOPE, ConfigurationScope.SCOPE }, pfess);
-		else
-			filter = new PreferenceFilter(new String[] { m_scope.getName() }, pfess);
-		return new IPreferenceFilter[] { filter };
 	}
 }

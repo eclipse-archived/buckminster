@@ -22,14 +22,15 @@ public class AlterDependency
 		m_base = base;
 	}
 
-	public String getName()
-	{
-		return m_base.getName();
-	}
-
 	public void alterDependency(ComponentRequestBuilder dep)
 	{
 		dep.setComponentTypeID(CSpecExtension.overrideCheckNull(m_base.getComponentTypeID(), dep.getComponentTypeID()));
-		dep.setVersionDesignator(CSpecExtension.overrideCheckNull(m_base.getVersionDesignator(), dep.getVersionDesignator()));
+		dep.setVersionDesignator(CSpecExtension.overrideCheckNull(m_base.getVersionDesignator(), dep
+				.getVersionDesignator()));
+	}
+
+	public String getName()
+	{
+		return m_base.getName();
 	}
 }

@@ -21,17 +21,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
- * A IStreamConsumer responsible for reading and parsing a
- * <code>.project</code> file.
- *
+ * A IStreamConsumer responsible for reading and parsing a <code>.project</code> file.
+ * 
  * @author thhal
  */
 public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
 {
 	public static IProjectDescription getProjectDescription(IComponentReader reader, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		ProjectDescReader pdr = new ProjectDescReader();
 		try
@@ -49,8 +47,8 @@ public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
 		}
 	}
 
-	public IProjectDescription consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws CoreException
+	public IProjectDescription consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		try
@@ -71,4 +69,3 @@ public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
 		}
 	}
 }
-

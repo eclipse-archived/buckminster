@@ -166,14 +166,14 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		return m_properties;
 	}
 
-	public long getRevision()
-	{
-		return m_revision;
-	}
-
 	public int[] getResolutionPrio()
 	{
 		return m_resolutionPrio;
+	}
+
+	public long getRevision()
+	{
+		return m_revision;
 	}
 
 	public SourceLevel getSourceLevel()
@@ -256,7 +256,9 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 
 	public void setBranchTagPath(VersionSelector[] branchTagPath)
 	{
-		m_branchTagPath = branchTagPath == null ? VersionSelector.EMPTY_PATH : branchTagPath;
+		m_branchTagPath = branchTagPath == null
+				? VersionSelector.EMPTY_PATH
+				: branchTagPath;
 	}
 
 	public void setComponentTypeID(String componentType)
@@ -291,14 +293,14 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_prune = prune;
 	}
 
-	public void setRevision(long revision)
-	{
-		m_revision = revision;
-	}
-
 	public void setResolutionPrio(int[] resolutionPrio)
 	{
 		m_resolutionPrio = resolutionPrio;
+	}
+
+	public void setRevision(long revision)
+	{
+		m_revision = revision;
 	}
 
 	public void setSkipComponent(boolean skipComponent)

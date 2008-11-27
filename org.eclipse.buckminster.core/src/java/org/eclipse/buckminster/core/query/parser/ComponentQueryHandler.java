@@ -23,14 +23,15 @@ import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class ComponentQueryHandler extends PropertyManagerHandler
 {
 	private final URL m_contextURL;
+
 	private DocumentationHandler m_documentationHandler;
+
 	private AdvisorNodeHandler m_advisorNodeHandler;
 
 	private final ComponentQueryBuilder m_builder = new ComponentQueryBuilder();
@@ -53,8 +54,7 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(ComponentQuery.ELEM_ROOT_REQUEST.equals(localName))
@@ -82,14 +82,13 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		return m_builder.getDeclaredProperties();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_builder.clear();
 		m_builder.setContextURL(m_contextURL);
@@ -98,4 +97,3 @@ public class ComponentQueryHandler extends PropertyManagerHandler
 		m_builder.setShortDesc(getOptionalStringValue(attrs, ComponentQuery.ATTR_SHORT_DESC));
 	}
 }
-

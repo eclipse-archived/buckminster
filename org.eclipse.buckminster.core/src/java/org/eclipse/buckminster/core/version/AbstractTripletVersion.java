@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -27,7 +26,9 @@ public abstract class AbstractTripletVersion extends AbstractVersion
 		public int compare(String o1, String o2)
 		{
 			if(o1 == null)
-				return o2 == null ? 0 : 1;
+				return o2 == null
+						? 0
+						: 1;
 			if(o2 == null)
 				return -1;
 
@@ -104,31 +105,27 @@ public abstract class AbstractTripletVersion extends AbstractVersion
 		m_qualifier = qualifier;
 	}
 
-	public Comparator<String> getQualifierComparator()
-	{
-		return s_defaultComparator;
-	}
-
 	/**
 	 * Compares this <code>Version</code> object to another object.
 	 * <p>
-	 * A version is considered to be <b>less than </b> another version if its major component is
-	 * less than the other version's major component, or the major components are equal and its
-	 * minor component is less than the other version's minor component, or the major and minor
-	 * components are equal and its micro component is less than the other version's micro
-	 * component, or the major, minor and micro components are equal and it's qualifier component is
-	 * less than the other version's qualifier component (using <code>String.compareTo</code>).
+	 * A version is considered to be <b>less than </b> another version if its major component is less than the other
+	 * version's major component, or the major components are equal and its minor component is less than the other
+	 * version's minor component, or the major and minor components are equal and its micro component is less than the
+	 * other version's micro component, or the major, minor and micro components are equal and it's qualifier component
+	 * is less than the other version's qualifier component (using <code>String.compareTo</code>).
 	 * </p>
 	 * <p>
-	 * A version is considered to be <b>equal to</b> another version if the major, minor and micro
-	 * components are equal and the qualifier component is equal (using
-	 * <code>String.compareTo</code>). A missing qualifier is considered greater then any
-	 * existing qualifier.
+	 * A version is considered to be <b>equal to</b> another version if the major, minor and micro components are equal
+	 * and the qualifier component is equal (using <code>String.compareTo</code>). A missing qualifier is considered
+	 * greater then any existing qualifier.
 	 * </p>
-	 * @param object The <code>Version</code> object to be compared.
-	 * @return A negative integer, zero, or a positive integer if this object is less than, equal
-	 *         to, or greater than the specified <code>Version</code> object.
-	 * @throws ClassCastException If the specified object is not a <code>OSGiVersion</code>.
+	 * 
+	 * @param object
+	 *            The <code>Version</code> object to be compared.
+	 * @return A negative integer, zero, or a positive integer if this object is less than, equal to, or greater than
+	 *         the specified <code>Version</code> object.
+	 * @throws ClassCastException
+	 *             If the specified object is not a <code>OSGiVersion</code>.
 	 */
 	public int compareTo(IVersion o)
 	{
@@ -207,6 +204,11 @@ public abstract class AbstractTripletVersion extends AbstractVersion
 		return m_qualifier;
 	}
 
+	public Comparator<String> getQualifierComparator()
+	{
+		return s_defaultComparator;
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -215,7 +217,9 @@ public abstract class AbstractTripletVersion extends AbstractVersion
 		hc = 37 * hc + m_major;
 		hc = 37 * hc + m_minor;
 		hc = 37 * hc + m_micro;
-		hc = 37 * hc + (m_qualifier == null ? 0 : m_qualifier.hashCode());
+		hc = 37 * hc + (m_qualifier == null
+				? 0
+				: m_qualifier.hashCode());
 
 		return hc;
 	}

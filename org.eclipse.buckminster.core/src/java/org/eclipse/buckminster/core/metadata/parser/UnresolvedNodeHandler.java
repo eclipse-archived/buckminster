@@ -30,31 +30,17 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 	public static final String TAG = UnresolvedNode.TAG;
 
 	private ComponentRequest m_componentRequest;
-	private final ComponentRequestHandler m_requestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
+
+	private final ComponentRequestHandler m_requestHandler = new ComponentRequestHandler(this,
+			new ComponentRequestBuilder());
+
 	private ArrayList<String> m_attributes;
+
 	private AttributeRefHandler m_attributeRefHandler;
 
 	UnresolvedNodeHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
-	{
-		ChildHandler ch;
-		if(ComponentRequestHandler.TAG.equals(localName))
-			ch = m_requestHandler;
-		else if(AttributeRefHandler.TAG.equals(localName))
-		{
-			if(m_attributeRefHandler == null)
-				m_attributeRefHandler = new AttributeRefHandler(this);
-			ch = m_attributeRefHandler;
-		}
-		else
-			ch = super.createHandler(uri, localName, attrs);
-		return ch;
 	}
 
 	public void childPopped(ChildHandler child) throws SAXParseException
@@ -70,12 +56,20 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
-		if(m_attributes != null)
-			m_attributes.clear();
-		m_componentRequest = null;
+		ChildHandler ch;
+		if(ComponentRequestHandler.TAG.equals(localName))
+			ch = m_requestHandler;
+		else if(AttributeRefHandler.TAG.equals(localName))
+		{
+			if(m_attributeRefHandler == null)
+				m_attributeRefHandler = new AttributeRefHandler(this);
+			ch = m_attributeRefHandler;
+		}
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
 	}
 
 	@Override
@@ -83,5 +77,12 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 	{
 		return new UnresolvedNode(new QualifiedDependency(m_componentRequest, m_attributes));
 	}
-}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		if(m_attributes != null)
+			m_attributes.clear();
+		m_componentRequest = null;
+	}
+}

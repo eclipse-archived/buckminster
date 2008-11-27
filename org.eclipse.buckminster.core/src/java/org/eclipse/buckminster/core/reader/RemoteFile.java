@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class RemoteFile implements Closeable
 {
 	private final ICatalogReader m_reader;
+
 	private final String m_fileName;
 
 	public RemoteFile(ICatalogReader reader, String fileName)
@@ -31,19 +32,19 @@ public class RemoteFile implements Closeable
 		m_fileName = fileName;
 	}
 
-	@Override
-	public String toString()
+	public void close() throws IOException
 	{
-		return m_reader.toString() + ',' + m_fileName;
+		m_reader.close();
 	}
 
 	public FileHandle getContents(IProgressMonitor monitor) throws CoreException, IOException
 	{
 		return m_reader.getContents(m_fileName, monitor);
 	}
-	
-	public void close() throws IOException
+
+	@Override
+	public String toString()
 	{
-		m_reader.close();
+		return m_reader.toString() + ',' + m_fileName;
 	}
 }

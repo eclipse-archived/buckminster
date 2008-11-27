@@ -28,7 +28,9 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 	public static final String TAG = ResolvedNode.TAG;
 
 	private UUID m_resolutionId;
+
 	private final ArrayList<UUID> m_children = new ArrayList<UUID>();
+
 	private final ElementRefHandler m_childHandler = new ElementRefHandler(this, ResolvedNode.CHILD_TAG);
 
 	ResolvedNodeHandler(AbstractHandler parent)
@@ -36,9 +38,14 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 		super(parent);
 	}
 
+	public void childPopped(ChildHandler child) throws SAXParseException
+	{
+		if(child == m_childHandler)
+			m_children.add(m_childHandler.getRefId());
+	}
+
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(m_childHandler.getTAG().equals(localName))
@@ -46,20 +53,6 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_resolutionId = UUID.fromString(this.getStringValue(attrs, ResolvedNode.ATTR_RESOLUTION_ID));
-		m_children.clear();
-	}
-
-	public void childPopped(ChildHandler child) throws SAXParseException
-	{
-		if(child == m_childHandler)
-			m_children.add(m_childHandler.getRefId());
 	}
 
 	@Override
@@ -75,8 +68,15 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException("wrapper " + m_resolutionId + " does not wrap a resolution", getDocumentLocator());			
+			throw new SAXParseException("wrapper " + m_resolutionId + " does not wrap a resolution",
+					getDocumentLocator());
 		}
 	}
-}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_resolutionId = UUID.fromString(this.getStringValue(attrs, ResolvedNode.ATTR_RESOLUTION_ID));
+		m_children.clear();
+	}
+}

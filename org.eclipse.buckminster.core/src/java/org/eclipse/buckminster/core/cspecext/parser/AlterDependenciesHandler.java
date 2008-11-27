@@ -23,6 +23,7 @@ class AlterDependenciesHandler extends AlterHandler
 	public static final String TAG = CSpecExtension.ELEM_ALTER_DEPENDENCIES;
 
 	private final AlterDependencyHandler m_alterDependencyHandler = new AlterDependencyHandler(this);
+
 	private final RemoveHandler m_removeDependencyHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME);
 
 	AlterDependenciesHandler(AbstractHandler parent)

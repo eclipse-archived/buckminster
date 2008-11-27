@@ -19,7 +19,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -39,11 +38,51 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	public static final String TAG = "attribute";
 
+	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern)
+	{
+		CharSequence tmp;
+		if(attribute == null && component == null)
+			return false;
+
+		if(excludePattern == null && includePattern == null)
+			return true;
+
+		if(attribute == null)
+			tmp = component;
+		else
+		{
+			StringBuilder bld = new StringBuilder();
+			if(component != null)
+				bld.append(component);
+			bld.append('#');
+			bld.append(attribute);
+			tmp = bld;
+		}
+		if(excludePattern != null)
+		{
+			Matcher m = excludePattern.matcher(tmp);
+			if(m.matches())
+				return false;
+		}
+		if(includePattern != null)
+		{
+			Matcher m = includePattern.matcher(tmp);
+			if(!m.matches())
+				return false;
+		}
+		return true;
+	}
+
 	private final String m_alias;
+
 	private final String m_componentName;
+
 	private final boolean m_contributor;
+
 	private final Pattern m_excludePattern;
+
 	private final Pattern m_includePattern;
+
 	private final boolean m_optional;
 
 	public Prerequisite(PrerequisiteBuilder bld)
@@ -55,6 +94,29 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		m_componentName = bld.getComponentName();
 		m_excludePattern = bld.getExcludePattern();
 		m_includePattern = bld.getIncludePattern();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_alias != null)
+			Utils.addAttribute(attrs, ATTR_ALIAS, m_alias);
+		if(!m_contributor)
+			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false");
+		if(m_excludePattern != null)
+			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
+		if(m_includePattern != null)
+			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
+		if(m_optional)
+			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true");
+		if(m_componentName != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
 	}
 
 	public final String getAlias()
@@ -97,14 +159,16 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		return m_contributor;
 	}
 
+	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException
+	{
+		return isExternal()
+				? (getReferencedAttribute(cspec, cache) != null)
+				: cspec.getAttribute(getAttribute()).isEnabled(cache);
+	}
+
 	public boolean isExternal()
 	{
 		return m_componentName != null;
-	}
-
-	public boolean isPatternFilter()
-	{
-		return m_excludePattern != null || m_includePattern != null;
 	}
 
 	public boolean isMatch(String component, String attribute)
@@ -112,51 +176,14 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		return isMatch(component, attribute, m_excludePattern, m_includePattern);
 	}
 
-	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern)
-	{
-		CharSequence tmp;
-		if(attribute == null && component == null)
-			return false;
-		
-		if(excludePattern == null && includePattern == null)
-			return true;
-
-		if(attribute == null)
-			tmp = component;
-		else
-		{
-			StringBuilder bld = new StringBuilder();
-			if(component != null)
-				bld.append(component);
-			bld.append('#');
-			bld.append(attribute);
-			tmp = bld;
-		}
-		if(excludePattern != null)
-		{
-			Matcher m = excludePattern.matcher(tmp);
-			if(m.matches())
-				return false;
-		}
-		if(includePattern != null)
-		{
-			Matcher m = includePattern.matcher(tmp);
-			if(!m.matches())
-				return false;
-		}
-		return true;
-	}
-
 	public final boolean isOptional()
 	{
 		return m_optional;
 	}
 
-	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException
+	public boolean isPatternFilter()
 	{
-		return isExternal()
-			? (getReferencedAttribute(cspec, cache) != null)
-			: cspec.getAttribute(getAttribute()).isEnabled(cache);
+		return m_excludePattern != null || m_includePattern != null;
 	}
 
 	@Override
@@ -166,28 +193,5 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 			return getName();
 
 		return m_componentName + '#' + getAttribute();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_alias != null)
-			Utils.addAttribute(attrs, ATTR_ALIAS, m_alias);
-		if(!m_contributor)
-			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false");
-		if(m_excludePattern != null)
-			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
-		if(m_includePattern != null)
-			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
-		if(m_optional)
-			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true");
-		if(m_componentName != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
 	}
 }

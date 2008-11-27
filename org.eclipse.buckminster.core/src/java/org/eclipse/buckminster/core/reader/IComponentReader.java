@@ -25,8 +25,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
- * A Component reader knows how to read a component stored at some arbitrary location. An instance
- * of a component reader is always associated with one specific component.
+ * A Component reader knows how to read a component stored at some arbitrary location. An instance of a component reader
+ * is always associated with one specific component.
+ * 
  * @see IReaderType
  * @author thhal
  */
@@ -63,22 +64,24 @@ public interface IComponentReader extends IResolverBackchannel, Closeable
 	IReaderType getReaderType();
 
 	/**
-	 * Returns the version converter that converts plain versions into fully fledged version
-	 * selectors.
+	 * Returns the version converter that converts plain versions into fully fledged version selectors.
+	 * 
 	 * @return A version converter.
 	 * @throws CoreException
 	 */
 	IVersionConverter getVersionConverter() throws CoreException;
 
 	/**
-	 * Materialize (download and unpack) the the file appointed by this reader into the
-	 * specified <code>location</code>. The implementation must ensure that the
-	 * materialization is atomic.
+	 * Materialize (download and unpack) the the file appointed by this reader into the specified <code>location</code>.
+	 * The implementation must ensure that the materialization is atomic.
+	 * 
 	 * @param location
 	 * @param resolution
 	 * @param ctx
-	 * @param monitor The progress monitor.
+	 * @param monitor
+	 *            The progress monitor.
 	 * @throws CoreException
 	 */
-	void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException;
+	void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
+			throws CoreException;
 }

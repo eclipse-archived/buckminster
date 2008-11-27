@@ -15,11 +15,10 @@ import org.xml.sax.ContentHandler;
 public interface ISAXParser<T> extends ContentHandler
 {
 	/**
-	 * Return the result. This method should not be called
-	 * until the handler has received the call to {@link
-	 * ContentHandler#endElement(String, String, String)}.
+	 * Return the result. This method should not be called until the handler has received the call to
+	 * {@link ContentHandler#endElement(String, String, String)}.
+	 * 
 	 * @return The result produced by this parser
 	 */
 	T getResult();
 }
-

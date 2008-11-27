@@ -25,10 +25,8 @@ public class ToUpperHandler extends ValueFilterHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		this.setValueHolder(new ToUpper());
 	}
 }
-

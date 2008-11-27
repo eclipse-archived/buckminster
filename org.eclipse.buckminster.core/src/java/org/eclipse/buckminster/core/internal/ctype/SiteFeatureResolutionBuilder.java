@@ -48,12 +48,38 @@ import org.eclipse.update.core.VersionedIdentifier;
  */
 public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 {
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+	private static ResolverNode getResolverNode(Map<ComponentName, ResolverNode> nodes, RMContext context,
+			QualifiedDependency qDep, String tagInfo) throws CoreException
+	{
+		// We use a ComponentName as the key since we don't want the
+		// designator to play a role here.
+		//
+		ComponentName key = qDep.getRequest().toPureComponentName();
+		ResolverNode nr;
+		boolean infant;
+		synchronized(nodes)
+		{
+			nr = nodes.get(key);
+			infant = (nr == null);
+			if(infant)
+			{
+				nr = new ResolverNode(context.getNodeQuery(qDep), tagInfo);
+				nodes.put(key, nr);
+			}
+		}
+
+		if(!infant)
+			nr.addDependencyQualification(qDep);
+		return nr;
+	}
+
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
+			IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof SiteFeatureReader))
-			throw BuckminsterException.fromMessage("%s resolution builder can only work with a site.feature reader", getId());
+			throw BuckminsterException.fromMessage("%s resolution builder can only work with a site.feature reader",
+					getId());
 
 		monitor.beginTask(null, 100);
 		try
@@ -67,7 +93,8 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 
 			NodeQuery query = reader.getNodeQuery();
 			QualifiedDependency qdep = new QualifiedDependency(query.getComponentRequest(), null);
-			ResolverNode rNode = buildCSpecFromSiteFeature(reader, new HashMap<ComponentName, ResolverNode>(), siteFeature, new UnresolvedNode(qdep), null, MonitorUtils.subMonitor(monitor, 50));
+			ResolverNode rNode = buildCSpecFromSiteFeature(reader, new HashMap<ComponentName, ResolverNode>(),
+					siteFeature, new UnresolvedNode(qdep), null, MonitorUtils.subMonitor(monitor, 50));
 			BOMNode node = rNode.collectNodes(new HashMap<UUID, BOMNode>(), new Stack<Resolution>(), true);
 			if(node == null)
 				node = new UnresolvedNode(query.getQualifiedDependency());
@@ -79,13 +106,8 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		}
 	}
 
-	@Override
-	public String getComponentTypeID()
-	{
-		return IComponentType.ECLIPSE_SITE_FEATURE;
-	}
-
-	private ResolverNode buildCSpecFromSiteFeature(IComponentReader reader, Map<ComponentName, ResolverNode> nodes, IFeature siteFeature, BOMNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
+	private ResolverNode buildCSpecFromSiteFeature(IComponentReader reader, Map<ComponentName, ResolverNode> nodes,
+			IFeature siteFeature, BOMNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query = reader.getNodeQuery();
 		RMContext context = query.getContext();
@@ -121,7 +143,9 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				ComponentRequestBuilder bld = cspecBld.createDependencyBuilder();
 				bld.setName(vid.getIdentifier());
 				bld.setComponentTypeID(getComponentTypeID());
-				bld.setVersionDesignator((version == null) ? null : VersionFactory.createExplicitDesignator(version));
+				bld.setVersionDesignator((version == null)
+						? null
+						: VersionFactory.createExplicitDesignator(version));
 				bld.setFilter(FilterUtils.createFilter(ref.getOS(), ref.getWS(), ref.getOSArch(), ref.getName()));
 				cspecBld.addDependency(bld);
 				matches[idx] = new VersionMatch(version, null, -1, null, null);
@@ -134,10 +158,12 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 				QualifiedDependency qdep = qDeps[idx];
 				NodeQuery childQuery = context.getNodeQuery(qdep);
 				IFeature refFeature = refs[idx].getFeature(MonitorUtils.subMonitor(monitor, 4));
-				IComponentReader childReader = reader.getReaderType().getReader(provider, ctype, childQuery, matches[idx], MonitorUtils.subMonitor(monitor, 1));
+				IComponentReader childReader = reader.getReaderType().getReader(provider, ctype, childQuery,
+						matches[idx], MonitorUtils.subMonitor(monitor, 1));
 				try
 				{
-					childArr.add(buildCSpecFromSiteFeature(childReader, nodes, refFeature, new UnresolvedNode(qdep), childTagInfo, MonitorUtils.subMonitor(monitor, 5)));
+					childArr.add(buildCSpecFromSiteFeature(childReader, nodes, refFeature, new UnresolvedNode(qdep),
+							childTagInfo, MonitorUtils.subMonitor(monitor, 5)));
 				}
 				finally
 				{
@@ -152,28 +178,10 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		return node;
 	}
 
-	private static ResolverNode getResolverNode(Map<ComponentName, ResolverNode> nodes, RMContext context, QualifiedDependency qDep, String tagInfo) throws CoreException
+	@Override
+	public String getComponentTypeID()
 	{
-		// We use a ComponentName as the key since we don't want the
-		// designator to play a role here.
-		//
-		ComponentName key = qDep.getRequest().toPureComponentName();
-		ResolverNode nr;
-		boolean infant;
-		synchronized(nodes)
-		{
-			nr = nodes.get(key);
-			infant = (nr == null);
-			if(infant)
-			{
-				nr = new ResolverNode(context.getNodeQuery(qDep), tagInfo);
-				nodes.put(key, nr);
-			}
-		}
-
-		if(!infant)
-			nr.addDependencyQualification(qDep);
-		return nr;
+		return IComponentType.ECLIPSE_SITE_FEATURE;
 	}
 
 	private CSpecBuilder getCSpecBuilder(IFeature siteFeature)
@@ -186,4 +194,3 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		return cspecBld;
 	}
 }
-

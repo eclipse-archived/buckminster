@@ -18,12 +18,14 @@ public interface IParser<T>
 {
 	/**
 	 * Parse the input stream and deliver a result.
-	 * @param systemId The \"name\" of the input stream
-	 * @param stream The stream that provides the input
+	 * 
+	 * @param systemId
+	 *            The \"name\" of the input stream
+	 * @param stream
+	 *            The stream that provides the input
 	 * @return The internalized model
-	 * @throws CoreException parsing failed for some reason.
+	 * @throws CoreException
+	 *             parsing failed for some reason.
 	 */
-	T parse(String systemId, InputStream stream)
-	throws CoreException;
+	T parse(String systemId, InputStream stream) throws CoreException;
 }
-

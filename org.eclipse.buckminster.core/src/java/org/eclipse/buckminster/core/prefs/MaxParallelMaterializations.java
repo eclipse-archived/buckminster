@@ -16,7 +16,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author thhal
- *
+ * 
  */
 public class MaxParallelMaterializations extends BasicPreferenceHandler
 {
@@ -42,9 +42,10 @@ public class MaxParallelMaterializations extends BasicPreferenceHandler
 		catch(NumberFormatException e)
 		{
 		}
-		throw new IllegalArgumentException(
-			String.format("%s is an illegal value for maxParallelMaterialisations. It must be an integer value between 1 and 20", prefValue));
-			
+		throw new IllegalArgumentException(String.format(
+				"%s is an illegal value for maxParallelMaterialisations. It must be an integer value between 1 and 20",
+				prefValue));
+
 	}
 
 	@Override

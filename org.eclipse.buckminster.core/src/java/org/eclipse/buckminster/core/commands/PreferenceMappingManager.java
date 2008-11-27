@@ -42,9 +42,9 @@ public class PreferenceMappingManager
 	public static synchronized PreferenceMappingManager getInstance(boolean includeTests) throws CoreException
 	{
 		PreferenceMappingManager pmm = null;
-		if (s_instanceRef != null)
+		if(s_instanceRef != null)
 			pmm = s_instanceRef.get();
-		if (pmm == null || pmm.m_includeTests != includeTests)
+		if(pmm == null || pmm.m_includeTests != includeTests)
 		{
 			pmm = new PreferenceMappingManager(includeTests);
 			s_instanceRef = new WeakReference<PreferenceMappingManager>(pmm);
@@ -73,7 +73,7 @@ public class PreferenceMappingManager
 		{
 			IConfigurationElement elem = elems[idx];
 			BasicPreferenceHandler bph;
-			if (elem.getAttribute(CLASS_ATTRIBUTE) != null)
+			if(elem.getAttribute(CLASS_ATTRIBUTE) != null)
 				bph = (BasicPreferenceHandler)elem.createExecutableExtension(CLASS_ATTRIBUTE);
 			else
 			{
@@ -81,11 +81,37 @@ public class PreferenceMappingManager
 				((IExecutableExtension)bph).setInitializationData(elem, CLASS_ATTRIBUTE, null);
 			}
 			String name = bph.getName();
-			if (name.startsWith(TEST_PREFIX) && !m_includeTests)
+			if(name.startsWith(TEST_PREFIX) && !m_includeTests)
 				continue;
 			mappings.add(bph);
 		}
 		return mappings;
+	}
+
+	public List<BasicPreferenceHandler> getAllHandlers(String pattern)
+	{
+		Pattern rx = (pattern == null)
+				? null
+				: Pattern.compile(pattern);
+
+		ArrayList<BasicPreferenceHandler> handlers = new ArrayList<BasicPreferenceHandler>();
+		int top = m_mappings.size();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			BasicPreferenceHandler bph = m_mappings.get(idx);
+			if(rx == null || rx.matcher(bph.getName()).find())
+				handlers.add(bph);
+		}
+
+		Comparator<BasicPreferenceHandler> bphComparator = new Comparator<BasicPreferenceHandler>()
+		{
+			public int compare(BasicPreferenceHandler o1, BasicPreferenceHandler o2)
+			{
+				return o1.getName().compareTo(o2.getName());
+			}
+		};
+		Collections.sort(handlers, bphComparator);
+		return handlers;
 	}
 
 	public BasicPreferenceHandler getHandler(String name) throws UsageException
@@ -123,7 +149,7 @@ public class PreferenceMappingManager
 		bld.append("Preference ");
 		bld.append(name);
 		bld.append(" is ambigous. It matches ");
-		for (int i = 0; i < foundMatches; i++)
+		for(int i = 0; i < foundMatches; i++)
 		{
 			if(i > 0)
 			{
@@ -134,29 +160,5 @@ public class PreferenceMappingManager
 			bld.append(matches.get(i).getName());
 		}
 		throw new UsageException(bld.toString());
-	}
-
-	public List<BasicPreferenceHandler> getAllHandlers(String pattern)
-	{
-		Pattern rx = (pattern == null) ? null : Pattern.compile(pattern);
-
-		ArrayList<BasicPreferenceHandler> handlers = new ArrayList<BasicPreferenceHandler>();
-		int top = m_mappings.size();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			BasicPreferenceHandler bph = m_mappings.get(idx);
-			if (rx == null || rx.matcher(bph.getName()).find())
-				handlers.add(bph);
-		}
-
-		Comparator<BasicPreferenceHandler> bphComparator = new Comparator<BasicPreferenceHandler>()
-		{
-			public int compare(BasicPreferenceHandler o1, BasicPreferenceHandler o2)
-			{
-				return o1.getName().compareTo(o2.getName());
-			}
-		};
-		Collections.sort(handlers, bphComparator);
-		return handlers;
 	}
 }

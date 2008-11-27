@@ -38,19 +38,28 @@ public class Generator extends NamedElement implements IGenerator
 		m_attribute = attribute;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, m_attribute);
+		if(m_component != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT, m_component);
+	}
+
 	public String getAttribute()
 	{
 		return m_attribute;
 	}
 
-	public CSpec getCSpec()
-	{
-		return m_cspec;
-	}
-
 	public String getComponent()
 	{
 		return m_component;
+	}
+
+	public CSpec getCSpec()
+	{
+		return m_cspec;
 	}
 
 	public String getDefaultTag()
@@ -67,14 +76,5 @@ public class Generator extends NamedElement implements IGenerator
 	public String getNameAttributeName()
 	{
 		return ATTR_GENERATES;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, m_attribute);
-		if(m_component != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT, m_component);
 	}
 }

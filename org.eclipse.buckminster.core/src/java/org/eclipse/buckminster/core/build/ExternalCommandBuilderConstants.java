@@ -11,14 +11,17 @@ package org.eclipse.buckminster.core.build;
 
 /**
  * @author kolwing
- *
+ * 
  */
 public interface ExternalCommandBuilderConstants
 {
 	public static final String LAUNCHERDEFINITIONS_FILE_KEY = "launcherdefinitions.file";
+
 	public static final String LAUNCHERDEFINITION_TO_USE_KEY = "launcherdefinition.to.use";
+
 	public static final String ADDITIONAL_ARGUMENTS_KEY = "additional.arguments";
-	
+
 	public static final String DEFAULT_LAUNCHERDEFINITIONS_FILE = ".launcherdefinitions";
+
 	public static final String DEFAULT_LAUNCHERDEFINITION_TO_USE = "${system:OS}";
 }

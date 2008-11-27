@@ -27,7 +27,7 @@ import org.eclipse.buckminster.core.common.model.IProperties;
 
 /**
  * A wrapper that brings some sanety into {@link java.util.Properties}.
- *
+ * 
  * @author Thomas Hallgren
  */
 abstract class PropertiesWrapper extends AbstractMap<String, String> implements IProperties
@@ -77,12 +77,12 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 		}
 	}
 
-	protected abstract Properties getProperties();
-
 	@Override
 	public boolean containsKey(Object key)
 	{
-		return (key instanceof String) ? (getProperties().getProperty((String)key) != null) : false;
+		return (key instanceof String)
+				? (getProperties().getProperty((String)key) != null)
+				: false;
 	}
 
 	@Override
@@ -113,7 +113,21 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 	@Override
 	public String get(Object key)
 	{
-		return (key instanceof String) ? getProperties().getProperty((String)key) : null;
+		return (key instanceof String)
+				? getProperties().getProperty((String)key)
+				: null;
+	}
+
+	protected abstract Properties getProperties();
+
+	public Set<String> immutableKeySet()
+	{
+		return this.keySet();
+	}
+
+	public boolean isMutable(String key)
+	{
+		return true;
 	}
 
 	@Override
@@ -132,22 +146,13 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 					}
 				};
 			}
+
 			@Override
 			public int size()
 			{
 				return PropertiesWrapper.this.size();
 			}
 		};
-	}
-
-	public Set<String> immutableKeySet()
-	{
-		return this.keySet();
-	}
-
-	public boolean isMutable(String key)
-	{
-		return true;
 	}
 
 	public Set<String> mutableKeySet()
@@ -228,6 +233,7 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 					}
 				};
 			}
+
 			@Override
 			public int size()
 			{

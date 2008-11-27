@@ -28,13 +28,13 @@ public class AlterDependencyBuilder
 		m_baseBuilder.clear();
 	}
 
-	public String getName()
-	{
-		return m_baseBuilder.getName();
-	}
-
 	public AlterDependency createAlterDependency() throws CoreException
 	{
 		return new AlterDependency(m_baseBuilder.createComponentRequest());
+	}
+
+	public String getName()
+	{
+		return m_baseBuilder.getName();
 	}
 }

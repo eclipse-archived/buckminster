@@ -36,11 +36,17 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 	public static final String TAG = WorkspaceBinding.TAG;
 
 	private ComponentIdentifier m_cid;
+
 	private UUID m_resolutionId;
+
 	private IPath m_location;
+
 	private IPath m_wsRoot;
+
 	private IPath m_wsRelativePath;
-	private Map<String,String> m_properties;
+
+	private Map<String, String> m_properties;
+
 	private long m_timestamp;
 
 	public WorkspaceBindingHandler(AbstractHandler parent)
@@ -49,10 +55,24 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 	}
 
 	@Override
+	public Map<String, String> getProperties()
+	{
+		if(m_properties == null)
+			m_properties = new HashMap<String, String>();
+		return m_properties;
+	}
+
+	WorkspaceBinding getWorkspaceBinding() throws SAXException
+	{
+		return new WorkspaceBinding(m_location, m_cid, m_resolutionId, m_wsRoot, m_wsRelativePath, m_properties,
+				m_timestamp);
+	}
+
+	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
-		String name  = getStringValue(attrs, NamedElement.ATTR_NAME);
+		String name = getStringValue(attrs, NamedElement.ATTR_NAME);
 		String ctype = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
 		IVersion version = null;
 
@@ -78,18 +98,5 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 		m_wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));
 		m_timestamp = getLongValue(attrs, WorkspaceBinding.ATTR_TIMESTAMP);
 		m_resolutionId = UUID.fromString(this.getStringValue(attrs, WorkspaceBinding.ATTR_RESOLUTION_ID));
-	}
-
-	WorkspaceBinding getWorkspaceBinding() throws SAXException
-	{
-		return new WorkspaceBinding(m_location, m_cid, m_resolutionId, m_wsRoot, m_wsRelativePath, m_properties, m_timestamp);
-	}
-
-	@Override
-	public Map<String, String> getProperties()
-	{
-		if(m_properties == null)
-			m_properties = new HashMap<String,String>();
-		return m_properties;
 	}
 }

@@ -21,7 +21,9 @@ import org.xml.sax.SAXException;
 abstract class AlterAttributesHandler extends AlterHandler
 {
 	private final AlterAttributeHandler m_publicHandler;
+
 	private final AlterAttributeHandler m_privateHandler;
+
 	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME);
 
 	AlterAttributesHandler(AbstractHandler parent)
@@ -31,6 +33,16 @@ abstract class AlterAttributesHandler extends AlterHandler
 		m_privateHandler = this.createAttributeHandler(false);
 	}
 
+	void addAlterAttribute(AlterAttributeBuilder attribute) throws SAXException
+	{
+		((AlterCSpecHandler)this.getParentHandler()).addAlterAttribute(attribute);
+	}
+
+	void addRemoveAttribute(String name)
+	{
+		((AlterCSpecHandler)this.getParentHandler()).addRemoveAttribute(name);
+	}
+
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_removeHandler)
@@ -38,6 +50,8 @@ abstract class AlterAttributesHandler extends AlterHandler
 		else
 			this.addAlterAttribute(((AlterAttributeHandler)child).getBuilder());
 	}
+
+	abstract AlterAttributeHandler createAttributeHandler(boolean publ);
 
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
@@ -53,16 +67,4 @@ abstract class AlterAttributesHandler extends AlterHandler
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
-
-	void addAlterAttribute(AlterAttributeBuilder attribute) throws SAXException
-	{
-		((AlterCSpecHandler)this.getParentHandler()).addAlterAttribute(attribute);
-	}
-	
-	void addRemoveAttribute(String name)
-	{
-		((AlterCSpecHandler)this.getParentHandler()).addRemoveAttribute(name);
-	}
-
-	abstract AlterAttributeHandler createAttributeHandler(boolean publ);
 }

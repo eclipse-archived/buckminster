@@ -19,18 +19,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * A IStreamConsumer responsible for reading and parsing eclipse preferences from
- * an input stream
- *
+ * A IStreamConsumer responsible for reading and parsing eclipse preferences from an input stream
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePreferences>
 {
-	public static final EclipsePreferencesReader INSTANCE = new EclipsePreferencesReader();
-
-	public static final String BUCKMINSTER_PROJECT_PREFS_PATH = EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME + '/' + CorePlugin.getID() + ".prefs";
-
 	private static class ECRemotePrefs extends EclipsePreferences
 	{
 		public static IEclipsePreferences loadFromStream(InputStream stream) throws IOException
@@ -43,8 +38,13 @@ public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePrefere
 		}
 	}
 
-	public IEclipsePreferences consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws CoreException, IOException
+	public static final EclipsePreferencesReader INSTANCE = new EclipsePreferencesReader();
+
+	public static final String BUCKMINSTER_PROJECT_PREFS_PATH = EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME + '/'
+			+ CorePlugin.getID() + ".prefs";
+
+	public IEclipsePreferences consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		try

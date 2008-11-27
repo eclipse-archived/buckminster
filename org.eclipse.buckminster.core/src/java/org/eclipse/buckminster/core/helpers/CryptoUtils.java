@@ -16,44 +16,15 @@ import java.security.NoSuchAlgorithmException;
  * Cryptology utils
  * 
  * @author Karel Brezina
- *
+ * 
  */
 public class CryptoUtils
 {
 	private static String ENCODING_UTF8 = "UTF-8";
 
 	/**
-	 * Encrypts an input string using a given algorithm 
-	 * @param input
-	 * @param algorithmName
-	 * @return
-	 */
-	public static String encrypt(String input, String algorithmName)
-	{
-		return encrypt(input, ENCODING_UTF8, algorithmName);
-	}
-	
-	/**
-	 * Encrypts an input string using a given algorithm 
-	 * @param input
-	 * @param encodingCharsetName
-	 * @param algorithmName
-	 * @return
-	 */
-	public static String encrypt(String input, String encodingCharsetName, String algorithmName)
-	{
-		try
-		{
-			return encrypt(input.getBytes(encodingCharsetName), algorithmName);
-		}
-		catch(UnsupportedEncodingException e)
-		{
-			throw new RuntimeException("Internal error: " + ENCODING_UTF8 + " is not supported encoding", e);
-		}
-	}
-	
-	/**
-	 * Encrypts an input byte array using a given algorithm 
+	 * Encrypts an input byte array using a given algorithm
+	 * 
 	 * @param input
 	 * @param algorithmName
 	 * @return
@@ -88,6 +59,38 @@ public class CryptoUtils
 		}
 		md5val = hexString.toString();
 		return md5val;
+	}
+
+	/**
+	 * Encrypts an input string using a given algorithm
+	 * 
+	 * @param input
+	 * @param algorithmName
+	 * @return
+	 */
+	public static String encrypt(String input, String algorithmName)
+	{
+		return encrypt(input, ENCODING_UTF8, algorithmName);
+	}
+
+	/**
+	 * Encrypts an input string using a given algorithm
+	 * 
+	 * @param input
+	 * @param encodingCharsetName
+	 * @param algorithmName
+	 * @return
+	 */
+	public static String encrypt(String input, String encodingCharsetName, String algorithmName)
+	{
+		try
+		{
+			return encrypt(input.getBytes(encodingCharsetName), algorithmName);
+		}
+		catch(UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("Internal error: " + ENCODING_UTF8 + " is not supported encoding", e);
+		}
 	}
 
 }

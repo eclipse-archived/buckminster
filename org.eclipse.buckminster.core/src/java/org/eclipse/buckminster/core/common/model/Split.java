@@ -16,11 +16,9 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
- * The Split class will perform a regular expression based split
- * on its source.
- *
+ * The Split class will perform a regular expression based split on its source.
+ * 
  * @author Thomas Hallgren
  */
 public class Split extends AbstractSplit
@@ -30,9 +28,9 @@ public class Split extends AbstractSplit
 	private final int m_limit;
 
 	/**
-	 * Create a <code>Split</code> that will split the value provided by
-	 * a source around instances of <code>splitter</code>.
-	 *
+	 * Create a <code>Split</code> that will split the value provided by a source around instances of
+	 * <code>splitter</code>.
+	 * 
 	 * @param pattern
 	 *            The delimiting pattern
 	 * @param limit
@@ -43,6 +41,21 @@ public class Split extends AbstractSplit
 	{
 		super(splitter);
 		m_limit = limit;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		if(m_limit != 0)
+			Utils.addAttribute(attrs, ATTR_LIMIT, Integer.toString(m_limit));
+	}
+
+	@Override
+	protected String[] checkedGetValues(Map<String, String> properties, int recursionGuard)
+	{
+		String source = this.checkedGetSourceValue(properties, recursionGuard);
+		return this.getPattern().split(source, m_limit);
 	}
 
 	@Override
@@ -58,20 +71,4 @@ public class Split extends AbstractSplit
 		hc = 37 * hc + m_limit;
 		return hc;
 	}
-
-	@Override
-	protected String[] checkedGetValues(Map<String, String> properties, int recursionGuard)
-	{
-		String source = this.checkedGetSourceValue(properties, recursionGuard);
-		return this.getPattern().split(source, m_limit);
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		if(m_limit != 0)
-			Utils.addAttribute(attrs, ATTR_LIMIT, Integer.toString(m_limit));
-	}
 }
-

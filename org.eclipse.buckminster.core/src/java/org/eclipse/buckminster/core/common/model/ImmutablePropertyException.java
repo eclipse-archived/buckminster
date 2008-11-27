@@ -22,4 +22,3 @@ public class ImmutablePropertyException extends RuntimeException
 		super(propKey);
 	}
 }
-

@@ -56,16 +56,17 @@ import org.eclipse.core.runtime.QualifiedName;
 public class WorkspaceInfo
 {
 	/**
-	 * Qualified name of the project persistent property where the {@link UUID} of the component is stored.<br/> This
-	 * property will be set on IResource elements that represent component roots such as projects or resources that is
-	 * inner bindings in projects.
+	 * Qualified name of the project persistent property where the {@link UUID} of the component is stored.<br/>
+	 * This property will be set on IResource elements that represent component roots such as projects or resources that
+	 * is inner bindings in projects.
 	 */
 	public static final QualifiedName PPKEY_COMPONENT_ID = new QualifiedName(CorePlugin.CORE_NAMESPACE, "componentID");
 
 	/**
 	 * Qualified name of the project persistent property where the a boolean value that indicates if the CSpec has been
-	 * generated from other artifacts is stored.<br/> This property will be set on IResource elements that represent
-	 * component roots such as projects or resources that is inner bindings in projects.
+	 * generated from other artifacts is stored.<br/>
+	 * This property will be set on IResource elements that represent component roots such as projects or resources that
+	 * is inner bindings in projects.
 	 */
 	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE,
 			"generatedCSpec");
@@ -77,6 +78,29 @@ public class WorkspaceInfo
 	private static final IResource[] s_noResources = new IResource[0];
 
 	private static final HashMap<ComponentIdentifier, Resolution> s_resolutionCache = new HashMap<ComponentIdentifier, Resolution>();
+
+	private static void checkFirstUse()
+	{
+		// We want the first caller to star the job. That job in turn will
+		// result in recursive calls that should return immediately.
+		//
+		synchronized(WorkspaceInfo.class)
+		{
+			if(s_hasBeenActivated)
+				return;
+			s_hasBeenActivated = true;
+		}
+
+		WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
+		catchUpJob.schedule();
+		try
+		{
+			catchUpJob.join();
+		}
+		catch(InterruptedException e)
+		{
+		}
+	}
 
 	public static void clearCachedLocation(IComponentIdentifier cid)
 	{
@@ -94,6 +118,22 @@ public class WorkspaceInfo
 		}
 	}
 
+	private static IProject extractProject(IResource[] resources)
+	{
+		int idx = resources.length;
+		while(--idx >= 0)
+		{
+			IResource resource = resources[idx];
+			if(resource instanceof IProject)
+			{
+				IProject project = (IProject)resource;
+				if(project.isOpen())
+					return project;
+			}
+		}
+		return null;
+	}
+
 	public static void forceRefreshOnAll(IProgressMonitor monitor)
 	{
 		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, "Problems during metadata refresh", null);
@@ -109,7 +149,11 @@ public class WorkspaceInfo
 			IResolution[] resolutions = StorageManager.getDefault().getResolutions().getElements();
 			MonitorUtils.worked(monitor, 50);
 
-			int ticksPerRefresh = 900 / (resolutions.length > 0 ? resolutions.length : (projects.length > 0 ? projects.length : 1));
+			int ticksPerRefresh = 900 / (resolutions.length > 0
+					? resolutions.length
+					: (projects.length > 0
+							? projects.length
+							: 1));
 
 			// Re-resolve all known bundles from the target platform
 			//
@@ -152,6 +196,131 @@ public class WorkspaceInfo
 			monitor.done();
 		}
 		CorePlugin.logWarningsAndErrors(status);
+	}
+
+	private static Resolution[] getActiveResolutions(StorageManager sm) throws CoreException
+	{
+		// Add the newest version of each known resolution
+		//
+		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
+		ArrayList<TimestampedKey> duplicates = null;
+		ISaxableStorage<Resolution> ress = sm.getResolutions();
+		ISaxableStorage<Materialization> mats = sm.getMaterializations();
+		for(Resolution res : ress.getElements())
+		{
+			UUID resId = res.getId();
+			ComponentIdentifier ci = res.getComponentIdentifier();
+
+			IPath location = getResolutionLocation(mats, res);
+			if(location == null)
+				continue;
+
+			ComponentName cn = ci.toPureComponentName();
+			TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
+			TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
+			if(prevTsKey == null)
+				continue;
+
+			// Check real existence of locations. For performance reasons we only do
+			// this when ambiguities arise.
+			//
+			Resolution prevRes = ress.getElement(prevTsKey.getKey());
+			IPath prevLocation = getResolutionLocation(mats, prevRes);
+			if(prevLocation == null)
+				continue;
+
+			if(location.toFile().exists())
+			{
+				if(location.equals(prevLocation))
+				{
+					// Discriminate using timestamp
+					//
+					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+					{
+						// We just replaced a newer entry. Put it back!
+						//
+						resolutionKeys.put(cn, prevTsKey);
+					}
+					continue;
+				}
+
+				if(!prevLocation.toFile().exists())
+					continue;
+
+				// A resolution towards the target platform will always have a lower
+				// precedence.
+				//
+				if(prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+				{
+					if(!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+						continue;
+				}
+				else
+				{
+					if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					{
+						resolutionKeys.put(cn, prevTsKey);
+						continue;
+					}
+				}
+
+				boolean versionEqual = false;
+				IVersion currVersion = ci.getVersion();
+				IVersion prevVersion = prevRes.getComponentIdentifier().getVersion();
+				if(currVersion == null)
+					versionEqual = (prevVersion == null);
+				else if(prevVersion != null)
+					versionEqual = currVersion.equalsUnqualified(prevVersion);
+
+				if(versionEqual)
+				{
+					// Discriminate using timestamp
+					//
+					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+						resolutionKeys.put(cn, prevTsKey);
+					continue;
+				}
+
+				// Apparently we have both locations present so we cannot
+				// discriminate one of them
+				//
+				if(duplicates == null)
+					duplicates = new ArrayList<TimestampedKey>();
+				duplicates.add(prevTsKey);
+
+				CorePlugin.getLogger().debug(
+						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn,
+						currVersion, location, prevVersion, prevLocation);
+				continue;
+			}
+
+			if(prevLocation.toFile().exists())
+			{
+				// New entry is bogus and old entry is valid
+				//
+				resolutionKeys.put(cn, prevTsKey);
+			}
+			else
+			{
+				// None of the entries were valid. Simply remove the entry
+				//
+				resolutionKeys.remove(cn);
+			}
+		}
+
+		int top = resolutionKeys.size();
+		if(duplicates != null)
+			top += duplicates.size();
+
+		Resolution[] result = new Resolution[top];
+		int idx = 0;
+		for(TimestampedKey tsKey : resolutionKeys.values())
+			result[idx++] = ress.getElement(tsKey.getKey());
+
+		if(duplicates != null)
+			for(TimestampedKey tsKey : duplicates)
+				result[idx++] = ress.getElement(tsKey.getKey());
+		return result;
 	}
 
 	public static List<Resolution> getAllResolutions() throws CoreException
@@ -301,8 +470,8 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Returns the optional <code>Materialization</code> for the component. Components found in the target platform
-	 * will not have a materialization.
+	 * Returns the optional <code>Materialization</code> for the component. Components found in the target platform will
+	 * not have a materialization.
 	 * 
 	 * @param resolution
 	 *            The resolution for which we want a Materialization
@@ -364,7 +533,7 @@ public class WorkspaceInfo
 						candidate = res;
 						break;
 					}
-					
+
 					if(candidate == null)
 					{
 						candidate = res;
@@ -441,8 +610,7 @@ public class WorkspaceInfo
 				try
 				{
 					ComponentIdentifier candCid = candidate.getCSpec().getComponentIdentifier();
-					int cmp = Trivial
-							.compareAllowNull(id.getVersion(), candCid.getVersion());
+					int cmp = Trivial.compareAllowNull(id.getVersion(), candCid.getVersion());
 					if(cmp == 0)
 					{
 						// One with a specified component type takes precedence
@@ -488,6 +656,39 @@ public class WorkspaceInfo
 			}
 		}
 		return candidate;
+	}
+
+	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res)
+			throws CoreException
+	{
+		// Obtain the storage manager outside of the synchronization to avoid
+		// possible deadlock.
+		//
+		StorageManager.getDefault();
+		checkFirstUse();
+
+		IPath location;
+		ComponentIdentifier ci = res.getComponentIdentifier();
+		synchronized(s_locationCache)
+		{
+			location = s_locationCache.get(ci);
+			if(location == null)
+			{
+				for(Materialization mat : mats.getElements())
+				{
+					if(mat.getComponentIdentifier().equals(ci))
+					{
+						location = mat.getComponentLocation();
+						break;
+					}
+				}
+				if(location == null)
+					location = res.getProvider().getReaderType().getFixedLocation(res);
+				if(location != null)
+					s_locationCache.put(ci, location);
+			}
+		}
+		return location;
 	}
 
 	/**
@@ -603,202 +804,5 @@ public class WorkspaceInfo
 		for(Materialization mt : sm.getMaterializations().getElements())
 			if(!mt.getComponentLocation().toFile().exists())
 				mt.remove(sm);
-	}
-
-	private static void checkFirstUse()
-	{
-		// We want the first caller to star the job. That job in turn will
-		// result in recursive calls that should return immediately.
-		//
-		synchronized(WorkspaceInfo.class)
-		{
-			if(s_hasBeenActivated)
-				return;
-			s_hasBeenActivated = true;
-		}
-
-		WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
-		catchUpJob.schedule();
-		try
-		{
-			catchUpJob.join();
-		}
-		catch(InterruptedException e)
-		{
-		}
-	}
-
-	private static IProject extractProject(IResource[] resources)
-	{
-		int idx = resources.length;
-		while(--idx >= 0)
-		{
-			IResource resource = resources[idx];
-			if(resource instanceof IProject)
-			{
-				IProject project = (IProject)resource;
-				if(project.isOpen())
-					return project;
-			}
-		}
-		return null;
-	}
-
-	private static Resolution[] getActiveResolutions(StorageManager sm) throws CoreException
-	{
-		// Add the newest version of each known resolution
-		//
-		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
-		ArrayList<TimestampedKey> duplicates = null;
-		ISaxableStorage<Resolution> ress = sm.getResolutions();
-		ISaxableStorage<Materialization> mats = sm.getMaterializations();
-		for(Resolution res : ress.getElements())
-		{
-			UUID resId = res.getId();
-			ComponentIdentifier ci = res.getComponentIdentifier();
-
-			IPath location = getResolutionLocation(mats, res);
-			if(location == null)
-				continue;
-
-			ComponentName cn = ci.toPureComponentName();
-			TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
-			TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
-			if(prevTsKey == null)
-				continue;
-
-			// Check real existence of locations. For performance reasons we only do
-			// this when ambiguities arise.
-			//
-			Resolution prevRes = ress.getElement(prevTsKey.getKey());
-			IPath prevLocation = getResolutionLocation(mats, prevRes);
-			if(prevLocation == null)
-				continue;
-
-			if(location.toFile().exists())
-			{
-				if(location.equals(prevLocation))
-				{
-					// Discriminate using timestamp
-					//
-					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
-					{
-						// We just replaced a newer entry. Put it back!
-						//
-						resolutionKeys.put(cn, prevTsKey);
-					}
-					continue;
-				}
-
-				if(!prevLocation.toFile().exists())
-					continue;
-
-				// A resolution towards the target platform will always have a lower
-				// precedence.
-				//
-				if(prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-				{
-					if(!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-						continue;
-				}
-				else
-				{
-					if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-					{
-						resolutionKeys.put(cn, prevTsKey);
-						continue;
-					}
-				}
-
-				boolean versionEqual = false;
-				IVersion currVersion = ci.getVersion();
-				IVersion prevVersion = prevRes.getComponentIdentifier().getVersion();
-				if(currVersion == null)
-					versionEqual = (prevVersion == null);
-				else if(prevVersion != null)
-					versionEqual = currVersion.equalsUnqualified(prevVersion);
-
-				if(versionEqual)
-				{
-					// Discriminate using timestamp
-					//
-					if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
-						resolutionKeys.put(cn, prevTsKey);
-					continue;
-				}
-
-				// Apparently we have both locations present so we cannot
-				// discriminate one of them
-				//
-				if(duplicates == null)
-					duplicates = new ArrayList<TimestampedKey>();
-				duplicates.add(prevTsKey);
-
-				CorePlugin.getLogger().debug(
-						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn,
-						currVersion, location, prevVersion, prevLocation);
-				continue;
-			}
-
-			if(prevLocation.toFile().exists())
-			{
-				// New entry is bogus and old entry is valid
-				//
-				resolutionKeys.put(cn, prevTsKey);
-			}
-			else
-			{
-				// None of the entries were valid. Simply remove the entry
-				//
-				resolutionKeys.remove(cn);
-			}
-		}
-
-		int top = resolutionKeys.size();
-		if(duplicates != null)
-			top += duplicates.size();
-
-		Resolution[] result = new Resolution[top];
-		int idx = 0;
-		for(TimestampedKey tsKey : resolutionKeys.values())
-			result[idx++] = ress.getElement(tsKey.getKey());
-
-		if(duplicates != null)
-			for(TimestampedKey tsKey : duplicates)
-				result[idx++] = ress.getElement(tsKey.getKey());
-		return result;
-	}
-
-	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res)
-			throws CoreException
-	{
-		// Obtain the storage manager outside of the synchronization to avoid
-		// possible deadlock.
-		//
-		StorageManager.getDefault();
-		checkFirstUse();
-
-		IPath location;
-		ComponentIdentifier ci = res.getComponentIdentifier();
-		synchronized(s_locationCache)
-		{
-			location = s_locationCache.get(ci);
-			if(location == null)
-			{
-				for(Materialization mat : mats.getElements())
-				{
-					if(mat.getComponentIdentifier().equals(ci))
-					{
-						location = mat.getComponentLocation();
-						break;
-					}
-				}
-				if(location == null)
-					location = res.getProvider().getReaderType().getFixedLocation(res);
-				if(location != null)
-					s_locationCache.put(ci, location);
-			}
-		}
-		return location;
 	}
 }

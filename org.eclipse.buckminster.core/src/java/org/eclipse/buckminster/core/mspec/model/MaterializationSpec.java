@@ -49,15 +49,12 @@ import org.xml.sax.helpers.AttributesImpl;
 public class MaterializationSpec extends MaterializationDirective implements ISaxable, IMaterializationSpec
 {
 	public static final String TAG = "mspec";
-	public static final String ATTR_NAME = "name";
-	public static final String ATTR_SHORT_DESC = "shortDesc";
-	public static final String ATTR_URL = "url";
 
-	private final String m_name;
-	private final String m_shortDesc;
-	private final String m_url;
-	private final List<MaterializationNode> m_nodes;
-	private final URL m_contextURL;
+	public static final String ATTR_NAME = "name";
+
+	public static final String ATTR_SHORT_DESC = "shortDesc";
+
+	public static final String ATTR_URL = "url";
 
 	public static MaterializationSpec fromStream(String systemId, InputStream stream) throws CoreException
 	{
@@ -88,8 +85,18 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		finally
 		{
 			IOUtils.close(stream);
-		}		
+		}
 	}
+
+	private final String m_name;
+
+	private final String m_shortDesc;
+
+	private final String m_url;
+
+	private final List<MaterializationNode> m_nodes;
+
+	private final URL m_contextURL;
 
 	public MaterializationSpec(MaterializationSpecBuilder builder)
 	{
@@ -104,6 +111,24 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		m_nodes = Utils.createUnmodifiableList(nodes);
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_NAME, m_name);
+		Utils.addAttribute(attrs, ATTR_URL, m_url);
+		if(m_shortDesc != null)
+			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(receiver, namespace, prefix);
+		for(MaterializationNode node : m_nodes)
+			node.toSax(receiver, namespace, prefix, node.getDefaultTag());
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class adapter)
@@ -115,32 +140,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 			return bld;
 		}
 		return super.getAdapter(adapter);
-	}
-
-	public String getProjectName(ComponentName cName) throws CoreException
-	{
-		IMaterializationNode node = getMatchingNode(cName);
-		if(node == null)
-			return cName.getProjectName();
-
-		Pattern bindingNamePattern = node.getBindingNamePattern();
-		String bindingNameReplacement = node.getBindingNameReplacement();
-		if(bindingNamePattern == null || bindingNameReplacement == null)
-			return cName.getProjectName();
-
-		Matcher matcher = bindingNamePattern.matcher(cName.getName());
-		if(matcher.matches())
-		{
-			String repl = matcher.replaceAll(bindingNameReplacement).trim();
-			if(repl.length() > 0)
-				return repl;
-		}
-		return cName.getProjectName();
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
 	}
 
 	public ConflictResolution getConflictResolution(IComponentName cName)
@@ -164,6 +163,19 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_contextURL;
 	}
 
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public IPath getLeafArtifact(IComponentName cname)
+	{
+		IMaterializationNode node = getMatchingNode(cname);
+		return node == null
+				? null
+				: node.getLeafArtifact();
+	}
+
 	public IMaterializationNode getMatchingNode(IComponentName cName)
 	{
 		String name = cName.getName();
@@ -173,7 +185,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 			if(pattern.matcher(name).find())
 			{
 				String matchingCType = aNode.getComponentTypeID();
-				
+
 				if(matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
@@ -189,7 +201,9 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public String getMaterializerID(Resolution resolution) throws CoreException
 	{
 		IMaterializationNode node = getMatchingNode(resolution.getComponentIdentifier());
-		String materializer = (node == null) ? null : node.getMaterializerID();
+		String materializer = (node == null)
+				? null
+				: node.getMaterializerID();
 		if(materializer == null)
 		{
 			materializer = getMaterializerID();
@@ -204,21 +218,44 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_name;
 	}
 
-	public IPath getLeafArtifact(IComponentName cname)
-	{
-		IMaterializationNode node = getMatchingNode(cname);
-		return node == null ? null : node.getLeafArtifact();
-	}
-
 	public List<? extends IMaterializationNode> getNodes()
 	{
 		return m_nodes;
 	}
 
+	public String getProjectName(ComponentName cName) throws CoreException
+	{
+		IMaterializationNode node = getMatchingNode(cName);
+		if(node == null)
+			return cName.getProjectName();
+
+		Pattern bindingNamePattern = node.getBindingNamePattern();
+		String bindingNameReplacement = node.getBindingNameReplacement();
+		if(bindingNamePattern == null || bindingNameReplacement == null)
+			return cName.getProjectName();
+
+		Matcher matcher = bindingNamePattern.matcher(cName.getName());
+		if(matcher.matches())
+		{
+			String repl = matcher.replaceAll(bindingNameReplacement).trim();
+			if(repl.length() > 0)
+				return repl;
+		}
+		return cName.getProjectName();
+	}
+
+	public URL getResolvedURL()
+	{
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_url,
+				0));
+	}
+
 	public IPath getResourcePath(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
-		return node == null ? null : node.getResourcePath();
+		return node == null
+				? null
+				: node.getResourcePath();
 	}
 
 	public String getShortDesc()
@@ -229,17 +266,14 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public String getSuffix(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
-		return node == null ? null : node.getSuffix();
+		return node == null
+				? null
+				: node.getSuffix();
 	}
 
 	public String getURL()
 	{
 		return m_url;
-	}
-
-	public URL getResolvedURL()
-	{
-		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_url, 0));
 	}
 
 	public boolean isExcluded(IComponentName cname)
@@ -265,23 +299,5 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		handler.startDocument();
 		toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		handler.endDocument();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		Utils.addAttribute(attrs, ATTR_URL, m_url);
-		if(m_shortDesc != null)
-			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(receiver, namespace, prefix);
-		for(MaterializationNode node : m_nodes)
-			node.toSax(receiver, namespace, prefix, node.getDefaultTag());
 	}
 }

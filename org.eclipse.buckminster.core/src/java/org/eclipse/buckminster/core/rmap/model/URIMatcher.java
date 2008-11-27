@@ -85,14 +85,20 @@ public class URIMatcher extends RxAssembly
 
 	public static final String ARTIFACT_INFO_PREFIX = "URIMetaData:";
 
+	private static Filter getFilter(Map<String, String> matchMap)
+	{
+		return FilterUtils.createFilter(matchMap.get(OS_PARAM), matchMap.get(WS_PARAM), matchMap.get(ARCH_PARAM),
+				matchMap.get(NL_PARAM));
+	}
+
 	private final String m_base;
 
 	private final IVersionType m_versionType;
 
 	private final String m_componentType;
-	
-	public URIMatcher(List<RxPart> parts, String base, IVersionType versionType, String componentType) throws CoreException,
-			PatternSyntaxException
+
+	public URIMatcher(List<RxPart> parts, String base, IVersionType versionType, String componentType)
+			throws CoreException, PatternSyntaxException
 	{
 		super(parts);
 		m_base = base;
@@ -103,9 +109,53 @@ public class URIMatcher extends RxAssembly
 	}
 
 	@Override
-	public String getDefaultTag()
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		return TAG;
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_BASE, m_base);
+		if(m_versionType != VersionFactory.OSGiType)
+			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
+	}
+
+	public Resolution createResolution(ProviderMatch pm) throws CoreException
+	{
+		Map<String, String> matchMap = pm.getMatcherMap();
+		if(matchMap == null)
+			return null;
+
+		CSpecBuilder bld = new CSpecBuilder();
+		bld.setName(matchMap.get(COMPONENT_NAME_PARAM));
+		String tmp = matchMap.get(COMPONENT_VERSION_PARAM);
+		if(tmp != null)
+			bld.setVersion(m_versionType.fromString(tmp));
+
+		IComponentType ctype = pm.getComponentType();
+		bld.setComponentTypeID(ctype.getId());
+		bld.setFilter(getFilter(matchMap));
+
+		try
+		{
+			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()), pm
+					.getConnectContext());
+			NodeQuery nq = pm.getNodeQuery();
+			ResolutionBuilder resBld = new ResolutionBuilder(bld, null);
+			resBld.getRequest().initFrom(nq.getComponentRequest());
+			resBld.setAttributes(nq.getRequiredAttributes());
+			resBld.setProvider(pm.getProvider());
+			resBld.setRepository(pm.getProvider().getURI(nq.getProperties()));
+			resBld.setComponentTypeId(ctype.getId());
+			resBld.setVersionMatch(pm.getVersionMatch());
+			resBld.setFileInfo(info);
+			return new Resolution(resBld);
+		}
+		catch(FileNotFoundException e)
+		{
+			return null;
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	public String getBase()
@@ -113,9 +163,10 @@ public class URIMatcher extends RxAssembly
 		return m_base;
 	}
 
-	public IVersionType getVersionType()
+	@Override
+	public String getDefaultTag()
 	{
-		return m_versionType;
+		return TAG;
 	}
 
 	public ProviderMatch getMatch(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException
@@ -123,7 +174,7 @@ public class URIMatcher extends RxAssembly
 		Logger logger = CorePlugin.getLogger();
 		ComponentRequest cq = query.getComponentRequest();
 		VersionMatch candidate = null;
-		Map<String,String> candidateMap = null;
+		Map<String, String> candidateMap = null;
 
 		URL baseURL;
 		try
@@ -215,7 +266,7 @@ public class URIMatcher extends RxAssembly
 				}
 			}
 
-			VersionMatch vm =  new VersionMatch(version, vs, revision, timestamp, null);
+			VersionMatch vm = new VersionMatch(version, vs, revision, timestamp, null);
 			if(candidate == null || query.compare(vm, candidate) > 0)
 			{
 				// Verify that the URI created using this matchMap is readable
@@ -229,66 +280,14 @@ public class URIMatcher extends RxAssembly
 
 		query = query.getContext().getNodeQuery(query.getQualifiedDependency());
 		query.getProperties().putAll(candidateMap);
-		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(m_componentType), candidate, query);
+		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(m_componentType),
+				candidate, query);
 		pm.setMatcherMap(candidateMap);
 		return pm;
 	}
 
-	public Resolution createResolution(ProviderMatch pm) throws CoreException
+	public IVersionType getVersionType()
 	{
-		Map<String, String> matchMap = pm.getMatcherMap();
-		if(matchMap == null)
-			return null;
-
-		CSpecBuilder bld = new CSpecBuilder();
-		bld.setName(matchMap.get(COMPONENT_NAME_PARAM));
-		String tmp = matchMap.get(COMPONENT_VERSION_PARAM);
-		if(tmp != null)
-			bld.setVersion(m_versionType.fromString(tmp));
-
-		IComponentType ctype = pm.getComponentType();
-		bld.setComponentTypeID(ctype.getId());
-		bld.setFilter(getFilter(matchMap));
-
-		try
-		{
-			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()), pm.getConnectContext());
-			NodeQuery nq = pm.getNodeQuery();
-			ResolutionBuilder resBld = new ResolutionBuilder(bld, null);
-			resBld.getRequest().initFrom(nq.getComponentRequest());
-			resBld.setAttributes(nq.getRequiredAttributes());
-			resBld.setProvider(pm.getProvider());
-			resBld.setRepository(pm.getProvider().getURI(nq.getProperties()));
-			resBld.setComponentTypeId(ctype.getId());
-			resBld.setVersionMatch(pm.getVersionMatch());
-			resBld.setFileInfo(info);
-			return new Resolution(resBld);
-		}
-		catch(FileNotFoundException e)
-		{
-			return null;
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_BASE, m_base);
-		if(m_versionType != VersionFactory.OSGiType)
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
-	}
-
-	private static Filter getFilter(Map<String,String> matchMap)
-	{
-		return FilterUtils.createFilter(
-				matchMap.get(OS_PARAM),
-				matchMap.get(WS_PARAM),
-				matchMap.get(ARCH_PARAM),
-				matchMap.get(NL_PARAM));
+		return m_versionType;
 	}
 }

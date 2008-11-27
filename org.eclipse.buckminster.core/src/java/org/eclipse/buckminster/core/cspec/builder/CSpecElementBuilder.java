@@ -7,7 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -30,4 +29,3 @@ public abstract class CSpecElementBuilder extends NamedElementBuilder
 		return m_cspecBuilder.getName();
 	}
 }
-

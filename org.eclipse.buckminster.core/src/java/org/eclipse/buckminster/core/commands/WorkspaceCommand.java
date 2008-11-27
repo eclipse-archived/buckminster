@@ -28,16 +28,48 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * The workspace command ensures that the workspace is in good shape
- * when the command terminates.
- *
+ * The workspace command ensures that the workspace is in good shape when the command terminates.
+ * 
  * @author Thomas Hallgren
- *
+ * 
  */
 @SuppressWarnings("restriction")
 public abstract class WorkspaceCommand extends AbstractCommand
 {
+	private static void saveWorkspace(IProgressMonitor monitor)
+	{
+		monitor.beginTask(null, 300);
+		try
+		{
+			IStatus saveStatus = ResourcesPlugin.getWorkspace().save(true, MonitorUtils.subMonitor(monitor, 100));
+			if(!(saveStatus == null || saveStatus.isOK()))
+				throw new ResourceException(saveStatus);
+		}
+		catch(Throwable e)
+		{
+			Buckminster.getLogger().error(e, "Error while saving workspace: %s", e.getMessage());
+		}
+		monitor.done();
+	}
+
 	private boolean m_inWorkspace = false;
+
+	protected void initWorkspace(IProgressMonitor monitor) throws Exception
+	{
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		IWorkspaceDescription wsDesc = ws.getDescription();
+		wsDesc.setAutoBuilding(false);
+		wsDesc.setSnapshotInterval(Long.MAX_VALUE);
+		ws.setDescription(wsDesc);
+		saveWorkspace(monitor);
+	}
+
+	protected abstract int internalRun(IProgressMonitor monitor) throws Exception;
+
+	public boolean isInWorkspace()
+	{
+		return m_inWorkspace;
+	}
 
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception
@@ -69,18 +101,19 @@ public abstract class WorkspaceCommand extends AbstractCommand
 				logger.debug("Doing full workspace refresh");
 				try
 				{
-					ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
+					ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE,
+							MonitorUtils.subMonitor(monitor, 50));
 				}
 				catch(Throwable e)
 				{
 					Buckminster.getLogger().error("Error while refreshing workspace: " + e.getMessage(), e);
 				}
-	
+
 				// Suspend the job manager temporarily and wait for all jobs to drain
 				//
 				final IJobManager jobManager = Job.getJobManager();
 				jobManager.suspend();
-	
+
 				// Cancel jobs that are known to run indefinitely
 				//
 				WorkspaceBindingInstallJob.stop();
@@ -89,7 +122,7 @@ public abstract class WorkspaceCommand extends AbstractCommand
 					if(job instanceof StringPoolJob)
 						job.cancel();
 				}
-	
+
 				// We wait for current jobs to end but we use a timeout since there might be jobs
 				// that run forever.
 				//
@@ -114,19 +147,19 @@ public abstract class WorkspaceCommand extends AbstractCommand
 					}
 				};
 				logger.debug("Waiting for jobs to end");
-				
+
 				// Wait at max 30 seconds for all jobs to complete. The normal case is that
 				// the join returns very quickly.
 				//
 				joinWait.start();
 				joinWait.join(30000);
 				joinWait.interrupt();
-	
+
 				// Cancel remaining jobs
 				//
 				for(Job job : jobManager.find(null))
 					job.cancel();
-	
+
 				// and resume the job manager. The workspace save will start new
 				// jobs.
 				//
@@ -138,41 +171,8 @@ public abstract class WorkspaceCommand extends AbstractCommand
 		}
 	}
 
-	protected void initWorkspace(IProgressMonitor monitor) throws Exception
-	{
-		IWorkspace ws = ResourcesPlugin.getWorkspace();
-		IWorkspaceDescription wsDesc = ws.getDescription();
-		wsDesc.setAutoBuilding(false);
-		wsDesc.setSnapshotInterval(Long.MAX_VALUE);
-		ws.setDescription(wsDesc);
-		saveWorkspace(monitor);
-	}
-
-	protected abstract int internalRun(IProgressMonitor monitor) throws Exception;
-
-	private static void saveWorkspace(IProgressMonitor monitor)
-	{
-		monitor.beginTask(null, 300);
-		try
-		{
-			IStatus saveStatus = ResourcesPlugin.getWorkspace().save(true, MonitorUtils.subMonitor(monitor, 100));
-			if(!(saveStatus == null || saveStatus.isOK()))
-				throw new ResourceException(saveStatus);
-		}
-		catch(Throwable e)
-		{
-			Buckminster.getLogger().error(e, "Error while saving workspace: %s", e.getMessage());
-		}
-		monitor.done();
-	}
-
 	public void setInWorkspace(boolean inWorkspace)
 	{
 		m_inWorkspace = inWorkspace;
-	}
-
-	public boolean isInWorkspace()
-	{
-		return m_inWorkspace;
 	}
 }

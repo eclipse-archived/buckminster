@@ -21,10 +21,10 @@ public class SiteFeatureComponentType extends AbstractComponentType
 {
 	private static final IResolutionBuilder s_builder = new SiteFeatureResolutionBuilder();
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
+			throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return s_builder;
 	}
 }
-

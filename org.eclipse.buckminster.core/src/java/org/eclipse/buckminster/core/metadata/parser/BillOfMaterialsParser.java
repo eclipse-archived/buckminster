@@ -22,13 +22,24 @@ import org.xml.sax.SAXException;
  */
 public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
 {
+	private BillOfMaterials m_resolution;
+
 	public BillOfMaterialsParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
 		super(parserExtensions, validating);
 	}
 
-	private BillOfMaterials m_resolution;
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_resolution = (BillOfMaterials)((BillOfMaterialsHandler)child).getDepNode();
+	}
+
+	public BillOfMaterials parse(String systemID, InputStream input) throws CoreException
+	{
+		this.parseInput(systemID, input);
+		return m_resolution;
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
@@ -38,17 +49,4 @@ public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public BillOfMaterials parse(String systemID, InputStream input) throws CoreException
-	{
-		this.parseInput(systemID, input);
-		return m_resolution;
-	}
-
-	public void childPopped(ChildHandler child)
-	throws SAXException
-	{
-		m_resolution = (BillOfMaterials)((BillOfMaterialsHandler)child).getDepNode();
-	}
 }
-

@@ -21,32 +21,17 @@ import org.xml.sax.helpers.AttributesImpl;
 public abstract class RxPart extends AbstractSaxableElement
 {
 	public static final String ATTR_NAME = "name";
+
 	public static final String ATTR_OPTIONAL = "optional";
 
 	private final String m_name;
+
 	private final boolean m_optional;
 
 	protected RxPart(String name, boolean optional)
 	{
 		m_name = name;
 		m_optional = optional;
-	}
-
-	public abstract void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException;
-
-	public String getName()
-	{
-		return m_name;
-	}
-
-	public boolean isTagged()
-	{
-		return false;
-	}
-
-	public boolean isOptional()
-	{
-		return m_optional;
 	}
 
 	@Override
@@ -56,5 +41,22 @@ public abstract class RxPart extends AbstractSaxableElement
 			Utils.addAttribute(attrs, ATTR_NAME, m_name);
 		if(m_optional)
 			Utils.addAttribute(attrs, ATTR_OPTIONAL, Boolean.TRUE.toString());
+	}
+
+	public abstract void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException;
+
+	public String getName()
+	{
+		return m_name;
+	}
+
+	public boolean isOptional()
+	{
+		return m_optional;
+	}
+
+	public boolean isTagged()
+	{
+		return false;
 	}
 }

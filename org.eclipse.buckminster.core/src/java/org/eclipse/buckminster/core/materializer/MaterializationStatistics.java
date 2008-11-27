@@ -27,7 +27,7 @@ public class MaterializationStatistics
 	private List<ComponentIdentifier> m_skipped = new ArrayList<ComponentIdentifier>();
 
 	private List<ComponentIdentifier> m_updated = new ArrayList<ComponentIdentifier>();
-	
+
 	public void addFailed(ComponentIdentifier ci)
 	{
 		m_failed.add(ci);
@@ -77,9 +77,10 @@ public class MaterializationStatistics
 	{
 		return m_updated;
 	}
-	
+
 	public boolean isIncluded(ComponentIdentifier ci)
 	{
-		return (m_failed.contains(ci) || m_kept.contains(ci) || m_replaced.contains(ci) || m_skipped.contains(ci) || m_updated.contains(ci));
+		return (m_failed.contains(ci) || m_kept.contains(ci) || m_replaced.contains(ci) || m_skipped.contains(ci) || m_updated
+				.contains(ci));
 	}
 }

@@ -24,26 +24,45 @@ import org.xml.sax.helpers.AttributesImpl;
 public class MaterializationNode extends MaterializationDirective implements IMaterializationNode
 {
 	public static final String TAG = "mspecNode";
+
 	public static final String ATTR_NAME_PATTERN = "namePattern";
+
 	public static final String ATTR_LEAF_ARTIFACT = "leafArtifact";
+
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
+
 	public static final String ATTR_EXCLUDE = "exclude";
+
 	public static final String ATTR_RESOURCE_PATH = "resourcePath";
+
 	public static final String ATTR_BINDING_NAME_PATTERN = "bindingNamePattern";
+
 	public static final String ATTR_BINDING_NAME_REPLACEMENT = "bindingNameReplacement";
+
 	public static final String ELEM_UNPACK = "unpack";
+
 	public static final String ATTR_SUFFIX = "suffix";
+
 	public static final String ATTR_EXPAND = "expand";
 
 	private final Pattern m_namePattern;
+
 	private final IPath m_leafArtifact;
+
 	private final String m_componentTypeID;
+
 	private final boolean m_exclude;
+
 	private final IPath m_resourcePath;
+
 	private final Pattern m_bindingNamePattern;
+
 	private final String m_bindingNameReplacement;
+
 	private final String m_suffix;
+
 	private final boolean m_unpack;
+
 	private final boolean m_expand;
 
 	public MaterializationNode(MaterializationNodeBuilder builder)

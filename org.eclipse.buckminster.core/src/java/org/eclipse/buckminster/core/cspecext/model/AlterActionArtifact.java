@@ -22,8 +22,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class AlterActionArtifact extends AlterArtifact
 {
-	public AlterActionArtifact(ActionArtifact base,
-			Set<String> removedHints, Map<String, String> alteredHints,
+	public AlterActionArtifact(ActionArtifact base, Set<String> removedHints, Map<String, String> alteredHints,
 			Set<IPath> removedPaths)
 	{
 		super(base, removedHints, alteredHints, removedPaths);

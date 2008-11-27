@@ -20,9 +20,8 @@ public class MissingCSpecSourceException extends LocalizedException
 
 	public MissingCSpecSourceException(ProviderMatch providerMatch)
 	{
-		super("Provider %s(%s): Missing CSpec source required by component type %s",
-				providerMatch.getProvider().getReaderTypeId(),
-				providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
+		super("Provider %s(%s): Missing CSpec source required by component type %s", providerMatch.getProvider()
+				.getReaderTypeId(), providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
 				providerMatch.getComponentType().getId());
 	}
 }

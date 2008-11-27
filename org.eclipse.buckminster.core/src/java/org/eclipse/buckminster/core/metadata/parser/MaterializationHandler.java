@@ -39,9 +39,13 @@ public class MaterializationHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
+	public Materialization getMaterialization()
+	{
+		return m_materialization;
+	}
+
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		ComponentIdentifier cid;
 		String name = getOptionalStringValue(attrs, NamedElement.ATTR_NAME);
@@ -64,7 +68,7 @@ public class MaterializationHandler extends ExtensionAwareHandler
 		{
 			String ctype = getComponentType(attrs);
 			IVersion version = null;
-	
+
 			String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
 			if(tmp != null)
 			{
@@ -82,13 +86,7 @@ public class MaterializationHandler extends ExtensionAwareHandler
 			}
 			cid = new ComponentIdentifier(name, ctype, version);
 		}
-		m_materialization = new Materialization(
-				Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION)), cid);
-	}
-
-	public Materialization getMaterialization()
-	{
-		return m_materialization;
+		m_materialization = new Materialization(Path.fromPortableString(this.getStringValue(attrs,
+				Materialization.ATTR_LOCATION)), cid);
 	}
 }
-

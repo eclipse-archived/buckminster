@@ -31,8 +31,22 @@ public class PrerequisiteHandler extends CSpecElementHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	protected NamedElementBuilder createBuilder()
+	{
+		return getAttributeBuilder().createPrerequisiteBuilder();
+	}
+
+	@Override
+	protected String getNameAttribute(Attributes attrs) throws SAXException
+	{
+		String name = getOptionalStringValue(attrs, NamedElement.ATTR_NAME);
+		if(name == null)
+			name = CSpec.SELF_ARTIFACT;
+		return name;
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_component = null;
 		super.handleAttributes(attrs);
@@ -45,21 +59,5 @@ public class PrerequisiteHandler extends CSpecElementHandler
 		builder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
 		builder.setExcludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_EXCLUDE_PATTERN));
 		builder.setIncludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_INCLUDE_PATTERN));
-	}
-
-	@Override
-	protected NamedElementBuilder createBuilder()
-	{
-		return getAttributeBuilder().createPrerequisiteBuilder();
-	}
-
-	@Override
-	protected String getNameAttribute(Attributes attrs)
-	throws SAXException
-	{
-		String name = getOptionalStringValue(attrs, NamedElement.ATTR_NAME);
-		if(name == null)
-			name = CSpec.SELF_ARTIFACT;
-		return name;
 	}
 }

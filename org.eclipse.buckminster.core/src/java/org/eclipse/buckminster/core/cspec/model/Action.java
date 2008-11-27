@@ -106,25 +106,15 @@ public class Action extends TopLevelAttribute implements IAction
 	}
 
 	@Override
-	public IAttribute copy()
+	protected void addAttributes(AttributesImpl attrs)
 	{
-		Action copy = (Action)super.copy();
-		copy.m_prerequisites = (Prerequisites)copy.m_prerequisites.copy();
-		return copy;
-	}
-
-	public String getActorName()
-	{
-		try
-		{
-			return isInternal()
-					? ActorFactory.getInstance().findInternalActionActorName(getName())
-					: m_actorName;
-		}
-		catch(CoreException ce)
-		{
-			throw new RuntimeException(ce);
-		}
+		super.addAttributes(attrs);
+		if(m_actorName != null)
+			Utils.addAttribute(attrs, ATTR_ACTOR, m_actorName);
+		if(m_always != ALWAYS_DEFAULT)
+			Utils.addAttribute(attrs, ATTR_ALWAYS, Boolean.toString(m_always));
+		if(m_assignConsoleSupport != ASSIGN_CONSOLE_SUPPORT_DEFAULT)
+			Utils.addAttribute(attrs, ATTR_ASSIGN_CONSOLE_SUPPORT, Boolean.toString(m_assignConsoleSupport));
 	}
 
 	public void addInstallerHints(IModelCache ctx, Map<String, String> installerHints) throws CoreException
@@ -150,110 +140,12 @@ public class Action extends TopLevelAttribute implements IAction
 		}
 	}
 
-	public Group getPrerequisiteGroup()
-	{
-		return m_prerequisites;
-	}
-
-	public IPath getPrerequisiteRebase()
-	{
-		return m_prerequisites.getPrerequisiteRebase();
-	}
-
 	@Override
-	public List<Prerequisite> getPrerequisites(Stack<IAttributeFilter> filters)
+	public IAttribute copy()
 	{
-		return m_prerequisites.getPrerequisites(filters);
-	}
-
-	public String getPrerequisitesAlias()
-	{
-		return m_prerequisites.getName();
-	}
-
-	public String getProductAlias()
-	{
-		return m_productAlias;
-	}
-
-	public List<ActionArtifact> getProductArtifacts()
-	{
-		return getCSpec().getActionArtifacts(this);
-	}
-
-	public IPath getProductBase()
-	{
-		return m_productBase;
-	}
-
-	public int getProductFileCount()
-	{
-		return m_productFileCount;
-	}
-
-	public Set<IPath> getProductPaths()
-	{
-		return m_products;
-	}
-
-	public UpToDatePolicy getUpToDatePolicy()
-	{
-		return m_upToDatePolicy;
-	}
-
-	public Map<String, String> getActorProperties()
-	{
-		return m_actorProperties;
-	}
-
-	public String getBindingName(Map<String, String> globalProps)
-	{
-		Map<String, String> actionProps = getProperties();
-		if(actionProps.containsKey(BINDING_NAME))
-		{
-			ExpandingProperties allProps = new ExpandingProperties(globalProps);
-			allProps.putAll(actionProps);
-			return allProps.get(BINDING_NAME);
-		}
-		return null;
-	}
-
-	public Map<String, String> getProperties()
-	{
-		return m_properties;
-	}
-
-	public boolean isAssignConsoleSupport()
-	{
-		return m_assignConsoleSupport;
-	}
-
-	public final boolean isAlways()
-	{
-		return m_always;
-	}
-
-	public final boolean isInternal()
-	{
-		return m_actorName == null;
-	}
-
-	@Override
-	public boolean isProducedByActions(IModelCache ctx)
-	{
-		return true;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_actorName != null)
-			Utils.addAttribute(attrs, ATTR_ACTOR, m_actorName);
-		if(m_always != ALWAYS_DEFAULT)
-			Utils.addAttribute(attrs, ATTR_ALWAYS, Boolean.toString(m_always));
-		if(m_assignConsoleSupport != ASSIGN_CONSOLE_SUPPORT_DEFAULT)
-			Utils.addAttribute(attrs, ATTR_ASSIGN_CONSOLE_SUPPORT, Boolean.toString(m_assignConsoleSupport));
+		Action copy = (Action)super.copy();
+		copy.m_prerequisites = (Prerequisites)copy.m_prerequisites.copy();
+		return copy;
 	}
 
 	@Override
@@ -302,9 +194,35 @@ public class Action extends TopLevelAttribute implements IAction
 		Utils.emitCollection(namespace, prefix, ELEM_PRODUCTS, null, attrs, allProds, handler);
 	}
 
-	public IPath getExpandedDefaultBase(Map<String, String> local)
+	public String getActorName()
 	{
-		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
+		try
+		{
+			return isInternal()
+					? ActorFactory.getInstance().findInternalActionActorName(getName())
+					: m_actorName;
+		}
+		catch(CoreException ce)
+		{
+			throw new RuntimeException(ce);
+		}
+	}
+
+	public Map<String, String> getActorProperties()
+	{
+		return m_actorProperties;
+	}
+
+	public String getBindingName(Map<String, String> globalProps)
+	{
+		Map<String, String> actionProps = getProperties();
+		if(actionProps.containsKey(BINDING_NAME))
+		{
+			ExpandingProperties allProps = new ExpandingProperties(globalProps);
+			allProps.putAll(actionProps);
+			return allProps.get(BINDING_NAME);
+		}
+		return null;
 	}
 
 	public IPath getExpandedBase(IPath productBase, Map<String, String> local)
@@ -318,8 +236,93 @@ public class Action extends TopLevelAttribute implements IAction
 		return productBase;
 	}
 
+	public IPath getExpandedDefaultBase(Map<String, String> local)
+	{
+		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
+	}
+
+	public Group getPrerequisiteGroup()
+	{
+		return m_prerequisites;
+	}
+
+	public IPath getPrerequisiteRebase()
+	{
+		return m_prerequisites.getPrerequisiteRebase();
+	}
+
+	private Map<String, Long> getPrerequisiteRelativeFiles(IModelCache ctx) throws CoreException
+	{
+		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
+		CSpec cspec = getCSpec();
+		for(Prerequisite pq : getPrerequisites(null))
+		{
+			if(!pq.isContributor())
+				continue;
+
+			IAttribute ag = pq.getReferencedAttribute(cspec, ctx);
+			if(ag instanceof TopLevelAttribute)
+				((TopLevelAttribute)ag).appendRelativeFiles(ctx, filesAndDates);
+		}
+		return filesAndDates;
+	}
+
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException
+	public List<Prerequisite> getPrerequisites(Stack<IAttributeFilter> filters)
+	{
+		return m_prerequisites.getPrerequisites(filters);
+	}
+
+	public String getPrerequisitesAlias()
+	{
+		return m_prerequisites.getName();
+	}
+
+	public String getProductAlias()
+	{
+		return m_productAlias;
+	}
+
+	public List<ActionArtifact> getProductArtifacts()
+	{
+		return getCSpec().getActionArtifacts(this);
+	}
+
+	public IPath getProductBase()
+	{
+		return m_productBase;
+	}
+
+	public int getProductFileCount()
+	{
+		return m_productFileCount;
+	}
+
+	public Set<IPath> getProductPaths()
+	{
+		return m_products;
+	}
+
+	private Map<String, Long> getProductRelativeFiles(IModelCache ctx) throws CoreException
+	{
+		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
+		appendRelativeFiles(ctx, filesAndDates);
+		return filesAndDates;
+	}
+
+	public Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
+	public UpToDatePolicy getUpToDatePolicy()
+	{
+		return m_upToDatePolicy;
+	}
+
+	@Override
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
+			Stack<IAttributeFilter> filters) throws CoreException
 	{
 		CSpec cspec = getCSpec();
 		ArrayList<PathGroup> pathGroups = new ArrayList<PathGroup>();
@@ -345,13 +348,35 @@ public class Action extends TopLevelAttribute implements IAction
 		return pathGroups.toArray(new PathGroup[pathGroups.size()]);
 	}
 
+	public final boolean isAlways()
+	{
+		return m_always;
+	}
+
+	public boolean isAssignConsoleSupport()
+	{
+		return m_assignConsoleSupport;
+	}
+
+	public final boolean isInternal()
+	{
+		return m_actorName == null;
+	}
+
+	@Override
+	public boolean isProducedByActions(IModelCache ctx)
+	{
+		return true;
+	}
+
 	public boolean isUpToDate(IModelCache ctx) throws CoreException
 	{
 		Logger logger = CorePlugin.getLogger();
 		String failLeadIn = "";
 		boolean isDebug = logger.isDebugEnabled();
 		if(isDebug)
-			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this, m_upToDatePolicy);
+			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this,
+					m_upToDatePolicy);
 
 		if(m_upToDatePolicy == UpToDatePolicy.ACTOR)
 		{
@@ -377,14 +402,15 @@ public class Action extends TopLevelAttribute implements IAction
 				// Not enough files
 				//
 				if(isDebug)
-					logger.debug("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()), Integer.valueOf(expectedFileCount));
+					logger.debug("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()),
+							Integer.valueOf(expectedFileCount));
 				return false;
 			}
 
 			// Don't consider products that we don't need since their timestamp
 			// might effect the outcome negatively
 			//
-			for(Map.Entry<String,Long> entry : prereqFiles.entrySet())
+			for(Map.Entry<String, Long> entry : prereqFiles.entrySet())
 			{
 				Long tsObj = productFiles.get(entry.getKey());
 				if(tsObj == null)
@@ -392,8 +418,8 @@ public class Action extends TopLevelAttribute implements IAction
 					// Oops, missing product
 					//
 					if(isDebug)
-						logger.debug(
-							String.format("%sNo product is matching requirement %s", failLeadIn, entry.getKey()));
+						logger.debug(String.format("%sNo product is matching requirement %s", failLeadIn, entry
+								.getKey()));
 					return false;
 				}
 
@@ -404,15 +430,15 @@ public class Action extends TopLevelAttribute implements IAction
 					// Prerequisite is newer
 					//
 					if(isDebug)
-						logger.debug(
-							String.format("%sThe product for %s of age %s is older then its matching requirement with age %s",
+						logger.debug(String.format(
+								"%sThe product for %s of age %s is older then its matching requirement with age %s",
 								failLeadIn, entry.getKey(), new Date(productTs), new Date(prereqTs)));
 					return false;
 				}
 			}
 			if(isDebug)
-				logger.debug(
-					String.format("Action %s using 'up to date' policy %s: Product is up to date", this, m_upToDatePolicy));
+				logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this,
+						m_upToDatePolicy));
 			return true;
 		}
 
@@ -441,17 +467,15 @@ public class Action extends TopLevelAttribute implements IAction
 				switch(m_upToDatePolicy)
 				{
 				case DEFAULT:
-					logger.debug(
-						String.format("%sProduct has folders", failLeadIn));
+					logger.debug(String.format("%sProduct has folders", failLeadIn));
 					break;
 				case NOT_EMPTY:
-					logger.debug(
-						String.format("%sProduct is empty", failLeadIn));
+					logger.debug(String.format("%sProduct is empty", failLeadIn));
 					break;
 				default:
-					logger.debug(
-						String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(fileCountBin[0]), Integer.valueOf(expectedFileCount)));
-						break;
+					logger.debug(String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer
+							.valueOf(fileCountBin[0]), Integer.valueOf(expectedFileCount)));
+					break;
 				}
 			}
 			return false;
@@ -462,37 +486,14 @@ public class Action extends TopLevelAttribute implements IAction
 		if(oldest >= prereqAge)
 		{
 			if(isDebug)
-				logger.debug(
-					String.format("Action %s using 'up to date' policy %s: Product is up to date", this, m_upToDatePolicy));
+				logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this,
+						m_upToDatePolicy));
 			return true;
 		}
 		if(isDebug)
-			logger.debug(
-				String.format("%s: Product of age %s is older then prerequisite of age %s", failLeadIn, new Date(oldest), new Date(prereqAge)));
+			logger.debug(String.format("%s: Product of age %s is older then prerequisite of age %s", failLeadIn,
+					new Date(oldest), new Date(prereqAge)));
 		return false;
-	}
-
-	private Map<String, Long> getProductRelativeFiles(IModelCache ctx) throws CoreException
-	{
-		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
-		appendRelativeFiles(ctx, filesAndDates);
-		return filesAndDates;
-	}
-
-	private Map<String, Long> getPrerequisiteRelativeFiles(IModelCache ctx) throws CoreException
-	{
-		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
-		CSpec cspec = getCSpec();
-		for(Prerequisite pq : getPrerequisites(null))
-		{
-			if(!pq.isContributor())
-				continue;
-
-			IAttribute ag = pq.getReferencedAttribute(cspec, ctx);
-			if(ag instanceof TopLevelAttribute)
-				((TopLevelAttribute)ag).appendRelativeFiles(ctx, filesAndDates);
-		}
-		return filesAndDates;
 	}
 
 	@Override

@@ -26,9 +26,10 @@ public abstract class ValueHolderFilter extends ValueHolder
 	private ArrayList<ValueHolder> m_valueHolders;
 
 	/**
-	 * Add a value holder that will become part of the source
-	 * to this filter.
-	 * @param valueHolder The holder to add.
+	 * Add a value holder that will become part of the source to this filter.
+	 * 
+	 * @param valueHolder
+	 *            The holder to add.
 	 */
 	public void addValueHolder(ValueHolder valueHolder)
 	{
@@ -37,29 +38,17 @@ public abstract class ValueHolderFilter extends ValueHolder
 		m_valueHolders.add(valueHolder);
 	}
 
-	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && Trivial.equalsAllowNull(m_valueHolders, ((ValueHolderFilter)o).m_valueHolders);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + (m_valueHolders == null ? 0 : m_valueHolders.hashCode());
-		return hc;
-	}
-
 	String checkedGetSourceValue(Map<String, String> properties, int recursionGuard)
 	{
-		int top = (m_valueHolders == null) ? 0 : m_valueHolders.size();
+		int top = (m_valueHolders == null)
+				? 0
+				: m_valueHolders.size();
 
 		if(top == 0)
 			return NO_VALUE;
 		else if(top == 1)
 			return m_valueHolders.get(0).checkedGetValue(properties, recursionGuard);
-		
+
 		StringBuilder bld = new StringBuilder();
 		for(int idx = 0; idx < top; ++idx)
 		{
@@ -78,7 +67,9 @@ public abstract class ValueHolderFilter extends ValueHolder
 
 	protected String[] checkedGetSourceValues(Map<String, String> properties, int recursionGuard)
 	{
-		int top = (m_valueHolders == null) ? 0 : m_valueHolders.size();
+		int top = (m_valueHolders == null)
+				? 0
+				: m_valueHolders.size();
 
 		if(top == 0)
 			return Trivial.EMPTY_STRING_ARRAY;
@@ -102,14 +93,19 @@ public abstract class ValueHolderFilter extends ValueHolder
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix)
-	throws SAXException
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		if(m_valueHolders != null)
 		{
 			for(ValueHolder vh : m_valueHolders)
 				vh.toSax(handler, namespace, prefix, vh.getDefaultTag());
 		}
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return super.equals(o) && Trivial.equalsAllowNull(m_valueHolders, ((ValueHolderFilter)o).m_valueHolders);
 	}
 
 	@Override
@@ -123,5 +119,14 @@ public abstract class ValueHolderFilter extends ValueHolder
 	{
 		return XMLConstants.BM_COMMON_PREFIX;
 	}
-}
 
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + (m_valueHolders == null
+				? 0
+				: m_valueHolders.hashCode());
+		return hc;
+	}
+}

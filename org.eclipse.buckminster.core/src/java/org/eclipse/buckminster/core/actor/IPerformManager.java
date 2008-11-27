@@ -22,9 +22,12 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface IPerformManager
 {
-	IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced, boolean quiet, IProgressMonitor monitor) throws CoreException;
+	IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced,
+			boolean quiet, IProgressMonitor monitor) throws CoreException;
 
-	IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> props, boolean forced, boolean quiet, IProgressMonitor monitor) throws CoreException;
+	IStatus perform(List<? extends IAttribute> attributes, IGlobalContext globalCtx, IProgressMonitor monitor)
+			throws CoreException;
 
-	IStatus perform(List<? extends IAttribute> attributes, IGlobalContext globalCtx, IProgressMonitor monitor) throws CoreException;
+	IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> props, boolean forced,
+			boolean quiet, IProgressMonitor monitor) throws CoreException;
 }

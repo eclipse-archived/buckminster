@@ -30,6 +30,12 @@ public class ActionArtifact extends Artifact implements IActionArtifact
 		m_actionName = builder.getActionName();
 	}
 
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createActionArtifactBuilder();
+	}
+
 	public final Action getAction() throws MissingAttributeException
 	{
 		return (Action)this.getCSpec().getRequiredAttribute(m_actionName);
@@ -38,6 +44,12 @@ public class ActionArtifact extends Artifact implements IActionArtifact
 	public String getActionName()
 	{
 		return m_actionName;
+	}
+
+	@Override
+	protected IPath getExpandedBase(Map<String, String> local) throws CoreException
+	{
+		return getAction().getExpandedBase(getBase(), local);
 	}
 
 	@Override
@@ -50,17 +62,5 @@ public class ActionArtifact extends Artifact implements IActionArtifact
 	public boolean isProducedByActions(IModelCache ctx)
 	{
 		return true;
-	}
-
-	@Override
-	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
-		return cspecBuilder.createActionArtifactBuilder();
-	}
-
-	@Override
-	protected IPath getExpandedBase(Map<String, String> local) throws CoreException
-	{
-		return getAction().getExpandedBase(getBase(), local);
 	}
 }

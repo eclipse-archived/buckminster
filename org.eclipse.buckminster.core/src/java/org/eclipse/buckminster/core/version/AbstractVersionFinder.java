@@ -25,7 +25,9 @@ import org.eclipse.ecf.core.security.IConnectContext;
 public abstract class AbstractVersionFinder implements IVersionFinder
 {
 	private final Provider m_provider;
+
 	private final NodeQuery m_query;
+
 	private final IComponentType m_componentType;
 
 	public AbstractVersionFinder(Provider provider, IComponentType componentType, NodeQuery query)
@@ -51,13 +53,14 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 			cctx = m_query.getComponentQuery().getConnectContext();
 		return cctx;
 	}
-	
+
 	public Provider getProvider()
 	{
 		return m_provider;
 	}
 
-	public ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctypeUsed, ProviderScore score) throws CoreException
+	public ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctypeUsed, ProviderScore score)
+			throws CoreException
 	{
 		return new ProviderMatch(m_provider, ctypeUsed, versionMatch, score, m_query);
 	}
@@ -67,20 +70,21 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 		return m_query;
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object...args)
-	{
-		return m_query.logDecision(decisionType, args);
-	}
-
-	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object...args)
-	{
-		return m_query.logDecision(decisionType, args);
-	}
-
-	protected IVersion getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor) throws CoreException
+	protected IVersion getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor)
+			throws CoreException
 	{
 		VersionMatch match = new VersionMatch(null, branchOrTag, m_query.getRevision(), m_query.getTimestamp(), null);
 		ProviderMatch rInfo = new ProviderMatch(m_provider, m_componentType, match, m_query);
 		return m_componentType.getComponentVersion(rInfo, monitor);
+	}
+
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	{
+		return m_query.logDecision(decisionType, args);
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return m_query.logDecision(decisionType, args);
 	}
 }

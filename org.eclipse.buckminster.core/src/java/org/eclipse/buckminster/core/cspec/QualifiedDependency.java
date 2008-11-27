@@ -72,11 +72,6 @@ public class QualifiedDependency
 				: this;
 	}
 
-	public final Set<String> getAttributeNames()
-	{
-		return m_attributes;
-	}
-
 	@Override
 	public boolean equals(Object o)
 	{
@@ -89,15 +84,14 @@ public class QualifiedDependency
 		return m_request.equals(that.m_request) && m_attributes.equals(that.m_attributes);
 	}
 
+	public final Set<String> getAttributeNames()
+	{
+		return m_attributes;
+	}
+
 	public final ComponentRequest getRequest()
 	{
 		return m_request;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return m_request.hashCode() * 31 + m_attributes.hashCode();
 	}
 
 	public boolean hasAllAttributes(Collection<String> attributes)
@@ -108,6 +102,12 @@ public class QualifiedDependency
 	public boolean hasAllAttributes(String[] attributes)
 	{
 		return hasAllAttributes(Arrays.asList(attributes));
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return m_request.hashCode() * 31 + m_attributes.hashCode();
 	}
 
 	/**

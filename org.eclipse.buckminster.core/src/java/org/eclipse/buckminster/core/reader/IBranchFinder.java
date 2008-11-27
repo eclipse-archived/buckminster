@@ -15,12 +15,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * A IBranchFinder will find the component branches that matches a certain
- * query.
+ * A IBranchFinder will find the component branches that matches a certain query.
+ * 
  * @author Thomas Hallgren
  */
 public interface IBranchFinder
 {
-	String[] getBranches(NodeQuery query, IProgressMonitor monitor)
-	throws CoreException;
+	String[] getBranches(NodeQuery query, IProgressMonitor monitor) throws CoreException;
 }

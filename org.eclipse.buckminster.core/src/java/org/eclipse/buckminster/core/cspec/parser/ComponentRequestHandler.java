@@ -34,18 +34,21 @@ public class ComponentRequestHandler extends ExtensionAwareHandler
 		m_builder = builder;
 	}
 
+	public ComponentRequestBuilder getBuilder()
+	{
+		return m_builder;
+	}
+
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_builder.clear();
 		m_builder.setName(getStringValue(attrs, NamedElement.ATTR_NAME));
 		m_builder.setComponentTypeID(getComponentType(attrs));
 		try
 		{
-			m_builder.setVersionDesignator(
-				getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR),
-				getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_TYPE));
+			m_builder.setVersionDesignator(getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR),
+					getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_TYPE));
 		}
 		catch(CoreException e)
 		{
@@ -63,10 +66,5 @@ public class ComponentRequestHandler extends ExtensionAwareHandler
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}
-	}
-
-	public ComponentRequestBuilder getBuilder()
-	{
-		return m_builder;
 	}
 }

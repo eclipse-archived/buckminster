@@ -37,12 +37,13 @@ import org.xml.sax.SAXException;
 
 /**
  * The super class for actions, artifacts, and groups
- *
+ * 
  * @author Thomas Hallgren
  */
 public abstract class TopLevelAttribute extends Attribute implements Cloneable
 {
 	public final static String PROPERTY_PREFIX = "buckminster.";
+
 	public final static String INSTALLER_HINT_PREFIX = PROPERTY_PREFIX + "install.";
 
 	public static final String ELEM_INSTALLER_HINTS = "installerHints";
@@ -59,13 +60,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 
 	private final boolean m_public;
 
-	TopLevelAttribute(TopLevelAttributeBuilder builder)
-	{
-		super(builder);
-		m_public = builder.isPublic();
-		m_installerHints = ExpandingProperties.createUnmodifiableProperties(builder.getInstallerHints());
-	}
-
 	TopLevelAttribute(String name)
 	{
 		super(name);
@@ -73,9 +67,15 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		m_installerHints = Collections.emptyMap();
 	}
 
+	TopLevelAttribute(TopLevelAttributeBuilder builder)
+	{
+		super(builder);
+		m_public = builder.isPublic();
+		m_installerHints = ExpandingProperties.createUnmodifiableProperties(builder.getInstallerHints());
+	}
+
 	@Override
-	public void addDynamicProperties(Map<String, String> properties)
-	throws CoreException
+	public void addDynamicProperties(Map<String, String> properties) throws CoreException
 	{
 		String actionOutput;
 		CSpec cspec = getCSpec();
@@ -100,8 +100,8 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		}
 		String uniqueFolder = bld.toString();
 
-		IPath buckminsterTempRoot = Path.fromOSString(
-				System.getProperty("java.io.tmpdir")).append("buckminster").append(uniqueFolder);
+		IPath buckminsterTempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster")
+				.append(uniqueFolder);
 
 		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		if(outputRoot != null)
@@ -120,7 +120,32 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		properties.putAll(cspec.getComponentIdentifier().getProperties());
 	}
 
-	public void getDeepInstallerHints(IModelCache ctx, Map<String, String> hints, Stack<IAttributeFilter> filters) throws CoreException
+	public void appendRelativeFiles(IModelCache ctx, Map<String, Long> fileNames) throws CoreException
+	{
+		PathGroup[] pqs = getPathGroups(ctx, null);
+		int idx = pqs.length;
+		while(--idx >= 0)
+			pqs[idx].appendRelativeFiles(fileNames);
+	}
+
+	@Override
+	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(handler, namespace, prefix);
+		if(!m_installerHints.isEmpty())
+		{
+			String qName = Utils.makeQualifiedName(prefix, ELEM_INSTALLER_HINTS);
+			handler.startElement(namespace, ELEM_INSTALLER_HINTS, qName, ISaxableElement.EMPTY_ATTRIBUTES);
+			SAXEmitter.emitProperties(handler, m_installerHints, namespace, prefix, true, false);
+			handler.endElement(namespace, ELEM_INSTALLER_HINTS, qName);
+		}
+	}
+
+	public void getDeepInstallerHints(IModelCache ctx, Map<String, String> hints, Stack<IAttributeFilter> filters)
+			throws CoreException
 	{
 		Map<String, String> myHints = getInstallerHints();
 		if(myHints.size() > 0)
@@ -180,7 +205,9 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 	@Override
 	public String getDefaultTag()
 	{
-		return isPublic() ? PUBLIC_TAG : PRIVATE_TAG;
+		return isPublic()
+				? PUBLIC_TAG
+				: PRIVATE_TAG;
 	}
 
 	public long getFirstModified(IModelCache ctx, int expectedFileCount, int[] fileCount) throws CoreException
@@ -216,14 +243,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		return m_installerHints;
 	}
 
-	public void appendRelativeFiles(IModelCache ctx, Map<String,Long> fileNames) throws CoreException
-	{
-		PathGroup[] pqs = getPathGroups(ctx, null);
-		int idx = pqs.length;
-		while(--idx >= 0)
-			pqs[idx].appendRelativeFiles(fileNames);
-	}
-
 	public long getLastModified(IModelCache ctx, long threshold, int[] fileCount) throws CoreException
 	{
 		PathGroup[] pqs = getPathGroups(ctx, null);
@@ -253,7 +272,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		PathGroup[] pga;
 		if(filters == null || filters.isEmpty())
 		{
-			Map<String,PathGroup[]> cache = ctx.getPathGroupsCache();
+			Map<String, PathGroup[]> cache = ctx.getPathGroupsCache();
 			String qName = getQualifiedName();
 			pga = cache.get(qName);
 			if(pga == null)
@@ -303,27 +322,12 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		return uniquePath;
 	}
 
+	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
+			Stack<IAttributeFilter> filters) throws CoreException;
+
 	@Override
 	public boolean isPublic()
 	{
 		return m_public;
 	}
-
-	@Override
-	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-		if(!m_installerHints.isEmpty())
-		{
-			String qName = Utils.makeQualifiedName(prefix, ELEM_INSTALLER_HINTS);
-			handler.startElement(namespace, ELEM_INSTALLER_HINTS, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-			SAXEmitter.emitProperties(handler, m_installerHints, namespace, prefix, true, false);
-			handler.endElement(namespace, ELEM_INSTALLER_HINTS, qName);
-		}
-	}
-
-	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException;
 }

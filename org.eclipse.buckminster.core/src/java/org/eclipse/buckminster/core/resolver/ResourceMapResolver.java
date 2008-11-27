@@ -53,7 +53,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 	private final LinkedList<ResolverNodeWithJob> m_waitQueue = new LinkedList<ResolverNodeWithJob>();
 
-	public ResourceMapResolver(IResourceMapResolverFactory factory, ResolutionContext context, boolean singleThreaded) throws CoreException
+	public ResourceMapResolver(IResourceMapResolverFactory factory, ResolutionContext context, boolean singleThreaded)
+			throws CoreException
 	{
 		super(context);
 		m_factory = factory;
@@ -64,8 +65,63 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	{
 	}
 
+	synchronized void addJobMonitor(IProgressMonitor monitor)
+	{
+		if(m_singleThreaded)
+			return;
+
+		if(m_topMonitor == null || m_topMonitor.isCanceled())
+		{
+			monitor.setCanceled(true);
+			return;
+		}
+
+		int idx = m_jobMonitors.size();
+		while(--idx >= 0)
+			if(m_jobMonitors.get(idx) == monitor)
+				return;
+
+		m_jobMonitors.add(monitor);
+	}
+
 	public void awake(IJobChangeEvent event)
 	{
+	}
+
+	private synchronized void beginTopMonitor(IProgressMonitor monitor)
+	{
+		monitor = new FibonacciMonitorWrapper(monitor);
+		monitor.beginTask(null, 50);
+		m_topMonitor = monitor;
+	}
+
+	private void cancelAllJobs()
+	{
+		synchronized(m_waitQueue)
+		{
+			m_waitQueue.clear();
+		}
+
+		synchronized(this)
+		{
+			int idx = m_jobMonitors.size();
+			while(--idx >= 0)
+				m_jobMonitors.get(idx).setCanceled(true);
+			if(m_topMonitor != null)
+				m_topMonitor.setCanceled(true);
+		}
+	}
+
+	synchronized void cancelTopMonitor()
+	{
+		if(m_topMonitor != null)
+			m_topMonitor.setCanceled(true);
+	}
+
+	@Override
+	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
+	{
+		return new ResolverNodeWithJob(this, context, qDep, requestorInfo);
 	}
 
 	public void done(IJobChangeEvent event)
@@ -82,16 +138,91 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		}
 	}
 
-	synchronized void cancelTopMonitor()
+	private synchronized void endTopMonitor()
 	{
-		if(m_topMonitor != null)
-			m_topMonitor.setCanceled(true);
+		m_topMonitor.done();
+		m_topMonitor = null;
 	}
 
-	@Override
-	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
+	BOMNode innerResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		return new ResolverNodeWithJob(this, context, qDep, requestorInfo);
+		monitor.beginTask(null, 100);
+		try
+		{
+			BOMNode node = null;
+			if(m_factory.isLocalResolve())
+				node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
+			else
+				MonitorUtils.worked(monitor, 5);
+
+			if(node == null && query.useResolutionService())
+			{
+				ComponentQuery cquery = query.getComponentQuery();
+				URL rmapURL = cquery.getResolvedResourceMapURL();
+				ResourceMap rmap = m_factory.getResourceMap(getContext(), rmapURL, cquery.getConnectContext());
+				query.logDecision(ResolverDecisionType.USING_RESOURCE_MAP, rmapURL);
+				node = rmap.resolve(query, MonitorUtils.subMonitor(monitor, 95));
+			}
+			else
+				MonitorUtils.worked(monitor, 95);
+			return node;
+		}
+		catch(CoreException e)
+		{
+			RMContext context = getContext();
+			if(!context.isContinueOnError())
+				throw e;
+			context.addRequestStatus(query.getComponentRequest(), e.getStatus());
+			return null;
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	private ResolverNodeWithJob popWaitQueue()
+	{
+		synchronized(m_waitQueue)
+		{
+			return m_waitQueue.poll();
+		}
+	}
+
+	private void pushOnWaitQueue(ResolverNodeWithJob node)
+	{
+		synchronized(m_waitQueue)
+		{
+			m_waitQueue.add(node);
+		}
+	}
+
+	synchronized void removeJobMonitor(IProgressMonitor monitor)
+	{
+		if(m_singleThreaded)
+			return;
+
+		int idx = m_jobMonitors.size();
+		while(--idx >= 0)
+		{
+			if(m_jobMonitors.get(idx) == monitor)
+			{
+				m_jobMonitors.remove(idx);
+				break;
+			}
+		}
+	}
+
+	synchronized void resolutionPartDone()
+	{
+		if(m_singleThreaded)
+			return;
+
+		// Allow another job to enter. The resolution part of the
+		// calling job is done.
+		//
+		--s_jobCounter;
+		scheduleNext();
 	}
 
 	@Override
@@ -140,7 +271,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			if(!(cquery == null || cquery.equals(context.getComponentQuery())))
 				context = new ResolutionContext(cquery, context);
 
-			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(context, bom.getQualifiedDependency(), bom.getTagInfo());
+			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(context, bom.getQualifiedDependency(),
+					bom.getTagInfo());
 
 			m_holdQueue = true;
 			if(topNode.rebuildTree(bom))
@@ -176,98 +308,6 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			MonitorUtils.worked(m_topMonitor, 1);
 	}
 
-	public void scheduled(IJobChangeEvent event)
-	{
-	}
-
-	public void sleeping(IJobChangeEvent event)
-	{
-	}
-
-	synchronized void addJobMonitor(IProgressMonitor monitor)
-	{
-		if(m_singleThreaded)
-			return;
-
-		if(m_topMonitor == null || m_topMonitor.isCanceled())
-		{
-			monitor.setCanceled(true);
-			return;
-		}
-
-		int idx = m_jobMonitors.size();
-		while(--idx >= 0)
-			if(m_jobMonitors.get(idx) == monitor)
-				return;
-
-		m_jobMonitors.add(monitor);
-	}
-
-	synchronized void resolutionPartDone()
-	{
-		if(m_singleThreaded)
-			return;
-
-		// Allow another job to enter. The resolution part of the
-		// calling job is done.
-		//
-		--s_jobCounter;
-		scheduleNext();
-	}
-
-	synchronized void removeJobMonitor(IProgressMonitor monitor)
-	{
-		if(m_singleThreaded)
-			return;
-
-		int idx = m_jobMonitors.size();
-		while(--idx >= 0)
-		{
-			if(m_jobMonitors.get(idx) == monitor)
-			{
-				m_jobMonitors.remove(idx);
-				break;
-			}
-		}
-	}
-
-	BOMNode innerResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
-		try
-		{
-			BOMNode node = null;
-			if(m_factory.isLocalResolve())
-				node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
-			else
-				MonitorUtils.worked(monitor, 5);
-
-			if(node == null && query.useResolutionService())
-			{
-				ComponentQuery cquery = query.getComponentQuery();
-				URL rmapURL = cquery.getResolvedResourceMapURL();
-				ResourceMap rmap = m_factory.getResourceMap(getContext(), rmapURL, cquery.getConnectContext());
-				query.logDecision(ResolverDecisionType.USING_RESOURCE_MAP, rmapURL);
-				node = rmap.resolve(query, MonitorUtils.subMonitor(monitor, 95));
-			}
-			else
-				MonitorUtils.worked(monitor, 95);
-			return node;
-		}
-		catch(CoreException e)
-		{
-			RMContext context = getContext();
-			if(!context.isContinueOnError())
-				throw e;
-			context.addRequestStatus(query.getComponentRequest(), e.getStatus());
-			return null;
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
 	boolean schedule(ResolverNodeWithJob node)
 	{
 		synchronized(node)
@@ -291,50 +331,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		return true;
 	}
 
-	private synchronized void beginTopMonitor(IProgressMonitor monitor)
+	public void scheduled(IJobChangeEvent event)
 	{
-		monitor = new FibonacciMonitorWrapper(monitor);
-		monitor.beginTask(null, 50);
-		m_topMonitor = monitor;
-	}
-
-	private void cancelAllJobs()
-	{
-		synchronized(m_waitQueue)
-		{
-			m_waitQueue.clear();
-		}
-
-		synchronized(this)
-		{
-			int idx = m_jobMonitors.size();
-			while(--idx >= 0)
-				m_jobMonitors.get(idx).setCanceled(true);
-			if(m_topMonitor != null)
-				m_topMonitor.setCanceled(true);
-		}
-	}
-
-	private synchronized void endTopMonitor()
-	{
-		m_topMonitor.done();
-		m_topMonitor = null;
-	}
-
-	private ResolverNodeWithJob popWaitQueue()
-	{
-		synchronized(m_waitQueue)
-		{
-			return m_waitQueue.poll();
-		}
-	}
-
-	private void pushOnWaitQueue(ResolverNodeWithJob node)
-	{
-		synchronized(m_waitQueue)
-		{
-			m_waitQueue.add(node);
-		}
 	}
 
 	private boolean scheduleNext()
@@ -367,6 +365,10 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			job.schedule();
 		}
 		return true;
+	}
+
+	public void sleeping(IJobChangeEvent event)
+	{
 	}
 
 	private void waitForCompletion(IProgressMonitor monitor) throws CoreException

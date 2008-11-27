@@ -25,7 +25,9 @@ public class OSGiVersion extends AbstractTripletVersion
 		public int compare(String o1, String o2)
 		{
 			if(o1 == null)
-				return o2 == null ? 0 : -1;
+				return o2 == null
+						? 0
+						: -1;
 			if(o2 == null)
 				return 1;
 
@@ -49,25 +51,25 @@ public class OSGiVersion extends AbstractTripletVersion
 	}
 
 	@Override
-	public Comparator<String> getQualifierComparator()
-	{
-		return s_defaultComparator;
-	}
-
-	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
-		if (!(o instanceof OSGiVersion))
+		if(!(o instanceof OSGiVersion))
 			return false;
 		OSGiVersion that = (OSGiVersion)o;
 
-		if (this.compareTo(that) != 0)
+		if(this.compareTo(that) != 0)
 			return false;
 
 		return true;
+	}
+
+	@Override
+	public Comparator<String> getQualifierComparator()
+	{
+		return s_defaultComparator;
 	}
 
 	@Override
@@ -77,10 +79,9 @@ public class OSGiVersion extends AbstractTripletVersion
 	}
 
 	/**
-	 * Appends the string representation of this version identifier. The format
-	 * of the version string will be <code>major.minor.micro</code> if
-	 * qualifier is the <code>null</code> or
-	 * <code>major.minor.micro.qualifier</code> otherwise.
+	 * Appends the string representation of this version identifier. The format of the version string will be
+	 * <code>major.minor.micro</code> if qualifier is the <code>null</code> or <code>major.minor.micro.qualifier</code>
+	 * otherwise.
 	 */
 	public void toString(StringBuilder bld)
 	{

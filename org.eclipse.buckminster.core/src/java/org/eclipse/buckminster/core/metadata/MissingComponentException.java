@@ -22,4 +22,3 @@ public class MissingComponentException extends LocalizedException
 		super("No component named %s is known to Buckminster", componentName);
 	}
 }
-

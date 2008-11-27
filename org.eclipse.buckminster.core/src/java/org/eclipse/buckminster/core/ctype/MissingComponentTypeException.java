@@ -20,8 +20,7 @@ public class MissingComponentTypeException extends LocalizedException
 
 	public MissingComponentTypeException(String componentTypeId)
 	{
-		super("No component type with id %s has been registered with extension-point %s",
-				componentTypeId, CorePlugin.COMPONENT_TYPE_POINT);
+		super("No component type with id %s has been registered with extension-point %s", componentTypeId,
+				CorePlugin.COMPONENT_TYPE_POINT);
 	}
 }
-

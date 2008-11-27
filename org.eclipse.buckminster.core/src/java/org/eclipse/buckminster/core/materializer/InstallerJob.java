@@ -23,14 +23,12 @@ import org.eclipse.core.runtime.Status;
 
 /**
  * A job that will materialize and bind according to specifications.
+ * 
  * @author Thomas Hallgren
  */
 public class InstallerJob extends WorkspaceJob
 {
-	private final MaterializationContext m_context;
-
-	public static void run(MaterializationContext context)
-	throws CoreException
+	public static void run(MaterializationContext context) throws CoreException
 	{
 		try
 		{
@@ -67,6 +65,8 @@ public class InstallerJob extends WorkspaceJob
 		if(!status.isOK())
 			throw new CoreException(status);
 	}
+
+	private final MaterializationContext m_context;
 
 	public InstallerJob(MaterializationContext ctx) throws CoreException
 	{

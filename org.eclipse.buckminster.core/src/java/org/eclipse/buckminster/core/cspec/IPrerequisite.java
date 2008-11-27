@@ -1,6 +1,5 @@
 package org.eclipse.buckminster.core.cspec;
 
-
 public interface IPrerequisite extends IAttributeFilter
 {
 	String getAlias();

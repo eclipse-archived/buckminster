@@ -28,6 +28,11 @@ public class AlterArtifactBuilder extends AlterAttributeBuilder
 		super(baseBuilder);
 	}
 
+	public void addRemovedPath(IPath path)
+	{
+		m_removedPaths.add(path);
+	}
+
 	@Override
 	public void clear()
 	{
@@ -39,11 +44,6 @@ public class AlterArtifactBuilder extends AlterAttributeBuilder
 	public AlterAttribute<?> createAlterAttribute()
 	{
 		return new AlterArtifact((Artifact)createBase(), getRemovedHints(), getAlteredHints(), m_removedPaths);
-	}
-
-	public void addRemovedPath(IPath path)
-	{
-		m_removedPaths.add(path);
 	}
 
 	public Set<IPath> getRemovedPaths()

@@ -14,21 +14,21 @@ import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Converts a <code>VersionSelector</code> of type <code>PLAIN</code> to
- * something that can be understood by a source code control system.
+ * Converts a <code>VersionSelector</code> of type <code>PLAIN</code> to something that can be understood by a source
+ * code control system.
  * 
  * @author Thomas Hallgren
  */
 public interface IVersionConverter extends IBuckminsterExtension
 {
 	static final String TAG = "tag";
+
 	static final String BRANCH = "branch";
 
 	/**
-	 * Converts the <code>version</code> into a <code>BranchOrTag</code>
-	 * that can be understood by a source code control system. An implementation
-	 * will typically use the <code>version</code> as a tag or branch name,
-	 * possibly modified using a substitution pattern
+	 * Converts the <code>version</code> into a <code>BranchOrTag</code> that can be understood by a source code control
+	 * system. An implementation will typically use the <code>version</code> as a tag or branch name, possibly modified
+	 * using a substitution pattern
 	 * 
 	 * @param version
 	 *            The version to convert.
@@ -39,8 +39,8 @@ public interface IVersionConverter extends IBuckminsterExtension
 	VersionSelector createSelector(IVersion version) throws CoreException;
 
 	/**
-	 * Converts the <code>branchOrTag</code> into a <code>IVersion</code>.
-	 * This is the reverse of {@link #createSelector(IVersion) }.
+	 * Converts the <code>branchOrTag</code> into a <code>IVersion</code>. This is the reverse of
+	 * {@link #createSelector(IVersion) }.
 	 * 
 	 * @param branchOrTag
 	 *            The branch or tag to convert.
@@ -51,14 +51,16 @@ public interface IVersionConverter extends IBuckminsterExtension
 	IVersion createVersion(VersionSelector branchOrTag) throws CoreException;
 
 	/**
-	 * Returns the type of the selectors that this converter will produce. Can
-	 * be either {@link VersionSelector#TAG} or {@link VersionSelector#BRANCH}.
-	 * @return The type of the produced selectors 
+	 * Returns the type of the selectors that this converter will produce. Can be either {@link VersionSelector#TAG} or
+	 * {@link VersionSelector#BRANCH}.
+	 * 
+	 * @return The type of the produced selectors
 	 */
 	int getSelectorType();
 
 	/**
 	 * Returns the type of the versions that this converter will produce
+	 * 
 	 * @return The type of the produced versions
 	 */
 	IVersionType getVersionType();

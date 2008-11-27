@@ -18,8 +18,26 @@ import java.util.UUID;
 public class UUIDUtil
 {
 	/**
-	 * Static factory to retrieve a type 3 (name based) <tt>UUID</tt> based on the
-	 * specified byte array.
+	 * Create an UUID from a byte array of length 16 that is the raw data for the UUID.
+	 * 
+	 * @param data
+	 *            The raw data for the UUID
+	 * @return The created UUID.
+	 */
+	public static UUID fromRawBytes(byte[] data)
+	{
+		long msb = 0;
+		long lsb = 0;
+		assert data.length == 16;
+		for(int i = 0; i < 8; i++)
+			msb = (msb << 8) | (data[i] & 0xff);
+		for(int i = 8; i < 16; i++)
+			lsb = (lsb << 8) | (data[i] & 0xff);
+		return new UUID(msb, lsb);
+	}
+
+	/**
+	 * Static factory to retrieve a type 3 (name based) <tt>UUID</tt> based on the specified byte array.
 	 * 
 	 * @param name
 	 *            a byte array to be used to construct a <tt>UUID</tt>.
@@ -49,24 +67,5 @@ public class UUIDUtil
 		md5Bytes[8] &= 0x3f; /* clear variant */
 		md5Bytes[8] |= 0x80; /* set to IETF variant */
 		return fromRawBytes(md5Bytes);
-	}
-
-	/**
-	 * Create an UUID from a byte array of length 16 that is the raw data for the UUID.
-	 * 
-	 * @param data
-	 *            The raw data for the UUID
-	 * @return The created UUID.
-	 */
-	public static UUID fromRawBytes(byte[] data)
-	{
-		long msb = 0;
-		long lsb = 0;
-		assert data.length == 16;
-		for(int i = 0; i < 8; i++)
-			msb = (msb << 8) | (data[i] & 0xff);
-		for(int i = 8; i < 16; i++)
-			lsb = (lsb << 8) | (data[i] & 0xff);
-		return new UUID(msb, lsb);
 	}
 }

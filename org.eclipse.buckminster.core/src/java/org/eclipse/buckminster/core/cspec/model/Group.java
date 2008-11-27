@@ -28,48 +28,12 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class Group extends TopLevelAttribute implements IGroup
 {
 	public static final String ATTR_REBASE = "rebase";
-
-	/**
-	 * Rebase all paths that, when resolved, are paths prefixed by newBase
-	 * @param newBase The base to use as replacement
-	 * @param paths The path groups to rebase
-	 * @return A new set of path groups
-	 * @throws CoreException
-	 */
-	public static PathGroup[] rebase(IPath newBase, PathGroup[] pathGroups) throws CoreException
-	{
-		if(newBase == null)
-			return pathGroups;
-
-		HashMap<IPath, ArrayList<IPath>> bld = new HashMap<IPath, ArrayList<IPath>>();
-		for(PathGroup pathGroup : pathGroups)
-		{
-			IPath currentBase = pathGroup.getBase();
-			IPath[] paths = pathGroup.getPaths();
-			if(paths.length == 0)
-				addPathGroup(bld, newBase, currentBase, null);
-			else
-			{
-				for(IPath path : paths)
-					addPathGroup(bld, newBase, currentBase, path);
-			}
-		}
-
-		ArrayList<PathGroup> newPathGroups = new ArrayList<PathGroup>();
-		for(Map.Entry<IPath, ArrayList<IPath>> entry : bld.entrySet())
-		{
-			ArrayList<IPath> paths = entry.getValue();
-			newPathGroups.add(new PathGroup(entry.getKey(), paths.toArray(new IPath[paths.size()])));
-		}
-		return newPathGroups.toArray(new PathGroup[newPathGroups.size()]);
-	}
 
 	private static void addPathGroup(HashMap<IPath, ArrayList<IPath>> bld, IPath newBase, IPath currentBase, IPath path)
 	{
@@ -101,6 +65,44 @@ public class Group extends TopLevelAttribute implements IGroup
 		return componentName + ':' + attributeName;
 	}
 
+	/**
+	 * Rebase all paths that, when resolved, are paths prefixed by newBase
+	 * 
+	 * @param newBase
+	 *            The base to use as replacement
+	 * @param paths
+	 *            The path groups to rebase
+	 * @return A new set of path groups
+	 * @throws CoreException
+	 */
+	public static PathGroup[] rebase(IPath newBase, PathGroup[] pathGroups) throws CoreException
+	{
+		if(newBase == null)
+			return pathGroups;
+
+		HashMap<IPath, ArrayList<IPath>> bld = new HashMap<IPath, ArrayList<IPath>>();
+		for(PathGroup pathGroup : pathGroups)
+		{
+			IPath currentBase = pathGroup.getBase();
+			IPath[] paths = pathGroup.getPaths();
+			if(paths.length == 0)
+				addPathGroup(bld, newBase, currentBase, null);
+			else
+			{
+				for(IPath path : paths)
+					addPathGroup(bld, newBase, currentBase, path);
+			}
+		}
+
+		ArrayList<PathGroup> newPathGroups = new ArrayList<PathGroup>();
+		for(Map.Entry<IPath, ArrayList<IPath>> entry : bld.entrySet())
+		{
+			ArrayList<IPath> paths = entry.getValue();
+			newPathGroups.add(new PathGroup(entry.getKey(), paths.toArray(new IPath[paths.size()])));
+		}
+		return newPathGroups.toArray(new PathGroup[newPathGroups.size()]);
+	}
+
 	private final List<Prerequisite> m_prerequisites;
 
 	private final IPath m_prerequisiteRebase;
@@ -110,6 +112,29 @@ public class Group extends TopLevelAttribute implements IGroup
 		super(builder);
 		m_prerequisiteRebase = builder.getPrerequisiteRebase();
 		m_prerequisites = Utils.createUnmodifiableList(builder.getPrerequisiteList());
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		IPath prereqsRebase = getPrerequisiteRebase();
+		if(prereqsRebase != null)
+			Utils.addAttribute(attrs, ATTR_REBASE, prereqsRebase.toPortableString());
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createGroupBuilder();
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(handler, namespace, prefix);
+		for(Prerequisite pr : getPrerequisites())
+			pr.toSax(handler, namespace, prefix, pr.getDefaultTag());
 	}
 
 	public IPath getPrerequisiteRebase()
@@ -143,68 +168,14 @@ public class Group extends TopLevelAttribute implements IGroup
 			if(isMatch)
 				matched.add(pq);
 		}
-		return matched.size() == m_prerequisites.size() ? m_prerequisites : matched;
+		return matched.size() == m_prerequisites.size()
+				? m_prerequisites
+				: matched;
 	}
 
 	@Override
-	public boolean isEnabled(IModelCache ctx) throws CoreException
-	{
-		if(!super.isEnabled(ctx))
-			return false;
-
-		// Return true if at least one of the prerequisites are enabled
-		//
-		CSpec cspec = getCSpec();
-		int idx = m_prerequisites.size();
-		if(idx == 0)
-			return true;
-
-		while(--idx >= 0)
-			if(m_prerequisites.get(idx).isEnabled(ctx, cspec))
-				return true;
-		return false;
-	}
-
-	@Override
-	public boolean isProducedByActions(IModelCache ctx) throws CoreException
-	{
-		CSpec cspec = getCSpec();
-		int idx = m_prerequisites.size();
-		while(--idx >= 0)
-		{
-			Attribute attr = m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx);
-			if(attr != null && attr.isProducedByActions(ctx))
-				return true;
-		}
-		return false;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		IPath prereqsRebase = getPrerequisiteRebase();
-		if(prereqsRebase != null)
-			Utils.addAttribute(attrs, ATTR_REBASE, prereqsRebase.toPortableString());
-	}
-
-	@Override
-	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
-		return cspecBuilder.createGroupBuilder();
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-		for(Prerequisite pr : getPrerequisites())
-			pr.toSax(handler, namespace, prefix, pr.getDefaultTag());
-	}
-
-	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
-			throws CoreException
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
+			Stack<IAttributeFilter> filters) throws CoreException
 	{
 		IPath prereqRebase = getPrerequisiteRebase();
 		if(prereqRebase != null)
@@ -247,5 +218,38 @@ public class Group extends TopLevelAttribute implements IGroup
 			}
 		}
 		return bld.toArray(new PathGroup[bld.size()]);
+	}
+
+	@Override
+	public boolean isEnabled(IModelCache ctx) throws CoreException
+	{
+		if(!super.isEnabled(ctx))
+			return false;
+
+		// Return true if at least one of the prerequisites are enabled
+		//
+		CSpec cspec = getCSpec();
+		int idx = m_prerequisites.size();
+		if(idx == 0)
+			return true;
+
+		while(--idx >= 0)
+			if(m_prerequisites.get(idx).isEnabled(ctx, cspec))
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean isProducedByActions(IModelCache ctx) throws CoreException
+	{
+		CSpec cspec = getCSpec();
+		int idx = m_prerequisites.size();
+		while(--idx >= 0)
+		{
+			Attribute attr = m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx);
+			if(attr != null && attr.isProducedByActions(ctx))
+				return true;
+		}
+		return false;
 	}
 }

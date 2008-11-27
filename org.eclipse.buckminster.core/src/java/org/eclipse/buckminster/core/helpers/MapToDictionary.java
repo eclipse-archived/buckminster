@@ -14,23 +14,23 @@ import java.util.Map;
 /**
  * @author Thomas Hallgren
  */
-public class MapToDictionary<K,V> extends Dictionary<K,V>
+public class MapToDictionary<K, V> extends Dictionary<K, V>
 {
-	private final Map<K,V> m_wrappedMap;
-
-	private MapToDictionary(Map<K,V> wrappedMap)
-	{
-		m_wrappedMap = wrappedMap;
-	}
-
 	@SuppressWarnings("unchecked")
-	public static <K,V> Dictionary<K,V> wrap(Map<K,V> map)
+	public static <K, V> Dictionary<K, V> wrap(Map<K, V> map)
 	{
 		if(map == null)
 			return null;
 		if(map instanceof Dictionary)
-			return (Dictionary<K,V>)map;
-		return new MapToDictionary<K,V>(map);
+			return (Dictionary<K, V>)map;
+		return new MapToDictionary<K, V>(map);
+	}
+
+	private final Map<K, V> m_wrappedMap;
+
+	private MapToDictionary(Map<K, V> wrappedMap)
+	{
+		m_wrappedMap = wrappedMap;
 	}
 
 	@Override

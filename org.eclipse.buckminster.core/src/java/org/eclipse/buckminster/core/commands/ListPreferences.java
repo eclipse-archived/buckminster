@@ -26,8 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class ListPreferences extends AbstractCommand
 {
-	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test",
-		OptionValueType.NONE);
+	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
 
 	private boolean m_test = false;
 
@@ -59,8 +58,7 @@ public class ListPreferences extends AbstractCommand
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		PrintStream out = System.out;
-		List<BasicPreferenceHandler> handlers = PreferenceMappingManager.getInstance(m_test).getAllHandlers(
-			m_pattern);
+		List<BasicPreferenceHandler> handlers = PreferenceMappingManager.getInstance(m_test).getAllHandlers(m_pattern);
 		int top = handlers.size();
 		if(top == 0)
 		{

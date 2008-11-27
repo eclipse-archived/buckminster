@@ -22,15 +22,14 @@ public abstract class ValueHandler extends ExtensionAwareHandler
 	{
 		super(parent);
 	}
-	
-	protected final void setValueHolder(ValueHolder valueHolder)
-	{
-		m_valueHolder = valueHolder;
-	}
 
 	public final ValueHolder getValueHolder()
 	{
 		return m_valueHolder;
 	}
-}
 
+	protected final void setValueHolder(ValueHolder valueHolder)
+	{
+		m_valueHolder = valueHolder;
+	}
+}

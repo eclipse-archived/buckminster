@@ -144,116 +144,6 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		m_properties = ExpandingProperties.createUnmodifiableProperties(bld.getProperties());
 	}
 
-	public boolean allowCircularDependency()
-	{
-		return m_allowCircularDependency;
-	}
-
-	public final List<String> getAttributes()
-	{
-		return m_attributes;
-	}
-
-	public final VersionSelector[] getBranchTagPath()
-	{
-		return m_branchTagPath;
-	}
-
-	public final String getComponentTypeID()
-	{
-		return m_componentTypeID;
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
-	}
-
-	public final MutableLevel getMutableLevel()
-	{
-		return m_mutableLevel;
-	}
-
-	public final Pattern getNamePattern()
-	{
-		return m_namePattern;
-	}
-
-	public URL getOverlayFolder()
-	{
-		return m_overlayFolder;
-	}
-
-	public Map<String, String> getProperties()
-	{
-		return m_properties;
-	}
-
-	public int[] getResolutionPrio()
-	{
-		return m_resolutionPrio;
-	}
-
-	public long getRevision()
-	{
-		return m_revision;
-	}
-
-	public Date getTimestamp()
-	{
-		return m_timestamp;
-	}
-
-	public final SourceLevel getSourceLevel()
-	{
-		return m_sourceLevel;
-	}
-
-	public final IVersionDesignator getVersionOverride()
-	{
-		return m_versionOverride;
-	}
-
-	public final boolean isPrune()
-	{
-		return m_prune;
-	}
-
-	public final boolean isSystemDiscovery()
-	{
-		return m_systemDiscovery;
-	}
-
-	public final boolean isUseTargetPlatform()
-	{
-		return m_useTargetPlatform;
-	}
-
-	public final boolean isUseMaterialization()
-	{
-		return m_useMaterialization;
-	}
-
-	public final boolean isUseWorkspace()
-	{
-		return m_useWorkspace;
-	}
-
-	public final boolean isUseRemoteResolution()
-	{
-		return m_useRemoteResolution;
-	}
-
-	public final boolean skipComponent()
-	{
-		return m_skipComponent;
-	}
-
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
@@ -315,11 +205,121 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
 	}
 
+	public boolean allowCircularDependency()
+	{
+		return m_allowCircularDependency;
+	}
+
 	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
 		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+	}
+
+	public final List<String> getAttributes()
+	{
+		return m_attributes;
+	}
+
+	public final VersionSelector[] getBranchTagPath()
+	{
+		return m_branchTagPath;
+	}
+
+	public final String getComponentTypeID()
+	{
+		return m_componentTypeID;
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public Documentation getDocumentation()
+	{
+		return m_documentation;
+	}
+
+	public final MutableLevel getMutableLevel()
+	{
+		return m_mutableLevel;
+	}
+
+	public final Pattern getNamePattern()
+	{
+		return m_namePattern;
+	}
+
+	public URL getOverlayFolder()
+	{
+		return m_overlayFolder;
+	}
+
+	public Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
+	public int[] getResolutionPrio()
+	{
+		return m_resolutionPrio;
+	}
+
+	public long getRevision()
+	{
+		return m_revision;
+	}
+
+	public final SourceLevel getSourceLevel()
+	{
+		return m_sourceLevel;
+	}
+
+	public Date getTimestamp()
+	{
+		return m_timestamp;
+	}
+
+	public final IVersionDesignator getVersionOverride()
+	{
+		return m_versionOverride;
+	}
+
+	public final boolean isPrune()
+	{
+		return m_prune;
+	}
+
+	public final boolean isSystemDiscovery()
+	{
+		return m_systemDiscovery;
+	}
+
+	public final boolean isUseMaterialization()
+	{
+		return m_useMaterialization;
+	}
+
+	public final boolean isUseRemoteResolution()
+	{
+		return m_useRemoteResolution;
+	}
+
+	public final boolean isUseTargetPlatform()
+	{
+		return m_useTargetPlatform;
+	}
+
+	public final boolean isUseWorkspace()
+	{
+		return m_useWorkspace;
+	}
+
+	public final boolean skipComponent()
+	{
+		return m_skipComponent;
 	}
 }

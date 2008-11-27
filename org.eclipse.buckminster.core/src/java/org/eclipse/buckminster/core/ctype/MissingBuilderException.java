@@ -21,7 +21,6 @@ public class MissingBuilderException extends LocalizedException
 	public MissingBuilderException(String builderId)
 	{
 		super("No Component Specification (cspec) builder with id %s has been registered with extension-point %s",
-			builderId, CorePlugin.CSPEC_BUILDER_POINT);
+				builderId, CorePlugin.CSPEC_BUILDER_POINT);
 	}
 }
-

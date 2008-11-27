@@ -21,12 +21,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * A Component Name is something that identifies a component irrespective of version.
- *
+ * 
  * @author Thomas Hallgren
  */
 public class ComponentName extends NamedElement implements Comparable<IComponentName>, IComponentName
 {
 	public static final String TAG = "componentName";
+
 	public static final String ATTR_COMPONENT_TYPE = "componentType";
 
 	private final String m_componentType;
@@ -44,6 +45,22 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 	}
 
 	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_componentType != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
+	}
+
+	public int compareTo(IComponentName o)
+	{
+		int cmp = Trivial.compareAllowNull(getName(), o.getName());
+		if(cmp == 0)
+			cmp = Trivial.compareAllowNull(m_componentType, o.getComponentTypeID());
+		return cmp;
+	}
+
+	@Override
 	public boolean equals(Object o)
 	{
 		if(this == o)
@@ -53,17 +70,24 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 
 		ComponentName that = (ComponentName)o;
 		return Trivial.equalsAllowNull(getName(), that.getName())
-			&& Trivial.equalsAllowNull(m_componentType, that.m_componentType);
+				&& Trivial.equalsAllowNull(m_componentType, that.m_componentType);
 	}
 
 	public IComponentType getComponentType() throws CoreException
 	{
-		return m_componentType == null ? null : CorePlugin.getDefault().getComponentType(m_componentType);
+		return m_componentType == null
+				? null
+				: CorePlugin.getDefault().getComponentType(m_componentType);
 	}
 
 	public String getComponentTypeID()
 	{
 		return m_componentType;
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
 	}
 
 	public String getProjectName() throws CoreException
@@ -79,9 +103,9 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 		return ctype.getProjectName(name);
 	}
 
-	public Map<String,String> getProperties()
+	public Map<String, String> getProperties()
 	{
-		HashMap<String,String> p = new HashMap<String,String>();
+		HashMap<String, String> p = new HashMap<String, String>();
 		if(getName() != null)
 			p.put(KeyConstants.COMPONENT_NAME, getName());
 		if(m_componentType != null)
@@ -89,15 +113,12 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 		return p;
 	}
 
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
 	@Override
 	public int hashCode()
 	{
-		int hc = getName() == null ? 31 : getName().hashCode();
+		int hc = getName() == null
+				? 31
+				: getName().hashCode();
 		if(m_componentType != null)
 		{
 			hc *= 37;
@@ -107,25 +128,28 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 	}
 
 	/**
-	 * <p>Match this name with another name. The match is done as
-	 * follows</p>
+	 * <p>
+	 * Match this name with another name. The match is done as follows
+	 * </p>
 	 * <ul>
 	 * <li>If names are not equal, the match is always false</li>
 	 * <li>If both instances have a component type, it must be equal</li>
 	 * <li>If one instance lacks a component type, the types are not considered part of the match</p>
-	 * @param o The name to match with this one
+	 * 
+	 * @param o
+	 *            The name to match with this one
 	 * @return <code>true</code> if the name match
 	 */
 	public boolean matches(ComponentName o)
 	{
 		return Trivial.equalsAllowNull(getName(), o.getName())
-			&& (m_componentType == null || o.m_componentType == null || m_componentType.equals(o.m_componentType));
+				&& (m_componentType == null || o.m_componentType == null || m_componentType.equals(o.m_componentType));
 	}
 
 	/**
-	 * Returns this instance as an explicit {@link ComponentName}, i.e. not
-	 * as one of its subclasses. This method should be used when component names
-	 * are used as keys where only the component name part is significant.
+	 * Returns this instance as an explicit {@link ComponentName}, i.e. not as one of its subclasses. This method should
+	 * be used when component names are used as keys where only the component name part is significant.
+	 * 
 	 * @return A pure component name.
 	 */
 	public IComponentName toPureComponentName()
@@ -149,21 +173,5 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 			bld.append(':');
 			bld.append(m_componentType);
 		}
-	}
-
-	public int compareTo(IComponentName o)
-	{
-		int cmp = Trivial.compareAllowNull(getName(), o.getName());
-		if(cmp == 0)
-			cmp = Trivial.compareAllowNull(m_componentType, o.getComponentTypeID());
-		return cmp;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_componentType != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
 	}
 }

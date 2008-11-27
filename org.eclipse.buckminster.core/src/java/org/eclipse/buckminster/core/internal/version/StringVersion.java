@@ -15,7 +15,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class StringVersion extends AbstractVersion
 {
@@ -37,14 +37,14 @@ public class StringVersion extends AbstractVersion
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
-		if (!(o instanceof StringVersion))
+		if(!(o instanceof StringVersion))
 			return false;
 		StringVersion that = (StringVersion)o;
 
-		if (!this.m_version.equals(that.m_version))
+		if(!this.m_version.equals(that.m_version))
 			return false;
 
 		return true;

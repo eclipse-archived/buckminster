@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 {
 	public static final String TAG = MaterializationSpec.TAG;
+
 	private final URL m_contextURL;
 
 	public MaterializationSpecHandler(AbstractHandler parent, URL contextURL)
@@ -32,8 +33,7 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(MaterializationNodeHandler.TAG.equals(localName))
@@ -41,6 +41,11 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
+	}
+
+	public MaterializationSpec getMaterializationSpec()
+	{
+		return new MaterializationSpec((MaterializationSpecBuilder)getBuilder());
 	}
 
 	@Override
@@ -52,10 +57,5 @@ public class MaterializationSpecHandler extends MaterializationDirectiveHandler
 		builder.setName(getStringValue(attrs, MaterializationSpec.ATTR_NAME));
 		builder.setShortDesc(getOptionalStringValue(attrs, MaterializationSpec.ATTR_SHORT_DESC));
 		builder.setURL(getStringValue(attrs, MaterializationSpec.ATTR_URL));
-	}
-
-	public MaterializationSpec getMaterializationSpec()
-	{
-		return new MaterializationSpec((MaterializationSpecBuilder)getBuilder());
 	}
 }

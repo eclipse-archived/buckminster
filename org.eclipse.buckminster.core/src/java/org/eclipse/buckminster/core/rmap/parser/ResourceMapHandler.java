@@ -21,17 +21,21 @@ import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class ResourceMapHandler extends PropertyManagerHandler
 {
 	private URL m_contextURL;
+
 	private SearchPathHandler m_searchPathHandler;
+
 	private MatcherHandler.LocatorHandler m_locatorHandler;
+
 	private MatcherHandler.RedirectHandler m_redirectHandler;
+
 	private DocumentationHandler m_documentationHandler;
+
 	private ResourceMap m_resourceMap;
 
 	public ResourceMapHandler(AbstractHandler parent)
@@ -40,8 +44,16 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		if(child == m_documentationHandler)
+			getResourceMap().setDocumentation(m_documentationHandler.createDocumentation());
+		else
+			super.childPopped(child);
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(SearchPathHandler.TAG.equals(localName))
@@ -74,27 +86,16 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName)
-	throws SAXException
+	public void endElement(String uri, String localName, String qName) throws SAXException
 	{
 		super.endElement(uri, localName, qName);
 		((ResourceMapParser)this.getTopHandler()).setResourceMap(this.getResourceMap());
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
+	public ExpandingProperties getProperties()
 	{
-		if(child == m_documentationHandler)
-			getResourceMap().setDocumentation(m_documentationHandler.createDocumentation());
-		else
-			super.childPopped(child);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_resourceMap = null;
+		return (ExpandingProperties)this.getResourceMap().getProperties();
 	}
 
 	public ResourceMap getResourceMap()
@@ -105,9 +106,9 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ExpandingProperties getProperties()
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		return (ExpandingProperties)this.getResourceMap().getProperties();
+		m_resourceMap = null;
 	}
 
 	void setContextURL(URL contextURL)
@@ -115,4 +116,3 @@ public class ResourceMapHandler extends PropertyManagerHandler
 		m_contextURL = contextURL;
 	}
 }
-

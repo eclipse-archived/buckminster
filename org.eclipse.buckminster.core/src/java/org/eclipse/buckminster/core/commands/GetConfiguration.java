@@ -37,6 +37,16 @@ public class GetConfiguration extends WorkspaceCommand
 	private IConnectContext m_connectContext;
 
 	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		int len = unparsed.length;
+		if(len > 1)
+			throw new UsageException("Too many arguments");
+		if(len == 1)
+			m_url = URLUtils.normalizeToURL(unparsed[0]);
+	}
+
+	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		System.out.println("Using workspace at " + Platform.getInstanceLocation().getURL().toString() + "...");
@@ -64,7 +74,8 @@ public class GetConfiguration extends WorkspaceCommand
 			mspecBuilder.setName(bom.getViewName());
 			mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 			bom.addMaterializationNodes(mspecBuilder);
-			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
+			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(),
+					context);
 			MaterializationJob.run(matCtx, true);
 			MonitorUtils.worked(monitor, 1);
 			System.out.println("Query complete.");
@@ -82,15 +93,5 @@ public class GetConfiguration extends WorkspaceCommand
 			monitor.done();
 		}
 		return 0;
-	}
-
-	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		int len = unparsed.length;
-		if(len > 1)
-			throw new UsageException("Too many arguments");
-		if(len == 1)
-			m_url = URLUtils.normalizeToURL(unparsed[0]);
 	}
 }

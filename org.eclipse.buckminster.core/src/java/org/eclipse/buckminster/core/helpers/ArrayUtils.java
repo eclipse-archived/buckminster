@@ -15,18 +15,11 @@ import java.util.HashSet;
 
 /**
  * Stuff that ought to be in java.util.Arrays
+ * 
  * @author Thomas Hallgren
  */
 public class ArrayUtils
 {
-	public static boolean contains(Object[] array, Object value)
-	{
-		for(Object x : array)
-			if(x.equals(value))
-				return true;
-		return false;
-	}
-
 	public static <T> T[] appendFirst(T[] array, T[] values)
 	{
 		return concatenate(values, array);
@@ -79,6 +72,14 @@ public class ArrayUtils
 		while(--idx >= 0)
 			unique.add(a2[idx]);
 		return unique.toArray(newInstance(a1, unique.size()));
+	}
+
+	public static boolean contains(Object[] array, Object value)
+	{
+		for(Object x : array)
+			if(x.equals(value))
+				return true;
+		return false;
 	}
 
 	public static boolean equals(byte[] a, byte[] b, int start, int end)

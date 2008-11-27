@@ -16,7 +16,7 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 abstract class AlterHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport
 {
@@ -25,14 +25,14 @@ abstract class AlterHandler extends ExtensionAwareHandler implements ChildPopped
 		super(parent);
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
-	}
-
 	AlterCSpecBuilder getAlterCSpecBuilder()
 	{
 		return ((AlterHandler)this.getParentHandler()).getAlterCSpecBuilder();
+	}
+
+	public CSpecBuilder getCSpecBuilder()
+	{
+		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
 	}
 
 	String getCSpecExtensionName()

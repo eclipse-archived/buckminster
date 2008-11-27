@@ -28,32 +28,13 @@ public class RxGroupHandler extends RxPartHandler implements ChildPoppedListener
 {
 	public static final String TAG = RxGroup.TAG;
 
-	private final HashMap<String,RxPartHandler> m_partHandlers = new HashMap<String, RxPartHandler>();
+	private final HashMap<String, RxPartHandler> m_partHandlers = new HashMap<String, RxPartHandler>();
 
 	private ArrayList<RxPart> m_parts;
 
 	public RxGroupHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		return RxAssemblyHandler.getPartHandler(this, localName, m_partHandlers);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		super.handleAttributes(attrs);
-		m_parts = null;
-	}
-
-	@Override
-	public RxPart createPart()
-	{
-		return new RxGroup(getName(), isOptional(), m_parts);
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -64,5 +45,24 @@ public class RxGroupHandler extends RxPartHandler implements ChildPoppedListener
 				m_parts = new ArrayList<RxPart>();
 			m_parts.add(((RxPartHandler)child).createPart());
 		}
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		return RxAssemblyHandler.getPartHandler(this, localName, m_partHandlers);
+	}
+
+	@Override
+	public RxPart createPart()
+	{
+		return new RxGroup(getName(), isOptional(), m_parts);
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		m_parts = null;
 	}
 }

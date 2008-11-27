@@ -25,13 +25,33 @@ import org.eclipse.buckminster.core.cspecext.model.AlterGroup;
  */
 public class AlterGroupBuilder extends AlterAttributeBuilder
 {
+	private final HashMap<String, Prerequisite> m_alteredPrerequisites = new HashMap<String, Prerequisite>();
+
+	private final HashSet<String> m_removedPrerequisites = new HashSet<String>();
+
 	public AlterGroupBuilder(GroupBuilder baseBuilder)
 	{
 		super(baseBuilder);
 	}
 
-	private final HashMap<String,Prerequisite> m_alteredPrerequisites = new HashMap<String, Prerequisite>();
-	private final HashSet<String> m_removedPrerequisites = new HashSet<String>();
+	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException
+	{
+		String key = value.toString();
+		if(m_alteredPrerequisites.containsKey(key))
+			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
+
+		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder()
+				.getPrerequisites();
+		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
+			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
+
+		m_alteredPrerequisites.put(key, value);
+	}
+
+	public void addRemovePrerequisite(String key)
+	{
+		m_removedPrerequisites.add(key);
+	}
 
 	@Override
 	public void clear()
@@ -44,26 +64,7 @@ public class AlterGroupBuilder extends AlterAttributeBuilder
 	@Override
 	public AlterAttribute<?> createAlterAttribute()
 	{
-		return new AlterGroup((Group)createBase(), 
-				getRemovedHints(), getAlteredHints(),
-				m_removedPrerequisites, m_alteredPrerequisites);
-	}
-
-	public void addRemovePrerequisite(String key)
-	{
-		m_removedPrerequisites.add(key);
-	}
-
-	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException
-	{
-		String key = value.toString();
-		if(m_alteredPrerequisites.containsKey(key))
-			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-
-		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
-		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
-			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-
-		m_alteredPrerequisites.put(key, value);
+		return new AlterGroup((Group)createBase(), getRemovedHints(), getAlteredHints(), m_removedPrerequisites,
+				m_alteredPrerequisites);
 	}
 }

@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core.version;
 
 import org.eclipse.core.runtime.CoreException;
 
-
 /**
  * <p>
  * The version designator is modeled after the OSGi version range notation. The actual versions in such a range is
@@ -73,11 +72,23 @@ public interface IVersionDesignator
 	ComparisonResult compare(IVersionDesignator designator);
 
 	/**
-	 * Returns the version. If the designator is a range, this will be the lower bound of that range.
+	 * Checks if the given version is designated by this designator. The version must have the same {@link IVersionType}
+	 * as the one returned by {@link #getVersion()}.
 	 * 
-	 * @return The version.
+	 * @param version
+	 *            The version to check.
+	 * @return <code>true</code> if the version is designated by this designator.
 	 */
-	IVersion getVersion();
+	boolean designates(IVersion version);
+
+	/**
+	 * Checks if the given version is designated by this designator.
+	 * 
+	 * @param version
+	 *            The version to check.
+	 * @return <code>true</code> if the version is designated by this designator.
+	 */
+	boolean designates(String version) throws VersionSyntaxException;
 
 	/**
 	 * Returns the to version or null if the designator is not a range.
@@ -87,6 +98,13 @@ public interface IVersionDesignator
 	IVersion getToVersion();
 
 	/**
+	 * Returns the version. If the designator is a range, this will be the lower bound of that range.
+	 * 
+	 * @return The version.
+	 */
+	IVersion getVersion();
+
+	/**
 	 * Returns <code>true</code> if this designator has an upper bound.
 	 * 
 	 * @return <code>true</code> if an upper bound is present.
@@ -94,24 +112,24 @@ public interface IVersionDesignator
 	boolean hasUpperBound();
 
 	/**
-	 * Returns <code>true</code> if the designator includes the lower bound in the match and <code>false</code> if
-	 * the match starts with versions greater then the lower bound.
+	 * Returns <code>true</code> if the designator includes the lower bound in the match and <code>false</code> if the
+	 * match starts with versions greater then the lower bound.
 	 * 
 	 * @return true if the lower bound is included in the match.
 	 */
 	boolean includesLowerBound();
 
 	/**
-	 * Returns <code>true</code> if the designator includes the upper bound in the match and <code>false</code> if
-	 * the match only includes versions less then the upper bound.
+	 * Returns <code>true</code> if the designator includes the upper bound in the match and <code>false</code> if the
+	 * match only includes versions less then the upper bound.
 	 * 
 	 * @return true if the upper bound is included in the match.
 	 */
 	boolean includesUpperBound();
 
 	/**
-	 * Returns <code>true</code> if this is instance designates an explicit version. This means that only a version
-	 * that is exactly equal to the version returned by {@link #getVersion()} will yield true for a call to
+	 * Returns <code>true</code> if this is instance designates an explicit version. This means that only a version that
+	 * is exactly equal to the version returned by {@link #getVersion()} will yield true for a call to
 	 * {@link #designates(String) }.
 	 * 
 	 * @return <code>true</code> if this is instance designates an explicit version.
@@ -133,23 +151,4 @@ public interface IVersionDesignator
 	 * @return A new designator for the intersecting range or <code>null</code> if no such range is possible.
 	 */
 	IVersionDesignator merge(IVersionDesignator that) throws CoreException;
-
-	/**
-	 * Checks if the given version is designated by this designator.
-	 * 
-	 * @param version
-	 *            The version to check.
-	 * @return <code>true</code> if the version is designated by this designator.
-	 */
-	boolean designates(String version) throws VersionSyntaxException;
-
-	/**
-	 * Checks if the given version is designated by this designator. The version must have the same {@link IVersionType}
-	 * as the one returned by {@link #getVersion()}.
-	 * 
-	 * @param version
-	 *            The version to check.
-	 * @return <code>true</code> if the version is designated by this designator.
-	 */
-	boolean designates(IVersion version);
 }

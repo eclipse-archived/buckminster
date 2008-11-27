@@ -21,4 +21,3 @@ public class SearchPathNotFoundException extends LocalizedException
 		super("Unable to find a searchPath for %s", name);
 	}
 }
-

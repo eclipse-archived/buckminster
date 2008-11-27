@@ -22,19 +22,14 @@ public class ExternalDataArea
 		FileUtils.prepareDestination(m_location.append(META_AREA).toFile(), strategy, new NullProgressMonitor());
 	}
 
-	public IPath getMetadataLocation()
-	{
-		return m_location.append(META_AREA);
-	}
-
 	public IPath getInstanceDataLocation()
 	{
 		return m_location;
 	}
 
-	public IPath getStateLocation(String bundleName)
+	public IPath getMetadataLocation()
 	{
-		return getMetadataLocation().append(PLUGIN_DATA).append(bundleName);
+		return m_location.append(META_AREA);
 	}
 
 	public IPath getPreferenceLocation(String bundleName, boolean create) throws IllegalStateException
@@ -43,5 +38,10 @@ public class ExternalDataArea
 		if(create)
 			result.toFile().mkdirs();
 		return result.append(PREFERENCES_FILE_NAME);
+	}
+
+	public IPath getStateLocation(String bundleName)
+	{
+		return getMetadataLocation().append(PLUGIN_DATA).append(bundleName);
 	}
 }

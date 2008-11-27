@@ -47,6 +47,11 @@ import org.eclipse.core.runtime.Path;
  */
 public class FileSystemMaterializer extends AbstractMaterializer
 {
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
+	{
+		return context.getArtifactLocation(resolution);
+	}
+
 	@Override
 	public String getMaterializerRootDir()
 	{
@@ -310,10 +315,5 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 			monitor.done();
 		}
-	}
-
-	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
-	{
-		return context.getArtifactLocation(resolution);
 	}
 }

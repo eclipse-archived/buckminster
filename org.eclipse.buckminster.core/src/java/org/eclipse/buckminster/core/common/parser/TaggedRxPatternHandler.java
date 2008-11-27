@@ -30,9 +30,9 @@ public class TaggedRxPatternHandler extends RxPatternHandler
 	}
 
 	@Override
-	public String getTAG()
+	public RxPart createPart()
 	{
-		return m_tag;
+		return new TaggedRxPattern(m_tag, getName(), isOptional(), getPattern(), getPrefix(), getSuffix());
 	}
 
 	@Override
@@ -42,14 +42,8 @@ public class TaggedRxPatternHandler extends RxPatternHandler
 	}
 
 	@Override
-	public RxPart createPart()
+	public String getTAG()
 	{
-		return new TaggedRxPattern(
-				m_tag,
-				getName(),
-				isOptional(),
-				getPattern(),
-				getPrefix(),
-				getSuffix());
+		return m_tag;
 	}
 }

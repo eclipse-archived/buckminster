@@ -57,7 +57,9 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 	@Override
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
 	{
-		return specBuilder == getCSpecBuilder() ? this : new ArtifactBuilder(specBuilder);
+		return specBuilder == getCSpecBuilder()
+				? this
+				: new ArtifactBuilder(specBuilder);
 	}
 
 	public IPath getBase()
@@ -94,7 +96,9 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 
 	public void setBase(IPath base)
 	{
-		m_base = (base == null) ? null : base.addTrailingSeparator();
+		m_base = (base == null)
+				? null
+				: base.addTrailingSeparator();
 	}
 
 	public void setType(String type)

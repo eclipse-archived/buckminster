@@ -21,17 +21,22 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public class PropertyElementHandler extends PropertyHandler implements ChildPoppedListener
 {
 	static final String TAG = "propertyElement";
 
 	private ConstantHandler m_constantHandler;
+
 	private FormatHandler m_formatHandler;
+
 	private PropertyRefHandler m_propertyRefHandler;
+
 	private ReplaceHandler m_replaceHandler;
+
 	private SplitHandler m_splitHandler;
+
 	private ToLowerHandler m_toLowerHandler;
+
 	private ToUpperHandler m_toUpperHandler;
 
 	private ValueHolder m_source;
@@ -42,8 +47,25 @@ public class PropertyElementHandler extends PropertyHandler implements ChildPopp
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	void addYourself(Map<String, String> props)
+	{
+		String key = getKey();
+		if(props instanceof ExpandingProperties)
+		{
+			m_source.setMutable(getMutable());
+			((ExpandingProperties)props).setProperty(key, m_source);
+		}
+		else
+			props.put(key, m_source.getValue(props));
+	}
+
+	public void childPopped(ChildHandler child)
+	{
+		m_source = ((ValueHandler)child).getValueHolder();
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(ConstantHandler.TAG.equals(localName))
@@ -92,23 +114,4 @@ public class PropertyElementHandler extends PropertyHandler implements ChildPopp
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
-
-	public void childPopped(ChildHandler child)
-	{
-		m_source = ((ValueHandler)child).getValueHolder();
-	}
-
-	@Override
-	void addYourself(Map<String,String> props)
-	{
-		String key = getKey();
-		if(props instanceof ExpandingProperties)
-		{
-			m_source.setMutable(getMutable());
-			((ExpandingProperties)props).setProperty(key, m_source);
-		}
-		else
-			props.put(key, m_source.getValue(props));
-	}
 }
-

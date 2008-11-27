@@ -43,49 +43,34 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public abstract class AbstractResolutionBuilder extends AbstractExtension implements IResolutionBuilder
 {
+	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath,
+			IProgressMonitor monitor) throws CoreException
+	{
+		return getMetadataFile(reader.readBuckminsterPreferences(monitor), prefName, defaultPath);
+	}
+
+	public static String getMetadataFile(IEclipsePreferences prefs, String prefName, String defaultPath)
+	{
+		if(prefs == null)
+			return defaultPath;
+
+		defaultPath = prefs.get(prefName, defaultPath);
+		IPath path = Path.fromPortableString(defaultPath);
+		if(!path.isAbsolute())
+		{
+			String metadataFolder = prefs.get(IComponentType.PREF_METADATA_FOLDER, null);
+			if(metadataFolder != null)
+				path = Path.fromPortableString(metadataFolder).append(path);
+		}
+		return path.makeRelative().toPortableString();
+	}
+
 	private String m_nature;
-	
+
 	private int m_weight = 0;
 
-	public int compareTo(IResolutionBuilder o)
-	{
-		int ow = o.getWeight();
-		return m_weight > ow ? 1 : (m_weight == ow ? 0 : -1);
-	}
-
-	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-		throws CoreException
-	{
-		String tmp = config.getAttribute("weight");
-		if (tmp != null)
-			m_weight = Integer.parseInt(tmp);
-		m_nature = config.getAttribute("nature");
-		super.setInitializationData(config, propertyName, data);
-	}
-
-	public String getComponentTypeID()
-	{
-		return null;
-	}
-
-	public String getNature()
-	{
-		return m_nature;
-	}
-
-	public int getWeight()
-	{
-		return m_weight;
-	}
-
-	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
-	{
-		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
-	}
-
-	protected void applyExtensions(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, IComponentReader reader, IProgressMonitor monitor)
-		throws CoreException
+	protected void applyExtensions(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, IComponentReader reader,
+			IProgressMonitor monitor) throws CoreException
 	{
 		if(!(reader instanceof ICatalogReader))
 		{
@@ -96,26 +81,28 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		ICatalogReader catReader = (ICatalogReader)reader;
 		try
 		{
-			CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE, new IStreamConsumer<CSpecExtension>()
-			{
-				public CSpecExtension consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor mon)
-					throws CoreException
-				{
-					mon.beginTask(null, 1);
-					mon.subTask(streamName);
-					try
+			CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE,
+					new IStreamConsumer<CSpecExtension>()
 					{
-						IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(true);
-						CSpecExtension ce = cspecExtParser.parse(streamName, stream);
-						MonitorUtils.worked(mon, 1);
-						return ce;
-					}
-					finally
-					{
-						mon.done();
-					}
-				}
-			}, monitor);
+						public CSpecExtension consumeStream(IComponentReader rdr, String streamName,
+								InputStream stream, IProgressMonitor mon) throws CoreException
+						{
+							mon.beginTask(null, 1);
+							mon.subTask(streamName);
+							try
+							{
+								IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory()
+										.getAlterCSpecParser(true);
+								CSpecExtension ce = cspecExtParser.parse(streamName, stream);
+								MonitorUtils.worked(mon, 1);
+								return ce;
+							}
+							finally
+							{
+								mon.done();
+							}
+						}
+					}, monitor);
 
 			// The cspec might be incomplete when the forResolutionOnly flag is set so
 			// we only patch the top element when that is the case.
@@ -135,7 +122,24 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		}
 	}
 
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
+	public int compareTo(IResolutionBuilder o)
+	{
+		int ow = o.getWeight();
+		return m_weight > ow
+				? 1
+				: (m_weight == ow
+						? 0
+						: -1);
+	}
+
+	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+			throws CoreException
+	{
+		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
+	}
+
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+			throws CoreException
 	{
 		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder, opmlBuilder);
 
@@ -154,24 +158,29 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		return new Resolution(resBld);
 	}
 
-	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath, IProgressMonitor monitor) throws CoreException
+	public String getComponentTypeID()
 	{
-		return getMetadataFile(reader.readBuckminsterPreferences(monitor), prefName, defaultPath);
+		return null;
 	}
 
-	public static String getMetadataFile(IEclipsePreferences prefs, String prefName, String defaultPath)
+	public String getNature()
 	{
-		if(prefs == null)
-			return defaultPath;
+		return m_nature;
+	}
 
-		defaultPath = prefs.get(prefName, defaultPath);
-		IPath path = Path.fromPortableString(defaultPath);
-		if(!path.isAbsolute())
-		{
-			String metadataFolder = prefs.get(IComponentType.PREF_METADATA_FOLDER, null);
-			if(metadataFolder != null)
-				path = Path.fromPortableString(metadataFolder).append(path);
-		}
-		return path.makeRelative().toPortableString();
+	public int getWeight()
+	{
+		return m_weight;
+	}
+
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+			throws CoreException
+	{
+		String tmp = config.getAttribute("weight");
+		if(tmp != null)
+			m_weight = Integer.parseInt(tmp);
+		m_nature = config.getAttribute("nature");
+		super.setInitializationData(config, propertyName, data);
 	}
 }

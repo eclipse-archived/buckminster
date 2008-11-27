@@ -34,30 +34,43 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
 	public final static String TAG = Provider.TAG;
-	
+
 	private DocumentationHandler m_documentationHandler;
+
 	private FormatHandler m_uriHandler;
+
 	private DigestHandler m_digestHandler;
+
 	private VersionConverterHandler m_versionConverterHandler;
+
 	private URIMatcherHandler m_uriMetaDataHandler;
+
 	private URIMatcher m_uriMatcher;
+
 	private Documentation m_documentation;
-	private String	m_readerType;
+
+	private String m_readerType;
+
 	private String[] m_componentTypes;
-	private boolean	m_source;
-	private boolean	m_mutable;
+
+	private boolean m_source;
+
+	private boolean m_mutable;
 
 	private Format m_uriFormat;
+
 	private Format m_digestFormat;
+
 	private String m_digestAlgorithm;
+
 	private VersionConverterDesc m_versionConverter;
+
 	private Filter m_resolutionFilter;
 
 	public ProviderHandler(AbstractHandler parent)
@@ -65,9 +78,34 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		super(parent);
 	}
 
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		if(child == m_uriHandler)
+			m_uriFormat = (Format)m_uriHandler.getValueHolder();
+		else if(child == m_digestHandler)
+		{
+			m_digestFormat = (Format)m_digestHandler.getValueHolder();
+			m_digestAlgorithm = m_digestHandler.getAlgorithm();
+		}
+		else if(child == m_versionConverterHandler)
+			m_versionConverter = m_versionConverterHandler.getVersionConverter();
+		else if(child == m_documentationHandler)
+			m_documentation = m_documentationHandler.createDocumentation();
+		else if(child == m_uriMetaDataHandler)
+		{
+			try
+			{
+				m_uriMatcher = m_uriMetaDataHandler.createURIMetaData();
+			}
+			catch(Exception e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
+	}
+
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(Provider.TAG_URI.equals(localName))
@@ -92,22 +130,77 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		{
 			if(m_versionConverterHandler == null)
 				m_versionConverterHandler = new VersionConverterHandler(this);
-			ch = m_versionConverterHandler;			
+			ch = m_versionConverterHandler;
 		}
 		else if(URIMatcher.TAG.equals(localName))
 		{
 			if(m_uriMetaDataHandler == null)
 				m_uriMetaDataHandler = new URIMatcherHandler(this);
-			ch = m_uriMetaDataHandler;			
+			ch = m_uriMetaDataHandler;
 		}
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
+	protected final String[] getComponentTypes()
+	{
+		return m_componentTypes;
+	}
+
+	protected final String getDigestAlgorithm()
+	{
+		return m_digestAlgorithm;
+	}
+
+	protected final Format getDigestFormat()
+	{
+		return m_digestFormat;
+	}
+
+	protected final Documentation getDocumentation()
+	{
+		return m_documentation;
+	}
+
+	public Provider getProvider()
+	{
+		return new Provider(getSearchPath(), m_readerType, m_componentTypes, m_versionConverter, m_uriFormat,
+				m_digestFormat, m_digestAlgorithm, m_resolutionFilter, m_mutable, m_source, m_uriMatcher,
+				m_documentation);
+	}
+
+	protected final String getReaderType()
+	{
+		return m_readerType;
+	}
+
+	protected final Filter getResolutionFilter()
+	{
+		return m_resolutionFilter;
+	}
+
+	protected SearchPath getSearchPath()
+	{
+		SearchPath searchPath = null;
+		AbstractHandler parent = getParentHandler();
+		if(parent instanceof SearchPathHandler)
+			searchPath = ((SearchPathHandler)parent).getSearchPath();
+		return searchPath;
+	}
+
+	protected final Format getUriFormat()
+	{
+		return m_uriFormat;
+	}
+
+	protected final VersionConverterDesc getVersionConverter()
+	{
+		return m_versionConverter;
+	}
+
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_readerType = getStringValue(attrs, Provider.ATTR_READER_TYPE);
 
@@ -122,7 +215,8 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 			//
 			tmp = getOptionalStringValue(attrs, "componentType");
 			if(tmp == null)
-				throw new MissingRequiredAttributeException(getTAG(), Provider.ATTR_COMPONENT_TYPES, getDocumentLocator());
+				throw new MissingRequiredAttributeException(getTAG(), Provider.ATTR_COMPONENT_TYPES,
+						getDocumentLocator());
 			logAttributeDeprecation(getTAG(), "componentType", Provider.ATTR_COMPONENT_TYPES);
 
 			boolean canManageBundle = true;
@@ -204,106 +298,13 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		m_documentation = null;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_uriHandler)
-			m_uriFormat = (Format)m_uriHandler.getValueHolder();
-		else if(child == m_digestHandler)
-		{
-			m_digestFormat = (Format)m_digestHandler.getValueHolder();
-			m_digestAlgorithm = m_digestHandler.getAlgorithm();
-		}
-		else if(child == m_versionConverterHandler)
-			m_versionConverter = m_versionConverterHandler.getVersionConverter();
-		else if(child == m_documentationHandler)
-			m_documentation = m_documentationHandler.createDocumentation();
-		else if(child == m_uriMetaDataHandler)
-		{
-			try
-			{
-				m_uriMatcher = m_uriMetaDataHandler.createURIMetaData();
-			}
-			catch(Exception e)
-			{
-				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
-			}
-		}
-	}
-
-	public Provider getProvider()
-	{
-		return new Provider(
-				getSearchPath(),
-				m_readerType,
-				m_componentTypes,
-				m_versionConverter,
-				m_uriFormat,
-				m_digestFormat,
-				m_digestAlgorithm,
-				m_resolutionFilter,
-				m_mutable,
-				m_source,
-				m_uriMatcher,
-				m_documentation);
-	}
-
-	protected SearchPath getSearchPath()
-	{
-		SearchPath searchPath = null;
-		AbstractHandler parent = getParentHandler();
-		if(parent instanceof SearchPathHandler)
-			searchPath = ((SearchPathHandler)parent).getSearchPath();
-		return searchPath;
-	}
-
-	protected final String[] getComponentTypes()
-	{
-		return m_componentTypes;
-	}
-
-	protected final Documentation getDocumentation()
-	{
-		return m_documentation;
-	}
-
 	protected final boolean isMutable()
 	{
 		return m_mutable;
-	}
-
-	protected final Format getDigestFormat()
-	{
-		return m_digestFormat;
-	}
-
-	protected final String getDigestAlgorithm()
-	{
-		return m_digestAlgorithm;
-	}
-
-	protected final String getReaderType()
-	{
-		return m_readerType;
-	}
-
-	protected final Filter getResolutionFilter()
-	{
-		return m_resolutionFilter;
 	}
 
 	protected final boolean isSource()
 	{
 		return m_source;
 	}
-
-	protected final Format getUriFormat()
-	{
-		return m_uriFormat;
-	}
-
-	protected final VersionConverterDesc getVersionConverter()
-	{
-		return m_versionConverter;
-	}
 }
-

@@ -17,21 +17,43 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class BidirectionalTransformer extends AbstractSaxableElement
 {
 	public static final String TAG = "transform";
+
 	public static final String ATTR_TO_PATTERN = "toPattern";
+
 	public static final String ATTR_TO_REPLACEMENT = "toReplacement";
+
 	public static final String ATTR_FROM_PATTERN = "fromPattern";
+
 	public static final String ATTR_FROM_REPLACEMENT = "fromReplacement";
 
+	private static String replace(String source, Pattern pattern, String replacement)
+	{
+		Matcher matcher = pattern.matcher(source);
+		if(matcher.find())
+		{
+			StringBuffer sb = new StringBuffer();
+			do
+			{
+				matcher.appendReplacement(sb, replacement);
+			} while(matcher.find());
+			matcher.appendTail(sb);
+			return sb.toString();
+		}
+		return null;
+	}
+
 	private final Pattern m_toPattern;
+
 	private final String m_toReplacement;
+
 	private final Pattern m_fromPattern;
+
 	private final String m_fromReplacement;
 
 	public BidirectionalTransformer(Pattern toPattern, String toReplacement, Pattern fromPattern, String fromReplacement)
@@ -40,21 +62,6 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 		m_toReplacement = toReplacement;
 		m_fromPattern = fromPattern;
 		m_fromReplacement = fromReplacement;
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public String transformFrom(String source) throws TransformerMismatchException
-	{
-		return transform(source, m_fromPattern, m_fromReplacement, m_toPattern, m_toReplacement);
-	}
-
-	public String transformTo(String source) throws TransformerMismatchException
-	{
-		return transform(source, m_toPattern, m_toReplacement, m_fromPattern, m_fromReplacement);
 	}
 
 	@Override
@@ -66,8 +73,33 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 		Utils.addAttribute(attrs, ATTR_FROM_REPLACEMENT, m_fromReplacement);
 	}
 
-	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern, String reverseReplacement)
-	throws TransformerMismatchException
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public final Pattern getFromPattern()
+	{
+		return m_fromPattern;
+	}
+
+	public final String getFromReplacement()
+	{
+		return m_fromReplacement;
+	}
+
+	public final Pattern getToPattern()
+	{
+		return m_toPattern;
+	}
+
+	public final String getToReplacement()
+	{
+		return m_toReplacement;
+	}
+
+	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern,
+			String reverseReplacement) throws TransformerMismatchException
 	{
 		String result = replace(source, pattern, replacement);
 		if(result == null)
@@ -89,39 +121,13 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 		throw new TransformerMismatchException(this);
 	}
 
-	private static String replace(String source, Pattern pattern, String replacement)
+	public String transformFrom(String source) throws TransformerMismatchException
 	{
-		Matcher matcher = pattern.matcher(source);
-		if(matcher.find())
-		{
-			StringBuffer sb = new StringBuffer();
-			do
-			{
-				matcher.appendReplacement(sb, replacement);
-			} while(matcher.find());
-			matcher.appendTail(sb);
-			return sb.toString();
-		}
-		return null;
+		return transform(source, m_fromPattern, m_fromReplacement, m_toPattern, m_toReplacement);
 	}
 
-	public final Pattern getFromPattern()
+	public String transformTo(String source) throws TransformerMismatchException
 	{
-		return m_fromPattern;
-	}
-
-	public final String getFromReplacement()
-	{
-		return m_fromReplacement;
-	}
-
-	public final Pattern getToPattern()
-	{
-		return m_toPattern;
-	}
-
-	public final String getToReplacement()
-	{
-		return m_toReplacement;
+		return transform(source, m_toPattern, m_toReplacement, m_fromPattern, m_fromReplacement);
 	}
 }

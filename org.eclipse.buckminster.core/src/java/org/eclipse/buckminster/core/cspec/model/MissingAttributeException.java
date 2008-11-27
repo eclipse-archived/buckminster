@@ -23,7 +23,8 @@ public class MissingAttributeException extends LocalizedException
 
 	public MissingAttributeException(String name, String target, boolean withVisibility)
 	{
-		super("CSpec %s has no %s action, group, or local artifact named %s", name, withVisibility ? "public " : "", target); 
+		super("CSpec %s has no %s action, group, or local artifact named %s", name, withVisibility
+				? "public "
+				: "", target);
 	}
 }
-

@@ -11,13 +11,13 @@ public interface IComponentQuery
 {
 	List<? extends IAdvisorNode> getAdvisoryNodes();
 
+	URL getContextURL();
+
 	Map<String, String> getDeclaredProperties();
 
 	Documentation getDocumentation();
 
 	IAdvisorNode getNodeByPattern(String pattern, String componentTypeID);
-
-	URL getContextURL();
 
 	String getPropertiesURL();
 

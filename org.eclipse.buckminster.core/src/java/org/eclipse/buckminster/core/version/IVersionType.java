@@ -14,40 +14,50 @@ import org.eclipse.buckminster.core.IBuckminsterExtension;
 public interface IVersionType extends IBuckminsterExtension
 {
 	public static final String OSGI = "OSGi";
+
 	public static final String STRING = "String";
+
 	public static final String TIMESTAMP = "Timestamp";
+
 	public static final String TRIPLET = "Triplet";
 
 	/**
-	 * Return true if this type can be compared to the other type
+	 * Coerce the object argument into a version of this type if possible.
+	 * 
+	 * @param object
+	 *            The object to coerce
+	 * @return the version that is the result of the coercion or <code>null</code> if coercion could was impossible.
 	 */
-	boolean isComparableTo(IVersionType other);
+	IVersion coerce(Object object);
 
 	/**
 	 * Parse a version from the given versionString.
-	 * @param versionString The string to parse
+	 * 
+	 * @param versionString
+	 *            The string to parse
 	 * @return The parsed version.
 	 * @throws VersionSyntaxException
 	 */
 	IVersion fromString(String versionString) throws VersionSyntaxException;
 
 	/**
-	 * Parse a version from the given versionString starting at position startPos. The
-	 * positition where the parsing ended will be returned in endPos at index zero.
-	 * @param versionString The string to parse
-	 * @param startPos Start position for the parse.
-	 * @param endPos Position of the first character after the parsed version. This
-	 * position might indicate the end of the versionString.
+	 * Parse a version from the given versionString starting at position startPos. The positition where the parsing
+	 * ended will be returned in endPos at index zero.
+	 * 
+	 * @param versionString
+	 *            The string to parse
+	 * @param startPos
+	 *            Start position for the parse.
+	 * @param endPos
+	 *            Position of the first character after the parsed version. This position might indicate the end of the
+	 *            versionString.
 	 * @return The parsed version.
 	 * @throws VersionSyntaxException
 	 */
 	IVersion fromString(String versionString, int startPos, int[] endPos) throws VersionSyntaxException;
 
 	/**
-	 * Coerce the object argument into a version of this type if possible.
-	 * @param object The object to coerce
-	 * @return the version that is the result of the coercion or <code>null</code> if coercion
-	 * could was impossible.
+	 * Return true if this type can be compared to the other type
 	 */
-	IVersion coerce(Object object);
+	boolean isComparableTo(IVersionType other);
 }

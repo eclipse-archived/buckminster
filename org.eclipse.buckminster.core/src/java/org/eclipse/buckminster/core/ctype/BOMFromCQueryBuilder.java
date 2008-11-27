@@ -39,28 +39,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
-	IStreamConsumer<ComponentQuery>
+public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements IStreamConsumer<ComponentQuery>
 {
-	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream,
-		IProgressMonitor monitor) throws CoreException
-	{
-		URL url;
-		try
-		{
-			url = URLUtils.normalizeToURL(streamName);
-		}
-		catch(MalformedURLException e)
-		{
-			url = null;
-		}
-		return ComponentQuery.fromStream(url, null, stream, true);
-	}
-
 	private static final UUID CACHE_KEY_BOM_CACHE = UUID.randomUUID();
 
 	@SuppressWarnings("unchecked")
-	private static Map<String,BillOfMaterials> getBOMCache(Map<UUID,Object> ctxUserCache)
+	private static Map<String, BillOfMaterials> getBOMCache(Map<UUID, Object> ctxUserCache)
 	{
 		synchronized(ctxUserCache)
 		{
@@ -74,8 +58,8 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 		}
 	}
 
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
+			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
 		try
@@ -85,7 +69,7 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 
 			NodeQuery query = reader.getNodeQuery();
 			ResolutionContext ctx = query.getResolutionContext();
-			Map<String,BillOfMaterials> bomCache = getBOMCache(ctx.getUserCache());
+			Map<String, BillOfMaterials> bomCache = getBOMCache(ctx.getUserCache());
 			String key = reader.getProviderMatch().getUniqueKey().intern();
 			synchronized(key)
 			{
@@ -96,7 +80,8 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 				if(reader instanceof ICatalogReader)
 				{
 					ICatalogReader catRdr = (ICatalogReader)reader;
-					String fileName = getMetadataFile(catRdr, IComponentType.PREF_CQUERY_FILE, CorePlugin.CQUERY_FILE, MonitorUtils.subMonitor(monitor, 100));
+					String fileName = getMetadataFile(catRdr, IComponentType.PREF_CQUERY_FILE, CorePlugin.CQUERY_FILE,
+							MonitorUtils.subMonitor(monitor, 100));
 					cquery = catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100));
 				}
 				else
@@ -121,5 +106,20 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements
 		{
 			monitor.done();
 		}
+	}
+
+	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws CoreException
+	{
+		URL url;
+		try
+		{
+			url = URLUtils.normalizeToURL(streamName);
+		}
+		catch(MalformedURLException e)
+		{
+			url = null;
+		}
+		return ComponentQuery.fromStream(url, null, stream, true);
 	}
 }

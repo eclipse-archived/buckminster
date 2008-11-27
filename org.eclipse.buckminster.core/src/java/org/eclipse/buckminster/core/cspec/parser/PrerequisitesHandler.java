@@ -15,7 +15,6 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -29,13 +28,6 @@ class PrerequisitesHandler extends GroupHandler
 	}
 
 	@Override
-	protected String getNameAttribute(Attributes attrs)
-	throws SAXException
-	{
-		return getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS);
-	}
-
-	@Override
 	protected TopLevelAttributeBuilder createAttributeBuilder()
 	{
 		return getActionBuilder().getPrerequisitesBuilder();
@@ -44,5 +36,11 @@ class PrerequisitesHandler extends GroupHandler
 	private ActionBuilder getActionBuilder()
 	{
 		return (ActionBuilder)((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
+	}
+
+	@Override
+	protected String getNameAttribute(Attributes attrs) throws SAXException
+	{
+		return getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS);
 	}
 }

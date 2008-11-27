@@ -33,21 +33,14 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 	private MaterializationSpec m_materializationSpec;
 
 	public MaterializationSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
 		super(parserExtensions, validating);
 	}
 
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		if(MaterializationSpec.TAG.equals(localName))
-		{
-			MaterializationSpecHandler rmh = new MaterializationSpecHandler(this, m_contextURL);
-			this.pushHandler(rmh, attrs);
-		}
-		else
-			super.startElement(uri, localName, qName, attrs);
+		m_materializationSpec = ((MaterializationSpecHandler)child).getMaterializationSpec();
 	}
 
 	public MaterializationSpec parse(String systemId, InputStream input) throws CoreException
@@ -64,9 +57,15 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 		return m_materializationSpec;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
-		m_materializationSpec = ((MaterializationSpecHandler)child).getMaterializationSpec();
+		if(MaterializationSpec.TAG.equals(localName))
+		{
+			MaterializationSpecHandler rmh = new MaterializationSpecHandler(this, m_contextURL);
+			this.pushHandler(rmh, attrs);
+		}
+		else
+			super.startElement(uri, localName, qName, attrs);
 	}
 }
-

@@ -60,114 +60,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		super(provider, componentType, query);
 	}
 
-	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
-	{
-		try
-		{
-			NodeQuery query = getQuery();
-
-			VersionSelector[] branchTagPath = query.getBranchTagPath();
-			int idx = branchTagPath.length;
-
-			boolean branches = false;
-			boolean tags = false;
-			boolean trunk = (idx == 0); // Use trunk if no branches or tags has been specified
-
-			while(--idx >= 0)
-			{
-				VersionSelector branchOrTag = branchTagPath[idx];
-				if(branchOrTag.getType() == VersionSelector.BRANCH)
-					branches = true;
-				else
-					tags = true;
-				if(branchOrTag.isDefault())
-					trunk = true;
-			}
-
-			IVersionConverter versionConverter = getProvider().getVersionConverter();
-			if(versionConverter != null)
-			{
-				// We are using a versionConverter. This rules out anything found
-				// on the trunk.
-				//
-				logDecision(ResolverDecisionType.USING_VERSION_CONVERTER, versionConverter.getId());
-
-				trunk = false;
-
-				// Exactly one of the tags or branches must be valid
-				//
-				if(versionConverter.getSelectorType() == VersionSelector.BRANCH)
-				{
-					if(tags == false)
-						branches = true;
-				}
-				else
-				{
-					if(branches == false)
-						tags = true;
-				}
-
-				// And perhaps this ruled out this finder all together?
-				//
-				if(!(branches || tags))
-				{
-					MonitorUtils.complete(monitor);
-					return null;
-				}
-			}
-
-			int ticks = 0;
-			if(trunk)
-			{
-				logDecision(ResolverDecisionType.SEARCHING_TRUNK);
-				ticks += 10;
-			}
-			if(branches)
-			{
-				logDecision(ResolverDecisionType.SEARCHING_BRANCHES);
-				ticks += 10;
-			}
-			if(tags)
-			{
-				logDecision(ResolverDecisionType.SEARCHING_TAGS);
-				ticks += 10;
-			}
-
-			monitor.beginTask(null, ticks);
-			VersionMatch best = null;
-			if(branches)
-				best = getBestBranchOrTagMatch(true, MonitorUtils.subMonitor(monitor, 10));
-
-			if(tags)
-			{
-				VersionMatch match = getBestBranchOrTagMatch(false, MonitorUtils.subMonitor(monitor, 10));
-				if(best == null)
-					best = match;
-				else if(match != null && query.compare(match, best) > 0)
-				{
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
-					best = match;
-				}
-			}
-
-			if(trunk)
-			{
-				VersionMatch match = getBestTrunkMatch(MonitorUtils.subMonitor(monitor, 10));
-				if(best == null)
-					best = match;
-				else if(match != null && query.compare(match, best) > 0)
-				{
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
-					best = match;
-				}
-			}
-			return best;
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
+	protected abstract boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor)
+			throws CoreException;
 
 	protected VersionMatch getBestBranchOrTagMatch(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
@@ -307,7 +201,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			{
 				// Discriminated by our designator
 				//
-				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s",
+						versionDesignator));
 				continue;
 			}
 
@@ -406,9 +301,10 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			{
 				// Discriminated by our designator
 				//
-				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s", versionDesignator));
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s",
+						versionDesignator));
 				return null;
-			}			
+			}
 			return new VersionMatch(version, null, -1, null, null);
 		}
 		finally
@@ -417,8 +313,114 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		}
 	}
 
-	protected abstract boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor)
-			throws CoreException;
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
+	{
+		try
+		{
+			NodeQuery query = getQuery();
+
+			VersionSelector[] branchTagPath = query.getBranchTagPath();
+			int idx = branchTagPath.length;
+
+			boolean branches = false;
+			boolean tags = false;
+			boolean trunk = (idx == 0); // Use trunk if no branches or tags has been specified
+
+			while(--idx >= 0)
+			{
+				VersionSelector branchOrTag = branchTagPath[idx];
+				if(branchOrTag.getType() == VersionSelector.BRANCH)
+					branches = true;
+				else
+					tags = true;
+				if(branchOrTag.isDefault())
+					trunk = true;
+			}
+
+			IVersionConverter versionConverter = getProvider().getVersionConverter();
+			if(versionConverter != null)
+			{
+				// We are using a versionConverter. This rules out anything found
+				// on the trunk.
+				//
+				logDecision(ResolverDecisionType.USING_VERSION_CONVERTER, versionConverter.getId());
+
+				trunk = false;
+
+				// Exactly one of the tags or branches must be valid
+				//
+				if(versionConverter.getSelectorType() == VersionSelector.BRANCH)
+				{
+					if(tags == false)
+						branches = true;
+				}
+				else
+				{
+					if(branches == false)
+						tags = true;
+				}
+
+				// And perhaps this ruled out this finder all together?
+				//
+				if(!(branches || tags))
+				{
+					MonitorUtils.complete(monitor);
+					return null;
+				}
+			}
+
+			int ticks = 0;
+			if(trunk)
+			{
+				logDecision(ResolverDecisionType.SEARCHING_TRUNK);
+				ticks += 10;
+			}
+			if(branches)
+			{
+				logDecision(ResolverDecisionType.SEARCHING_BRANCHES);
+				ticks += 10;
+			}
+			if(tags)
+			{
+				logDecision(ResolverDecisionType.SEARCHING_TAGS);
+				ticks += 10;
+			}
+
+			monitor.beginTask(null, ticks);
+			VersionMatch best = null;
+			if(branches)
+				best = getBestBranchOrTagMatch(true, MonitorUtils.subMonitor(monitor, 10));
+
+			if(tags)
+			{
+				VersionMatch match = getBestBranchOrTagMatch(false, MonitorUtils.subMonitor(monitor, 10));
+				if(best == null)
+					best = match;
+				else if(match != null && query.compare(match, best) > 0)
+				{
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					best = match;
+				}
+			}
+
+			if(trunk)
+			{
+				VersionMatch match = getBestTrunkMatch(MonitorUtils.subMonitor(monitor, 10));
+				if(best == null)
+					best = match;
+				else if(match != null && query.compare(match, best) > 0)
+				{
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					best = match;
+				}
+			}
+			return best;
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
 
 	protected abstract List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor)
 			throws CoreException;

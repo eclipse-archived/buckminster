@@ -17,14 +17,13 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class DefaultResolutionBuilder extends AbstractResolutionBuilder
 {
 	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		CSpecBuilder bld = reader.getProviderMatch().createCSpec();

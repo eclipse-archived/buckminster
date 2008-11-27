@@ -38,8 +38,11 @@ import org.eclipse.core.runtime.Path;
 public class MaterializationContext extends RMContext
 {
 	private final BillOfMaterials m_bom;
+
 	private final MaterializationSpec m_materializationSpec;
+
 	private final MaterializationStatistics m_statistics = new MaterializationStatistics();
+
 	private boolean m_rebootNeeded = false;
 
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec)
@@ -57,23 +60,37 @@ public class MaterializationContext extends RMContext
 		m_materializationSpec = mspec;
 	}
 
-	public BillOfMaterials getBillOfMaterials()
+	private void addTagInfosFromBom()
 	{
-		return m_bom;
+		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
 	}
 
-	@Override
-	public ComponentQuery getComponentQuery()
+	private void addTagInfosFromNode(String tagInfo, BOMNode node)
 	{
-		return m_bom.getQuery();
+		Resolution res = node.getResolution();
+		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
+			return;
+
+		addTagInfo(node.getRequest(), tagInfo);
+		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
+		for(BOMNode child : node.getChildren())
+			addTagInfosFromNode(childTagInfo, child);
+	}
+
+	private IPath expand(IPath path)
+	{
+		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
 	}
 
 	/**
-	 * Returns the designated full path to the installed artifact for the resolution. This
-	 * is a shortcut for<pre>
+	 * Returns the designated full path to the installed artifact for the resolution. This is a shortcut for
+	 * 
+	 * <pre>
 	 * getInstallLocation(resolution).append(getLeafArtifact(resolution))
 	 * </pre>
-	 * @param resolution The resolution for which we want the artifact location
+	 * 
+	 * @param resolution
+	 *            The resolution for which we want the artifact location
 	 * @return An absolute path in the local file system.
 	 * @throws CoreException
 	 */
@@ -88,10 +105,23 @@ public class MaterializationContext extends RMContext
 		return installLocation;
 	}
 
+	public BillOfMaterials getBillOfMaterials()
+	{
+		return m_bom;
+	}
+
+	@Override
+	public ComponentQuery getComponentQuery()
+	{
+		return m_bom.getQuery();
+	}
+
 	/**
-	 * Returns the install location for the resolution as specified in the {@link MaterializationSpec}
-	 * or the default location if it is not specified.
-	 * @param resolution The resolution for which we want the install location
+	 * Returns the install location for the resolution as specified in the {@link MaterializationSpec} or the default
+	 * location if it is not specified.
+	 * 
+	 * @param resolution
+	 *            The resolution for which we want the install location
 	 * @return An absolute path in the local file system.
 	 * @throws CoreException
 	 */
@@ -154,14 +184,14 @@ public class MaterializationContext extends RMContext
 		return leaf;
 	}
 
-	public MaterializationStatistics getMaterializationStatistics()
-	{
-		return m_statistics;
-	}
-
 	public MaterializationSpec getMaterializationSpec()
 	{
 		return m_materializationSpec;
+	}
+
+	public MaterializationStatistics getMaterializationStatistics()
+	{
+		return m_statistics;
 	}
 
 	public int getMaxParallelJobs()
@@ -175,95 +205,11 @@ public class MaterializationContext extends RMContext
 	@Override
 	public Map<String, String> getProperties(ComponentName cName)
 	{
-		Map<String,String> p = super.getProperties(cName);
+		Map<String, String> p = super.getProperties(cName);
 		IMaterializationNode node = m_materializationSpec.getMatchingNode(cName);
 		if(node != null)
 			p.putAll(node.getProperties());
 		return p;
-	}
-
-	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
-	{
-		IPath nodeLocation = null;
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-		if(node != null)
-		{
-			nodeLocation = node.getWorkspaceLocation();
-			if(nodeLocation != null)
-			{
-				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation.toOSString(), 0));
-				IPath tmp = expand(nodeLocation);
-				if(tmp.isAbsolute())
-					return tmp;
-			}
-		}
-
-		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
-		if(rootLocation == null)
-		{
-			if(nodeLocation != null)
-				//
-				// At this point the nodeLocation must be relative so this
-				// is illegal.
-				//
-				throw BuckminsterException.fromMessage(
-					"WorkspaceLocation %s in node matching %s cannot be relative unless a main workspace location is present",
-						nodeLocation, ci);
-
-			// Default to location of current workspace
-			//
-			return ResourcesPlugin.getWorkspace().getRoot().getLocation();
-		}
-
-		return expand((nodeLocation == null)
-			? rootLocation
-			: rootLocation.append(nodeLocation));
-	}
-
-	/**
-	 * If the target platform materializer installs things into the current
-	 * runtime, this flag will be set to <code>true</code>.
-	 * 
-	 * @return <code>true</code> if a materializer altered the current runtime platform.
-	 */
-	public boolean isRebootNeeded()
-	{
-		return m_rebootNeeded;
-	}
-
-	public String getSuffixedName(Resolution resolution, String remoteName)
-	throws CoreException
-	{
-		MaterializationSpec mspec = getMaterializationSpec();
-		IComponentName cName = resolution.getComponentIdentifier();
-		if(!mspec.isUnpack(cName))
-			return null;
-
-		String name = mspec.getSuffix(cName);
-		if(name == null)
-			name = remoteName;
-
-		if(name == null)
-		{
-			IReaderType rd = resolution.getProvider().getReaderType();
-			IPath leaf = rd.getLeafArtifact(resolution, this);
-			if(leaf == null || leaf.segmentCount() == 0)
-				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of %s", cName);
-			name = leaf.segment(0);
-		}
-		return name;
-	}
-
-	/**
-	 * Set by the target platform materializer when it installs new features into the
-	 * default target platform (the one currently in use).
-	 *
-	 * @param flag
-	 */
-	public void setRebootNeeded(boolean flag)
-	{
-		m_rebootNeeded = flag;
 	}
 
 	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException
@@ -303,25 +249,88 @@ public class MaterializationContext extends RMContext
 		return location;
 	}
 
-	private IPath expand(IPath path)
+	public String getSuffixedName(Resolution resolution, String remoteName) throws CoreException
 	{
-		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
+		MaterializationSpec mspec = getMaterializationSpec();
+		IComponentName cName = resolution.getComponentIdentifier();
+		if(!mspec.isUnpack(cName))
+			return null;
+
+		String name = mspec.getSuffix(cName);
+		if(name == null)
+			name = remoteName;
+
+		if(name == null)
+		{
+			IReaderType rd = resolution.getProvider().getReaderType();
+			IPath leaf = rd.getLeafArtifact(resolution, this);
+			if(leaf == null || leaf.segmentCount() == 0)
+				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of %s", cName);
+			name = leaf.segment(0);
+		}
+		return name;
 	}
 
-	private void addTagInfosFromBom()
+	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
 	{
-		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
+		IPath nodeLocation = null;
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		if(node != null)
+		{
+			nodeLocation = node.getWorkspaceLocation();
+			if(nodeLocation != null)
+			{
+				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation
+						.toOSString(), 0));
+				IPath tmp = expand(nodeLocation);
+				if(tmp.isAbsolute())
+					return tmp;
+			}
+		}
+
+		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
+		if(rootLocation == null)
+		{
+			if(nodeLocation != null)
+				//
+				// At this point the nodeLocation must be relative so this
+				// is illegal.
+				//
+				throw BuckminsterException
+						.fromMessage(
+								"WorkspaceLocation %s in node matching %s cannot be relative unless a main workspace location is present",
+								nodeLocation, ci);
+
+			// Default to location of current workspace
+			//
+			return ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		}
+
+		return expand((nodeLocation == null)
+				? rootLocation
+				: rootLocation.append(nodeLocation));
 	}
 
-	private void addTagInfosFromNode(String tagInfo, BOMNode node)
+	/**
+	 * If the target platform materializer installs things into the current runtime, this flag will be set to
+	 * <code>true</code>.
+	 * 
+	 * @return <code>true</code> if a materializer altered the current runtime platform.
+	 */
+	public boolean isRebootNeeded()
 	{
-		Resolution res = node.getResolution();
-		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
-			return;
+		return m_rebootNeeded;
+	}
 
-		addTagInfo(node.getRequest(), tagInfo);
-		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
-		for(BOMNode child : node.getChildren())
-			addTagInfosFromNode(childTagInfo, child);
+	/**
+	 * Set by the target platform materializer when it installs new features into the default target platform (the one
+	 * currently in use).
+	 * 
+	 * @param flag
+	 */
+	public void setRebootNeeded(boolean flag)
+	{
+		m_rebootNeeded = flag;
 	}
 }

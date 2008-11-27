@@ -14,10 +14,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * The AlterPropertiesHandler makes it possible to alter or remove properties
- * from an existing property set. It must always be used in a conjunction with
- * a normal property handler that makes it possible to add properties.
- *
+ * The AlterPropertiesHandler makes it possible to alter or remove properties from an existing property set. It must
+ * always be used in a conjunction with a normal property handler that makes it possible to add properties.
+ * 
  * @author Thomas Hallgren
  */
 abstract class AlterPropertiesHandler extends PropertyManagerHandler
@@ -28,6 +27,8 @@ abstract class AlterPropertiesHandler extends PropertyManagerHandler
 	{
 		super(parent, tag);
 	}
+
+	protected abstract void addRemovedProperty(String key) throws SAXException;
 
 	@Override
 	public void childPopped(ChildHandler child) throws SAXException
@@ -48,6 +49,4 @@ abstract class AlterPropertiesHandler extends PropertyManagerHandler
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
-
-	protected abstract void addRemovedProperty(String key) throws SAXException;
 }

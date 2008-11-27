@@ -20,7 +20,8 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class CSpecElementHandler extends ExtensionAwareHandler implements IAttributeBuilderSupport, ICSpecBuilderSupport
+public abstract class CSpecElementHandler extends ExtensionAwareHandler implements IAttributeBuilderSupport,
+		ICSpecBuilderSupport
 {
 	private NamedElementBuilder m_builder;
 
@@ -28,6 +29,8 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 	{
 		super(parent);
 	}
+
+	protected abstract NamedElementBuilder createBuilder();
 
 	public TopLevelAttributeBuilder getAttributeBuilder()
 	{
@@ -44,24 +47,20 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 		return ((ICSpecBuilderSupport)getParentHandler()).getCSpecBuilder();
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_builder = this.createBuilder();
-		m_builder.setName(this.getNameAttribute(attrs));
-	}
-
-	protected abstract NamedElementBuilder createBuilder();
-
 	protected CSpecElementBuilder getCSpecElementBuilder()
 	{
 		return (CSpecElementBuilder)this.getBuilder();
 	}
-	
-	protected String getNameAttribute(Attributes attrs)
-	throws SAXException
+
+	protected String getNameAttribute(Attributes attrs) throws SAXException
 	{
 		return this.getStringValue(attrs, NamedElement.ATTR_NAME);
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_builder = this.createBuilder();
+		m_builder.setName(this.getNameAttribute(attrs));
 	}
 }

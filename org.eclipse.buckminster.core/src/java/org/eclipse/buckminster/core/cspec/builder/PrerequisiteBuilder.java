@@ -20,10 +20,15 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	private String m_alias;
 
 	private final AttributeBuilder m_attributeBuilder;
+
 	private String m_component;
+
 	private boolean m_contributor = true;
+
 	private Pattern m_excludePattern;
+
 	private Pattern m_includePattern;
+
 	private boolean m_optional = false;
 
 	PrerequisiteBuilder(AttributeBuilder attributeBuilder)

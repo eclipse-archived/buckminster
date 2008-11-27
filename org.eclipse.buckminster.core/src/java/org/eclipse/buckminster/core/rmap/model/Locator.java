@@ -15,13 +15,13 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class Locator extends Matcher
 {
 	public static final String TAG = "locator";
+
 	public static final String ATTR_SEARCH_PATH_REF = "searchPathRef";
 
 	private final String m_searchPath;
@@ -33,10 +33,10 @@ public class Locator extends Matcher
 	}
 
 	@Override
-	public SearchPath getSearchPath(NodeQuery query)
-	throws SearchPathNotFoundException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		return getOwner().getSearchPathByReference(m_searchPath);
+		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, m_searchPath.toString());
+		super.addAttributes(attrs);
 	}
 
 	public String getDefaultTag()
@@ -44,17 +44,15 @@ public class Locator extends Matcher
 		return TAG;
 	}
 
+	@Override
+	public SearchPath getSearchPath(NodeQuery query) throws SearchPathNotFoundException
+	{
+		return getOwner().getSearchPathByReference(m_searchPath);
+	}
+
 	public String getSearchPathName()
 	{
 		return m_searchPath;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, m_searchPath.toString());
-		super.addAttributes(attrs);
-	}
-
 }
-

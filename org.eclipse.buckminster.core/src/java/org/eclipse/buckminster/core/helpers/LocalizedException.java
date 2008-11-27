@@ -17,7 +17,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 
-
 @SuppressWarnings("serial")
 public abstract class LocalizedException extends CoreException
 {
@@ -60,14 +59,15 @@ public abstract class LocalizedException extends CoreException
 	}
 
 	private final String m_defaultMessageFormat;
+
 	private final Object[] m_arguments;
 
-	protected LocalizedException(String defaultMessageFormat, Object...args)
+	protected LocalizedException(String defaultMessageFormat, Object... args)
 	{
 		this(null, defaultMessageFormat, args);
 	}
 
-	protected LocalizedException(Throwable cause, String defaultMessageFormat, Object...args)
+	protected LocalizedException(Throwable cause, String defaultMessageFormat, Object... args)
 	{
 		super(BuckminsterException.createStatus(defaultMessageFormat, args));
 		m_defaultMessageFormat = defaultMessageFormat;
@@ -80,4 +80,3 @@ public abstract class LocalizedException extends CoreException
 		return String.format(getLocalizedFormat(getClass(), m_defaultMessageFormat), m_arguments);
 	}
 }
-

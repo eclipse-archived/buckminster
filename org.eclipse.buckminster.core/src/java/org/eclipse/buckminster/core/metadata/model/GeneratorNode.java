@@ -61,6 +61,22 @@ public class GeneratorNode extends BOMNode
 		m_generates = generates;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		Utils.addAttribute(attrs, ATTR_DECLARING_CSPEC_ID, m_declaringCSpec.getId().toString());
+		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, m_attribute);
+		if(m_component != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT, m_component);
+		Utils.addAttribute(attrs, ATTR_GENERATES, m_generates);
+	}
+
+	@Override
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
+	{
+	}
+
 	/**
 	 * @return the attribute
 	 */
@@ -77,6 +93,11 @@ public class GeneratorNode extends BOMNode
 		return m_component;
 	}
 
+	public CSpec getDeclaringCSpec()
+	{
+		return m_declaringCSpec;
+	}
+
 	public String getDefaultTag()
 	{
 		return TAG;
@@ -88,11 +109,6 @@ public class GeneratorNode extends BOMNode
 	public String getGenerates()
 	{
 		return m_generates;
-	}
-
-	public CSpec getDeclaringCSpec()
-	{
-		return m_declaringCSpec;
 	}
 
 	@Override
@@ -117,21 +133,5 @@ public class GeneratorNode extends BOMNode
 	public boolean isFullyResolved(ComponentQuery query) throws CoreException
 	{
 		return true;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		Utils.addAttribute(attrs, ATTR_DECLARING_CSPEC_ID, m_declaringCSpec.getId().toString());
-		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, m_attribute);
-		if(m_component != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT, m_component);
-		Utils.addAttribute(attrs, ATTR_GENERATES, m_generates);
-	}
-
-	@Override
-	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
-	throws CoreException
-	{
 	}
 }

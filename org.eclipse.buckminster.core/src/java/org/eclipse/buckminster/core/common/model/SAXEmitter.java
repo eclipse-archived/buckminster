@@ -19,13 +19,13 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
 public abstract class SAXEmitter
 {
-	public static void emitProperties(ContentHandler handler, Map<String,String> props, String namespace, String prefix, boolean raw, boolean includeDefaults) throws SAXException
+	public static void emitProperties(ContentHandler handler, Map<String, String> props, String namespace,
+			String prefix, boolean raw, boolean includeDefaults) throws SAXException
 	{
 		if(raw && props instanceof ExpandingProperties)
 		{
@@ -47,7 +47,7 @@ public abstract class SAXEmitter
 				String sysValue = System.getProperty(name);
 				if(sysValue != null && sysValue.equals(props.get(name)))
 					continue;
-	
+
 				sorted.add(name);
 			}
 		}
@@ -57,7 +57,7 @@ public abstract class SAXEmitter
 			if(props instanceof IProperties)
 				keySet = ((IProperties)props).overlayKeySet();
 			else if(props instanceof MapUnion)
-				keySet = ((MapUnion<String,String>)props).overlayKeySet();
+				keySet = ((MapUnion<String, String>)props).overlayKeySet();
 			else
 				keySet = props.keySet();
 			for(String name : keySet)

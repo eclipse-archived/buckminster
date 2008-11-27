@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
 public class TimestampVersionType extends AbstractVersionType
 {
 	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss");
+
 	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	static
@@ -31,17 +32,6 @@ public class TimestampVersionType extends AbstractVersionType
 		TimeZone utc = TimeZone.getTimeZone("UTC");
 		s_timestampFormat.setTimeZone(utc);
 		s_dateFormat.setTimeZone(utc);
-	}
-
-	@Override
-	public IVersion coerce(Object object)
-	{
-		return (object instanceof Date) ? new TimestampVersion(this, (Date)object) : super.coerce(object);
-	}
-
-	public static String toString(TimestampVersion tsv)
-	{
-		return toString(tsv.getTimestamp());
 	}
 
 	public static String toString(Date ts)
@@ -54,6 +44,19 @@ public class TimestampVersionType extends AbstractVersionType
 		if(string.endsWith(".000000"))
 			string = string.substring(0, string.length() - 7);
 		return string;
+	}
+
+	public static String toString(TimestampVersion tsv)
+	{
+		return toString(tsv.getTimestamp());
+	}
+
+	@Override
+	public IVersion coerce(Object object)
+	{
+		return (object instanceof Date)
+				? new TimestampVersion(this, (Date)object)
+				: super.coerce(object);
 	}
 
 	public IVersion fromString(String versionString, int startPos, int[] endPosRet) throws VersionSyntaxException

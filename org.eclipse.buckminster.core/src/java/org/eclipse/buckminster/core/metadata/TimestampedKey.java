@@ -15,6 +15,7 @@ import java.util.UUID;
 public class TimestampedKey
 {
 	private final UUID m_uuid;
+
 	private final long m_creationTime;
 
 	public TimestampedKey(UUID uuid, long creationTime)

@@ -21,13 +21,26 @@ import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
 public abstract class AlterAttributeBuilder
 {
 	private final AttributeBuilder m_baseBuilder;
+
 	private final HashSet<String> m_removedHints = new HashSet<String>();
+
 	private final ExpandingProperties m_alteredHints = new ExpandingProperties();
+
 	private String m_cspecName = null;
 
 	protected AlterAttributeBuilder(AttributeBuilder baseBuilder)
 	{
 		m_baseBuilder = baseBuilder;
+	}
+
+	public void addAlteredInstallerHInt(String key, String value)
+	{
+		m_alteredHints.put(key, value);
+	}
+
+	public void addRemovedInstallerHint(String key)
+	{
+		m_removedHints.add(key);
 	}
 
 	public void clear()
@@ -39,19 +52,9 @@ public abstract class AlterAttributeBuilder
 
 	public abstract AlterAttribute<?> createAlterAttribute();
 
-	public void addRemovedInstallerHint(String key)
+	IAttribute createBase()
 	{
-		m_removedHints.add(key);
-	}
-
-	public void addAlteredInstallerHInt(String key, String value)
-	{
-		m_alteredHints.put(key, value);
-	}
-
-	public AttributeBuilder getBaseBuilder()
-	{
-		return m_baseBuilder;
+		return getBaseBuilder().createAttribute();
 	}
 
 	public ExpandingProperties getAlteredHints()
@@ -59,14 +62,9 @@ public abstract class AlterAttributeBuilder
 		return m_alteredHints;
 	}
 
-	public Set<String> getRemovedHints()
+	public AttributeBuilder getBaseBuilder()
 	{
-		return m_removedHints;
-	}
-
-	public String getName()
-	{
-		return m_baseBuilder.getName();
+		return m_baseBuilder;
 	}
 
 	public String getCSpecName()
@@ -74,13 +72,18 @@ public abstract class AlterAttributeBuilder
 		return m_cspecName;
 	}
 
+	public String getName()
+	{
+		return m_baseBuilder.getName();
+	}
+
+	public Set<String> getRemovedHints()
+	{
+		return m_removedHints;
+	}
+
 	public void setCSpecName(String cspecName)
 	{
 		m_cspecName = cspecName;
-	}
-
-	IAttribute createBase()
-	{
-		return getBaseBuilder().createAttribute();
 	}
 }

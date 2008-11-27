@@ -36,8 +36,11 @@ import org.eclipse.core.runtime.IStatus;
 public class ResolutionContext extends RMContext implements IResolverBackchannel
 {
 	private final ComponentQuery m_componentQuery;
-	private HashMap<String,GeneratorNode> m_generators;
+
+	private HashMap<String, GeneratorNode> m_generators;
+
 	private final ResolutionContext m_parentContext;
+
 	private final HashMap<ComponentRequest, List<ResolverDecision>> m_decisionLog = new HashMap<ComponentRequest, List<ResolverDecision>>();
 
 	public ResolutionContext(ComponentQuery componentQuery)
@@ -47,7 +50,9 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 
 	public ResolutionContext(ComponentQuery componentQuery, ResolutionContext parentContext)
 	{
-		super(parentContext == null ? componentQuery.getGlobalProperties() : new MapUnion<String, String>(componentQuery.getGlobalProperties(), parentContext));
+		super(parentContext == null
+				? componentQuery.getGlobalProperties()
+				: new MapUnion<String, String>(componentQuery.getGlobalProperties(), parentContext));
 		m_componentQuery = componentQuery;
 		m_parentContext = parentContext;
 	}
@@ -71,17 +76,24 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public synchronized Map<String,String> getBindingProperties()
+	public synchronized Map<String, String> getBindingProperties()
 	{
 		return (m_parentContext != null)
-			? m_parentContext.getBindingProperties()
-			: super.getBindingProperties();
+				? m_parentContext.getBindingProperties()
+				: super.getBindingProperties();
 	}
 
 	@Override
 	public ComponentQuery getComponentQuery()
 	{
 		return m_componentQuery;
+	}
+
+	public synchronized List<ResolverDecision> getDecisionLog(IComponentRequest request)
+	{
+		if(m_parentContext != null)
+			return m_parentContext.getDecisionLog(request);
+		return Utils.createUnmodifiableList(m_decisionLog.get(request));
 	}
 
 	public GeneratorNode getGeneratorNode(String name)
@@ -92,14 +104,16 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 			if(node != null)
 				return node;
 		}
-		return (m_parentContext == null) ? null : m_parentContext.getGeneratorNode(name);
+		return (m_parentContext == null)
+				? null
+				: m_parentContext.getGeneratorNode(name);
 	}
 
 	@Override
 	public Map<String, String> getProperties(ComponentName cName)
 	{
 		IAdvisorNode node;
-		Map<String,String> p = super.getProperties(cName);
+		Map<String, String> p = super.getProperties(cName);
 		if(m_parentContext != null)
 		{
 			node = m_parentContext.getComponentQuery().getMatchingNode(cName);
@@ -116,39 +130,28 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	public synchronized IStatus getStatus()
 	{
 		return (m_parentContext != null)
-			? m_parentContext.getStatus()
-			: super.getStatus();
+				? m_parentContext.getStatus()
+				: super.getStatus();
 	}
 
 	@Override
-	public synchronized Map<UUID,Object> getUserCache()
+	public synchronized Map<UUID, Object> getUserCache()
 	{
 		return (m_parentContext != null)
-			? m_parentContext.getUserCache()
-			: super.getUserCache();
+				? m_parentContext.getUserCache()
+				: super.getUserCache();
 	}
 
 	@Override
 	public synchronized boolean isContinueOnError()
 	{
 		return (m_parentContext != null)
-			? m_parentContext.isContinueOnError()
-			: super.isContinueOnError();
+				? m_parentContext.isContinueOnError()
+				: super.isContinueOnError();
 	}
 
-	public synchronized List<ResolverDecision> getDecisionLog(IComponentRequest request)
-	{
-		if(m_parentContext != null)
-			return m_parentContext.getDecisionLog(request);
-		return Utils.createUnmodifiableList(m_decisionLog.get(request));
-	}
-
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
-		return logDecision(getComponentQuery().getRootRequest(), decisionType, args);
-	}
-
-	public synchronized ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
+	public synchronized ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType,
+			Object... args)
 	{
 		if(m_parentContext != null)
 			return m_parentContext.logDecision(request, decisionType, args);
@@ -166,6 +169,11 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		if(logger.isDebugEnabled())
 			logger.debug("%s: %s", request, decision.toString());
 		return decision;
+	}
+
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
+	{
+		return logDecision(getComponentQuery().getRootRequest(), decisionType, args);
 	}
 
 	@Override

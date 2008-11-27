@@ -27,11 +27,6 @@ import org.eclipse.core.runtime.IPath;
  */
 public class AlterActionBuilder extends AlterAttributeBuilder
 {
-	public AlterActionBuilder(ActionBuilder baseBuilder)
-	{
-		super(baseBuilder);
-	}
-
 	private final HashMap<String, Prerequisite> m_alteredPrerequisites = new HashMap<String, Prerequisite>();
 
 	private final HashSet<String> m_removedPrerequisites = new HashSet<String>();
@@ -45,6 +40,55 @@ public class AlterActionBuilder extends AlterAttributeBuilder
 	private final HashSet<String> m_removedProperties = new HashSet<String>();
 
 	private final HashSet<IPath> m_removedPaths = new HashSet<IPath>();
+
+	public AlterActionBuilder(ActionBuilder baseBuilder)
+	{
+		super(baseBuilder);
+	}
+
+	public void addAlterActorProperty(String key, String value)
+	{
+		m_alteredActorProperties.put(key, value);
+	}
+
+	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException
+	{
+		String key = value.toString();
+		if(m_alteredPrerequisites.containsKey(key))
+			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
+
+		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder()
+				.getPrerequisites();
+		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
+			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
+
+		m_alteredPrerequisites.put(key, value);
+	}
+
+	public void addAlterProperty(String key, String value)
+	{
+		m_alteredProperties.put(key, value);
+	}
+
+	public void addRemoveActorProperty(String key)
+	{
+		m_removedActorProperties.add(key);
+	}
+
+	public void addRemovePrerequisite(String key)
+	{
+		m_removedPrerequisites.add(key);
+	}
+
+	public void addRemoveProductPath(IPath path)
+	{
+		m_removedPaths.add(path);
+	}
+
+	public void addRemoveProperty(String key)
+	{
+		m_removedProperties.add(key);
+	}
 
 	@Override
 	public void clear()
@@ -62,53 +106,15 @@ public class AlterActionBuilder extends AlterAttributeBuilder
 	@Override
 	public AlterAttribute<?> createAlterAttribute()
 	{
-		return new AlterAction(createBase(), getRemovedHints(), getAlteredHints(),
-				m_removedPrerequisites, m_alteredPrerequisites, m_removedActorProperties,
-				m_alteredActorProperties, m_removedProperties, m_alteredProperties,
-				m_removedPaths);
+		return new AlterAction(createBase(), getRemovedHints(), getAlteredHints(), m_removedPrerequisites,
+				m_alteredPrerequisites, m_removedActorProperties, m_alteredActorProperties, m_removedProperties,
+				m_alteredProperties, m_removedPaths);
 	}
 
-	public void addRemoveProductPath(IPath path)
+	@Override
+	Action createBase()
 	{
-		m_removedPaths.add(path);
-	}
-
-	public void addRemoveActorProperty(String key)
-	{
-		m_removedActorProperties.add(key);
-	}
-
-	public void addAlterActorProperty(String key, String value)
-	{
-		m_alteredActorProperties.put(key, value);
-	}
-
-	public void addRemoveProperty(String key)
-	{
-		m_removedProperties.add(key);
-	}
-
-	public void addAlterProperty(String key, String value)
-	{
-		m_alteredProperties.put(key, value);
-	}
-
-	public void addRemovePrerequisite(String key)
-	{
-		m_removedPrerequisites.add(key);
-	}
-
-	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException
-	{
-		String key = value.toString();
-		if(m_alteredPrerequisites.containsKey(key))
-			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-
-		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
-		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
-			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-
-		m_alteredPrerequisites.put(key, value);
+		return ((ActionBuilder)getBaseBuilder()).createAttribute();
 	}
 
 	public ExpandingProperties getAlterActorProperties()
@@ -119,11 +125,5 @@ public class AlterActionBuilder extends AlterAttributeBuilder
 	public ExpandingProperties getAlterProperties()
 	{
 		return m_alteredProperties;
-	}
-
-	@Override
-	Action createBase()
-	{
-		return ((ActionBuilder)getBaseBuilder()).createAttribute();
 	}
 }

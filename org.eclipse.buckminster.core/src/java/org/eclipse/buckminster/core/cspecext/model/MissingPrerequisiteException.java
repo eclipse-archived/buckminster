@@ -18,4 +18,3 @@ public class MissingPrerequisiteException extends LocalizedException
 		super("CSpec %s, attribute %s does not define prerequisite %s", name, attribute, prereqName);
 	}
 }
-

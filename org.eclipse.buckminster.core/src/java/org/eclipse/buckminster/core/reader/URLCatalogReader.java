@@ -35,7 +35,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -49,19 +48,82 @@ public class URLCatalogReader extends AbstractCatalogReader
 		m_uri = readerType.getURI(rInfo);
 	}
 
+	protected final URI getURI()
+	{
+		return m_uri;
+	}
+
+	public URL getURL() throws CoreException
+	{
+		try
+		{
+			return m_uri.toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	@Override
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			File source = FileUtils.getFile(getURL());
+			if(source != null)
+				return new File(source, fileName).exists();
+
+			URL fileUrl = new URL(getURL(), fileName);
+			input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), monitor);
+			return true;
+		}
+		catch(IOException e)
+		{
+			return false;
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
+
+	@Override
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		File source = FileUtils.getFile(getURL());
+		if(source == null)
+			return super.innerGetContents(fileName, monitor);
+
+		monitor.beginTask(null, 5);
+		try
+		{
+			File file = new File(source, fileName);
+			if(!file.isFile())
+				throw new FileNotFoundException(file.getAbsolutePath());
+
+			return new FileHandle(fileName, file, false);
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
 	@Override
 	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-	throws CoreException, IOException
+			throws CoreException, IOException
 	{
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
 		if(source == null)
 			return;
-		
+
 		String[] rootFiles = source.list();
 		if(rootFiles == null)
 			return;
-		
+
 		for(String rootFile : rootFiles)
 		{
 			if(pattern.matcher(rootFile).matches())
@@ -80,7 +142,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		File source = FileUtils.getFile(url);
 		if(source == null)
 			return;
-		
+
 		File[] rootFiles = source.listFiles();
 		if(rootFiles == null)
 			return;
@@ -94,8 +156,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		}
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor)
-	throws CoreException
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
@@ -139,73 +200,9 @@ public class URLCatalogReader extends AbstractCatalogReader
 		}
 	}
 
-	protected final URI getURI()
-	{
-		return m_uri;
-	}
-
-	public URL getURL() throws CoreException
-	{
-		try
-		{
-			return m_uri.toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor)
-	throws CoreException
-	{
-		InputStream input = null;
-		try
-		{
-			File source = FileUtils.getFile(getURL());
-			if(source != null)
-				return new File(source, fileName).exists();
-
-			URL fileUrl = new URL(getURL(), fileName);
-			input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(),  monitor);
-			return true;
-		}
-		catch(IOException e)
-		{
-			return false;
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		File source = FileUtils.getFile(getURL());
-		if(source == null)
-			return super.innerGetContents(fileName, monitor);
-
-		monitor.beginTask(null, 5);
-		try
-		{
-			File file = new File(source, fileName);
-			if(!file.isFile())
-				throw new FileNotFoundException(file.getAbsolutePath());
-			
-			return new FileHandle(fileName, file, false);
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
 	@Override
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-	throws CoreException, IOException
+			throws CoreException, IOException
 	{
 		InputStream input = null;
 		monitor.beginTask(fileName, 2);
@@ -222,7 +219,8 @@ public class URLCatalogReader extends AbstractCatalogReader
 			else
 			{
 				URL fileUrl = new URL(getURL(), fileName);
-				input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), MonitorUtils.subMonitor(monitor, 1));
+				input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(),
+						MonitorUtils.subMonitor(monitor, 1));
 				fullName = fileUrl.toString();
 			}
 			input = new BufferedInputStream(input);
@@ -235,4 +233,3 @@ public class URLCatalogReader extends AbstractCatalogReader
 		}
 	}
 }
-

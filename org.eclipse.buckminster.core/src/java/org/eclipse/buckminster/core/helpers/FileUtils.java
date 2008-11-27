@@ -60,6 +60,57 @@ import org.osgi.framework.Bundle;
  */
 public abstract class FileUtils
 {
+	public static class CopyOntoSelfException extends LocalizedException
+	{
+		private static final long serialVersionUID = 379621474603864267L;
+
+		public CopyOntoSelfException(File source, File destination)
+		{
+			super("Cannot copy %s to %s since the destination is equal to, or contained in, the source", source,
+					destination);
+		}
+	}
+
+	public static class DeleteException extends LocalizedException
+	{
+		private static final long serialVersionUID = -8216112755038789300L;
+
+		public DeleteException(File file)
+		{
+			this(file, null);
+		}
+
+		public DeleteException(File file, Throwable e)
+		{
+			super(e, "Unable to delete: %s", file);
+		}
+	}
+
+	public static class DestinationNotEmptyException extends LocalizedException
+	{
+		private static final long serialVersionUID = -4126568695654461634L;
+
+		public DestinationNotEmptyException(File destination)
+		{
+			super("Unable to use %s as a destination for copy since it is not empty", destination);
+		}
+	}
+
+	public static class MkdirException extends LocalizedException
+	{
+		private static final long serialVersionUID = -1919074286465177750L;
+
+		public MkdirException(File directory)
+		{
+			this(directory, null);
+		}
+
+		public MkdirException(File directory, Throwable e)
+		{
+			super(e, "Unable to create directory %s", directory);
+		}
+	}
+
 	public static final String FILE_SEP = System.getProperty("file.separator");
 
 	public static final String PATH_SEP = System.getProperty("path.separator");
@@ -69,6 +120,8 @@ public abstract class FileUtils
 	private static final Pattern[] s_defaultExcludes;
 
 	private static final Object THREADLOCK = new Object();
+
+	private static HashSet<File> s_foldersToRemove;
 
 	static
 	{
@@ -92,75 +145,99 @@ public abstract class FileUtils
 		s_defaultExcludes = bld.toArray(new Pattern[bld.size()]);
 	}
 
-	public static class CopyOntoSelfException extends LocalizedException
+	private static void addPattern(ArrayList<Pattern> bld, String expr)
 	{
-		private static final long serialVersionUID = 379621474603864267L;
+		bld.add(Pattern.compile(expr));
+	}
 
-		public CopyOntoSelfException(File source, File destination)
+	public static void appendRelativeFiles(File directory, File relPath, Map<String, Long> fileNames)
+	{
+		String path = relPath.getPath();
+		File fileOrDir = relPath.isAbsolute()
+				? relPath
+				: new File(directory, path);
+		if(fileOrDir.isDirectory())
 		{
-			super("Cannot copy %s to %s since the destination is equal to, or contained in, the source",
-				source, destination);
+			StringBuilder builder = new StringBuilder();
+			builder.append(path);
+			appendRelativeFiles(fileOrDir, fileNames, builder);
+		}
+		else
+		{
+			long ts = fileOrDir.lastModified();
+			if(ts != 0L)
+				fileNames.put(path, new Long(ts));
+		}
+	}
+
+	public static void appendRelativeFiles(File directory, Map<String, Long> fileNames)
+	{
+		appendRelativeFiles(directory, fileNames, new StringBuilder());
+	}
+
+	private static void appendRelativeFiles(File directory, Map<String, Long> fileNames, StringBuilder path)
+	{
+		int pathLen = path.length();
+		if(pathLen > 0)
+		{
+			path.append(FILE_SEP);
+			pathLen = path.length();
+		}
+
+		File[] files = directory.listFiles();
+		if(files == null)
+			return;
+
+		int idx = files.length;
+		while(--idx >= 0)
+		{
+			File file = files[idx];
+			String sourceStr = file.toString().replace('\\', '/');
+
+			path.append(file.getName());
+			if(file.isDirectory())
+			{
+				if(!isMatch(sourceStr + '/', s_defaultExcludes, false))
+					appendRelativeFiles(file, fileNames, path);
+			}
+			else
+			{
+				if(!isMatch(sourceStr, s_defaultExcludes, false))
+					fileNames.put(path.toString(), new Long(file.lastModified()));
+			}
+			path.setLength(pathLen);
 		}
 	}
 
 	/**
-	 * Perform an OS sensitive equality comparison between two paths. This is very different from the
-	 * {@link IPath#equals(Object)} since that method is case sensitive on all platforms.
-	 * 
-	 * @param a
-	 * @param b
-	 * @return <code>true</code> if both paths are equal or both paths are <code>null</code>.
+	 * Helper method to calculate a digest for a file or a tree
 	 */
-	public static boolean pathEquals(IPath a, IPath b)
+	static public byte[] calculateDigest(File f, String algorithm, IProgressMonitor monitor)
+			throws NoSuchAlgorithmException, IOException
 	{
-		return (a == null || b == null)
-				? a == b
-				: a.toFile().equals(b.toFile());
-	}
-
-	public static class DestinationNotEmptyException extends LocalizedException
-	{
-		private static final long serialVersionUID = -4126568695654461634L;
-
-		public DestinationNotEmptyException(File destination)
+		MessageDigest md = MessageDigest.getInstance(algorithm);
+		DigestOutputStream dos = new DigestOutputStream(NullOutputStream.INSTANCE, md);
+		if(f.isFile())
 		{
-			super("Unable to use %s as a destination for copy since it is not empty", destination);
+			FileInputStream fis = new FileInputStream(f);
+			try
+			{
+				copyFile(fis, dos, monitor);
+			}
+			finally
+			{
+				IOUtils.close(fis);
+			}
 		}
-	}
-
-	public static class DeleteException extends LocalizedException
-	{
-		private static final long serialVersionUID = -8216112755038789300L;
-
-		public DeleteException(File file)
-		{
-			this(file, null);
-		}
-
-		public DeleteException(File file, Throwable e)
-		{
-			super(e, "Unable to delete: %s", file);
-		}
-	}
-
-	public static class MkdirException extends LocalizedException
-	{
-		private static final long serialVersionUID = -1919074286465177750L;
-
-		public MkdirException(File directory)
-		{
-			this(directory, null);
-		}
-
-		public MkdirException(File directory, Throwable e)
-		{
-			super(e, "Unable to create directory %s", directory);
-		}
+		else
+			deepCalculateDigest(f, dos, f.getCanonicalPath().length() + 1, monitor);
+		dos.close();
+		return md.digest();
 	}
 
 	/**
-	 * This method will assert that the <code>source</code> is not present inside the <code>destination</code> and
-	 * then call {@link #prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)}.
+	 * This method will assert that the <code>source</code> is not present inside the <code>destination</code> and then
+	 * call {@link #prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)}.
 	 * 
 	 * @param source
 	 *            The source. Might be a file or a directory.
@@ -187,264 +264,25 @@ public abstract class FileUtils
 		prepareDestination(destination, strategy, monitor);
 	}
 
-	/**
-	 * This method prepares the <code>destination</code> to receive a file or files according to the given
-	 * <code>strategy</code>
-	 * @param source
-	 *            The source. Might be a file or a directory.
-	 * @param destination
-	 *            The destination directory.
-	 * @param strategy
-	 *            how to handle a destination that is not empty
-	 * @throws BuckminsterException
-	 */
-	public static void prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)
-			throws CoreException
+	public static boolean compareContents(InputStream a, InputStream b) throws IOException
 	{
-		MonitorUtils.begin(monitor, 200);
-		try
+		byte[] bufA = new byte[0x400];
+		byte[] bufB = new byte[0x400];
+		int countA;
+		while((countA = a.read(bufA)) > 0)
 		{
-			File[] list = destination.listFiles();
-			MonitorUtils.worked(monitor, 30);
-			if(list == null)
-			{
-				if(destination.isFile())
-				{
-					if(strategy == ConflictResolution.FAIL)
-						throw new DestinationNotEmptyException(destination);
-
-					if(strategy != ConflictResolution.KEEP)
-					{
-						// Both UPDATE and REPLACE will replace a file
-						//
-						if(!destination.delete())
-							throw new DeleteException(destination);
-					}
-					MonitorUtils.worked(monitor, 85);
-				}
-				createDirectory(destination, MonitorUtils.subMonitor(monitor, 85));
-			}
-			else
-			{
-				int numFiles = list.length;
-				if(numFiles > 0)
-				{
-					IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 170);
-					MonitorUtils.begin(subMonitor, numFiles * 100);
-					try
-					{
-						if(strategy == ConflictResolution.FAIL)
-							throw new DestinationNotEmptyException(destination);
-
-						if(strategy == ConflictResolution.REPLACE)
-						{
-							for(File file : list)
-								deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
-						}
-					}
-					finally
-					{
-						MonitorUtils.done(subMonitor);
-					}
-				}
-				else
-					MonitorUtils.worked(monitor, 170);
-			}
+			if(b.read(bufB) != countA)
+				return false;
+			if(!ArrayUtils.equals(bufA, bufB, 0, countA))
+				return false;
 		}
-		finally
-		{
-			MonitorUtils.done(monitor);
-		}
+		return b.read(bufB) == countA;
 	}
 
 	/**
-	 * Substitute parameters in the form &lt;dc&gt;&lt;paramName&gt;&lt;dc&gt; where
-	 * &lt;dc&gt; is the <code>delim</code> character and &lt;paramName&gt; is a
-	 * parameter that is found in <code>substitutions</code>. An unmatched parameter
-	 * substitution string is replaced with an empty string
-	 * @param input The input stream to read from
-	 * @param output The output to write to
-	 * @param delim The character that starts and ends a parameter substitution
-	 * @param substitutions The map containing valid substitutions
-	 * @throws IOException
-	 */
-	public static void substituteParameters(InputStream input, OutputStream output, char delim, Map<String,String> substitutions) throws IOException
-	{
-		BufferedInputStream bufferedInput = new BufferedInputStream(input);
-		BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);
-
-		int c;
-		parseName: while((c = bufferedInput.read()) >= 0)
-		{
-			if(c != delim)
-			{
-				bufferedOutput.write((byte)c);
-				continue;
-			}
-
-			bufferedInput.mark(Integer.MAX_VALUE);
-			c = bufferedInput.read();
-			if(c == delim)
-			{
-				bufferedOutput.write(delim);
-				continue;
-			}
-
-			StringBuilder nameBuilder = new StringBuilder();
-			nameBuilder.append((char)c);
-
-			while((c = bufferedInput.read()) >= 0)
-			{
-				if(c == delim)
-					break;
-
-				if(Character.isJavaIdentifierPart((char)c))
-				{
-					nameBuilder.append((char)c);
-					continue;
-				}
-
-				// Not a valid parameter substitution
-				//
-				bufferedOutput.write(delim);
-				bufferedInput.reset();
-				continue parseName;
-			}
-
-			String paramName = nameBuilder.toString();
-			String param = substitutions.get(paramName);
-			if(param != null)
-				bufferedOutput.write(param.getBytes());
-		}
-		bufferedOutput.flush();
-	}
-
-	/**
-	 * Copy everything found in the <code>sourceDirectory</code> to the <code>destinationDirectory</code>. The
-	 * destination is prepared according to the given <code>strategy</code>.
-	 * 
-	 * @param sourceDirectory
-	 *            The source directory for the copy
-	 * @param destinationDirectory
-	 *            The destination directory for the copy.
-	 * @param strategy
-	 *            how to handle a destination that is not empty
-	 * @throws CoreException
-	 */
-	public static void deepCopy(File sourceDirectory, File destinationDirectory, ConflictResolution strategy,
-			IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.begin(monitor, 1000);
-		try
-		{
-			checkCopyConditions(sourceDirectory, destinationDirectory, strategy, MonitorUtils.subMonitor(monitor, 100));
-			deepCopyUnchecked(sourceDirectory, destinationDirectory, MonitorUtils.subMonitor(monitor, 900));
-		}
-		finally
-		{
-			MonitorUtils.done(monitor);
-		}
-	}
-
-	/**
-	 * Unzip the <code>source</code> contents to a <code>destDir</code> directory and give it the name
-	 * <code>destName</code>. This method assumes that the source is the URL that points to zipped contents, that
-	 * destDir is a directory, and that a file named destName can be created in destDir.
-	 * 
-	 * @param source
-	 *            The source zipped content.
-	 * @param sourceRelPath
-	 *            Relative path to material inside the soruce file.
-	 * @param dest
-	 *            The destination directory.
-	 * @param strategy
-	 *            how to handle a destination that is not empty
-	 * @param monitor
-	 *            The progress monitor used during the operation
-	 * @throws BuckminsterException
-	 */
-	public static void unzip(URL source, IConnectContext cctx, String sourceRelPath, File dest, ConflictResolution strategy, IProgressMonitor monitor)
-			throws CoreException
-	{
-		InputStream input = null;
-		try
-		{
-			input = DownloadManager.read(source, cctx);
-			unzip(input, sourceRelPath, dest, strategy, monitor);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	public static void unzip(InputStream inputs, String sourceRelPath, File dest, ConflictResolution strategy,
-			IProgressMonitor monitor) throws CoreException
-	{
-		ZipEntry entry;
-		ZipInputStream input = null;
-		MonitorUtils.begin(monitor, 600);
-		if(dest != null)
-			prepareDestination(dest, strategy, MonitorUtils.subMonitor(monitor, 100));
-
-		try
-		{
-			int ticksLeft = 500;
-			input = new ZipInputStream(inputs);
-
-			while((entry = input.getNextEntry()) != null)
-			{
-				String name = entry.getName();
-				if(sourceRelPath != null)
-				{
-					if(!name.startsWith(sourceRelPath))
-						continue;
-					name = name.substring(sourceRelPath.length() + 1);
-					if(name.length() == 0)
-						continue;
-				}
-
-				IProgressMonitor subMonitor;
-				if(ticksLeft > 0)
-				{
-					subMonitor = MonitorUtils.subMonitor(monitor, 10);
-					ticksLeft -= 10;
-				}
-				else
-				{
-					subMonitor = null;
-				}
-
-				if(entry.isDirectory())
-				{
-					if(dest != null)
-						createDirectory(new File(dest, name), subMonitor);
-					continue;
-				}
-				copyFile(input, dest, name, subMonitor);
-			}
-			if(ticksLeft > 0)
-				MonitorUtils.worked(monitor, ticksLeft);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			MonitorUtils.done(monitor);
-		}
-	}
-
-	/**
-	 * Copy the <code>source</code> file to a <code>destDir</code> directory and give it the name
-	 * <code>destName</code>. This mehtod assumes that the source is a common file, that destDir is a directory, and
-	 * that a file named destName can be created in destDir. If such a file exists already, an attempt will be made to
-	 * overwrite.
+	 * Copy the <code>source</code> file to a <code>destDir</code> directory and give it the name <code>destName</code>.
+	 * This mehtod assumes that the source is a common file, that destDir is a directory, and that a file named destName
+	 * can be created in destDir. If such a file exists already, an attempt will be made to overwrite.
 	 * 
 	 * @param source
 	 *            The source. Cannot be a directory.
@@ -452,8 +290,8 @@ public abstract class FileUtils
 	 *            The destination directory.
 	 * @param destName
 	 *            The name of the file relative to the destination.
-	 * @throws IOException,
-	 *             MkdirException
+	 * @throws IOException
+	 *             , MkdirException
 	 * @return The total number of bytes copied
 	 */
 	public static long copyFile(File source, File destDir, String destName, IProgressMonitor monitor)
@@ -510,11 +348,6 @@ public abstract class FileUtils
 		}
 	}
 
-	public static long copyFile(InputStream input, OutputStream output, IProgressMonitor monitor) throws IOException
-	{
-		return copyFile(input, output, new byte[0x2000], monitor);
-	}
-
 	public static long copyFile(InputStream input, OutputStream output, byte[] buf, IProgressMonitor monitor)
 			throws IOException
 	{
@@ -537,27 +370,30 @@ public abstract class FileUtils
 		}
 	}
 
-	public static long getCRC(InputStream input) throws IOException
+	public static long copyFile(InputStream input, OutputStream output, IProgressMonitor monitor) throws IOException
 	{
-		CRC32 crc32 = new CRC32();
-		byte[] copyBuffer = new byte[0x2000]; // 8 kilobyte buffer.
-		int count;
-		while((count = input.read(copyBuffer)) > 0)
-			crc32.update(copyBuffer, 0, count);
-		return crc32.getValue();
+		return copyFile(input, output, new byte[0x2000], monitor);
 	}
 
-	public static long getCRCAndCopy(InputStream input, OutputStream output) throws IOException
+	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)
 	{
-		CRC32 crc32 = new CRC32();
-		byte[] copyBuffer = new byte[0x2000]; // 8 kilobyte buffer.
-		int count;
-		while((count = input.read(copyBuffer)) > 0)
+		File[] files = fileOrDir.listFiles();
+		if(files == null)
 		{
-			output.write(copyBuffer, 0, count);
-			crc32.update(copyBuffer, 0, count);
+			if(fileOrDir.isFile())
+			{
+				long timestamp = fileOrDir.lastModified();
+				if(timestamp < timestampHolder[0])
+					timestampHolder[0] = timestamp;
+				count++;
+			}
 		}
-		return crc32.getValue();
+		else
+		{
+			for(File file : files)
+				count = countFilesAndGetOldest(file, count, timestampHolder);
+		}
+		return count;
 	}
 
 	public static synchronized void createDirectory(File file, IProgressMonitor monitor) throws MkdirException
@@ -579,69 +415,6 @@ public abstract class FileUtils
 		}
 	}
 
-	public static void deleteRecursive(File file, IProgressMonitor monitor) throws DeleteException
-	{
-		MonitorUtils.begin(monitor, 1000);
-		try
-		{
-			if(file == null)
-				return;
-
-			File[] list = file.listFiles();
-			int count = (list == null) ? 0 : list.length;
-			if(count > 0)
-			{
-				IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 900);
-				MonitorUtils.begin(subMon, count * 100);
-				try
-				{
-					if(s_foldersToRemove != null)
-						s_foldersToRemove.remove(file);
-
-					while(--count >= 0)
-						deleteRecursive(list[count], MonitorUtils.subMonitor(subMon, 100));
-				}
-				finally
-				{
-					MonitorUtils.done(subMon);
-				}
-			}
-			else
-				MonitorUtils.worked(monitor, 900);
-
-			if(!file.delete() && file.exists())
-				throw new DeleteException(file);
-			MonitorUtils.worked(monitor, 100);
-		}
-		catch(SecurityException e)
-		{
-			throw new DeleteException(file, e);
-		}
-		finally
-		{
-			MonitorUtils.done(monitor);
-		}
-	}
-
-	public static IPath pathForLocation(IPath location)
-	{
-		if(Platform.getLocation().equals(location))
-			return Path.ROOT;
-
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for(int i = 0; i < projects.length; i++)
-		{
-			IProject project = projects[i];
-			IPath projectLocation = project.getLocation();
-			if(projectLocation != null && projectLocation.isPrefixOf(location))
-			{
-				int segmentsToRemove = projectLocation.segmentCount();
-				return project.getFullPath().append(location.removeFirstSegments(segmentsToRemove));
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Creates the given folder and any needed but nonexistent parent folders.
 	 * 
@@ -661,25 +434,144 @@ public abstract class FileUtils
 		}
 	}
 
-	private static boolean isMatch(String fileStr, Pattern[] patterns, boolean whenEmpty)
+	/**
+	 * Creates a folder based on an abstract file handle. The folder and all its content will be deleted when the
+	 * process exists. The <code>tmpDir</code> directory must not exist when this method is called.
+	 * 
+	 * @param tmpDir
+	 *            The directory to create
+	 * @throws MkdirException
+	 *             If the directory could not be created.
+	 */
+	public static synchronized void createTempFolder(File tmpDir) throws MkdirException
 	{
-		if(patterns != null)
+		if(!tmpDir.mkdirs())
+			throw new MkdirException(tmpDir);
+
+		if(s_foldersToRemove == null)
 		{
-			int idx = patterns.length;
-			if(idx > 0)
+			s_foldersToRemove = new HashSet<File>();
+			Runtime.getRuntime().addShutdownHook(new Thread()
 			{
-				while(--idx >= 0)
-					if(patterns[idx].matcher(fileStr).matches())
-						return true;
-				return false;
-			}
+				@Override
+				public void run()
+				{
+					// Prevent that s_foldersToRemove is updated during the remove
+					//
+					HashSet<File> folders = new HashSet<File>(s_foldersToRemove);
+					s_foldersToRemove = null;
+					for(File folder : folders)
+					{
+						try
+						{
+							deleteRecursive(folder, null);
+						}
+						catch(Exception e)
+						{
+							// We're shutting down so this is ignored
+							System.err.println("Failed to remove directory " + folder + " :" + e.toString());
+						}
+					}
+				}
+			});
 		}
-		return whenEmpty;
+		s_foldersToRemove.add(tmpDir);
 	}
 
-	private static void addPattern(ArrayList<Pattern> bld, String expr)
+	/**
+	 * Creates a folder based on a generated name. The folder and all its content will be deleted when the process
+	 * exists.
+	 */
+	public static synchronized File createTempFolder(String prefix, String suffix) throws CoreException
 	{
-		bld.add(Pattern.compile(expr));
+		File tmpFile;
+		try
+		{
+			tmpFile = File.createTempFile(prefix, suffix);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		if(!tmpFile.delete())
+			throw new MkdirException(tmpFile);
+
+		createTempFolder(tmpFile);
+		return tmpFile;
+	}
+
+	/**
+	 * internal helper method to read all files/dirs in a directory tree to a *single* outstream
+	 */
+	private static void deepCalculateDigest(File from, OutputStream os, int rootOffset, IProgressMonitor monitor)
+			throws IOException
+	{
+		// get the file list, but *always* sort it to ensure we
+		// always process things in the same order as this is important
+		// for always getting the same digest
+		//
+		File names[] = from.listFiles();
+		MonitorUtils.begin(monitor, names.length * 100);
+		try
+		{
+			Arrays.sort(names);
+			for(int i = 0; i < names.length; i++)
+			{
+				File p = names[i];
+				//
+				// Make pathnames count for everything we encounter to ensure
+				// changes in dir structure also count (new dirs, empty files,
+				// changed names)
+				// replace the platform specific separator with something
+				// else...we should then
+				// get identical results on any platform.
+				//
+				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
+				os.write(p.getName().getBytes());
+				if(p.isDirectory())
+				{
+					os.write(1);
+					deepCalculateDigest(p, os, rootOffset, subMonitor);
+				}
+				else
+				{
+					FileInputStream fis = new FileInputStream(p);
+					copyFile(fis, os, subMonitor);
+					fis.close();
+				}
+			}
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
+	}
+
+	/**
+	 * Copy everything found in the <code>sourceDirectory</code> to the <code>destinationDirectory</code>. The
+	 * destination is prepared according to the given <code>strategy</code>.
+	 * 
+	 * @param sourceDirectory
+	 *            The source directory for the copy
+	 * @param destinationDirectory
+	 *            The destination directory for the copy.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
+	 * @throws CoreException
+	 */
+	public static void deepCopy(File sourceDirectory, File destinationDirectory, ConflictResolution strategy,
+			IProgressMonitor monitor) throws CoreException
+	{
+		MonitorUtils.begin(monitor, 1000);
+		try
+		{
+			checkCopyConditions(sourceDirectory, destinationDirectory, strategy, MonitorUtils.subMonitor(monitor, 100));
+			deepCopyUnchecked(sourceDirectory, destinationDirectory, MonitorUtils.subMonitor(monitor, 900));
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
 	}
 
 	public static void deepCopyUnchecked(File source, File dest, IProgressMonitor monitor) throws CoreException
@@ -748,149 +640,153 @@ public abstract class FileUtils
 		}
 	}
 
-	public static boolean compareContents(InputStream a, InputStream b) throws IOException
+	public static void deleteRecursive(File file, IProgressMonitor monitor) throws DeleteException
 	{
-		byte[] bufA = new byte[0x400];
-		byte[] bufB = new byte[0x400];
-		int countA;
-		while((countA = a.read(bufA)) > 0)
-		{
-			if(b.read(bufB) != countA)
-				return false;
-			if(!ArrayUtils.equals(bufA, bufB, 0, countA))
-				return false;
-		}
-		return b.read(bufB) == countA;
-	}
-
-	private static HashSet<File> s_foldersToRemove;
-
-	/**
-	 * Creates a folder based on a generated name. The folder and all its content will be deleted when the process
-	 * exists.
-	 */
-	public static synchronized File createTempFolder(String prefix, String suffix) throws CoreException
-	{
-		File tmpFile;
+		MonitorUtils.begin(monitor, 1000);
 		try
 		{
-			tmpFile = File.createTempFile(prefix, suffix);
+			if(file == null)
+				return;
+
+			File[] list = file.listFiles();
+			int count = (list == null)
+					? 0
+					: list.length;
+			if(count > 0)
+			{
+				IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 900);
+				MonitorUtils.begin(subMon, count * 100);
+				try
+				{
+					if(s_foldersToRemove != null)
+						s_foldersToRemove.remove(file);
+
+					while(--count >= 0)
+						deleteRecursive(list[count], MonitorUtils.subMonitor(subMon, 100));
+				}
+				finally
+				{
+					MonitorUtils.done(subMon);
+				}
+			}
+			else
+				MonitorUtils.worked(monitor, 900);
+
+			if(!file.delete() && file.exists())
+				throw new DeleteException(file);
+			MonitorUtils.worked(monitor, 100);
 		}
-		catch(IOException e)
+		catch(SecurityException e)
+		{
+			throw new DeleteException(file, e);
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
+	}
+
+	public static File findPath(Bundle bundle, String path) throws CoreException
+	{
+		try
+		{
+			return path == null
+					? null
+					: new File(FileLocator.toFileURL(FileLocator.find(bundle, new Path(path), null)).toURI());
+		}
+		catch(Exception e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
-		if(!tmpFile.delete())
-			throw new MkdirException(tmpFile);
-
-		createTempFolder(tmpFile);
-		return tmpFile;
 	}
 
-	/**
-	 * Creates a folder based on an abstract file handle. The folder and all its content will be deleted when the
-	 * process exists. The <code>tmpDir</code> directory must not exist when this method is called.
-	 * 
-	 * @param tmpDir
-	 *            The directory to create
-	 * @throws MkdirException
-	 *             If the directory could not be created.
-	 */
-	public static synchronized void createTempFolder(File tmpDir) throws MkdirException
+	public static File findPath(Plugin plugin, String path) throws CoreException
 	{
-		if(!tmpDir.mkdirs())
-			throw new MkdirException(tmpDir);
+		return findPath(plugin.getBundle(), path);
+	}
 
-		if(s_foldersToRemove == null)
+	public static File findPath(String pluginId, String path) throws CoreException
+	{
+		return findPath(Platform.getBundle(pluginId), path);
+	}
+
+	public static long getCRC(InputStream input) throws IOException
+	{
+		CRC32 crc32 = new CRC32();
+		byte[] copyBuffer = new byte[0x2000]; // 8 kilobyte buffer.
+		int count;
+		while((count = input.read(copyBuffer)) > 0)
+			crc32.update(copyBuffer, 0, count);
+		return crc32.getValue();
+	}
+
+	public static long getCRCAndCopy(InputStream input, OutputStream output) throws IOException
+	{
+		CRC32 crc32 = new CRC32();
+		byte[] copyBuffer = new byte[0x2000]; // 8 kilobyte buffer.
+		int count;
+		while((count = input.read(copyBuffer)) > 0)
 		{
-			s_foldersToRemove = new HashSet<File>();
-			Runtime.getRuntime().addShutdownHook(new Thread()
-			{
-				@Override
-				public void run()
-				{
-					// Prevent that s_foldersToRemove is updated during the remove
-					//
-					HashSet<File> folders = new HashSet<File>(s_foldersToRemove);
-					s_foldersToRemove = null;
-					for(File folder : folders)
-					{
-						try
-						{
-							deleteRecursive(folder, null);
-						}
-						catch(Exception e)
-						{
-							// We're shutting down so this is ignored
-							System.err.println("Failed to remove directory " + folder + " :" + e.toString());
-						}
-					}
-				}
-			});
+			output.write(copyBuffer, 0, count);
+			crc32.update(copyBuffer, 0, count);
 		}
-		s_foldersToRemove.add(tmpDir);
+		return crc32.getValue();
 	}
 
-	/**
-	 * Helper method to calculate a digest for a file or a tree
-	 */
-	static public byte[] calculateDigest(File f, String algorithm, IProgressMonitor monitor)
-			throws NoSuchAlgorithmException, IOException
+	public static File getFile(URL url)
 	{
-		MessageDigest md = MessageDigest.getInstance(algorithm);
-		DigestOutputStream dos = new DigestOutputStream(NullOutputStream.INSTANCE, md);
-		if(f.isFile())
+		if(url == null)
+			return null;
+
+		String proto = url.getProtocol();
+		if(proto == null || "file".equalsIgnoreCase(proto))
 		{
-			FileInputStream fis = new FileInputStream(f);
 			try
 			{
-				copyFile(fis, dos, monitor);
+				return new File(url.toURI());
 			}
-			finally
+			catch(URISyntaxException e)
 			{
-				IOUtils.close(fis);
+				// This is probably due to spaces in the URL path. If it
+				// is, the URL is per definition corrupt but let's use that
+				// path verbatim anyway
+				// http://bugs.eclipse.org/bugs/show_bug.cgi?id=125967
+				//
+				String path = url.getPath();
+				if(path.indexOf(' ') >= 0)
+					return new File(path);
+
+				// Nope, that was not the problem!
+				//
+				CorePlugin.getLogger().warning(e, e.getMessage());
+			}
+			catch(IllegalArgumentException e)
+			{
+				// Probably because the URI has a fragement component
 			}
 		}
-		else
-			deepCalculateDigest(f, dos, f.getCanonicalPath().length() + 1, monitor);
-		dos.close();
-		return md.digest();
+		return null;
 	}
 
-	public static void appendRelativeFiles(File directory, Map<String,Long> fileNames)
+	public static IPath getFileAsPath(URL url)
 	{
-		appendRelativeFiles(directory, fileNames, new StringBuilder());
-	}
-
-	public static void appendRelativeFiles(File directory, File relPath, Map<String,Long> fileNames)
-	{
-		String path = relPath.getPath();
-		File fileOrDir = relPath.isAbsolute() ? relPath : new File(directory, path);
-		if(fileOrDir.isDirectory())
-		{
-			StringBuilder builder = new StringBuilder();
-			builder.append(path);
-			appendRelativeFiles(fileOrDir, fileNames, builder);
-		}
-		else
-		{
-			long ts = fileOrDir.lastModified();
-			if(ts != 0L)
-				fileNames.put(path, new Long(ts));
-		}
+		File file = getFile(url);
+		return file == null
+				? null
+				: new Path(file.toString());
 	}
 
 	/**
 	 * <p>
-	 * If the <code>fileOrDir</code> is a file, and if the <code>expectedFileCount &lt;= 1</code>, this method
-	 * returns the timestamp for that file.
+	 * If the <code>fileOrDir</code> is a file, and if the <code>expectedFileCount &lt;= 1</code>, this method returns
+	 * the timestamp for that file.
 	 * </p>
 	 * <p>
 	 * If <code>fileOrDir</code> is a directory the following rules apply:
 	 * <ul>
 	 * <li>if the <code>expectedFileCount</code> is <code>-1</code>, this method will return <code>0L</code>.</li>
-	 * <li>if the <code>expectedFileCount</code> is <code>0</code>, this method will return the timestamp of the
-	 * oldest file found using a recursive scan of all subdirectories.</li>
+	 * <li>if the <code>expectedFileCount</code> is <code>0</code>, this method will return the timestamp of the oldest
+	 * file found using a recursive scan of all subdirectories.</li>
 	 * <li>if the <code>expectedFileCount</code> is a positive number, this method will return the timestamp of the
 	 * oldest file found using a recursive scan of all subdirectories provided the number of files is greater or equal
 	 * to that <code>expectedFileCount</code>.</li>
@@ -899,11 +795,16 @@ public abstract class FileUtils
 	 * <p>
 	 * for all other cases this method returns <code>0L</code>.
 	 * </p>
-	 * <p>The method will return the actual number of files found in the one element array parameter <code>realFileCount</code>.
+	 * <p>
+	 * The method will return the actual number of files found in the one element array parameter
+	 * <code>realFileCount</code>.
 	 * 
-	 * @param fileOrDir The file or directory to check.
-	 * @param expectedFileCount <code>-1</code>, <code>0</code>, or a minimum expected file count.
-	 * @param realFileCount A one element array where the actual number of files is returned.
+	 * @param fileOrDir
+	 *            The file or directory to check.
+	 * @param expectedFileCount
+	 *            <code>-1</code>, <code>0</code>, or a minimum expected file count.
+	 * @param realFileCount
+	 *            A one element array where the actual number of files is returned.
 	 * @return The file modification time according to the rules outlined for this method.
 	 */
 	public static long getFirstModified(File fileOrDir, int expectedFileCount, int[] realFileCount)
@@ -967,180 +868,29 @@ public abstract class FileUtils
 		return lastModTime;
 	}
 
-	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)
+	private static boolean isMatch(String fileStr, Pattern[] patterns, boolean whenEmpty)
 	{
-		File[] files = fileOrDir.listFiles();
-		if(files == null)
+		if(patterns != null)
 		{
-			if(fileOrDir.isFile())
+			int idx = patterns.length;
+			if(idx > 0)
 			{
-				long timestamp = fileOrDir.lastModified();
-				if(timestamp < timestampHolder[0])
-					timestampHolder[0] = timestamp;
-				count++;
+				while(--idx >= 0)
+					if(patterns[idx].matcher(fileStr).matches())
+						return true;
+				return false;
 			}
 		}
-		else
-		{
-			for(File file : files)
-				count = countFilesAndGetOldest(file, count, timestampHolder);
-		}
-		return count;
+		return whenEmpty;
 	}
 
-	private static void appendRelativeFiles(File directory, Map<String,Long> fileNames, StringBuilder path)
-	{
-		int pathLen = path.length();
-		if(pathLen > 0)
-		{
-			path.append(FILE_SEP);
-			pathLen = path.length();
-		}
-
-		File[] files = directory.listFiles();
-		if(files == null)
-			return;
-
-		int idx = files.length;
-		while(--idx >= 0)
-		{
-			File file = files[idx];
-			String sourceStr = file.toString().replace('\\', '/');
-
-			path.append(file.getName());
-			if(file.isDirectory())
-			{
-				if(!isMatch(sourceStr + '/', s_defaultExcludes, false))
-					appendRelativeFiles(file, fileNames, path);
-			}
-			else
-			{
-				if(!isMatch(sourceStr, s_defaultExcludes, false))
-					fileNames.put(path.toString(), new Long(file.lastModified()));
-			}
-			path.setLength(pathLen);
-		}
-	}
-
-	/**
-	 * internal helper method to read all files/dirs in a directory tree to a *single* outstream
-	 */
-	private static void deepCalculateDigest(File from, OutputStream os, int rootOffset, IProgressMonitor monitor)
-			throws IOException
-	{
-		// get the file list, but *always* sort it to ensure we
-		// always process things in the same order as this is important
-		// for always getting the same digest
-		//
-		File names[] = from.listFiles();
-		MonitorUtils.begin(monitor, names.length * 100);
-		try
-		{
-			Arrays.sort(names);
-			for(int i = 0; i < names.length; i++)
-			{
-				File p = names[i];
-				//
-				// Make pathnames count for everything we encounter to ensure
-				// changes in dir structure also count (new dirs, empty files,
-				// changed names)
-				// replace the platform specific separator with something
-				// else...we should then
-				// get identical results on any platform.
-				//
-				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
-				os.write(p.getName().getBytes());
-				if(p.isDirectory())
-				{
-					os.write(1);
-					deepCalculateDigest(p, os, rootOffset, subMonitor);
-				}
-				else
-				{
-					FileInputStream fis = new FileInputStream(p);
-					copyFile(fis, os, subMonitor);
-					fis.close();
-				}
-			}
-		}
-		finally
-		{
-			MonitorUtils.done(monitor);
-		}
-	}
-
-	public static File findPath(String pluginId, String path) throws CoreException
-	{
-		return findPath(Platform.getBundle(pluginId), path);
-	}
-
-	public static File findPath(Plugin plugin, String path) throws CoreException
-	{
-		return findPath(plugin.getBundle(), path);
-	}
-
-	public static File findPath(Bundle bundle, String path) throws CoreException
-	{
-		try
-		{
-			return path == null
-					? null
-					: new File(FileLocator.toFileURL(FileLocator.find(bundle, new Path(path), null)).toURI());
-		}
-		catch(Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	public static IPath getFileAsPath(URL url)
-	{
-		File file = getFile(url);
-		return file == null
-				? null
-				: new Path(file.toString());
-	}
-
-	public static File getFile(URL url)
-	{
-		if(url == null)
-			return null;
-
-		String proto = url.getProtocol();
-		if(proto == null || "file".equalsIgnoreCase(proto))
-		{
-			try
-			{
-				return new File(url.toURI());
-			}
-			catch(URISyntaxException e)
-			{
-				// This is probably due to spaces in the URL path. If it
-				// is, the URL is per definition corrupt but let's use that
-				// path verbatim anyway
-				// http://bugs.eclipse.org/bugs/show_bug.cgi?id=125967
-				//
-				String path = url.getPath();
-				if(path.indexOf(' ') >= 0)
-					return new File(path);
-
-				// Nope, that was not the problem!
-				//
-				CorePlugin.getLogger().warning(e, e.getMessage());
-			}
-			catch(IllegalArgumentException e)
-			{
-				// Probably because the URI has a fragement component
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * Creates directories in a synchronized block.
 	 * 
-	 * @param directory The path for which all directories should be created
-	 * @throws CoreException If the directories cannot be created
+	 * @param directory
+	 *            The path for which all directories should be created
+	 * @throws CoreException
+	 *             If the directories cannot be created
 	 */
 	public static void mkdirs(File directory) throws CoreException
 	{
@@ -1149,11 +899,277 @@ public abstract class FileUtils
 			if(directory == null || directory.exists() && !directory.isDirectory())
 				throw BuckminsterException.fromMessage("Unable to create directory %s: Not a directory",
 						directory != null
-							? directory
-							: "(null)");
-			
+								? directory
+								: "(null)");
+
 			if(!directory.exists() && !directory.mkdirs())
 				throw BuckminsterException.fromMessage("Unable to create directory %s", directory);
+		}
+	}
+
+	/**
+	 * Perform an OS sensitive equality comparison between two paths. This is very different from the
+	 * {@link IPath#equals(Object)} since that method is case sensitive on all platforms.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return <code>true</code> if both paths are equal or both paths are <code>null</code>.
+	 */
+	public static boolean pathEquals(IPath a, IPath b)
+	{
+		return (a == null || b == null)
+				? a == b
+				: a.toFile().equals(b.toFile());
+	}
+
+	public static IPath pathForLocation(IPath location)
+	{
+		if(Platform.getLocation().equals(location))
+			return Path.ROOT;
+
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		for(int i = 0; i < projects.length; i++)
+		{
+			IProject project = projects[i];
+			IPath projectLocation = project.getLocation();
+			if(projectLocation != null && projectLocation.isPrefixOf(location))
+			{
+				int segmentsToRemove = projectLocation.segmentCount();
+				return project.getFullPath().append(location.removeFirstSegments(segmentsToRemove));
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * This method prepares the <code>destination</code> to receive a file or files according to the given
+	 * <code>strategy</code>
+	 * 
+	 * @param source
+	 *            The source. Might be a file or a directory.
+	 * @param destination
+	 *            The destination directory.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
+	 * @throws BuckminsterException
+	 */
+	public static void prepareDestination(File destination, ConflictResolution strategy, IProgressMonitor monitor)
+			throws CoreException
+	{
+		MonitorUtils.begin(monitor, 200);
+		try
+		{
+			File[] list = destination.listFiles();
+			MonitorUtils.worked(monitor, 30);
+			if(list == null)
+			{
+				if(destination.isFile())
+				{
+					if(strategy == ConflictResolution.FAIL)
+						throw new DestinationNotEmptyException(destination);
+
+					if(strategy != ConflictResolution.KEEP)
+					{
+						// Both UPDATE and REPLACE will replace a file
+						//
+						if(!destination.delete())
+							throw new DeleteException(destination);
+					}
+					MonitorUtils.worked(monitor, 85);
+				}
+				createDirectory(destination, MonitorUtils.subMonitor(monitor, 85));
+			}
+			else
+			{
+				int numFiles = list.length;
+				if(numFiles > 0)
+				{
+					IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 170);
+					MonitorUtils.begin(subMonitor, numFiles * 100);
+					try
+					{
+						if(strategy == ConflictResolution.FAIL)
+							throw new DestinationNotEmptyException(destination);
+
+						if(strategy == ConflictResolution.REPLACE)
+						{
+							for(File file : list)
+								deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+						}
+					}
+					finally
+					{
+						MonitorUtils.done(subMonitor);
+					}
+				}
+				else
+					MonitorUtils.worked(monitor, 170);
+			}
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
+	}
+
+	/**
+	 * Substitute parameters in the form &lt;dc&gt;&lt;paramName&gt;&lt;dc&gt; where &lt;dc&gt; is the
+	 * <code>delim</code> character and &lt;paramName&gt; is a parameter that is found in <code>substitutions</code>. An
+	 * unmatched parameter substitution string is replaced with an empty string
+	 * 
+	 * @param input
+	 *            The input stream to read from
+	 * @param output
+	 *            The output to write to
+	 * @param delim
+	 *            The character that starts and ends a parameter substitution
+	 * @param substitutions
+	 *            The map containing valid substitutions
+	 * @throws IOException
+	 */
+	public static void substituteParameters(InputStream input, OutputStream output, char delim,
+			Map<String, String> substitutions) throws IOException
+	{
+		BufferedInputStream bufferedInput = new BufferedInputStream(input);
+		BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);
+
+		int c;
+		parseName: while((c = bufferedInput.read()) >= 0)
+		{
+			if(c != delim)
+			{
+				bufferedOutput.write((byte)c);
+				continue;
+			}
+
+			bufferedInput.mark(Integer.MAX_VALUE);
+			c = bufferedInput.read();
+			if(c == delim)
+			{
+				bufferedOutput.write(delim);
+				continue;
+			}
+
+			StringBuilder nameBuilder = new StringBuilder();
+			nameBuilder.append((char)c);
+
+			while((c = bufferedInput.read()) >= 0)
+			{
+				if(c == delim)
+					break;
+
+				if(Character.isJavaIdentifierPart((char)c))
+				{
+					nameBuilder.append((char)c);
+					continue;
+				}
+
+				// Not a valid parameter substitution
+				//
+				bufferedOutput.write(delim);
+				bufferedInput.reset();
+				continue parseName;
+			}
+
+			String paramName = nameBuilder.toString();
+			String param = substitutions.get(paramName);
+			if(param != null)
+				bufferedOutput.write(param.getBytes());
+		}
+		bufferedOutput.flush();
+	}
+
+	public static void unzip(InputStream inputs, String sourceRelPath, File dest, ConflictResolution strategy,
+			IProgressMonitor monitor) throws CoreException
+	{
+		ZipEntry entry;
+		ZipInputStream input = null;
+		MonitorUtils.begin(monitor, 600);
+		if(dest != null)
+			prepareDestination(dest, strategy, MonitorUtils.subMonitor(monitor, 100));
+
+		try
+		{
+			int ticksLeft = 500;
+			input = new ZipInputStream(inputs);
+
+			while((entry = input.getNextEntry()) != null)
+			{
+				String name = entry.getName();
+				if(sourceRelPath != null)
+				{
+					if(!name.startsWith(sourceRelPath))
+						continue;
+					name = name.substring(sourceRelPath.length() + 1);
+					if(name.length() == 0)
+						continue;
+				}
+
+				IProgressMonitor subMonitor;
+				if(ticksLeft > 0)
+				{
+					subMonitor = MonitorUtils.subMonitor(monitor, 10);
+					ticksLeft -= 10;
+				}
+				else
+				{
+					subMonitor = null;
+				}
+
+				if(entry.isDirectory())
+				{
+					if(dest != null)
+						createDirectory(new File(dest, name), subMonitor);
+					continue;
+				}
+				copyFile(input, dest, name, subMonitor);
+			}
+			if(ticksLeft > 0)
+				MonitorUtils.worked(monitor, ticksLeft);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
+	}
+
+	/**
+	 * Unzip the <code>source</code> contents to a <code>destDir</code> directory and give it the name
+	 * <code>destName</code>. This method assumes that the source is the URL that points to zipped contents, that
+	 * destDir is a directory, and that a file named destName can be created in destDir.
+	 * 
+	 * @param source
+	 *            The source zipped content.
+	 * @param sourceRelPath
+	 *            Relative path to material inside the soruce file.
+	 * @param dest
+	 *            The destination directory.
+	 * @param strategy
+	 *            how to handle a destination that is not empty
+	 * @param monitor
+	 *            The progress monitor used during the operation
+	 * @throws BuckminsterException
+	 */
+	public static void unzip(URL source, IConnectContext cctx, String sourceRelPath, File dest,
+			ConflictResolution strategy, IProgressMonitor monitor) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			input = DownloadManager.read(source, cctx);
+			unzip(input, sourceRelPath, dest, strategy, monitor);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
 		}
 	}
 }

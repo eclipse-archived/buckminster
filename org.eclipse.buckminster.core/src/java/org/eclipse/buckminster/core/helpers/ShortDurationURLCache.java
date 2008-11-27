@@ -49,8 +49,12 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 
 		return this.open(new Materializer()
 		{
-			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info)
-					throws IOException, CoreException
+			public String getKey()
+			{
+				return url.toString();
+			}
+
+			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info) throws IOException, CoreException
 			{
 				if(info == null)
 					info = new FileInfoBuilder();
@@ -77,11 +81,6 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 					if(!success && tempFile != null)
 						tempFile.delete();
 				}
-			}
-
-			public String getKey()
-			{
-				return url.toString();
 			}
 		}, monitor);
 	}

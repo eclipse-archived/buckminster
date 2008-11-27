@@ -25,10 +25,11 @@ import org.osgi.framework.Filter;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * A ComponentRequest is part of a requirement. All referenced components must be available in a
- * workspace for a requirment to be fulfilled. A component can be further qualified using target
- * references in cases when only a part of the component is needed. The ComponentRequest uses a
- * singleton pattern and is optimized for use as key in a Map or Set.
+ * A ComponentRequest is part of a requirement. All referenced components must be available in a workspace for a
+ * requirment to be fulfilled. A component can be further qualified using target references in cases when only a part of
+ * the component is needed. The ComponentRequest uses a singleton pattern and is optimized for use as key in a Map or
+ * Set.
+ * 
  * @author thhal
  */
 public class ComponentRequest extends ComponentName implements IComponentRequest
@@ -46,6 +47,13 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	private final Filter m_filter;
 
+	public ComponentRequest(ComponentRequestBuilder bld)
+	{
+		super(bld.getName(), bld.getComponentTypeID());
+		m_versionDesignator = bld.getVersionDesignator();
+		m_filter = bld.getFilter();
+	}
+
 	public ComponentRequest(String name, String componentType, IVersionDesignator versionDesignator)
 	{
 		super(name, componentType);
@@ -54,20 +62,13 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	}
 
 	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId)
-	throws CoreException
+			throws CoreException
 	{
 		this(name, componentType, versionDesignatorStr, versionTypeId, null);
 	}
 
-	public ComponentRequest(ComponentRequestBuilder bld)
-	{
-		super(bld.getName(), bld.getComponentTypeID());
-		m_versionDesignator = bld.getVersionDesignator();
-		m_filter = bld.getFilter();
-	}
-
-	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId, Filter filter)
-	throws CoreException
+	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId,
+			Filter filter) throws CoreException
 	{
 		super(name, componentType);
 		IVersionDesignator versionDesignator = null;
@@ -77,16 +78,47 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		m_filter = filter;
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_versionDesignator != null)
+		{
+			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionDesignator.toString());
+			IVersion version = m_versionDesignator.getVersion();
+			if(version != null)
+			{
+				IVersionType vt = version.getType();
+				if(vt != null)
+					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
+			}
+		}
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
+	}
+
+	public void appendViewName(StringBuilder bld)
+	{
+		bld.append(getName());
+		String componentType = getComponentTypeID();
+		if(componentType != null)
+		{
+			bld.append(':');
+			bld.append(componentType);
+		}
+		if(m_filter != null)
+			bld.append(m_filter);
+	}
+
 	public boolean designates(IComponentIdentifier id)
 	{
 		return Trivial.equalsAllowNull(getName(), id.getName())
-			&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))
-			&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
+				&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))
+				&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
 	}
 
 	/**
-	 * Returns true if this component reference is equal to obj with respect to name,
-	 * versionSelector, and match rule.
+	 * Returns true if this component reference is equal to obj with respect to name, versionSelector, and match rule.
 	 */
 	@Override
 	public boolean equals(Object o)
@@ -95,14 +127,19 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 			return true;
 
 		return super.equals(o)
-			&& Trivial.equalsAllowNull(m_versionDesignator, ((ComponentRequest)o).m_versionDesignator)
-			&& Trivial.equalsAllowNull(m_filter, ((ComponentRequest)o).m_filter);
+				&& Trivial.equalsAllowNull(m_versionDesignator, ((ComponentRequest)o).m_versionDesignator)
+				&& Trivial.equalsAllowNull(m_filter, ((ComponentRequest)o).m_filter);
 	}
 
 	@Override
 	public String getDefaultTag()
 	{
 		return TAG;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	@Override
@@ -129,19 +166,6 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		return bld.toString();
 	}
 
-	public void appendViewName(StringBuilder bld)
-	{
-		bld.append(getName());
-		String componentType = getComponentTypeID();
-		if(componentType != null)
-		{
-			bld.append(':');
-			bld.append(componentType);
-		}
-		if(m_filter != null)
-			bld.append(m_filter);
-	}
-
 	/**
 	 * Returns the hashCode for this component request.
 	 */
@@ -149,8 +173,17 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public int hashCode()
 	{
 		int hash = super.hashCode();
-		hash = 31 * hash + (m_versionDesignator == null ? 0 : m_versionDesignator.hashCode());
-		return 31 * hash + (m_filter == null ? 0 : m_filter.hashCode());
+		hash = 31 * hash + (m_versionDesignator == null
+				? 0
+				: m_versionDesignator.hashCode());
+		return 31 * hash + (m_filter == null
+				? 0
+				: m_filter.hashCode());
+	}
+
+	public boolean isEnabled(Map<String, String> properties)
+	{
+		return m_filter == null || FilterUtils.isMatch(m_filter, properties);
 	}
 
 	public ComponentRequest mergeDesignator(ComponentRequest that) throws CoreException
@@ -168,7 +201,9 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		IVersionDesignator thisVD = getVersionDesignator();
 		IVersionDesignator thatVD = that.getVersionDesignator();
 		if(thisVD == null)
-			return thatVD == null ? this : that;
+			return thatVD == null
+					? this
+					: that;
 
 		if(thatVD == null)
 			return this;
@@ -182,7 +217,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 		return new ComponentRequest(getName(), thisCType, mergedVD);
 	}
-	
+
 	@Override
 	public ComponentName toPureComponentName()
 	{
@@ -202,34 +237,5 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		}
 		if(m_filter != null)
 			bld.append(m_filter);
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_versionDesignator != null)
-		{
-			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionDesignator.toString());
-			IVersion version = m_versionDesignator.getVersion();
-			if(version != null)
-			{
-				IVersionType vt = version.getType();
-				if(vt != null)
-					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
-			}
-		}
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
-	}
-
-	public Filter getFilter()
-	{
-		return m_filter;
-	}
-
-	public boolean isEnabled(Map<String, String> properties)
-	{
-		return m_filter == null || FilterUtils.isMatch(m_filter, properties);
 	}
 }

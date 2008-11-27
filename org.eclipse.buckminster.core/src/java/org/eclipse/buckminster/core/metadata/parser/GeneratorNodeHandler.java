@@ -32,27 +32,25 @@ class GeneratorNodeHandler extends BomNodeHandler
 	}
 
 	@Override
+	BOMNode getDepNode()
+	{
+		return m_node;
+	}
+
+	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		UUID cspecId = null;
 		try
 		{
 			cspecId = UUID.fromString(this.getStringValue(attrs, GeneratorNode.ATTR_DECLARING_CSPEC_ID));
-			m_node = new GeneratorNode(
-				(CSpec)getWrapped(cspecId),
-				getStringValue(attrs, GeneratorNode.ATTR_COMPONENT),
-				getStringValue(attrs, GeneratorNode.ATTR_ATTRIBUTE),
-				getStringValue(attrs, GeneratorNode.ATTR_GENERATES));
+			m_node = new GeneratorNode((CSpec)getWrapped(cspecId), getStringValue(attrs, GeneratorNode.ATTR_COMPONENT),
+					getStringValue(attrs, GeneratorNode.ATTR_ATTRIBUTE), getStringValue(attrs,
+							GeneratorNode.ATTR_GENERATES));
 		}
 		catch(ClassCastException e)
 		{
 			throw new SAXParseException("wrapper " + cspecId + " does not wrap a cspec", getDocumentLocator());
 		}
-	}
-
-	@Override
-	BOMNode getDepNode()
-	{
-		return m_node;
 	}
 }

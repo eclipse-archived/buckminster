@@ -22,6 +22,16 @@ public class TripletVersion extends AbstractTripletVersion
 		m_stringForm = stringForm;
 	}
 
+	public boolean hasMicro()
+	{
+		return TripletVersionType.hasMicro(m_stringForm);
+	}
+
+	public boolean hasMinor()
+	{
+		return TripletVersionType.hasMinor(m_stringForm);
+	}
+
 	@Override
 	public IVersion replaceQualifier(String qualifier)
 	{
@@ -40,16 +50,6 @@ public class TripletVersion extends AbstractTripletVersion
 		else
 			stringForm = stringForm + '-' + qualifier;
 		return new TripletVersion(getType(), getMajor(), getMinor(), getMicro(), qualifier, stringForm);
-	}
-
-	public boolean hasMinor()
-	{
-		return TripletVersionType.hasMinor(m_stringForm);
-	}
-
-	public boolean hasMicro()
-	{
-		return TripletVersionType.hasMicro(m_stringForm);
 	}
 
 	@Override

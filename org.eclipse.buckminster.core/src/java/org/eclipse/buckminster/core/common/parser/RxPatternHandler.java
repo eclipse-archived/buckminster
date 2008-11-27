@@ -24,7 +24,9 @@ public class RxPatternHandler extends RxPartHandler
 	public static final String TAG = RxPattern.TAG;
 
 	private String m_pattern;
+
 	private String m_prefix;
+
 	private String m_suffix;
 
 	public RxPatternHandler(AbstractHandler parent)
@@ -33,23 +35,9 @@ public class RxPatternHandler extends RxPartHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		super.handleAttributes(attrs);
-		m_pattern = getStringValue(attrs, RxPattern.ATTR_PATTERN);
-		m_prefix = getOptionalStringValue(attrs, RxPattern.ATTR_PREFIX);
-		m_suffix = getOptionalStringValue(attrs, RxPattern.ATTR_SUFFIX);
-	}
-
-	@Override
 	public RxPart createPart()
 	{
-		return new RxPattern(
-				getName(),
-				isOptional(),
-				m_pattern,
-				m_prefix,
-				m_suffix);
+		return new RxPattern(getName(), isOptional(), m_pattern, m_prefix, m_suffix);
 	}
 
 	protected final String getPattern()
@@ -65,5 +53,14 @@ public class RxPatternHandler extends RxPartHandler
 	protected final String getSuffix()
 	{
 		return m_suffix;
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		m_pattern = getStringValue(attrs, RxPattern.ATTR_PATTERN);
+		m_prefix = getOptionalStringValue(attrs, RxPattern.ATTR_PREFIX);
+		m_suffix = getOptionalStringValue(attrs, RxPattern.ATTR_SUFFIX);
 	}
 }

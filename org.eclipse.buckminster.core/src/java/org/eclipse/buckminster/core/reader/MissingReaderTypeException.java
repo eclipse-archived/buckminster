@@ -19,8 +19,7 @@ public class MissingReaderTypeException extends LocalizedException
 
 	public MissingReaderTypeException(String remoteReaderId)
 	{
-		super("No reader type with id %s has been registered with extension-point %s",
-				remoteReaderId, CorePlugin.READER_TYPE_POINT);
+		super("No reader type with id %s has been registered with extension-point %s", remoteReaderId,
+				CorePlugin.READER_TYPE_POINT);
 	}
 }
-

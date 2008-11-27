@@ -93,41 +93,51 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	private final String m_digestAlgorithm;
 
 	private final VersionConverterDesc m_versionConverter;
-	
+
 	private final SearchPath m_searchPath;
 
 	private final URIMatcher m_uriMatcher;
 
 	private final Filter m_resolutionFilter;
 
-	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri, Filter resolutionFilter)
-	{
-		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, resolutionFilter, false, false, null, null);
-	}
-
 	/**
 	 * Creates a new fully initialized Provider
-	 * @param searchPath The search path that this provider belongs to.
-	 * @param remoteReaderType The reader type used by the provider
-	 * @param componentTypeIDs An array of component types supported by this provider
-	 * @param versionConverterDesc The description of the version converter or <code>null</code> if not applicable.
-	 * @param uri The URI used by the reader type.
-	 * @param digest The digest URI or <code>null</code> if not applicable
-	 * @param digestAlgorithm The digest algorithm or <code>null</code> if not applicable
-	 * @param space The naming authority
-	 * @param mutable <code>true</code> if this provider delivers source from an SCM with read/write access. Should be false if not.
-	 * @param source <code>true</code> if this provider delivers source.
-	 * @param uriMatcher The URI matcher for the provider or <code>null</code> if not applicable.
-	 * @param documentation Documentation in xhtml format.
+	 * 
+	 * @param searchPath
+	 *            The search path that this provider belongs to.
+	 * @param remoteReaderType
+	 *            The reader type used by the provider
+	 * @param componentTypeIDs
+	 *            An array of component types supported by this provider
+	 * @param versionConverterDesc
+	 *            The description of the version converter or <code>null</code> if not applicable.
+	 * @param uri
+	 *            The URI used by the reader type.
+	 * @param digest
+	 *            The digest URI or <code>null</code> if not applicable
+	 * @param digestAlgorithm
+	 *            The digest algorithm or <code>null</code> if not applicable
+	 * @param space
+	 *            The naming authority
+	 * @param mutable
+	 *            <code>true</code> if this provider delivers source from an SCM with read/write access. Should be false
+	 *            if not.
+	 * @param source
+	 *            <code>true</code> if this provider delivers source.
+	 * @param uriMatcher
+	 *            The URI matcher for the provider or <code>null</code> if not applicable.
+	 * @param documentation
+	 *            Documentation in xhtml format.
 	 */
 	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
-		VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm, Filter resolutionFilter, boolean mutable, boolean source,
-		URIMatcher uriMatcher,
-		Documentation documentation)
+			VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm,
+			Filter resolutionFilter, boolean mutable, boolean source, URIMatcher uriMatcher, Documentation documentation)
 	{
 		m_searchPath = searchPath;
 		m_readerTypeId = remoteReaderType;
-		m_componentTypeIDs = componentTypeIDs == null ? Trivial.EMPTY_STRING_ARRAY : componentTypeIDs;
+		m_componentTypeIDs = componentTypeIDs == null
+				? Trivial.EMPTY_STRING_ARRAY
+				: componentTypeIDs;
 		m_versionConverter = versionConverterDesc;
 		m_uri = uri;
 		m_digest = digest;
@@ -139,24 +149,61 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		m_documentation = documentation;
 	}
 
+	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri, Filter resolutionFilter)
+	{
+		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, resolutionFilter, false,
+				false, null, null);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
+		if(m_componentTypeIDs.length > 0)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ","));
+		if(m_resolutionFilter != null)
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());
+		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
+		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
+	}
+
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
 	{
 		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
 	}
 
-	public IConnectContext getConnectContext()
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
-		return null;
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+		m_uri.toSax(handler, namespace, prefix, TAG_URI);
+
+		if(m_digest != null)
+		{
+			AttributesImpl attrs = new AttributesImpl();
+			Utils.addAttribute(attrs, Format.ATTR_FORMAT, m_digest.getFormat());
+			Utils.addAttribute(attrs, ATTR_ALGORITHM, m_digestAlgorithm);
+			String qName = Utils.makeQualifiedName(prefix, TAG_DIGEST);
+			handler.startElement(namespace, TAG_DIGEST, qName, attrs);
+			handler.endElement(namespace, TAG_DIGEST, qName);
+		}
+
+		if(m_versionConverter != null)
+			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
+		if(m_uriMatcher != null)
+			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
 	}
 
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		String readerType = getReaderTypeId();
 		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 		if(score == ProviderScore.REJECTED)
 		{
-			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(), "Score is below threshold");
+			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
+					getURI(), "Score is below threshold");
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
 		}
@@ -170,7 +217,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		{
 			ComponentRequest request = query.getComponentRequest();
 			String componentTypeID = request.getComponentTypeID();
-	
+
 			// The component request is equipped with a component type. It must
 			// match the types that this provider provides.
 			//
@@ -198,14 +245,16 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 					//
 					if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 					{
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
-							String.format("Components of type %s are not supported", componentTypeID));
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
+								readerType, getURI(), String.format("Components of type %s are not supported",
+										componentTypeID));
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
+								.toString(), null));
 					}
 					return null;
 				}
 			}
-		
+
 			VersionMatch candidate = null;
 			IComponentType ctypeUsed = null;
 			CoreException problem = null;
@@ -215,7 +264,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 				{
 					try
 					{
-						versionFinder = getReaderType().getVersionFinder(this, ctype, query, MonitorUtils.subMonitor(monitor, 20));
+						versionFinder = getReaderType().getVersionFinder(this, ctype, query,
+								MonitorUtils.subMonitor(monitor, 20));
 						candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
 						if(candidate == null)
 							continue;
@@ -235,9 +285,12 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 			if(candidate == null)
 			{
-				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
-						"No component match was found");
-				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem == null ? null : BuckminsterException.unwind(problem)));
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
+						getURI(), "No component match was found");
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(),
+						problem == null
+								? null
+								: BuckminsterException.unwind(problem)));
 				return null;
 			}
 			query.logDecision(ResolverDecisionType.MATCH_FOUND, candidate);
@@ -248,7 +301,12 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			if(versionFinder != null)
 				versionFinder.close();
 			monitor.done();
-		}			
+		}
+	}
+
+	public final String[] getComponentTypeIDs()
+	{
+		return m_componentTypeIDs;
 	}
 
 	public final IComponentType[] getComponentTypes() throws CoreException
@@ -261,9 +319,9 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return ctypes;
 	}
 
-	public final String[] getComponentTypeIDs()
+	public IConnectContext getConnectContext()
 	{
-		return m_componentTypeIDs;
+		return null;
 	}
 
 	public String getDefaultTag()
@@ -271,9 +329,43 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return TAG;
 	}
 
+	/**
+	 * @return Returns the Digest URI.
+	 */
+	public final String getDigest(Map<String, String> properties)
+	{
+		return m_digest == null
+				? null
+				: m_digest.getValue(getProperties(properties));
+	}
+
+	public final String getDigestAlgorithm()
+	{
+		return m_digestAlgorithm;
+	}
+
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_RMAP_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_RMAP_PREFIX;
+	}
+
+	public Map<String, String> getProperties(Map<String, String> properties)
+	{
+		if(m_searchPath != null)
+			properties = m_searchPath.getResourceMap().getProperties(properties);
+		return properties;
 	}
 
 	public final IReaderType getReaderType() throws CoreException
@@ -297,21 +389,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	}
 
 	/**
-	 * @return Returns the Digest URI.
-	 */
-	public final String getDigest(Map<String, String> properties)
-	{
-		return m_digest == null ? null : m_digest.getValue(getProperties(properties));
-	}
-
-	public final String getDigestAlgorithm()
-	{
-		return m_digestAlgorithm;
-	}
-
-	/**
-	 * @return Returns the possibly parameterized <code>Format</code> instance that represents
-	 * File or Repository URI.
+	 * @return Returns the possibly parameterized <code>Format</code> instance that represents File or Repository URI.
 	 */
 	public final Format getURI()
 	{
@@ -326,13 +404,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return m_uri.getValue(getProperties(properties));
 	}
 
-	public Map<String,String> getProperties(Map<String,String> properties)
-	{
-		if(m_searchPath != null)
-			properties = m_searchPath.getResourceMap().getProperties(properties);
-		return properties;
-	}
-
 	public URIMatcher getURIMatcher()
 	{
 		return m_uriMatcher;
@@ -341,7 +412,9 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	public IVersionConverter getVersionConverter() throws CoreException
 	{
 		VersionConverterDesc vcd = getVersionConverterDesc();
-		return vcd == null ? null : vcd.getVersionConverter();
+		return vcd == null
+				? null
+				: vcd.getVersionConverter();
 	}
 
 	public final VersionConverterDesc getVersionConverterDesc()
@@ -398,52 +471,5 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			handler.endPrefixMapping(pfx);
 
 		handler.endDocument();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
-		if(m_componentTypeIDs.length > 0)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ","));
-		if(m_resolutionFilter != null)
-			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());			
-		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
-		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-		m_uri.toSax(handler, namespace, prefix, TAG_URI);
-
-		if(m_digest != null)
-		{
-			AttributesImpl attrs = new AttributesImpl();
-			Utils.addAttribute(attrs, Format.ATTR_FORMAT, m_digest.getFormat());
-			Utils.addAttribute(attrs, ATTR_ALGORITHM, m_digestAlgorithm);
-			String qName = Utils.makeQualifiedName(prefix, TAG_DIGEST);
-			handler.startElement(namespace, TAG_DIGEST, qName, attrs);
-			handler.endElement(namespace, TAG_DIGEST, qName);
-		}
-
-		if(m_versionConverter != null)
-			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
-		if(m_uriMatcher != null)
-			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
-	}
-
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return XMLConstants.BM_RMAP_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return XMLConstants.BM_RMAP_PREFIX;
 	}
 }

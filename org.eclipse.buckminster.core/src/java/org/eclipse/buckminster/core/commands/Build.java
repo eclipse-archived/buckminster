@@ -37,6 +37,43 @@ public class Build extends WorkspaceCommand
 	//
 	private boolean m_clean = false;
 
+	private String formatMarkerMessage(String type, IMarker problem)
+	{
+		StringBuilder bld = new StringBuilder();
+		bld.append(type);
+		bld.append(": file ");
+		bld.append(problem.getResource().getLocation().toOSString());
+		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
+		if(line > 0)
+		{
+			bld.append(", line ");
+			bld.append(line);
+		}
+		bld.append(": ");
+		bld.append(problem.getAttribute(IMarker.MESSAGE, ""));
+		return bld.toString();
+	}
+
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
+	{
+		appendHere.add(s_cleanDescriptor);
+	}
+
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(s_cleanDescriptor))
+			m_clean = true;
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		if(unparsed.length > 0)
+			throw new UsageException("Too many arguments");
+	}
+
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
@@ -46,7 +83,9 @@ public class Build extends WorkspaceCommand
 
 		try
 		{
-			monitor.beginTask(null, projs.length * (m_clean ? 8 : 6));
+			monitor.beginTask(null, projs.length * (m_clean
+					? 8
+					: 6));
 
 			// Ensure that the workspace is in sync
 			//
@@ -99,7 +138,7 @@ public class Build extends WorkspaceCommand
 			if(top == 0)
 				return 0;
 
-			Map<Long,IMarker> problems = new TreeMap<Long, IMarker>();
+			Map<Long, IMarker> problems = new TreeMap<Long, IMarker>();
 			while(--top >= 0)
 			{
 				IMarker marker = markers[top];
@@ -128,44 +167,6 @@ public class Build extends WorkspaceCommand
 		{
 			monitor.done();
 		}
-	}
-
-	private String formatMarkerMessage(String type, IMarker problem)
-	{
-		StringBuilder bld = new StringBuilder();
-		bld.append(type);
-		bld.append(": file ");
-		bld.append(problem.getResource().getLocation().toOSString());
-		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
-		if(line > 0)
-		{
-			bld.append(", line ");
-			bld.append(line);
-		}
-		bld.append(": ");
-		bld.append(problem.getAttribute(IMarker.MESSAGE, ""));
-		return bld.toString();
-	}
-
-
-	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
-		appendHere.add(s_cleanDescriptor);
-	}
-
-    @Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(s_cleanDescriptor))
-			m_clean = true;
-	}
-
-    @Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length > 0)
-			throw new UsageException("Too many arguments");
 	}
 
 }

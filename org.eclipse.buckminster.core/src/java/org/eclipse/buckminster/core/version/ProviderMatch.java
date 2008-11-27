@@ -25,21 +25,28 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
- * A <code>VersionSelectorMatch</code> is the result of a comparison between a
- * desired version and an existing version using a specific {@link MatchRule}.
- * The rule denoted in a <code>VersionSelectorMatch</code> is often tighter
- * then the rule expressed as a rule when the match was performed.
+ * A <code>VersionSelectorMatch</code> is the result of a comparison between a desired version and an existing version
+ * using a specific {@link MatchRule}. The rule denoted in a <code>VersionSelectorMatch</code> is often tighter then the
+ * rule expressed as a rule when the match was performed.
+ * 
  * @author Thomas Hallgren
  */
 public final class ProviderMatch implements Comparable<ProviderMatch>
 {
 	private IComponentType m_componentType;
+
 	private final Provider m_originalProvider;
+
 	private Provider m_provider;
+
 	private final ProviderScore m_providerScore;
+
 	private final NodeQuery m_query;
+
 	private VersionMatch m_versionMatch;
-	private Map<String,String> m_matcherMap;
+
+	private Map<String, String> m_matcherMap;
+
 	private String m_repositoryURI;
 
 	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, NodeQuery query)
@@ -47,32 +54,38 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		this(provider, componentType, versionMatch, ProviderScore.PREFERRED, query);
 	}
 
-	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, ProviderScore providerScore, NodeQuery query)
+	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch,
+			ProviderScore providerScore, NodeQuery query)
 	{
 		m_provider = provider;
 		m_originalProvider = provider;
 		m_componentType = componentType;
-		m_versionMatch = versionMatch == null ? VersionMatch.DEFAULT : versionMatch;
+		m_versionMatch = versionMatch == null
+				? VersionMatch.DEFAULT
+				: versionMatch;
 		m_providerScore = providerScore;
 		m_query = query;
 	}
 
 	/**
 	 * Compare this match to another match.
-	 * @param o The match to compare to.
-	 * @return 1 if this instance is considered a better match than
-	 *         <code>o</code>, -1 if it's the opposite and 0 if the matches
-	 *         are considered equal.
+	 * 
+	 * @param o
+	 *            The match to compare to.
+	 * @return 1 if this instance is considered a better match than <code>o</code>, -1 if it's the opposite and 0 if the
+	 *         matches are considered equal.
 	 */
 	public int compareTo(ProviderMatch o)
 	{
 		int versionCompare = m_query.compare(m_versionMatch, o.getVersionMatch());
-		return versionCompare == 0 ? m_providerScore.compareTo(o.getProviderScore()) : versionCompare;
+		return versionCompare == 0
+				? m_providerScore.compareTo(o.getProviderScore())
+				: versionCompare;
 	}
 
 	/**
-	 * Create a CSPEC builder that is initialized with the name, type, and
-	 * version from this match.
+	 * Create a CSPEC builder that is initialized with the name, type, and version from this match.
+	 * 
 	 * @return The initialized builder
 	 */
 	public CSpecBuilder createCSpec()
@@ -103,7 +116,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return cctx;
 	}
 
-	public Map<String,String> getMatcherMap()
+	public Map<String, String> getMatcherMap()
 	{
 		return m_matcherMap;
 	}
@@ -120,6 +133,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 
 	/**
 	 * Returns the provider that matched the request.
+	 * 
 	 * @return the provider that matched
 	 */
 	public Provider getProvider()
@@ -128,9 +142,9 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	}
 
 	/**
-	 * Get the provider score for this match. The provider score is determined
-	 * comparing the MutableLevel and SourceLevel with the corresponding
-	 * settings of a provider.
+	 * Get the provider score for this match. The provider score is determined comparing the MutableLevel and
+	 * SourceLevel with the corresponding settings of a provider.
+	 * 
 	 * @return the provider score.
 	 */
 	public final ProviderScore getProviderScore()
@@ -140,6 +154,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 
 	/**
 	 * Returns the query used when the math was created.
+	 * 
 	 * @return the query that was used.
 	 */
 	public NodeQuery getQuery()
@@ -149,6 +164,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 
 	/**
 	 * Returns a reader initialized to materialize based on this match
+	 * 
 	 * @return
 	 * @throws CoreException
 	 */
@@ -157,8 +173,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return getReaderType().getReader(this, monitor);
 	}
 
-	public IReaderType getReaderType()
-	throws CoreException
+	public IReaderType getReaderType() throws CoreException
 	{
 		return m_provider.getReaderType();
 	}
@@ -188,14 +203,14 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return bld.toString();
 	}
 
-	public IVersionConverter getVersionConverter()
-	throws CoreException
+	public IVersionConverter getVersionConverter() throws CoreException
 	{
 		return m_provider.getVersionConverter();
 	}
 
 	/**
 	 * Returns the version that matched the requirement.
+	 * 
 	 * @return the version that matched
 	 */
 	public VersionMatch getVersionMatch()
@@ -208,7 +223,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		m_componentType = componentType;
 	}
 
-	public void setMatcherMap(Map<String,String> matcherMap)
+	public void setMatcherMap(Map<String, String> matcherMap)
 	{
 		m_matcherMap = matcherMap;
 	}
@@ -230,8 +245,8 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	}
 
 	/**
-	 * Returns a string representation of the match. Only intended
-	 * for debug purposes
+	 * Returns a string representation of the match. Only intended for debug purposes
+	 * 
 	 * @return A string representation of the match
 	 */
 	@Override

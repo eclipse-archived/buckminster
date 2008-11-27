@@ -18,7 +18,7 @@ public class ProjectNameMismatchException extends LocalizedException
 
 	public ProjectNameMismatchException(String wantedName, String existingName)
 	{
-		super("ProjectBinding name conflict. Bind information indicates %s for project named %s", wantedName, existingName);
+		super("ProjectBinding name conflict. Bind information indicates %s for project named %s", wantedName,
+				existingName);
 	}
 }
-

@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -32,26 +31,26 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 	private Provider m_provider;
 
 	public ProviderParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
-		super(parserExtensions, new String[]
-		{
-			XMLConstants.XHTML_NS,
-			XMLConstants.XML_NS,
-			XMLConstants.BM_COMMON_NS,
-			XMLConstants.BM_RMAP_NS
-		}, new String[]
-		{
-			XMLConstants.XHTML_RESOURCE,
-			XMLConstants.XML_RESOURCE,
-			XMLConstants.BM_COMMON_RESOURCE,
-			XMLConstants.BM_RMAP_RESOURCE
-		}, validating);
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
+				XMLConstants.BM_RMAP_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
+				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_RMAP_RESOURCE }, validating);
+	}
+
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_provider = ((ProviderHandler)child).getProvider();
+	}
+
+	public Provider parse(String systemID, InputStream input) throws CoreException
+	{
+		parseInput(systemID, input);
+		return m_provider;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs)
-	throws SAXException
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
 		if(ProviderHandler.TAG.equals(localName))
 		{
@@ -62,16 +61,4 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public Provider parse(String systemID, InputStream input) throws CoreException
-	{
-		parseInput(systemID, input);
-		return m_provider;
-	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_provider = ((ProviderHandler)child).getProvider();
-	}
 }
-

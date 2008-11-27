@@ -17,16 +17,15 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
- * An instance of this class will produce the resolved value of the constant
- * that it holds on to.
+ * An instance of this class will produce the resolved value of the constant that it holds on to.
  * 
  * @author Thomas Hallgren
  */
 public class Constant extends ValueHolder
 {
 	public static final String TAG = "constant";
+
 	public static final String ATTR_VALUE = "value";
 
 	private final String m_value;
@@ -34,31 +33,6 @@ public class Constant extends ValueHolder
 	public Constant(String value)
 	{
 		m_value = value;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && Trivial.equalsAllowNull(m_value, ((Constant)o).m_value);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + (m_value == null ? 0 : m_value.hashCode());
-		return hc;
-	}
-
-	@Override
-	public String toString()
-	{
-		return m_value;
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
 	}
 
 	@Override
@@ -72,5 +46,31 @@ public class Constant extends ValueHolder
 	{
 		return ExpandingProperties.expand(properties, m_value, recursionGuard + 1);
 	}
-}
 
+	@Override
+	public boolean equals(Object o)
+	{
+		return super.equals(o) && Trivial.equalsAllowNull(m_value, ((Constant)o).m_value);
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + (m_value == null
+				? 0
+				: m_value.hashCode());
+		return hc;
+	}
+
+	@Override
+	public String toString()
+	{
+		return m_value;
+	}
+}

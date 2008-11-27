@@ -38,36 +38,10 @@ import org.eclipse.update.core.VersionedIdentifier;
  */
 public class SiteFeatureReaderType extends CatalogReaderType
 {
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		return null;
-	}
-
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
-		checkComponentType(providerMatch.getProvider());
-		MonitorUtils.complete(monitor);
-		return new SiteFeatureReader(this, providerMatch);
-	}
-
-	@Override
-	public String getRecommendedMaterializer()
-	{
-		return IMaterializer.TARGET_PLATFORM;
-	}
-
-	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
-	throws CoreException
-	{
-		checkComponentType(provider);
-		return new SiteFeatureFinder(provider, ctype, nodeQuery, monitor);
-	}
-
 	/**
-	 * Check that the component type used by the provider is of the type
-	 * {@link IComponentType#ECLIPSE_SITE_FEATURE},
+	 * Check that the component type used by the provider is of the type {@link IComponentType#ECLIPSE_SITE_FEATURE},
 	 * throw an exception if not.
+	 * 
 	 * @param provider
 	 * @throws CoreException
 	 */
@@ -94,33 +68,38 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		}
 		catch(CoreException e)
 		{
-			CoreException ew = new CoreException(BuckminsterException.createStatus(e, "Unable to obtain site from: %s", siteURLStr));
+			CoreException ew = new CoreException(BuckminsterException.createStatus(e, "Unable to obtain site from: %s",
+					siteURLStr));
 			ew.initCause(e);
 			throw ew;
 		}
 	}
 
-	public static ISiteFeatureReference getSiteFeatureReference(ISite site, ComponentIdentifier ci) throws CoreException
-	{
-		for(ISiteFeatureReference ref : site.getRawFeatureReferences())
-			if(isEqual(ci, ref.getVersionedIdentifier()))
-				return ref;
-		return null;
-	}
-
-	public static IFeature getSiteFeature(String siteURLStr, ComponentIdentifier ci, IProgressMonitor monitor) throws CoreException
+	public static IFeature getSiteFeature(String siteURLStr, ComponentIdentifier ci, IProgressMonitor monitor)
+			throws CoreException
 	{
 		monitor.beginTask(null, 200);
 		try
 		{
 			ISite site = getSite(siteURLStr, MonitorUtils.subMonitor(monitor, 100));
 			ISiteFeatureReference ref = getSiteFeatureReference(site, ci);
-			return (ref == null) ? null : ref.getFeature(MonitorUtils.subMonitor(monitor, 100));
+			return (ref == null)
+					? null
+					: ref.getFeature(MonitorUtils.subMonitor(monitor, 100));
 		}
 		finally
 		{
 			monitor.done();
-		}		
+		}
+	}
+
+	public static ISiteFeatureReference getSiteFeatureReference(ISite site, ComponentIdentifier ci)
+			throws CoreException
+	{
+		for(ISiteFeatureReference ref : site.getRawFeatureReferences())
+			if(isEqual(ci, ref.getVersionedIdentifier()))
+				return ref;
+		return null;
 	}
 
 	private static boolean isEqual(ComponentIdentifier ci, VersionedIdentifier vi)
@@ -131,5 +110,31 @@ public class SiteFeatureReaderType extends CatalogReaderType
 			return (version == null || version.equals(VersionFactory.OSGiType.coerce(vi.getVersion())));
 		}
 		return false;
+	}
+
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
+
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
+	{
+		checkComponentType(providerMatch.getProvider());
+		MonitorUtils.complete(monitor);
+		return new SiteFeatureReader(this, providerMatch);
+	}
+
+	@Override
+	public String getRecommendedMaterializer()
+	{
+		return IMaterializer.TARGET_PLATFORM;
+	}
+
+	@Override
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
+	{
+		checkComponentType(provider);
+		return new SiteFeatureFinder(provider, ctype, nodeQuery, monitor);
 	}
 }

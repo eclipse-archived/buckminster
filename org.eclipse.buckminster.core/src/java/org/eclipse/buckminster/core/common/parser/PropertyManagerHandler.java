@@ -19,11 +19,12 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public abstract class PropertyManagerHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
 	private PropertyConstantHandler m_propertyConstantHandler;
+
 	private PropertyElementHandler m_propertyElementHandler;
+
 	private final String m_tag;
 
 	public PropertyManagerHandler(AbstractHandler parent, String tag)
@@ -32,10 +33,10 @@ public abstract class PropertyManagerHandler extends ExtensionAwareHandler imple
 		m_tag = tag;
 	}
 
-	@Override
-	public String getTAG()
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		return m_tag;
+		if(child instanceof PropertyHandler)
+			((PropertyHandler)child).addYourself(getProperties());
 	}
 
 	@Override
@@ -59,11 +60,11 @@ public abstract class PropertyManagerHandler extends ExtensionAwareHandler imple
 		return ch;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof PropertyHandler)
-			((PropertyHandler)child).addYourself(getProperties());
-	}
+	public abstract Map<String, String> getProperties();
 
-	public abstract Map<String,String> getProperties();
+	@Override
+	public String getTAG()
+	{
+		return m_tag;
+	}
 }

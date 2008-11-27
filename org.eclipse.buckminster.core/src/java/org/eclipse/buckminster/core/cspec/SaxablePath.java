@@ -15,23 +15,25 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class SaxablePath extends Path implements ISaxableElement
 {
 	public static final String ATTR_PATH = "path";
+
 	public static final String TAG = "path";
+
+	public static SaxablePath coerce(IPath path)
+	{
+		return path instanceof SaxablePath
+				? (SaxablePath)path
+				: new SaxablePath(path.toOSString());
+	}
 
 	public static SaxablePath fromPortableString(String pathString)
 	{
 		return new SaxablePath(Path.fromPortableString(pathString).toOSString());
-	}
-
-	public static SaxablePath coerce(IPath path)
-	{
-		return path instanceof SaxablePath ? (SaxablePath)path : new SaxablePath(path.toOSString());
 	}
 
 	private SaxablePath(String fullPath)

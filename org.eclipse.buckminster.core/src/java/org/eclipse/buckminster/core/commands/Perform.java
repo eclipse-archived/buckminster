@@ -40,7 +40,8 @@ import org.eclipse.core.runtime.IStatus;
 
 public class Perform extends WorkspaceCommand
 {
-	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", OptionValueType.REQUIRED);
+	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define",
+			OptionValueType.REQUIRED);
 
 	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$");
 
@@ -48,12 +49,14 @@ public class Perform extends WorkspaceCommand
 
 	static private final OptionDescriptor QUIET_DESCRIPTOR = new OptionDescriptor('Q', "quiet", OptionValueType.NONE);
 
-	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings", OptionValueType.REQUIRED);
+	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings",
+			OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", OptionValueType.REQUIRED);
-	
+	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties",
+			OptionValueType.REQUIRED);
+
 	private final List<Attribute> m_attributes = new ArrayList<Attribute>();
-	
+
 	private boolean m_forced = false;
 
 	private int m_maxWarnings = -1;
@@ -67,7 +70,7 @@ public class Perform extends WorkspaceCommand
 		m_attributes.add(attribute);
 	}
 
-	public void addProperties(Map<String,String> properties)
+	public void addProperties(Map<String, String> properties)
 	{
 		if(m_props == null)
 			m_props = new HashMap<String, String>(properties);
@@ -82,17 +85,24 @@ public class Perform extends WorkspaceCommand
 		m_props.put(key, value);
 	}
 
-	public boolean isQuiet()
+	private String formatMarkerMessage(String type, IMarker problem)
 	{
-		return m_quiet;
+		StringBuilder bld = new StringBuilder();
+		bld.append(type);
+		bld.append(": file ");
+		bld.append(problem.getResource().getLocation().toOSString());
+		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
+		if(line > 0)
+		{
+			bld.append(", line ");
+			bld.append(line);
+		}
+		bld.append(": ");
+		bld.append(problem.getAttribute(IMarker.MESSAGE, ""));
+		return bld.toString();
 	}
 
-	public void setQuiet(boolean quiet)
-	{
-		m_quiet = quiet;
-	}
-
-    @Override
+	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(DEFINE_DESCRIPTOR);
@@ -102,7 +112,7 @@ public class Perform extends WorkspaceCommand
 		appendHere.add(QUIET_DESCRIPTOR);
 	}
 
-    @Override
+	@Override
 	protected void handleOption(Option option) throws Exception
 	{
 		if(option.is(DEFINE_DESCRIPTOR))
@@ -112,7 +122,9 @@ public class Perform extends WorkspaceCommand
 			if(!m.matches())
 				throw new IllegalArgumentException("Not a key[=value] string : " + v);
 			String key = m.group(1);
-			String value = m.group(2) == null ? "" : m.group(2);
+			String value = m.group(2) == null
+					? ""
+					: m.group(2);
 			addProperty(key, value);
 		}
 		if(option.is(PROPERTIES_DESCRIPTOR))
@@ -145,26 +157,26 @@ public class Perform extends WorkspaceCommand
 	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
-    	for(String s : unparsed)
-    	{
-    		String component = null;
-    		String attribute = null;
-    		int splitIdx = s.lastIndexOf('#');
-    		if(splitIdx > 0)
-    		{
-    			attribute = s.substring(splitIdx + 1).trim();
-    			if(attribute.length() == 0)
-    				attribute = null;
-    			component = s.substring(0, splitIdx).trim();
-    			if(component.length() == 0)
-    				component = null;
-    		}
-    		if(component == null || attribute == null)
-    			throw new UsageException("Attribute names must be in the form <component name>#<attribute name>");
+		for(String s : unparsed)
+		{
+			String component = null;
+			String attribute = null;
+			int splitIdx = s.lastIndexOf('#');
+			if(splitIdx > 0)
+			{
+				attribute = s.substring(splitIdx + 1).trim();
+				if(attribute.length() == 0)
+					attribute = null;
+				component = s.substring(0, splitIdx).trim();
+				if(component.length() == 0)
+					component = null;
+			}
+			if(component == null || attribute == null)
+				throw new UsageException("Attribute names must be in the form <component name>#<attribute name>");
 
-    		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
-    		addAttribute(cspec.getRequiredAttribute(attribute));
-    	}
+			CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
+			addAttribute(cspec.getRequiredAttribute(attribute));
+		}
 	}
 
 	@Override
@@ -181,7 +193,8 @@ public class Perform extends WorkspaceCommand
 
 		// Get all problem markers. Sort them by timestamp
 		//
-		IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = ResourcesPlugin.getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true,
+				IResource.DEPTH_INFINITE);
 		if(markers.length == 0)
 			return 0;
 
@@ -193,7 +206,7 @@ public class Perform extends WorkspaceCommand
 			return 0;
 		}
 
-		Map<Long,IMarker> problems = new TreeMap<Long, IMarker>();
+		Map<Long, IMarker> problems = new TreeMap<Long, IMarker>();
 		for(IMarker problem : markers)
 			problems.put(Long.valueOf(problem.getCreationTime()), problem);
 
@@ -248,20 +261,13 @@ public class Perform extends WorkspaceCommand
 		return exitValue;
 	}
 
-	private String formatMarkerMessage(String type, IMarker problem)
+	public boolean isQuiet()
 	{
-		StringBuilder bld = new StringBuilder();
-		bld.append(type);
-		bld.append(": file ");
-		bld.append(problem.getResource().getLocation().toOSString());
-		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
-		if(line > 0)
-		{
-			bld.append(", line ");
-			bld.append(line);
-		}
-		bld.append(": ");
-		bld.append(problem.getAttribute(IMarker.MESSAGE, ""));
-		return bld.toString();
+		return m_quiet;
+	}
+
+	public void setQuiet(boolean quiet)
+	{
+		m_quiet = quiet;
 	}
 }

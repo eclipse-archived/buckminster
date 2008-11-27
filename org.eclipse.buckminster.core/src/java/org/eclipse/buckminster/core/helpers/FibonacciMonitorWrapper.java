@@ -18,9 +18,12 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 public class FibonacciMonitorWrapper extends ProgressMonitorWrapper
 {
 	private int m_multiplier = 0x10000;
+
 	private double m_totalWork = 0;
+
 	private double m_worked = 0;
-	private static final double s_goldenRatio = 89.0/55.0;
+
+	private static final double s_goldenRatio = 89.0 / 55.0;
 
 	public FibonacciMonitorWrapper(IProgressMonitor monitor)
 	{
@@ -39,7 +42,7 @@ public class FibonacciMonitorWrapper extends ProgressMonitorWrapper
 	public void internalWorked(double work)
 	{
 		double attempt = work * m_multiplier;
-		while(m_worked + attempt > m_totalWork / s_goldenRatio &&  m_multiplier > 1)
+		while(m_worked + attempt > m_totalWork / s_goldenRatio && m_multiplier > 1)
 		{
 			m_multiplier >>= 1;
 			m_totalWork -= m_worked;
@@ -60,6 +63,6 @@ public class FibonacciMonitorWrapper extends ProgressMonitorWrapper
 	@Override
 	public void worked(int work)
 	{
-        this.internalWorked(work);
+		this.internalWorked(work);
 	}
 }

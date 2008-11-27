@@ -18,7 +18,6 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public abstract class ValueFilterHandler extends ValueHandler implements ChildPoppedListener
 {
 	public ValueFilterHandler(AbstractHandler parent)
@@ -26,9 +25,13 @@ public abstract class ValueFilterHandler extends ValueHandler implements ChildPo
 		super(parent);
 	}
 
+	public void childPopped(ChildHandler child)
+	{
+		((ValueHolderFilter)this.getValueHolder()).addValueHolder(((ValueHandler)child).getValueHolder());
+	}
+
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		// We have to create new instances on the fly here to avoid endless
 		// recursion.
@@ -52,10 +55,4 @@ public abstract class ValueFilterHandler extends ValueHandler implements ChildPo
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
-
-	public void childPopped(ChildHandler child)
-	{
-		((ValueHolderFilter)this.getValueHolder()).addValueHolder(((ValueHandler)child).getValueHolder());
-	}
 }
-

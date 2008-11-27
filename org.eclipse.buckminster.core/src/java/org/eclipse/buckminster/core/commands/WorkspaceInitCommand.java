@@ -35,12 +35,11 @@ import org.eclipse.core.runtime.Platform;
  */
 public abstract class WorkspaceInitCommand extends WorkspaceCommand
 {
-	static final OptionDescriptor CONTINUE_ON_ERROR = new OptionDescriptor('C', "continueonerror",
-		OptionValueType.NONE);
-	static final OptionDescriptor MATERIALIZER = new OptionDescriptor('M', "materializer",
-			OptionValueType.REQUIRED);
-	static final OptionDescriptor TEMPLATE = new OptionDescriptor('T', "template",
-		OptionValueType.REQUIRED);
+	static final OptionDescriptor CONTINUE_ON_ERROR = new OptionDescriptor('C', "continueonerror", OptionValueType.NONE);
+
+	static final OptionDescriptor MATERIALIZER = new OptionDescriptor('M', "materializer", OptionValueType.REQUIRED);
+
+	static final OptionDescriptor TEMPLATE = new OptionDescriptor('T', "template", OptionValueType.REQUIRED);
 
 	private static boolean isFolderEmpty(File folder)
 	{
@@ -60,21 +59,6 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	private String m_materializer;
 
 	private URL m_template;
-
-	public void setContinueOnError(boolean flag)
-	{
-		m_continueOnError = flag;
-	}
-
-	public void setMaterializer(String materializer)
-	{
-		m_materializer = materializer;
-	}
-
-	public void setTemplate(URL template)
-	{
-		m_template = template;
-	}
 
 	protected String getMaterializer()
 	{
@@ -100,12 +84,19 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 			setMaterializer(option.getValue());
 	}
 
+	@Override
+	protected void initWorkspace(IProgressMonitor monitor) throws Exception
+	{
+		if(m_template != null)
+			initWorkspaceFromTemplate();
+		super.initWorkspace(monitor);
+	}
+
 	/**
-	 * Initialize the current workspace from a template workspace. This
-	 * method must be called very early in the execution process. The
-	 * current workspace must be empty. It may well exist but it cannot
-	 * contain any files, just empty folders.
-	 *
+	 * Initialize the current workspace from a template workspace. This method must be called very early in the
+	 * execution process. The current workspace must be empty. It may well exist but it cannot contain any files, just
+	 * empty folders.
+	 * 
 	 * @param template
 	 */
 	protected void initWorkspaceFromTemplate() throws Exception
@@ -139,14 +130,14 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 			{
 				fileTemplate = FileUtils.getFile(template);
 				if(fileTemplate == null)
-					throw new SimpleErrorExitException(
-						"Only zip and jar files allowed for remote workspace templates");
+					throw new SimpleErrorExitException("Only zip and jar files allowed for remote workspace templates");
 
 				if(!fileTemplate.isAbsolute())
 					fileTemplate = fileTemplate.getAbsoluteFile();
 
 				if(!fileTemplate.isDirectory())
-					throw new SimpleErrorExitException("Only folders, zip, and jar files can be uses as workspace template");
+					throw new SimpleErrorExitException(
+							"Only folders, zip, and jar files can be uses as workspace template");
 			}
 			FileUtils.deepCopyUnchecked(fileTemplate, wsRoot, nullMon);
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, nullMon);
@@ -160,14 +151,6 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	protected abstract int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception;
 
 	@Override
-	protected void initWorkspace(IProgressMonitor monitor) throws Exception
-	{
-		if(m_template != null)
-			initWorkspaceFromTemplate();
-		super.initWorkspace(monitor);
-	}
-
-	@Override
 	protected final int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		return internalRun(m_continueOnError, monitor);
@@ -176,5 +159,20 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	protected boolean isContinueOnError()
 	{
 		return m_continueOnError;
+	}
+
+	public void setContinueOnError(boolean flag)
+	{
+		m_continueOnError = flag;
+	}
+
+	public void setMaterializer(String materializer)
+	{
+		m_materializer = materializer;
+	}
+
+	public void setTemplate(URL template)
+	{
+		m_template = template;
 	}
 }

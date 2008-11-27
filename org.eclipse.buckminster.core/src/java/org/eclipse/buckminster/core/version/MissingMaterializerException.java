@@ -19,8 +19,7 @@ public class MissingMaterializerException extends LocalizedException
 
 	public MissingMaterializerException(String materializerId)
 	{
-		super("No materializer with id %s has been registered with extension-point %s",
-			materializerId, IMaterializer.MATERIALIZERS_POINT);
+		super("No materializer with id %s has been registered with extension-point %s", materializerId,
+				IMaterializer.MATERIALIZERS_POINT);
 	}
 }
-

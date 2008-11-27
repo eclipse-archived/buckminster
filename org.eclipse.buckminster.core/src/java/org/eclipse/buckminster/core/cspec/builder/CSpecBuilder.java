@@ -35,18 +35,28 @@ import org.osgi.framework.Filter;
  */
 public class CSpecBuilder implements ICSpecData
 {
-	private HashMap<String,AttributeBuilder> m_attributes;
+	private HashMap<String, AttributeBuilder> m_attributes;
+
 	private String m_componentType;
-	private HashMap<String,ComponentRequestBuilder> m_dependencies;
+
+	private HashMap<String, ComponentRequestBuilder> m_dependencies;
+
 	private Documentation m_documentation;
-	private HashMap<String,GeneratorBuilder> m_generators;
+
+	private HashMap<String, GeneratorBuilder> m_generators;
+
 	private String m_name;
+
 	private URL m_projectInfo;
+
 	private String m_shortDesc;
+
 	private IVersion m_version;
+
 	private Filter m_filter;
 
-	public ActionBuilder addAction(String actionName, boolean publ, String actorName, boolean always) throws AttributeAlreadyDefinedException
+	public ActionBuilder addAction(String actionName, boolean publ, String actorName, boolean always)
+			throws AttributeAlreadyDefinedException
 	{
 		ActionBuilder bld = createActionBuilder();
 		bld.setName(actionName);
@@ -57,7 +67,8 @@ public class CSpecBuilder implements ICSpecData
 		return bld;
 	}
 
-	public ArtifactBuilder addArtifact(String name, boolean publ, String type, IPath base) throws AttributeAlreadyDefinedException
+	public ArtifactBuilder addArtifact(String name, boolean publ, String type, IPath base)
+			throws AttributeAlreadyDefinedException
 	{
 		ArtifactBuilder bld = createArtifactBuilder();
 		bld.setName(name);
@@ -73,8 +84,7 @@ public class CSpecBuilder implements ICSpecData
 		String name = attribute.getName();
 		if(m_attributes == null)
 			m_attributes = new HashMap<String, AttributeBuilder>();
-		else
-		if(m_attributes.containsKey(name))
+		else if(m_attributes.containsKey(name))
 			throw new AttributeAlreadyDefinedException(m_name, name);
 		m_attributes.put(name, attribute.getAttributeBuilder(this));
 	}
@@ -83,9 +93,8 @@ public class CSpecBuilder implements ICSpecData
 	{
 		String name = dependency.getName();
 		if(m_dependencies == null)
-			m_dependencies = new HashMap<String,ComponentRequestBuilder>();
-		else
-		if(m_dependencies.containsKey(name))
+			m_dependencies = new HashMap<String, ComponentRequestBuilder>();
+		else if(m_dependencies.containsKey(name))
 			throw new DependencyAlreadyDefinedException(m_name, name);
 
 		ComponentRequestBuilder bld;
@@ -103,9 +112,8 @@ public class CSpecBuilder implements ICSpecData
 	{
 		String name = generator.getGenerates();
 		if(m_generators == null)
-			m_generators = new HashMap<String,GeneratorBuilder>();
-		else
-		if(m_generators.containsKey(name))
+			m_generators = new HashMap<String, GeneratorBuilder>();
+		else if(m_generators.containsKey(name))
 			throw new GeneratorAlreadyDefinedException(m_name, name);
 
 		GeneratorBuilder bld = createGeneratorBuilder();
@@ -181,43 +189,49 @@ public class CSpecBuilder implements ICSpecData
 		return new GroupBuilder(this);
 	}
 
+	public ActionBuilder getActionBuilder(String name)
+	{
+		AttributeBuilder attr = m_attributes.get(name);
+		return attr instanceof ActionBuilder
+				? (ActionBuilder)attr
+				: null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapterType)
 	{
 		if(CSpecBuilder.class.isAssignableFrom(adapterType))
 			return this;
-		
+
 		if(CSpec.class.isAssignableFrom(adapterType))
 			return createCSpec();
 
 		return Platform.getAdapterManager().getAdapter(this, adapterType);
 	}
 
-	public Map<String,AttributeBuilder> getAttributes()
-	{
-		return m_attributes;
-	}
-
-	public ActionBuilder getActionBuilder(String name)
-	{
-		AttributeBuilder attr = m_attributes.get(name);
-		return attr instanceof ActionBuilder ? (ActionBuilder)attr : null;
-	}
-
 	public ArtifactBuilder getArtifactBuilder(String name)
 	{
 		AttributeBuilder attr = m_attributes.get(name);
-		return attr instanceof ArtifactBuilder ? (ArtifactBuilder)attr : null;
+		return attr instanceof ArtifactBuilder
+				? (ArtifactBuilder)attr
+				: null;
 	}
 
 	public AttributeBuilder getAttribute(String name)
 	{
-		return m_attributes == null ? null : m_attributes.get(name);
+		return m_attributes == null
+				? null
+				: m_attributes.get(name);
+	}
+
+	public Map<String, AttributeBuilder> getAttributes()
+	{
+		return m_attributes;
 	}
 
 	public ComponentIdentifier getComponentIdentifier()
 	{
-		return new ComponentIdentifier(m_name, m_componentType, m_version);		
+		return new ComponentIdentifier(m_name, m_componentType, m_version);
 	}
 
 	public String getComponentTypeID()
@@ -225,19 +239,21 @@ public class CSpecBuilder implements ICSpecData
 		return m_componentType;
 	}
 
-	public Map<String,ComponentRequestBuilder> getDependencies()
+	public Map<String, ComponentRequestBuilder> getDependencies()
 	{
 		return m_dependencies;
 	}
 
 	public ComponentRequestBuilder getDependency(String dependencyName)
 	{
-		return m_dependencies == null ? null : m_dependencies.get(dependencyName);
+		return m_dependencies == null
+				? null
+				: m_dependencies.get(dependencyName);
 	}
 
-	public Map<String,GeneratorBuilder> getGenerators()
+	public Documentation getDocumentation()
 	{
-		return m_generators;
+		return m_documentation;
 	}
 
 	public Filter getFilter()
@@ -247,23 +263,32 @@ public class CSpecBuilder implements ICSpecData
 
 	public GeneratorBuilder getGenerator(String generatorName)
 	{
-		return m_generators == null ? null : m_generators.get(generatorName);
+		return m_generators == null
+				? null
+				: m_generators.get(generatorName);
 	}
 
-	public Documentation getDocumentation()
+	public Map<String, GeneratorBuilder> getGenerators()
 	{
-		return m_documentation;
+		return m_generators;
 	}
 
 	public GroupBuilder getGroup(String name)
 	{
 		AttributeBuilder attr = m_attributes.get(name);
-		return attr instanceof GroupBuilder ? (GroupBuilder)attr : null;
+		return attr instanceof GroupBuilder
+				? (GroupBuilder)attr
+				: null;
 	}
 
 	public String getName()
 	{
 		return m_name;
+	}
+
+	public URL getProjectInfo()
+	{
+		return m_projectInfo;
 	}
 
 	public ActionBuilder getRequiredAction(String name) throws MissingAttributeException
@@ -306,11 +331,6 @@ public class CSpecBuilder implements ICSpecData
 		throw new MissingAttributeException(m_name, name);
 	}
 
-	public URL getProjectInfo()
-	{
-		return m_projectInfo;
-	}
-
 	public String getShortDesc()
 	{
 		return m_shortDesc;
@@ -336,7 +356,7 @@ public class CSpecBuilder implements ICSpecData
 		m_documentation = cspec.getDocumentation();
 		m_shortDesc = cspec.getShortDesc();
 
-		Map<String,? extends IAttribute> attrs = cspec.getAttributes();
+		Map<String, ? extends IAttribute> attrs = cspec.getAttributes();
 		if(attrs.size() > 0)
 		{
 			m_attributes = new HashMap<String, AttributeBuilder>(attrs.size());
@@ -346,7 +366,7 @@ public class CSpecBuilder implements ICSpecData
 		else
 			m_attributes = null;
 
-		Map<String,? extends IComponentRequest> deps = cspec.getDependencies();
+		Map<String, ? extends IComponentRequest> deps = cspec.getDependencies();
 		if(deps.size() > 0)
 		{
 			m_dependencies = new HashMap<String, ComponentRequestBuilder>(deps.size());
@@ -360,7 +380,7 @@ public class CSpecBuilder implements ICSpecData
 		else
 			m_dependencies = null;
 
-		Map<String,? extends IGenerator> gens = cspec.getGenerators();
+		Map<String, ? extends IGenerator> gens = cspec.getGenerators();
 		if(gens.size() > 0)
 		{
 			m_generators = new HashMap<String, GeneratorBuilder>(gens.size());
@@ -452,4 +472,3 @@ public class CSpecBuilder implements ICSpecData
 		m_version = VersionFactory.createVersion(versionTypeId, versionString);
 	}
 }
-

@@ -58,21 +58,11 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 			m_versionMatch = new VersionMatch(null, null, -1, null, null);
 		}
 
-		public VersionMatch getBestVersion(IProgressMonitor monitor)
-		throws CoreException
+		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 		{
 			MonitorUtils.complete(monitor);
 			return m_versionMatch;
 		}
-	}
-
-	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
-	{
-	}
-
-	public String getRecommendedMaterializer()
-	{
-		return IMaterializer.WORKSPACE;
 	}
 
 	public static IReaderType getTypeForResource(IResource resource) throws CoreException
@@ -98,44 +88,19 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
-	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
+	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
 	{
-		return null;
 	}
 
-	public String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName)
-	throws CoreException
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
+			throws CoreException
 	{
 		throw new UnsupportedOperationException("ReaderType " + getId() + " cannot handle fetchFactory data");
 	}
 
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
 	{
 		return null;
-	}
-
-	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		return null;
-	}
-
-	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException
-	{
-		return -1;
-	}
-
-	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		return -1;
-	}
-
-	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		return null;
-	}
-
-	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor) throws CoreException
-	{
 	}
 
 	public VersionMatch getDefaultVersion() throws CoreException
@@ -153,19 +118,39 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return null;
 	}
 
-	public IReaderType getLocalReaderType(boolean destIsFile) throws CoreException
-	{
-		return CorePlugin.getDefault().getReaderType(destIsFile ? URL : URL_CATALOG);
-	}
-
-	public String getRemotePath(String repositoryLocation) throws CoreException
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
 		return null;
 	}
 
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-	throws CoreException
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
+			throws CoreException
 	{
+		return null;
+	}
+
+	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		return -1;
+	}
+
+	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
+			throws CoreException
+	{
+		return -1;
+	}
+
+	public IReaderType getLocalReaderType(boolean destIsFile) throws CoreException
+	{
+		return CorePlugin.getDefault().getReaderType(destIsFile
+				? URL
+				: URL_CATALOG);
+	}
+
+	public IComponentReader getReader(Provider provider, IComponentType ctype, NodeQuery query,
+			VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
+	{
+		return getReader(new ProviderMatch(provider, ctype, versionMatch, ProviderScore.FAIR, query), monitor);
 	}
 
 	public IComponentReader getReader(Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException
@@ -173,18 +158,38 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		return getReader(cr.getProviderMatch(context), monitor);
 	}
 
-	public IComponentReader getReader(Provider provider, IComponentType ctype, NodeQuery query, VersionMatch versionMatch, IProgressMonitor monitor)
-	throws CoreException
+	public String getRecommendedMaterializer()
 	{
-		return getReader(new ProviderMatch(provider, ctype, versionMatch, ProviderScore.FAIR, query), monitor);
+		return IMaterializer.WORKSPACE;
 	}
 
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
+	{
+		return null;
+	}
+
+	public String getRemotePath(String repositoryLocation) throws CoreException
+	{
+		return null;
+	}
+
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query,
+			IProgressMonitor monitor) throws CoreException
 	{
 		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
 	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	{
+	}
+
+	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context,
+			IProgressMonitor monitor) throws CoreException
+	{
+	}
+
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
+			throws CoreException
 	{
 	}
 }

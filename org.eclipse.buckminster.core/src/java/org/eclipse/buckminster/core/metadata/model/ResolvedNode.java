@@ -47,18 +47,22 @@ public class ResolvedNode extends BOMNode
 	private final Resolution m_resolution;
 
 	/**
-	 * This constructor will create a resolved node that has all of its children unresolved. The set
-	 * of children is and how the children are qualified are determined using the attributes and
-	 * prune flag defined in the <code>cquery</code>.
-	 * @param cquery The component query whos advice will be used
-	 * @param resolution The resolution for the created resolved node
+	 * This constructor will create a resolved node that has all of its children unresolved. The set of children is and
+	 * how the children are qualified are determined using the attributes and prune flag defined in the
+	 * <code>cquery</code>.
+	 * 
+	 * @param cquery
+	 *            The component query whos advice will be used
+	 * @param resolution
+	 *            The resolution for the created resolved node
 	 * @throws CoreException
 	 */
 	public ResolvedNode(NodeQuery query, Resolution resolution) throws CoreException
 	{
 		m_resolution = resolution;
 
-		CSpec cspec = resolution.getCSpec().prune(query.getContext(), query.getProperties(), query.isPrune(), resolution.getQualifiedDependency().getAttributeNames());
+		CSpec cspec = resolution.getCSpec().prune(query.getContext(), query.getProperties(), query.isPrune(),
+				resolution.getQualifiedDependency().getAttributeNames());
 		List<QualifiedDependency> qDeps = cspec.getQualifiedDependencies(query.isPrune());
 		int nDeps = qDeps.size();
 		if(nDeps == 0)
@@ -102,7 +106,31 @@ public class ResolvedNode extends BOMNode
 		// don't call the createUnmodifiableList in that case though, since that creates
 		// a full copy of the list.
 		//
-		m_children = forBuild ? Collections.unmodifiableList(children) : Utils.createUnmodifiableList(children);
+		m_children = forBuild
+				? Collections.unmodifiableList(children)
+				: Utils.createUnmodifiableList(children);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolution.getId().toString());
+	}
+
+	@Override
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
+	{
+		for(BOMNode child : getChildren())
+			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
+
+		Resolution resolution = getResolution();
+		if(perused.add(resolution))
+		{
+			ComponentIdentifier ci = resolution.getComponentIdentifier();
+			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
+				resolutions.add(resolution);
+		}
 	}
 
 	@Override
@@ -112,6 +140,38 @@ public class ResolvedNode extends BOMNode
 		{
 			for(BOMNode child : getChildren())
 				child.addUnresolved(unresolved, skipThese);
+		}
+	}
+
+	@Override
+	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
+	{
+		Resolution resolution = getResolution();
+		if(notThese.add(resolution))
+		{
+			// It's rather important that we do depth first here and store
+			// the child before its parent since they need to be materialized
+			// and bound in that order.
+			//
+			for(BOMNode child : getChildren())
+				child.collectAll(notThese, all);
+			all.add(getResolution());
+		}
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		if(m_children.size() > 0)
+		{
+			String childName = Utils.makeQualifiedName(prefix, CHILD_TAG);
+			for(BOMNode child : m_children)
+			{
+				AttributesImpl attrs = new AttributesImpl();
+				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.getId().toString());
+				receiver.startElement(namespace, CHILD_TAG, childName, attrs);
+				receiver.endElement(namespace, CHILD_TAG, childName);
+			}
 		}
 	}
 
@@ -168,7 +228,9 @@ public class ResolvedNode extends BOMNode
 
 	/**
 	 * Checks if the nodeID is equal to one of the children ids.
-	 * @param nodeID The nodeID to check for.
+	 * 
+	 * @param nodeID
+	 *            The nodeID to check for.
 	 * @return true if the nodeID was equal to one of the children ids.
 	 */
 	@Override
@@ -209,61 +271,7 @@ public class ResolvedNode extends BOMNode
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolution.getId().toString());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_children.size() > 0)
-		{
-			String childName = Utils.makeQualifiedName(prefix, CHILD_TAG);
-			for(BOMNode child : m_children)
-			{
-				AttributesImpl attrs = new AttributesImpl();
-				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.getId().toString());
-				receiver.startElement(namespace, CHILD_TAG, childName, attrs);
-				receiver.endElement(namespace, CHILD_TAG, childName);
-			}
-		}
-	}
-
-	@Override
-	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
-	throws CoreException
-	{
-		for(BOMNode child : getChildren())
-			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
-
-		Resolution resolution = getResolution();
-		if(perused.add(resolution))
-		{
-			ComponentIdentifier ci = resolution.getComponentIdentifier();
-			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
-				resolutions.add(resolution);
-		}
-	}
-
-	@Override
-	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
-	{
-		Resolution resolution = getResolution();
-		if(notThese.add(resolution))
-		{
-			// It's rather important that we do depth first here and store
-			// the child before its parent since they need to be materialized
-			// and bound in that order.
-			//
-			for(BOMNode child : getChildren())
-				child.collectAll(notThese, all);
-			all.add(getResolution());
-		}
-	}
-
-	@Override
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode,BOMNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
 	{
 		BOMNode self = super.replaceNode(topReplacer, node, visited);
 		if(self != this)

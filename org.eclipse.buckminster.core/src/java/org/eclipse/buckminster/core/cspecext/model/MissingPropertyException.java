@@ -21,4 +21,3 @@ public class MissingPropertyException extends LocalizedException
 		super("CSpec %s, attribute %s has no %s named %s", name, attribute, propertyCategory, propertyName);
 	}
 }
-

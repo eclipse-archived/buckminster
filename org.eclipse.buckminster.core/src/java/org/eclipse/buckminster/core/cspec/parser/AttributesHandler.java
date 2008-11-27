@@ -25,11 +25,29 @@ import org.xml.sax.SAXParseException;
 abstract class AttributesHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport
 {
 	private TopLevelAttributeHandler m_publicHandler;
+
 	private TopLevelAttributeHandler m_privateHandler;
 
 	AttributesHandler(AbstractHandler parent)
 	{
 		super(parent);
+	}
+
+	final void addAttribute(AttributeBuilder attribute) throws SAXException
+	{
+		try
+		{
+			this.getCSpecBuilder().addAttribute(attribute);
+		}
+		catch(AttributeAlreadyDefinedException e)
+		{
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
+	}
+
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		this.addAttribute(((AttributeHandler)child).getAttributeBuilder());
 	}
 
 	abstract TopLevelAttributeHandler createAttributeHandler(boolean publ);
@@ -53,23 +71,6 @@ abstract class AttributesHandler extends ExtensionAwareHandler implements ChildP
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		this.addAttribute(((AttributeHandler)child).getAttributeBuilder());
-	}
-
-	final void addAttribute(AttributeBuilder attribute) throws SAXException
-	{
-		try
-		{
-			this.getCSpecBuilder().addAttribute(attribute);
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
 	}
 
 	public CSpecBuilder getCSpecBuilder()

@@ -14,7 +14,7 @@ import org.eclipse.buckminster.sax.ISaxableElement;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class DocumentationHandler extends FlowHandler
 {

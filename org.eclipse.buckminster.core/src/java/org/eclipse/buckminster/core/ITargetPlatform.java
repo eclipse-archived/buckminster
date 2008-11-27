@@ -19,6 +19,26 @@ import org.eclipse.core.runtime.CoreException;
 public interface ITargetPlatform
 {
 	/**
+	 * Returns the target system architecture
+	 */
+	String getArch();
+
+	/**
+	 * Returns a list of all components (features, plugins, and fragments) that are known to the target platform.
+	 */
+	List<ComponentIdentifier> getComponents() throws CoreException;
+
+	/**
+	 * Returns the target platform's main location
+	 */
+	File getLocation();
+
+	/**
+	 * Returns the target locale
+	 */
+	String getNL();
+
+	/**
 	 * Returns the target operating system
 	 */
 	String getOS();
@@ -27,25 +47,4 @@ public interface ITargetPlatform
 	 * Returns the target windowing system.
 	 */
 	String getWS();
-
-	/**
-	 * Returns the target system architecture
-	 */
-	String getArch();
-
-	/**
-	 * Returns the target locale
-	 */
-	String getNL();
-
-	/**
-	 * Returns the target platform's main location
-	 */
-	File getLocation();
-
-	/**
-	 * Returns a list of all components (features, plugins, and fragments) that
-	 * are known to the target platform.
-	 */
-	List<ComponentIdentifier> getComponents() throws CoreException;
 }

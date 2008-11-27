@@ -20,6 +20,6 @@ public class NoSuchActorException extends LocalizedException
 	public NoSuchActorException(String actorName, String actionName)
 	{
 		super("Action {0} refers to actor with id {1} but no such actor has been registered with extension-point {2}",
-			actionName, actorName, CorePlugin.ACTORS_POINT);
+				actionName, actorName, CorePlugin.ACTORS_POINT);
 	}
 }

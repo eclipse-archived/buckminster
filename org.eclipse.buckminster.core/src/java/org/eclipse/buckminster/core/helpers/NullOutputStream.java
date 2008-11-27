@@ -16,12 +16,12 @@ import java.io.OutputStream;
 public class NullOutputStream extends OutputStream
 {
 	public static NullOutputStream INSTANCE = new NullOutputStream();
-	
+
 	private NullOutputStream()
 	{
 		// all we need is the singleton INSTANCE
 	}
-	
+
 	@Override
 	public void write(byte[] b)
 	{

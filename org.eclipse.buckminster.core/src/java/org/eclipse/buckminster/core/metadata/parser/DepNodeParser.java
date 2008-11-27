@@ -24,10 +24,20 @@ public class DepNodeParser extends MetaDataParser<BOMNode>
 {
 	private BOMNode m_resolvedNode;
 
-	public DepNodeParser(List<ParserFactory.ParserExtension> parserExtensions)
-	throws CoreException
+	public DepNodeParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
 	{
 		super(parserExtensions);
+	}
+
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_resolvedNode = ((BomNodeHandler)child).getDepNode();
+	}
+
+	public BOMNode parse(String systemID, InputStream input) throws CoreException
+	{
+		this.parseInput(systemID, input);
+		return m_resolvedNode;
 	}
 
 	@Override
@@ -56,17 +66,4 @@ public class DepNodeParser extends MetaDataParser<BOMNode>
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public BOMNode parse(String systemID, InputStream input) throws CoreException
-	{
-		this.parseInput(systemID, input);
-		return m_resolvedNode;
-	}
-
-	public void childPopped(ChildHandler child)
-	throws SAXException
-	{
-		m_resolvedNode = ((BomNodeHandler)child).getDepNode();
-	}
 }
-

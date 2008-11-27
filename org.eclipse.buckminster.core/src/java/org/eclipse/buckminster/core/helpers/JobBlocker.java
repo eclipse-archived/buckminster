@@ -17,52 +17,35 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
  * Block job execution based on the name or class of the job.
- *
+ * 
  * @author Thomas Hallgren
  */
 public class JobBlocker extends JobChangeAdapter
 {
+	private static void trace(String format, Object... args)
+	{
+		// We can't trust that the CorePlugin is still active
+		// since some jobs might outlive it.
+		//
+		// try
+		// {
+		// CorePlugin.getLogger().debug(format, args);
+		// }
+		// catch(Throwable e)
+		// {
+		// if(args.length > 0)
+		// format = String.format(format, args);
+		// System.out.println(format);
+		// }
+	}
+
 	private final Set<String> m_blockByName = Collections.synchronizedSet(new HashSet<String>());
+
 	private final Set<String> m_blockByClass = Collections.synchronizedSet(new HashSet<String>());
 
 	public JobBlocker()
 	{
 		Job.getJobManager().addJobChangeListener(this);
-	}
-
-	public void release()
-	{
-		Job.getJobManager().removeJobChangeListener(this);
-	}
-
-	public void addNameBlock(String nameToBlock)
-	{
-		m_blockByName.add(nameToBlock);
-	}
-
-	public void addClassBlock(String className)
-	{
-		m_blockByClass.add(className);
-	}
-
-	public void addClassBlock(Class<? extends Job> classToBlock)
-	{
-		m_blockByClass.add(classToBlock.getName());
-	}
-
-	public void removeNameBlock(String nameToBlock)
-	{
-		m_blockByName.remove(nameToBlock);
-	}
-
-	public void removeClassBlock(String className)
-	{
-		m_blockByClass.remove(className);
-	}
-
-	public void removeClassBlock(Class<? extends Job> classToBlock)
-	{
-		m_blockByClass.remove(classToBlock.getName());
 	}
 
 	@Override
@@ -80,20 +63,38 @@ public class JobBlocker extends JobChangeAdapter
 		}
 	}
 
-	private static void trace(String format, Object...args)
+	public void addClassBlock(Class<? extends Job> classToBlock)
 	{
-		// We can't trust that the CorePlugin is still active
-		// since some jobs might outlive it.
-		//
-		//try
-		//{
-		// 	CorePlugin.getLogger().debug(format, args);
-		//}
-		//catch(Throwable e)
-		//{
-		// 	if(args.length > 0)
-		// 		format = String.format(format, args);
-		// 	System.out.println(format);
-		//}
+		m_blockByClass.add(classToBlock.getName());
+	}
+
+	public void addClassBlock(String className)
+	{
+		m_blockByClass.add(className);
+	}
+
+	public void addNameBlock(String nameToBlock)
+	{
+		m_blockByName.add(nameToBlock);
+	}
+
+	public void release()
+	{
+		Job.getJobManager().removeJobChangeListener(this);
+	}
+
+	public void removeClassBlock(Class<? extends Job> classToBlock)
+	{
+		m_blockByClass.remove(classToBlock.getName());
+	}
+
+	public void removeClassBlock(String className)
+	{
+		m_blockByClass.remove(className);
+	}
+
+	public void removeNameBlock(String nameToBlock)
+	{
+		m_blockByName.remove(nameToBlock);
 	}
 }

@@ -29,11 +29,15 @@ import org.eclipse.ecf.core.security.IConnectContext;
 public interface IVersionFinder extends IResolverBackchannel
 {
 	/**
+	 * Closes all resources utilized by this instance.
+	 */
+	void close();
+
+	/**
 	 * Find the best match for the designated component
 	 * 
 	 * @param monitor
-	 * @return The match that best matched the conditions or null if no match
-	 *         was found
+	 * @return The match that best matched the conditions or null if no match was found
 	 * @throws CoreException
 	 */
 	VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException;
@@ -49,19 +53,16 @@ public interface IVersionFinder extends IResolverBackchannel
 	Provider getProvider();
 
 	/**
-	 * Returns the provider that can materialize a <code>versionMatch</code>.
-	 * The <code>versionMatch</code> must be produced by this finder.
+	 * Returns the provider that can materialize a <code>versionMatch</code>. The <code>versionMatch</code> must be
+	 * produced by this finder.
+	 * 
 	 * @return The provider
 	 */
-	ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctype, ProviderScore providerScore) throws CoreException;
+	ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctype, ProviderScore providerScore)
+			throws CoreException;
 
 	/**
 	 * Returns the query associated with this version finder
 	 */
 	NodeQuery getQuery();
-
-	/**
-	 * Closes all resources utilized by this instance.
-	 */
-	void close();
 }

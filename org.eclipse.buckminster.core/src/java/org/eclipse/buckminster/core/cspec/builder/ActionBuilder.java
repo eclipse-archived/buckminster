@@ -34,11 +34,11 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 
 	private boolean m_assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
 
-	private final PrerequisitesBuilder m_prerequisitesBuilder;;
+	private final PrerequisitesBuilder m_prerequisitesBuilder;
 
 	private String m_productAlias;
 
-	private IPath m_productBase;;
+	private IPath m_productBase;
 
 	private int m_productFileCount = -1;
 
@@ -65,7 +65,8 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		m_prerequisitesBuilder.addPrerequisite(prerequisite);
 	}
 
-	public ArtifactBuilder addProductArtifact(String name, boolean publ, String type, IPath output) throws AttributeAlreadyDefinedException
+	public ArtifactBuilder addProductArtifact(String name, boolean publ, String type, IPath output)
+			throws AttributeAlreadyDefinedException
 	{
 		CSpecBuilder cspecBuilder = getCSpecBuilder();
 		ActionArtifactBuilder bld = cspecBuilder.createActionArtifactBuilder();
@@ -124,12 +125,20 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 	@Override
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
 	{
-		return specBuilder == getCSpecBuilder() ? this : new ActionBuilder(specBuilder);
+		return specBuilder == getCSpecBuilder()
+				? this
+				: new ActionBuilder(specBuilder);
 	}
 
 	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
 	{
 		return m_prerequisitesBuilder.getPrerequisite(prerequisteName);
+	}
+
+	public Group getPrerequisiteGroup()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -151,7 +160,9 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 	public ArtifactBuilder getProductArtifact(String name)
 	{
 		ArtifactBuilder bld = getCSpecBuilder().getArtifactBuilder(name);
-		return (bld instanceof ActionArtifactBuilder) ? bld : null;
+		return (bld instanceof ActionArtifactBuilder)
+				? bld
+				: null;
 	}
 
 	public IPath getProductBase()
@@ -207,6 +218,13 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		return m_assignConsoleSupport;
 	}
 
+	public boolean isInternal()
+	{
+		// An internal action is never "built".
+		//
+		return false;
+	}
+
 	@Override
 	public void removePrerequisite(String prerequisteName)
 	{
@@ -255,7 +273,9 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 
 	public void setProductBase(IPath productBase)
 	{
-		m_productBase = productBase == null ? null : productBase.addTrailingSeparator();
+		m_productBase = productBase == null
+				? null
+				: productBase.addTrailingSeparator();
 	}
 
 	public void setProductFileCount(int productFileCount)
@@ -266,18 +286,5 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 	public void setUpToDatePolicy(UpToDatePolicy upToDatePolicy)
 	{
 		m_upToDatePolicy = upToDatePolicy;
-	}
-
-	public Group getPrerequisiteGroup()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean isInternal()
-	{
-		// An internal action is never "built".
-		//
-		return false;
 	}
 }

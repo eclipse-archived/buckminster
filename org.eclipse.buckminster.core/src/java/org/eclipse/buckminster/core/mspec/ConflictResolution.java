@@ -9,8 +9,7 @@
 package org.eclipse.buckminster.core.mspec;
 
 /**
- * An enum that describes what to do when content exists
- * at the location where the component should be materialized.
+ * An enum that describes what to do when content exists at the location where the component should be materialized.
  * 
  * @author Thomas Hallgren
  */
@@ -27,16 +26,19 @@ public enum ConflictResolution
 	REPLACE("Replace"),
 
 	/**
-	 * Update with new content. Some materializers may
-	 * consider this equal to <code>REPLACE</code>.
+	 * Update with new content. Some materializers may consider this equal to <code>REPLACE</code>.
 	 */
 	UPDATE("Update"),
 
 	/**
-	 * Reuse (trust) the content at the location and don't
-	 * perform a new materialization.
+	 * Reuse (trust) the content at the location and don't perform a new materialization.
 	 */
 	KEEP("Keep");
+
+	public static ConflictResolution getDefault()
+	{
+		return UPDATE;
+	}
 
 	private final String m_string;
 
@@ -49,10 +51,5 @@ public enum ConflictResolution
 	public String toString()
 	{
 		return m_string;
-	}
-
-	public static ConflictResolution getDefault()
-	{
-		return UPDATE;
 	}
 }

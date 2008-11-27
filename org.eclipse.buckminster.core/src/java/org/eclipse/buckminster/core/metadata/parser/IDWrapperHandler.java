@@ -31,15 +31,23 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 	public static final String TAG = IDWrapper.TAG;
 
 	private final CSpecHandler m_cspecHandler = new CSpecHandler(this);
+
 	private final ResolutionHandler m_resolutionHandler = new ResolutionHandler(this);
+
 	private final ResolvedNodeHandler m_resolvedNodeHandler = new ResolvedNodeHandler(this);
+
 	private final UnresolvedNodeHandler m_unresolvedNodeHandler = new UnresolvedNodeHandler(this);
+
 	private final GeneratorNodeHandler m_generatorNodeHandler = new GeneratorNodeHandler(this);
+
 	private final ComponentQueryHandler m_componentQueryHandler = new ComponentQueryHandler(this, null);
+
 	private final OPMLHandler m_opmlHandler = new OPMLHandler(this);
+
 	private BillOfMaterialsHandler m_billOfMaterialsHandler;
 
 	private UUID m_id;
+
 	private IDWrapper m_wrapper;
 
 	public IDWrapperHandler(AbstractHandler parent)
@@ -47,11 +55,20 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		super(parent);
 	}
 
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
+	public void childPopped(ChildHandler child) throws SAXException
 	{
-		m_id = UUID.fromString(this.getStringValue(attrs, IDWrapper.ATTR_ID));
-		m_wrapper = null;
+		if(child instanceof BomNodeHandler)
+			m_wrapper = new IDWrapper(m_id, ((BomNodeHandler)child).getDepNode());
+		else if(child == m_cspecHandler)
+			m_wrapper = new IDWrapper(m_id, m_cspecHandler.getCSpec());
+		else if(child instanceof ProviderHandler)
+			m_wrapper = new IDWrapper(m_id, ((ProviderHandler)child).getProvider());
+		else if(child == m_resolutionHandler)
+			m_wrapper = new IDWrapper(m_id, m_resolutionHandler.getResolution());
+		else if(child == m_componentQueryHandler)
+			m_wrapper = new IDWrapper(m_id, m_componentQueryHandler.getComponentQuery());
+		else if(child == m_opmlHandler)
+			m_wrapper = new IDWrapper(m_id, new OPML(m_opmlHandler.getOPML()));
 	}
 
 	@Override
@@ -85,20 +102,9 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		return ch;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
+	UUIDKeyed getWrapped(UUID id) throws SAXException
 	{
-		if(child instanceof BomNodeHandler)
-			m_wrapper = new IDWrapper(m_id, ((BomNodeHandler)child).getDepNode());
-		else if(child == m_cspecHandler)
-			m_wrapper = new IDWrapper(m_id, m_cspecHandler.getCSpec());
-		else if(child instanceof ProviderHandler)
-			m_wrapper = new IDWrapper(m_id, ((ProviderHandler)child).getProvider());
-		else if(child == m_resolutionHandler)
-			m_wrapper = new IDWrapper(m_id, m_resolutionHandler.getResolution());
-		else if(child == m_componentQueryHandler)
-			m_wrapper = new IDWrapper(m_id, m_componentQueryHandler.getComponentQuery());
-		else if(child == m_opmlHandler)
-			m_wrapper = new IDWrapper(m_id, new OPML(m_opmlHandler.getOPML()));
+		return ((IWrapperParent)getParentHandler()).getWrapped(id);
 	}
 
 	public IDWrapper getWrapper()
@@ -106,9 +112,10 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		return m_wrapper;
 	}
 
-	UUIDKeyed getWrapped(UUID id) throws SAXException
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		return ((IWrapperParent)getParentHandler()).getWrapped(id);
+		m_id = UUID.fromString(this.getStringValue(attrs, IDWrapper.ATTR_ID));
+		m_wrapper = null;
 	}
 }
-

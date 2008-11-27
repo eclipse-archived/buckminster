@@ -19,8 +19,7 @@ public class MissingVersionConverterException extends LocalizedException
 
 	public MissingVersionConverterException(String versionConverterId)
 	{
-		super("No version converter with id %s has been registered with extension-point %s",
-			versionConverterId, CorePlugin.VERSION_CONVERTERS_POINT);
+		super("No version converter with id %s has been registered with extension-point %s", versionConverterId,
+				CorePlugin.VERSION_CONVERTERS_POINT);
 	}
 }
-

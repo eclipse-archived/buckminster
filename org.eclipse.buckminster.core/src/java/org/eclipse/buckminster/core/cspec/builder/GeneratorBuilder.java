@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.cspec.model.Generator;
 public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator
 {
 	private String m_attribute;
+
 	private String m_component;
 
 	GeneratorBuilder(CSpecBuilder cspecBuilder)
@@ -37,14 +38,14 @@ public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator
 		return new Generator(cspec, m_component, m_attribute, getName());
 	}
 
-	public String getComponent()
-	{
-		return m_component;
-	}
-
 	public String getAttribute()
 	{
 		return m_attribute;
+	}
+
+	public String getComponent()
+	{
+		return m_component;
 	}
 
 	public String getGenerates()
@@ -59,11 +60,6 @@ public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator
 		m_attribute = generator.getAttribute();
 	}
 
-	public void setGenerates(String generates)
-	{
-		setName(generates);
-	}
-
 	public void setAttribute(String attribute)
 	{
 		m_attribute = attribute;
@@ -72,5 +68,10 @@ public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator
 	public void setComponent(String component)
 	{
 		m_component = component;
+	}
+
+	public void setGenerates(String generates)
+	{
+		setName(generates);
 	}
 }

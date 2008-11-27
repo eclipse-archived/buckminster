@@ -63,21 +63,6 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			m_site = site;
 		}
 
-		ISite getSite()
-		{
-			return m_site;
-		}
-
-		ISiteFeatureReference[] getFeatureRefs()
-		{
-			return toArray(new ISiteFeatureReference[size()]);
-		}
-
-		IResolution[] getResolutions()
-		{
-			return m_includedRes.toArray(new Resolution[m_includedRes.size()]);
-		}
-
 		void add(Resolution res) throws CoreException
 		{
 			if(!m_includedRes.contains(res))
@@ -94,172 +79,21 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 				m_includedRes.add(res);
 			}
 		}
-	}
 
-	@Override
-	public boolean canWorkInParallel()
-	{
-		return false;
-	}
-
-	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
-		Set<ComponentIdentifier> allInstalled = new HashSet<ComponentIdentifier>();
-		Set<ComponentIdentifier> installDelta = null;
-		try
+		ISiteFeatureReference[] getFeatureRefs()
 		{
-			Map<IPath, Map<String, FeaturesPerSite>> sites = new HashMap<IPath, Map<String, FeaturesPerSite>>();
-
-			IProgressMonitor siteCollectorMon = MonitorUtils.subMonitor(monitor, 50);
-			siteCollectorMon.beginTask(null, resolutions.size() * 100);
-			try
-			{
-				collectSites(context, resolutions, sites, siteCollectorMon);
-			}
-			finally
-			{
-				siteCollectorMon.done();
-			}
-
-			installDelta = installFeatures(context, allInstalled, sites, MonitorUtils.subMonitor(monitor, 50));
-
-			// Not supposed to be further perused
-			//
-			return Collections.emptyList();
+			return toArray(new ISiteFeatureReference[size()]);
 		}
-		finally
+
+		IResolution[] getResolutions()
 		{
-			MaterializationStatistics statistics = context.getMaterializationStatistics();
-			StorageManager sm = StorageManager.getDefault();
-			for(Resolution res : resolutions)
-			{
-				ComponentIdentifier ci = res.getComponentIdentifier();
-				if(!allInstalled.contains(ci))
-				{
-					statistics.addFailed(ci);
-					continue;
-				}
-				IPath installLocation = context.getInstallLocation(res);
-				Materialization mat = new Materialization(installLocation, ci);
-				res.store(sm);
-				mat.store(sm);
-
-				if(installDelta != null && installDelta.contains(ci))
-					statistics.addReplaced(ci);
-				else
-					statistics.addKept(ci);
-			}
-			monitor.done();
+			return m_includedRes.toArray(new Resolution[m_includedRes.size()]);
 		}
-	}
 
-	protected abstract ISite getDestinationSite(MaterializationContext context, IPath destination,
-			IProgressMonitor monitor) throws CoreException;
-
-	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
-			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
-
-	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context,
-			Set<ComponentIdentifier> allInstalled, Map<IPath, Map<String, FeaturesPerSite>> sites,
-			IProgressMonitor monitor) throws CoreException
-	{
-		int count = 0;
-		Set<IPath> destinations = sites.keySet();
-		for(IPath path : destinations)
-			count += sites.get(path).size();
-
-		HashSet<ComponentIdentifier> installDelta = new HashSet<ComponentIdentifier>();
-		monitor.beginTask(null, destinations.size() * 100 + count * 100);
-		try
+		ISite getSite()
 		{
-			for(IPath path : destinations)
-			{
-				ISite mirrorSite = getDestinationSite(context, path, MonitorUtils.subMonitor(monitor, 100));
-				for(FeaturesPerSite fps : sites.get(path).values())
-				{
-					final IResolution first = fps.getResolutions()[0];
-					ILogListener listener = new ILogListener()
-					{
-						public void logging(IStatus status, String plugin)
-						{
-							switch(status.getSeverity())
-							{
-							case IStatus.WARNING:
-							case IStatus.ERROR:
-								Platform.removeLogListener(this);
-								context.addRequestStatus(first.getRequest(), status);
-								Platform.addLogListener(this);
-							}
-						}
-					};
-					Platform.addLogListener(listener);
-
-					try
-					{
-						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
-								"Start mirroring"));
-						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
-								monitor, 5));
-						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils
-								.subMonitor(monitor, 90));
-						Set<ComponentIdentifier> afterInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
-								monitor, 5));
-
-						// Create the delta that represents the installed components and add it to the
-						// complete delta for all site installations.
-						//
-						allInstalled.addAll(afterInstall);
-						afterInstall.removeAll(beforeInstall);
-						installDelta.addAll(afterInstall);
-					}
-					catch(CoreException e)
-					{
-						if(!context.isContinueOnError())
-							throw e;
-						context.addRequestStatus(first.getRequest(), e.getStatus());
-					}
-					finally
-					{
-						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
-								"End mirroring"));
-						Platform.removeLogListener(listener);
-					}
-				}
-			}
-			return installDelta;
+			return m_site;
 		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
-	private static Set<ComponentIdentifier> getSiteComponents(ISite site, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ISiteFeatureReference[] refs = site.getRawFeatureReferences();
-		monitor.beginTask(null, refs.length * 100);
-		HashSet<ComponentIdentifier> components = new HashSet<ComponentIdentifier>();
-		for(ISiteFeatureReference ref : refs)
-		{
-			VersionedIdentifier vi = ref.getVersionedIdentifier();
-			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE,
-					VersionFactory.OSGiType.coerce(vi.getVersion()));
-			if(components.add(ci))
-			{
-				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
-				if(feature == null)
-					components.remove(ci);
-				else
-					addFeatureComponents(feature, components, MonitorUtils.subMonitor(monitor, 50));
-			}
-			else
-				monitor.worked(100);
-		}
-		monitor.done();
-		return components;
 	}
 
 	private static void addFeatureComponents(IFeature feature, Set<ComponentIdentifier> components,
@@ -352,6 +186,172 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			{
 				context.addRequestStatus(resolution.getRequest(), BuckminsterException.wrap(e).getStatus());
 			}
+		}
+	}
+
+	private static Set<ComponentIdentifier> getSiteComponents(ISite site, IProgressMonitor monitor)
+			throws CoreException
+	{
+		ISiteFeatureReference[] refs = site.getRawFeatureReferences();
+		monitor.beginTask(null, refs.length * 100);
+		HashSet<ComponentIdentifier> components = new HashSet<ComponentIdentifier>();
+		for(ISiteFeatureReference ref : refs)
+		{
+			VersionedIdentifier vi = ref.getVersionedIdentifier();
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE,
+					VersionFactory.OSGiType.coerce(vi.getVersion()));
+			if(components.add(ci))
+			{
+				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
+				if(feature == null)
+					components.remove(ci);
+				else
+					addFeatureComponents(feature, components, MonitorUtils.subMonitor(monitor, 50));
+			}
+			else
+				monitor.worked(100);
+		}
+		monitor.done();
+		return components;
+	}
+
+	@Override
+	public boolean canWorkInParallel()
+	{
+		return false;
+	}
+
+	protected abstract ISite getDestinationSite(MaterializationContext context, IPath destination,
+			IProgressMonitor monitor) throws CoreException;
+
+	protected abstract void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
+			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException;
+
+	private Set<ComponentIdentifier> installFeatures(final MaterializationContext context,
+			Set<ComponentIdentifier> allInstalled, Map<IPath, Map<String, FeaturesPerSite>> sites,
+			IProgressMonitor monitor) throws CoreException
+	{
+		int count = 0;
+		Set<IPath> destinations = sites.keySet();
+		for(IPath path : destinations)
+			count += sites.get(path).size();
+
+		HashSet<ComponentIdentifier> installDelta = new HashSet<ComponentIdentifier>();
+		monitor.beginTask(null, destinations.size() * 100 + count * 100);
+		try
+		{
+			for(IPath path : destinations)
+			{
+				ISite mirrorSite = getDestinationSite(context, path, MonitorUtils.subMonitor(monitor, 100));
+				for(FeaturesPerSite fps : sites.get(path).values())
+				{
+					final IResolution first = fps.getResolutions()[0];
+					ILogListener listener = new ILogListener()
+					{
+						public void logging(IStatus status, String plugin)
+						{
+							switch(status.getSeverity())
+							{
+							case IStatus.WARNING:
+							case IStatus.ERROR:
+								Platform.removeLogListener(this);
+								context.addRequestStatus(first.getRequest(), status);
+								Platform.addLogListener(this);
+							}
+						}
+					};
+					Platform.addLogListener(listener);
+
+					try
+					{
+						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
+								"Start mirroring"));
+						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
+								monitor, 5));
+						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils
+								.subMonitor(monitor, 90));
+						Set<ComponentIdentifier> afterInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
+								monitor, 5));
+
+						// Create the delta that represents the installed components and add it to the
+						// complete delta for all site installations.
+						//
+						allInstalled.addAll(afterInstall);
+						afterInstall.removeAll(beforeInstall);
+						installDelta.addAll(afterInstall);
+					}
+					catch(CoreException e)
+					{
+						if(!context.isContinueOnError())
+							throw e;
+						context.addRequestStatus(first.getRequest(), e.getStatus());
+					}
+					finally
+					{
+						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
+								"End mirroring"));
+						Platform.removeLogListener(listener);
+					}
+				}
+			}
+			return installDelta;
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
+			IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 100);
+		Set<ComponentIdentifier> allInstalled = new HashSet<ComponentIdentifier>();
+		Set<ComponentIdentifier> installDelta = null;
+		try
+		{
+			Map<IPath, Map<String, FeaturesPerSite>> sites = new HashMap<IPath, Map<String, FeaturesPerSite>>();
+
+			IProgressMonitor siteCollectorMon = MonitorUtils.subMonitor(monitor, 50);
+			siteCollectorMon.beginTask(null, resolutions.size() * 100);
+			try
+			{
+				collectSites(context, resolutions, sites, siteCollectorMon);
+			}
+			finally
+			{
+				siteCollectorMon.done();
+			}
+
+			installDelta = installFeatures(context, allInstalled, sites, MonitorUtils.subMonitor(monitor, 50));
+
+			// Not supposed to be further perused
+			//
+			return Collections.emptyList();
+		}
+		finally
+		{
+			MaterializationStatistics statistics = context.getMaterializationStatistics();
+			StorageManager sm = StorageManager.getDefault();
+			for(Resolution res : resolutions)
+			{
+				ComponentIdentifier ci = res.getComponentIdentifier();
+				if(!allInstalled.contains(ci))
+				{
+					statistics.addFailed(ci);
+					continue;
+				}
+				IPath installLocation = context.getInstallLocation(res);
+				Materialization mat = new Materialization(installLocation, ci);
+				res.store(sm);
+				mat.store(sm);
+
+				if(installDelta != null && installDelta.contains(ci))
+					statistics.addReplaced(ci);
+				else
+					statistics.addKept(ci);
+			}
+			monitor.done();
 		}
 	}
 }

@@ -18,7 +18,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -50,8 +49,13 @@ public class ArtifactHandler extends TopLevelAttributeHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	protected TopLevelAttributeBuilder createAttributeBuilder()
+	{
+		return getCSpecBuilder().createArtifactBuilder();
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(PathHandler.TAG.equals(localName))
@@ -61,9 +65,13 @@ public class ArtifactHandler extends TopLevelAttributeHandler
 		return ch;
 	}
 
+	final ArtifactBuilder getArtifactBuilder()
+	{
+		return (ArtifactBuilder)this.getBuilder();
+	}
+
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
 		ArtifactBuilder builder = this.getArtifactBuilder();
@@ -82,16 +90,5 @@ public class ArtifactHandler extends TopLevelAttributeHandler
 			{
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
-	}
-
-	final ArtifactBuilder getArtifactBuilder()
-	{
-		return (ArtifactBuilder)this.getBuilder();
-	}
-
-	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
-		return getCSpecBuilder().createArtifactBuilder();
 	}
 }

@@ -8,17 +8,17 @@ import org.eclipse.buckminster.sax.ISaxable;
 
 public interface IMaterializationSpec extends IMaterializationDirective, ISaxable
 {
+	URL getContextURL();
+
 	IMaterializationNode getMatchingNode(IComponentName cName);
 
 	String getName();
 
 	List<? extends IMaterializationNode> getNodes();
 
+	URL getResolvedURL();
+
 	String getShortDesc();
 
 	String getURL();
-
-	URL getContextURL();
-
-	URL getResolvedURL();
 }

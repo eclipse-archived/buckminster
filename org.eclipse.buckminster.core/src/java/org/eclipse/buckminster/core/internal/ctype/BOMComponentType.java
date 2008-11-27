@@ -21,7 +21,8 @@ public class BOMComponentType extends AbstractComponentType
 {
 	private static final IResolutionBuilder s_builder = new BOMBuilder();
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
+			throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return s_builder;

@@ -18,19 +18,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
-
 public class ReplaceHandler extends ValueFilterHandler
 {
-	static final String TAG = Replace.TAG;
-
-	private final MatchHandler m_matchHandler = new MatchHandler(this);
-
-	public ReplaceHandler(AbstractHandler parent)
-	{
-		super(parent);
-	}
-
 	public static class MatchHandler extends ExtensionAwareHandler
 	{
 		@SuppressWarnings("hiding")
@@ -43,25 +32,41 @@ public class ReplaceHandler extends ValueFilterHandler
 			super(parent);
 		}
 
+		final Replace.Match getMatch()
+		{
+			return m_match;
+		}
+
 		@Override
-		public void handleAttributes(Attributes attrs)
-		throws SAXException
+		public void handleAttributes(Attributes attrs) throws SAXException
 		{
 			String pattern = this.getStringValue(attrs, Replace.ATTR_PATTERN);
 			String replacement = this.getStringValue(attrs, Replace.ATTR_REPLACEMENT);
 			boolean quotePattern = getOptionalBooleanValue(attrs, Replace.ATTR_QUOTE_PATTERN, false);
 			m_match = new Replace.Match(pattern, replacement, quotePattern);
 		}
-		
-		final Replace.Match getMatch()
-		{
-			return m_match;
-		}
+	}
+
+	static final String TAG = Replace.TAG;
+
+	private final MatchHandler m_matchHandler = new MatchHandler(this);
+
+	public ReplaceHandler(AbstractHandler parent)
+	{
+		super(parent);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public void childPopped(ChildHandler child)
+	{
+		if(child == m_matchHandler)
+			((Replace)this.getValueHolder()).addMatch(m_matchHandler.getMatch());
+		else
+			super.childPopped(child);
+	}
+
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(MatchHandler.TAG.equals(localName))
@@ -72,8 +77,7 @@ public class ReplaceHandler extends ValueFilterHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		Replace rp = new Replace();
 		String pattern = getOptionalStringValue(attrs, Replace.ATTR_PATTERN);
@@ -90,14 +94,4 @@ public class ReplaceHandler extends ValueFilterHandler
 
 		this.setValueHolder(rp);
 	}
-
-	@Override
-	public void childPopped(ChildHandler child)
-	{
-		if(child == m_matchHandler)
-			((Replace)this.getValueHolder()).addMatch(m_matchHandler.getMatch());
-		else
-			super.childPopped(child);
-	}
 }
-

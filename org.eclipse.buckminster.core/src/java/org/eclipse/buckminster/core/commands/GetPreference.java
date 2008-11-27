@@ -26,9 +26,11 @@ public class GetPreference extends AbstractCommand
 {
 	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
 
-	static private final OptionDescriptor DEFAULT_DESCRIPTOR = new OptionDescriptor('d', "default", OptionValueType.REQUIRED);
+	static private final OptionDescriptor DEFAULT_DESCRIPTOR = new OptionDescriptor('d', "default",
+			OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor ONLYVALUE_DESCRIPTOR = new OptionDescriptor(null, "onlyvalue", OptionValueType.NONE);
+	static private final OptionDescriptor ONLYVALUE_DESCRIPTOR = new OptionDescriptor(null, "onlyvalue",
+			OptionValueType.NONE);
 
 	private boolean m_test = false;
 
@@ -46,11 +48,11 @@ public class GetPreference extends AbstractCommand
 	@Override
 	protected void handleOption(Option option) throws Exception
 	{
-		if (option.is(TEST_DESCRIPTOR))
+		if(option.is(TEST_DESCRIPTOR))
 			m_test = true;
-		else if (option.is(DEFAULT_DESCRIPTOR))
+		else if(option.is(DEFAULT_DESCRIPTOR))
 			m_default = option.getValue();
-		else if (option.is(ONLYVALUE_DESCRIPTOR))
+		else if(option.is(ONLYVALUE_DESCRIPTOR))
 			m_onlyValue = true;
 	}
 
@@ -58,23 +60,23 @@ public class GetPreference extends AbstractCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		int len = unparsed.length;
-		if (len > 1)
+		if(len > 1)
 			throw new SimpleErrorExitException("Too many arguments");
-		if (len == 1)
+		if(len == 1)
 			m_name = unparsed[0];
 	}
 
 	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
-		if (m_name == null)
+		if(m_name == null)
 			throw new SimpleErrorExitException("You must provide a preference name");
 
 		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);
 		String v = bph.get(m_default);
-		if (!m_onlyValue)
+		if(!m_onlyValue)
 			System.out.print(bph.getName() + "=");
-		if (v != null)
+		if(v != null)
 			System.out.println(v);
 		return 0;
 	}

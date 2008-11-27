@@ -31,200 +31,12 @@ public class BMProperties implements IProperties
 		protected Properties getProperties()
 		{
 			return System.getProperties();
-		}		
+		}
 	};
 
 	/** A table of hex digits */
 	private static final char[] hexDigit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
 			'F' };
-
-	public static void store(Map<String,String> props, OutputStream out, String comments) throws IOException
-	{
-		BufferedWriter awriter;
-		awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1"));
-		if(comments != null)
-			writeln(awriter, "#" + comments);
-		writeln(awriter, "#" + new Date().toString());
-		synchronized(props)
-		{
-			for(Entry<String, String> e : props.entrySet())
-			{
-				String key = e.getKey();
-				key = saveConvert(key, true);
-	
-				/*
-				 * No need to escape embedded and trailing spaces for value, hence
-				 * pass false to flag.
-				 */
-				writeln(awriter, key + "=" + saveConvert(e.getValue(), false));
-			}
-		}
-		awriter.flush();
-	}
-
-    private final Map<String, String> m_map;
-
-	public BMProperties()
-	{
-		m_map = new HashMap<String,String>();
-	}
-
-	public BMProperties(InputStream inStream) throws IOException
-	{
-    	final Properties loader = new Properties();
-    	loader.load(inStream);
-		m_map = new PropertiesWrapper()
-		{
-			@Override
-			protected Properties getProperties()
-			{
-				return loader;
-			}		
-		};
-	}
-
-	public BMProperties(final Properties defaultProps)
-	{
-		m_map = new PropertiesWrapper()
-		{
-			@Override
-			protected Properties getProperties()
-			{
-				return defaultProps;
-			}		
-		};
-	}
-
-	public BMProperties(Map<String, String> defaultProps)
-	{
-		Map<String,String> props = new HashMap<String,String>();
-		if(defaultProps != null)
-			props = new MapUnion<String,String>(props, defaultProps);
-		m_map = props;
-	}
-
-	public BMProperties(Map<String, String> mutableProps, Map<String, String> defaultProps)
-	{
-		if(defaultProps != null)
-			mutableProps = new MapUnion<String,String>(mutableProps, defaultProps);
-		m_map = mutableProps;
-	}
-
-	public void clear()
-	{
-		m_map.clear();
-	}
-
-	public boolean containsKey(Object key)
-	{
-		return m_map.containsKey(key);
-	}
-
-	public boolean containsValue(Object value)
-	{
-		return m_map.containsValue(value);
-	}
-
-	public Set<Entry<String, String>> entrySet()
-	{
-		return m_map.entrySet();
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		return this == o || (o instanceof Map && o.equals(m_map));
-	}
-
-	public String get(Object key)
-	{
-		return m_map.get(key);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return m_map.hashCode();
-	}
-
-	public boolean isEmpty()
-	{
-		return m_map.isEmpty();
-	}
-
-	public Set<String> keySet()
-	{
-		return m_map.keySet();
-	}
-
-	public Set<String> immutableKeySet()
-	{
-		return (m_map instanceof IProperties)
-			? ((IProperties)m_map).immutableKeySet()
-			: m_map.keySet();
-	}
-
-	public boolean isMutable(String key)
-	{
-		return (m_map instanceof IProperties)
-			? ((IProperties)m_map).isMutable(key)
-			: true;
-	}
-
-	public Set<String> mutableKeySet()
-	{
-		return (m_map instanceof IProperties)
-			? ((IProperties)m_map).mutableKeySet()
-			: m_map.keySet();
-	}
-
-	public Set<String> overlayKeySet()
-	{
-		if(m_map instanceof IProperties)
-			return ((IProperties)m_map).overlayKeySet();
-		if(m_map instanceof MapUnion)
-			return ((MapUnion<String,String>)m_map).overlayKeySet();
-		return m_map.keySet();
-	}
-
-	public String put(String key, String value)
-	{
-		return m_map.put(key, value);
-	}
-
-	public String put(String key, String value, boolean mutable)
-	{
-		if(m_map instanceof IProperties)
-			return ((IProperties)m_map).put(key, value, mutable);
-		if(!mutable)
-			throw new UnsupportedOperationException("put immutable");
-		return m_map.put(key, value);
-	}
-
-	public void putAll(Map<? extends String, ? extends String> t)
-	{
-		m_map.putAll(t);
-	}
-
-	public String remove(Object key)
-	{
-		return m_map.remove(key);
-	}
-
-	public int size()
-	{
-		return m_map.size();
-	}
-
-	public void store(OutputStream out, String comments) throws IOException
-	{
-		store(m_map, out, comments);
-	}
-
-	public Collection<String> values()
-	{
-		return m_map.values();
-	}
 
 	public static IProperties getSystemProperties()
 	{
@@ -305,9 +117,34 @@ public class BMProperties implements IProperties
 		return outBuffer.toString();
 	}
 
+	public static void store(Map<String, String> props, OutputStream out, String comments) throws IOException
+	{
+		BufferedWriter awriter;
+		awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1"));
+		if(comments != null)
+			writeln(awriter, "#" + comments);
+		writeln(awriter, "#" + new Date().toString());
+		synchronized(props)
+		{
+			for(Entry<String, String> e : props.entrySet())
+			{
+				String key = e.getKey();
+				key = saveConvert(key, true);
+
+				/*
+				 * No need to escape embedded and trailing spaces for value, hence pass false to flag.
+				 */
+				writeln(awriter, key + "=" + saveConvert(e.getValue(), false));
+			}
+		}
+		awriter.flush();
+	}
+
 	/**
 	 * Convert a nibble to a hex character
-	 * @param nibble the nibble to convert.
+	 * 
+	 * @param nibble
+	 *            the nibble to convert.
 	 */
 	private static char toHex(int nibble)
 	{
@@ -320,6 +157,155 @@ public class BMProperties implements IProperties
 		bw.newLine();
 	}
 
+	private final Map<String, String> m_map;
+
+	public BMProperties()
+	{
+		m_map = new HashMap<String, String>();
+	}
+
+	public BMProperties(InputStream inStream) throws IOException
+	{
+		final Properties loader = new Properties();
+		loader.load(inStream);
+		m_map = new PropertiesWrapper()
+		{
+			@Override
+			protected Properties getProperties()
+			{
+				return loader;
+			}
+		};
+	}
+
+	public BMProperties(Map<String, String> defaultProps)
+	{
+		Map<String, String> props = new HashMap<String, String>();
+		if(defaultProps != null)
+			props = new MapUnion<String, String>(props, defaultProps);
+		m_map = props;
+	}
+
+	public BMProperties(Map<String, String> mutableProps, Map<String, String> defaultProps)
+	{
+		if(defaultProps != null)
+			mutableProps = new MapUnion<String, String>(mutableProps, defaultProps);
+		m_map = mutableProps;
+	}
+
+	public BMProperties(final Properties defaultProps)
+	{
+		m_map = new PropertiesWrapper()
+		{
+			@Override
+			protected Properties getProperties()
+			{
+				return defaultProps;
+			}
+		};
+	}
+
+	public void clear()
+	{
+		m_map.clear();
+	}
+
+	public boolean containsKey(Object key)
+	{
+		return m_map.containsKey(key);
+	}
+
+	public boolean containsValue(Object value)
+	{
+		return m_map.containsValue(value);
+	}
+
+	public Set<Entry<String, String>> entrySet()
+	{
+		return m_map.entrySet();
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return this == o || (o instanceof Map && o.equals(m_map));
+	}
+
+	public String get(Object key)
+	{
+		return m_map.get(key);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return m_map.hashCode();
+	}
+
+	public Set<String> immutableKeySet()
+	{
+		return (m_map instanceof IProperties)
+				? ((IProperties)m_map).immutableKeySet()
+				: m_map.keySet();
+	}
+
+	public boolean isEmpty()
+	{
+		return m_map.isEmpty();
+	}
+
+	public boolean isMutable(String key)
+	{
+		return (m_map instanceof IProperties)
+				? ((IProperties)m_map).isMutable(key)
+				: true;
+	}
+
+	public Set<String> keySet()
+	{
+		return m_map.keySet();
+	}
+
+	public Set<String> mutableKeySet()
+	{
+		return (m_map instanceof IProperties)
+				? ((IProperties)m_map).mutableKeySet()
+				: m_map.keySet();
+	}
+
+	public Set<String> overlayKeySet()
+	{
+		if(m_map instanceof IProperties)
+			return ((IProperties)m_map).overlayKeySet();
+		if(m_map instanceof MapUnion)
+			return ((MapUnion<String, String>)m_map).overlayKeySet();
+		return m_map.keySet();
+	}
+
+	public String put(String key, String value)
+	{
+		return m_map.put(key, value);
+	}
+
+	public String put(String key, String value, boolean mutable)
+	{
+		if(m_map instanceof IProperties)
+			return ((IProperties)m_map).put(key, value, mutable);
+		if(!mutable)
+			throw new UnsupportedOperationException("put immutable");
+		return m_map.put(key, value);
+	}
+
+	public void putAll(Map<? extends String, ? extends String> t)
+	{
+		m_map.putAll(t);
+	}
+
+	public String remove(Object key)
+	{
+		return m_map.remove(key);
+	}
+
 	public void setMutable(String key, boolean flag) throws UnsupportedOperationException
 	{
 		if(m_map instanceof IProperties)
@@ -328,10 +314,25 @@ public class BMProperties implements IProperties
 			throw new UnsupportedOperationException("setMutable");
 	}
 
+	public int size()
+	{
+		return m_map.size();
+	}
+
+	public void store(OutputStream out, String comments) throws IOException
+	{
+		store(m_map, out, comments);
+	}
+
 	public boolean supportsMutability()
 	{
 		return (m_map instanceof IProperties)
-			? ((IProperties)m_map).supportsMutability()
-			: false;
+				? ((IProperties)m_map).supportsMutability()
+				: false;
+	}
+
+	public Collection<String> values()
+	{
+		return m_map.values();
 	}
 }

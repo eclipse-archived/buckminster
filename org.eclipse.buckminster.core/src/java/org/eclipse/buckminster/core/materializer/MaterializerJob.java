@@ -25,10 +25,13 @@ import org.eclipse.core.runtime.jobs.Job;
 public class MaterializerJob extends Job implements IJobInfo
 {
 	private final IMaterializer m_materializer;
+
 	private final MaterializationContext m_context;
+
 	private final List<Resolution> m_resolutions;
 
-	public MaterializerJob(String id, IMaterializer materializer, List<Resolution> resolutions, MaterializationContext context)
+	public MaterializerJob(String id, IMaterializer materializer, List<Resolution> resolutions,
+			MaterializationContext context)
 	{
 		super(id + " materializer");
 		if(resolutions.size() < 1)
@@ -51,6 +54,12 @@ public class MaterializerJob extends Job implements IJobInfo
 		return m_context == family;
 	}
 
+	public String getOperationName()
+	{
+		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
+		return "Materialization of " + lastResolution.getComponentIdentifier().toString();
+	}
+
 	@Override
 	protected IStatus run(IProgressMonitor monitor)
 	{
@@ -60,16 +69,11 @@ public class MaterializerJob extends Job implements IJobInfo
 		}
 		catch(CoreException e)
 		{
-			m_context.addRequestStatus(m_resolutions.get(m_resolutions.size()-1).getRequest(), BuckminsterException.wrap(e).getStatus());
+			m_context.addRequestStatus(m_resolutions.get(m_resolutions.size() - 1).getRequest(), BuckminsterException
+					.wrap(e).getStatus());
 			if(!m_context.isContinueOnError())
 				return e.getStatus();
 		}
 		return Status.OK_STATUS;
-	}
-
-	public String getOperationName()
-	{
-		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);		
-		return "Materialization of " + lastResolution.getComponentIdentifier().toString();
 	}
 }

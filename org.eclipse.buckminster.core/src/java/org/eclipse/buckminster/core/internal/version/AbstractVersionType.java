@@ -17,7 +17,7 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public abstract class AbstractVersionType extends AbstractExtension implements IVersionType
 {

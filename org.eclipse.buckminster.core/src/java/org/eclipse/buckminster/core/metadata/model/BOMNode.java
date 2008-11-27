@@ -35,8 +35,22 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 
 	public static final String TAG = "depnode";
 
+	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException;
+
 	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
 	{
+	}
+
+	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
+	{
+	}
+
+	private void collectNodes(Set<BOMNode> nodes) throws CoreException
+	{
+		if(nodes.add(this))
+			for(BOMNode child : getChildren())
+				child.collectNodes(nodes);
 	}
 
 	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
@@ -91,13 +105,16 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 	}
 
 	/**
-	 * Returns <code>true</code> if this DepNode references the given <code>nodeId</code>,
-	 * directly or indirectly through the children.
-	 * @param node The node to check for
-	 * @param shallow When true, compare only with the id of the node itself and the id of all
-	 *            children. Do not recurse down into children.
-	 * @return true if the node identified by <code>resolverNodeId</code> is equal to this node or
-	 *         if it is found in the graph extending from this node
+	 * Returns <code>true</code> if this DepNode references the given <code>nodeId</code>, directly or indirectly
+	 * through the children.
+	 * 
+	 * @param node
+	 *            The node to check for
+	 * @param shallow
+	 *            When true, compare only with the id of the node itself and the id of all children. Do not recurse down
+	 *            into children.
+	 * @return true if the node identified by <code>resolverNodeId</code> is equal to this node or if it is found in the
+	 *         graph extending from this node
 	 * @throws CoreException
 	 */
 	public boolean isReferencing(BOMNode node, boolean shallow) throws CoreException
@@ -110,34 +127,7 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		throw new UnsupportedOperationException();
 	}
 
-	public void store(StorageManager sm) throws CoreException
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	public final void toSax(ContentHandler receiver) throws SAXException
-	{
-		receiver.startDocument();
-		this.toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX,
-			this.getDefaultTag());
-		receiver.endDocument();
-	}
-
-	public int uniqueNodeCount() throws CoreException
-	{
-		HashSet<BOMNode> allNodes = new HashSet<BOMNode>();
-		collectNodes(allNodes);
-		return allNodes.size();
-	}
-
-	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query, MaterializationSpec mspec, Set<Resolution> perused)
-	throws CoreException;
-
-	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
-	{
-	}
-
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode,BOMNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
 	{
 		BOMNode self = visited.get(this);
 		if(self == null)
@@ -154,10 +144,22 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		return self;
 	}
 
-	private void collectNodes(Set<BOMNode> nodes) throws CoreException
+	public void store(StorageManager sm) throws CoreException
 	{
-		if(nodes.add(this))
-			for(BOMNode child : getChildren())
-				child.collectNodes(nodes);
+		throw new UnsupportedOperationException();
+	}
+
+	public final void toSax(ContentHandler receiver) throws SAXException
+	{
+		receiver.startDocument();
+		this.toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, this.getDefaultTag());
+		receiver.endDocument();
+	}
+
+	public int uniqueNodeCount() throws CoreException
+	{
+		HashSet<BOMNode> allNodes = new HashSet<BOMNode>();
+		collectNodes(allNodes);
+		return allNodes.size();
 	}
 }

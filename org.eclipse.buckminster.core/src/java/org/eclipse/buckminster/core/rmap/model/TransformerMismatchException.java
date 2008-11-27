@@ -18,10 +18,7 @@ public class TransformerMismatchException extends LocalizedException
 
 	public TransformerMismatchException(BidirectionalTransformer invalid)
 	{
-		super("The substitution %s -> %s is not reversed by %s -> %s",
-			invalid.getFromPattern().toString(),
-			invalid.getFromReplacement(),
-			invalid.getToPattern().toString(),
-			invalid.getToReplacement());
+		super("The substitution %s -> %s is not reversed by %s -> %s", invalid.getFromPattern().toString(), invalid
+				.getFromReplacement(), invalid.getToPattern().toString(), invalid.getToReplacement());
 	}
 }

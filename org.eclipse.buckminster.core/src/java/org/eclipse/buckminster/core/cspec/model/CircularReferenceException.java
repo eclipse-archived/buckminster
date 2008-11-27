@@ -32,7 +32,7 @@ public class CircularReferenceException extends LocalizedException
 
 	public CircularReferenceException(String componentName, List<String> attributeNames, String recursionStart)
 	{
-		super("Component %s has an internal circular attribute reference. Attribute chain is %s",
-			componentName, buildChain(attributeNames, recursionStart));
+		super("Component %s has an internal circular attribute reference. Attribute chain is %s", componentName,
+				buildChain(attributeNames, recursionStart));
 	}
 }

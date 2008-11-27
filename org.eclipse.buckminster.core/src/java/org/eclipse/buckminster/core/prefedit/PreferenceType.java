@@ -12,12 +12,5 @@ package org.eclipse.buckminster.core.prefedit;
  */
 public enum PreferenceType
 {
-	Boolean,
-	Integer,
-	String,
-	Enum,
-	Directory,
-	File,
-	Path,
-	Password
+	Boolean, Integer, String, Enum, Directory, File, Path, Password
 }

@@ -12,6 +12,14 @@ package org.eclipse.buckminster.core.version;
 public interface IVersion extends Comparable<IVersion>
 {
 	/**
+	 * Returns <code>true</code> if this version is equal to <code>version</code> in all but the version qualifier.
+	 * 
+	 * @param version
+	 * @return true when the versions are equal irrespective of qualifiers
+	 */
+	boolean equalsUnqualified(IVersion version);
+
+	/**
 	 * Returns the version qualifier or null if not applicable
 	 */
 	String getQualifier();
@@ -47,13 +55,4 @@ public interface IVersion extends Comparable<IVersion>
 	 *            the builder that receives the version
 	 */
 	void toString(StringBuilder bld);
-
-	/**
-	 * Returns <code>true</code> if this version is equal to <code>version</code> in all but
-	 * the version qualifier.
-	 * 
-	 * @param version
-	 * @return true when the versions are equal irrespective of qualifiers
-	 */
-	boolean equalsUnqualified(IVersion version);
 }

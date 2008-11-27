@@ -56,6 +56,151 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 
 	public static final String ARG_INCREMENTAL_PRINTSTREAM_KEY = "incremental.printstream";
 
+	public static String bestNameForBuilder(String givenName, IConfigurationElement ce)
+	{
+		StringBuilder sb = new StringBuilder();
+		if(givenName != null)
+			sb.append(givenName).append(" (");
+		String s = ce.getDeclaringExtension().getLabel().trim();
+		if(s.length() == 0)
+			s = ce.getDeclaringExtension().getUniqueIdentifier();
+		sb.append(s);
+		if(givenName != null)
+			sb.append(")");
+		return sb.toString();
+	}
+
+	public static String getValue(Map<String, String> args, String key)
+	{
+		String v = args.get(key);
+		if(v != null)
+		{
+			v = v.trim();
+			if(v.length() == 0)
+				v = null;
+		}
+		return v;
+	}
+
+	public static boolean isDeltaMatching(Map<String, String> args, IProject project, IResourceDelta delta,
+			IResource[] notifyOnChangedResources) throws CoreException
+	{
+		// if there's no delta available, just go on
+		//
+		if(delta == null)
+			return true;
+
+		// if there is no delta resource configured, everything matches
+		//
+		String deltaResource = getValue(args, ARG_DELTA_RESOURCE_KEY);
+		if(deltaResource == null)
+			return true;
+
+		// try to find the configured delta resource
+		//
+		if(delta.findMember(new Path(deltaResource)) != null)
+			return true;
+
+		// anything the builder wishes change notifications about are
+		// implicitly delta resources
+		// note: delta checks are for auto/incremental, notifications for any
+		// change, so they are otherwise different usecases
+		if(notifyOnChangedResources != null)
+		{
+			for(IResource r : notifyOnChangedResources)
+				if(delta.findMember(r.getFullPath()) != null)
+					return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isDisabled(Map<String, String> args)
+	{
+		return Boolean.parseBoolean(getValue(args, ARG_DISABLED_KEY));
+	}
+
+	public static boolean isPrintingEnabledForKind(Map<String, String> args, int kind)
+	{
+		String key = null;
+		switch(kind)
+		{
+		case AUTO_BUILD:
+			key = ARG_AUTO_PRINTSTREAM_KEY;
+			break;
+		case CLEAN_BUILD:
+			key = ARG_CLEAN_PRINTSTREAM_KEY;
+			break;
+		case FULL_BUILD:
+			key = ARG_FULL_PRINTSTREAM_KEY;
+			break;
+		case INCREMENTAL_BUILD:
+			key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
+			break;
+		}
+
+		if(key == null)
+			return true;
+
+		// an absent value indicates 'true'
+		//
+		String value = getValue(args, key);
+		if(value == null)
+			return true;
+
+		return Boolean.parseBoolean(value);
+	}
+
+	public static String kindToString(int kind)
+	{
+		if(kind == AUTO_BUILD)
+			return "AUTO";
+		if(kind == CLEAN_BUILD)
+			return "CLEAN";
+		if(kind == FULL_BUILD)
+			return "FULL";
+		if(kind == INCREMENTAL_BUILD)
+			return "INCREMENTAL";
+
+		return "NONE";
+	}
+
+	public static void setDisabled(Map<String, String> args, boolean disabled)
+	{
+		if(disabled)
+			args.put(ARG_DISABLED_KEY, Boolean.TRUE.toString());
+		else
+			args.remove(ARG_DISABLED_KEY);
+	}
+
+	public static void setPrintingEnabledForKind(Map<String, String> args, int kind, boolean enabled)
+	{
+		String key = null;
+		switch(kind)
+		{
+		case AUTO_BUILD:
+			key = ARG_AUTO_PRINTSTREAM_KEY;
+			break;
+		case CLEAN_BUILD:
+			key = ARG_CLEAN_PRINTSTREAM_KEY;
+			break;
+		case FULL_BUILD:
+			key = ARG_FULL_PRINTSTREAM_KEY;
+			break;
+		case INCREMENTAL_BUILD:
+			key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
+			break;
+		}
+
+		if(key != null)
+		{
+			if(enabled)
+				args.remove(key);
+			else
+				args.put(key, Boolean.FALSE.toString());
+		}
+	}
+
 	private IConfigurationElement m_config;
 
 	private Object m_data;
@@ -74,22 +219,11 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	// to set resource notifications, for example
 	private boolean m_initialBuildDone = false;
 
-	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
-		super.setInitializationData(config, propertyName, data);
-
-		m_config = config;
-		m_propertyName = propertyName;
-		m_data = data;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map,
-	 *      org.eclipse.core.runtime.IProgressMonitor)
+	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -125,8 +259,8 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 				}
 
 				if(logger.isDebugEnabled())
-					logger.debug("[start AntBuilder(%s)] : %s - %s",
-							kindToString(kind), getBestName(args), getProject().getName());
+					logger.debug("[start AntBuilder(%s)] : %s - %s", kindToString(kind), getBestName(args),
+							getProject().getName());
 
 				projects = doBuild(kind, args, monitor);
 
@@ -176,14 +310,9 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		this.build(CLEAN_BUILD, this.getCommand().getArguments(), monitor);
 	}
 
-	protected PrintStream getOutStream()
+	protected IProject[] doAutoBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
-		return m_outStream;
-	}
-
-	protected PrintStream getErrStream()
-	{
-		return m_errStream;
+		return null;
 	}
 
 	protected IProject[] doBuild(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException
@@ -198,11 +327,6 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 			return this.doIncrementalBuild(args, monitor);
 
 		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, "Unknown kind", null));
-	}
-
-	protected IProject[] doAutoBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
-	{
-		return null;
 	}
 
 	protected IProject[] doCleanBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
@@ -225,6 +349,11 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		// noop
 	}
 
+	protected String getBestName(Map<String, String> args)
+	{
+		return bestNameForBuilder(this.getGivenName(args), m_config);
+	}
+
 	protected IConfigurationElement getConfig()
 	{
 		return m_config;
@@ -235,9 +364,9 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		return m_data;
 	}
 
-	protected String getBestName(Map<String, String> args)
+	protected PrintStream getErrStream()
 	{
-		return bestNameForBuilder(this.getGivenName(args), m_config);
+		return m_errStream;
 	}
 
 	protected String getGivenName(Map<String, String> args)
@@ -245,103 +374,19 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		return getValue(args, ARG_GIVEN_NAME_KEY);
 	}
 
+	protected PrintStream getOutStream()
+	{
+		return m_outStream;
+	}
+
 	protected String getPropertyName()
 	{
 		return m_propertyName;
 	}
 
-	public static String kindToString(int kind)
+	protected void notifyOnChangedResources(IResource[] resources)
 	{
-		if(kind == AUTO_BUILD)
-			return "AUTO";
-		if(kind == CLEAN_BUILD)
-			return "CLEAN";
-		if(kind == FULL_BUILD)
-			return "FULL";
-		if(kind == INCREMENTAL_BUILD)
-			return "INCREMENTAL";
-
-		return "NONE";
-	}
-
-	@Override
-	protected void startupOnInitialize()
-	{
-		super.startupOnInitialize();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-		this.doStartupOnInitialize();
-	}
-
-	public static String getValue(Map<String, String> args, String key)
-	{
-		String v = args.get(key);
-		if(v != null)
-		{
-			v = v.trim();
-			if(v.length() == 0)
-				v = null;
-		}
-		return v;
-	}
-
-	public static String bestNameForBuilder(String givenName, IConfigurationElement ce)
-	{
-		StringBuilder sb = new StringBuilder();
-		if(givenName != null)
-			sb.append(givenName).append(" (");
-		String s = ce.getDeclaringExtension().getLabel().trim();
-		if(s.length() == 0)
-			s = ce.getDeclaringExtension().getUniqueIdentifier();
-		sb.append(s);
-		if(givenName != null)
-			sb.append(")");
-		return sb.toString();
-	}
-
-	public static boolean isDisabled(Map<String, String> args)
-	{
-		return Boolean.parseBoolean(getValue(args, ARG_DISABLED_KEY));
-	}
-
-	public static boolean isDeltaMatching(Map<String, String> args, IProject project, IResourceDelta delta,
-			IResource[] notifyOnChangedResources) throws CoreException
-	{
-		// if there's no delta available, just go on
-		//
-		if(delta == null)
-			return true;
-
-		// if there is no delta resource configured, everything matches
-		//
-		String deltaResource = getValue(args, ARG_DELTA_RESOURCE_KEY);
-		if(deltaResource == null)
-			return true;
-
-		// try to find the configured delta resource
-		//
-		if(delta.findMember(new Path(deltaResource)) != null)
-			return true;
-
-		// anything the builder wishes change notifications about are
-		// implicitly delta resources
-		// note: delta checks are for auto/incremental, notifications for any
-		// change, so they are otherwise different usecases
-		if(notifyOnChangedResources != null)
-		{
-			for(IResource r : notifyOnChangedResources)
-				if(delta.findMember(r.getFullPath()) != null)
-					return true;
-		}
-
-		return false;
-	}
-
-	public static void setDisabled(Map<String, String> args, boolean disabled)
-	{
-		if(disabled)
-			args.put(ARG_DISABLED_KEY, Boolean.TRUE.toString());
-		else
-			args.remove(ARG_DISABLED_KEY);
+		m_notifyOnChangedResources = resources;
 	}
 
 	public void resourceChanged(IResourceChangeEvent event)
@@ -366,11 +411,6 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		}
 	}
 
-	protected void notifyOnChangedResources(IResource[] resources)
-	{
-		m_notifyOnChangedResources = resources;
-	}
-
 	protected void resourcesChangeNotification(IResource[] changedResources)
 	{
 		// if someone has requested notification and then doesn't listen to it,
@@ -378,62 +418,22 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		throw new IllegalStateException("Method not overridden");
 	}
 
-	public static boolean isPrintingEnabledForKind(Map<String, String> args, int kind)
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+			throws CoreException
 	{
-		String key = null;
-		switch(kind)
-		{
-		case AUTO_BUILD:
-			key = ARG_AUTO_PRINTSTREAM_KEY;
-			break;
-		case CLEAN_BUILD:
-			key = ARG_CLEAN_PRINTSTREAM_KEY;
-			break;
-		case FULL_BUILD:
-			key = ARG_FULL_PRINTSTREAM_KEY;
-			break;
-		case INCREMENTAL_BUILD:
-			key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
-			break;
-		}
+		super.setInitializationData(config, propertyName, data);
 
-		if(key == null)
-			return true;
-
-		// an absent value indicates 'true'
-		//
-		String value = getValue(args, key);
-		if(value == null)
-			return true;
-
-		return Boolean.parseBoolean(value);
+		m_config = config;
+		m_propertyName = propertyName;
+		m_data = data;
 	}
 
-	public static void setPrintingEnabledForKind(Map<String, String> args, int kind, boolean enabled)
+	@Override
+	protected void startupOnInitialize()
 	{
-		String key = null;
-		switch(kind)
-		{
-		case AUTO_BUILD:
-			key = ARG_AUTO_PRINTSTREAM_KEY;
-			break;
-		case CLEAN_BUILD:
-			key = ARG_CLEAN_PRINTSTREAM_KEY;
-			break;
-		case FULL_BUILD:
-			key = ARG_FULL_PRINTSTREAM_KEY;
-			break;
-		case INCREMENTAL_BUILD:
-			key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
-			break;
-		}
-
-		if(key != null)
-		{
-			if(enabled)
-				args.remove(key);
-			else
-				args.put(key, Boolean.FALSE.toString());
-		}
+		super.startupOnInitialize();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		this.doStartupOnInitialize();
 	}
 }

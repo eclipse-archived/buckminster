@@ -55,6 +55,17 @@ public class ActionHandler extends TopLevelAttributeHandler
 		};
 	}
 
+	final void addProductPath(IPath path)
+	{
+		getActionBuilder().addProductPath(path);
+	}
+
+	@Override
+	protected TopLevelAttributeBuilder createAttributeBuilder()
+	{
+		return getCSpecBuilder().createActionBuilder();
+	}
+
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
@@ -71,7 +82,7 @@ public class ActionHandler extends TopLevelAttributeHandler
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
-	
+
 	public ActionBuilder getActionBuilder()
 	{
 		return (ActionBuilder)getBuilder();
@@ -88,19 +99,9 @@ public class ActionHandler extends TopLevelAttributeHandler
 				Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT));
 	}
 
-	final void addProductPath(IPath path)
-	{
-		getActionBuilder().addProductPath(path);
-	}
-
 	final void setProductAlias(String productAlias)
 	{
 		getActionBuilder().setProductAlias(productAlias);
-	}
-
-	final void setProductFileCount(int producFileCount)
-	{
-		getActionBuilder().setProductFileCount(producFileCount);
 	}
 
 	final void setProductBase(IPath productBase)
@@ -108,14 +109,13 @@ public class ActionHandler extends TopLevelAttributeHandler
 		getActionBuilder().setProductBase(productBase);
 	}
 
+	final void setProductFileCount(int producFileCount)
+	{
+		getActionBuilder().setProductFileCount(producFileCount);
+	}
+
 	final void setUpToDatePolicy(UpToDatePolicy policy)
 	{
 		getActionBuilder().setUpToDatePolicy(policy);
-	}
-
-	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
-		return getCSpecBuilder().createActionBuilder();
 	}
 }

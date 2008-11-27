@@ -10,18 +10,22 @@
 
 package org.eclipse.buckminster.core.version;
 
-
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public abstract class AbstractVersion implements IVersion
 {
 	private final IVersionType m_type;
-	
+
 	protected AbstractVersion(IVersionType type)
 	{
 		m_type = type;
+	}
+
+	public boolean equalsUnqualified(IVersion version)
+	{
+		return equals(version);
 	}
 
 	public String getQualifier()
@@ -32,11 +36,6 @@ public abstract class AbstractVersion implements IVersion
 	public IVersionType getType()
 	{
 		return m_type;
-	}
-
-	public boolean equalsUnqualified(IVersion version)
-	{
-		return equals(version);
 	}
 
 	public IVersion replaceQualifier(String string)

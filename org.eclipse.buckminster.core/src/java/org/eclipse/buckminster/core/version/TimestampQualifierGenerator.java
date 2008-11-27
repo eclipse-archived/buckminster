@@ -28,17 +28,25 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the same
- * {@ IReaderType} that was used when the component was first materialized
+ * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the
+ * same {@ IReaderType} that was used when the component was first materialized
  * 
  * @author Thomas Hallgren
  */
 public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static final String FORMAT_PROPERTY = "generator.lastModified.format";
+
 	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm";
-	public static final String[] commonFormats = new String[] { DEFAULT_FORMAT, "'v'yyyyMMdd-HHmm", "'v'yyyyMMdd", "'I'yyyyMMddHHmm", "'I'yyyyMMdd-HHmm", "'I'yyyyMMdd" };
+
+	public static final String[] commonFormats = new String[] { DEFAULT_FORMAT, "'v'yyyyMMdd-HHmm", "'v'yyyyMMdd",
+			"'I'yyyyMMddHHmm", "'I'yyyyMMdd-HHmm", "'I'yyyyMMdd" };
+
 	public static final DateFormat[] commonFormatters;
+
+	// Milliseconds corresponding to approximately 10 years
+	//
+	private static final long SANITY_THRESHOLD = (10L * 365L + 5L) * 24L * 60L * 60L * 1000L;
 
 	static
 	{
@@ -51,6 +59,17 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			dm.setLenient(false);
 			commonFormatters[idx] = dm;
 		}
+	}
+
+	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
+	{
+		long now = System.currentTimeMillis();
+		long sanePast = now - SANITY_THRESHOLD;
+		Date dt = mf.parse(str);
+		long tm = dt.getTime();
+		if(tm > now || tm < sanePast)
+			throw new ParseException("Bogus", 0);
+		return dt;
 	}
 
 	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
@@ -71,7 +90,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			if(lastMod == null)
 				return currentVersion;
 
-			Map<String,String> props = context.getProperties();
+			Map<String, String> props = context.getProperties();
 			String format = props.get(FORMAT_PROPERTY);
 			if(format == null)
 				format = DEFAULT_FORMAT;
@@ -123,20 +142,5 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		{
 			return currentVersion;
 		}
-	}
-
-	// Milliseconds corresponding to approximately 10 years
-	//
-	private static final long SANITY_THRESHOLD = (10L * 365L + 5L) * 24L * 60L * 60L * 1000L;
-
-	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
-	{
-		long now = System.currentTimeMillis();
-		long sanePast = now - SANITY_THRESHOLD;
-		Date dt = mf.parse(str);
-		long tm = dt.getTime();
-		if(tm > now || tm < sanePast)
-			throw new ParseException("Bogus", 0);
-		return dt;
 	}
 }

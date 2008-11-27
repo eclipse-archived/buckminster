@@ -18,5 +18,6 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IQualifierGenerator
 {
-	IVersion generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException;
+	IVersion generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies)
+			throws CoreException;
 }

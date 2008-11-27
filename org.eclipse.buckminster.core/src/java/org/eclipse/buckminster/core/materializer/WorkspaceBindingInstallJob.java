@@ -27,9 +27,38 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  */
 public class WorkspaceBindingInstallJob extends WorkspaceJob
 {
+	private static class Repeater extends JobChangeAdapter
+	{
+		@Override
+		public void done(IJobChangeEvent event)
+		{
+			Job active = s_active;
+			if(active != null)
+				active.schedule(REPEAT_DELAY);
+		}
+	}
+
 	private static WorkspaceBindingInstallJob s_active = null;
 
 	public static final int REPEAT_DELAY = 60000;
+
+	public static void start()
+	{
+		if(s_active != null)
+			return;
+
+		s_active = new WorkspaceBindingInstallJob();
+		s_active.addJobChangeListener(new Repeater());
+		s_active.schedule(5000);
+	}
+
+	public static void stop()
+	{
+		Job active = s_active;
+		s_active = null;
+		if(active != null)
+			active.cancel();
+	}
 
 	private WorkspaceBindingInstallJob()
 	{
@@ -58,39 +87,11 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 		Arrays.sort(wsBindings);
 		for(WorkspaceBinding wsBinding : wsBindings)
 		{
-			wsMaterializer.installLocal(wsBinding, new RMContext(wsBinding.getProperties()), MonitorUtils.subMonitor(monitor, 100));
+			wsMaterializer.installLocal(wsBinding, new RMContext(wsBinding.getProperties()), MonitorUtils.subMonitor(
+					monitor, 100));
 			wsBinding.remove(sm);
 		}
 		monitor.done();
 		return Status.OK_STATUS;
-	}
-
-	public static void start()
-	{
-		if(s_active != null)
-			return;
-
-		s_active = new WorkspaceBindingInstallJob();
-		s_active.addJobChangeListener(new Repeater());
-		s_active.schedule(5000);
-	}
-
-	public static void stop()
-	{
-		Job active = s_active;
-		s_active = null;
-		if(active != null)
-			active.cancel();
-	}
-
-	private static class Repeater extends JobChangeAdapter
-	{
-		@Override
-		public void done(IJobChangeEvent event)
-		{
-			Job active = s_active;
-			if(active != null)
-				active.schedule(REPEAT_DELAY);
-		}
 	}
 }

@@ -27,9 +27,11 @@ import org.eclipse.update.core.VersionedIdentifier;
 public class SiteFeatureFinder extends AbstractVersionFinder
 {
 	private final ISite m_site;
+
 	private final ComponentRequest m_request;
 
-	SiteFeatureFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	SiteFeatureFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor)
+			throws CoreException
 	{
 		super(provider, ctype, query);
 		m_site = SiteFeatureReaderType.getSite(provider.getURI(query.getProperties()), monitor);
@@ -63,6 +65,8 @@ public class SiteFeatureFinder extends AbstractVersionFinder
 			if(isMatch && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
-		return (bestFit == null) ? null : new VersionMatch(bestFit, null, -1, null, null);
+		return (bestFit == null)
+				? null
+				: new VersionMatch(bestFit, null, -1, null, null);
 	}
 }

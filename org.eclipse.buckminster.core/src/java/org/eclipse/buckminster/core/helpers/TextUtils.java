@@ -38,8 +38,8 @@ public class TextUtils
 	 *            The strings to concatenate.
 	 * @param delim
 	 *            The delimiter to use between the concatenated strings
-	 * @return The concatenated result or <code>null</code> if the <code>strings</code> argument is
-	 *         <code>null</code> or of zero length.
+	 * @return The concatenated result or <code>null</code> if the <code>strings</code> argument is <code>null</code> or
+	 *         of zero length.
 	 */
 	public static String concat(Collection<String> strings, String delim)
 	{
@@ -60,8 +60,8 @@ public class TextUtils
 	 *            The strings to concatenate.
 	 * @param delim
 	 *            The delimiter to use between the concatenated strings
-	 * @return The concatenated result or <code>null</code> if the <code>strings</code> argument is
-	 *         <code>null</code> or of zero length.
+	 * @return The concatenated result or <code>null</code> if the <code>strings</code> argument is <code>null</code> or
+	 *         of zero length.
 	 */
 	public static String concat(String[] strings, String delim)
 	{
@@ -75,10 +75,10 @@ public class TextUtils
 	}
 
 	/**
-	 * Appends a <code>delim</code> separated list of <code>strings</code> onto <code>builder</code>. It is
-	 * assumed that none of the supplied strings contains the <code>delim</code>. This method will not add escape
-	 * characters or the like. No leading or trailing <code>delim</code> will be added and nothing at all will be
-	 * added if the array <code>strings</code> is <code>null</code> or of zero length.
+	 * Appends a <code>delim</code> separated list of <code>strings</code> onto <code>builder</code>. It is assumed that
+	 * none of the supplied strings contains the <code>delim</code>. This method will not add escape characters or the
+	 * like. No leading or trailing <code>delim</code> will be added and nothing at all will be added if the array
+	 * <code>strings</code> is <code>null</code> or of zero length.
 	 * 
 	 * @param builder
 	 *            The receiver.
@@ -104,10 +104,10 @@ public class TextUtils
 	}
 
 	/**
-	 * Appends a <code>delim</code> separated list of <code>strings</code> onto <code>builder</code>. It is
-	 * assumed that none of the supplied strings contains the <code>delim</code>. This method will not add escape
-	 * characters or the like. No leading or trailing <code>delim</code> will be added and nothing at all will be
-	 * added if the array <code>strings</code> is <code>null</code> or of zero length.
+	 * Appends a <code>delim</code> separated list of <code>strings</code> onto <code>builder</code>. It is assumed that
+	 * none of the supplied strings contains the <code>delim</code>. This method will not add escape characters or the
+	 * like. No leading or trailing <code>delim</code> will be added and nothing at all will be added if the array
+	 * <code>strings</code> is <code>null</code> or of zero length.
 	 * 
 	 * @param builder
 	 *            The receiver.
@@ -133,10 +133,10 @@ public class TextUtils
 	}
 
 	/**
-	 * Writes a <code>delim</code> separated list of <code>strings</code> onto <code>writer</code>. It is assumed
-	 * that none of the supplied strings contains the <code>delim</code>. This method will not add escape characters
-	 * or the like. No leading or trailing <code>delim</code> will be written and nothing at all will be written if
-	 * the array <code>strings</code> is <code>null</code> or of zero length.
+	 * Writes a <code>delim</code> separated list of <code>strings</code> onto <code>writer</code>. It is assumed that
+	 * none of the supplied strings contains the <code>delim</code>. This method will not add escape characters or the
+	 * like. No leading or trailing <code>delim</code> will be written and nothing at all will be written if the array
+	 * <code>strings</code> is <code>null</code> or of zero length.
 	 * 
 	 * @param writer
 	 *            The receiver.
@@ -177,6 +177,7 @@ public class TextUtils
 			pairs[idx] = pairs[idx].replace("&&", "&");
 		return pairs;
 	}
+
 	public static String encodeFromQueryPairs(List<String> pairs)
 	{
 		if(pairs == null || pairs.size() == 0)
@@ -199,12 +200,14 @@ public class TextUtils
 	}
 
 	/**
-	 * Returns the index of <code>element</code> in the array <code>array</code> or
-	 * <code>-1</code> if <code>element</code> is not equal to any of the
-	 * <code>array</code> elements. The method will return <code>-1</code> if any of the arguments
-	 * is <code>null</code>.
-	 * @param array The array to search in
-	 * @param element The element to find
+	 * Returns the index of <code>element</code> in the array <code>array</code> or <code>-1</code> if
+	 * <code>element</code> is not equal to any of the <code>array</code> elements. The method will return
+	 * <code>-1</code> if any of the arguments is <code>null</code>.
+	 * 
+	 * @param array
+	 *            The array to search in
+	 * @param element
+	 *            The element to find
 	 * @return The index of the found element or <code>-1</code>
 	 */
 	public static int indexOf(String[] array, String element)
@@ -269,16 +272,11 @@ public class TextUtils
 		return sb.toString();
 	}
 
-	public static String notNullString(Object txt)
-	{
-		return txt == null
-				? ""
-				: txt.toString();
-	}
-
 	public static String notEmptyString(String s)
 	{
-		return (s == null || s.length() == 0) ? null : s;
+		return (s == null || s.length() == 0)
+				? null
+				: s;
 	}
 
 	public static String notEmptyTrimmedString(String s)
@@ -292,6 +290,13 @@ public class TextUtils
 				s = null;
 		}
 		return s;
+	}
+
+	public static String notNullString(Object txt)
+	{
+		return txt == null
+				? ""
+				: txt.toString();
 	}
 
 	public static Map<String, String> queryAsParameters(String query)
@@ -345,6 +350,8 @@ public class TextUtils
 				}
 			}
 		}
-		return bld == null ? Trivial.EMPTY_STRING_ARRAY : bld.toArray(new String[bld.size()]);
+		return bld == null
+				? Trivial.EMPTY_STRING_ARRAY
+				: bld.toArray(new String[bld.size()]);
 	}
 }

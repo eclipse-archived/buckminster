@@ -21,32 +21,38 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * A catalog reader knows how to read individual files from a component stored at a some
- * arbitrary location.
+ * A catalog reader knows how to read individual files from a component stored at a some arbitrary location.
+ * 
  * @author Thomas Hallgren
  */
 public interface ICatalogReader extends IComponentReader
 {
 	/**
-	 * Returns <code>true</code> if a file with the given name exists within
-	 * the component that this reader is associated with.
+	 * Returns <code>true</code> if a file with the given name exists within the component that this reader is
+	 * associated with.
+	 * 
 	 * @param fileName
-	 * @param monitor The progress monitor.
+	 * @param monitor
+	 *            The progress monitor.
 	 * @return <code>true</code> if the file exists.
 	 * @throws CoreException
 	 */
 	boolean exists(String fileName, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Obtain the content of file <code>fileName</code> as a local file. 
-	 * @param fileName The file to obtain
-	 * @param monitor The progress monitor.
+	 * Obtain the content of file <code>fileName</code> as a local file.
+	 * 
+	 * @param fileName
+	 *            The file to obtain
+	 * @param monitor
+	 *            The progress monitor.
 	 * @return a handle to a file
 	 */
 	FileHandle getContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException;
 
 	/**
 	 * Obtain files from the root directory whos name matches the given pattern.
+	 * 
 	 * @param matchPattern
 	 * @param monitor
 	 * @return A list of files, possibly empty but never null
@@ -56,26 +62,19 @@ public interface ICatalogReader extends IComponentReader
 	List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException, IOException;
 
 	/**
-	 * Read the project specific preferences for Buckminster from the remote source.
-	 *
-	 * @param monitor
-	 * @return The found preferences or <code>null</code> if the file is missing
-	 * @throws CoreException
-	 */
-	IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException;
-
-	/**
 	 * Same as {@link #materialize(IPath, IProgressMonitor)} but overlay folders are not considered.
-	 * @param destination The destination for the materialization
-	 * @param monitor The progress monitor.
+	 * 
+	 * @param destination
+	 *            The destination for the materialization
+	 * @param monitor
+	 *            The progress monitor.
 	 * @throws CoreException
 	 */
 	void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Returns a list of strings representing what is found at the root of this
-	 * reader. Folders with end with a slash.
-	 *
+	 * Returns a list of strings representing what is found at the root of this reader. Folders with end with a slash.
+	 * 
 	 * @param monitor
 	 * @return
 	 * @throws CoreException
@@ -83,12 +82,26 @@ public interface ICatalogReader extends IComponentReader
 	List<String> list(IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Read the project specific preferences for Buckminster from the remote source.
+	 * 
+	 * @param monitor
+	 * @return The found preferences or <code>null</code> if the file is missing
+	 * @throws CoreException
+	 */
+	IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * Read a file and send the result to the <code>consumer</code>.
-	 * @param fileName The name of the file relative to the root of this reader.
-	 * @param consumer The consumer that will be handed the InputStream.
-	 * @param monitor The progress monitor.
+	 * 
+	 * @param fileName
+	 *            The name of the file relative to the root of this reader.
+	 * @param consumer
+	 *            The consumer that will be handed the InputStream.
+	 * @param monitor
+	 *            The progress monitor.
 	 * @return The value returned by the consumer.
 	 * @throws CoreException
 	 */
-	<T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException;
+	<T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException,
+			IOException;
 }

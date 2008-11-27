@@ -26,21 +26,13 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class BOMBuilder extends AbstractResolutionBuilder implements IStreamConsumer<BillOfMaterials>
 {
-	public BillOfMaterials consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws CoreException
-	{
-		IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-		return bomParser.parse(streamName, stream);
-	}
-
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
+			IProgressMonitor monitor) throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		try
@@ -65,5 +57,11 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 			throw BuckminsterException.wrap(e);
 		}
 	}
-}
 
+	public BillOfMaterials consumeStream(IComponentReader reader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws CoreException
+	{
+		IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
+		return bomParser.parse(streamName, stream);
+	}
+}

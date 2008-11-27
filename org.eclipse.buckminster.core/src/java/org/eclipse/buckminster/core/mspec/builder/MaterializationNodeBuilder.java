@@ -17,18 +17,26 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder implements IMaterializationNode
 {
 	private Pattern m_namePattern;
+
 	private IPath m_leafArtifact;
+
 	private String m_componentTypeID;
+
 	private boolean m_exclude;
+
 	private Pattern m_bindingNamePattern;
+
 	private String m_bindingNameReplacement;
+
 	private String m_suffix;
+
 	private boolean m_unpack;
+
 	private boolean m_expand = true;
 
 	// Only valid when materializing into workspace
@@ -81,11 +89,6 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		return m_componentTypeID;
 	}
 
-	public void setComponentTypeID(String componentTypeID)
-	{
-		m_componentTypeID = componentTypeID;
-	}
-
 	public IPath getLeafArtifact()
 	{
 		return m_leafArtifact;
@@ -104,31 +107,6 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 	public String getSuffix()
 	{
 		return m_suffix;
-	}
-
-	public boolean isExpand()
-	{
-		return m_expand;
-	}
-
-	public boolean isUnpack()
-	{
-		return m_unpack;
-	}
-
-	public void setBindingNamePattern(Pattern bindingNamePattern)
-	{
-		m_bindingNamePattern = bindingNamePattern;
-	}
-
-	public void setBindingNameReplacement(String bindingNameReplacement)
-	{
-		m_bindingNameReplacement = bindingNameReplacement;
-	}
-
-	public void setNamePattern(Pattern namePattern)
-	{
-		m_namePattern = namePattern;
 	}
 
 	public void initFrom(IMaterializationNode mn)
@@ -151,6 +129,31 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		return m_exclude;
 	}
 
+	public boolean isExpand()
+	{
+		return m_expand;
+	}
+
+	public boolean isUnpack()
+	{
+		return m_unpack;
+	}
+
+	public void setBindingNamePattern(Pattern bindingNamePattern)
+	{
+		m_bindingNamePattern = bindingNamePattern;
+	}
+
+	public void setBindingNameReplacement(String bindingNameReplacement)
+	{
+		m_bindingNameReplacement = bindingNameReplacement;
+	}
+
+	public void setComponentTypeID(String componentTypeID)
+	{
+		m_componentTypeID = componentTypeID;
+	}
+
 	public void setExclude(boolean exclude)
 	{
 		m_exclude = exclude;
@@ -164,6 +167,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 	public void setLeafArtifact(IPath leafArtifact)
 	{
 		m_leafArtifact = leafArtifact;
+	}
+
+	public void setNamePattern(Pattern namePattern)
+	{
+		m_namePattern = namePattern;
 	}
 
 	public void setResourcePath(IPath resourcePath)

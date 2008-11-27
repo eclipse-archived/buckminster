@@ -33,17 +33,24 @@ import org.eclipse.core.runtime.IStatus;
 public class GlobalContext extends ModelCache implements IGlobalContext
 {
 	private final ArrayList<Integer> m_executedEclipseKinds = new ArrayList<Integer>();
+
 	private final ArrayList<IPath> m_scheduledRemovals = new ArrayList<IPath>();
-	private final Map<UUID,Object> m_invocationCache = new HashMap<UUID,Object>();
+
+	private final Map<UUID, Object> m_invocationCache = new HashMap<UUID, Object>();
+
 	private final HashSet<Action> m_actionsPerformed = new HashSet<Action>();
+
 	private final Map<String, String> m_globalProps;
+
 	private final boolean m_forcedExecution;
+
 	private final boolean m_quietExecution;
 
 	private boolean m_workspaceRefreshPending;
+
 	private IStatus m_status;
 
-	public GlobalContext(Map<String,String> userProps, boolean forcedExecution, boolean quietExecution)
+	public GlobalContext(Map<String, String> userProps, boolean forcedExecution, boolean quietExecution)
 	{
 		super(userProps);
 		m_globalProps = RMContext.getGlobalPropertyAdditions();
@@ -51,14 +58,22 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 		m_quietExecution = quietExecution;
 	}
 
-	public Map<UUID,Object> getInvocationCache()
+	/**
+	 * Add an <code>action</code> to the set of performed actions.
+	 * 
+	 * @param action
+	 *            The action to add.
+	 */
+	void addPerformedAction(Action action)
 	{
-		return m_invocationCache ;
+		m_actionsPerformed.add(action);
 	}
 
-	public Map<String,String> getExecutionProperties(Attribute attribute) throws CoreException
+	public Map<String, String> getExecutionProperties(Attribute attribute) throws CoreException
 	{
-		Map<String,String> actionProps = (attribute instanceof IAction) ? ((IAction)attribute).getProperties() : Collections.<String,String>emptyMap();
+		Map<String, String> actionProps = (attribute instanceof IAction)
+				? ((IAction)attribute).getProperties()
+				: Collections.<String, String> emptyMap();
 		int mapSize = m_globalProps.size() + actionProps.size() + 10;
 		ExpandingProperties allProps = new ExpandingProperties(mapSize);
 		allProps.putAll(m_globalProps, true);
@@ -66,6 +81,11 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 		allProps.putAll(super.getProperties());
 		attribute.addDynamicProperties(allProps);
 		return allProps;
+	}
+
+	public Map<UUID, Object> getInvocationCache()
+	{
+		return m_invocationCache;
 	}
 
 	/**
@@ -89,46 +109,17 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 		return m_status;
 	}
 
-	public void setStatus(IStatus status)
-	{
-		m_status = status;
-	}
-
-	public void scheduleRemoval(IPath path)
-	{
-		if(!path.isAbsolute())
-			throw new IllegalArgumentException("Only absolute paths can be scheduled for removal");
-
-		int idx = m_scheduledRemovals.size();
-		while(--idx >= 0)
-		{
-			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
-			if(alreadyScheduled.isPrefixOf(path))
-				return;
-			if(path.isPrefixOf(alreadyScheduled))
-				m_scheduledRemovals.remove(idx);
-		}
-		m_scheduledRemovals.add(path);
-	}
-
-	/**
-	 * Add an <code>action</code> to the set of performed actions.
-	 * @param action The action to add.
-	 */
-	void addPerformedAction(Action action)
-	{
-		m_actionsPerformed.add(action);
-	}
-
 	boolean hasExecutedKind(int kind)
 	{
 		return m_executedEclipseKinds.contains(new Integer(kind));
 	}
 
 	/**
-	 * Checks if the <code>action</code> is among the actions that were added using
-	 * the {@link #addPerformedAction(Action)} method.
-	 * @param action The action to check
+	 * Checks if the <code>action</code> is among the actions that were added using the
+	 * {@link #addPerformedAction(Action)} method.
+	 * 
+	 * @param action
+	 *            The action to check
 	 * @return <code>true</code> if the action has been added.
 	 */
 	boolean hasPerformedAction(IAction action)
@@ -168,7 +159,8 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 			{
 				try
 				{
-					FileUtils.deleteRecursive(m_scheduledRemovals.get(idx).toFile(), MonitorUtils.subMonitor(monitor, 10));
+					FileUtils.deleteRecursive(m_scheduledRemovals.get(idx).toFile(), MonitorUtils.subMonitor(monitor,
+							10));
 				}
 				catch(DeleteException e)
 				{
@@ -181,6 +173,28 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 			monitor.done();
 		}
 		m_scheduledRemovals.clear();
+	}
+
+	public void scheduleRemoval(IPath path)
+	{
+		if(!path.isAbsolute())
+			throw new IllegalArgumentException("Only absolute paths can be scheduled for removal");
+
+		int idx = m_scheduledRemovals.size();
+		while(--idx >= 0)
+		{
+			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
+			if(alreadyScheduled.isPrefixOf(path))
+				return;
+			if(path.isPrefixOf(alreadyScheduled))
+				m_scheduledRemovals.remove(idx);
+		}
+		m_scheduledRemovals.add(path);
+	}
+
+	public void setStatus(IStatus status)
+	{
+		m_status = status;
 	}
 
 	void setWorkspaceRefreshPending(boolean flag)

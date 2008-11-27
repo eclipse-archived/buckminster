@@ -34,16 +34,17 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 
 	public static final String XHTML_TAG = "div";
 
-	private static final String LEAD_IN =
-		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<div xmlns=\"http://www.w3.org/1999/xhtml\">";
+	private static final String LEAD_IN = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+			+ "<div xmlns=\"http://www.w3.org/1999/xhtml\">";
 
-	private static final String TAIL =
-		"</div>";
+	private static final String TAIL = "</div>";
 
 	/**
-	 * Parse a text snipped into a Documentation object. This method will first wrap
-	 * the snipped in a XHTML &lt;div&gt; tag and then parse it using the {@link DocumentationParser}
-	 * @param doc The text to be parsed.
+	 * Parse a text snipped into a Documentation object. This method will first wrap the snipped in a XHTML &lt;div&gt;
+	 * tag and then parse it using the {@link DocumentationParser}
+	 * 
+	 * @param doc
+	 *            The text to be parsed.
 	 * @return A documentation object
 	 * @throws CoreException
 	 */
@@ -67,8 +68,9 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 	}
 
 	/**
-	 * Merge a documentation with another documentation. The new documentation found in <code>doc</code> is appended
-	 * to the end of this documentation.
+	 * Merge a documentation with another documentation. The new documentation found in <code>doc</code> is appended to
+	 * the end of this documentation.
+	 * 
 	 * @param doc
 	 * @return The merged documentation.
 	 */
@@ -112,10 +114,12 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 	}
 
 	/**
-	 * Emits the SAX events for a an XML document with the XHTML &lt;div&gt; tag as the root
-	 * element.
-	 * @param receiver The content handler to receive the SAX events
-	 * @throws SAXException if something goes wrong during the event generation
+	 * Emits the SAX events for a an XML document with the XHTML &lt;div&gt; tag as the root element.
+	 * 
+	 * @param receiver
+	 *            The content handler to receive the SAX events
+	 * @throws SAXException
+	 *             if something goes wrong during the event generation
 	 */
 	public void toSax(ContentHandler receiver) throws SAXException
 	{
@@ -125,8 +129,7 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 	}
 
 	@Override
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-	throws SAXException
+	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
 		receiver.startPrefixMapping("", XMLConstants.XHTML_NS);
 		super.toSax(receiver, namespace, prefix, localName);
@@ -134,8 +137,7 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 	}
 
 	/**
-	 * Returns the XHTML content of top element in the form of a String. The tag of the top element is
-	 * not included.
+	 * Returns the XHTML content of top element in the form of a String. The tag of the top element is not included.
 	 */
 	@Override
 	public String toString()
@@ -159,7 +161,7 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 			int lastIdx = xmlContent.lastIndexOf("</" + XHTML_TAG + ">");
 			if(lastIdx < idx)
 				return null;
-			
+
 			return xmlContent.substring(idx, lastIdx);
 		}
 		catch(SAXException e)

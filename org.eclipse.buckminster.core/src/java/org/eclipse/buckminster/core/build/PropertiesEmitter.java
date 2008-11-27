@@ -36,10 +36,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * An Abstract Builder that emits the properties to some location.
+ * 
  * @author Thomas Hallgren
  */
-public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
-	implements IResourceChangeListener
+public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder implements IResourceChangeListener
 {
 	/**
 	 * The path, relative to the project root, of the properties file.
@@ -47,20 +47,19 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 	public static final String ARG_FILE = "file";
 
 	/**
-	 * File separator. Defaults to setting of system property
-	 * &quot;file.separator&quot;
+	 * File separator. Defaults to setting of system property &quot;file.separator&quot;
 	 */
 	public static final String ARG_FILE_SEPARATOR = "file.separator";
 
 	/**
-	 * A boolean argument denoting wether or not the already present properties
-	 * should be retained (truncate == false) or discarded (truncate == true).
+	 * A boolean argument denoting wether or not the already present properties should be retained (truncate == false)
+	 * or discarded (truncate == true).
 	 */
 	public static final String ARG_TRUNCATE = "truncate";
 
 	public static final String DEFAULT_PROPERTY_FILE = "buckminster.properties";
 
-	private Map<String,String> m_arguments;
+	private Map<String, String> m_arguments;
 
 	private HashMap<String, Format> m_formatters;
 
@@ -68,50 +67,36 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 
 	private IFile m_propertyFile;
 
-	@Override
-	public void resourceChanged(IResourceChangeEvent event)
-	{
-		if(event.getType() != IResourceChangeEvent.POST_CHANGE || m_propertyFile == null)
-			return;
-
-		IResourceDelta propFileDelta = event.getDelta().findMember(m_propertyFile.getFullPath());
-		if(propFileDelta != null && (propFileDelta.getKind() & IResourceDelta.REMOVED) != 0)
-			//
-			// Someone removed our property file. Let's make sure it's rebuilt
-			//
-			this.forgetLastBuiltState();
-	}
-
-	public void doStartupOnIntialize()
-		throws CoreException
-	{
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-	}
-
 	/**
-	 * Add a format that can be used when creating the keys in the emitted
-	 * properties. Before adding the <code>defaultFormat</code>, a check is
-	 * made if an alternative format has been provided in the <code>args</code>
+	 * Add a format that can be used when creating the keys in the emitted properties. Before adding the
+	 * <code>defaultFormat</code>, a check is made if an alternative format has been provided in the <code>args</code>
 	 * map that was supplied to the <b>build</b> method.
-	 * @param argKey The key to use when obtaining the formatter.
-	 * @param defaultFormat The default formatter.
+	 * 
+	 * @param argKey
+	 *            The key to use when obtaining the formatter.
+	 * @param defaultFormat
+	 *            The default formatter.
 	 */
 	protected void addFormat(String argKey, Format defaultFormat)
 	{
 		String arg = this.getArgument(argKey);
-		m_formatters.put(argKey, (arg == null) ? defaultFormat : new MessageFormat(arg));
+		m_formatters.put(argKey, (arg == null)
+				? defaultFormat
+				: new MessageFormat(arg));
 	}
 
 	/**
-	 * Subclasses should implement this method to supply formatters for the key
-	 * of each of the properties that it intend to emit.
+	 * Subclasses should implement this method to supply formatters for the key of each of the properties that it intend
+	 * to emit.
+	 * 
 	 * @see #addFormat
 	 */
 	protected abstract void addFormatters();
 
 	/**
-	 * Add a property to the set of properties that will be emitted. The
-	 * formatKey must correspond to a previously added formatter.
+	 * Add a property to the set of properties that will be emitted. The formatKey must correspond to a previously added
+	 * formatter.
+	 * 
 	 * @param formatKey
 	 * @param keyArgs
 	 * @param value
@@ -124,26 +109,34 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 	}
 
 	/**
-	 * Subclasses should implement this method to add the properties that it
-	 * wants to emit.
+	 * Subclasses should implement this method to add the properties that it wants to emit.
+	 * 
 	 * @throws CoreException
 	 */
 	protected abstract void appendProperties() throws CoreException;
 
 	@Override
-	protected IProject[] doAutoBuild(Map<String,String> args, IProgressMonitor monitor) throws CoreException
+	protected IProject[] doAutoBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
 		return this.doFullBuild(args, monitor);
 	}
 
 	@Override
-	protected IProject[] doIncrementalBuild(Map<String,String> args, IProgressMonitor monitor) throws CoreException
+	protected IProject[] doCleanBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
-		return this.doFullBuild(args, monitor);
+		if(m_propertyFile != null)
+		{
+			monitor.beginTask("Deleting " + m_propertyFile, 100);
+			m_propertyFile.refreshLocal(IResource.DEPTH_ZERO, MonitorUtils.subMonitor(monitor, 50));
+			if(m_propertyFile.exists())
+				m_propertyFile.delete(false, false, MonitorUtils.subMonitor(monitor, 50));
+			monitor.done();
+		}
+		return null;
 	}
 
 	@Override
-	protected IProject[] doFullBuild(Map<String,String> args, IProgressMonitor monitor) throws CoreException
+	protected IProject[] doFullBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
 		m_arguments = args;
 		m_formatters = new HashMap<String, Format>();
@@ -163,8 +156,8 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 		monitor.subTask("Emitting properties");
 
 		m_propertyFile.refreshLocal(IResource.DEPTH_ZERO, MonitorUtils.subMonitor(monitor, 1));
-		Map<String,String> oldProps = null;
-		
+		Map<String, String> oldProps = null;
+
 		if(m_propertyFile.exists())
 		{
 			InputStream recentProperties = null;
@@ -202,7 +195,7 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 				if(!m_properties.equals(oldProps))
 				{
 					m_propertyFile.setContents(output.getInputStream(), false, false, storeMonitor);
-					
+
 					// Might stem from a project created on existing folders.
 					//
 					m_propertyFile.setDerived(true);
@@ -232,22 +225,21 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 	}
 
 	@Override
-	protected IProject[] doCleanBuild(Map<String,String> args, IProgressMonitor monitor) throws CoreException
+	protected IProject[] doIncrementalBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
-		if(m_propertyFile != null)
-		{
-			monitor.beginTask("Deleting " + m_propertyFile, 100);
-			m_propertyFile.refreshLocal(IResource.DEPTH_ZERO, MonitorUtils.subMonitor(monitor, 50));
-			if(m_propertyFile.exists())
-				m_propertyFile.delete(false, false, MonitorUtils.subMonitor(monitor, 50));
-			monitor.done();
-		}
-		return null;
+		return this.doFullBuild(args, monitor);
+	}
+
+	public void doStartupOnIntialize() throws CoreException
+	{
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/**
 	 * Format the path according to value of <code>ARG_FILE_SEPARATOR</code>.
-	 * @param path path to format.
+	 * 
+	 * @param path
+	 *            path to format.
 	 * @return The formatted path.
 	 */
 	protected final String formatPath(IPath path)
@@ -264,14 +256,31 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder
 	}
 
 	/**
-	 * Returns a value supplied in the <code>args</code> argument of the
-	 * <code>build</code> method or <code>null</code> if the given
-	 * <code>key</code> was not found.
-	 * @param key The key used when obtaining the value.
+	 * Returns a value supplied in the <code>args</code> argument of the <code>build</code> method or <code>null</code>
+	 * if the given <code>key</code> was not found.
+	 * 
+	 * @param key
+	 *            The key used when obtaining the value.
 	 * @return The value or <code>null</code>.
 	 */
 	protected final String getArgument(String key)
 	{
-		return m_arguments == null ? null : (String)m_arguments.get(key);
+		return m_arguments == null
+				? null
+				: (String)m_arguments.get(key);
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event)
+	{
+		if(event.getType() != IResourceChangeEvent.POST_CHANGE || m_propertyFile == null)
+			return;
+
+		IResourceDelta propFileDelta = event.getDelta().findMember(m_propertyFile.getFullPath());
+		if(propFileDelta != null && (propFileDelta.getKind() & IResourceDelta.REMOVED) != 0)
+			//
+			// Someone removed our property file. Let's make sure it's rebuilt
+			//
+			this.forgetLastBuiltState();
 	}
 }

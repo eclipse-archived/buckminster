@@ -8,6 +8,8 @@ import org.eclipse.core.runtime.IPath;
 
 public interface IMaterializationDirective extends IAdaptable
 {
+	ConflictResolution getConflictResolution();
+
 	Documentation getDocumentation();
 
 	IPath getInstallLocation();
@@ -16,9 +18,7 @@ public interface IMaterializationDirective extends IAdaptable
 
 	int getMaxParallelJobs();
 
-	IPath getWorkspaceLocation();
-
 	Map<String, String> getProperties();
 
-	ConflictResolution getConflictResolution();
+	IPath getWorkspaceLocation();
 }

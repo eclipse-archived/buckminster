@@ -20,13 +20,20 @@ import org.xml.sax.SAXException;
 public class ElementRefHandler extends ExtensionAwareHandler
 {
 	public static final String ATTR_REFID = "refId";
+
 	private final String m_tag;
+
 	private UUID m_refId;
 
 	public ElementRefHandler(AbstractHandler parent, String name)
 	{
 		super(parent);
 		m_tag = name;
+	}
+
+	final UUID getRefId()
+	{
+		return m_refId;
 	}
 
 	@Override
@@ -36,14 +43,8 @@ public class ElementRefHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_refId = UUID.fromString(this.getStringValue(attrs, ATTR_REFID));
-	}
-
-	final UUID getRefId()
-	{
-		return m_refId;
 	}
 }

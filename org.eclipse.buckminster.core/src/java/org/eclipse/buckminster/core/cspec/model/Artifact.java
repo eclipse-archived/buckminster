@@ -59,21 +59,6 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 		m_paths = CSpec.createUnmodifiablePaths(builder.getPaths());
 	}
 
-	public IPath getBase()
-	{
-		return m_base;
-	}
-
-	public Set<IPath> getPaths()
-	{
-		return m_paths;
-	}
-
-	public final String getType()
-	{
-		return m_type;
-	}
-
 	@Override
 	protected void addAttributes(AttributesImpl attrs)
 	{
@@ -104,6 +89,11 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 			}
 	}
 
+	public IPath getBase()
+	{
+		return m_base;
+	}
+
 	protected IPath getExpandedBase(Map<String, String> local) throws CoreException
 	{
 		if(m_base == null)
@@ -111,13 +101,23 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 
 		IPath base = PerformManager.expandPath(local, m_base);
 		return base.isAbsolute()
-			? base
-			: getCSpec().getComponentLocation().append(base);
+				? base
+				: getCSpec().getComponentLocation().append(base);
+	}
+
+	public Set<IPath> getPaths()
+	{
+		return m_paths;
+	}
+
+	public final String getType()
+	{
+		return m_type;
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
-			throws CoreException
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
+			Stack<IAttributeFilter> filters) throws CoreException
 	{
 		int idx = m_paths.size();
 		IPath[] pathArr;

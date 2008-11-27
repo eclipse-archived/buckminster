@@ -30,6 +30,21 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		super(parent, TAG, builder);
 	}
 
+	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		ChildHandler ch;
+		if(UnpackHandler.TAG.equals(localName))
+		{
+			if(m_unpackHandler == null)
+				m_unpackHandler = new UnpackHandler(this);
+			ch = m_unpackHandler;
+		}
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
+	}
+
 	public MaterializationNodeBuilder getMaterializationNodeBuilder()
 	{
 		return (MaterializationNodeBuilder)getBuilder();
@@ -51,21 +66,7 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 		if(tmp != null)
 			builder.setResourcePath(Path.fromPortableString(tmp));
 		builder.setBindingNamePattern(getOptionalPatternValue(attrs, MaterializationNode.ATTR_BINDING_NAME_PATTERN));
-		builder.setBindingNameReplacement(getOptionalStringValue(attrs, MaterializationNode.ATTR_BINDING_NAME_REPLACEMENT));
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		ChildHandler ch;
-		if(UnpackHandler.TAG.equals(localName))
-		{
-			if(m_unpackHandler == null)
-				m_unpackHandler = new UnpackHandler(this);
-			ch = m_unpackHandler;
-		}
-		else
-			ch = super.createHandler(uri, localName, attrs);
-		return ch;
+		builder.setBindingNameReplacement(getOptionalStringValue(attrs,
+				MaterializationNode.ATTR_BINDING_NAME_REPLACEMENT));
 	}
 }

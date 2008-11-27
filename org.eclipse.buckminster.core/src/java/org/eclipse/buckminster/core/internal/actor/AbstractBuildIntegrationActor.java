@@ -27,6 +27,11 @@ import org.eclipse.core.runtime.Status;
  */
 public abstract class AbstractBuildIntegrationActor extends AbstractActor
 {
+	protected String getNameForKind(IActionContext ctx)
+	{
+		return ctx.getAction().getName();
+	}
+
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
@@ -38,15 +43,18 @@ public abstract class AbstractBuildIntegrationActor extends AbstractActor
 				return Status.OK_STATUS;
 
 			project.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 100));
-			project.build(WellknownActions.ECLIPSE.name2Kind(getNameForKind(ctx)), MonitorUtils.subMonitor(monitor, 200));
+			project.build(WellknownActions.ECLIPSE.name2Kind(getNameForKind(ctx)), MonitorUtils
+					.subMonitor(monitor, 200));
 			for(IMarker problem : project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
 			{
 				switch(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO))
 				{
 				case IMarker.SEVERITY_ERROR:
-					throw new CoreException(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, problem.getAttribute(IMarker.MESSAGE, ""), null));
+					throw new CoreException(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, problem
+							.getAttribute(IMarker.MESSAGE, ""), null));
 				case IMarker.SEVERITY_WARNING:
-					return new Status(IStatus.WARNING, CorePlugin.getID(), IStatus.OK, problem.getAttribute(IMarker.MESSAGE, ""), null);
+					return new Status(IStatus.WARNING, CorePlugin.getID(), IStatus.OK, problem.getAttribute(
+							IMarker.MESSAGE, ""), null);
 				}
 			}
 			return Status.OK_STATUS;
@@ -55,10 +63,5 @@ public abstract class AbstractBuildIntegrationActor extends AbstractActor
 		{
 			monitor.done();
 		}
-	}
-
-	protected String getNameForKind(IActionContext ctx)
-	{
-		return ctx.getAction().getName();
 	}
 }

@@ -17,16 +17,17 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * Functionality common to <code>Split</code> and <code>GroupSplit</code>.
- *
+ * 
  * @author Thomas Hallgren
  */
 public abstract class AbstractSplit extends ValueHolderFilter
 {
 	public static final String TAG = "split";
+
 	public static final String ATTR_STYLE = "style";
+
 	public static final String ATTR_PATTERN = "pattern";
 
 	private final Pattern m_pattern;
@@ -37,28 +38,9 @@ public abstract class AbstractSplit extends ValueHolderFilter
 	}
 
 	@Override
-	public boolean equals(Object o)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		return super.equals(o) && m_pattern.equals(((AbstractSplit)o).m_pattern);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + m_pattern.hashCode();
-		return hc;
-	}
-
-	/**
-	 * This method will always return <code>true</code> since a split
-	 * may produce more then one value.
-	 * @return <code>true</code>, always.
-	 */
-	@Override
-	public boolean isMultiValueProducer()
-	{
-		return true;
+		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
 	}
 
 	@Override
@@ -78,9 +60,10 @@ public abstract class AbstractSplit extends ValueHolderFilter
 		return bld.toString();
 	}
 
-	final Pattern getPattern()
+	@Override
+	public boolean equals(Object o)
 	{
-		return m_pattern;
+		return super.equals(o) && m_pattern.equals(((AbstractSplit)o).m_pattern);
 	}
 
 	public String getDefaultTag()
@@ -88,10 +71,27 @@ public abstract class AbstractSplit extends ValueHolderFilter
 		return TAG;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	final Pattern getPattern()
 	{
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
+		return m_pattern;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + m_pattern.hashCode();
+		return hc;
+	}
+
+	/**
+	 * This method will always return <code>true</code> since a split may produce more then one value.
+	 * 
+	 * @return <code>true</code>, always.
+	 */
+	@Override
+	public boolean isMultiValueProducer()
+	{
+		return true;
 	}
 }
-

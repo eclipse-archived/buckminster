@@ -19,12 +19,87 @@ import org.osgi.framework.InvalidSyntaxException;
 @SuppressWarnings("restriction")
 public class FilterUtils
 {
-	public static final String MATCH_ALL = "*";
-
-	public static Filter createFilter(String expression) throws InvalidSyntaxException
+	static class MatchAllAwareFilterImpl extends FilterImpl
 	{
-		return new MatchAllAwareFilterImpl(expression);
+		public MatchAllAwareFilterImpl(String expression) throws InvalidSyntaxException
+		{
+			super(expression);
+			if(value instanceof Filter[])
+			{
+				Filter[] subFilters = (Filter[])value;
+				int idx = subFilters.length;
+				while(--idx >= 0)
+					subFilters[idx] = new MatchAllAwareFilterImpl(subFilters[idx].toString());
+			}
+		}
+
+		public void addConsultedAttributes(Map<String, String[]> propertyChoices)
+		{
+			if(value instanceof Filter[])
+			{
+				Filter[] subFilters = (Filter[])value;
+				int idx = subFilters.length;
+				while(--idx >= 0)
+					((MatchAllAwareFilterImpl)subFilters[idx]).addConsultedAttributes(propertyChoices);
+				return;
+			}
+			if(attr == null || value == null)
+				return;
+
+			String stringValue;
+			if(value instanceof String[])
+			{
+				String[] substrings = (String[])value;
+				StringBuilder bld = new StringBuilder();
+				int size = substrings.length;
+				for(int i = 0; i < size; i++)
+				{
+					String substr = substrings[i];
+					if(substr == null)
+						bld.append('*');
+					else
+						bld.append(substr);
+				}
+				stringValue = bld.toString();
+			}
+			else
+				stringValue = value.toString();
+
+			// Add the attribute value as a valid choice for the attribute
+			// unless it's already present.
+			//
+			synchronized(propertyChoices)
+			{
+				String[] choices = propertyChoices.get(attr);
+				if(choices == null)
+				{
+					propertyChoices.put(attr, new String[] { stringValue });
+					return;
+				}
+
+				int top = choices.length;
+				int idx = top;
+				while(--idx >= 0)
+					if(stringValue.equals(choices[idx]))
+						return;
+
+				String[] newChoices = new String[top + 1];
+				System.arraycopy(choices, 0, newChoices, 0, top);
+				newChoices[top] = stringValue;
+				propertyChoices.put(attr, newChoices);
+			}
+		}
+
+		@Override
+		protected boolean compare_String(int op, String string, Object value2)
+		{
+			return MATCH_ALL.equals(string)
+					? true
+					: super.compare_String(op, string, value2);
+		}
 	}
+
+	public static final String MATCH_ALL = "*";
 
 	/**
 	 * <p>
@@ -32,9 +107,14 @@ public class FilterUtils
 	 * the attribute will be compared against are collected into a unique array of strings and put into o the provided
 	 * <code>propertyChoices</code> map keyed by the name of the attribute.
 	 * </p>
-	 * <p>It is guaranteed that all updates to the <code>propertyChoices</code> map are synchronised.</p>
-	 * @param filter The filter to scan
-	 * @param propertyChoices The map that will receive the results.
+	 * <p>
+	 * It is guaranteed that all updates to the <code>propertyChoices</code> map are synchronised.
+	 * </p>
+	 * 
+	 * @param filter
+	 *            The filter to scan
+	 * @param propertyChoices
+	 *            The map that will receive the results.
 	 */
 	public static void addConsultedAttributes(Filter filter, Map<String, String[]> propertyChoices)
 	{
@@ -57,6 +137,63 @@ public class FilterUtils
 			}
 		}
 		maFilter.addConsultedAttributes(propertyChoices);
+	}
+
+	private static boolean addProperty(StringBuilder bld, String key, String value)
+	{
+		value = TextUtils.notEmptyTrimmedString(value);
+		if(value == null)
+			return false;
+
+		int bldStart = bld.length();
+		int top = value.length();
+		boolean startNew = true;
+		boolean multi = false;
+		for(int idx = 0; idx < top; ++idx)
+		{
+			if(startNew)
+			{
+				if(idx > 0)
+				{
+					bld.append(')');
+					multi = true;
+				}
+				bld.append('(');
+				bld.append(key);
+				bld.append('=');
+				startNew = false;
+			}
+			char c = value.charAt(idx);
+			switch(c)
+			{
+			case '(':
+			case ')':
+			case '\\':
+				bld.append('\\');
+				bld.append(c);
+				continue;
+			case ',':
+				startNew = true;
+				continue;
+			}
+			bld.append(c);
+		}
+
+		bld.append(')');
+		if(multi)
+		{
+			String expr = bld.substring(bldStart);
+			bld.setLength(bldStart);
+			bld.append("(|");
+			bld.append(expr);
+			bld.append(')');
+		}
+		return true;
+	}
+
+	public static Filter createFilter(String expression) throws InvalidSyntaxException
+	{
+		return new MatchAllAwareFilterImpl(expression);
 	}
 
 	public static Filter createFilter(String os, String ws, String arch, String nl)
@@ -171,137 +308,5 @@ public class FilterUtils
 			}
 		}
 		return bld.toString();
-	}
-
-	private static boolean addProperty(StringBuilder bld, String key, String value)
-	{
-		value = TextUtils.notEmptyTrimmedString(value);
-		if(value == null)
-			return false;
-
-		int bldStart = bld.length();
-		int top = value.length();
-		boolean startNew = true;
-		boolean multi = false;
-		for(int idx = 0; idx < top; ++idx)
-		{
-			if(startNew)
-			{
-				if(idx > 0)
-				{
-					bld.append(')');
-					multi = true;
-				}
-				bld.append('(');
-				bld.append(key);
-				bld.append('=');
-				startNew = false;
-			}
-			char c = value.charAt(idx);
-			switch(c)
-			{
-			case '(':
-			case ')':
-			case '\\':
-				bld.append('\\');
-				bld.append(c);
-				continue;
-			case ',':
-				startNew = true;
-				continue;
-			}
-			bld.append(c);
-		}
-
-		bld.append(')');
-		if(multi)
-		{
-			String expr = bld.substring(bldStart);
-			bld.setLength(bldStart);
-			bld.append("(|");
-			bld.append(expr);
-			bld.append(')');
-		}
-		return true;
-	}
-
-	static class MatchAllAwareFilterImpl extends FilterImpl
-	{
-		public MatchAllAwareFilterImpl(String expression) throws InvalidSyntaxException
-		{
-			super(expression);
-			if(value instanceof Filter[])
-			{
-				Filter[] subFilters = (Filter[])value;
-				int idx = subFilters.length;
-				while(--idx >= 0)
-					subFilters[idx] = new MatchAllAwareFilterImpl(subFilters[idx].toString());
-			}
-		}
-
-		public void addConsultedAttributes(Map<String, String[]> propertyChoices)
-		{
-			if(value instanceof Filter[])
-			{
-				Filter[] subFilters = (Filter[])value;
-				int idx = subFilters.length;
-				while(--idx >= 0)
-					((MatchAllAwareFilterImpl)subFilters[idx]).addConsultedAttributes(propertyChoices);
-				return;
-			}
-			if(attr == null || value == null)
-				return;
-
-			String stringValue;
-			if(value instanceof String[])
-			{
-				String[] substrings = (String[])value;
-				StringBuilder bld = new StringBuilder();
-				int size = substrings.length;
-				for(int i = 0; i < size; i++)
-				{
-					String substr = substrings[i];
-					if(substr == null)
-						bld.append('*');
-					else
-						bld.append(substr);
-				}
-				stringValue = bld.toString();
-			}
-			else
-				stringValue = value.toString();
-
-			// Add the attribute value as a valid choice for the attribute
-			// unless it's already present.
-			//
-			synchronized(propertyChoices)
-			{
-				String[] choices = propertyChoices.get(attr);
-				if(choices == null)
-				{
-					propertyChoices.put(attr, new String[] { stringValue });
-					return;
-				}
-
-				int top = choices.length;
-				int idx = top;
-				while(--idx >= 0)
-					if(stringValue.equals(choices[idx]))
-						return;
-
-				String[] newChoices = new String[top + 1];
-				System.arraycopy(choices, 0, newChoices, 0, top);
-				newChoices[top] = stringValue;
-				propertyChoices.put(attr, newChoices);
-			}
-		}
-
-		@Override
-		protected boolean compare_String(int op, String string, Object value2)
-		{
-			return MATCH_ALL.equals(string)
-					? true
-					: super.compare_String(op, string, value2);
-		}
 	}
 }

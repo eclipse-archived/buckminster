@@ -23,4 +23,3 @@ public class MalformedProviderURIException extends LocalizedException
 		super("A reader of type %s cannot use the uri %s", readerType.getId(), uri);
 	}
 }
-

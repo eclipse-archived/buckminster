@@ -30,22 +30,20 @@ public class RemoteFileCache extends ShortDurationFileCache
 		super(keepAlive, prefix, suffix, tempDir);
 	}
 
-	public InputStream openRemoteFile(final RemoteFile remoteFile, IProgressMonitor monitor)
-	throws IOException, CoreException
+	public InputStream openRemoteFile(final RemoteFile remoteFile, IProgressMonitor monitor) throws IOException,
+			CoreException
 	{
 		return open(new Materializer()
 		{
-			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info)
-			throws IOException, CoreException
-			{
-				return remoteFile.getContents(mon);
-			}
-
 			public String getKey()
 			{
 				return remoteFile.toString();
 			}
+
+			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info) throws IOException, CoreException
+			{
+				return remoteFile.getContents(mon);
+			}
 		}, monitor);
 	}
 }
-

@@ -28,7 +28,8 @@ public class BuckminsterComponentType extends AbstractComponentType
 {
 	private static final IResolutionBuilder s_builder = new BuckminsterCSpecBuilder();
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
+			throws CoreException
 	{
 		// Not that we cannot look for a cquery at the very top. If we did, then we
 		// would end up in an endless recursion since an attempt to resolve it would
@@ -41,8 +42,8 @@ public class BuckminsterComponentType extends AbstractComponentType
 			if(!atTop)
 			{
 				return ((ICatalogReader)reader).exists(CorePlugin.CQUERY_FILE, monitor)
-					? CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.CQUERY2BOM)
-					: s_builder; // No need to complete monitor
+						? CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.CQUERY2BOM)
+						: s_builder; // No need to complete monitor
 			}
 		}
 		MonitorUtils.complete(monitor);

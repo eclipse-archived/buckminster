@@ -43,9 +43,9 @@ public interface IAdvisorNode
 
 	long getRevision();
 
-	Date getTimestamp();
-
 	SourceLevel getSourceLevel();
+
+	Date getTimestamp();
 
 	IVersionDesignator getVersionOverride();
 
@@ -53,13 +53,13 @@ public interface IAdvisorNode
 
 	boolean isSystemDiscovery();
 
-	boolean isUseTargetPlatform();
-
 	boolean isUseMaterialization();
 
-	boolean isUseWorkspace();
-
 	boolean isUseRemoteResolution();
+
+	boolean isUseTargetPlatform();
+
+	boolean isUseWorkspace();
 
 	boolean skipComponent();
 

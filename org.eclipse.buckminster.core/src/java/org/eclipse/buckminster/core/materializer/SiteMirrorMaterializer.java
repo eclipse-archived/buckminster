@@ -26,16 +26,11 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
 @SuppressWarnings("restriction")
 public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 {
-	@Override
-	public String getMaterializerRootDir()
-	{
-		return "siteMirrors";
-	}
-
 	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
 
 	@Override
-	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor) throws CoreException
+	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor)
+			throws CoreException
 	{
 		MirrorSiteFactory factory = new MirrorSiteFactory();
 		MirrorSite mirrorSite;
@@ -50,6 +45,12 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 		mirrorSite.setIgnoreNonPresentPlugins(context.isContinueOnError());
 		MonitorUtils.complete(monitor);
 		return mirrorSite;
+	}
+
+	@Override
+	public String getMaterializerRootDir()
+	{
+		return "siteMirrors";
 	}
 
 	@Override

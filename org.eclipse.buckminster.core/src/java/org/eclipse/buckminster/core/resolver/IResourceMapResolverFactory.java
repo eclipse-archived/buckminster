@@ -18,9 +18,9 @@ import org.eclipse.ecf.core.security.IConnectContext;
  */
 public interface IResourceMapResolverFactory extends IResolverFactory
 {
-	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException;
-
 	public int getResolverThreadsMax();
+
+	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException;
 
 	/**
 	 * Obtains the {@link #RESOURCE_MAP_URL_PARAM} setting for this factory from the preference store. If not found

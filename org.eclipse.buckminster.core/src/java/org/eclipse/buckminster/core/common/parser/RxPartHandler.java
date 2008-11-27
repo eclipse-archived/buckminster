@@ -16,18 +16,30 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
 abstract class RxPartHandler extends ExtensionAwareHandler
 {
 	private String m_name;
+
 	private boolean m_optional;
 
 	public RxPartHandler(AbstractHandler parent)
 	{
 		super(parent);
+	}
+
+	protected abstract RxPart createPart();
+
+	protected final String getName()
+	{
+		return m_name;
+	}
+
+	protected String getNameAttributeValue(Attributes attrs) throws SAXException
+	{
+		return getOptionalStringValue(attrs, RxPart.ATTR_NAME);
 	}
 
 	@Override
@@ -37,20 +49,8 @@ abstract class RxPartHandler extends ExtensionAwareHandler
 		m_optional = getOptionalBooleanValue(attrs, RxPart.ATTR_OPTIONAL, false);
 	}
 
-	protected String getNameAttributeValue(Attributes attrs) throws SAXException
-	{
-		return getOptionalStringValue(attrs, RxPart.ATTR_NAME);
-	}
-
-	protected final String getName()
-	{
-		return m_name;
-	}
-
 	protected final boolean isOptional()
 	{
 		return m_optional;
 	}
-
-	protected abstract RxPart createPart();
 }

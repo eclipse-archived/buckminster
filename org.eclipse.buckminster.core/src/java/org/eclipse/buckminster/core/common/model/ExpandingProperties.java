@@ -30,14 +30,15 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
- * <p>This class works just as a normal <code>Map&lt;String,String&gt;</code> but with two additions:<ul>
- * <li>Values are expanded using ant-style property expansion. The scope of the expansion
- * is the instance itself.</li>
- * <li>Any value can be declared immutable. When doing so, it is guaranteed that the
- * value cannot be changed or removed from the map.</li>
- * </ul></p>
+ * <p>
+ * This class works just as a normal <code>Map&lt;String,String&gt;</code> but with two additions:
+ * <ul>
+ * <li>Values are expanded using ant-style property expansion. The scope of the expansion is the instance itself.</li>
+ * <li>Any value can be declared immutable. When doing so, it is guaranteed that the value cannot be changed or removed
+ * from the map.</li>
+ * </ul>
+ * </p>
  * 
  * @author Thomas Hallgren
  */
@@ -79,10 +80,138 @@ public class ExpandingProperties implements IProperties
 
 	public static final int MAX_NESTING_DEPTH = 64;
 
+	private static String checkedExpand(Map<String, String> props, String topValue, String value, int recursionGuard)
+	{
+		if(value == null)
+			return null;
+
+		if(recursionGuard > MAX_NESTING_DEPTH)
+			throw new CircularExpansionException(topValue);
+
+		StringBuilder bld = null;
+		int fragmentStart = 0;
+		int top = value.length();
+		if(top < 4)
+			return value;
+
+		--top; // Last character is not of interest
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = value.charAt(idx);
+			if(c != '$')
+				continue;
+
+			if(value.charAt(idx + 1) == '$')
+			{
+				// Let '$$' mean '$'
+				//
+				if(bld == null)
+					bld = new StringBuilder();
+
+				if(idx > fragmentStart)
+					bld.append(value.substring(fragmentStart, idx));
+				fragmentStart = ++idx;
+				continue;
+			}
+
+			if(value.charAt(idx + 1) != '{' || idx + 3 >= top)
+				//
+				// Can't be a ${x} construction.
+				//
+				continue;
+
+			int startPos = idx + 2;
+			int endPos = parsePropertyName(value, startPos, true);
+			if(endPos < 0)
+				continue;
+
+			String propKey = value.substring(startPos, endPos);
+
+			// We must use the getUnexpandedProperty here if we don't want
+			// to put the CircularExpansion check out of business.
+			//
+			String propVal = (props instanceof ExpandingProperties)
+					? ((ExpandingProperties)props).getExpandedProperty(propKey, recursionGuard + 1)
+					: props.get(propKey);
+
+			if(propVal != null)
+			{
+				if(bld == null)
+					bld = new StringBuilder();
+				if(idx > fragmentStart)
+					bld.append(value.substring(fragmentStart, idx));
+				bld.append(checkedExpand(props, topValue, propVal, recursionGuard + 1));
+				fragmentStart = endPos + 1;
+			}
+			idx = endPos;
+		}
+
+		if(bld != null)
+		{
+			++top; // Last character becomes interesting again
+			if(fragmentStart < top)
+				bld.append(value.substring(fragmentStart, top));
+			return bld.toString();
+		}
+
+		// No substitution occured
+		//
+		return value;
+	}
+
+	public static Map<String, String> createUnmodifiableProperties(Map<String, String> aMap)
+	{
+		if(aMap == null || aMap.size() == 0)
+			aMap = Collections.emptyMap();
+		else
+			aMap = Collections.unmodifiableMap(new ExpandingProperties(aMap));
+		return aMap;
+	}
+
 	public static final String expand(Map<String, String> properties, String value, int nestingLevel)
 	{
 		return checkedExpand(properties, value, value, nestingLevel);
 	}
+
+	private static int parsePropertyName(String source, int startIndex, boolean inResolve)
+	{
+		if(source == null)
+			return -1;
+
+		int top = source.length();
+		if(startIndex >= top)
+			return -1;
+
+		int idx = startIndex;
+		char c = source.charAt(idx++);
+		if(!Character.isJavaIdentifierStart(c))
+			return -1;
+
+		while(idx < top)
+		{
+			char last = c;
+			c = source.charAt(idx++);
+			if(c == '.')
+			{
+				// Check that the name does not:
+				// - have repeated dots, i.e. ".."
+				// - end with a dot
+				//
+				if(last == '.' || idx == top || (inResolve && source.charAt(idx) == '}'))
+					return -1;
+			}
+			else
+			{
+				if(inResolve && c == '}')
+					return idx - 1;
+
+				if(!Character.isJavaIdentifierPart(c))
+					return -1; // Illegal character
+			}
+		}
+		return top;
+	}
+
 	private final Map<String, ValueHolder> m_map;
 
 	public ExpandingProperties()
@@ -104,12 +233,12 @@ public class ExpandingProperties implements IProperties
 			return;
 		}
 
-		Map<String,ValueHolder> dfltMap;
+		Map<String, ValueHolder> dfltMap;
 		if(dflts instanceof ExpandingProperties)
 			dfltMap = ((ExpandingProperties)dflts).m_map;
 		else
 		{
-			dfltMap = new HashMap<String,ValueHolder>(dflts.size());
+			dfltMap = new HashMap<String, ValueHolder>(dflts.size());
 			for(Map.Entry<String, String> de : dflts.entrySet())
 			{
 				ValueHolder vh = new Constant(de.getValue());
@@ -124,7 +253,7 @@ public class ExpandingProperties implements IProperties
 	{
 		if(m_map.isEmpty())
 			return;
-		
+
 		for(Map.Entry<String, ValueHolder> ee : m_map.entrySet())
 			if(!ee.getValue().isMutable())
 				throw new ImmutablePropertyException(ee.getKey());
@@ -140,6 +269,68 @@ public class ExpandingProperties implements IProperties
 	public boolean containsValue(Object value)
 	{
 		return m_map.containsValue(value);
+	}
+
+	private String convertValue(ValueHolder vh, int recursionGuard)
+	{
+		return vh == null
+				? null
+				: vh.checkedGetValue(this, recursionGuard);
+	}
+
+	void emitProperties(ContentHandler handler, String namespace, String prefix, boolean includeDefaults)
+			throws SAXException
+	{
+		String plName = "property";
+		String pqName = Utils.makeQualifiedName(prefix, plName);
+		String pelName = "propertyElement";
+		String peqName = Utils.makeQualifiedName(prefix, pelName);
+		AttributesImpl attrs = new AttributesImpl();
+
+		TreeSet<String> sorted = new TreeSet<String>();
+		if(includeDefaults)
+		{
+			for(String key : keySet())
+				sorted.add(key);
+		}
+		else
+		{
+			for(String name : overlayKeySet())
+				sorted.add(name);
+		}
+
+		for(String name : sorted)
+		{
+			ValueHolder value = m_map.get(name);
+			if(value == null)
+				continue;
+
+			if(includeDefaults && value instanceof Constant)
+			{
+				// We still don't include unmodified system properties.
+				//
+				String sysValue = System.getProperty(name);
+				if(sysValue != null && sysValue.equals(value))
+					continue;
+			}
+
+			attrs.clear();
+			Utils.addAttribute(attrs, "key", name);
+			if(value.isMutable())
+				Utils.addAttribute(attrs, "mutable", "true");
+			if(value instanceof Constant)
+			{
+				Utils.addAttribute(attrs, "value", value.toString());
+				handler.startElement(namespace, plName, pqName, attrs);
+				handler.endElement(namespace, plName, pqName);
+			}
+			else
+			{
+				handler.startElement(namespace, pelName, peqName, attrs);
+				value.toSax(handler, namespace, prefix, value.getDefaultTag());
+				handler.endElement(namespace, pelName, peqName);
+			}
+		}
 	}
 
 	public Set<Entry<String, String>> entrySet()
@@ -190,8 +381,13 @@ public class ExpandingProperties implements IProperties
 	public String get(Object key)
 	{
 		return key instanceof String
-			? getExpandedProperty((String)key, 0)
-			: null;
+				? getExpandedProperty((String)key, 0)
+				: null;
+	}
+
+	String getExpandedProperty(String key, int recursionGuard)
+	{
+		return convertValue(m_map.get(key), recursionGuard);
 	}
 
 	@Override
@@ -241,8 +437,8 @@ public class ExpandingProperties implements IProperties
 	public Set<String> overlayKeySet()
 	{
 		return (m_map instanceof MapUnion)
-			? ((MapUnion<String, ValueHolder>)m_map).overlayKeySet()
-			: m_map.keySet();
+				? ((MapUnion<String, ValueHolder>)m_map).overlayKeySet()
+				: m_map.keySet();
 	}
 
 	public String put(String key, String propVal)
@@ -374,196 +570,5 @@ public class ExpandingProperties implements IProperties
 				return m_map.size();
 			}
 		};
-	}
-
-	void emitProperties(ContentHandler handler, String namespace, String prefix, boolean includeDefaults) throws SAXException
-	{
-		String plName = "property";
-		String pqName = Utils.makeQualifiedName(prefix, plName);
-		String pelName = "propertyElement";
-		String peqName = Utils.makeQualifiedName(prefix, pelName);
-		AttributesImpl attrs = new AttributesImpl();
-
-		TreeSet<String> sorted = new TreeSet<String>();
-		if(includeDefaults)
-		{
-			for(String key : keySet())
-				sorted.add(key);
-		}
-		else
-		{
-			for(String name : overlayKeySet())
-				sorted.add(name);
-		}
-
-		for(String name : sorted)
-		{
-			ValueHolder value = m_map.get(name);
-			if(value == null)
-				continue;
-
-			if(includeDefaults && value instanceof Constant)
-			{
-				// We still don't include unmodified system properties.
-				//
-				String sysValue = System.getProperty(name);
-				if(sysValue != null && sysValue.equals(value))
-					continue;
-			}
-
-			attrs.clear();
-			Utils.addAttribute(attrs, "key", name);
-			if(value.isMutable())
-				Utils.addAttribute(attrs, "mutable", "true");
-			if(value instanceof Constant)
-			{
-				Utils.addAttribute(attrs, "value", value.toString());
-				handler.startElement(namespace, plName, pqName, attrs);
-				handler.endElement(namespace, plName, pqName);
-			}
-			else
-			{
-				handler.startElement(namespace, pelName, peqName, attrs);
-				value.toSax(handler, namespace, prefix, value.getDefaultTag());
-				handler.endElement(namespace, pelName, peqName);
-			}
-		}
-	}
-
-	private static String checkedExpand(Map<String, String> props, String topValue, String value, int recursionGuard)
-	{
-		if(value == null)
-			return null;
-
-		if(recursionGuard > MAX_NESTING_DEPTH)
-			throw new CircularExpansionException(topValue);
-
-		StringBuilder bld = null;
-		int fragmentStart = 0;
-		int top = value.length();
-		if(top < 4)
-			return value;
-
-		--top; // Last character is not of interest
-		for(int idx = 0; idx < top; ++idx)
-		{
-			char c = value.charAt(idx);
-			if(c != '$')
-				continue;
-
-			if(value.charAt(idx + 1) == '$')
-			{
-				// Let '$$' mean '$'
-				//
-				if(bld == null)
-					bld = new StringBuilder();
-
-				if(idx > fragmentStart)
-					bld.append(value.substring(fragmentStart, idx));
-				fragmentStart = ++idx;
-				continue;
-			}
-
-			if(value.charAt(idx + 1) != '{' || idx + 3 >= top)
-				//
-				// Can't be a ${x} construction.
-				//
-				continue;
-
-			int startPos = idx + 2;
-			int endPos = parsePropertyName(value, startPos, true);
-			if(endPos < 0)
-				continue;
-
-			String propKey = value.substring(startPos, endPos);
-
-			// We must use the getUnexpandedProperty here if we don't want
-			// to put the CircularExpansion check out of business.
-			//
-			String propVal = (props instanceof ExpandingProperties)
-					? ((ExpandingProperties)props).getExpandedProperty(propKey, recursionGuard + 1)
-					: props.get(propKey);
-
-			if(propVal != null)
-			{
-				if(bld == null)
-					bld = new StringBuilder();
-				if(idx > fragmentStart)
-					bld.append(value.substring(fragmentStart, idx));
-				bld.append(checkedExpand(props, topValue, propVal, recursionGuard + 1));
-				fragmentStart = endPos + 1;
-			}
-			idx = endPos;
-		}
-
-		if(bld != null)
-		{
-			++top; // Last character becomes interesting again
-			if(fragmentStart < top)
-				bld.append(value.substring(fragmentStart, top));
-			return bld.toString();
-		}
-
-		// No substitution occured
-		//
-		return value;
-	}
-
-	private static int parsePropertyName(String source, int startIndex, boolean inResolve)
-	{
-		if(source == null)
-			return -1;
-
-		int top = source.length();
-		if(startIndex >= top)
-			return -1;
-
-		int idx = startIndex;
-		char c = source.charAt(idx++);
-		if(!Character.isJavaIdentifierStart(c))
-			return -1;
-
-		while(idx < top)
-		{
-			char last = c;
-			c = source.charAt(idx++);
-			if(c == '.')
-			{
-				// Check that the name does not:
-				// - have repeated dots, i.e. ".."
-				// - end with a dot
-				//
-				if(last == '.' || idx == top || (inResolve && source.charAt(idx) == '}'))
-					return -1;
-			}
-			else
-			{
-				if(inResolve && c == '}')
-					return idx - 1;
-
-				if(!Character.isJavaIdentifierPart(c))
-					return -1; // Illegal character
-			}
-		}
-		return top;
-	}
-
-	private String convertValue(ValueHolder vh, int recursionGuard)
-	{
-		return vh == null ? null : vh.checkedGetValue(this, recursionGuard);
-	}
-
-	String getExpandedProperty(String key, int recursionGuard)
-	{
-		return convertValue(m_map.get(key), recursionGuard);
-	}
-
-	public static Map<String,String> createUnmodifiableProperties(Map<String,String> aMap)
-	{
-		if(aMap == null || aMap.size() == 0)
-			aMap = Collections.emptyMap();
-		else
-			aMap = Collections.unmodifiableMap(new ExpandingProperties(aMap));
-		return aMap;
 	}
 }

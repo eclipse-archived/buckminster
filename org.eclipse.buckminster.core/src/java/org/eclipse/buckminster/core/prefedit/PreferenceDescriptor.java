@@ -48,14 +48,14 @@ public class PreferenceDescriptor implements IPreferenceDescriptor
 		return m_enums;
 	}
 
-	public String getLabel()
-	{
-		return m_label;
-	}
-
 	public int[] getIntegerRange()
 	{
 		return m_integerRange;
+	}
+
+	public String getLabel()
+	{
+		return m_label;
 	}
 
 	public String getName()

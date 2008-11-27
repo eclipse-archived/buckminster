@@ -43,30 +43,6 @@ import org.eclipse.core.runtime.Path;
  */
 public class URLReaderType extends AbstractReaderType
 {
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		try
-		{
-			return new URI(resolution.getRepository());
-		}
-		catch(URISyntaxException e)
-		{
-			return null;
-		}
-	}
-
-	@Override
-	public String convertFetchFactoryLocator(Map<String,String> fetchFactoryLocator, String componentName)
-	throws CoreException
-	{
-		return fetchFactoryLocator.get("src");
-	}
-
-	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
-	{
-		return getDirectReader(externalFile, IReaderType.URL, monitor);
-	}
-
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
 	{
 		String urlString = url.toString();
@@ -83,6 +59,18 @@ public class URLReaderType extends AbstractReaderType
 		return pm.getReader(monitor);
 	}
 
+	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
+	{
+		return getDirectReader(externalFile, IReaderType.URL, monitor);
+	}
+
+	@Override
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
+			throws CoreException
+	{
+		return fetchFactoryLocator.get("src");
+	}
+
 	@Override
 	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
 	{
@@ -96,33 +84,26 @@ public class URLReaderType extends AbstractReaderType
 		}
 	}
 
-	public IReaderType getLocalReaderType()
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
 	{
-		return this;
+		try
+		{
+			return new URI(resolution.getRepository());
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
+		}
 	}
 
-	@Override
-	public IComponentReader getReader(Resolution resolution, RMContext context, IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new URLFileReader(this, resolution.getProviderMatch(context), getURI(resolution.getRepository()));
-	}
-
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new URLFileReader(this, providerMatch, getURI(providerMatch));
-	}
-
-	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context)
-	throws CoreException
+	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException
 	{
 		String name = resolution.getRemoteName();
 		if(name != null)
 			return Path.fromPortableString(name);
 
 		URI uri = getURI(resolution.getRepository());
-		Map<String,String> params = TextUtils.queryAsParameters(uri.getQuery());
+		Map<String, String> params = TextUtils.queryAsParameters(uri.getQuery());
 		String pathStr = params.get("file");
 		if(pathStr == null)
 			pathStr = uri.getPath();
@@ -132,6 +113,31 @@ public class URLReaderType extends AbstractReaderType
 		if(segCount > 1)
 			path = path.removeFirstSegments(segCount - 1);
 		return path;
+	}
+
+	public IReaderType getLocalReaderType()
+	{
+		return this;
+	}
+
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
+	{
+		MonitorUtils.complete(monitor);
+		return new URLFileReader(this, providerMatch, getURI(providerMatch));
+	}
+
+	@Override
+	public IComponentReader getReader(Resolution resolution, RMContext context, IProgressMonitor monitor)
+			throws CoreException
+	{
+		MonitorUtils.complete(monitor);
+		return new URLFileReader(this, resolution.getProviderMatch(context), getURI(resolution.getRepository()));
+	}
+
+	@Override
+	public String getRemotePath(String repositoryLocation) throws CoreException
+	{
+		return getURI(repositoryLocation).getPath();
 	}
 
 	public URI getURI(ProviderMatch providerMatch) throws CoreException
@@ -145,7 +151,8 @@ public class URLReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query,
+			IProgressMonitor monitor) throws CoreException
 	{
 		return new DefaultVersionFinder(provider, ctype, query);
 	}
@@ -153,11 +160,5 @@ public class URLReaderType extends AbstractReaderType
 	public boolean isFileReader()
 	{
 		return true;
-	}
-
-	@Override
-	public String getRemotePath(String repositoryLocation) throws CoreException
-	{
-		return getURI(repositoryLocation).getPath();
 	}
 }

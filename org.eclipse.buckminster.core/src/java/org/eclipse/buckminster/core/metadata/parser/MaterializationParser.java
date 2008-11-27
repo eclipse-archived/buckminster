@@ -22,13 +22,23 @@ import org.xml.sax.SAXException;
  */
 public class MaterializationParser extends MetaDataParser<Materialization>
 {
-	public MaterializationParser(List<ParserFactory.ParserExtension> parserExtensions)
-	throws CoreException
+	private Materialization m_materialization;
+
+	public MaterializationParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
 	{
 		super(parserExtensions);
 	}
 
-	private Materialization m_materialization;
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_materialization = ((MaterializationHandler)child).getMaterialization();
+	}
+
+	public Materialization parse(String systemID, InputStream input) throws CoreException
+	{
+		this.parseInput(systemID, input);
+		return m_materialization;
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
@@ -41,17 +51,4 @@ public class MaterializationParser extends MetaDataParser<Materialization>
 		else
 			super.startElement(uri, localName, qName, attrs);
 	}
-
-	public Materialization parse(String systemID, InputStream input) throws CoreException
-	{
-		this.parseInput(systemID, input);
-		return m_materialization;
-	}
-
-	public void childPopped(ChildHandler child)
-	throws SAXException
-	{
-		m_materialization = ((MaterializationHandler)child).getMaterialization();
-	}
 }
-

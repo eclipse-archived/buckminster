@@ -19,34 +19,6 @@ import org.eclipse.core.runtime.IPath;
  */
 public class PropertyExpander
 {
-	private final Map<String, String> m_variableMap;
-
-	public PropertyExpander(IActionContext ctx) throws CoreException
-	{
-		m_variableMap = getVariables(ctx);
-	}
-
-	public String expand(String string)
-	{
-		return ExpandingProperties.expand(m_variableMap, string, 1);
-	}
-
-	/**
-	 * Returns a map that contains variables to replace This contains the properties and the NamedPath defined in the
-	 * Action
-	 * 
-	 * @param ctx
-	 * @return
-	 * @throws CoreException
-	 */
-	final private static Map<String, String> getVariables(IActionContext ctx) throws CoreException
-	{
-		final Map<String, String> map = new HashMap<String, String>();
-		map.putAll(getNamedPathMap(ctx));
-		map.putAll(ctx.getProperties());
-		return map;
-	}
-
 	/**
 	 * Prepares a map with all the namedPath of the current action. The association is prerequisites.alias =
 	 * paths.comma.separated
@@ -85,10 +57,38 @@ public class PropertyExpander
 			{
 				buffer.append(path).append(File.pathSeparatorChar);
 			}
-			final int lastCharIndex = buffer.length()-1;
-			if(lastCharIndex>0 && buffer.charAt(lastCharIndex)==File.pathSeparatorChar)
+			final int lastCharIndex = buffer.length() - 1;
+			if(lastCharIndex > 0 && buffer.charAt(lastCharIndex) == File.pathSeparatorChar)
 				map.put(pathGroupKey, buffer.substring(0, lastCharIndex));
 		}
 		return map;
+	}
+
+	/**
+	 * Returns a map that contains variables to replace This contains the properties and the NamedPath defined in the
+	 * Action
+	 * 
+	 * @param ctx
+	 * @return
+	 * @throws CoreException
+	 */
+	final private static Map<String, String> getVariables(IActionContext ctx) throws CoreException
+	{
+		final Map<String, String> map = new HashMap<String, String>();
+		map.putAll(getNamedPathMap(ctx));
+		map.putAll(ctx.getProperties());
+		return map;
+	}
+
+	private final Map<String, String> m_variableMap;
+
+	public PropertyExpander(IActionContext ctx) throws CoreException
+	{
+		m_variableMap = getVariables(ctx);
+	}
+
+	public String expand(String string)
+	{
+		return ExpandingProperties.expand(m_variableMap, string, 1);
 	}
 }

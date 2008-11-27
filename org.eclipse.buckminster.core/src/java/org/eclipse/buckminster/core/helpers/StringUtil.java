@@ -12,93 +12,10 @@ import java.util.Properties;
 /**
  * @author Filip Hrbek
  * 
- * The <CODE>StringUtil<CODE/> class contains static methods for manipulating Strings
+ *         The <CODE>StringUtil<CODE/> class contains static methods for manipulating Strings
  */
 public class StringUtil
 {
-
-	/**
-	 * Private constructor forbids instantiation of the class
-	 */
-	private StringUtil()
-	{
-	}
-
-	/**
-	 * Fills a new String with a given character
-	 * 
-	 * @param c
-	 *            character which fills the String
-	 * @param count
-	 *            number of characters in the String
-	 * @return created String
-	 */
-	public static String filler(char c, int count)
-	{
-		StringBuilder sb = new StringBuilder();
-
-		for(int i = 0; i < count; i++)
-		{
-			sb.append(c);
-		}
-
-		return sb.toString();
-	}
-
-	/**
-	 * Fills a new String with a given String
-	 * 
-	 * @param str
-	 *            String which fills the new String
-	 * @param count
-	 *            number of parameter Strings in the new String
-	 * @return created String
-	 */
-	public static String filler(String str, int count)
-	{
-		StringBuilder sb = new StringBuilder();
-
-		for(int i = 0; i < count; i++)
-		{
-			sb.append(str);
-		}
-
-		return sb.toString();
-	}
-
-	/**
-	 * Right trim of a given String
-	 * 
-	 * @param str
-	 *            String to be trimmed
-	 * @return trimmed String
-	 */
-	public static String rtrim(String str)
-	{
-		int len = str.length();
-		char[] val = str.toCharArray();
-		int count = len;
-
-		while(len > 0 && (val[len - 1] <= ' '))
-		{
-			len--;
-		}
-		return (len < count)
-				? str.substring(0, len)
-				: str;
-	}
-
-	/**
-	 * Removes backslashes from a String
-	 * 
-	 * @param str
-	 *            original String
-	 * @return String without backlashes
-	 */
-	public static String stripBackslashes(String str)
-	{
-		return str.replaceAll("\\\\(.)", "$1");
-	}
 
 	/**
 	 * Converts a given String into a new String which is safe fror HTML
@@ -212,6 +129,48 @@ public class StringUtil
 	}
 
 	/**
+	 * Fills a new String with a given character
+	 * 
+	 * @param c
+	 *            character which fills the String
+	 * @param count
+	 *            number of characters in the String
+	 * @return created String
+	 */
+	public static String filler(char c, int count)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for(int i = 0; i < count; i++)
+		{
+			sb.append(c);
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Fills a new String with a given String
+	 * 
+	 * @param str
+	 *            String which fills the new String
+	 * @param count
+	 *            number of parameter Strings in the new String
+	 * @return created String
+	 */
+	public static String filler(String str, int count)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for(int i = 0; i < count; i++)
+		{
+			sb.append(str);
+		}
+
+		return sb.toString();
+	}
+
+	/**
 	 * Puts the given String into quotation marks, original quotation marks are escaped
 	 * 
 	 * @param string
@@ -245,6 +204,28 @@ public class StringUtil
 	}
 
 	/**
+	 * Right trim of a given String
+	 * 
+	 * @param str
+	 *            String to be trimmed
+	 * @return trimmed String
+	 */
+	public static String rtrim(String str)
+	{
+		int len = str.length();
+		char[] val = str.toCharArray();
+		int count = len;
+
+		while(len > 0 && (val[len - 1] <= ' '))
+		{
+			len--;
+		}
+		return (len < count)
+				? str.substring(0, len)
+				: str;
+	}
+
+	/**
 	 * Puts {@link Properties} into {@link String}
 	 * 
 	 * @param properties
@@ -257,10 +238,29 @@ public class StringUtil
 
 		for(Object key : properties.keySet())
 		{
-			propList.add(String.format("%s=\"%s\"", key, properties.getProperty((String)key).replaceAll(
-					"[\"\\\\]", "\\\\1")));
+			propList.add(String.format("%s=\"%s\"", key, properties.getProperty((String)key).replaceAll("[\"\\\\]",
+					"\\\\1")));
 		}
 
 		return propList.toString();
+	}
+
+	/**
+	 * Removes backslashes from a String
+	 * 
+	 * @param str
+	 *            original String
+	 * @return String without backlashes
+	 */
+	public static String stripBackslashes(String str)
+	{
+		return str.replaceAll("\\\\(.)", "$1");
+	}
+
+	/**
+	 * Private constructor forbids instantiation of the class
+	 */
+	private StringUtil()
+	{
 	}
 }

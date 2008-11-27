@@ -22,16 +22,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class PropertiesParser implements IStreamConsumer<Map<String,String>>
+public class PropertiesParser implements IStreamConsumer<Map<String, String>>
 {
-	public static Map<String,String> readProperties(InputStream stream)
-	throws IOException
+	public static Map<String, String> readProperties(InputStream stream) throws IOException
 	{
 		return new BMProperties(stream);
 	}
 
-	public Map<String,String> consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws IOException
+	public Map<String, String> consumeStream(IComponentReader reader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws IOException
 	{
 		monitor.beginTask(streamName, 1);
 		try

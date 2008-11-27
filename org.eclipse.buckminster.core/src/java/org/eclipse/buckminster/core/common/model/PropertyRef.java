@@ -18,16 +18,16 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
- * An instance of this class represents a reference to a property. The
- * instance will resolve to the expanded value of that property.
+ * An instance of this class represents a reference to a property. The instance will resolve to the expanded value of
+ * that property.
  * 
  * @author Thomas Hallgren
  */
 public class PropertyRef extends ValueHolder
 {
 	public static final String TAG = "propertyRef";
+
 	public static final String ATTR_KEY = "key";
 
 	private final String m_key;
@@ -38,6 +38,12 @@ public class PropertyRef extends ValueHolder
 	}
 
 	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_KEY, m_key);
+	}
+
+	@Override
 	public String checkedGetValue(Map<String, String> properties, int recursionGuard)
 	{
 		String expandedKey = ExpandingProperties.expand(properties, m_key, recursionGuard + 1);
@@ -45,14 +51,8 @@ public class PropertyRef extends ValueHolder
 			return ((ExpandingProperties)properties).getExpandedProperty(expandedKey, recursionGuard + 1);
 		final String replacementValue = properties.get(expandedKey);
 		if(replacementValue == null)
-			CorePlugin.getLogger()
-					.warning("The property ${" + m_key + "} has not been set and will default to null");
+			CorePlugin.getLogger().warning("The property ${" + m_key + "} has not been set and will default to null");
 		return ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1);
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
 	}
 
 	@Override
@@ -61,18 +61,18 @@ public class PropertyRef extends ValueHolder
 		return super.equals(o) && Trivial.equalsAllowNull(m_key, ((PropertyRef)o).m_key);
 	}
 
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
 	@Override
 	public int hashCode()
 	{
 		int hc = super.hashCode();
-		hc = 37 * hc + (m_key == null ? 0 : m_key.hashCode());
+		hc = 37 * hc + (m_key == null
+				? 0
+				: m_key.hashCode());
 		return hc;
 	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_KEY, m_key);
-	}
 }
-

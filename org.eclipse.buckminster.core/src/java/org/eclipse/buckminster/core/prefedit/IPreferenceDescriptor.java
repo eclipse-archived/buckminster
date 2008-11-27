@@ -12,17 +12,17 @@ package org.eclipse.buckminster.core.prefedit;
  */
 public interface IPreferenceDescriptor
 {
-	String getLabel();
-
-	PreferenceType getType();
-
-	int getTextWidth();
+	Enum<?>[] getEnums();
 
 	int[] getIntegerRange();
 
+	String getLabel();
+
 	String getName();
 
+	int getTextWidth();
+
+	PreferenceType getType();
+
 	IPreferenceValidator getValidator();
-	
-	Enum<?>[] getEnums();
 }

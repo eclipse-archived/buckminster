@@ -34,6 +34,11 @@ class VersionMatchHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
+	VersionMatch getVersionMatch()
+	{
+		return m_versionMatch;
+	}
+
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
@@ -66,10 +71,5 @@ class VersionMatchHandler extends ExtensionAwareHandler
 		{
 			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 		}
-	}
-
-	VersionMatch getVersionMatch()
-	{
-		return m_versionMatch;
 	}
 }

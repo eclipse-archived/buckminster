@@ -51,18 +51,10 @@ import org.eclipse.core.variables.VariablesPlugin;
  */
 public class RMContext extends ExpandingProperties
 {
-	private int m_tagInfoSquenceNumber = 0;
-
-	private final Map<String,TagInfo> m_knownTagInfos = new HashMap<String,TagInfo>();
-
-	private final Map<QualifiedDependency,NodeQuery> m_nodeQueries = new HashMap<QualifiedDependency,NodeQuery>();
-
-	private final Map<String, String[]> m_filterAttributeUsageMap = new HashMap<String, String[]>();
-
 	public class TagInfo
 	{
 		private final String m_tagId;
-		
+
 		private final String m_infoString;
 
 		private boolean m_used = false;
@@ -95,11 +87,84 @@ public class RMContext extends ExpandingProperties
 		}
 	}
 
+	private static IStatus addTagId(String tagId, IStatus status)
+	{
+		if(status instanceof MultiStatus)
+		{
+			IStatus[] children = status.getChildren();
+			int idx = children.length;
+			IStatus[] taggedChildren = new IStatus[idx];
+			while(--idx >= 0)
+				taggedChildren[idx] = addTagId(tagId, children[idx]);
+			return new MultiStatus(status.getPlugin(), status.getCode(), taggedChildren, addTagId(tagId, status
+					.getMessage()), status.getException());
+		}
+		return new Status(status.getSeverity(), status.getPlugin(), addTagId(tagId, status.getMessage()), status
+				.getException());
+	}
+
+	private static String addTagId(String tagId, String msg)
+	{
+		String prefix = '[' + tagId + "] : ";
+		if(msg == null)
+			msg = prefix;
+		else if(!msg.startsWith(prefix))
+			msg = prefix + msg;
+		return msg;
+	}
+
+	private static void formatStatus(BufferedWriter wrt, int indent, IStatus status) throws IOException
+	{
+		for(int idx = 0; idx < indent; ++idx)
+			wrt.append(' ');
+		switch(status.getSeverity())
+		{
+		case IStatus.INFO:
+			wrt.append("INFO    ");
+			break;
+		case IStatus.WARNING:
+			wrt.append("WARNING ");
+			break;
+		case IStatus.ERROR:
+			wrt.append("ERROR   ");
+			break;
+		}
+		wrt.append(status.getMessage());
+		for(IStatus child : status.getChildren())
+		{
+			wrt.newLine();
+			formatStatus(wrt, indent + 2, child);
+		}
+	}
+
+	public static String formatStatus(IStatus status)
+	{
+		StringWriter bld = new StringWriter();
+		BufferedWriter wrt = new BufferedWriter(bld);
+		try
+		{
+			formatStatus(wrt, 0, status);
+			wrt.flush();
+		}
+		catch(IOException e)
+		{
+		}
+		return bld.toString();
+	}
+
+	private int m_tagInfoSquenceNumber = 0;
+
+	private final Map<String, TagInfo> m_knownTagInfos = new HashMap<String, TagInfo>();
+
+	private final Map<QualifiedDependency, NodeQuery> m_nodeQueries = new HashMap<QualifiedDependency, NodeQuery>();
+
+	private final Map<String, String[]> m_filterAttributeUsageMap = new HashMap<String, String[]>();
+
 	private static final Map<String, String> s_staticAdditions;
 
 	static
 	{
-		Map<String,String> additions = new HashMap<String,String>();
+		Map<String, String> additions = new HashMap<String, String>();
 		File homeFile = TargetPlatform.getPlatformInstallLocation();
 		if(homeFile != null)
 		{
@@ -123,11 +188,12 @@ public class RMContext extends ExpandingProperties
 
 	public static Map<String, String> getGlobalPropertyAdditions()
 	{
-		Map<String,String> sysProps = BMProperties.getSystemProperties();
+		Map<String, String> sysProps = BMProperties.getSystemProperties();
 		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
 		IValueVariable[] vars = varMgr.getValueVariables();
 
-		Map<String,String> additions = new HashMap<String,String>(s_staticAdditions.size() + sysProps.size() + vars.length + 6);
+		Map<String, String> additions = new HashMap<String, String>(s_staticAdditions.size() + sysProps.size()
+				+ vars.length + 6);
 		additions.putAll(s_staticAdditions);
 
 		try
@@ -151,11 +217,12 @@ public class RMContext extends ExpandingProperties
 	}
 
 	private boolean m_continueOnError;
+
 	private final Map<ComponentRequest, TagInfo> m_tagInfos = new HashMap<ComponentRequest, TagInfo>();
 
-	private final Map<UUID,Object> m_userCache = Collections.synchronizedMap(new HashMap<UUID, Object>());
+	private final Map<UUID, Object> m_userCache = Collections.synchronizedMap(new HashMap<UUID, Object>());
 
-	private final Map<String,String> m_bindingProperties = Collections.synchronizedMap(new HashMap<String, String>());
+	private final Map<String, String> m_bindingProperties = Collections.synchronizedMap(new HashMap<String, String>());
 
 	private MultiStatus m_status;
 
@@ -217,45 +284,6 @@ public class RMContext extends ExpandingProperties
 			m_status.merge(status);
 	}
 
-	public static String formatStatus(IStatus status)
-	{
-		StringWriter bld = new StringWriter();
-		BufferedWriter wrt = new BufferedWriter(bld);
-		try
-		{
-			formatStatus(wrt, 0, status);
-			wrt.flush();
-		}
-		catch(IOException e)
-		{
-		}
-		return bld.toString();
-	}
-
-	private static void formatStatus(BufferedWriter wrt, int indent, IStatus status) throws IOException
-	{
-		for(int idx = 0; idx < indent; ++idx)
-			wrt.append(' ');
-		switch(status.getSeverity())
-		{
-		case IStatus.INFO:
-			wrt.append("INFO    ");
-			break;
-		case IStatus.WARNING:
-			wrt.append("WARNING ");
-			break;
-		case IStatus.ERROR:
-			wrt.append("ERROR   ");
-			break;
-		}
-		wrt.append(status.getMessage());		
-		for(IStatus child : status.getChildren())
-		{
-			wrt.newLine();
-			formatStatus(wrt, indent + 2, child);
-		}
-	}
-
 	public synchronized void addTagInfo(ComponentRequest request, String info)
 	{
 		TagInfo tagInfo = m_tagInfos.get(request);
@@ -267,19 +295,8 @@ public class RMContext extends ExpandingProperties
 				tagInfo = new TagInfo(info);
 				m_knownTagInfos.put(info, tagInfo);
 			}
-		m_tagInfos.put(request, tagInfo);
+			m_tagInfos.put(request, tagInfo);
 		}
-	}
-
-	private synchronized String getTagId(IComponentRequest request)
-	{
-		TagInfo tagInfo = m_tagInfos.get(request);
-		if(tagInfo != null)
-		{
-			tagInfo.setUsed();
-			return tagInfo.getTagId();
-		}
-		return "0000";
 	}
 
 	/**
@@ -296,7 +313,7 @@ public class RMContext extends ExpandingProperties
 		if(!logger.isInfoEnabled())
 			return;
 
-		Map<String,TagInfo> sorted = new TreeMap<String, TagInfo>();
+		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
 		for(TagInfo tagInfo : m_tagInfos.values())
 			if(tagInfo.isUsed())
 				sorted.put(tagInfo.getTagId(), tagInfo);
@@ -322,7 +339,27 @@ public class RMContext extends ExpandingProperties
 		logger.info(bld.toString());
 	}
 
-	public String getBindingName(Resolution resolution, Map<String,String> props) throws CoreException
+	/**
+	 * Emit all tags for warnings and errors that have been added earlier.
+	 * 
+	 * @return <code>true</code> if errors have been added, <code>false</code> if not.
+	 */
+	public boolean emitWarningAndErrorTags()
+	{
+		IStatus status = getStatus();
+		switch(status.getSeverity())
+		{
+		case IStatus.ERROR:
+			emitTagInfos();
+			return true;
+		case IStatus.WARNING:
+		case IStatus.INFO:
+			emitTagInfos();
+		}
+		return false;
+	}
+
+	public String getBindingName(Resolution resolution, Map<String, String> props) throws CoreException
 	{
 		ComponentRequest request = resolution.getRequest();
 		String name = null;
@@ -340,7 +377,7 @@ public class RMContext extends ExpandingProperties
 		return name;
 	}
 
-	public Map<String,String> getBindingProperties()
+	public Map<String, String> getBindingProperties()
 	{
 		return m_bindingProperties;
 	}
@@ -351,9 +388,9 @@ public class RMContext extends ExpandingProperties
 	}
 
 	/**
-	 * Returns the map used for keeping track of that attributes that are used by
-	 * filters throughout the resolution and what values that are queried for
-	 * those attributes.
+	 * Returns the map used for keeping track of that attributes that are used by filters throughout the resolution and
+	 * what values that are queried for those attributes.
+	 * 
 	 * @return An map, keyed by attribute name, that collects queried values for each attribute.
 	 */
 	public Map<String, String[]> getFilterAttributeUsageMap()
@@ -382,11 +419,6 @@ public class RMContext extends ExpandingProperties
 		return new MapUnion<String, String>(cName.getProperties(), this);
 	}
 
-	public synchronized Map<ComponentRequest,TagInfo> getTagInfos()
-	{
-		return m_tagInfos;
-	}
-
 	public NodeQuery getRootNodeQuery()
 	{
 		return getNodeQuery(getComponentQuery().getRootRequest());
@@ -410,49 +442,20 @@ public class RMContext extends ExpandingProperties
 		return status;
 	}
 
-	/**
-	 * Emit all tags for warnings and errors that have been added earlier.
-	 * @return <code>true</code> if errors have been added, <code>false</code> if not.
-	 */
-	public boolean emitWarningAndErrorTags()
+	private synchronized String getTagId(IComponentRequest request)
 	{
-		IStatus status = getStatus();
-		switch(status.getSeverity())
+		TagInfo tagInfo = m_tagInfos.get(request);
+		if(tagInfo != null)
 		{
-		case IStatus.ERROR:
-			emitTagInfos();
-			return true;
-		case IStatus.WARNING:
-		case IStatus.INFO:
-			emitTagInfos();
+			tagInfo.setUsed();
+			return tagInfo.getTagId();
 		}
-		return false;
+		return "0000";
 	}
 
-	private static IStatus addTagId(String tagId, IStatus status)
+	public synchronized Map<ComponentRequest, TagInfo> getTagInfos()
 	{
-		if(status instanceof MultiStatus)
-		{
-			IStatus[] children = status.getChildren();
-			int idx = children.length;
-			IStatus[] taggedChildren = new IStatus[idx];
-			while(--idx >= 0)
-				taggedChildren[idx] = addTagId(tagId, children[idx]);
-			return new MultiStatus(status.getPlugin(), status.getCode(), taggedChildren, addTagId(tagId, status
-					.getMessage()), status.getException());
-		}
-		return new Status(status.getSeverity(), status.getPlugin(), addTagId(tagId, status.getMessage()), status
-				.getException());
-	}
-
-	private static String addTagId(String tagId, String msg)
-	{
-		String prefix = '[' + tagId + "] : ";
-		if(msg == null)
-			msg = prefix;
-		else if(!msg.startsWith(prefix))
-			msg = prefix + msg;
-		return msg;
+		return m_tagInfos;
 	}
 
 	/**

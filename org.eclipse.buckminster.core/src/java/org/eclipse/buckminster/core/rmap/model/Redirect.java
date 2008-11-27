@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -40,13 +39,10 @@ public class Redirect extends Matcher
 	}
 
 	@Override
-	public SearchPath getSearchPath(NodeQuery query) throws CoreException
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		ResourceMap rmap = getOwner();
-		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
-		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
-		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
-		return ResourceMap.fromURL(url, query.getComponentQuery().getConnectContext()).getSearchPath(query);
+		Utils.addAttribute(attrs, ATTR_HREF, m_url);
+		super.addAttributes(attrs);
 	}
 
 	public String getDefaultTag()
@@ -55,9 +51,12 @@ public class Redirect extends Matcher
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	public SearchPath getSearchPath(NodeQuery query) throws CoreException
 	{
-		Utils.addAttribute(attrs, ATTR_HREF, m_url);
-		super.addAttributes(attrs);
+		ResourceMap rmap = getOwner();
+		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
+		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
+		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
+		return ResourceMap.fromURL(url, query.getComponentQuery().getConnectContext()).getSearchPath(query);
 	}
 }

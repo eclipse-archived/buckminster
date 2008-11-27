@@ -24,46 +24,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class ResourceMapParser extends AbstractParser<ResourceMap>
 {
 	private ResourceMap m_resourceMap;
+
 	private URL m_contextURL;
 
 	public ResourceMapParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-	throws CoreException
+			throws CoreException
 	{
-		super(parserExtensions, new String[]
-   		{
-			XMLConstants.XHTML_NS,
-			XMLConstants.XML_NS,
-   			XMLConstants.BM_COMMON_NS,
-			XMLConstants.BM_RMAP_NS,
-   		}, new String[]
-   		{
-			XMLConstants.XHTML_RESOURCE,
-			XMLConstants.XML_RESOURCE,
-			XMLConstants.BM_COMMON_RESOURCE,
-			XMLConstants.BM_RMAP_RESOURCE,
-   		}, validating);
-	}
-
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs)
-	throws SAXException
-	{
-		if("rmap".equals(localName))
-		{
-			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
-			ResourceMapHandler rmh = this.createContentHandler(this, ResourceMapHandler.class, uri, type);
-			rmh.setContextURL(m_contextURL);
-			this.pushHandler(rmh, attrs);
-		}
-		else
-			super.startElement(uri, localName, qName, attrs);
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
+				XMLConstants.BM_RMAP_NS, }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
+				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_RMAP_RESOURCE, }, validating);
 	}
 
 	public ResourceMap parse(String systemID, InputStream input) throws CoreException
@@ -84,5 +59,18 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 	{
 		m_resourceMap = resourceMap;
 	}
-}
 
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
+	{
+		if("rmap".equals(localName))
+		{
+			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
+			ResourceMapHandler rmh = this.createContentHandler(this, ResourceMapHandler.class, uri, type);
+			rmh.setContextURL(m_contextURL);
+			this.pushHandler(rmh, attrs);
+		}
+		else
+			super.startElement(uri, localName, qName, attrs);
+	}
+}

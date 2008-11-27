@@ -25,6 +25,7 @@ import org.xml.sax.SAXParseException;
 class AlterDependencyHandler extends AlterHandler
 {
 	private final ComponentRequestHandler m_baseHandler;
+
 	private AlterDependencyBuilder m_builder;
 
 	AlterDependencyHandler(AbstractHandler parent)
@@ -35,29 +36,15 @@ class AlterDependencyHandler extends AlterHandler
 
 	public void childPopped(ChildHandler child) throws SAXException
 	{
-		
+
 		if(m_baseHandler instanceof ChildPoppedListener)
 			((ChildPoppedListener)m_baseHandler).childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		return m_baseHandler.createHandler(uri, localName, attrs);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		m_baseHandler.handleAttributes(attrs);
-		m_builder = new AlterDependencyBuilder(m_baseHandler.getBuilder());
-	}
-
-	AlterDependencyBuilder getBuilder()
-	{
-		return m_builder;
 	}
 
 	AlterDependency getAlterDependency() throws SAXException
@@ -70,5 +57,17 @@ class AlterDependencyHandler extends AlterHandler
 		{
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
+	}
+
+	AlterDependencyBuilder getBuilder()
+	{
+		return m_builder;
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_baseHandler.handleAttributes(attrs);
+		m_builder = new AlterDependencyBuilder(m_baseHandler.getBuilder());
 	}
 }

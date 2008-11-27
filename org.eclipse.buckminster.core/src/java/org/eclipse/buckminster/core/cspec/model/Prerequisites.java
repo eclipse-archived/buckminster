@@ -10,16 +10,19 @@ package org.eclipse.buckminster.core.cspec.model;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 
 /**
- * The special group that maintains the action prerequisites. It
- * doesn't have a name, it does have an alias and its tag is different.
+ * The special group that maintains the action prerequisites. It doesn't have a name, it does have an alias and its tag
+ * is different.
+ * 
  * @author Thomas Hallgren
- *
+ * 
  */
 public class Prerequisites extends Group
 {
 	@SuppressWarnings("hiding")
 	public static final String TAG = "prerequisites";
+
 	public static final String ATTR_ALIAS = "alias";
+
 	private final Action m_owner;
 
 	public Prerequisites(Action owner, PrerequisitesBuilder builder)

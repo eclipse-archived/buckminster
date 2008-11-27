@@ -27,7 +27,9 @@ public class BranchConverter extends AbstractConverter
 			return null;
 
 		String selectorComponent = createSelectorComponent(version);
-		return selectorComponent == null ? null : VersionSelector.branch(selectorComponent);
+		return selectorComponent == null
+				? null
+				: VersionSelector.branch(selectorComponent);
 	}
 
 	public IVersion createVersion(VersionSelector versionSelector) throws CoreException
@@ -42,14 +44,14 @@ public class BranchConverter extends AbstractConverter
 		return createVersionFromSelectorComponent(name);
 	}
 
-	public int getSelectorType()
-	{
-		return VersionSelector.BRANCH;
-	}
-
 	@Override
 	protected IVersionType getDefaultVersionType()
 	{
 		return VersionFactory.StringType;
+	}
+
+	public int getSelectorType()
+	{
+		return VersionSelector.BRANCH;
 	}
 }

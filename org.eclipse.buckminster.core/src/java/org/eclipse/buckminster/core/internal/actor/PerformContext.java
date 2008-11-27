@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 public class PerformContext implements IActionContext
 {
 	final static String PRODUCT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "product.";
+
 	final static String REQUIREMENT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "requirement.";
 
 	private static PathGroup[] normalizePathGroups(PathGroup[] pathGroups) throws CoreException
@@ -71,23 +72,6 @@ public class PerformContext implements IActionContext
 		return normalized.toArray(new PathGroup[normalized.size()]);
 	}
 
-	private static PathGroup[] trimNonExistentBases(PathGroup[] pathGroups) throws CoreException
-	{
-		if(pathGroups.length == 0)
-			return pathGroups;
-		
-		ArrayList<PathGroup> existentBases = new ArrayList<PathGroup>();
-		for(PathGroup pathGroup : pathGroups)
-		{
-			File file = pathGroup.getBase().toFile().getAbsoluteFile();
-			if(file.exists())
-				existentBases.add(pathGroup);
-			else
-				CorePlugin.getLogger().debug("Base: %s: No such file or directory", file);
-		}
-		return existentBases.toArray(new PathGroup[existentBases.size()]);
-	}
-
 	private static void normalizePaths(ArrayList<IPath> paths)
 	{
 		// Remove all paths that has a parent path in the array
@@ -110,8 +94,25 @@ public class PerformContext implements IActionContext
 					paths.remove(topDown);
 					break;
 				}
-			}	
+			}
 		}
+	}
+
+	private static PathGroup[] trimNonExistentBases(PathGroup[] pathGroups) throws CoreException
+	{
+		if(pathGroups.length == 0)
+			return pathGroups;
+
+		ArrayList<PathGroup> existentBases = new ArrayList<PathGroup>();
+		for(PathGroup pathGroup : pathGroups)
+		{
+			File file = pathGroup.getBase().toFile().getAbsoluteFile();
+			if(file.exists())
+				existentBases.add(pathGroup);
+			else
+				CorePlugin.getLogger().debug("Base: %s: No such file or directory", file);
+		}
+		return existentBases.toArray(new PathGroup[existentBases.size()]);
 	}
 
 	private final IProgressMonitor m_cancellationMonitor;
@@ -126,7 +127,8 @@ public class PerformContext implements IActionContext
 
 	private final Map<String, String> m_properties;
 
-	public PerformContext(GlobalContext globalCtx, Action action, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor) throws CoreException
+	public PerformContext(GlobalContext globalCtx, Action action, PrintStream out, PrintStream err,
+			IProgressMonitor cancellationMonitor) throws CoreException
 	{
 		m_globalCtx = globalCtx;
 		m_action = action;
@@ -144,7 +146,7 @@ public class PerformContext implements IActionContext
 			return;
 
 		CSpec cspec = action.getCSpec();
-		Map<String,String> properties = getProperties();
+		Map<String, String> properties = getProperties();
 		IPath prereqRebase = action.getPrerequisiteRebase();
 		if(prereqRebase != null)
 		{
@@ -227,7 +229,9 @@ public class PerformContext implements IActionContext
 		return m_globalCtx.findCSpec(ownerCSpec, request);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getAction()
 	 */
 	public Action getAction()
@@ -240,7 +244,9 @@ public class PerformContext implements IActionContext
 		return new SubProgressMonitor(m_cancellationMonitor, 1);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getComponentLocation()
 	 */
 	public IPath getComponentLocation() throws CoreException
@@ -248,7 +254,9 @@ public class PerformContext implements IActionContext
 		return getCSpec().getComponentLocation();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getCSpec()
 	 */
 	public CSpec getCSpec() throws CoreException
@@ -256,7 +264,9 @@ public class PerformContext implements IActionContext
 		return m_action.getCSpec();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getErrorStream()
 	 */
 	public PrintStream getErrorStream()
