@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -65,7 +66,7 @@ public class DynamicTableLayout extends Layout
 	public void addColumnData(ColumnLayoutData data)
 	{
 		if(!((data instanceof ColumnPixelData) || (data instanceof ColumnWeightData)))
-			throw new IllegalArgumentException("Unknown ColumnLayoutData derivate");
+			throw new IllegalArgumentException(NLS.bind(Messages.unknown_0_derivate, "ColumnLayoutData")); //$NON-NLS-1$
 		m_columns.add(data);
 	}
 
