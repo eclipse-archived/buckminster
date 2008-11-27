@@ -36,6 +36,8 @@ public class Messages extends NLS
 
 	public static String add_opml_bookmarks_to_rss_reader;
 
+	public static String add_with_arrow_left;
+
 	public static String advisor_nodes;
 
 	public static String alias;
@@ -83,6 +85,8 @@ public class Messages extends NLS
 	public static String buckminster_project_folder;
 
 	public static String cannot_get_attribute_names_for_the_selected_component;
+
+	public static String cannot_save_password;
 
 	public static String category;
 
@@ -262,6 +266,8 @@ public class Messages extends NLS
 
 	public static String optional;
 
+	public static String order_of_resolution;
+
 	public static String overlay_folder;
 
 	public static String overlay_folder_for_prototyping;
@@ -315,6 +321,8 @@ public class Messages extends NLS
 	public static String release_path_with_colon;
 
 	public static String remove;
+
+	public static String remove_with_arrow_right;
 
 	public static String resolution_scope;
 

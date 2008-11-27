@@ -28,7 +28,7 @@ public class NestedFieldEditor extends FieldEditor
 
 	public NestedFieldEditor(String title, Composite parent)
 	{
-		init("", title);
+		init("", title); //$NON-NLS-1$
 		createControl(parent);
 	}
 

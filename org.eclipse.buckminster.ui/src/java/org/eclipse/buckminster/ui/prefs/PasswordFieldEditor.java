@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.prefs;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
@@ -32,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
 public class PasswordFieldEditor extends StringFieldEditor
 {
 	//fake URL - need it for saving to the key ring
-	private final static String BUCKMINSTER_NODE = "buckminster";
+	private final static String BUCKMINSTER_NODE = "buckminster"; //$NON-NLS-1$
 	
 	private String m_keyRingRealm;
 	
@@ -118,7 +119,7 @@ public class PasswordFieldEditor extends StringFieldEditor
     @Override
 	protected void doLoadDefault() {
         if (m_textField != null) {
-            String value = "";
+            String value = ""; //$NON-NLS-1$
             m_textField.setText(value);
         }
         valueChanged();
@@ -151,11 +152,11 @@ public class PasswordFieldEditor extends StringFieldEditor
     	ISecurePreferences info = SecurePreferencesFactory.getDefault().node(BUCKMINSTER_NODE).node(m_keyRingRealm);
     	try
 		{
-			return info.get(getPreferenceName(), "");
+			return info.get(getPreferenceName(), ""); //$NON-NLS-1$
 		}
 		catch(StorageException e)
 		{
-			return "";
+			return ""; //$NON-NLS-1$
 		}
     }
 
@@ -169,7 +170,7 @@ public class PasswordFieldEditor extends StringFieldEditor
 		}
 		catch(Exception e)
 		{
-			throw new RuntimeException("Cannot save password", e);
+			throw new RuntimeException(Messages.cannot_save_password, e);
 		}
 	}
 

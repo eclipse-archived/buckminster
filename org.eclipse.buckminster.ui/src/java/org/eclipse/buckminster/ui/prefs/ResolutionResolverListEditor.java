@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.eclipse.buckminster.core.resolver.ResolverFactoryMaintainer;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -69,7 +70,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 			m_resolveOrderGroup = new Group(parent, SWT.NONE);
 			m_resolveOrderGroup.setLayout(new GridLayout(3, false));
 			m_resolveOrderGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, numColumns, 1));
-			m_resolveOrderGroup.setText("Order of resolution");
+			m_resolveOrderGroup.setText(Messages.order_of_resolution);
 			m_queryResolvers = new ListViewer(m_resolveOrderGroup, SWT.BORDER);
 			m_queryResolvers.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			m_queryResolvers.setContentProvider(new ArrayContentProvider());
@@ -86,7 +87,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 			buttonBox.setLayout(new GridLayout(1, true));
 			buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
 	
-			m_addButton = UiUtils.createPushButton(buttonBox, "<-- Add", new SelectionAdapter()
+			m_addButton = UiUtils.createPushButton(buttonBox, Messages.add_with_arrow_left, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -96,7 +97,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 			});
 			m_addButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 	
-			m_removeButton = UiUtils.createPushButton(buttonBox, "Remove -->", new SelectionAdapter()
+			m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove_with_arrow_right, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -106,7 +107,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 			});
 			m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 	
-			m_moveUpButton = UiUtils.createPushButton(buttonBox, "Move up", new SelectionAdapter()
+			m_moveUpButton = UiUtils.createPushButton(buttonBox, Messages.move_up, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -116,7 +117,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 			});
 			m_moveUpButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 	
-			m_moveDownButton = UiUtils.createPushButton(buttonBox, "Move down", new SelectionAdapter()
+			m_moveDownButton = UiUtils.createPushButton(buttonBox, Messages.move_down, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -280,7 +281,7 @@ public class ResolutionResolverListEditor extends FieldEditor
 
 	private void loadLists(String prefValue)
 	{
-		String[] resolvers = (prefValue == null || prefValue.length() == 0) ? Trivial.EMPTY_STRING_ARRAY : prefValue.split(",");
+		String[] resolvers = (prefValue == null || prefValue.length() == 0) ? Trivial.EMPTY_STRING_ARRAY : prefValue.split(","); //$NON-NLS-1$
 		m_queryResolvers.setInput(resolvers);
 		m_queryResolvers.getList().select(0);
 		m_queryResolversToAdd.setInput(getPossibleResolverAdditions());
