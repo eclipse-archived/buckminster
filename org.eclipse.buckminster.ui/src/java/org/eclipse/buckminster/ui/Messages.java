@@ -26,6 +26,8 @@ public class Messages extends NLS
 
 	public static String action;
 
+	public static String actions;
+
 	public static String actions_of;
 
 	public static String actor_name_with_colon;
@@ -34,6 +36,8 @@ public class Messages extends NLS
 
 	public static String add_opml_bookmarks_to_rss_reader;
 
+	public static String all_attributes;
+
 	public static String always_with_colon;
 
 	public static String an_error_occured_when_creating_the_file;
@@ -41,6 +45,8 @@ public class Messages extends NLS
 	public static String artifact;
 
 	public static String artifact_path_with_dash;
+
+	public static String artifacts;
 
 	public static String assign_console_support_with_colon;
 
@@ -56,17 +62,27 @@ public class Messages extends NLS
 
 	public static String command;
 
+	public static String component_name_with_colon;
+
+	public static String component_type_with_colon;
+
 	public static String components_known_to_buckminster;
 
 	public static String confirm_overwrite;
 
 	public static String could_not_create_file;
 
+	public static String cspec_editor_dependency;
+
+	public static String cspec_editor_generator;
+
 	public static String dependencies;
 
 	public static String designator_with_colon;
 
 	public static String documentation;
+
+	public static String documentation_with_colon;
 
 	public static String duplicate_0_found_in_plugin_1;
 
@@ -88,6 +104,8 @@ public class Messages extends NLS
 
 	public static String extensions;
 
+	public static String external_save_as;
+
 	public static String file_does_not_exist;
 
 	public static String file_with_colon;
@@ -108,17 +126,25 @@ public class Messages extends NLS
 
 	public static String general_properties;
 
+	public static String generators;
+
 	public static String grater_or_equal_to_version;
 
 	public static String group;
+
+	public static String groups;
 
 	public static String installer_hints;
 
 	public static String internal_problem_when_generating_opml_xml;
 
+	public static String invalid_input;
+
 	public static String key;
 
 	public static String key_with_colon;
+
+	public static String main;
 
 	public static String name;
 
@@ -168,11 +194,17 @@ public class Messages extends NLS
 
 	public static String public_with_colon;
 
+	public static String read_only_in_paranthesis;
+
 	public static String remove;
+
+	public static String short_description_with_colon;
 
 	public static String show_details;
 
 	public static String splashScreen_splash_will_close_after_X_sec_but_you_can_click_to_close;
+
+	public static String the_component_must_have_a_name;
 
 	public static String the_entered_file_name_is_not_valid;
 
@@ -183,6 +215,8 @@ public class Messages extends NLS
 	public static String type_with_colon;
 
 	public static String unable_to_open_editor;
+
+	public static String unable_to_save_file_0;
 
 	public static String unknown_0_derivate;
 
@@ -199,6 +233,10 @@ public class Messages extends NLS
 	public static String wiki_with_colon;
 
 	public static String write_error;
+
+	public static String xml_content;
+
+	public static String xml_content_was_not_updated_due_to_errors;
 	static
 	{
 		// initialize resource bundle

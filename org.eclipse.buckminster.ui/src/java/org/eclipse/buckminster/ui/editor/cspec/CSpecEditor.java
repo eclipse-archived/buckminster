@@ -43,6 +43,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.buckminster.ui.IDerivedEditorInput;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.ArtifactType;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -141,7 +142,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		}
 	}
 
-	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec";
+	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec"; //$NON-NLS-1$
 
 	private CSpecBuilder m_cspec;
 
@@ -222,7 +223,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		if(!commitChanges())
 			return;
 		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.cspec" });
+		dlg.setFilterExtensions(new String[] { "*.cspec" }); //$NON-NLS-1$
 		final String location = dlg.open();
 		if(location == null)
 			return;
@@ -289,7 +290,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		catch(InvocationTargetException e)
 		{
 			CoreException t = BuckminsterException.wrap(e);
-			String msg = "Unable to save file " + path;
+			String msg = Messages.unable_to_save_file_0 + path;
 			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getSite().getShell(), null, msg, t.getStatus());
 		}
@@ -315,7 +316,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		String name = UiUtils.trimmedValue(m_componentName);
 		if(name == null)
 		{
-			MessageDialog.openError(getSite().getShell(), null, "The component must have a name");
+			MessageDialog.openError(getSite().getShell(), null, Messages.the_component_must_have_a_name);
 			return false;
 		}
 		m_cspec.setName(name);
@@ -444,7 +445,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput
 				|| input instanceof IURIEditorInput || input instanceof CSpecEditorInput))
-			throw new PartInitException("Invalid Input");
+			throw new PartInitException(Messages.invalid_input);
 		setSite(site);
 
 		if(input instanceof IURIEditorInput)
@@ -455,7 +456,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			}
 			catch(Exception e)
 			{
-				throw new PartInitException("Unable to open editor", e);
+				throw new PartInitException(Messages.unable_to_open_editor, e);
 			}
 		}
 
@@ -494,8 +495,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 			setInputWithNotify(input);
 			setPartName(input.getName() + (m_readOnly
-					? " (read only)"
-					: ""));
+					? Messages.read_only_in_paranthesis
+					: "")); //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{
@@ -543,7 +544,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			IVersion version = m_cspec.getVersion();
 			if(version == null)
 			{
-				m_versionString.setText("");
+				m_versionString.setText(""); //$NON-NLS-1$
 				m_versionType.select(m_versionType.indexOf(IVersionType.OSGI));
 			}
 			else
@@ -614,7 +615,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			m_shortDesc.setText(TextUtils.notNullString(m_cspec.getShortDesc()));
 			Documentation doc = m_cspec.getDocumentation();
 			m_documentation.setText(TextUtils.notNullString(doc == null
-					? ""
+					? "" //$NON-NLS-1$
 					: doc.toString()));
 
 			m_xml.setText(getCSpecXML());
@@ -665,7 +666,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private String getCSpecXML()
 	{
-		String cspecXML = "";
+		String cspecXML = ""; //$NON-NLS-1$
 		try
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -703,47 +704,47 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		m_mainTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_mainTab.setText("Main");
+		m_mainTab.setText(Messages.main);
 		m_mainTab.setControl(getMainTabControl(m_tabFolder));
 		m_mainTab.setData(CSpecEditorTab.MAIN);
 
 		m_actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_actionsTab.setText("Actions");
+		m_actionsTab.setText(Messages.actions);
 		m_actionsTab.setControl(getActionsTabControl(m_tabFolder));
 		m_actionsTab.setData(CSpecEditorTab.ACTIONS);
 
 		m_artifactsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_artifactsTab.setText("Artifacts");
+		m_artifactsTab.setText(Messages.artifacts);
 		m_artifactsTab.setControl(getArtifactsTabControl(m_tabFolder));
 		m_artifactsTab.setData(CSpecEditorTab.ARTIFACTS);
 
 		m_groupsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_groupsTab.setText("Groups");
+		m_groupsTab.setText(Messages.groups);
 		m_groupsTab.setControl(getGroupsTabControl(m_tabFolder));
 		m_groupsTab.setData(CSpecEditorTab.GROUPS);
 
 		m_attributesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_attributesTab.setText("All Attributes");
+		m_attributesTab.setText(Messages.all_attributes);
 		m_attributesTab.setControl(getAttributesTabControl(m_tabFolder));
 		m_attributesTab.setData(CSpecEditorTab.ATTRIBUTES);
 
 		m_dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_dependenciesTab.setText("Dependencies");
+		m_dependenciesTab.setText(Messages.dependencies);
 		m_dependenciesTab.setControl(getDependenciesTabControl(m_tabFolder));
 		m_dependenciesTab.setData(CSpecEditorTab.DEPENDENCIES);
 
 		m_generatorsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_generatorsTab.setText("Generators");
+		m_generatorsTab.setText(Messages.generators);
 		m_generatorsTab.setControl(getGeneratorsTabControl(m_tabFolder));
 		m_generatorsTab.setData(CSpecEditorTab.GENERATORS);
 
 		m_documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_documentationTab.setText("Documentation");
+		m_documentationTab.setText(Messages.documentation);
 		m_documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
 		m_documentationTab.setData(CSpecEditorTab.DOCUMENTATION);
 
 		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_xmlTab.setText("XML Content");
+		m_xmlTab.setText(Messages.xml_content);
 		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
 		m_xmlTab.setData(CSpecEditorTab.XML);
 
@@ -830,7 +831,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				{
 					if(!commitChanges())
 						MessageDialog.openWarning(getSite().getShell(), null,
-								"XML Content was not actualised due to errors");
+								Messages.xml_content_was_not_updated_due_to_errors);
 					else
 						m_xml.setText(getCSpecXML());
 				}
@@ -856,7 +857,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		pressButtonsBox.setLayout(layout);
 		pressButtonsBox.setLayoutData(new GridData(SWT.END, SWT.FILL, true, false));
 
-		m_externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, "External Save As", new SelectionAdapter()
+		m_externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, Messages.external_save_as, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -881,7 +882,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private Control getMainTabControl(CTabFolder parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Main");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.main);
 
 		Composite nameComposite = new Composite(tabComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
@@ -890,7 +891,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		nameComposite.setLayout(layout);
 		nameComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		Label label = UiUtils.createGridLabel(nameComposite, "Component name:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(nameComposite, Messages.component_name_with_colon, 1, 0, SWT.NONE);
 		int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x + 5;
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gridData.widthHint = labelWidth;
@@ -898,7 +899,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 
-		UiUtils.createGridLabel(nameComposite, "Component Type:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(nameComposite, Messages.component_type_with_colon, 1, 0, SWT.NONE);
 		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
@@ -914,12 +915,12 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		 * m_componentCategory.setLayoutData(gridData);
 		 */
 		Group versionGroup = new Group(tabComposite, SWT.NONE);
-		versionGroup.setText("Version");
+		versionGroup.setText(Messages.version);
 		layout = new GridLayout(2, false);
 		versionGroup.setLayout(layout);
 		versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
-		Label versionLabel = UiUtils.createGridLabel(versionGroup, "Version:", 1, 0, SWT.NONE);
+		Label versionLabel = UiUtils.createGridLabel(versionGroup, Messages.version_with_colon, 1, 0, SWT.NONE);
 		gridData = (GridData)versionLabel.getLayoutData();
 		gridData.widthHint = labelWidth - layout.marginWidth - 3;
 		versionLabel.setLayoutData(gridData);
@@ -931,14 +932,14 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		 * 
 		 * UiUtils.createEmptyPanel(versionGroup);
 		 */
-		UiUtils.createGridLabel(versionGroup, "Type:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(versionGroup, Messages.type_with_colon, 1, 0, SWT.NONE);
 		m_versionType = UiUtils.createGridCombo(versionGroup, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
 		String[] versionTypes = CorePlugin.getDefault().getExtensionIds(CorePlugin.VERSION_TYPES_POINT);
 
 		m_versionType.setItems(versionTypes);
-		m_versionType.select(m_versionType.indexOf("OSGi"));
+		m_versionType.select(m_versionType.indexOf("OSGi")); //$NON-NLS-1$
 		m_versionType.addModifyListener(m_compoundModifyListener);
 		/*
 		 * UiUtils.createEmptyPanel(versionGroup);
@@ -948,7 +949,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private Control getActionsTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Actions");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.actions);
 
 		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec);
 		table.addFieldModifyListener(m_compoundModifyListener);
@@ -962,7 +963,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private Control getArtifactsTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Artifacts");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.artifacts);
 
 		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec);
 		table.addFieldModifyListener(m_compoundModifyListener);
@@ -974,7 +975,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private Control getGroupsTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Groups");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.groups);
 
 		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec);
 		table.addFieldModifyListener(m_compoundModifyListener);
@@ -986,7 +987,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private Control getAttributesTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "All Attributes");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.all_attributes);
 
 		m_attributesView = new AllAttributesView(tabComposite, SWT.NONE, this);
 
@@ -996,13 +997,13 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	@SuppressWarnings("unchecked")
 	private Control getDependenciesTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Dependencies");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.dependencies);
 
 		DependenciesTable table = new DependenciesTable(m_dependencyBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 
 		m_dependenciesEditor = new SimpleTableEditor<ComponentRequestBuilder>(tabComposite, table, null,
-				"CSpec Editor - Dependency", null, null, SWT.NONE);
+				Messages.cspec_editor_dependency, null, null, SWT.NONE);
 
 		return tabComposite;
 	}
@@ -1010,20 +1011,20 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	@SuppressWarnings("unchecked")
 	private Control getGeneratorsTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Generators");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.generators);
 
 		GeneratorsTable table = new GeneratorsTable(this, m_generatorBuilders, m_cspec);
 		table.addTableModifyListener(m_compoundModifyListener);
 
 		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(tabComposite, table, null,
-				"CSpec Editor - Generator", null, null, SWT.NONE);
+				Messages.cspec_editor_generator, null, null, SWT.NONE);
 
 		return tabComposite;
 	}
 
 	private Control getDocumentationTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "Documentation");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.documentation);
 
 		Composite descComposite = new Composite(tabComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
@@ -1031,10 +1032,10 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		descComposite.setLayout(layout);
 		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		UiUtils.createGridLabel(descComposite, "Short Description:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(descComposite, Messages.short_description_with_colon, 1, 0, SWT.NONE);
 		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
 
-		Label label = UiUtils.createGridLabel(descComposite, "Documentation:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(descComposite, Messages.documentation_with_colon, 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
 		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL,
 				m_compoundModifyListener);
@@ -1045,7 +1046,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private Control getXMLTabControl(Composite parent)
 	{
-		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, "XML Content");
+		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.xml_content);
 
 		Composite xmlComposite = new Composite(tabComposite, SWT.NONE);
 		GridLayout layout = new GridLayout();
