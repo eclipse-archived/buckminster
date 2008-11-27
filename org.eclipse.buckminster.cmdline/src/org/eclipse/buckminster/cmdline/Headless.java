@@ -36,12 +36,15 @@ public class Headless implements IApplication, OptionValueType
 	public static class Invocation
 	{
 		private final String m_name;
+
 		private final String[] m_args;
 
 		public Invocation(String name, String[] args)
 		{
 			m_name = name;
-			m_args = args == null ? Trivial.EMPTY_STRING_ARRAY : args;
+			m_args = args == null
+					? Trivial.EMPTY_STRING_ARRAY
+					: args;
 		}
 
 		public String[] getArgs()
@@ -60,7 +63,7 @@ public class Headless implements IApplication, OptionValueType
 			int nargs = m_args.length;
 			if(nargs == 0)
 				return m_name;
-			
+
 			StringBuffer bld = new StringBuffer();
 			bld.append(m_name);
 			for(int idx = 0; idx < nargs; ++idx)
@@ -73,12 +76,15 @@ public class Headless implements IApplication, OptionValueType
 		}
 	}
 
-	/** The plug-in ID
+	/**
+	 * The plug-in ID
 	 */
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.cmdline";
 
 	static final public int EXIT_FORCED = 2;
+
 	static final public int EXIT_FAIL = 1;
+
 	static final public int EXIT_OK = 0;
 
 	// be a little less user-friendly by displaying nasty stack traces on
@@ -108,88 +114,25 @@ public class Headless implements IApplication, OptionValueType
 
 	private int m_logLevel = Logger.INFO;
 
-	public Object start(IApplicationContext context) throws Exception
+	protected void help(PrintStream ps) throws Exception
 	{
-		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
-	}
-
-	public Object run(Object objArgs) throws Exception
-	{
-		Buckminster.setHeadless();
-		int exitValue = EXIT_FAIL;
-		try
+		PrintStream out = System.out;
+		InputStream is = getClass().getResourceAsStream("Headless.help");
+		if(is == null)
+			out.println("Help is not available");
+		else
 		{
-			exitValue = run((String[])objArgs);
+			out.println("Help text for buckminster:");
+			try
+			{
+				IOUtils.copy(is, out, null);
+				out.flush();
+			}
+			finally
+			{
+				IOUtils.close(is);
+			}
 		}
-		catch(OperationCanceledException e)
-		{
-			System.err.println("Command canceled");
-		}
-		catch(InterruptedException e)
-		{
-			System.err.println("Command was interrupted");
-		}
-		catch(SimpleErrorExitException e)
-		{
-			System.err.println(e.getMessage());
-			exitValue = e.getExitValue();
-		}
-		catch(UsageException e)
-		{
-			System.err.println(e.getMessage());
-			if(e.isEmitHelp())
-				help(System.out);
-		}
-		catch(Throwable e)
-		{
-			BuckminsterException.deeplyPrint(e, System.err, m_displayStackTrace);
-		}
-		return new Integer(exitValue);
-	}
-
-	protected int run(String[] args) throws Exception
-	{
-		parse(args);
-		
-		Logger.setConsoleLevelThreshold(m_logLevel);
-		Logger.setEclipseLoggerLevelThreshold(m_logLevel);
-		Logger.setEclipseLoggerToConsole(true);
-
-		if(m_help)
-		{
-			help(System.out);
-			return EXIT_OK;
-		}
-
-		final IJobManager jobMgr = Job.getJobManager();
-		int top = m_invocations.size();
-		if(top == 0)
-		{
-			System.out.println("No command provided. Try one of:");
-			System.out.println("  buckminster --help");
-			System.out.println("  buckminster listcommands");
-			System.out.println("  buckminster <command> --help");
-			return EXIT_FAIL;
-		}
-
-		Logger logger = Buckminster.getLogger();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			Invocation invocation = m_invocations.get(idx);
-			String commandName = invocation.getName();
-			CommandInfo ci = CommandInfo.getCommand(commandName);
-			AbstractCommand cmd = ci.createInstance();
-			jobMgr.setProgressProvider(cmd.getProgressProvider());
-			
-			if(logger.isDebugEnabled())
-				logger.debug(invocation.toString());
-			else if(m_usingScript)
-				logger.info(invocation.toString());
-			int exitValue = cmd.basicRun(commandName, ci, invocation.getArgs());
-			if(exitValue != EXIT_OK)
-				return exitValue;
-		}
-		return EXIT_OK;
 	}
 
 	protected void parse(String[] args) throws Exception
@@ -277,25 +220,88 @@ public class Headless implements IApplication, OptionValueType
 		}
 	}
 
-	protected void help(PrintStream ps) throws Exception
+	public Object run(Object objArgs) throws Exception
 	{
-		PrintStream out = System.out;
-		InputStream is = getClass().getResourceAsStream("Headless.help");
-		if(is == null)
-			out.println("Help is not available");
-		else
+		Buckminster.setHeadless();
+		int exitValue = EXIT_FAIL;
+		try
 		{
-			out.println("Help text for buckminster:");
-			try
-			{
-				IOUtils.copy(is, out, null);
-				out.flush();
-			}
-			finally
-			{
-				IOUtils.close(is);
-			}
+			exitValue = run((String[])objArgs);
 		}
+		catch(OperationCanceledException e)
+		{
+			System.err.println("Command canceled");
+		}
+		catch(InterruptedException e)
+		{
+			System.err.println("Command was interrupted");
+		}
+		catch(SimpleErrorExitException e)
+		{
+			System.err.println(e.getMessage());
+			exitValue = e.getExitValue();
+		}
+		catch(UsageException e)
+		{
+			System.err.println(e.getMessage());
+			if(e.isEmitHelp())
+				help(System.out);
+		}
+		catch(Throwable e)
+		{
+			BuckminsterException.deeplyPrint(e, System.err, m_displayStackTrace);
+		}
+		return new Integer(exitValue);
+	}
+
+	protected int run(String[] args) throws Exception
+	{
+		parse(args);
+
+		Logger.setConsoleLevelThreshold(m_logLevel);
+		Logger.setEclipseLoggerLevelThreshold(m_logLevel);
+		Logger.setEclipseLoggerToConsole(true);
+
+		if(m_help)
+		{
+			help(System.out);
+			return EXIT_OK;
+		}
+
+		final IJobManager jobMgr = Job.getJobManager();
+		int top = m_invocations.size();
+		if(top == 0)
+		{
+			System.out.println("No command provided. Try one of:");
+			System.out.println("  buckminster --help");
+			System.out.println("  buckminster listcommands");
+			System.out.println("  buckminster <command> --help");
+			return EXIT_FAIL;
+		}
+
+		Logger logger = Buckminster.getLogger();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			Invocation invocation = m_invocations.get(idx);
+			String commandName = invocation.getName();
+			CommandInfo ci = CommandInfo.getCommand(commandName);
+			AbstractCommand cmd = ci.createInstance();
+			jobMgr.setProgressProvider(cmd.getProgressProvider());
+
+			if(logger.isDebugEnabled())
+				logger.debug(invocation.toString());
+			else if(m_usingScript)
+				logger.info(invocation.toString());
+			int exitValue = cmd.basicRun(commandName, ci, invocation.getArgs());
+			if(exitValue != EXIT_OK)
+				return exitValue;
+		}
+		return EXIT_OK;
+	}
+
+	public Object start(IApplicationContext context) throws Exception
+	{
+		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
 	}
 
 	public void stop()

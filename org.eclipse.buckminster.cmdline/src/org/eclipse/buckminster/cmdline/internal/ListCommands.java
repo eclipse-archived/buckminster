@@ -33,7 +33,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class ListCommands extends AbstractCommand
 {
 	private static final int LONG = 1;
+
 	private static final int NORMAL = 2;
+
 	private static final int SHORT = 3;
 
 	static private final OptionDescriptor DISABLED_OPT = new OptionDescriptor(null, "__disabled", OptionValueType.NONE);
@@ -41,12 +43,6 @@ public class ListCommands extends AbstractCommand
 	static private final OptionDescriptor HIDDEN_OPT = new OptionDescriptor(null, "__hidden", OptionValueType.NONE);
 
 	static private final OptionDescriptor STYLE_OPT = new OptionDescriptor(null, "style", OptionValueType.REQUIRED);
-
-	private boolean m_showDisabled = false;
-
-	private boolean m_showHidden = false;
-
-	private int m_style = NORMAL;
 
 	private static int parseStyle(String styleStr) throws InvalidOptionValueException
 	{
@@ -62,6 +58,12 @@ public class ListCommands extends AbstractCommand
 		return style;
 	}
 
+	private boolean m_showDisabled = false;
+
+	private boolean m_showHidden = false;
+
+	private int m_style = NORMAL;
+
 	protected OptionDescriptor[] getOptionDescriptors() throws Exception
 	{
 		return new OptionDescriptor[] { HIDDEN_OPT, DISABLED_OPT, STYLE_OPT };
@@ -70,11 +72,11 @@ public class ListCommands extends AbstractCommand
 	@Override
 	protected void handleOption(Option option) throws Exception
 	{
-		if (option.is(HIDDEN_OPT))
+		if(option.is(HIDDEN_OPT))
 			m_showHidden = true;
-		else if (option.is(DISABLED_OPT))
+		else if(option.is(DISABLED_OPT))
 			m_showDisabled = true;
-		else if (option.is(STYLE_OPT))
+		else if(option.is(STYLE_OPT))
 			m_style = parseStyle(option.getValue().toUpperCase());
 	}
 
@@ -82,7 +84,7 @@ public class ListCommands extends AbstractCommand
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		CommandInfo[] implementors = CommandInfo.getImplementors();
-		switch (m_style)
+		switch(m_style)
 		{
 		case SHORT:
 			this.showShort(implementors);
@@ -100,9 +102,9 @@ public class ListCommands extends AbstractCommand
 	private boolean shouldShow(CommandInfo cmdInfo)
 	{
 		int s = cmdInfo.getStatus();
-		if (s == CommandInfo.HIDDEN && !m_showHidden)
+		if(s == CommandInfo.HIDDEN && !m_showHidden)
 			return false;
-		if (s == CommandInfo.DISABLED && !m_showDisabled)
+		if(s == CommandInfo.DISABLED && !m_showDisabled)
 			return false;
 		return true;
 	}
@@ -111,11 +113,11 @@ public class ListCommands extends AbstractCommand
 	{
 		PrintStream out = System.out;
 		out.println("Available commands by namespace:");
-		SortedMap<String,List<CommandInfo>> implementorsByNamespace = sortImplementorsByNamespace(implementors);
-		Iterator<Map.Entry<String,List<CommandInfo>>> allInfosItor = implementorsByNamespace.entrySet().iterator();
+		SortedMap<String, List<CommandInfo>> implementorsByNamespace = sortImplementorsByNamespace(implementors);
+		Iterator<Map.Entry<String, List<CommandInfo>>> allInfosItor = implementorsByNamespace.entrySet().iterator();
 		while(allInfosItor.hasNext())
 		{
-			Map.Entry<String,List<CommandInfo>> entry = allInfosItor.next();
+			Map.Entry<String, List<CommandInfo>> entry = allInfosItor.next();
 			List<CommandInfo> implementorsForNamespace = entry.getValue();
 			Collections.sort(implementorsForNamespace, new Comparator<CommandInfo>()
 			{
@@ -130,9 +132,9 @@ public class ListCommands extends AbstractCommand
 			for(int idx = 0; idx < top; ++idx)
 			{
 				CommandInfo ci = implementorsForNamespace.get(idx);
-				if (shouldShow(ci))
+				if(shouldShow(ci))
 				{
-					if (namespace != null)
+					if(namespace != null)
 					{
 						out.print("  (");
 						out.print(namespace);
@@ -142,12 +144,14 @@ public class ListCommands extends AbstractCommand
 					out.print("    ");
 					out.print(ci.getName());
 					String[] aliases = ci.getAliases();
-					if (aliases.length > 0)
+					if(aliases.length > 0)
 					{
 						out.print(" (");
 						out.print(aliases.length);
 						out.print(" alias");
-						out.println(aliases.length > 1 ? "es)" : ")");
+						out.println(aliases.length > 1
+								? "es)"
+								: ")");
 						Arrays.sort(aliases);
 						for(int i = 0; i < aliases.length; ++i)
 						{
@@ -170,7 +174,7 @@ public class ListCommands extends AbstractCommand
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
 			CommandInfo cmdInfo = implementors[idx];
-			if (shouldShow(cmdInfo))
+			if(shouldShow(cmdInfo))
 			{
 				String[] allNames = cmdInfo.getAllNames();
 				for(int i = 0; i < allNames.length; ++i)
@@ -193,7 +197,7 @@ public class ListCommands extends AbstractCommand
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
 			CommandInfo cmdInfo = implementors[idx];
-			if (shouldShow(cmdInfo))
+			if(shouldShow(cmdInfo))
 				names.add(cmdInfo.getFullName());
 		}
 		Collections.sort(names);
@@ -202,16 +206,16 @@ public class ListCommands extends AbstractCommand
 			out.println(names.get(idx));
 	}
 
-	private SortedMap<String,List<CommandInfo>> sortImplementorsByNamespace(CommandInfo[] implementors)
+	private SortedMap<String, List<CommandInfo>> sortImplementorsByNamespace(CommandInfo[] implementors)
 	{
-		SortedMap<String,List<CommandInfo>> implementorsByNamespace = new TreeMap<String,List<CommandInfo>>();
+		SortedMap<String, List<CommandInfo>> implementorsByNamespace = new TreeMap<String, List<CommandInfo>>();
 
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
 			CommandInfo ci = implementors[idx];
 			String namespace = ci.getNamespace();
 			List<CommandInfo> ciList = implementorsByNamespace.get(namespace);
-			if (ciList == null)
+			if(ciList == null)
 				ciList = new ArrayList<CommandInfo>();
 			ciList.add(ci);
 			implementorsByNamespace.put(namespace, ciList);
@@ -219,4 +223,3 @@ public class ListCommands extends AbstractCommand
 		return implementorsByNamespace;
 	}
 }
-

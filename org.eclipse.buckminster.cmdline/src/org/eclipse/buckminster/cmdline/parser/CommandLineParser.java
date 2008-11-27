@@ -16,63 +16,25 @@ import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 
 /**
- * A simple command line parser that implements a subset of the parsing that
- * is performed by a normal bourne shell. Environment substitution is performed
- * only if the Java runtime is of version 1.5 or higher.
- *
+ * A simple command line parser that implements a subset of the parsing that is performed by a normal bourne shell.
+ * Environment substitution is performed only if the Java runtime is of version 1.5 or higher.
+ * 
  * @author Thomas Hallgren
  * @see java.util.Iterator
  */
 public class CommandLineParser implements Iterator<String>
 {
-	private final StringBuffer m_innerBld = new StringBuffer();
-	private final StringBuffer m_outerBld = new StringBuffer();
-	private final String m_line;
-
-	private String m_nextToken;
-	private int m_pos;
-
-	public CommandLineParser(String line)
+	@Deprecated
+	private static String getenv(String varName)
 	{
-		m_line = line;
-		int top = m_line.length();
-		while(m_pos < top)
+		try
 		{
-			char c = m_line.charAt(m_pos);
-			if(Character.isWhitespace(c))
-			{
-				++m_pos;
-				continue;
-			}
-			
-			// Lines where first non-space character is a '#' are considered
-			// to be comments
-			//
-			if(c == '#')
-				m_pos = top;
-			break;
+			return System.getenv(varName);
 		}
-	}
-
-	public boolean hasNext()
-	{
-		if(m_nextToken == null)
-			m_nextToken = this.nextToken();
-		return m_nextToken != null;
-	}
-
-	public String next()
-	{
-		if(!this.hasNext())
-			throw new NoSuchElementException();
-		String nxt = m_nextToken;
-		m_nextToken = null;
-		return nxt;
-	}
-
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
+		catch(Error e)
+		{
+			return "ENV Variables are not supported unless you use Java 1.5 or higher";
+		}
 	}
 
 	private static char getEscapedChar(char escaped)
@@ -87,6 +49,38 @@ public class CommandLineParser implements Iterator<String>
 			return '\r';
 		default:
 			return escaped;
+		}
+	}
+
+	private final StringBuffer m_innerBld = new StringBuffer();
+
+	private final StringBuffer m_outerBld = new StringBuffer();
+
+	private final String m_line;
+
+	private String m_nextToken;
+
+	private int m_pos;
+
+	public CommandLineParser(String line)
+	{
+		m_line = line;
+		int top = m_line.length();
+		while(m_pos < top)
+		{
+			char c = m_line.charAt(m_pos);
+			if(Character.isWhitespace(c))
+			{
+				++m_pos;
+				continue;
+			}
+
+			// Lines where first non-space character is a '#' are considered
+			// to be comments
+			//
+			if(c == '#')
+				m_pos = top;
+			break;
 		}
 	}
 
@@ -105,7 +99,7 @@ public class CommandLineParser implements Iterator<String>
 			}
 			if(idx == top)
 				break;
-			
+
 			int start;
 			int end;
 			c = string.charAt(idx);
@@ -127,25 +121,12 @@ public class CommandLineParser implements Iterator<String>
 			{
 				String key = string.substring(start, end);
 				String value = (key.length() > 4 && "env:".equalsIgnoreCase(string.substring(0, 4)))
-					? getenv(key.substring(4))
-					: System.getProperty(key);
+						? getenv(key.substring(4))
+						: System.getProperty(key);
 				logger.debug("key '%s' expanded to '%s'", key, value);
 				if(value != null)
 					bld.append(value);
 			}
-		}
-	}
-
-	@Deprecated
-	private static String getenv(String varName)
-	{
-		try
-		{
-			return System.getenv(varName);
-		}
-		catch(Error e)
-		{
-			return "ENV Variables are not supported unless you use Java 1.5 or higher";
 		}
 	}
 
@@ -203,6 +184,22 @@ public class CommandLineParser implements Iterator<String>
 		return m_innerBld.toString();
 	}
 
+	public boolean hasNext()
+	{
+		if(m_nextToken == null)
+			m_nextToken = this.nextToken();
+		return m_nextToken != null;
+	}
+
+	public String next()
+	{
+		if(!this.hasNext())
+			throw new NoSuchElementException();
+		String nxt = m_nextToken;
+		m_nextToken = null;
+		return nxt;
+	}
+
 	private String nextToken()
 	{
 		m_outerBld.setLength(0);
@@ -235,12 +232,17 @@ public class CommandLineParser implements Iterator<String>
 					while(m_pos < top && Character.isWhitespace(m_line.charAt(m_pos)))
 						++m_pos;
 					break;
-				}	
+				}
 				getExpanded(m_outerBld, getSpaceDelimited());
 				continue;
 			}
 			break;
 		}
 		return m_outerBld.toString();
+	}
+
+	public void remove()
+	{
+		throw new UnsupportedOperationException();
 	}
 }

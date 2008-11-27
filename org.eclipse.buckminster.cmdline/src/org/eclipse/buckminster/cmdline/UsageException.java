@@ -11,9 +11,8 @@
 package org.eclipse.buckminster.cmdline;
 
 /**
- * Exception thrown while parsing the command line. The message is
- * printed as an information to the invoking user.
- *
+ * Exception thrown while parsing the command line. The message is printed as an information to the invoking user.
+ * 
  * @author Thomas Hallgren
  */
 public class UsageException extends Exception

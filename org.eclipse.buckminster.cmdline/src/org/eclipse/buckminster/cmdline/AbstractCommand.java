@@ -30,35 +30,6 @@ abstract public class AbstractCommand
 
 	private boolean m_addHelpFlags;
 
-	public ProgressProvider getProgressProvider()
-	{
-		return new ProgressProvider()
-		{
-			@Override
-			public IProgressMonitor createMonitor(Job job)
-			{
-				return this.getDefaultMonitor();
-			}
-		};		
-	}
-
-	public void init(boolean addHelpFlags)
-	{
-		m_addHelpFlags = addHelpFlags;
-	}
-
-	/**
-	 * Internal run command. Assumes that all options has been set.
-	 * @param cmdName The name of the command.
-	 * @return the exit code.
-	 */
-	public int run(String cmdName) throws Exception
-	{
-		m_calledUsingName = cmdName;
-		m_cmdInfo = CommandInfo.getCommand(cmdName);
-		return this.run(this.getProgressProvider().getDefaultMonitor());
-	}
-
 	final int basicRun(String calledUsingName, CommandInfo cmdInfo, String[] commandArgs) throws Exception
 	{
 		m_calledUsingName = calledUsingName;
@@ -113,8 +84,27 @@ abstract public class AbstractCommand
 		return m_cmdInfo.getFullName();
 	}
 
+	protected InputStream getHelpStream() throws Exception
+	{
+		Class<? extends AbstractCommand> myClass = getClass();
+		String helpResource = "/" + myClass.getName().replace('.', '/') + ".help";
+		return myClass.getResourceAsStream(helpResource);
+	}
+
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
+	}
+
+	public ProgressProvider getProgressProvider()
+	{
+		return new ProgressProvider()
+		{
+			@Override
+			public IProgressMonitor createMonitor(Job job)
+			{
+				return this.getDefaultMonitor();
+			}
+		};
 	}
 
 	protected void handleOption(Option option) throws Exception
@@ -125,13 +115,6 @@ abstract public class AbstractCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		// noop
-	}
-
-	protected InputStream getHelpStream() throws Exception
-	{
-		Class<? extends AbstractCommand> myClass = getClass();
-		String helpResource = "/" + myClass.getName().replace('.', '/') + ".help";
-		return myClass.getResourceAsStream(helpResource);
 	}
 
 	protected void help() throws Exception
@@ -160,7 +143,10 @@ abstract public class AbstractCommand
 		}
 	}
 
-	protected abstract int run(IProgressMonitor monitor) throws Exception;
+	public void init(boolean addHelpFlags)
+	{
+		m_addHelpFlags = addHelpFlags;
+	}
 
 	private boolean parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception
 	{
@@ -172,7 +158,7 @@ abstract public class AbstractCommand
 		for(int idx = 0; idx < top; ++idx)
 		{
 			Option option = options[idx];
-			if (option.is(s_helpDescriptor))
+			if(option.is(s_helpDescriptor))
 				helpRequested = true;
 			else
 				this.handleOption(option);
@@ -180,5 +166,21 @@ abstract public class AbstractCommand
 		this.endOptionProcessing();
 		this.handleUnparsed(pr.getUnparsed());
 		return helpRequested;
+	}
+
+	protected abstract int run(IProgressMonitor monitor) throws Exception;
+
+	/**
+	 * Internal run command. Assumes that all options has been set.
+	 * 
+	 * @param cmdName
+	 *            The name of the command.
+	 * @return the exit code.
+	 */
+	public int run(String cmdName) throws Exception
+	{
+		m_calledUsingName = cmdName;
+		m_cmdInfo = CommandInfo.getCommand(cmdName);
+		return this.run(this.getProgressProvider().getDefaultMonitor());
 	}
 }

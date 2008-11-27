@@ -13,6 +13,8 @@ package org.eclipse.buckminster.cmdline;
 public interface OptionValueType
 {
 	public static final int NONE = 1;
+
 	public static final int OPTIONAL = 2;
+
 	public static final int REQUIRED = 3;
 }

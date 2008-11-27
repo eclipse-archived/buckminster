@@ -22,4 +22,3 @@ public class OptionRequiresValueException extends AbstractOptionParsingException
 		super("The option '" + message + "' requires a value");
 	}
 }
-

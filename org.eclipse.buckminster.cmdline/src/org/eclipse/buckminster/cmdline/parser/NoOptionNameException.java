@@ -22,4 +22,3 @@ public class NoOptionNameException extends AbstractOptionParsingException
 		super("Missing option name");
 	}
 }
-

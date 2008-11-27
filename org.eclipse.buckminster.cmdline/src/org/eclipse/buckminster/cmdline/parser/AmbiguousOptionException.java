@@ -22,4 +22,3 @@ public class AmbiguousOptionException extends AbstractOptionParsingException
 		super("The option '" + message + "' is ambiguous");
 	}
 }
-

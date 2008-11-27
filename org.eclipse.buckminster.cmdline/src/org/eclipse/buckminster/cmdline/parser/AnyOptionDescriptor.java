@@ -28,4 +28,3 @@ public class AnyOptionDescriptor extends OptionDescriptor
 		return true;
 	}
 }
-

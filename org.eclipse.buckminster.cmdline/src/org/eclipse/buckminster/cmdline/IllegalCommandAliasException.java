@@ -19,4 +19,3 @@ class IllegalCommandAliasException extends RuntimeException
 		super("The command alias '" + message + "' is illegal");
 	}
 }
-

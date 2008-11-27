@@ -11,9 +11,9 @@ package org.eclipse.buckminster.cmdline.parser;
 
 /**
  * @author kolwing
- *
+ * 
  */
-public class InvalidOptionValueException  extends AbstractOptionParsingException
+public class InvalidOptionValueException extends AbstractOptionParsingException
 {
 	private static final long serialVersionUID = 4827165311898239651L;
 

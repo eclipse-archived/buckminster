@@ -13,33 +13,35 @@ package org.eclipse.buckminster.cmdline;
 public class OptionDescriptor
 {
 	private final Character m_shortName;
+
 	private final String m_longName;
+
 	private final int m_type;
-	
-	public OptionDescriptor(Character shortName, String longName, int type)
-	{
-		m_shortName = shortName;
-		m_longName = longName;
-		m_type = type;
-	}
-	
+
 	public OptionDescriptor(char shortName, String longName, int type)
 	{
 		m_shortName = new Character(shortName);
 		m_longName = longName;
 		m_type = type;
 	}
-	
-	public Character getShortName()
+
+	public OptionDescriptor(Character shortName, String longName, int type)
 	{
-		return m_shortName;
+		m_shortName = shortName;
+		m_longName = longName;
+		m_type = type;
 	}
-	
+
 	public String getLongName()
 	{
 		return m_longName;
 	}
-	
+
+	public Character getShortName()
+	{
+		return m_shortName;
+	}
+
 	public int getType()
 	{
 		return m_type;
@@ -49,15 +51,18 @@ public class OptionDescriptor
 	{
 		// short names have simple testing
 		//
-		if (!isLongName)
-			return (m_shortName == null ? false : m_shortName.charValue() == name.charAt(0));
-		
+		if(!isLongName)
+			return (m_shortName == null
+					? false
+					: m_shortName.charValue() == name.charAt(0));
+
 		// long names are sensitive to exact or non-exact matching
 		//
-		if (m_longName == null)
+		if(m_longName == null)
 			return false;
-		
-		return (exact ? m_longName.equals(name) : m_longName.startsWith(name));
+
+		return (exact
+				? m_longName.equals(name)
+				: m_longName.startsWith(name));
 	}
 }
-

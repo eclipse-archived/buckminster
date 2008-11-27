@@ -40,26 +40,10 @@ public class BasicPreferenceHandler implements IExecutableExtension
 
 	private static final IEclipsePreferences s_eclipsePrefs = Platform.getPreferencesService().getRootNode();
 
-	public void set(String value) throws BackingStoreException
-	{
-		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
-		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
-		node.put(prefNodeAndKey[1], value);
-		node.flush();
-	}
-
 	public String get(String defaultValue) throws CoreException
 	{
 		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
 		return s_eclipsePrefs.node(prefNodeAndKey[0]).get(prefNodeAndKey[1], defaultValue);
-	}
-
-	public void unset() throws BackingStoreException
-	{
-		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
-		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
-		node.remove(prefNodeAndKey[1]);
-		node.flush();
 	}
 
 	public final String getDescription()
@@ -77,18 +61,36 @@ public class BasicPreferenceHandler implements IExecutableExtension
 		return m_name;
 	}
 
-	public final void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException
+	protected final String[] pathAsNodeAndKey(String path)
 	{
-		m_name = new StringBuffer(config.getDeclaringExtension().getNamespaceIdentifier()).append('.').append(config.getAttribute(NAME_ATTRIB)).toString();
+		int lastSlash = path.lastIndexOf(SLASH);
+		if(lastSlash == -1)
+			throw new IllegalArgumentException("No slash in preference path");
+		return new String[] { path.substring(0, lastSlash), path.substring(lastSlash + 1) };
+	}
+
+	public void set(String value) throws BackingStoreException
+	{
+		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
+		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
+		node.put(prefNodeAndKey[1], value);
+		node.flush();
+	}
+
+	public final void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+			throws CoreException
+	{
+		m_name = new StringBuffer(config.getDeclaringExtension().getNamespaceIdentifier()).append('.').append(
+				config.getAttribute(NAME_ATTRIB)).toString();
 		m_key = config.getAttribute(KEY_ATTRIB);
 		m_description = config.getAttribute(DESC_ATTRIB);
 	}
 
-	protected final String[] pathAsNodeAndKey(String path)
+	public void unset() throws BackingStoreException
 	{
-		int lastSlash = path.lastIndexOf(SLASH);
-		if (lastSlash == -1)
-			throw new IllegalArgumentException("No slash in preference path");
-		return new String[] { path.substring(0, lastSlash), path.substring(lastSlash + 1) };
+		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
+		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
+		node.remove(prefNodeAndKey[1]);
+		node.flush();
 	}
 }

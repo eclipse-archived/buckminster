@@ -10,14 +10,16 @@
 
 package org.eclipse.buckminster.cmdline;
 
-
 public class Option
 {
 	private final OptionDescriptor m_optionDescriptor;
+
 	private final String m_name;
+
 	private final String m_value;
+
 	private final boolean m_isLongName;
-	
+
 	public Option(OptionDescriptor optionDescriptor, String name, String value, boolean isLongName)
 	{
 		m_optionDescriptor = optionDescriptor;
@@ -25,12 +27,7 @@ public class Option
 		m_value = value;
 		m_isLongName = isLongName;
 	}
-	
-	public boolean is(OptionDescriptor optionDescriptor)
-	{
-		return optionDescriptor == m_optionDescriptor;
-	}
-	
+
 	public String getName()
 	{
 		return m_name;
@@ -40,7 +37,12 @@ public class Option
 	{
 		return m_value;
 	}
-	
+
+	public boolean is(OptionDescriptor optionDescriptor)
+	{
+		return optionDescriptor == m_optionDescriptor;
+	}
+
 	public boolean isLongName()
 	{
 		return m_isLongName;
@@ -62,4 +64,3 @@ public class Option
 		return bld.toString();
 	}
 }
-

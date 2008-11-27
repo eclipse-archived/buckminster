@@ -19,4 +19,3 @@ public class InvalidOptionException extends AbstractOptionParsingException
 		super("The option '" + message + "' is invalid");
 	}
 }
-
