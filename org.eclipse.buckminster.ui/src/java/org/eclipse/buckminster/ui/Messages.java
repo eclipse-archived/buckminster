@@ -40,9 +40,13 @@ public class Messages extends NLS
 
 	public static String artifact;
 
+	public static String artifact_path_with_dash;
+
 	public static String assign_console_support_with_colon;
 
 	public static String bad_file_name;
+
+	public static String base_path_with_colon;
 
 	public static String browse_with_dots;
 
@@ -131,6 +135,8 @@ public class Messages extends NLS
 	public static String ok;
 
 	public static String opml_format_error;
+
+	public static String paths_with_colon;
 
 	public static String please_enter_a_valid_url;
 

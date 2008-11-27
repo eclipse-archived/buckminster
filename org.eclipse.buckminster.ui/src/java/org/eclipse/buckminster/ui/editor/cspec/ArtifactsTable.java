@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
@@ -95,9 +96,9 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 	@Override
 	public void fillStack(Composite stackComposite)
 	{
-		addStackMapping("General", createGeneralStackLayer(stackComposite));
-		addStackMapping("Installer Hints", createInstallerHintsStackLayer(stackComposite));
-		addStackMapping("Documentation", createDocumentationStackLayer(stackComposite));
+		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
+		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
+		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -108,22 +109,22 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		layout.marginHeight = layout.marginWidth = 0;
 		geComposite.setLayout(layout);
 
-		EditorUtils.createHeaderLabel(geComposite, "General", 2);
+		EditorUtils.createHeaderLabel(geComposite, Messages.general, 2);
 
-		UiUtils.createGridLabel(geComposite, "Name:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.name_with_colon, 1, 0, SWT.NONE);
 
 		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
 
-		UiUtils.createGridLabel(geComposite, "Public:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
 		
-		UiUtils.createGridLabel(geComposite, "Base Path:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.base_path_with_colon, 1, 0, SWT.NONE);
 
 		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_basePathText.addModifyListener(FIELD_LISTENER);
 		
-		UiUtils.createGridLabel(geComposite, "Type:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(geComposite, Messages.type_with_colon, 1, 0, SWT.NONE);
 
 		m_typeText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_typeText.addModifyListener(FIELD_LISTENER);
@@ -131,7 +132,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
 		
-		Label label = UiUtils.createGridLabel(geComposite, "Paths:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(geComposite, Messages.paths_with_colon, 1, 0, SWT.NONE);
 		GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
 		gridData.horizontalSpan = 2;
 		label.setLayoutData(gridData);
@@ -143,7 +144,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 				geComposite,
 				phTable,
 				null,
-				"Artifact - Path",
+				Messages.artifact_path_with_dash,
 				null,
 				null,
 				SWT.NONE);
@@ -152,7 +153,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		gridData.horizontalSpan = 2;
 		m_pathsEditor.setLayoutData(gridData);
 
-		geComposite.setData("focusControl", getNameText());
+		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 
 		return geComposite;
 	}
