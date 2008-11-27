@@ -64,6 +64,8 @@ public class Messages extends NLS
 
 	public static String component_name_with_colon;
 
+	public static String component_type;
+
 	public static String component_type_with_colon;
 
 	public static String components_known_to_buckminster;
@@ -77,6 +79,8 @@ public class Messages extends NLS
 	public static String cspec_editor_generator;
 
 	public static String dependencies;
+
+	public static String dependency_name_cannot_be_empty;
 
 	public static String designator_with_colon;
 
@@ -109,6 +113,8 @@ public class Messages extends NLS
 	public static String file_does_not_exist;
 
 	public static String file_with_colon;
+
+	public static String filter;
 
 	public static String filter_with_colon;
 
@@ -227,6 +233,8 @@ public class Messages extends NLS
 	public static String value_with_colon;
 
 	public static String version;
+
+	public static String version_designator;
 
 	public static String version_with_colon;
 

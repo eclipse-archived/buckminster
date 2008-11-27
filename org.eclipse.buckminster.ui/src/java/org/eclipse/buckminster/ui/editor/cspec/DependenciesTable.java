@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
 import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
@@ -107,7 +108,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[]{"Name", "Component Type", "Version Designator", "Filter"};
+		return new String[]{Messages.name, Messages.component_type, Messages.version_designator, Messages.filter};
 	}
 
 	public int[] getColumnWeights()
@@ -166,7 +167,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		
 		final IWidgetin widgetin = new WidgetWrapper(text);
 		
-		String stringValue = value == null ? "" : value.toString();
+		String stringValue = value == null ? "" : value.toString(); //$NON-NLS-1$
 		
 		text.setText(stringValue);
 		text.setData(stringValue);
@@ -241,16 +242,16 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		
 		IWidgetin[] widgetins = new IWidgetin[getColumns()];
 		
-		UiUtils.createGridLabel(parent, getColumnHeaders()[0] + ":", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(parent, getColumnHeaders()[0] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
 		widgetins[0] = getWidgetin(parent, 0, fieldValues[0]);
 		
-		UiUtils.createGridLabel(parent, getColumnHeaders()[1] + ":", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(parent, getColumnHeaders()[1] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
 		widgetins[1] = getWidgetin(parent, 1, fieldValues[1]);
 		new Label(parent, SWT.NONE);
 		
 		widgetins[2] = getWidgetin(parent, 2, fieldValues[2]);
 
-		UiUtils.createGridLabel(parent, getColumnHeaders()[3] + ":", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(parent, getColumnHeaders()[3] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
 		widgetins[3] = getWidgetin(parent, 3, fieldValues[3]);
 		
 		return widgetins;
@@ -262,7 +263,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		switch(idx)
 		{
 		case 0:
-			return SimpleTable.createNotEmptyStringValidator("Dependency name cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator(Messages.dependency_name_cannot_be_empty);
 		case 2:
 			return m_versionDesignatorValidator;
 		case 3:
