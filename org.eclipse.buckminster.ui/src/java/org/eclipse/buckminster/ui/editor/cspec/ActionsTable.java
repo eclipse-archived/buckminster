@@ -284,7 +284,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				composite,
 				table,
 				null,
-				Messages.action_properties,
+				Messages.action_properties_with_dash,
 				null,
 				null,
 				SWT.NONE);

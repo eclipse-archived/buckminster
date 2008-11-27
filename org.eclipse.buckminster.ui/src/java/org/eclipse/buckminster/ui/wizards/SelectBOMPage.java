@@ -30,6 +30,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -68,7 +69,7 @@ public class SelectBOMPage extends AbstractQueryPage
 
 	public SelectBOMPage(IStructuredSelection selection)
 	{
-		super("");
+		super(""); //$NON-NLS-1$
 		if(selection != null && selection.size() == 1)
 		{
 			Object selected = selection.getFirstElement();
@@ -150,8 +151,8 @@ public class SelectBOMPage extends AbstractQueryPage
 
 		Label lbl = new Label(composite, SWT.NONE);
 		lbl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-		lbl.setText("Enter a URL of either MSPEC, BOM, or CQUERY (use a URL or a file system path)");
-		lbl.setToolTipText("Enter a URL that appoints either a Materialization Specification, a Bill of Materials, or a Component Query");
+		lbl.setText(Messages.enter_url_of_mspec_bom_cquery);
+		lbl.setToolTipText(Messages.enter_url_that_appoints_mspec_bom_cquery);
 
 		m_fileNameText = new Text(composite, SWT.BORDER);
 		m_fileNameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -163,13 +164,13 @@ public class SelectBOMPage extends AbstractQueryPage
 			}
 		});
 
-		Button browseButton = UiUtils.createPushButton(composite, "Browse...", new SelectionAdapter()
+		Button browseButton = UiUtils.createPushButton(composite, Messages.browse_with_dots, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
 			{
 				FileDialog dlg = new FileDialog(getShell());
-				dlg.setFilterExtensions(new String[] { "*.mspec", "*.cquery", "*.bom" });
+				dlg.setFilterExtensions(new String[] { "*.mspec", "*.cquery", "*.bom" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				String name = dlg.open();
 				if(name != null)
 					m_fileNameText.setText(name);
@@ -177,7 +178,7 @@ public class SelectBOMPage extends AbstractQueryPage
 		});
 		browseButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));
 
-		m_loadButton = UiUtils.createPushButton(composite, "Load", new SelectionAdapter()
+		m_loadButton = UiUtils.createPushButton(composite, Messages.load, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent se)
@@ -190,7 +191,7 @@ public class SelectBOMPage extends AbstractQueryPage
 
 		m_topComponentLabel = new Label(composite, SWT.NONE);
 		m_topComponentLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-		m_topComponentLabel.setText("Top component of loaded Bill of Materials");
+		m_topComponentLabel.setText(Messages.top_component_of_loaded_bom);
 		m_topComponentLabel.setVisible(false);
 
 		m_topComponent = new Text(composite, SWT.BORDER);
@@ -319,7 +320,7 @@ public class SelectBOMPage extends AbstractQueryPage
 		}
 		catch(IOException e)
 		{
-			setErrorMessage("Invalid URL or filename");
+			setErrorMessage(Messages.invalid_url_or_filename);
 			m_loadButton.setEnabled(false);
 			return;
 		}
@@ -330,9 +331,9 @@ public class SelectBOMPage extends AbstractQueryPage
 			// URL is remote. Let's assume it's OK for now
 			//
 			String path = url.getPath();
-			if(path == null || path.length() == 0 || path.endsWith("/"))
+			if(path == null || path.length() == 0 || path.endsWith("/")) //$NON-NLS-1$
 			{
-				setErrorMessage("URL path is not valid");
+				setErrorMessage(Messages.url_path_is_not_valid);
 				m_loadButton.setEnabled(false);
 			}
 			else
@@ -351,7 +352,7 @@ public class SelectBOMPage extends AbstractQueryPage
 				loadBomOrMSpec();
 			}
 			else
-				setErrorMessage("File does not exist");
+				setErrorMessage(Messages.file_does_not_exist);
 		}
 	}
 }

@@ -204,6 +204,10 @@ public class Messages extends NLS
 
 	public static String enter_new_row_fields;
 
+	public static String enter_url_of_mspec_bom_cquery;
+
+	public static String enter_url_that_appoints_mspec_bom_cquery;
+
 	public static String equal_to_version;
 
 	public static String error_during_action_perform;
@@ -290,6 +294,8 @@ public class Messages extends NLS
 
 	public static String invalid_input;
 
+	public static String invalid_url_or_filename;
+
 	public static String invoke_action;
 
 	public static String key;
@@ -299,6 +305,8 @@ public class Messages extends NLS
 	public static String key_with_colon;
 
 	public static String leaf_artifact_with_colon;
+
+	public static String load;
 
 	public static String location_with_colon;
 
@@ -538,6 +546,8 @@ public class Messages extends NLS
 
 	public static String timestamp_with_colon;
 
+	public static String top_component_of_loaded_bom;
+
 	public static String troubleshooting;
 
 	public static String type;
@@ -561,6 +571,8 @@ public class Messages extends NLS
 	public static String unresolved_node;
 
 	public static String url_for_query_with_colon;
+
+	public static String url_path_is_not_valid;
 
 	public static String use_defaults;
 
