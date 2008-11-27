@@ -31,7 +31,8 @@ public class CommandsTest extends AbstractTestCase
 		try
 		{
 			PrintStream cmdOut = new PrintStream(commandFile);
-			cmdOut.println("resolve --noimport --bomfile '" + escapeBS(bomFile) + "' http://www.eclipse.org/buckminster/samples/queries/demo.cquery");
+			cmdOut.println("resolve --noimport --bomfile '" + escapeBS(bomFile)
+					+ "' http://www.eclipse.org/buckminster/samples/queries/demo.cquery");
 			cmdOut.println("import '" + escapeBS(bomFile) + "'");
 			cmdOut.close();
 			assertEquals(((Integer)headless.run(new String[] { "--scriptfile", commandFile.toString() })).intValue(), 0);

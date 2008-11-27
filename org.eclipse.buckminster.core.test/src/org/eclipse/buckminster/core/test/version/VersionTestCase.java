@@ -20,11 +20,10 @@ public class VersionTestCase extends TestCase
 
 	private static final Pattern s_versionExp = Pattern.compile("^\\s*(.*?)?([@/#][^@/#]*?)?\\s*$");
 
-	private static final Pattern s_timestampExp = Pattern.compile(
-	"^((?:19|2[01])\\d{2})-?(0[1-9]|1[012])-?(0[1-9]|[12][0-9]|3[01])(?:T([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9]))?$");
+	private static final Pattern s_timestampExp = Pattern
+			.compile("^((?:19|2[01])\\d{2})-?(0[1-9]|1[012])-?(0[1-9]|[12][0-9]|3[01])(?:T([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9]))?$");
 
-	public void testVersionExpr()
-	throws Exception
+	public void testVersionExpr() throws Exception
 	{
 		Matcher m = s_versionExp.matcher("  LATEST  ");
 		if(m.matches())

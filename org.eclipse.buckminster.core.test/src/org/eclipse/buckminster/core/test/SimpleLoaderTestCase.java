@@ -28,14 +28,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * Abstract test case that will materialize a workspace with the
- * test components build_a, build_b, build_c, and build_d.
- *
+ * Abstract test case that will materialize a workspace with the test components build_a, build_b, build_c, and build_d.
+ * 
  * @author Thomas Hallgren
  */
 public class SimpleLoaderTestCase extends TestCase
 {
 	protected ComponentQuery m_query;
+
 	protected IProgressMonitor m_nullMonitor = new NullProgressMonitor();
 
 	public SimpleLoaderTestCase()
@@ -64,7 +64,8 @@ public class SimpleLoaderTestCase extends TestCase
 		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 		mspecBuilder.setName(bom.getViewName());
 		mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
-		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), resolver.getContext());
+		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(),
+				resolver.getContext());
 		MaterializationJob.run(matCtx, true);
 	}
 }

@@ -29,7 +29,6 @@ import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -44,14 +43,6 @@ public abstract class AbstractTestCase extends TestCase
 		super(name);
 	}
 
-	@Override
-	public void setUp()
-	throws Exception
-	{
-		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
-		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
-	}
-
 	protected IResolver createResolver(String componentName, String componentType) throws Exception
 	{
 		ComponentRequest request = new ComponentRequest(componentName, componentType, null);
@@ -63,6 +54,26 @@ public abstract class AbstractTestCase extends TestCase
 		node.setUseTargetPlatform(false);
 		ComponentQuery query = queryBld.createComponentQuery();
 		return new MainResolver(new ResolutionContext(query));
+	}
+
+	protected CorePlugin getPlugin() throws Exception
+	{
+		CorePlugin plugin = CorePlugin.getDefault();
+		if(plugin == null)
+			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
+		return plugin;
+	}
+
+	protected URL getRMAP()
+	{
+		try
+		{
+			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap");
+		}
+		catch(MalformedURLException e)
+		{
+			return null;
+		}
 	}
 
 	@Override
@@ -79,25 +90,10 @@ public abstract class AbstractTestCase extends TestCase
 		}
 	}
 
-	protected URL getRMAP()
+	@Override
+	public void setUp() throws Exception
 	{
-		try
-		{
-			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap");
-		}
-		catch(MalformedURLException e)
-		{
-			return null;
-		}
-	}
-
-	protected CorePlugin getPlugin()
-	throws Exception
-	{
-		CorePlugin plugin = CorePlugin.getDefault();
-		if(plugin == null)
-			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
-		return plugin;
+		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
+		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 	}
 }
-

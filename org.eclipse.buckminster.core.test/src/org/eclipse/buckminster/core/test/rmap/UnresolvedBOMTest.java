@@ -27,26 +27,31 @@ import org.eclipse.core.runtime.jobs.Job;
 
 public class UnresolvedBOMTest extends AbstractTestCase
 {
-	/**
-	 * Same as testReResolve() but uses the MainResolver
-	 * @throws Exception
-	 */
-	public void testReResolve2() throws Exception
+	private IResolverFactory createRMAPResolverFactory(String rmap) throws CoreException
+	{
+		URL rmapURL = getClass().getResource(rmap);
+		ResourceMapResolverFactory f = new ResourceMapResolverFactory();
+		f.setExtensionParameter(ResourceMapResolverFactory.RESOURCE_MAP_URL_PARAM, rmapURL.toString());
+		f.setExtensionParameter(ResourceMapResolverFactory.OVERRIDE_QUERY_URL_PARAM, "true");
+		return f;
+	}
+
+	public void testBug170839() throws Exception
 	{
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
 		ComponentQuery query = queryBld.createComponentQuery();
 
-		// Fake extension point registration
-		//
-		ResolverFactoryMaintainer.getInstance().setResolverFactories(new IResolverFactory[] {
-			createRMAPResolverFactory("rmap_c.rmap"), createRMAPResolverFactory("rmap_abd.rmap") });
+		ResolutionContext context = new ResolutionContext(query);
+		IResolver resolver1 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context);
+		resolver1.getContext().setContinueOnError(true);
+		IResolver resolver2 = createRMAPResolverFactory("rmap_d.rmap").createResolver(context);
+		resolver2.getContext().setContinueOnError(true);
 
-		// Resolve using the MainResolver
-		//
-		IResolver resolver = new MainResolver(new ResolutionContext(query));
-		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
-		assertTrue("bom is not fully resolved", bom.isFullyResolved());
+		IProgressMonitor nullMon = new NullProgressMonitor();
+		BillOfMaterials bom1 = resolver1.resolve(query.getRootRequest(), nullMon);
+		BillOfMaterials bom2 = resolver2.resolveRemaining(bom1, nullMon);
+		assertEquals("bom1 is not equal to bom2", bom1, bom2);
 	}
 
 	public void testReResolve() throws Exception
@@ -54,7 +59,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
 		ComponentQuery query = queryBld.createComponentQuery();
-		
+
 		ResolutionContext context = new ResolutionContext(query);
 		IResolver resolver1 = createRMAPResolverFactory("rmap_c.rmap").createResolver(context);
 		resolver1.getContext().setContinueOnError(true);
@@ -69,6 +74,30 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		BillOfMaterials bom3 = resolver1.resolveRemaining(bom2, nullMon);
 		Utils.serialize(bom3, System.out);
 		assertTrue("bom3 is not fully resolved", bom3.isFullyResolved());
+	}
+
+	/**
+	 * Same as testReResolve() but uses the MainResolver
+	 * 
+	 * @throws Exception
+	 */
+	public void testReResolve2() throws Exception
+	{
+		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
+		ComponentQuery query = queryBld.createComponentQuery();
+
+		// Fake extension point registration
+		//
+		ResolverFactoryMaintainer.getInstance().setResolverFactories(
+				new IResolverFactory[] { createRMAPResolverFactory("rmap_c.rmap"),
+						createRMAPResolverFactory("rmap_abd.rmap") });
+
+		// Resolve using the MainResolver
+		//
+		IResolver resolver = new MainResolver(new ResolutionContext(query));
+		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
+		assertTrue("bom is not fully resolved", bom.isFullyResolved());
 	}
 
 	public void testUnresolvedBOM() throws Exception
@@ -89,7 +118,8 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		// just bluntly override anything that has been set through
 		// extension points.
 		//
-		ResolverFactoryMaintainer.getInstance().setResolverFactories(new IResolverFactory[] { new ResourceMapResolverFactory() });
+		ResolverFactoryMaintainer.getInstance().setResolverFactories(
+				new IResolverFactory[] { new ResourceMapResolverFactory() });
 		final IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials unresolved = BillOfMaterials.create(new UnresolvedNode(qDep), query);
 
@@ -118,7 +148,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 					CorePlugin.getLogger().error(e, e.toString());
 					return e.getStatus();
 				}
-			}	
+			}
 		};
 
 		// Wait for job completion
@@ -129,34 +159,5 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		// Are we resolved now?
 		//
 		assertTrue("bom is not fully resolved", bucket[0].isFullyResolved());
-	}
-
-	public void testBug170839() throws Exception
-	{
-		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
-		ComponentQuery query = queryBld.createComponentQuery();
-
-		ResolutionContext context = new ResolutionContext(query);
-		IResolver resolver1 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context);
-		resolver1.getContext().setContinueOnError(true);
-		IResolver resolver2 = createRMAPResolverFactory("rmap_d.rmap").createResolver(context);
-		resolver2.getContext().setContinueOnError(true);
-
-		IProgressMonitor nullMon = new NullProgressMonitor();
-		BillOfMaterials bom1 = resolver1.resolve(query.getRootRequest(), nullMon);
-		BillOfMaterials bom2 = resolver2.resolveRemaining(bom1, nullMon);
-		assertEquals("bom1 is not equal to bom2", bom1, bom2);
-	}
-
-	private IResolverFactory createRMAPResolverFactory(String rmap) throws CoreException
-	{
-		URL rmapURL = getClass().getResource(rmap);
-		ResourceMapResolverFactory f = new ResourceMapResolverFactory();
-		f.setExtensionParameter(
-			ResourceMapResolverFactory.RESOURCE_MAP_URL_PARAM, rmapURL.toString());
-		f.setExtensionParameter(
-			ResourceMapResolverFactory.OVERRIDE_QUERY_URL_PARAM, "true");
-		return f;
 	}
 }

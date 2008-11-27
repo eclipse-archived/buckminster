@@ -13,12 +13,12 @@ public class BillOfMaterialsTest extends AbstractMnBTestCase
 	public void testBOM() throws Exception
 	{
 		BillOfMaterials bom = m_bom;
-		
+
 		// Create an exported graph, i.e. a graph that does not rely
 		// on the meta-data storage.
 		//
 		IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-		
+
 		// Test serialization/de-serialization
 		//
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

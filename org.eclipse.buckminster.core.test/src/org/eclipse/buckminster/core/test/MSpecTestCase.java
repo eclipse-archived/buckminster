@@ -28,9 +28,8 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.Path;
 
 /**
- * Abstract test case that will materialize a workspace with the
- * test components build_a, build_b, build_c, and build_d.
- *
+ * Abstract test case that will materialize a workspace with the test components build_a, build_b, build_c, and build_d.
+ * 
  * @author Thomas Hallgren
  */
 public class MSpecTestCase extends TestCase
@@ -56,7 +55,8 @@ public class MSpecTestCase extends TestCase
 		builder.setName("Buckys download spec");
 		builder.setURL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery");
 		builder.setShortDesc("Buckminster materialization spec");
-		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home") + System.getProperty("file.separator") + "bucky"));
+		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home")
+				+ System.getProperty("file.separator") + "bucky"));
 		builder.setMaterializerID("workspace");
 
 		MaterializationNodeBuilder node = builder.addNodeBuilder();
@@ -80,14 +80,14 @@ public class MSpecTestCase extends TestCase
 
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		Utils.serialize(spec, byteOut);
-		
+
 		byte[] image = byteOut.toByteArray();
 		System.out.println(new String(image, "UTF8"));
 
 		IParserFactory pf = CorePlugin.getDefault().getParserFactory();
 		ByteArrayInputStream byteIn = new ByteArrayInputStream(image);
 		IParser<MaterializationSpec> parser = pf.getMaterializationSpecParser(true);
-		
+
 		MaterializationSpec spec2 = parser.parse("byte image", byteIn);
 
 		byteOut = new ByteArrayOutputStream();

@@ -21,18 +21,22 @@ import org.eclipse.buckminster.core.test.AbstractTestCase;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-
 /**
  * @author thhal
  */
 public abstract class AbstractMnBTestCase extends AbstractTestCase
 {
 	protected ComponentQuery m_query;
+
 	protected BillOfMaterials m_bom;
 
+	public String getComponentName()
+	{
+		return "buckminster.test.simple_d";
+	}
+
 	@Override
-	public void setUp()
-	throws Exception
+	public void setUp() throws Exception
 	{
 		super.setUp();
 		String componentName = this.getComponentName();
@@ -44,9 +48,4 @@ public abstract class AbstractMnBTestCase extends AbstractTestCase
 		IResolver resolver = new MainResolver(new ResolutionContext(m_query));
 		m_bom = resolver.resolve(nullMon);
 	}
-	public String getComponentName()
-	{
-		return "buckminster.test.simple_d";
-	}
 }
-

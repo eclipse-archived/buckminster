@@ -39,53 +39,62 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
-
 public class PropertyFormatTestCase extends TestCase
 {
-	static void log(String message, Object ...args)
+	class DummyParser extends TopHandler
+	{
+		private final IProperties m_properties;
+
+		protected DummyParser(IProperties properties) throws SAXException
+		{
+			super(Utils.createXMLReader(false, true));
+			m_properties = properties;
+		}
+
+		public void parse(URL url) throws IOException, SAXException, CoreException
+		{
+			InputStream input = DownloadManager.read(url, null);
+			try
+			{
+				InputSource source = new InputSource(new BufferedInputStream(input));
+				source.setSystemId(url.toString());
+				this.getXMLReader().parse(source);
+			}
+			finally
+			{
+				try
+				{
+					input.close();
+				}
+				catch(IOException e)
+				{
+				}
+			}
+		}
+
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
+		{
+			if("testElement".equals(localName))
+			{
+				PropertyManagerHandler pmh = new PropertyManagerHandler(this, "root")
+				{
+					@Override
+					public ExpandingProperties getProperties()
+					{
+						return (ExpandingProperties)m_properties;
+					}
+				};
+				this.pushHandler(pmh, attrs);
+			}
+			else
+				super.startElement(uri, localName, qName, attrs);
+		}
+	}
+
+	static void log(String message, Object... args)
 	{
 		System.out.format(message + "%n", args);
-	}
-
-	public void testSystemProperties()
-	{
-		Format fmt = new Format("You are {0}, the parent of your home is {1} and you run Java version {2}");
-		fmt.addValueHolder(new PropertyRef("user.name"));
-		Replace rpl1 = new Replace();
-		rpl1.addMatch(new Replace.Match(Pattern.quote("\\"), "/", false));
-		rpl1.addValueHolder(new PropertyRef("user.home"));
-		Replace rpl2 = new Replace();
-		rpl2.addMatch(new Replace.Match("^(.*)/[^/]+$", "$1", false));
-		rpl2.addValueHolder(rpl1);
-		fmt.addValueHolder(rpl2);
-		fmt.addValueHolder(new PropertyRef("java.version"));
-
-		IProperties props = BMProperties.getSystemProperties();
-		String result = fmt.getValue(props);
-		String expected =
-			"You are " + props.get("user.name") + 
-			", the parent of your home is " +
-			(new File(props.get("user.home"))).getParent().replace('\\', '/') +
-			" and you run Java version " + props.get("java.version");
-
-		log(result);
-		assertEquals(expected, result);
-	}
-
-	public void testExpandingProperties()
-	{
-		IProperties props = new ExpandingProperties(BMProperties.getSystemProperties());
-		props.put("salut", "Hello ${user.name}!");
-		props.put("salut.home", "${salut} Your \\${user.home} is ${user.home}");
-
-		String result = props.get("salut.home");
-		String expected =
-			"Hello " + System.getProperty("user.name") +
-			"! Your ${user.home} is " + System.getProperty("user.home");
-
-		log(result);
-		assertEquals(expected, result);
 	}
 
 	public void testCircularExpansionTrap()
@@ -106,6 +115,20 @@ public class PropertyFormatTestCase extends TestCase
 		}
 	}
 
+	public void testExpandingProperties()
+	{
+		IProperties props = new ExpandingProperties(BMProperties.getSystemProperties());
+		props.put("salut", "Hello ${user.name}!");
+		props.put("salut.home", "${salut} Your \\${user.home} is ${user.home}");
+
+		String result = props.get("salut.home");
+		String expected = "Hello " + System.getProperty("user.name") + "! Your ${user.home} is "
+				+ System.getProperty("user.home");
+
+		log(result);
+		assertEquals(expected, result);
+	}
+
 	public void testExpressions()
 	{
 		ValueHolder cvsRoot = new Constant(":pserver:${user.name}@buckminster.tigris.org:/cvs");
@@ -119,13 +142,8 @@ public class PropertyFormatTestCase extends TestCase
 		split.addValueHolder(rpl);
 		fmt.addValueHolder(split);
 
-		String expected = new MessageFormat(fmtString).format(new String[]
-		{
-			"pserver",
-			System.getProperty("user.name"),
-			"buckminster.tigris.org",
-			"/cvs"
-		});
+		String expected = new MessageFormat(fmtString).format(new String[] { "pserver",
+				System.getProperty("user.name"), "buckminster.tigris.org", "/cvs" });
 
 		IProperties props = BMProperties.getSystemProperties();
 		String result = fmt.getValue(props);
@@ -133,55 +151,7 @@ public class PropertyFormatTestCase extends TestCase
 		assertEquals(expected, result);
 	}
 
-	class DummyParser extends TopHandler
-	{
-		private final IProperties m_properties;
-
-		protected DummyParser(IProperties properties)
-		throws SAXException
-		{
-			super(Utils.createXMLReader(false, true));
-			m_properties = properties;
-		}
-
-		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attrs)
-		throws SAXException
-		{
-			if("testElement".equals(localName))
-			{
-				PropertyManagerHandler pmh = new PropertyManagerHandler(this, "root")
-				{
-					@Override
-					public ExpandingProperties getProperties()
-					{
-						return (ExpandingProperties)m_properties;
-					}
-				};
-				this.pushHandler(pmh, attrs);
-			}
-			else
-				super.startElement(uri, localName, qName, attrs);
-		}
-
-		public void parse(URL url) throws IOException, SAXException, CoreException
-		{
-			InputStream input = DownloadManager.read(url, null);
-			try
-			{
-				InputSource source = new InputSource(new BufferedInputStream(input));
-				source.setSystemId(url.toString());
-				this.getXMLReader().parse(source);
-			}
-			finally
-			{
-				try { input.close(); } catch(IOException e) {}
-			}
-		}
-	}
-
-	public void testPropertyParser()
-	throws Exception
+	public void testPropertyParser() throws Exception
 	{
 		IProperties props = new ExpandingProperties(BMProperties.getSystemProperties());
 		props.put("buckminster.component.target", "ant-optional");
@@ -200,5 +170,27 @@ public class PropertyFormatTestCase extends TestCase
 		assertEquals("http://www.ibiblio.org/maven/ant/jars/ant-optional-1.7.0.jar", result);
 		assertEquals("The created URL is \"" + result + '"', verboseResult);
 	}
-}
 
+	public void testSystemProperties()
+	{
+		Format fmt = new Format("You are {0}, the parent of your home is {1} and you run Java version {2}");
+		fmt.addValueHolder(new PropertyRef("user.name"));
+		Replace rpl1 = new Replace();
+		rpl1.addMatch(new Replace.Match(Pattern.quote("\\"), "/", false));
+		rpl1.addValueHolder(new PropertyRef("user.home"));
+		Replace rpl2 = new Replace();
+		rpl2.addMatch(new Replace.Match("^(.*)/[^/]+$", "$1", false));
+		rpl2.addValueHolder(rpl1);
+		fmt.addValueHolder(rpl2);
+		fmt.addValueHolder(new PropertyRef("java.version"));
+
+		IProperties props = BMProperties.getSystemProperties();
+		String result = fmt.getValue(props);
+		String expected = "You are " + props.get("user.name") + ", the parent of your home is "
+				+ (new File(props.get("user.home"))).getParent().replace('\\', '/') + " and you run Java version "
+				+ props.get("java.version");
+
+		log(result);
+		assertEquals(expected, result);
+	}
+}

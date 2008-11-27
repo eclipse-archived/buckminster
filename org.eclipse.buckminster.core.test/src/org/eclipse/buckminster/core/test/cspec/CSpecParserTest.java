@@ -17,7 +17,7 @@ import org.eclipse.buckminster.sax.Utils;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class CSpecParserTest extends AbstractTestCase
 {

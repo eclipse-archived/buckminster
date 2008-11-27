@@ -40,11 +40,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  */
 public class RMapTestCase extends AbstractTestCase
 {
-	public RMapTestCase(String name)
-	{
-		super(name);
-	}
-
 	public static Test suite() throws Exception
 	{
 		TestSuite suite = new TestSuite();
@@ -52,18 +47,9 @@ public class RMapTestCase extends AbstractTestCase
 		return suite;
 	}
 
-	public void testLocal() throws Exception
+	public RMapTestCase(String name)
 	{
-		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null));
-		URL rmapURL = getClass().getResource("local_main.rmap");
-		URL parentURL = URLUtils.getParentURL(rmapURL);
-		queryBld.setResourceMapURL(rmapURL.toString());
-		queryBld.getDeclaredProperties().put("rmaps", parentURL.toString());
-		ComponentQuery query = queryBld.createComponentQuery();
-		ResolutionContext ctx = new ResolutionContext(query);
-		MainResolver resolver = new MainResolver(ctx);
-		resolver.resolve(new NullProgressMonitor());
+		super(name);
 	}
 
 	public void testCQUERY2BOM() throws Exception
@@ -80,7 +66,7 @@ public class RMapTestCase extends AbstractTestCase
 		// extension points.
 		//
 		ResolverFactoryMaintainer.getInstance().setResolverFactories(
-			new IResolverFactory[] { new ResourceMapResolverFactory() });
+				new IResolverFactory[] { new ResourceMapResolverFactory() });
 
 		// Resolve the query
 		//
@@ -93,8 +79,21 @@ public class RMapTestCase extends AbstractTestCase
 		assertTrue("Resolution failed", bom.isFullyResolved());
 	}
 
-	public void testRMAP()
-	throws Exception
+	public void testLocal() throws Exception
+	{
+		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null));
+		URL rmapURL = getClass().getResource("local_main.rmap");
+		URL parentURL = URLUtils.getParentURL(rmapURL);
+		queryBld.setResourceMapURL(rmapURL.toString());
+		queryBld.getDeclaredProperties().put("rmaps", parentURL.toString());
+		ComponentQuery query = queryBld.createComponentQuery();
+		ResolutionContext ctx = new ResolutionContext(query);
+		MainResolver resolver = new MainResolver(ctx);
+		resolver.resolve(new NullProgressMonitor());
+	}
+
+	public void testRMAP() throws Exception
 	{
 		IProgressMonitor nullMon = new NullProgressMonitor();
 		IResolver resolver = createResolver("buckminster.test.simple_a", null);
@@ -115,4 +114,3 @@ public class RMapTestCase extends AbstractTestCase
 		rmapParser.parse("generated.rmap", Utils.getInputStream(rmap));
 	}
 }
-

@@ -34,8 +34,7 @@ import org.eclipse.buckminster.sax.Utils;
 
 public class CSpecBuilderTestCase extends TestCase
 {
-	public void testSaxGenerator()
-	throws Exception
+	public void testSaxGenerator() throws Exception
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
 		if(plugin == null)
@@ -44,10 +43,12 @@ public class CSpecBuilderTestCase extends TestCase
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		cspecBld.setName("my.test.project");
 		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3"));
-		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", IVersionType.OSGI, null);
+		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)",
+				IVersionType.OSGI, null);
 		cspecBld.addDependency(c1);
 		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null, null, null));
-		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", IVersionType.OSGI, null));
+		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0",
+				IVersionType.OSGI, null));
 		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", IVersionType.OSGI, null));
 
 		CSpec c = cspecBld.createCSpec();
@@ -55,9 +56,11 @@ public class CSpecBuilderTestCase extends TestCase
 		ComponentRequest request = new ComponentRequest("test", null, null);
 		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
 		VersionMatch fixed = new VersionMatch(vs, null, -1, new Date(), null);
-		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, "svn://foo.bar.com/foobar", null);
+		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER },
+				"svn://foo.bar.com/foobar", null);
 		Resolution resolution = new Resolution(c, null, IComponentType.BUCKMINSTER, fixed, provider, true, request,
-			Collections.<String>emptyList(), null, provider.getURI(Collections.<String,String>emptyMap()), null, null, 0L, -1L, false);
+				Collections.<String> emptyList(), null, provider.getURI(Collections.<String, String> emptyMap()), null,
+				null, 0L, -1L, false);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 		Utils.serialize(resolution, ostream);
