@@ -84,16 +84,16 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate
 					{
 						CoreException ce = (CoreException)t;
 						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(), UiPlugin
-								.getResourceString("CreateNewBuckminsterProject.error.title"), null, ce.getStatus());
+								.getResourceString("CreateNewBuckminsterProject.error.title"), null, ce.getStatus()); //$NON-NLS-1$
 					}
 					else
 					{
-						String title = UiPlugin.getResourceString("CreateNewBuckminsterProject.error.title");
+						String title = UiPlugin.getResourceString("CreateNewBuckminsterProject.error.title"); //$NON-NLS-1$
 						String rawMsg = t.getLocalizedMessage();
 						if(rawMsg == null)
 							rawMsg = t.toString();
 						String msg = MessageFormat.format(UiPlugin
-								.getResourceString("CreateNewBuckminsterProject.error.msg"), new Object[] { rawMsg });
+								.getResourceString("CreateNewBuckminsterProject.error.msg"), new Object[] { rawMsg }); //$NON-NLS-1$
 						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, msg);
 					}
 				}
