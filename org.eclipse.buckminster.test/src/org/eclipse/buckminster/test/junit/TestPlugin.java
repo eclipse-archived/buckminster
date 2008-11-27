@@ -19,15 +19,19 @@ import org.osgi.util.tracker.ServiceTracker;
  * <p>
  * The {@link org.osgi.framework.BundleActivator} of the <code>org.eclipse.buckminster.test</code> bundle.
  * <p>
- *
+ * 
  * @author Michal Rùžièka
  */
 public class TestPlugin extends Plugin
 {
 	private static TestPlugin s_testPlugin;
 
-	private ServiceTracker m_adminTracker;
+	public static TestPlugin getDefault()
+	{
+		return s_testPlugin;
+	}
 
+	private ServiceTracker m_adminTracker;
 
 	public TestPlugin()
 	{
@@ -35,9 +39,17 @@ public class TestPlugin extends Plugin
 		s_testPlugin = this;
 	}
 
-	public static TestPlugin getDefault()
+	public PackageAdmin getPackageAdmin()
 	{
-		return s_testPlugin;
+		ServiceTracker adminTracker = m_adminTracker;
+		PackageAdmin packageAdmin;
+
+		if(adminTracker == null || (packageAdmin = (PackageAdmin)adminTracker.getService()) == null)
+		{
+			throw new IllegalStateException(getBundle().getSymbolicName() + " is not running.");
+		}
+
+		return packageAdmin;
 	}
 
 	@Override
@@ -54,18 +66,5 @@ public class TestPlugin extends Plugin
 		m_adminTracker.close();
 		m_adminTracker = null;
 		super.stop(context);
-	}
-
-	public PackageAdmin getPackageAdmin()
-	{
-		ServiceTracker adminTracker = m_adminTracker;
-		PackageAdmin packageAdmin;
-
-		if(adminTracker == null || (packageAdmin = (PackageAdmin)adminTracker.getService()) == null)
-		{
-			throw new IllegalStateException(getBundle().getSymbolicName() + " is not running.");
-		}
-
-		return packageAdmin;
 	}
 }

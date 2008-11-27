@@ -61,10 +61,6 @@ public class TestCommand extends AbstractCommand
 	 */
 	protected static class TestLocationResolver
 	{
-		public static final String RUNTIME_LOCATION = "runtime";
-
-		public static final String DEAFULT_TEST_LIST_RESOURCE = "/plugin-tests.lst";
-
 		@SuppressWarnings("serial")
 		public static class ResolutionException extends Exception
 		{
@@ -88,9 +84,38 @@ public class TestCommand extends AbstractCommand
 			String getSuiteName();
 		}
 
+		protected static class ResolvedTestSuiteDescriptor implements TestSuiteDescriptor
+		{
+			private Bundle m_suiteBundle;
+
+			private Class<?> m_suiteClass;
+
+			public ResolvedTestSuiteDescriptor(Bundle suiteBundle, Class<?> suiteClass)
+			{
+				m_suiteBundle = suiteBundle;
+				m_suiteClass = suiteClass;
+			}
+
+			public Bundle getSuiteBundle()
+			{
+				return m_suiteBundle;
+			}
+
+			public Class<?> getSuiteClass()
+			{
+				return m_suiteClass;
+			}
+
+			public String getSuiteName()
+			{
+				return getBundleResourceName(m_suiteBundle, m_suiteClass.getName());
+			}
+		}
+
 		protected static class UnresolvedTestSuiteDescriptor implements TestSuiteDescriptor
 		{
 			private String m_suiteName;
+
 			private Throwable m_cause;
 
 			public UnresolvedTestSuiteDescriptor(String suiteName, Throwable resolutionException)
@@ -116,79 +141,11 @@ public class TestCommand extends AbstractCommand
 			}
 		}
 
-		private static String getBundleResourceName(Bundle bundle, String resource)
-		{
-			return bundle.getSymbolicName() + ':' + resource;
-		}
+		public static final String RUNTIME_LOCATION = "runtime";
 
-		protected static class ResolvedTestSuiteDescriptor implements TestSuiteDescriptor
-		{
-			private Bundle m_suiteBundle;
-			private Class<?> m_suiteClass;
-
-			public ResolvedTestSuiteDescriptor(Bundle suiteBundle, Class<?> suiteClass)
-			{
-				m_suiteBundle = suiteBundle;
-				m_suiteClass = suiteClass;
-			}
-
-			public Bundle getSuiteBundle()
-			{
-				return m_suiteBundle;
-			}
-
-			public Class<?> getSuiteClass()
-			{
-				return m_suiteClass;
-			}
-
-			public String getSuiteName()
-			{
-				return getBundleResourceName(m_suiteBundle, m_suiteClass.getName());
-			}
-		}
+		public static final String DEAFULT_TEST_LIST_RESOURCE = "/plugin-tests.lst";
 
 		private static TestPlugin s_testPlugin = TestPlugin.getDefault();
-
-		private PackageAdmin m_packageAdmin = s_testPlugin.getPackageAdmin();
-
-		private Set<URL> m_seenURLs = new HashSet<URL>();
-
-		private List<TestSuiteDescriptor> m_resolvedSuites;
-
-		/**
-		 * <p>
-		 * The sole constructor and the only publicly accessible (non static) member of this class. The resolution
-		 * process is started immediately upon instantiation of this class. Once the resolution is done the instance is
-		 * not useful any more. The resolved tests are stored in the supplied <code>resolvedSuites<code> list.
-		 * </p>
-		 *
-		 * @param locations the test locations to resolve
-		 * @param monitor resolution progress monitor 
-		 * @param resolvedSuites the list where to store the resolved tests
-		 */
-		public TestLocationResolver(String[] locations, IProgressMonitor monitor, List<TestSuiteDescriptor> resolvedSuites)
-		{
-			monitor.beginTask("Resolving test suites", locations.length+1);
-
-			m_resolvedSuites = resolvedSuites;
-
-			monitor.worked(1);
-
-			for(String location : locations)
-			{
-				if(monitor.isCanceled())
-				{
-					return;
-				}
-
-				resolveLocation(location, null);
-
-				monitor.worked(1);
-			}
-
-			monitor.done();
-		}
 
 		/**
 		 * <p>
@@ -255,8 +212,8 @@ public class TestCommand extends AbstractCommand
 
 		/**
 		 * <p>
-		 * Checks if the supplied <code>name</code> is a valid fully qualified Java class name i.e. a sequence of one
-		 * or more valid Java identifiers separated by dots ("<code>.</code>").
+		 * Checks if the supplied <code>name</code> is a valid fully qualified Java class name i.e. a sequence of one or
+		 * more valid Java identifiers separated by dots ("<code>.</code>").
 		 * </p>
 		 * 
 		 * @param name
@@ -307,16 +264,65 @@ public class TestCommand extends AbstractCommand
 			}
 		}
 
+		private static String getBundleResourceName(Bundle bundle, String resource)
+		{
+			return bundle.getSymbolicName() + ':' + resource;
+		}
+
 		@SuppressWarnings("unchecked")
 		private static Enumeration<URL> getBundleResources(Bundle bundle, String resource) throws IOException
 		{
 			return bundle.getResources(resource);
 		}
 
+		private PackageAdmin m_packageAdmin = s_testPlugin.getPackageAdmin();
+
+		private Set<URL> m_seenURLs = new HashSet<URL>();
+
+		private List<TestSuiteDescriptor> m_resolvedSuites;
+
 		/**
 		 * <p>
-		 * Resolves (possibly recursively) the supplied <code>location</code> assuming the <code>parent</code>
-		 * bundle to contain locations which don't have their containing bundle explicitly specified.
+		 * The sole constructor and the only publicly accessible (non static) member of this class. The resolution
+		 * process is started immediately upon instantiation of this class. Once the resolution is done the instance is
+		 * not useful any more. The resolved tests are stored in the supplied <code>resolvedSuites<code> list.
+		 * </p>
+		 * 
+		 * @param locations
+		 *            the test locations to resolve
+		 * @param monitor
+		 *            resolution progress monitor
+		 * @param resolvedSuites
+		 *            the list where to store the resolved tests
+		 */
+		public TestLocationResolver(String[] locations, IProgressMonitor monitor,
+				List<TestSuiteDescriptor> resolvedSuites)
+		{
+			monitor.beginTask("Resolving test suites", locations.length + 1);
+
+			m_resolvedSuites = resolvedSuites;
+
+			monitor.worked(1);
+
+			for(String location : locations)
+			{
+				if(monitor.isCanceled())
+				{
+					return;
+				}
+
+				resolveLocation(location, null);
+
+				monitor.worked(1);
+			}
+
+			monitor.done();
+		}
+
+		/**
+		 * <p>
+		 * Resolves (possibly recursively) the supplied <code>location</code> assuming the <code>parent</code> bundle to
+		 * contain locations which don't have their containing bundle explicitly specified.
 		 * </p>
 		 * 
 		 * @param location
@@ -364,7 +370,8 @@ public class TestCommand extends AbstractCommand
 
 					if(bundles == null)
 					{
-						m_resolvedSuites.add(new UnresolvedTestSuiteDescriptor(location, new RuntimeException("No such bundle: " + bundleName)));
+						m_resolvedSuites.add(new UnresolvedTestSuiteDescriptor(location, new RuntimeException(
+								"No such bundle: " + bundleName)));
 						return;
 					}
 
@@ -373,13 +380,16 @@ public class TestCommand extends AbstractCommand
 				}
 				else if(parent == null)
 				{
-					m_resolvedSuites.add(new UnresolvedTestSuiteDescriptor(location, new RuntimeException("Illegal or no bundle specified")));
+					m_resolvedSuites.add(new UnresolvedTestSuiteDescriptor(location, new RuntimeException(
+							"Illegal or no bundle specified")));
 					return;
 				}
 				else
 				{
 					bundle = parent;
-					resource = (pos == 0) ? location.substring(1) : location;
+					resource = (pos == 0)
+							? location.substring(1)
+							: location;
 				}
 			}
 
@@ -398,7 +408,7 @@ public class TestCommand extends AbstractCommand
 			else
 			{
 				Enumeration<URL> resourceEnumerator;
-				
+
 				if(resource.length() == 0)
 				{
 					resource = DEAFULT_TEST_LIST_RESOURCE;
@@ -431,7 +441,8 @@ public class TestCommand extends AbstractCommand
 					}
 					catch(IOException e)
 					{
-						m_resolvedSuites.add(new UnresolvedTestSuiteDescriptor(getBundleResourceName(bundle, resource), new RuntimeException("Error accessing " + resourceURL.toString(), e)));
+						m_resolvedSuites.add(new UnresolvedTestSuiteDescriptor(getBundleResourceName(bundle, resource),
+								new RuntimeException("Error accessing " + resourceURL.toString(), e)));
 					}
 				}
 			}
@@ -439,9 +450,9 @@ public class TestCommand extends AbstractCommand
 
 		/**
 		 * <p>
-		 * Resolves test locations contained in the target of the supplied <code>locationList</code> URL. The URL
-		 * target is assumed to contain newline separated list of test locations. Assumes the <code>parent</code>
-		 * bundle to contain locations which don't have their containing bundle explicitly specified.
+		 * Resolves test locations contained in the target of the supplied <code>locationList</code> URL. The URL target
+		 * is assumed to contain newline separated list of test locations. Assumes the <code>parent</code> bundle to
+		 * contain locations which don't have their containing bundle explicitly specified.
 		 * </p>
 		 * 
 		 * @param locationList
@@ -472,10 +483,10 @@ public class TestCommand extends AbstractCommand
 		}
 	}
 
-
 	private static final OptionDescriptor RESULT_PREFIX = new OptionDescriptor('p', "prefix", OptionValueType.REQUIRED);
 
-	private static final OptionDescriptor RESULT_DIRECTORY = new OptionDescriptor('d', "directory", OptionValueType.REQUIRED);
+	private static final OptionDescriptor RESULT_DIRECTORY = new OptionDescriptor('d', "directory",
+			OptionValueType.REQUIRED);
 
 	private static final OptionDescriptor QUIET_FLAG = new OptionDescriptor('q', "quiet", OptionValueType.NONE);
 
@@ -487,21 +498,47 @@ public class TestCommand extends AbstractCommand
 
 	private String m_resultPrefix;
 
-	private File getReportFile()
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void getOptionDescriptors(List appendHere) throws Exception
 	{
-		String fileName = (m_resultPrefix != null
-				? m_resultPrefix
-				: "result") + '-' + System.currentTimeMillis() + ".xml";
+		super.getOptionDescriptors(appendHere);
+		appendHere.add(RESULT_PREFIX);
+		appendHere.add(RESULT_DIRECTORY);
+		appendHere.add(QUIET_FLAG);
+	}
 
-		return m_resultDirectory != null
-				? new File(m_resultDirectory, fileName)
-				: new File(fileName);
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(RESULT_PREFIX))
+		{
+			m_resultPrefix = option.getValue();
+		}
+		else if(option.is(RESULT_DIRECTORY))
+		{
+			m_resultDirectory = new File(option.getValue());
+		}
+		else if(option.is(QUIET_FLAG))
+		{
+			m_quietFlag = true;
+		}
+		else
+		{
+			super.handleOption(option);
+		}
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		m_locations = unparsed;
 	}
 
 	/**
 	 * <p>
-	 * The implementation of the <code>test</code> command for Buckminster. For more info see its usage instructions
-	 * by issuing:
+	 * The implementation of the <code>test</code> command for Buckminster. For more info see its usage instructions by
+	 * issuing:
 	 * <ul>
 	 * <code>buckminster test -?</code>
 	 * </ul>
@@ -591,40 +628,14 @@ public class TestCommand extends AbstractCommand
 		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void getOptionDescriptors(List appendHere) throws Exception
+	private File getReportFile()
 	{
-		super.getOptionDescriptors(appendHere);
-		appendHere.add(RESULT_PREFIX);
-		appendHere.add(RESULT_DIRECTORY);
-		appendHere.add(QUIET_FLAG);
-	}
+		String fileName = (m_resultPrefix != null
+				? m_resultPrefix
+				: "result") + '-' + System.currentTimeMillis() + ".xml";
 
-	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(RESULT_PREFIX))
-		{
-			m_resultPrefix = option.getValue();
-		}
-		else if(option.is(RESULT_DIRECTORY))
-		{
-			m_resultDirectory = new File(option.getValue());
-		}
-		else if(option.is(QUIET_FLAG))
-		{
-			m_quietFlag = true;
-		}
-		else
-		{
-			super.handleOption(option);
-		}
-	}
-
-	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		m_locations = unparsed;
+		return m_resultDirectory != null
+				? new File(m_resultDirectory, fileName)
+				: new File(fileName);
 	}
 }

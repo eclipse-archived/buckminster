@@ -39,7 +39,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * <p>
  * JUnit testing support for Buckminster.
@@ -60,43 +59,11 @@ public class TestRunner
 	 */
 	public static class TestSuiteResult implements TestListener, ISaxableElement
 	{
-		/** the testsuites element for the aggregate document */
-		public static final String TESTSUITES = "testsuites";
-
-		/** constant for unnamed testsuites/cases */
-		public static final String UNKNOWN = "unknown";
-
-		/** the testsuite element */
-		public static final String TESTSUITE = "testsuite";
-
-		/** name attribute for testsuite and testcase elements */
-		public static final String ATTR_NAME = "name";
-
-		/** time attribute for testsuite and testcase elements */
-		public static final String ATTR_TIME = "time";
-
-		/** timestamp attribute for testsuite and testcase elements */
-		public static final String ATTR_TIMESTAMP = "timestamp";
-
-		/** errors attribute for testsuite elements */
-		public static final String ATTR_ERRORS = "errors";
-
-		/** failures attribute for testsuite elements */
-		public static final String ATTR_FAILURES = "failures";
-
-		/** tests attribute for testsuite elements */
-		public static final String ATTR_TESTS = "tests";
-
-		/** the system-err element */
-		public static final String SYSTEM_ERR = "system-err";
-
-		/** the system-out element */
-		public static final String SYSTEM_OUT = "system-out";
-
-		protected static class ExceptionWrapper implements ISaxableElement {
+		protected static class ExceptionWrapper implements ISaxableElement
+		{
 			/** the error element */
 			public static final String ERROR = "error";
-		
+
 			/** the failure element */
 			public static final String FAILURE = "failure";
 
@@ -105,18 +72,6 @@ public class TestRunner
 
 			/** message attribute for error and failure elements */
 			public static final String ATTR_MESSAGE = "message";
-
-			private String m_type;
-			private Throwable m_exception;
-
-			public ExceptionWrapper(String type, Throwable exception) {
-				m_type = type;
-				m_exception = exception;
-			}
-
-			public String getDefaultTag() {
-				return m_type;
-			}
 
 			protected static char[] getStackTrace(Throwable t)
 			{
@@ -132,6 +87,21 @@ public class TestRunner
 				buf.getChars(0, buf.length(), target, 0);
 
 				return target;
+			}
+
+			private String m_type;
+
+			private Throwable m_exception;
+
+			public ExceptionWrapper(String type, Throwable exception)
+			{
+				m_type = type;
+				m_exception = exception;
+			}
+
+			public String getDefaultTag()
+			{
+				return m_type;
 			}
 
 			public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
@@ -154,16 +124,35 @@ public class TestRunner
 			}
 		}
 
-		protected static class OutputWrapper implements ISaxableElement {
+		/**
+		 * <p>
+		 * A {@link junit.framework.TestResult} subclass that is aware of being monitored by a
+		 * {@link org.eclipse.core.runtime.IProgressMonitor}.
+		 * </p>
+		 */
+		protected class MonitoredTestResult extends TestResult
+		{
+			@Override
+			public synchronized boolean shouldStop()
+			{
+				return super.shouldStop() || m_monitor.isCanceled();
+			}
+		}
+
+		protected static class OutputWrapper implements ISaxableElement
+		{
 			private String m_type;
+
 			private byte[] m_data;
 
-			public OutputWrapper(String type, byte[] data) {
+			public OutputWrapper(String type, byte[] data)
+			{
 				m_type = type;
 				m_data = data;
 			}
 
-			public String getDefaultTag() {
+			public String getDefaultTag()
+			{
 				return m_type;
 			}
 
@@ -205,19 +194,20 @@ public class TestRunner
 			/** name attribute for testcase elements */
 			@SuppressWarnings("hiding")
 			public static final String ATTR_NAME = TestSuiteResult.ATTR_NAME;
-		
+
 			/** time attribute for testcase elements */
 			@SuppressWarnings("hiding")
 			public static final String ATTR_TIME = TestSuiteResult.ATTR_TIME;
-		
+
 			/** timestamp attribute for testcase elements */
 			@SuppressWarnings("hiding")
-			public static final String ATTR_TIMESTAMP =  TestSuiteResult.ATTR_TIMESTAMP;
+			public static final String ATTR_TIMESTAMP = TestSuiteResult.ATTR_TIMESTAMP;
 
-			// back reference to the Test Object 
+			// back reference to the Test Object
 			protected Test m_test;
 
 			protected long m_startTimestamp;
+
 			protected long m_endTimestamp;
 
 			protected List<ISaxableElement> m_additionalInfo = new LinkedList<ISaxableElement>();
@@ -228,15 +218,14 @@ public class TestRunner
 				m_test = test;
 			}
 
-			public void setEndTimestamp(long stamp)
-			{
-				if(stamp > m_startTimestamp)
-					m_endTimestamp = stamp;
-			}
-
 			public void addInfo(ISaxableElement child)
 			{
 				m_additionalInfo.add(child);
+			}
+
+			public String getDefaultTag()
+			{
+				return TESTCASE;
 			}
 
 			public Test getTest()
@@ -244,9 +233,10 @@ public class TestRunner
 				return m_test;
 			}
 
-			public String getDefaultTag()
+			public void setEndTimestamp(long stamp)
 			{
-				return TESTCASE;
+				if(stamp > m_startTimestamp)
+					m_endTimestamp = stamp;
 			}
 
 			public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
@@ -265,7 +255,8 @@ public class TestRunner
 
 				receiver.startElement(namespace, localName, qName, attrs);
 
-				for(ISaxableElement info : m_additionalInfo) {
+				for(ISaxableElement info : m_additionalInfo)
+				{
 					info.toSax(receiver, namespace, prefix, info.getDefaultTag());
 				}
 
@@ -273,19 +264,94 @@ public class TestRunner
 			}
 		}
 
+		/** the testsuites element for the aggregate document */
+		public static final String TESTSUITES = "testsuites";
+
+		/** constant for unnamed testsuites/cases */
+		public static final String UNKNOWN = "unknown";
+
+		/** the testsuite element */
+		public static final String TESTSUITE = "testsuite";
+
+		/** name attribute for testsuite and testcase elements */
+		public static final String ATTR_NAME = "name";
+
+		/** time attribute for testsuite and testcase elements */
+		public static final String ATTR_TIME = "time";
+
+		/** timestamp attribute for testsuite and testcase elements */
+		public static final String ATTR_TIMESTAMP = "timestamp";
+
+		/** errors attribute for testsuite elements */
+		public static final String ATTR_ERRORS = "errors";
+
+		/** failures attribute for testsuite elements */
+		public static final String ATTR_FAILURES = "failures";
+
+		/** tests attribute for testsuite elements */
+		public static final String ATTR_TESTS = "tests";
+
+		/** the system-err element */
+		public static final String SYSTEM_ERR = "system-err";
+
+		/** the system-out element */
+		public static final String SYSTEM_OUT = "system-out";
+
 		/**
 		 * <p>
-		 * A {@link junit.framework.TestResult} subclass that is aware of being monitored by a
-		 * {@link org.eclipse.core.runtime.IProgressMonitor}.
+		 * Emits SAX events closing the results report document.
 		 * </p>
+		 * 
+		 * @param report
+		 *            the SAX handler to emit the events to
 		 */
-		protected class MonitoredTestResult extends TestResult
+		public static void endReport(ContentHandler report) throws SAXException
 		{
-			@Override
-			public synchronized boolean shouldStop()
+			report.endElement(null, null, TestSuiteResult.TESTSUITES);
+			report.endDocument();
+		}
+
+		/**
+		 * <p>
+		 * Emits SAX events opening the results report document.
+		 * </p>
+		 * 
+		 * @param report
+		 *            the SAX handler to emit the events to
+		 */
+		public static void startReport(ContentHandler report) throws SAXException
+		{
+			report.startDocument();
+			report.startElement(null, null, TestSuiteResult.TESTSUITES, ISaxableElement.EMPTY_ATTRIBUTES);
+		}
+
+		protected static String getTestCaseName(Test test)
+		{
+			try
 			{
-				return super.shouldStop() || m_monitor.isCanceled();
+				Class<?> clazz = test.getClass();
+				Method getNameMethod;
+
+				try
+				{
+					getNameMethod = clazz.getMethod("getName");
+				}
+				catch(NoSuchMethodException e)
+				{
+					getNameMethod = clazz.getMethod("name");
+				}
+
+				if(getNameMethod.getReturnType() == String.class)
+				{
+					return (String)getNameMethod.invoke(test);
+				}
 			}
+			catch(Throwable e)
+			{
+				// ignore
+			}
+
+			return UNKNOWN;
 		}
 
 		/** The name of the testsuite. */
@@ -321,87 +387,26 @@ public class TestRunner
 		/** A progress monitor monitoring the test suite execution. */
 		protected IProgressMonitor m_monitor;
 
-
 		public TestSuiteResult(String testSuiteName, IProgressMonitor monitor)
 		{
 			m_testSuiteName = testSuiteName;
 			m_monitor = monitor;
 		}
 
-		protected static String getTestCaseName(Test test)
+		public void addError(Test test, Throwable t)
 		{
-			try
-			{
-				Class<?> clazz = test.getClass();
-				Method getNameMethod;
-
-				try
-				{
-					getNameMethod = clazz.getMethod("getName");
-				}
-				catch(NoSuchMethodException e)
-				{
-					getNameMethod = clazz.getMethod("name");
-				}
-
-				if(getNameMethod.getReturnType() == String.class)
-				{
-					return (String)getNameMethod.invoke(test);
-				}
-			}
-			catch(Throwable e)
-			{
-				// ignore
-			}
-
-			return UNKNOWN;
+			addException(test, ExceptionWrapper.ERROR, t);
 		}
 
-		public void startTest(Test test)
+		public void addFailure(Test test, AssertionFailedError e)
 		{
-			long timestamp = System.currentTimeMillis();
-			TestCaseResult result = m_runningTests.get(test);
-
-			// just return if the test is already running
-			if(result != null)
-				return;
-
-			result = m_failedTests.get(test);
-
-			// if the test is failed then finish it
-			if(result != null)
-			{
-				m_failedTests.remove(test);
-				result.setEndTimestamp(timestamp);
-				m_finishedTests.put(test, result);
-			}
-
-			m_runningTests.put(test, new TestCaseResult(test));
+			addException(test, ExceptionWrapper.FAILURE, e);
 		}
 
-		protected TestCaseResult getTestCaseResult(Test test) throws NoSuchElementException
+		public void addOutput(byte[] out, byte[] err)
 		{
-			TestCaseResult result = m_runningTests.get(test);
-
-			if(result != null)
-			{
-				m_runningTests.remove(test);
-				return result;
-			}
-
-			result = m_failedTests.get(test);
-
-			if(result != null)
-			{
-				m_failedTests.remove(test);
-				return result;
-			}
-
-			if(m_finishedTests.get(test) != null)
-				return null;
-
-			// throw an exception if the test is unknown
-			throw new NoSuchElementException();
+			m_out = out;
+			m_err = err;
 		}
 
 		public void endTest(Test test)
@@ -430,41 +435,9 @@ public class TestRunner
 			m_finishedTests.put(test, result);
 		}
 
-		protected void addException(Test test, String type, Throwable t)
+		public String getDefaultTag()
 		{
-			TestCaseResult result = m_runningTests.get(test);
-
-			// ignore this event if the test is not running
-			if(result == null)
-				return;
-
-			m_runningTests.remove(test);
-			result.addInfo(new ExceptionWrapper(type, t));
-			m_failedTests.put(test, result);
-		}
-
-		public void addFailure(Test test, AssertionFailedError e)
-		{
-			addException(test, ExceptionWrapper.FAILURE, e);
-		}
-
-		public void addError(Test test, Throwable t)
-		{
-			addException(test, ExceptionWrapper.ERROR, t);
-		}
-
-		protected void addError(Throwable t)
-		{
-			if(m_error == null)
-			{
-				m_error = t;
-			}
-		}
-
-		public void addOutput(byte[] out, byte[] err)
-		{
-			m_out = out;
-			m_err = err;
+			return TESTSUITE;
 		}
 
 		/**
@@ -495,7 +468,7 @@ public class TestRunner
 						{
 							for(TestCaseResult result : m_runningTests.values())
 							{
-								// Note that this moves the test from running to failed 
+								// Note that this moves the test from running to failed
 								addError(result.getTest(), new Exception("Test not completed"));
 							}
 
@@ -523,12 +496,30 @@ public class TestRunner
 			}
 		}
 
-		public String getDefaultTag()
+		public void startTest(Test test)
 		{
-			return TESTSUITE;
+			long timestamp = System.currentTimeMillis();
+			TestCaseResult result = m_runningTests.get(test);
+
+			// just return if the test is already running
+			if(result != null)
+				return;
+
+			result = m_failedTests.get(test);
+
+			// if the test is failed then finish it
+			if(result != null)
+			{
+				m_failedTests.remove(test);
+				result.setEndTimestamp(timestamp);
+				m_finishedTests.put(test, result);
+			}
+
+			m_runningTests.put(test, new TestCaseResult(test));
 		}
 
-		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
+		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
+				throws SAXException
 		{
 			if(m_testResult == null)
 			{
@@ -576,51 +567,51 @@ public class TestRunner
 			receiver.endElement(namespace, localName, qName);
 		}
 
-		/**
-		 * <p>
-		 * Emits SAX events opening the results report document.
-		 * </p>
-		 * 
-		 * @param report
-		 *            the SAX handler to emit the events to
-		 */ 
-		public static void startReport(ContentHandler report) throws SAXException
+		protected void addError(Throwable t)
 		{
-			report.startDocument();
-			report.startElement(null, null, TestSuiteResult.TESTSUITES, ISaxableElement.EMPTY_ATTRIBUTES);
+			if(m_error == null)
+			{
+				m_error = t;
+			}
 		}
 
-		/**
-		 * <p>
-		 * Emits SAX events closing the results report document.
-		 * </p>
-		 * 
-		 * @param report
-		 *            the SAX handler to emit the events to
-		 */ 
-		public static void endReport(ContentHandler report) throws SAXException
+		protected void addException(Test test, String type, Throwable t)
 		{
-			report.endElement(null, null, TestSuiteResult.TESTSUITES);
-			report.endDocument();
+			TestCaseResult result = m_runningTests.get(test);
+
+			// ignore this event if the test is not running
+			if(result == null)
+				return;
+
+			m_runningTests.remove(test);
+			result.addInfo(new ExceptionWrapper(type, t));
+			m_failedTests.put(test, result);
 		}
-	}
 
-	protected ByteArrayOutputStream m_outStreamBuffer;
-	protected ByteArrayOutputStream m_errStreamBuffer;
+		protected TestCaseResult getTestCaseResult(Test test) throws NoSuchElementException
+		{
+			TestCaseResult result = m_runningTests.get(test);
 
-	protected PrintStream m_bufferedOut;
-	protected PrintStream m_bufferedErr;
+			if(result != null)
+			{
+				m_runningTests.remove(test);
+				return result;
+			}
 
-	protected PrintStream m_originalSystemOut;
-	protected PrintStream m_originalSystemErr;
+			result = m_failedTests.get(test);
 
-	protected PrintStream m_originalLoggerOut;
-	protected PrintStream m_originalLoggerErr;
+			if(result != null)
+			{
+				m_failedTests.remove(test);
+				return result;
+			}
 
-	public TestRunner()
-	{
-		m_outStreamBuffer = new ByteArrayOutputStream();
-		m_errStreamBuffer = new ByteArrayOutputStream();
+			if(m_finishedTests.get(test) != null)
+				return null;
+
+			// throw an exception if the test is unknown
+			throw new NoSuchElementException();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -629,46 +620,26 @@ public class TestRunner
 		return clazz;
 	}
 
-	protected void bufferStreams()
+	protected ByteArrayOutputStream m_outStreamBuffer;
+
+	protected ByteArrayOutputStream m_errStreamBuffer;
+
+	protected PrintStream m_bufferedOut;
+
+	protected PrintStream m_bufferedErr;
+
+	protected PrintStream m_originalSystemOut;
+
+	protected PrintStream m_originalSystemErr;
+
+	protected PrintStream m_originalLoggerOut;
+
+	protected PrintStream m_originalLoggerErr;
+
+	public TestRunner()
 	{
-		if(m_bufferedOut != null)
-			return;
-
-		m_outStreamBuffer.reset();
-		m_errStreamBuffer.reset();
-
-		m_bufferedOut = new PrintStream(m_outStreamBuffer);
-		m_bufferedErr = new PrintStream(m_errStreamBuffer);
-
-		m_originalSystemOut = System.out;
-		m_originalSystemErr = System.err;
-
-		m_originalLoggerOut = Logger.getOutStream();
-		m_originalLoggerErr = Logger.getErrStream();
-
-		System.setOut(m_bufferedOut);
-		System.setErr(m_bufferedErr);
-
-		Logger.setOutStream(m_bufferedOut);
-		Logger.setErrStream(m_bufferedErr);
-	}
-
-	protected void unbufferStreams()
-	{
-		if(m_bufferedOut == null)
-			return;
-
-		System.setOut(m_originalSystemOut);
-		System.setErr(m_originalSystemErr);
-
-		Logger.setOutStream(m_originalLoggerOut);
-		Logger.setErrStream(m_originalLoggerErr);
-
-		m_bufferedOut.close();
-		m_bufferedErr.close();
-
-		m_bufferedOut = null;
-		m_bufferedErr = null;
+		m_outStreamBuffer = new ByteArrayOutputStream();
+		m_errStreamBuffer = new ByteArrayOutputStream();
 	}
 
 	/**
@@ -680,14 +651,14 @@ public class TestRunner
 	 *            the test suite to execute
 	 * @param monitor
 	 *            a monitor that monitors the execution (used only for testing if the cancellation of the test execution
-	 *            was requested by means of calling the
-	 *            {@link org.eclipse.core.runtime.IProgressMonitor#isCanceled() monitor.isCanceled()})
+	 *            was requested by means of calling the {@link org.eclipse.core.runtime.IProgressMonitor#isCanceled()
+	 *            monitor.isCanceled()})
 	 * @return <code>TestSuiteResult</code> holding the result of the <code>testSuite</code> execution.
 	 */
 	public TestSuiteResult run(TestSuiteDescriptor testSuite, IProgressMonitor monitor)
 	{
 		TestSuiteResult result = new TestSuiteResult(testSuite.getSuiteName(), monitor);
-		 monitor.isCanceled();
+		monitor.isCanceled();
 		Test suite = null;
 
 		bufferStreams();
@@ -742,7 +713,9 @@ public class TestRunner
 		}
 		catch(Throwable t)
 		{
-			result.addError((t instanceof ResolutionException) ? t.getCause() : new Exception("Failed to create test suite", t));
+			result.addError((t instanceof ResolutionException)
+					? t.getCause()
+					: new Exception("Failed to create test suite", t));
 		}
 
 		unbufferStreams();
@@ -750,5 +723,47 @@ public class TestRunner
 		result.addOutput(m_outStreamBuffer.toByteArray(), m_errStreamBuffer.toByteArray());
 
 		return result;
+	}
+
+	protected void bufferStreams()
+	{
+		if(m_bufferedOut != null)
+			return;
+
+		m_outStreamBuffer.reset();
+		m_errStreamBuffer.reset();
+
+		m_bufferedOut = new PrintStream(m_outStreamBuffer);
+		m_bufferedErr = new PrintStream(m_errStreamBuffer);
+
+		m_originalSystemOut = System.out;
+		m_originalSystemErr = System.err;
+
+		m_originalLoggerOut = Logger.getOutStream();
+		m_originalLoggerErr = Logger.getErrStream();
+
+		System.setOut(m_bufferedOut);
+		System.setErr(m_bufferedErr);
+
+		Logger.setOutStream(m_bufferedOut);
+		Logger.setErrStream(m_bufferedErr);
+	}
+
+	protected void unbufferStreams()
+	{
+		if(m_bufferedOut == null)
+			return;
+
+		System.setOut(m_originalSystemOut);
+		System.setErr(m_originalSystemErr);
+
+		Logger.setOutStream(m_originalLoggerOut);
+		Logger.setErrStream(m_originalLoggerErr);
+
+		m_bufferedOut.close();
+		m_bufferedErr.close();
+
+		m_bufferedOut = null;
+		m_bufferedErr = null;
 	}
 }
