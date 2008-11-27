@@ -78,6 +78,8 @@ public class Messages extends NLS
 
 	public static String confirm_overwrite;
 
+	public static String contributor;
+
 	public static String could_not_create_file;
 
 	public static String cspec_editor_dependency;
@@ -179,6 +181,8 @@ public class Messages extends NLS
 	public static String ok;
 
 	public static String opml_format_error;
+
+	public static String optional;
 
 	public static String paths_with_colon;
 

@@ -13,6 +13,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.swt.widgets.Composite;
@@ -35,7 +36,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public String[] getColumnHeaders()
 	{
-		return new String[] {"Component", "Name", "Contributor", "Optional"};
+		return new String[] {Messages.component, Messages.name, Messages.contributor, Messages.optional};
 	}
 
 	@Override
