@@ -90,6 +90,8 @@ public class Messages extends NLS
 
 	public static String buckminster_understands_project_metadata;
 
+	public static String cannot_create_a_new_buckminster_component_specification_file;
+
 	public static String cannot_get_attribute_names_for_the_selected_component;
 
 	public static String cannot_save_password;

@@ -13,17 +13,18 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.INewWizard;
 import org.xml.sax.SAXException;
 
 public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 {
-	private final String INIT_COMPONENT_TYPE = "buckminster";
+	private final String INIT_COMPONENT_TYPE = "buckminster"; //$NON-NLS-1$
 	
-	private final String INIT_VERSION_STRING = "1.0.0";
+	private final String INIT_VERSION_STRING = "1.0.0"; //$NON-NLS-1$
 	
-	private final String INIT_VERSION_TYPE = "OSGi";
+	private final String INIT_VERSION_TYPE = "OSGi"; //$NON-NLS-1$
 	
 	public NewCSPECWizard()
 	{
@@ -74,7 +75,7 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 		}
 		catch(SAXException e)
 		{
-			throw new RuntimeException("Cannot create a new Buckminster Component Specification File", e);
+			throw new RuntimeException(Messages.cannot_create_a_new_buckminster_component_specification_file, e);
 		}
 		
 		return bld.getInputStream();
