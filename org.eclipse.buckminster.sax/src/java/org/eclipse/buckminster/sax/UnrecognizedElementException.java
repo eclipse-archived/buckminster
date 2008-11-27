@@ -21,6 +21,6 @@ public class UnrecognizedElementException extends SAXParseException
 
 	public UnrecognizedElementException(String inTag, String qName, Locator locator)
 	{
-		super("Unrecognized element <" + qName + "> encountered in tag <" + inTag + ">", locator);
+		super("Unrecognized element <" + qName + "> encountered in tag <" + inTag + ">", locator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 }

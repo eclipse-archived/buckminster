@@ -44,11 +44,11 @@ public abstract class AbstractHandler extends DefaultHandler
 		String value = getOptionalStringValue(attrs, qName);
 		if(value == null)
 			return defaultValue;
-		if("1".equals(value))
+		if("1".equals(value)) //$NON-NLS-1$
 			return true;
-		if("0".equals(value))
+		if("0".equals(value)) //$NON-NLS-1$
 			return false;
-		return "true".equalsIgnoreCase(value);
+		return "true".equalsIgnoreCase(value); //$NON-NLS-1$
 	}
 
 	/**
@@ -183,7 +183,7 @@ public abstract class AbstractHandler extends DefaultHandler
 		}
 		catch(PatternSyntaxException e)
 		{
-			throw new SAXParseException("The value of attribute " + qName + " is not a valid regular expression",
+			throw new SAXParseException("The value of attribute " + qName + " is not a valid regular expression", //$NON-NLS-1$ //$NON-NLS-2$
 					getDocumentLocator(), e);
 		}
 	}
@@ -217,13 +217,13 @@ public abstract class AbstractHandler extends DefaultHandler
 			{
 				try
 				{
-					return new URL(value.replaceAll("\\s", "%20"));
+					return new URL(value.replaceAll("\\s", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				catch(MalformedURLException me1)
 				{
 				}
 			}
-			throw new SAXParseException("The value of attribute " + qName + " is not a valid URL",
+			throw new SAXParseException("The value of attribute " + qName + " is not a valid URL", //$NON-NLS-1$ //$NON-NLS-2$
 					getDocumentLocator(), e);
 		}
 	}
@@ -265,11 +265,11 @@ public abstract class AbstractHandler extends DefaultHandler
 	protected boolean getBooleanValue(Attributes attrs, String qName) throws MissingRequiredAttributeException
 	{
 		String value = this.getStringValue(attrs, qName);
-		if("1".equals(value))
+		if("1".equals(value)) //$NON-NLS-1$
 			return true;
-		if("0".equals(value))
+		if("0".equals(value)) //$NON-NLS-1$
 			return false;
-		return "true".equalsIgnoreCase(value);
+		return "true".equalsIgnoreCase(value); //$NON-NLS-1$
 	}
 
 	protected abstract Locator getDocumentLocator();

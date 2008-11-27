@@ -157,7 +157,7 @@ public abstract class TopHandler extends AbstractHandler
 	@Override
 	public String getTAG()
 	{
-		return "root";
+		return "root"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public abstract class TopHandler extends AbstractHandler
 	{
 		try
 		{
-			m_reader.setFeature("http://xml.org/sax/features/namespaces", flag);
+			m_reader.setFeature("http://xml.org/sax/features/namespaces", flag); //$NON-NLS-1$
 		}
 		catch(SAXException e)
 		{
@@ -256,7 +256,7 @@ public abstract class TopHandler extends AbstractHandler
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
 	{
-		throw new UnrecognizedElementException("root", qName, this.getDocumentLocator());
+		throw new UnrecognizedElementException("root", qName, this.getDocumentLocator()); //$NON-NLS-1$
 	}
 
 	/**
@@ -315,7 +315,7 @@ public abstract class TopHandler extends AbstractHandler
 		{
 			try
 			{
-				m_reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+				m_reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler); //$NON-NLS-1$
 			}
 			catch(SAXException e)
 			{

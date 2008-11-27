@@ -29,6 +29,6 @@ public class MissingRequiredAttributeException extends SAXParseException
 	 */
 	public MissingRequiredAttributeException(String tagName, String attrName, Locator locator)
 	{
-		super("Element <" + tagName + "> is missing the required attribute: " + attrName, locator);
+		super("Element <" + tagName + "> is missing the required attribute: " + attrName, locator); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

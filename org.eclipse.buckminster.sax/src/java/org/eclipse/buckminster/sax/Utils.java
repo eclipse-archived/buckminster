@@ -73,7 +73,7 @@ public class Utils
 	 */
 	public static void addAttribute(AttributesImpl attrs, String name, String value)
 	{
-		attrs.addAttribute("", name, name, "CDATA", value);
+		attrs.addAttribute("", name, name, "CDATA", value); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public static <T> List<T> createUnmodifiableList(Collection<T> coll)
@@ -217,7 +217,7 @@ public class Utils
 		{
 			try
 			{
-				enc = (String)locator.getClass().getMethod("getEncoding", s_emptyArgTypes).invoke(locator, s_emptyArgs);
+				enc = (String)locator.getClass().getMethod("getEncoding", s_emptyArgTypes).invoke(locator, s_emptyArgs); //$NON-NLS-1$
 			}
 			catch(Exception e)
 			{
@@ -226,7 +226,7 @@ public class Utils
 			}
 		}
 		if(enc == null)
-			enc = "UTF-8";
+			enc = "UTF-8"; //$NON-NLS-1$
 		return enc;
 	}
 
@@ -302,12 +302,12 @@ public class Utils
 	{
 		TransformerHandler serializer = createTransformerHandler(indent);
 		Transformer t = serializer.getTransformer();
-		t.setOutputProperty(OutputKeys.METHOD, "xml");
+		t.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
 		if(encoding != null)
 			t.setOutputProperty(OutputKeys.ENCODING, encoding);
 
 		if(indent >= 0)
-			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			t.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 
 		StreamResult out = new StreamResult();
 		if(file != null)
@@ -324,22 +324,22 @@ public class Utils
 			throw new SAXException(e.getMessage());
 		}
 
-		String lineSep = System.getProperty("line.separator");
-		if(useSysLinesep || "\n".equals(lineSep))
+		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		if(useSysLinesep || "\n".equals(lineSep)) //$NON-NLS-1$
 			serializer.setResult(out);
 		else
 		{
 			// Someone forgot to expose the ToXMLStream.setLineSepUse(boolean) so there's
 			// no way we can do that in a nice way. This has been known to work though
 			//
-			System.setProperty("line.separator", "\n");
+			System.setProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			try
 			{
 				serializer.setResult(out);
 			}
 			finally
 			{
-				System.setProperty("line.separator", lineSep);
+				System.setProperty("line.separator", lineSep); //$NON-NLS-1$
 			}
 		}
 		return serializer;
@@ -347,13 +347,13 @@ public class Utils
 
 	public static void serialize(ISaxable saxable, OutputStream outputStream) throws SAXException
 	{
-		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", 4, true);
+		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", 4, true); //$NON-NLS-1$
 		saxable.toSax(serializer);
 	}
 
 	public static void serializeUgly(ISaxable saxable, OutputStream outputStream) throws SAXException
 	{
-		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", -1, false);
+		ContentHandler serializer = newSerializer(null, outputStream, "UTF-8", -1, false); //$NON-NLS-1$
 		saxable.toSax(serializer);
 	}
 
@@ -363,13 +363,13 @@ public class Utils
 		{
 			TransformerFactory tf = TransformerFactory.newInstance();
 			if(!tf.getFeature(SAXTransformerFactory.FEATURE))
-				throw new SAXException("The TransformerFactory is not a SAXTransformerFactory");
+				throw new SAXException("The TransformerFactory is not a SAXTransformerFactory"); //$NON-NLS-1$
 
 			s_saxTransformerFactory = (SAXTransformerFactory)tf;
 		}
 		try
 		{
-			s_saxTransformerFactory.setAttribute("indent-number", Integer.toString(indent));
+			s_saxTransformerFactory.setAttribute("indent-number", Integer.toString(indent)); //$NON-NLS-1$
 		}
 		catch(IllegalArgumentException e)
 		{

@@ -94,7 +94,7 @@ public abstract class ChildHandler extends AbstractHandler
 	{
 		try
 		{
-			Field idField = this.getClass().getDeclaredField("TAG");
+			Field idField = this.getClass().getDeclaredField("TAG"); //$NON-NLS-1$
 			int mods = idField.getModifiers();
 			if(!idField.isAccessible())
 				idField.setAccessible(true);
@@ -104,7 +104,7 @@ public abstract class ChildHandler extends AbstractHandler
 		}
 		catch(NoSuchFieldException e)
 		{
-			return this.getClass() + "(lacks TAG field)";
+			return this.getClass() + "(lacks TAG field)"; //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{
