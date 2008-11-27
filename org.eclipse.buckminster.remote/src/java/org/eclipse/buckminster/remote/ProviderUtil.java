@@ -67,7 +67,7 @@ public class ProviderUtil
 		if((provider = s_serviceCache.get(providerID)) != null)
 			return provider;
 
-		throw new NoSuchProviderException(NLS.bind(Messages.getString("ProviderUtil.provider_0_not_found"), providerID)); //$NON-NLS-1$
+		throw new NoSuchProviderException(NLS.bind(Messages.provider_0_not_found, providerID));
 	}
 
 	/**
@@ -119,8 +119,7 @@ public class ProviderUtil
 		if(s_serviceCache.get(provider.getId()) == null)
 			s_serviceCache.put(provider.getId(), provider);
 		else
-			throw BuckminsterException.fromMessage(NLS.bind(Messages
-					.getString("ProviderUtil.provider_0_already_registered"), provider.getId())); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.provider_0_already_registered, provider.getId()));
 	}
 
 	private static void scanExtensionRegistry()

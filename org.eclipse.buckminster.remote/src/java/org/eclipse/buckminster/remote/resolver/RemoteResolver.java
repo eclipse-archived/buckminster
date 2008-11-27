@@ -8,9 +8,9 @@
 
 package org.eclipse.buckminster.remote.resolver;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -86,7 +86,7 @@ public class RemoteResolver implements IResolver
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
 		if(bom == null)
-			throw BuckminsterException.fromMessage(Messages.getString("RemoteResolver.null_BOM_resolution_request")); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(Messages.null_BOM_resolution_request);
 
 		if(bom.isFullyResolved())
 		{
@@ -103,14 +103,14 @@ public class RemoteResolver implements IResolver
 		{
 			m_remoteService.reset();
 
-			monitor.beginTask(Messages.getString("RemoteResolver.query_resolution_in_progress"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+			monitor.beginTask(Messages.query_resolution_in_progress, IProgressMonitor.UNKNOWN);
 			int lastWorked = 0;
 
 			Logger logger = CorePlugin.getLogger();
 
 			try
 			{
-				monitor.subTask(Messages.getString("RemoteResolver.starting_query_resolution")); //$NON-NLS-1$
+				monitor.subTask(Messages.starting_query_resolution);
 
 				logger.debug("Starting query..."); //$NON-NLS-1$
 				m_remoteService.fireQueryResolution(bom);
