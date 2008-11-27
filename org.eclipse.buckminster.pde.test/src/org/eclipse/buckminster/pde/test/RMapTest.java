@@ -32,20 +32,20 @@ public class RMapTest extends PDETestCase
 	public void testEclipseInstalled() throws Exception
 	{
 		this.getPlugin();
-		ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null);
+		ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null); //$NON-NLS-1$
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
-		queryBld.setResourceMapURL(this.getClass().getResource("test.rmap").toString());
+		queryBld.setResourceMapURL(this.getClass().getResource("test.rmap").toString()); //$NON-NLS-1$
 
 		AdvisorNodeBuilder nodeBld = queryBld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile("org\\.eclipse"));
+		nodeBld.setNamePattern(Pattern.compile("org\\.eclipse")); //$NON-NLS-1$
 		nodeBld.setUseTargetPlatform(false);
 		ComponentQuery query = queryBld.createComponentQuery();
 
 		IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
-		assertTrue("Resolve failed", bom.isFullyResolved());
+		assertTrue("Resolve failed", bom.isFullyResolved()); //$NON-NLS-1$
 		Utils.serialize(bom.getResolution(), System.out);
 	}
 }

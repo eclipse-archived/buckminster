@@ -38,13 +38,13 @@ public class PDEBuilderTest extends PDETestCase
 	{
 		PDEPlugin pdePlugin = PDEPlugin.getDefault();
 		if(pdePlugin == null)
-			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
+			throw new Exception("This test must be run as a \"JUnit Plug-in Test\""); //$NON-NLS-1$
 
 		IProgressMonitor nulMon = new NullProgressMonitor();
 		String[] componentTypes = new String[] { IComponentType.OSGI_BUNDLE, IComponentType.ECLIPSE_FEATURE };
 		IResolver resolver = this.createResolver(pdePlugin.toString(), IComponentType.OSGI_BUNDLE);
 		CorePlugin corePlugin = CorePlugin.getDefault();
-		URL location = FileLocator.toFileURL(pdePlugin.getBundle().getEntry("/"));
+		URL location = FileLocator.toFileURL(pdePlugin.getBundle().getEntry("/")); //$NON-NLS-1$
 		Provider provider = new Provider(IReaderType.URL_CATALOG, componentTypes, location.toString(), null);
 
 		IComponentType bundleType = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
@@ -52,13 +52,13 @@ public class PDEBuilderTest extends PDETestCase
 		IComponentReader[] reader = new IComponentReader[] { readerType.getReader(provider, bundleType, resolver
 				.getContext().getRootNodeQuery(), null, nulMon) };
 
-		IResolutionBuilder builder = corePlugin.getResolutionBuilder("plugin2cspec");
+		IResolutionBuilder builder = corePlugin.getResolutionBuilder("plugin2cspec"); //$NON-NLS-1$
 		Utils.serialize(builder.build(reader, false, nulMon), System.out);
 		if(reader[0] != null)
 			reader[0].close();
 
-		location = FileLocator.toFileURL(Platform.getBundle("org.junit").getEntry("/"));
-		resolver = this.createResolver("org.junit", null);
+		location = FileLocator.toFileURL(Platform.getBundle("org.junit").getEntry("/")); //$NON-NLS-1$ //$NON-NLS-2$
+		resolver = this.createResolver("org.junit", null); //$NON-NLS-1$
 		provider = new Provider(IReaderType.URL_CATALOG, componentTypes, location.toString(), null);
 
 		reader[0] = readerType.getReader(provider, bundleType, resolver.getContext().getRootNodeQuery(), null, nulMon);
@@ -66,7 +66,7 @@ public class PDEBuilderTest extends PDETestCase
 		if(reader[0] != null)
 			reader[0].close();
 
-		IFeatureModel featureModel = EclipsePlatformReaderType.getBestFeature("org.eclipse.pde", null, null);
+		IFeatureModel featureModel = EclipsePlatformReaderType.getBestFeature("org.eclipse.pde", null, null); //$NON-NLS-1$
 		String installLocation = featureModel.getInstallLocation();
 		if(installLocation == null)
 		{
@@ -78,8 +78,8 @@ public class PDEBuilderTest extends PDETestCase
 		File tmp = new File(installLocation);
 
 		location = tmp.toURI().toURL();
-		resolver = this.createResolver("org.eclipse.pde", null);
-		builder = corePlugin.getResolutionBuilder("feature2cspec");
+		resolver = this.createResolver("org.eclipse.pde", null); //$NON-NLS-1$
+		builder = corePlugin.getResolutionBuilder("feature2cspec"); //$NON-NLS-1$
 		provider = new Provider(IReaderType.URL_CATALOG, componentTypes, location.toString(), null);
 		reader[0] = readerType.getReader(provider, bundleType, resolver.getContext().getRootNodeQuery(), null, nulMon);
 		Utils.serialize(builder.build(reader, false, nulMon), System.out);
@@ -88,23 +88,23 @@ public class PDEBuilderTest extends PDETestCase
 
 		try
 		{
-			resolver = this.createResolver("org.tigris.subversion.subclipse.core", null);
+			resolver = this.createResolver("org.tigris.subversion.subclipse.core", null); //$NON-NLS-1$
 			provider = new Provider(
-					"svn",
+					"svn", //$NON-NLS-1$
 					componentTypes,
-					"http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core",
+					"http://subclipse.tigris.org/svn/subclipse/trunk/subclipse?moduleBeforeTag&amp;moduleAfterTag#core", //$NON-NLS-1$
 					null);
 			readerType = provider.getReaderType();
 			reader[0] = readerType.getReader(provider, bundleType, resolver.getContext().getRootNodeQuery(), null,
 					nulMon);
-			builder = corePlugin.getResolutionBuilder("plugin2cspec");
+			builder = corePlugin.getResolutionBuilder("plugin2cspec"); //$NON-NLS-1$
 			Utils.serialize(builder.build(reader, false, nulMon), System.out);
 			if(reader[0] != null)
 				reader[0].close();
 		}
 		catch(MissingReaderTypeException e)
 		{
-			System.out.println("The buckminster.svn plugin is apparently not installed");
+			System.out.println("The buckminster.svn plugin is apparently not installed"); //$NON-NLS-1$
 		}
 	}
 }

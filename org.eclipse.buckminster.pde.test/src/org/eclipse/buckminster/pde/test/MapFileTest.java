@@ -35,13 +35,13 @@ public class MapFileTest extends TestCase
 	public void testMap() throws Exception
 	{
 		ArrayList<MapFileEntry> bld = new ArrayList<MapFileEntry>();
-		URL url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/directory.txt");
+		URL url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/directory.txt"); //$NON-NLS-1$
 		InputStream input = url.openStream();
 		MapFile.parse(input, url.toString(), bld);
 		input.close();
 
 		url = new URL(
-				"http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/orbitBundles-S20080209163815.map");
+				"http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/orbitBundles-S20080209163815.map"); //$NON-NLS-1$
 		input = url.openStream();
 		MapFile.parse(input, url.toString(), bld);
 		input.close();
