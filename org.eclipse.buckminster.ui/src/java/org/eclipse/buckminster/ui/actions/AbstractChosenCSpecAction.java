@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.ui.DynamicTableLayout;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
@@ -59,7 +60,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 				break;
 			case 1:
 				IVersion vs = cr.getVersion();
-				lbl = vs == null ? "" : vs.toString();
+				lbl = vs == null ? "" : vs.toString(); //$NON-NLS-1$
 				break;
 			default:
 				lbl = null;
@@ -98,7 +99,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 			Composite superArea = (Composite)super.createDialogArea(parent);
 			Table table = new Table(superArea, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 
-			String[] columnNames = new String[] { "Name", "Version" };
+			String[] columnNames = new String[] { Messages.name, Messages.version };
 			int[] columnWeights = new int[] { 70, 30 };
 
 			table.setHeaderVisible(true);
@@ -172,7 +173,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 		Shell shell = m_window.getShell();
 		try
 		{
-			ComponentsDialog dialog = new ComponentsDialog(shell, "Components known to Buckminster", WorkspaceInfo.getAllResolutions());
+			ComponentsDialog dialog = new ComponentsDialog(shell, Messages.components_known_to_buckminster, WorkspaceInfo.getAllResolutions());
 			if(dialog.open() != Window.OK)
 				return;
 
@@ -182,7 +183,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 		}
 		catch(Exception e)
 		{
-			UiUtils.openError(shell, "Errors during loading", e);
+			UiUtils.openError(shell, Messages.errors_during_loading, e);
 		}
 	}
 
