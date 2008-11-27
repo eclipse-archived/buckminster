@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -27,6 +28,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -107,7 +109,7 @@ public abstract class NewBMFileWizard extends Wizard
 		catch(InvocationTargetException e)
 		{
 			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+			MessageDialog.openError(getShell(), Messages.error, realException.getMessage());
 			return false;
 		}
 		return true;
@@ -120,12 +122,12 @@ public abstract class NewBMFileWizard extends Wizard
 	private void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException
 	{
 		// create a sample file
-		monitor.beginTask("Creating " + fileName, 2);
+		monitor.beginTask(NLS.bind(Messages.creating_0, fileName), 2);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IResource resource = root.findMember(new Path(containerName));
 		if(!resource.exists() || !(resource instanceof IContainer))
 		{
-			throwCoreException("Container \"" + containerName + "\" does not exist.");
+			throwCoreException(NLS.bind(Messages.container_0_does_not_exist, containerName ));
 		}
 		IContainer container = (IContainer)resource;
 		
@@ -147,7 +149,7 @@ public abstract class NewBMFileWizard extends Wizard
 		{
 		}
 		monitor.worked(1);
-		monitor.setTaskName("Opening file for editing...");
+		monitor.setTaskName(Messages.opening_file_for_editing_with_dots);
 		getShell().getDisplay().asyncExec(new Runnable()
 		{
 			public void run()
@@ -171,13 +173,13 @@ public abstract class NewBMFileWizard extends Wizard
 	 */
 	protected InputStream openContentStream(String containerName, String fileName)
 	{
-		String contents = "";
+		String contents = ""; //$NON-NLS-1$
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
 	protected void throwCoreException(String message) throws CoreException
 	{
-		IStatus status = new Status(IStatus.ERROR, "org.eclipse.buckminster.bmview", IStatus.OK, message, null);
+		IStatus status = new Status(IStatus.ERROR, "org.eclipse.buckminster.bmview", IStatus.OK, message, null); //$NON-NLS-1$
 		throw new CoreException(status);
 	}
 

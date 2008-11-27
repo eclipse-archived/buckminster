@@ -130,6 +130,8 @@ public class Messages extends NLS
 
 	public static String console_logger_level_with_colon;
 
+	public static String container_0_does_not_exist;
+
 	public static String content;
 
 	public static String continue_on_error;
@@ -145,6 +147,8 @@ public class Messages extends NLS
 	public static String cquery_context_url_set_to_0;
 
 	public static String create_new_repository_identity;
+
+	public static String creating_0;
 
 	public static String cspec_editor_dependency;
 
@@ -299,6 +303,8 @@ public class Messages extends NLS
 	public static String open_a_component_query;
 
 	public static String open_with;
+
+	public static String opening_file_for_editing_with_dots;
 
 	public static String opml_format_error;
 
