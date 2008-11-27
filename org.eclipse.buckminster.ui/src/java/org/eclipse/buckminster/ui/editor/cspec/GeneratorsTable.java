@@ -13,6 +13,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
@@ -38,7 +39,7 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[]{"Name", "Attribute", "Component"};
+		return new String[]{Messages.name, Messages.attribute, Messages.component};
 	}
 
 	public int[] getColumnWeights()
@@ -91,9 +92,9 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 		switch(idx)
 		{
 		case 0:
-			return SimpleTable.createNotEmptyStringValidator("Generator name cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator(Messages.generator_name_cannot_be_empty);
 		case 1:
-			return SimpleTable.createNotEmptyStringValidator("Attribute cannot be empty");
+			return SimpleTable.createNotEmptyStringValidator(Messages.attribute_cannot_be_empty);
 		default:
 			return SimpleTable.getEmptyValidator();
 		}

@@ -50,6 +50,10 @@ public class Messages extends NLS
 
 	public static String assign_console_support_with_colon;
 
+	public static String attribute;
+
+	public static String attribute_cannot_be_empty;
+
 	public static String attribute_installer_hints_with_dash;
 
 	public static String bad_file_name;
@@ -63,6 +67,8 @@ public class Messages extends NLS
 	public static String command;
 
 	public static String component_name_with_colon;
+
+	public static String component;
 
 	public static String component_type;
 
@@ -131,6 +137,8 @@ public class Messages extends NLS
 	public static String general;
 
 	public static String general_properties;
+
+	public static String generator_name_cannot_be_empty;
 
 	public static String generators;
 
