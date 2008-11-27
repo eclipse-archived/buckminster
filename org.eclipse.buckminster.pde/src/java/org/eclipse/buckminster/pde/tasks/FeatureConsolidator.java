@@ -28,13 +28,15 @@ import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
-import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
+import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.IModelChangedEvent;
 import org.eclipse.pde.core.IModelChangedListener;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -54,7 +56,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		IBuildPropertiesConstants
 {
 	// The 64 characters that are legal in a version qualifier, in lexicographical order.
-	private static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	private static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 
 	private static final int QUALIFIER_SUFFIX_VERSION = 1;
 
@@ -119,7 +121,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		try
 		{
 			version = (OSGiVersion)VersionFactory.OSGiType.fromString(versionStr);
-			if(version.toString().equals("0.0.0"))
+			if(version.toString().equals("0.0.0")) //$NON-NLS-1$
 				version = null;
 		}
 		catch(VersionSyntaxException e)
@@ -173,7 +175,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			jarFile = new JarFile(dirOrZip);
 			JarEntry entry = jarFile.getJarEntry(fileName);
 			if(entry == null)
-				throw new FileNotFoundException(String.format("%s[%s]", dirOrZip, fileName));
+				throw new FileNotFoundException(String.format("%s[%s]", dirOrZip, fileName)); //$NON-NLS-1$
 
 			// Closing the jarFile is hereby the responsibility of the user of
 			// the returned InputStream
@@ -202,7 +204,8 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 		}
 		catch(Exception e)
 		{
-			throw BuckminsterException.fromMessage(e, "Unable to read %s", dirOrZip);
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages
+					.getString("FeatureConsolidator.unable_to_read_0"), dirOrZip)); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -214,7 +217,8 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				}
 				catch(IOException e)
 				{
-					PDEPlugin.getLogger().error(e, "Error while closing %s", dirOrZip);
+					PDEPlugin.getLogger().error(e,
+							NLS.bind(Messages.getString("FeatureConsolidator.error_while_closing_0"), dirOrZip)); //$NON-NLS-1$
 				}
 			}
 		}
@@ -427,7 +431,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 						feature.setVersion(newVersionStr);
 						if(isContextReplacement())
 						{
-							int lastDot = versionStr.lastIndexOf(".");
+							int lastDot = versionStr.lastIndexOf("."); //$NON-NLS-1$
 							m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
 						}
 					}
@@ -648,7 +652,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 	private ComponentIdentifier replaceFeatureReferenceVersion(String id, IFeatureChild ref) throws CoreException
 	{
-		IVersion version = findBestVersion(m_featureVersions, id, "feature", ref.getId(), ref.getVersion());
+		IVersion version = findBestVersion(m_featureVersions, id, "feature", ref.getId(), ref.getVersion()); //$NON-NLS-1$
 		if(version != null)
 		{
 			String newVer = version.toString();
@@ -661,7 +665,7 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 	private ComponentIdentifier replacePluginReferenceVersion(String id, IFeaturePlugin ref) throws CoreException
 	{
-		IVersion version = findBestVersion(m_pluginVersions, id, "plugin", ref.getId(), ref.getVersion());
+		IVersion version = findBestVersion(m_pluginVersions, id, "plugin", ref.getId(), ref.getVersion()); //$NON-NLS-1$
 		if(version != null)
 		{
 			String newVer = version.toString();
