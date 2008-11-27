@@ -14,7 +14,7 @@ package org.eclipse.buckminster.ui.editor;
  */
 public enum ArtifactType
 {
-	CQUERY("bmqtmp-", ".cquery"), CSPEC("bmstmp-", ".cspec");
+	CQUERY("bmqtmp-", ".cquery"), CSPEC("bmstmp-", ".cspec"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	
 	private String m_tempPrefix;
 	
