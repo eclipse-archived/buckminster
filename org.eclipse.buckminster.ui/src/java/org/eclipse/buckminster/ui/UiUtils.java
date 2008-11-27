@@ -202,7 +202,7 @@ public class UiUtils
 
 	public static Composite createEmptyPanel(Composite parent)
 	{
-		return createEmptyPanel(parent, "");
+		return createEmptyPanel(parent, ""); //$NON-NLS-1$
 	}
 
 	public static Composite createEmptyPanel(Composite parent, String fictiveStringToSetWidth)
