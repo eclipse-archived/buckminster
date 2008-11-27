@@ -42,11 +42,15 @@ public class Messages extends NLS
 
 	public static String add_with_arrow_left;
 
+	public static String advanced_with_dots;
+
 	public static String advisor_nodes;
 
 	public static String alias;
 
 	public static String all_attributes;
+
+	public static String all_specifications_resolved;
 
 	public static String allow_circular_dependency_with_colon;
 
@@ -79,6 +83,8 @@ public class Messages extends NLS
 	public static String bad_file_name;
 
 	public static String base_path_with_colon;
+
+	public static String bound;
 
 	public static String branch_or_tag_path_with_colon;
 
@@ -166,6 +172,8 @@ public class Messages extends NLS
 
 	public static String cspec_editor_generator;
 
+	public static String default_suffix_with_colon;
+
 	public static String dependencies;
 
 	public static String dependencies_in_0;
@@ -173,6 +181,8 @@ public class Messages extends NLS
 	public static String dependency_name_cannot_be_empty;
 
 	public static String designator_with_colon;
+
+	public static String destination_type_with_colon;
 
 	public static String documentation;
 
@@ -202,13 +212,19 @@ public class Messages extends NLS
 
 	public static String error;
 
+	public static String error_in_capitals;
+
 	public static String errors_during_loading;
+
+	public static String expand;
 
 	public static String extensions;
 
 	public static String external_save_as;
 
 	public static String external_save_bom;
+
+	public static String external_save_mspec;
 
 	public static String feed;
 
@@ -254,6 +270,8 @@ public class Messages extends NLS
 
 	public static String getting_resolutions;
 
+	public static String global_settings;
+
 	public static String grater_or_equal_to_version;
 
 	public static String group;
@@ -279,6 +297,10 @@ public class Messages extends NLS
 	public static String key_cannot_be_empty;
 
 	public static String key_with_colon;
+
+	public static String leaf_artifact_with_colon;
+
+	public static String location_with_colon;
 
 	public static String main;
 
@@ -336,13 +358,19 @@ public class Messages extends NLS
 
 	public static String no_components_found;
 
+	public static String no;
+
 	public static String no_ompl;
+
+	public static String not_available_abbreviation;
 
 	public static String not_yet_implemented;
 
 	public static String nothing_to_display_with_dot;
 
 	public static String ok;
+
+	public static String on_non_empty_install_location_with_colon;
 
 	public static String open;
 
@@ -368,6 +396,8 @@ public class Messages extends NLS
 
 	public static String overwrite_existing_node_with_same_pattern;
 
+	public static String parnet_folder_with_colon;
+
 	public static String path;
 
 	public static String path_cannot_be_empty;
@@ -384,6 +414,8 @@ public class Messages extends NLS
 
 	public static String prerequisites_with_colon;
 
+	public static String present;
+
 	public static String product_alias_with_colon;
 
 	public static String product_artifact;
@@ -399,6 +431,8 @@ public class Messages extends NLS
 	public static String project_is_not_open;
 
 	public static String project_must_be_writable;
+
+	public static String project_name_with_colon;
 
 	public static String properties;
 
@@ -456,7 +490,11 @@ public class Messages extends NLS
 
 	public static String save_bom;
 
+	public static String save_mspec;
+
 	public static String select_new_file_container;
+
+	public static String selected_components_with_colon;
 
 	public static String selection_criteria;
 
@@ -469,6 +507,8 @@ public class Messages extends NLS
 	public static String site_name;
 
 	public static String skip_component_with_colon;
+
+	public static String skip_this_component;
 
 	public static String source_level_with_colon;
 
@@ -485,6 +525,12 @@ public class Messages extends NLS
 	public static String the_entered_file_name_is_not_valid;
 
 	public static String the_file_0_already_exists_overwrite_question;
+
+	public static String the_location_0_for_1_already_exists_as_a_file;
+
+	public static String the_location_0_for_1_exists_but_is_not_empty;
+
+	public static String the_location_0_for_1_is_not_an_absolute_path;
 
 	public static String the_name_pattern_cannot_be_empty;
 
@@ -510,9 +556,13 @@ public class Messages extends NLS
 
 	public static String unknown_0_derivate;
 
+	public static String unpack;
+
 	public static String unresolved_node;
 
 	public static String url_for_query_with_colon;
+
+	public static String use_defaults;
 
 	public static String use_resource_map;
 
@@ -540,11 +590,15 @@ public class Messages extends NLS
 
 	public static String workspace_with_colon;
 
+	public static String workspace_with_dots;
+
 	public static String write_error;
 
 	public static String xml_content;
 
 	public static String xml_content_was_not_updated_due_to_errors;
+
+	public static String yes;
 	static
 	{
 		// initialize resource bundle
