@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.subversive.Messages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -180,7 +181,7 @@ public class SubversiveReaderType extends CatalogReaderType
 				SVNTeamProjectMapper.map(project, resource);
 			}
 			else
-				throw BuckminsterException.fromMessage("Could not create repository resource");
+				throw BuckminsterException.fromMessage(Messages.could_not_create_repository_resource);
 		}
 		catch(Exception ex)
 		{

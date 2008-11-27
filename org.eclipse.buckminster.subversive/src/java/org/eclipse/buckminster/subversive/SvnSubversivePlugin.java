@@ -66,7 +66,7 @@ public class SvnSubversivePlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.svn.SvnPluginResources");
+				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.svn.SvnPluginResources"); //$NON-NLS-1$
 		} catch (MissingResourceException x) {
 			m_resourceBundle = null;
 		}

@@ -31,12 +31,13 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.subversive.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
 import org.eclipse.team.svn.core.connector.SVNConnectorException;
@@ -85,7 +86,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		m_session = new SubversiveSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo.getNodeQuery().getContext());
 		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
 		if(m_topEntries.length == 0)
-			throw BuckminsterException.fromMessage("Unable to find artifacts at %s", m_session);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, m_session));
 	}
 
 	@Override
@@ -167,8 +168,8 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 		for(SVNEntry dirEntry : m_topEntries)
 		{
 			String fileName = dirEntry.path;
-			if(dirEntry.nodeKind == Kind.DIR && !fileName.endsWith("/"))
-				fileName = fileName + "/";
+			if(dirEntry.nodeKind == Kind.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
+				fileName = fileName + "/"; //$NON-NLS-1$
 			files.add(fileName);
 		}
 	}
@@ -206,7 +207,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 
 		try
 		{
-			logger.debug("Reading remote file %s", key);
+			logger.debug(NLS.bind(Messages.reading_remote_file_0, key));
 			ISVNConnector proxy = m_session.getSVNProxy();
 			destFile = this.createTempFile();
 			output = new FileOutputStream(destFile);
@@ -219,7 +220,7 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 				//
 				if(m_session.getDirEntry(url, revision, MonitorUtils.subMonitor(monitor, 20)) == null)
 				{
-					logger.debug("Remote file not found %s", key);
+					logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
 					throw new FileNotFoundException(url.toString());
 				}
 			}
@@ -244,10 +245,10 @@ public class SubversiveRemoteFileReader extends AbstractRemoteReader
 			else
 			{
 				String lcMsg = msg.toLowerCase();
-				if(lcMsg.contains("file not found") || lcMsg.contains("path not found") || lcMsg.contains("unable to find repository location"))
+				if(lcMsg.contains(Messages.exception_part_file_not_found) || lcMsg.contains(Messages.exception_part_path_not_found) || lcMsg.contains(Messages.exception_part_unable_to_find_repository_location))
 				{
 					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote file not found %s", key));
+						logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
 					throw new FileNotFoundException(key);
 				}
 			}
