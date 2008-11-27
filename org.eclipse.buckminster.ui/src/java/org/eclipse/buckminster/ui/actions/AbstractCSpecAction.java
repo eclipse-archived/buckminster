@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.ui.actions;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -39,7 +40,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
 		final Shell shell = site.getShell();
 		if(m_selectedComponent == null)
 		{
-			MessageDialog.openInformation(shell, null, "No component is selected");
+			MessageDialog.openInformation(shell, null, Messages.no_component_is_selected);
 			return;
 		}
 		run(m_selectedComponent, m_activePart.getSite().getShell());
