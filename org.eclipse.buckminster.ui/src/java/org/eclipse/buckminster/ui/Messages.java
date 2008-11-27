@@ -308,6 +308,10 @@ public class Messages extends NLS
 
 	public static String new_buckminster_cspex_wizard_explanation_article;
 
+	public static String new_buckminster_resource_map_file;
+
+	public static String new_buckminster_rmap_wizard_explanation_article;
+
 	public static String new_label;
 
 	public static String new_property;

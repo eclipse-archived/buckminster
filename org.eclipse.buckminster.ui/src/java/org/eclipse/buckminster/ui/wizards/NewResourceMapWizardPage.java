@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
@@ -24,9 +25,8 @@ public class NewResourceMapWizardPage extends NewBMFileWizardPage
 	 */
 	public NewResourceMapWizardPage(ISelection selection)
 	{
-		super(selection, "new_rmap.rmap", "rmap");
-		setTitle("New Buckminster Resource Map File");
-		setDescription("This wizard creates a new file with *.rmap extension that can be edited with an XML or text editor. "
-				+ "A RMAP is used to specify where components are found.");
+		super(selection, "new_rmap.rmap", "rmap"); //$NON-NLS-1$ //$NON-NLS-2$
+		setTitle(Messages.new_buckminster_resource_map_file);
+		setDescription(Messages.new_buckminster_rmap_wizard_explanation_article);
 	}
 }
