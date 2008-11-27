@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.subversive.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -343,13 +344,13 @@ public class SubversiveSession implements Closeable
 			return SVNRevision.fromDate(timestamp.getTime());
 		}
 		if(timestamp != null)
-			throw new IllegalArgumentException("SvnSession cannot use both timestamp and revision number");
+			throw new IllegalArgumentException(Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
 		return SVNRevision.fromNumber(revision);
 	}
 
 	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
 
-	private static final String UNKNOWN_ROOT_PREFIX = SubversiveSession.class.getPackage().getName() + ".root.";
+	private static final String UNKNOWN_ROOT_PREFIX = SubversiveSession.class.getPackage().getName() + ".root."; //$NON-NLS-1$
 
 	private static void addUnknownRoot(Map<String,String> properties, RepositoryAccess ra)
 	{
@@ -484,7 +485,7 @@ public class SubversiveSession implements Closeable
 			String[] pathSegments = fullPath.segments();
 			int idx = pathSegments.length;
 			while(--idx >= 0)
-				if(pathSegments[idx].equals("trunk"))
+				if(pathSegments[idx].equals("trunk")) //$NON-NLS-1$
 					break;
 
 			if(idx >= 0)
@@ -500,7 +501,7 @@ public class SubversiveSession implements Closeable
 				// No use continuing with this session since there's no hope finding
 				// the desired branch or tag.
 				//
-				throw BuckminsterException.fromMessage("Branch or tag %s not found", m_branchOrTag);
+				throw BuckminsterException.fromMessage(Messages.branch_or_tag_0_not_found, m_branchOrTag);
 
 			int relPathLen = pathSegments.length - idx;
 
@@ -509,7 +510,7 @@ public class SubversiveSession implements Closeable
 			if(scheme != null)
 			{
 				bld.append(scheme);
-				bld.append("://");
+				bld.append("://"); //$NON-NLS-1$
 			}
 
 			String username = null;
@@ -527,10 +528,10 @@ public class SubversiveSession implements Closeable
 					if(upSplit > 0)
 					{
 						username = authentication.substring(0, upSplit);
-						if("null".equals(username))
+						if("null".equals(username)) //$NON-NLS-1$
 							username = null;
 						password = authentication.substring(upSplit + 1);
-						if("null".equals(password))
+						if("null".equals(password)) //$NON-NLS-1$
 							password = null;
 					}
 				}
@@ -576,13 +577,13 @@ public class SubversiveSession implements Closeable
 			{
 				for(String entry : TextUtils.decodeToQueryPairs(uri.getQuery()))
 				{
-					if(entry.equalsIgnoreCase("moduleBeforeTag"))
+					if(entry.equalsIgnoreCase("moduleBeforeTag")) //$NON-NLS-1$
 						moduleBeforeTag = true;
-					else if(entry.equalsIgnoreCase("moduleAfterTag"))
+					else if(entry.equalsIgnoreCase("moduleAfterTag")) //$NON-NLS-1$
 						moduleAfterTag = true;
-					else if(entry.equalsIgnoreCase("moduleBeforeBranch"))
+					else if(entry.equalsIgnoreCase("moduleBeforeBranch")) //$NON-NLS-1$
 						moduleBeforeBranch = true;
-					else if(entry.equalsIgnoreCase("moduleAfterBranch"))
+					else if(entry.equalsIgnoreCase("moduleAfterBranch")) //$NON-NLS-1$
 						moduleAfterBranch = true;
 				}
 			}
@@ -610,14 +611,14 @@ public class SubversiveSession implements Closeable
 
 				// We let the protocol svn or http match a repo that uses svn+ssh or https
 				//
-				boolean repoIsSSH = repoProto.equals("svn+ssh") || repoProto.equals("https");
+				boolean repoIsSSH = repoProto.equals("svn+ssh") || repoProto.equals("https"); //$NON-NLS-1$ //$NON-NLS-2$
 				if(rank > 200 && !repoIsSSH)
 					continue;
 
 				if(!(repoProto.equals(ourProto)
-				|| (repoProto.equals("svn") && ourProto.equals("http"))
-				|| (repoProto.equals("http") && ourProto.equals("svn"))
-				|| ((ourProto.equals("svn") || ourProto.equals("http")) && repoIsSSH)))
+				|| (repoProto.equals("svn") && ourProto.equals("http")) //$NON-NLS-1$ //$NON-NLS-2$
+				|| (repoProto.equals("http") && ourProto.equals("svn")) //$NON-NLS-1$ //$NON-NLS-2$
+				|| ((ourProto.equals("svn") || ourProto.equals("http")) && repoIsSSH))) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 
 				String[] ourPath = Path.fromPortableString(ourRoot.getPath()).segments();
@@ -788,7 +789,7 @@ public class SubversiveSession implements Closeable
 
 		if(branches)
 		{
-			bld.append("/branches");
+			bld.append("/branches"); //$NON-NLS-1$
 			if(m_moduleBeforeBranch && m_module != null)
 			{
 				bld.append('/');
@@ -797,7 +798,7 @@ public class SubversiveSession implements Closeable
 		}
 		else
 		{
-			bld.append("/tags");
+			bld.append("/tags"); //$NON-NLS-1$
 			if(m_moduleBeforeTag && m_module != null)
 			{
 				bld.append('/');
@@ -822,7 +823,7 @@ public class SubversiveSession implements Closeable
 		if(m_branchOrTag == null)
 		{
 			if(m_trunkStructure)
-				bld.append("/trunk");
+				bld.append("/trunk"); //$NON-NLS-1$
 
 			if(m_module != null)
 			{
@@ -832,7 +833,7 @@ public class SubversiveSession implements Closeable
 		}
 		else if(m_branchOrTag.getType() == VersionSelector.BRANCH)
 		{
-			bld.append("/branches");
+			bld.append("/branches"); //$NON-NLS-1$
 			if(m_moduleBeforeBranch && m_module != null)
 			{
 				bld.append('/');
@@ -848,7 +849,7 @@ public class SubversiveSession implements Closeable
 		}
 		else
 		{
-			bld.append("/tags");
+			bld.append("/tags"); //$NON-NLS-1$
 			if(m_moduleBeforeTag && m_module != null)
 			{
 				bld.append('/');
@@ -950,11 +951,11 @@ public class SubversiveSession implements Closeable
 			ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 100);
 			try
 			{
-				logger.debug("Listing remote folder %s", key);
+				logger.debug(Messages.listing_remote_folder_0, key);
 				list = SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, m_revision), ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 				if(list == null || list.length == 0)
 				{
-					logger.debug("Remote folder had no entries %s", key);
+					logger.debug(Messages.remote_folder_had_no_entries_0, key);
 					list = s_emptyFolder;
 				}
 				m_listCache.put(key, list);
@@ -966,9 +967,9 @@ public class SubversiveSession implements Closeable
 				if(msg != null)
 				{
 					msg = msg.toLowerCase();
-					if(msg.contains("non-existent") || msg.contains("not found"))
+					if(msg.contains(Messages.exception_part_non_existent) || msg.contains(Messages.exception_part_not_found))
 					{
-						logger.debug("Remote folder does not exist %s", key);
+						logger.debug(Messages.remote_folder_does_not_exist_0, key);
 						return s_emptyFolder;
 					}
 				}
@@ -996,13 +997,13 @@ public class SubversiveSession implements Closeable
 		String protocol = url.getScheme();
 		int port = url.getPort();
 		bld.append(protocol);
-		bld.append("://");
+		bld.append("://"); //$NON-NLS-1$
 		if(url.getHost() != null)
 		{
 			bld.append(url.getHost());
 			if(port != -1)
 			{
-				bld.append(":");
+				bld.append(":"); //$NON-NLS-1$
 				bld.append(port);
 			}
 		}
@@ -1117,13 +1118,13 @@ public class SubversiveSession implements Closeable
 
 				StringBuilder bld = new StringBuilder();
 				bld.append(url.getScheme());
-				bld.append("://");
+				bld.append("://"); //$NON-NLS-1$
 				if(url.getHost() != null)
 				{
 					bld.append(url.getHost());
 					if(url.getPort() != -1)
 					{
-						bld.append(":");
+						bld.append(":"); //$NON-NLS-1$
 						bld.append(url.getPort());
 					}
 				}
@@ -1131,7 +1132,7 @@ public class SubversiveSession implements Closeable
 				{
 					String seg = urlSegs[pdx];
 					bld.append('/');
-					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches"))
+					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						//
 						// Assume that common root is above this folder
 						//
