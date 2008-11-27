@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.ui.dialogs;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -61,11 +62,11 @@ public class PropertyDialog extends Dialog
 		
 		if(m_newProperty)
 		{
-			newShell.setText("New Property");
+			newShell.setText(Messages.new_property);
 		}
 		else
 		{
-			newShell.setText("Edit Property");
+			newShell.setText(Messages.edit_property);
 		}
 	}
 
@@ -86,7 +87,7 @@ public class PropertyDialog extends Dialog
 		textComposite.setLayout(layout);
 		textComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		Label label = UiUtils.createGridLabel(textComposite, "Key:", 1, 0, SWT.NONE);
+		Label label = UiUtils.createGridLabel(textComposite, Messages.key_with_colon, 1, 0, SWT.NONE);
 		m_keyText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
 		GridData data = (GridData)m_keyText.getLayoutData();
 		data.widthHint = 300;
@@ -98,11 +99,11 @@ public class PropertyDialog extends Dialog
 			m_keyText.setEnabled(false);
 		}
 
-		UiUtils.createGridLabel(textComposite, "Value:", 1, 0, SWT.NONE);
+		UiUtils.createGridLabel(textComposite, Messages.value_with_colon, 1, 0, SWT.NONE);
 		m_valueText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
 
-		m_keyText.setText(m_property == null ? "" : m_property.getKey());
-		m_valueText.setText(m_property == null	? "" : m_property.getValue());
+		m_keyText.setText(m_property == null ? "" : m_property.getKey()); //$NON-NLS-1$
+		m_valueText.setText(m_property == null	? "" : m_property.getValue()); //$NON-NLS-1$
 
 		m_keyText.addModifyListener(new ModifyListener()
 		{

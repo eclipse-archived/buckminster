@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.ui.dialogs;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -38,7 +39,7 @@ public class ShowListMessageDialog extends MessageDialog
 	public ShowListMessageDialog(Shell shell, String title, String msg, String[] list, Font font,
 			int maxHeightHint, int maxWidthHint)
 	{
-		super(shell, title, null, msg, MessageDialog.NONE, new String[] { "Ok" }, 0);
+		super(shell, title, null, msg, MessageDialog.NONE, new String[] { Messages.ok }, 0);
 		int shellStyle = this.getShellStyle();
 		shellStyle |= SWT.RESIZE;
 		this.setShellStyle(shellStyle);
@@ -54,7 +55,7 @@ public class ShowListMessageDialog extends MessageDialog
 		Group grp = new Group(parent, SWT.NONE);
 		grp.setLayout(new GridLayout(1, false));
 		grp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		grp.setText("Command:");
+		grp.setText(Messages.command);
 
 		UiUtils.createListViewer(grp, m_list, m_font, m_maxHeightHint, m_maxWidthHint);
 

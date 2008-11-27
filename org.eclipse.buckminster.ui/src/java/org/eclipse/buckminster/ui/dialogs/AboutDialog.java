@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.resources.IResource;
@@ -103,8 +104,8 @@ public class AboutDialog extends Dialog
 
 			public NavigatorLabelProvider()
 			{
-				m_point = UiPlugin.getImageDescriptor("icons/extension_obj.gif").createImage();
-				m_element = UiPlugin.getImageDescriptor("icons/generic_xml_obj.gif").createImage();
+				m_point = UiPlugin.getImageDescriptor("icons/extension_obj.gif").createImage(); //$NON-NLS-1$
+				m_element = UiPlugin.getImageDescriptor("icons/generic_xml_obj.gif").createImage(); //$NON-NLS-1$
 			}
 
 			public Image getImage(Object element)
@@ -132,10 +133,10 @@ public class AboutDialog extends Dialog
 				if(element instanceof IConfigurationElement)
 				{
 					IConfigurationElement confElement = (IConfigurationElement) element;
-					return TextUtils.notNullString(confElement.getAttribute("id")) + " (" + confElement.getName() + ")";
+					return TextUtils.notNullString(confElement.getAttribute("id")) + " (" + confElement.getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 				
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 
 			public void addListener(ILabelProviderListener listener)
@@ -158,7 +159,7 @@ public class AboutDialog extends Dialog
 			}
 		}
 
-		private final static String BUCKMINSTER_PREFIX = "org.eclipse.buckminster";
+		private final static String BUCKMINSTER_PREFIX = "org.eclipse.buckminster"; //$NON-NLS-1$
 		private TreeViewer m_treeViewer;
 		private IExtensionPoint[] m_extensionPoints;
 
@@ -197,7 +198,7 @@ public class AboutDialog extends Dialog
 		{
 			super.configureShell(newShell);
 			
-			newShell.setText("Buckminster Extensions");
+			newShell.setText(Messages.buckminster_extensions);
 		}
 
 		@Override
@@ -234,7 +235,7 @@ public class AboutDialog extends Dialog
 	
 	public static final int EXTENSIONS_ID = IDialogConstants.CLIENT_ID;
 
-	public static final String EXTENSIONS_LABEL = "Extensions";
+	public static final String EXTENSIONS_LABEL = Messages.extensions;
 
 	private Image m_image;
 	
@@ -244,7 +245,7 @@ public class AboutDialog extends Dialog
 	{
 		super(parentShell);
 
-		m_image = UiPlugin.getImageDescriptor("images/buckminster_logo.png").createImage();
+		m_image = UiPlugin.getImageDescriptor("images/buckminster_logo.png").createImage(); //$NON-NLS-1$
 		m_extensionDialog = new ExtensionsDialog(getShell());
 	}
 
@@ -253,7 +254,7 @@ public class AboutDialog extends Dialog
 	{
 		super.configureShell(newShell);
 		
-		newShell.setText("About Buckminster");
+		newShell.setText(Messages.about_buckminster);
 	}
 
 	@Override
@@ -288,18 +289,18 @@ public class AboutDialog extends Dialog
 		layout = new GridLayout(2, false);
 		bmComposite.setLayout(layout);
 
-		UiUtils.createGridLabel(bmComposite, "Version:", 0, 0, SWT.NONE);
+		UiUtils.createGridLabel(bmComposite, Messages.version_with_colon, 0, 0, SWT.NONE);
 
 		UiUtils.createGridLabel(bmComposite, TextUtils.notNullString(getCoreVersion()), 0, 0, SWT.NONE);
-		UiUtils.createGridLabel(bmComposite, "Wiki:", 0, 0, SWT.NONE);
+		UiUtils.createGridLabel(bmComposite, Messages.wiki_with_colon, 0, 0, SWT.NONE);
 		Link wiki = new Link(bmComposite, SWT.NONE);
-		wiki.setText("<A>http://wiki.eclipse.org/index.php/BuckminsterWiki</A>");
+		wiki.setText("<A>http://wiki.eclipse.org/index.php/BuckminsterWiki</A>"); //$NON-NLS-1$
 		wiki.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				Program.launch("http://wiki.eclipse.org/index.php/Buckminster");
+				Program.launch("http://wiki.eclipse.org/index.php/Buckminster"); //$NON-NLS-1$
 			}
 		});
 		
@@ -336,8 +337,8 @@ public class AboutDialog extends Dialog
 	// TODO Should be in core bundle
 	private static String getCoreVersion()
 	{
-		Bundle coreBundle = Platform.getBundle("org.eclipse.buckminster.core");
-		return coreBundle == null ? null : (String) coreBundle.getHeaders().get("Bundle-Version");
+		Bundle coreBundle = Platform.getBundle("org.eclipse.buckminster.core"); //$NON-NLS-1$
+		return coreBundle == null ? null : (String) coreBundle.getHeaders().get("Bundle-Version"); //$NON-NLS-1$
 	}
 }
 

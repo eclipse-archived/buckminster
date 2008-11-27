@@ -6,6 +6,8 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.ui.messages"; //$NON-NLS-1$
 
+	public static String about_buckminster;
+
 	public static String action_error;
 
 	public static String action_properties;
@@ -20,6 +22,10 @@ public class Messages extends NLS
 
 	public static String browse_with_dots;
 
+	public static String buckminster_extensions;
+
+	public static String command;
+
 	public static String components_known_to_buckminster;
 
 	public static String confirm_overwrite;
@@ -30,11 +36,15 @@ public class Messages extends NLS
 
 	public static String duplicate_0_found_in_plugin_1;
 
+	public static String edit_property;
+
 	public static String error_during_action_perform;
 
 	public static String error_while_opening_file_for_writing;
 
 	public static String errors_during_loading;
+
+	public static String extensions;
 
 	public static String file_does_not_exist;
 
@@ -42,13 +52,19 @@ public class Messages extends NLS
 
 	public static String internal_problem_when_generating_opml_xml;
 
+	public static String key_with_colon;
+
 	public static String name;
+
+	public static String new_property;
 
 	public static String no_component_is_selected;
 
 	public static String no_ompl;
 
 	public static String not_yet_implemented;
+
+	public static String ok;
 
 	public static String opml_format_error;
 
@@ -66,7 +82,13 @@ public class Messages extends NLS
 
 	public static String url_for_query_with_colon;
 
+	public static String value_with_colon;
+
 	public static String version;
+
+	public static String version_with_colon;
+
+	public static String wiki_with_colon;
 
 	public static String write_error;
 	static
