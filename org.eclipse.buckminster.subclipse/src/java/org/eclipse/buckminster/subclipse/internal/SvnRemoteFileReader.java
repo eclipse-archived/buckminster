@@ -32,12 +32,14 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.subclipse.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
@@ -84,7 +86,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		m_session = new SvnSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo.getNodeQuery().getContext());
 		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
 		if(m_topEntries.length == 0)
-			throw BuckminsterException.fromMessage("Unable to find artifacts at %s", m_session);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_0, m_session));
 	}
 
 	@Override
@@ -128,8 +130,8 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		for(ISVNDirEntry dirEntry : m_topEntries)
 		{
 			String fileName = dirEntry.getPath();
-			if(dirEntry.getNodeKind() == SVNNodeKind.DIR && ! fileName.endsWith("/"))
-				fileName = fileName + "/";
+			if(dirEntry.getNodeKind() == SVNNodeKind.DIR && ! fileName.endsWith("/")) //$NON-NLS-1$
+				fileName = fileName + "/"; //$NON-NLS-1$
 			files.add(fileName);
 		}
 	}
@@ -154,7 +156,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				{
 					SVNUrl svnURL = m_session.getSVNUrl(null);
 					SVNRevision svnRev = m_session.getRevision();
-					CorePlugin.getLogger().debug("Checking out %s using revision %s", svnURL, svnRev);
+					CorePlugin.getLogger().debug(NLS.bind(Messages.checking_out_0_using_revision_1, svnURL, svnRev));
 					m_session.getClientAdapter().checkout(svnURL, destDir, svnRev, true);
 					resultSlot[0] = Boolean.TRUE;
 				}
@@ -190,7 +192,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		}
 		catch(InterruptedException e)
 		{
-			throw BuckminsterException.fromMessage("SVN checkout timed out");
+			throw BuckminsterException.fromMessage(Messages.svn_checkout_timed_out);
 		}
 		finally
 		{
@@ -251,7 +253,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 		{
 			byte[] buf = new byte[0x1000];
 
-			logger.debug("Reading remote file %s", key);
+			logger.debug(NLS.bind(Messages.reading_remote_file_0, key));
 			input = clientAdapter.getContent(url, revision);
 			int bytesRead = input.read(buf);
 
@@ -261,7 +263,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 				//
 				if(clientAdapter.getDirEntry(url, revision) == null)
 				{
-					logger.debug("Remote file not found %s", key);
+					logger.debug(NLS.bind(Messages.remote_file_not_found, key));
 					throw new FileNotFoundException(url.toString());
 				}
 			}
@@ -298,10 +300,10 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			else
 			{
 				String lcMsg = msg.toLowerCase();
-				if(lcMsg.contains("file not found") || lcMsg.contains("path not found") || lcMsg.contains("unable to find repository location"))
+				if(lcMsg.contains(Messages.file_not_found) || lcMsg.contains(Messages.path_not_found) || lcMsg.contains(Messages.unable_to_find_repository_location))
 				{
 					if(logger.isDebugEnabled())
-						logger.debug(String.format("Remote file not found %s", key));
+						logger.debug(NLS.bind(Messages.remote_file_not_found, key));
 					throw new FileNotFoundException(key);
 				}
 			}
