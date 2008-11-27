@@ -36,6 +36,8 @@ public class Messages extends NLS
 
 	public static String add_opml_bookmarks_to_rss_reader;
 
+	public static String alias;
+
 	public static String all_attributes;
 
 	public static String always_with_colon;
@@ -63,6 +65,8 @@ public class Messages extends NLS
 	public static String browse_with_dots;
 
 	public static String buckminster_extensions;
+
+	public static String cannot_get_attribute_names_for_the_selected_component;
 
 	public static String command;
 
@@ -167,6 +171,8 @@ public class Messages extends NLS
 	public static String name;
 
 	public static String name_cannnot_be_empty;
+
+	public static String name_or_component_has_to_be_entered;
 
 	public static String name_with_colon;
 

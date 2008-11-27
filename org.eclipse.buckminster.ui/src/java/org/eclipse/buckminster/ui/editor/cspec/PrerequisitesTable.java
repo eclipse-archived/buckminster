@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
@@ -62,7 +63,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[] { "Component", "Attribute", "Alias", "Contributor", "Optional" };
+		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor, Messages.optional };
 	}
 
 	public int[] getColumnWeights()
@@ -125,7 +126,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		combo.setItems(items);
 
 		String stringValue = value == null
-				? ""
+				? "" //$NON-NLS-1$
 				: value.toString();
 
 		combo.setText(stringValue);
@@ -147,14 +148,14 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
 	{
-		final String ITEMS_KEY = "items";
+		final String ITEMS_KEY = "items"; //$NON-NLS-1$
 
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
 
 		final IWidgetin widgetin = new WidgetWrapper(combo);
 
 		String stringValue = value == null
-				? ""
+				? "" //$NON-NLS-1$
 				: value.toString();
 
 		combo.setText(stringValue);
@@ -187,7 +188,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 		if(componentCombo.getText() == null || componentCombo.getText().length() == 0)
 		{
-			attributeCombo.setItems(((String[])attributeCombo.getData("items")));
+			attributeCombo.setItems(((String[])attributeCombo.getData("items"))); //$NON-NLS-1$
 		}
 		else
 		{
@@ -210,7 +211,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 			}
 			catch(CoreException e)
 			{
-				ErrorDialog.openError(m_editor.getSite().getShell(), null, "Cannot get attribute names for the selected component", e.getStatus());
+				ErrorDialog.openError(m_editor.getSite().getShell(), null, Messages.cannot_get_attribute_names_for_the_selected_component, e.getStatus());
 			}
 			
 			attributeCombo.setItems(prereqAttributes.toArray(new String[0]));
@@ -235,7 +236,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 				if((prerequisite.getName() == null || prerequisite.getName().length() == 0)
 						&& (prerequisite.getComponentName() == null || prerequisite.getComponentName().length() == 0))
 				{
-					throw new ValidatorException("Name or component has to be filled");
+					throw new ValidatorException(Messages.name_or_component_has_to_be_entered);
 				}
 			}
 		};
