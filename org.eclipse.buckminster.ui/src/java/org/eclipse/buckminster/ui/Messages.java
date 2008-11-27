@@ -298,7 +298,11 @@ public class Messages extends NLS
 
 	public static String new_buckminster_component_query_editor_file;
 
+	public static String new_buckminster_component_specification_file;
+
 	public static String new_buckminster_cquery_wizard_explanation_article;
+
+	public static String new_buckminster_cspec_wizard_explanation_article;
 
 	public static String new_label;
 

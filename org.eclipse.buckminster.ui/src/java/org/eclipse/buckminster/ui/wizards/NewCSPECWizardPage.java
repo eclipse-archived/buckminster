@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
@@ -23,10 +24,9 @@ public class NewCSPECWizardPage extends NewBMFileWizardPage
 	 */
 	public NewCSPECWizardPage(ISelection selection)
 	{
-		super(selection, "buckminster.cspec", "cspec");
-		setTitle("New Buckminster Component Specification File");
-		setDescription("This wizard creates a new file with *.cspec extension that can be opened by an XML or text editor. "
-				+ "A CSPEC is used when a specification can not be generated.");
+		super(selection, "buckminster.cspec", "cspec"); //$NON-NLS-1$ //$NON-NLS-2$
+		setTitle(Messages.new_buckminster_component_specification_file);
+		setDescription(Messages.new_buckminster_cspec_wizard_explanation_article);
 	}
 
 }
