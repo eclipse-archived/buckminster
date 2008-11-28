@@ -50,6 +50,66 @@ public class ExecutorActor extends AbstractActor
 
 	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor"; //$NON-NLS-1$
 
+	/**
+	 * Splits the environment variables but protects quoted parts
+	 * 
+	 * @param env
+	 * @return
+	 */
+	@SuppressWarnings("boxing")
+	static String[] splitEnvironnementVariables(final String env)
+	{
+		final List<Integer> semicolonIndexes = indexesOf(env, ';');
+		final List<Integer> quoteIndexes = indexesOf(env, '\"');
+		if(quoteIndexes.size() % 2 != 0)
+			throw new IllegalStateException(NLS.bind(Messages.odd_number_of_quoting_chars_in_0, env));
+		// removing semicolon indexes between quote indexes
+		final Iterator<Integer> quoteItr = quoteIndexes.iterator();
+		while(quoteItr.hasNext())
+		{
+			int min = quoteItr.next();
+			int max = quoteItr.next();
+			Iterator<Integer> semicolonItr = semicolonIndexes.iterator();
+			while(semicolonItr.hasNext())
+			{
+				int i = semicolonItr.next();
+				if(i > min && i < max)
+					semicolonItr.remove();
+			}
+		}
+		// splitting the variables
+		final List<String> result = new ArrayList<String>();
+		int lastIndex = 0;
+		for(int i : semicolonIndexes)
+		{
+			result.add(env.substring(lastIndex, i));
+			lastIndex = i + 1;
+		}
+		result.add(env.substring(lastIndex));
+		return result.toArray(new String[result.size()]);
+	}
+
+	/**
+	 * returns the list of indexes where you can find the character c in string
+	 * 
+	 * @param string
+	 * @param c
+	 * @return
+	 */
+	@SuppressWarnings("boxing")
+	private static List<Integer> indexesOf(String string, char c)
+	{
+		final List<Integer> list = new ArrayList<Integer>();
+		int fromIndex = 0;
+		int index;
+		while((index = string.indexOf(c, fromIndex)) != -1)
+		{
+			list.add(index);
+			fromIndex = index + 1;
+		}
+		return list;
+	}
+
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
@@ -112,14 +172,6 @@ public class ExecutorActor extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private boolean getFailStatus()
-	{
-		final String failOnErrorValue = this.getActorProperty(EXECUTOR_FAIL_ON_ERROR);
-		if(failOnErrorValue == null)
-			return true;
-		return Boolean.parseBoolean(TextUtils.notEmptyTrimmedString(failOnErrorValue));
-	}
-
 	private void checkProperties() throws CoreException
 	{
 		final HashSet<String> validSet = new HashSet<String>(Arrays.asList(validProperties));
@@ -138,6 +190,14 @@ public class ExecutorActor extends AbstractActor
 		}
 	}
 
+	/**
+	 * @return "exec" actorProperty or null if not set
+	 */
+	private String getExecCommand()
+	{
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_ACTION));
+	}
+
 	private File getExecutionDir(IActionContext ctx) throws CoreException
 	{
 		final String executionDir = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_DIR_ACTION));
@@ -150,6 +210,22 @@ public class ExecutorActor extends AbstractActor
 			return executionDirFile;
 
 		return new File(componentLocation + executionDir);
+	}
+
+	private boolean getFailStatus()
+	{
+		final String failOnErrorValue = this.getActorProperty(EXECUTOR_FAIL_ON_ERROR);
+		if(failOnErrorValue == null)
+			return true;
+		return Boolean.parseBoolean(TextUtils.notEmptyTrimmedString(failOnErrorValue));
+	}
+
+	/**
+	 * @return "shell" actorProperty or null if not set
+	 */
+	private String getShellCommand()
+	{
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_SHELL_ACTION));
 	}
 
 	private String prepareCommandLine() throws CoreException
@@ -170,33 +246,6 @@ public class ExecutorActor extends AbstractActor
 		if(shell == null)
 			throw new Error(NLS.bind(Messages.shell_interpreter_for_0_not_supported, ShellCommand.getOsName()));
 		return shell + ' ' + shellCommand;
-	}
-
-	/**
-	 * Helper to generate an error
-	 * 
-	 * @param message
-	 * @throws CoreException
-	 */
-	private void throwError(final String message) throws CoreException
-	{
-		throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, message));
-	}
-
-	/**
-	 * @return "exec" actorProperty or null if not set
-	 */
-	private String getExecCommand()
-	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_ACTION));
-	}
-
-	/**
-	 * @return "shell" actorProperty or null if not set
-	 */
-	private String getShellCommand()
-	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_SHELL_ACTION));
 	}
 
 	/**
@@ -239,63 +288,13 @@ public class ExecutorActor extends AbstractActor
 	}
 
 	/**
-	 * Splits the environment variables but protects quoted parts
+	 * Helper to generate an error
 	 * 
-	 * @param env
-	 * @return
+	 * @param message
+	 * @throws CoreException
 	 */
-	@SuppressWarnings("boxing")
-	static String[] splitEnvironnementVariables(final String env)
+	private void throwError(final String message) throws CoreException
 	{
-		final List<Integer> semicolonIndexes = indexesOf(env, ';');
-		final List<Integer> quoteIndexes = indexesOf(env, '\"');
-		if(quoteIndexes.size() % 2 != 0)
-			throw new IllegalStateException(NLS.bind(Messages.odd_number_of_quoting_chars_in_0, env));
-		// removing semicolon indexes between quote indexes
-		final Iterator<Integer> quoteItr = quoteIndexes.iterator();
-		while(quoteItr.hasNext())
-		{
-			int min = quoteItr.next();
-			int max = quoteItr.next();
-			Iterator<Integer> semicolonItr = semicolonIndexes.iterator();
-			while(semicolonItr.hasNext())
-			{
-				int i = semicolonItr.next();
-				if(i > min && i < max)
-					semicolonItr.remove();
-			}
-		}
-		// splitting the variables
-		final List<String> result = new ArrayList<String>();
-		int lastIndex = 0;
-		for(int i : semicolonIndexes)
-		{
-			result.add(env.substring(lastIndex, i));
-			lastIndex = i + 1;
-		}
-		result.add(env.substring(lastIndex));
-		return result.toArray(new String[result.size()]);
+		throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, message));
 	}
-
-	/**
-	 * returns the list of indexes where you can find the character c in string
-	 * 
-	 * @param string
-	 * @param c
-	 * @return
-	 */
-	@SuppressWarnings("boxing")
-	private static List<Integer> indexesOf(String string, char c)
-	{
-		final List<Integer> list = new ArrayList<Integer>();
-		int fromIndex = 0;
-		int index;
-		while((index = string.indexOf(c, fromIndex)) != -1)
-		{
-			list.add(index);
-			fromIndex = index + 1;
-		}
-		return list;
-	}
-
 }

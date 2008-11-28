@@ -10,7 +10,9 @@ import java.util.HashMap;
 public final class ShellCommand
 {
 	private static final String WINDOWS_CMD = "cmd.exe /C"; //$NON-NLS-1$
+
 	private static final String LINUX_CMD = "sh -c"; //$NON-NLS-1$
+
 	private static final HashMap<String, String> s_shellCommands;
 
 	static
@@ -27,13 +29,13 @@ public final class ShellCommand
 		s_shellCommands.put("Linux", LINUX_CMD); //$NON-NLS-1$
 	}
 
-	public static String getShellCommand()
-	{
-		return s_shellCommands.get(getOsName());
-	}
-
 	public static String getOsName()
 	{
 		return System.getProperty("os.name"); //$NON-NLS-1$
+	}
+
+	public static String getShellCommand()
+	{
+		return s_shellCommands.get(getOsName());
 	}
 }
