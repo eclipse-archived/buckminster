@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
 import org.eclipse.buckminster.p4.preferences.Server;
@@ -26,6 +27,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 
 
@@ -94,11 +96,11 @@ public class DepotURI extends PropertyScope
 	{
 		super(properties);
 		String scheme = uri.getScheme();
-		if(!(scheme == null || "p4".equals(scheme)))
-			throw BuckminsterException.fromMessage("Invalid URI: %s, Scheme is not p4", uri.toString());
+		if(!(scheme == null || "p4".equals(scheme))) //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_URI_0_scheme_is_not_p4, uri.toString()));
 
 		if(uri.getUserInfo() != null)
-			throw BuckminsterException.fromMessage("Invalid URI: %s, P4 URI cannot contain user info", uri.toString());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_URI_0_P4_URI_cannot_contain_user_info, uri.toString()));
 
 		String defaultBranch = null;
 		String clientName = null;
@@ -108,10 +110,10 @@ public class DepotURI extends PropertyScope
 			// now split the pair on the first '=' only
 			// (one '=' is required to be there, even if the value is blank)
 			//
-			String[] kv = pair.split("=", 2);
-			if("client".equalsIgnoreCase(kv[0]))
+			String[] kv = pair.split("=", 2); //$NON-NLS-1$
+			if("client".equalsIgnoreCase(kv[0])) //$NON-NLS-1$
 				clientName = kv[1];
-			else if("defaultbranch".equalsIgnoreCase(kv[0]))
+			else if("defaultbranch".equalsIgnoreCase(kv[0])) //$NON-NLS-1$
 				defaultBranch = kv[1];
 		}
 
@@ -125,7 +127,7 @@ public class DepotURI extends PropertyScope
 
 		// Create the UNC path that points into the DEPOT
 		//
-		IPath depotPath = new Path("/" + uri.getPath());
+		IPath depotPath = new Path("/" + uri.getPath()); //$NON-NLS-1$
 		
 		// Check if we have a segment that is one single '-'. If we do, it
 		// will be the branch designator.
@@ -133,7 +135,7 @@ public class DepotURI extends PropertyScope
 		int segmentCount = depotPath.segmentCount();
 		int branchDesignator = segmentCount;
 		while(--branchDesignator >= 0)
-			if("-".equals(depotPath.segment(branchDesignator)))
+			if("-".equals(depotPath.segment(branchDesignator))) //$NON-NLS-1$
 				break;
 
 		m_hasBranchDesignator = branchDesignator >= 0;
@@ -144,7 +146,7 @@ public class DepotURI extends PropertyScope
 			//
 			IPath branchInjected;
 			if(branchDesignator == 0)
-				branchInjected = new Path("//");
+				branchInjected = new Path("//"); //$NON-NLS-1$
 			else
 				branchInjected = depotPath.removeLastSegments(segmentCount - branchDesignator);
 
@@ -176,7 +178,7 @@ public class DepotURI extends PropertyScope
 			{
 				client = server.getClient(clientName);
 				if(client == null)
-					throw BuckminsterException.fromMessage("No preferences for P4 client %s for server %s", clientName, server.getName());
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.no_preferences_for_P4_client_0_for_server_1, clientName, server.getName()));
 			}
 			return client;
 		}
@@ -193,7 +195,7 @@ public class DepotURI extends PropertyScope
 		}
 		catch(URISyntaxException e)
 		{
-			throw BuckminsterException.fromMessage(e, "Invalid URL used for P4 provider: %s", uriString);
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.invalid_URL_used_for_P4_provider_0, uriString));
 		}
 	}
 
@@ -218,7 +220,7 @@ public class DepotURI extends PropertyScope
 
 				server = prefs.getServer(address);
 				if(server == null)
-					throw BuckminsterException.fromMessage("No P4 server with address %s has been configured", address);
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.no_P4_server_with_address_0_has_been_configured, address));
 			}
 			return server;
 		}
@@ -319,14 +321,14 @@ public class DepotURI extends PropertyScope
 			return true;
 		if(p1 == null || p2 == null)
 			return false;
-		if(p1.lastSegment().equals("..."))
+		if(p1.lastSegment().equals("...")) //$NON-NLS-1$
 			p1 = p1.removeLastSegments(1);
-		if(p2.lastSegment().equals("..."))
+		if(p2.lastSegment().equals("...")) //$NON-NLS-1$
 			p2 = p2.removeLastSegments(1);
 		return p1.toFile().equals(p2.toFile());
 	}
 
-	private static Pattern s_p4PortPattern = Pattern.compile("^([^:]+):([0-9]+)$");
+	private static Pattern s_p4PortPattern = Pattern.compile("^([^:]+):([0-9]+)$"); //$NON-NLS-1$
 
 	@Override
 	public String toString()
@@ -341,7 +343,7 @@ public class DepotURI extends PropertyScope
 				host = matcher.group(1);
 				port = Integer.parseInt(matcher.group(2));
 			}
-			return new URI("p4", null, host, port, m_depotPath.makeUNC(false).toString(), null, this.expand(m_client.getName())).toString();
+			return new URI("p4", null, host, port, m_depotPath.makeUNC(false).toString(), null, this.expand(m_client.getName())).toString(); //$NON-NLS-1$
 		}
 		catch(URISyntaxException e)
 		{

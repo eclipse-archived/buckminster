@@ -28,29 +28,29 @@ public class Label extends DepotObject
 
 	public String getDescription()
 	{
-		return this.get("Description");
+		return this.get("Description"); //$NON-NLS-1$
 	}
 
 	public String getLabel()
 	{
-		return this.get("Label");
+		return this.get("Label"); //$NON-NLS-1$
 	}
 
 	public String getOwner()
 	{
-		return this.get("Owner");
+		return this.get("Owner"); //$NON-NLS-1$
 	}
 
 	public Date getAccess()
 	throws CoreException
 	{
-		return this.getParsedDate("Access");
+		return this.getParsedDate("Access"); //$NON-NLS-1$
 	}
 
 	public Date getUpdate()
 	throws CoreException
 	{
-		return this.getParsedDate("Update");
+		return this.getParsedDate("Update"); //$NON-NLS-1$
 	}
 
 	public ViewEntry[] getView()
@@ -60,7 +60,7 @@ public class Label extends DepotObject
 
 	public boolean isLocked()
 	{
-		return "locked".equals(this.get("Options"));
+		return "locked".equals(this.get("Options")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override

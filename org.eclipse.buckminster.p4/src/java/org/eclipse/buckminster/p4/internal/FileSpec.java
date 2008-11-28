@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.IPath;
  */
 public class FileSpec
 {
-	public static final Specifier NONE = new Specifier("#none");
-	public static final Specifier HEAD = new Specifier("#head");
-	public static final Specifier HAVE = new Specifier("#have");
+	public static final Specifier NONE = new Specifier("#none"); //$NON-NLS-1$
+	public static final Specifier HEAD = new Specifier("#head"); //$NON-NLS-1$
+	public static final Specifier HAVE = new Specifier("#have"); //$NON-NLS-1$
 
 	public static class Specifier
 	{
@@ -69,7 +69,7 @@ public class FileSpec
 	{
 		public ChangeNumber(int number)
 		{
-			super("@" + Integer.toString(number));
+			super("@" + Integer.toString(number)); //$NON-NLS-1$
 		}
 	}
 
@@ -77,7 +77,7 @@ public class FileSpec
 	{
 		// Somewhat weird format that uses ':' to separate the date from the time of day.
 		//
-		private static DateFormat s_dateFormat = new SimpleDateFormat("yyyy/MM/dd:HH:mm:ss");
+		private static DateFormat s_dateFormat = new SimpleDateFormat("yyyy/MM/dd:HH:mm:ss"); //$NON-NLS-1$
 
 		private static String formatDate(long time, TimeZone tz)
 		{
@@ -90,7 +90,7 @@ public class FileSpec
 
 		public Timestamp(long time, TimeZone tz)
 		{
-			super("@" + formatDate(time, tz));
+			super("@" + formatDate(time, tz)); //$NON-NLS-1$
 		}
 	}
 
@@ -98,7 +98,7 @@ public class FileSpec
 	{
 		public FileRevision(int number)
 		{
-			super("#" + Integer.toString(number));
+			super("#" + Integer.toString(number)); //$NON-NLS-1$
 		}
 	}
 
@@ -106,7 +106,7 @@ public class FileSpec
 	{
 		public Label(String label)
 		{
-			super("@" + label);
+			super("@" + label); //$NON-NLS-1$
 		}
 	}
 

@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.p4.internal.DepotObject.ViewEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -72,7 +73,7 @@ public class P4RemoteReader extends AbstractRemoteReader
 		}
 		
 		if(specifierConflict)
-			throw new IllegalArgumentException("Tag, Timestamp, and Change number are mutually exclusive");
+			throw new IllegalArgumentException(Messages.tag_timestamp_and_change_number_are_mutually_exclusive);
 
 		return rev;
 	}
@@ -112,7 +113,7 @@ public class P4RemoteReader extends AbstractRemoteReader
 			{
 				client.setView(newSpec.toArray(new ViewEntry[newSpec.size()]));
 				client.commitChanges();
-				conn.exec("flush", new String[] { "..." } );
+				conn.exec("flush", new String[] { "..." } ); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		finally
@@ -145,12 +146,12 @@ public class P4RemoteReader extends AbstractRemoteReader
 		monitor.beginTask(null, 100);
 		try
 		{
-			FileSpec fileSpec = new FileSpec(destination.append("..."), m_revision);
+			FileSpec fileSpec = new FileSpec(destination.append("..."), m_revision); //$NON-NLS-1$
 			Connection conn = getConnection();
 			boolean success = false;
 			try
 			{
-				conn.exec("sync", new String[] { "-f", fileSpec.toString() } );
+				conn.exec("sync", new String[] { "-f", fileSpec.toString() } ); //$NON-NLS-1$ //$NON-NLS-2$
 				MonitorUtils.worked(monitor, 100);
 				success = true;
 			}

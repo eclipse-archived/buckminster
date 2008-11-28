@@ -13,6 +13,7 @@ package org.eclipse.buckminster.p4.preferences;
 import java.util.ArrayList;
 
 import org.eclipse.buckminster.core.XMLConstants;
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -25,15 +26,15 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Server extends NodeWrapper implements ISaxable
 {
-	public static final String BM_SERVER_NS = XMLConstants.BM_PREFIX + "P4Server-1.0";
-	public static final String BM_SERVER_PREFIX = "p4s";
-	public static final String BM_SERVER_RESOURCE = "/p4server-1.0.xsd";
-	public static final String FILE_EXTENSION = ".p4srv";
-	public static final String TAG = "server";
-	public static final String ATTR_NAME = "name";
-	public static final String ATTR_PASSWORD = "password";
-	public static final String ATTR_USER = "user";
-	public static final String ATTR_DEFAULT_CLIENT = "defaultClient";
+	public static final String BM_SERVER_NS = XMLConstants.BM_PREFIX + "P4Server-1.0"; //$NON-NLS-1$
+	public static final String BM_SERVER_PREFIX = "p4s"; //$NON-NLS-1$
+	public static final String BM_SERVER_RESOURCE = "/p4server-1.0.xsd"; //$NON-NLS-1$
+	public static final String FILE_EXTENSION = ".p4srv"; //$NON-NLS-1$
+	public static final String TAG = "server"; //$NON-NLS-1$
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
+	public static final String ATTR_PASSWORD = "password"; //$NON-NLS-1$
+	public static final String ATTR_USER = "user"; //$NON-NLS-1$
+	public static final String ATTR_DEFAULT_CLIENT = "defaultClient"; //$NON-NLS-1$
 
 	Server(Preferences preferences)
 	{
@@ -45,7 +46,7 @@ public class Server extends NodeWrapper implements ISaxable
 		Preferences prefs = getPreferences();
 		boolean first = (prefs.childrenNames().length == 0);
 		if(!first && prefs.nodeExists(name))
-			throw new BackingStoreException("Client already exists");
+			throw new BackingStoreException(Messages.client_already_exists);
 
 		Client client = new Client(this, prefs.node(name));
 		if(first)
@@ -115,7 +116,7 @@ public class Server extends NodeWrapper implements ISaxable
 			if(defaultClient != null)
 				return defaultClient;
 		}
-		throw new BackingStoreException("No default client exists");
+		throw new BackingStoreException(Messages.no_default_client_exists);
 	}
 
 	public String getDefaultTag()

@@ -23,10 +23,10 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class DepotMapping extends NodeWrapper
 {
-	public static final String TAG = "depotMapping";
-	public static final String ATTR_NAME = "name";
-	public static final String ATTR_DEPOT_PATTERN = "depotPattern";
-	public static final String ATTR_LOCAL_REPLACEMENT = "localReplacement";
+	public static final String TAG = "depotMapping"; //$NON-NLS-1$
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
+	public static final String ATTR_DEPOT_PATTERN = "depotPattern"; //$NON-NLS-1$
+	public static final String ATTR_LOCAL_REPLACEMENT = "localReplacement"; //$NON-NLS-1$
 
 	private final Client m_client;
 

@@ -30,22 +30,22 @@ public class DepotFile extends DepotObject
 
 	public String getHeadAction()
 	{
-		return this.get("headAction");
+		return this.get("headAction"); //$NON-NLS-1$
 	}
 
 	public IPath getClientPath()
 	{
-		return new Path(this.get("clientFile"));
+		return new Path(this.get("clientFile")); //$NON-NLS-1$
 	}
 
 	public IPath getDepotPath()
 	{
-		return new Path(this.get("depotFile"));
+		return new Path(this.get("depotFile")); //$NON-NLS-1$
 	}
 
 	public void copyTo(File tempFile) throws CoreException
 	{
-		this.getConnection().exec("print", new String[] { "-o", tempFile.getAbsolutePath(), this.getDepotPath().toString() });
+		this.getConnection().exec("print", new String[] { "-o", tempFile.getAbsolutePath(), this.getDepotPath().toString() }); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
 

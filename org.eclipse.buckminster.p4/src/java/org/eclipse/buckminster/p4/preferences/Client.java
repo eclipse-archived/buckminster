@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.osgi.service.prefs.BackingStoreException;
@@ -27,9 +28,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Client extends NodeWrapper
 {
-	public static final String TAG = "client";
-	public static final String ATTR_NAME = "name";
-	public static final String ATTR_LOCAL_ROOT = "localRoot";
+	public static final String TAG = "client"; //$NON-NLS-1$
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
+	public static final String ATTR_LOCAL_ROOT = "localRoot"; //$NON-NLS-1$
 
 	private final Server m_server;
 
@@ -44,7 +45,7 @@ public class Client extends NodeWrapper
 		Preferences prefs = getPreferences();
 		boolean first = (prefs.childrenNames().length == 0);
 		if(!first && prefs.nodeExists(name))
-			throw new BackingStoreException("Depot mapping already exists");
+			throw new BackingStoreException(Messages.depot_mapping_already_exists);
 
 		return new DepotMapping(this, prefs.node(name));
 	}

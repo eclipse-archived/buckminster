@@ -39,19 +39,19 @@ import org.eclipse.osgi.util.NLS;
 
 public class P4Settings extends AbstractCommand
 {
-	static private final OptionDescriptor REMOVE = new OptionDescriptor('R', Messages.remove, OptionValueType.REQUIRED);
+	static private final OptionDescriptor REMOVE = new OptionDescriptor('R', "remove", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor LIST = new OptionDescriptor('L', Messages.list, OptionValueType.NONE);
+	static private final OptionDescriptor LIST = new OptionDescriptor('L', "list", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor IMPORT = new OptionDescriptor('I', Messages.importLabel, OptionValueType.NONE);
+	static private final OptionDescriptor IMPORT = new OptionDescriptor('I', "import", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor EXPORT = new OptionDescriptor('E', Messages.export, OptionValueType.REQUIRED);
+	static private final OptionDescriptor EXPORT = new OptionDescriptor('E', "export", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor OVERWRITE = new OptionDescriptor('O', Messages.overwrite, OptionValueType.NONE);
+	static private final OptionDescriptor OVERWRITE = new OptionDescriptor('O', "overwrite", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor DEFAULT = new OptionDescriptor('D', Messages.defaultLabel, OptionValueType.REQUIRED);
+	static private final OptionDescriptor DEFAULT = new OptionDescriptor('D', "default", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor CURRENT = new OptionDescriptor('C', Messages.current, OptionValueType.NONE);
+	static private final OptionDescriptor CURRENT = new OptionDescriptor('C', "current", OptionValueType.NONE); //$NON-NLS-1$
 
 	private final ArrayList<String> m_unparsed = new ArrayList<String>();
 

@@ -42,20 +42,20 @@ public class ConnectionInfo
 
 	private static String asString(String str)
 	{
-		return str == null ? "null" : str;
+		return str == null ? "null" : str; //$NON-NLS-1$
 	}
 
 	@Override
 	public String toString()
 	{
 		Formatter fmt = new Formatter();
-		fmt.format("user: %s%nclient: %s%nroot: %s%naddress: %s%ntimeZone: %s%nsecurity: %s",
+		fmt.format("user: %s%nclient: %s%nroot: %s%naddress: %s%ntimeZone: %s%nsecurity: %s", //$NON-NLS-1$
 			asString(m_user),
 			asString(m_client),
 			asString(m_clientRoot),
 			asString(m_address),
 			m_timeZone.getDisplayName(true, TimeZone.SHORT),
-			m_securityEnabled ? "true" : "false");
+			m_securityEnabled ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		return fmt.toString();
 	}
 

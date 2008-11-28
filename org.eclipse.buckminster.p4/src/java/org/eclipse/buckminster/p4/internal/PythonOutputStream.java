@@ -16,6 +16,9 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.p4.Messages;
+import org.eclipse.osgi.util.NLS;
+
 public class PythonOutputStream extends BufferedOutputStream implements PythonStreamConstants
 {
 	public PythonOutputStream(OutputStream output)
@@ -42,7 +45,7 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 		else if(obj instanceof Object[])
 			this.writeTuple((Object[])obj);
 		else
-			throw new IOException("Unable to write object of type " + obj.getClass());
+			throw new IOException(NLS.bind(Messages.unable_to_write_object_of_type_0, obj.getClass()));
 	}
 
 	private void writeInt(int v) throws IOException
@@ -62,7 +65,7 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 		String dblStr = Double.toString(v);
 		out.write(TYPE_FLOAT);
 		out.write(dblStr.length());
-		out.write(dblStr.getBytes("US-ASCII"));
+		out.write(dblStr.getBytes("US-ASCII")); //$NON-NLS-1$
 	}
 
 	private void writeString(String str) throws IOException

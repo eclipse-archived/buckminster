@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.p4.P4Plugin;
 import org.eclipse.buckminster.p4.internal.Connection;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -26,6 +27,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -34,7 +36,7 @@ import org.osgi.service.prefs.Preferences;
  */
 public class P4Preferences
 {
-	public static final String ATTR_DEFAULT_SERVER = "defaultServer";
+	public static final String ATTR_DEFAULT_SERVER = "defaultServer"; //$NON-NLS-1$
 
 	private static final P4Preferences s_instance = new P4Preferences();
 
@@ -49,7 +51,7 @@ public class P4Preferences
 	public Server addServer(String name) throws BackingStoreException
 	{
 		if (m_preferences.nodeExists(name))
-			throw new BackingStoreException("Name already exists");
+			throw new BackingStoreException(Messages.name_already_exists);
 		Server server = new Server(m_preferences.node(name));
 		if(m_preferences.childrenNames().length == 1)
 			this.setDefaultServer(name);
@@ -128,7 +130,7 @@ public class P4Preferences
 	 * @return The configured server entry.
 	 * @throws BuckminsterException
 	 */
-	private static final Pattern rxPattern = Pattern.compile("^(P4[A-Z]+)=(.+?)(?:\\s+\\(set[^\\)]*\\))?+$");
+	private static final Pattern rxPattern = Pattern.compile("^(P4[A-Z]+)=(.+?)(?:\\s+\\(set[^\\)]*\\))?+$"); //$NON-NLS-1$
 	public Server configureDefaultServer(Map<String,String> scope, boolean overwrite)
 	throws BackingStoreException, CoreException
 	{
@@ -136,7 +138,7 @@ public class P4Preferences
 		Map<String, String> p4Properties;
 		try
 		{
-			Process process = Runtime.getRuntime().exec(new String[] { P4Plugin.getDefault().getP4Binary(), "set" });
+			Process process = Runtime.getRuntime().exec(new String[] { P4Plugin.getDefault().getP4Binary(), "set" }); //$NON-NLS-1$
 			reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			p4Properties = new HashMap<String,String>();
 			String line;
@@ -156,17 +158,17 @@ public class P4Preferences
 			IOUtils.close(reader);
 		}
 
-		String p4Port = p4Properties.get("P4PORT");
+		String p4Port = p4Properties.get("P4PORT"); //$NON-NLS-1$
 		if(p4Port == null)
-			throw BuckminsterException.fromMessage("Missing environment P4PORT");
+			throw BuckminsterException.fromMessage(Messages.missing_environment_P4PORT);
 
-		String p4User = p4Properties.get("P4USER");
+		String p4User = p4Properties.get("P4USER"); //$NON-NLS-1$
 		if(p4User == null)
-			p4User = System.getProperty("user.name");
+			p4User = System.getProperty("user.name"); //$NON-NLS-1$
 
-		String p4Client = p4Properties.get("P4CLIENT");
+		String p4Client = p4Properties.get("P4CLIENT"); //$NON-NLS-1$
 		if(p4Client == null)
-			throw BuckminsterException.fromMessage("Missing environment P4CLIENT");
+			throw BuckminsterException.fromMessage(Messages.missing_environment_P4CLIENT);
 
 		Server server = this.getServer(p4Port);
 		if(server == null)
@@ -174,12 +176,12 @@ public class P4Preferences
 		else
 		{
 			if(!overwrite)
-				throw BuckminsterException.fromMessage("Server %s already exists", p4Port);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.server_0_already_exists, p4Port));
 			server.clear();
 		}
 
 		server.setUser(p4User);
-		String p4Passwd = p4Properties.get("P4PASSWD");
+		String p4Passwd = p4Properties.get("P4PASSWD"); //$NON-NLS-1$
 		if(p4Passwd != null)
 			server.setPassword(p4Passwd);
 

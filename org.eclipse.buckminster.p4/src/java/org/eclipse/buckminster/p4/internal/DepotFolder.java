@@ -31,7 +31,7 @@ public class DepotFolder extends DepotObject
 
 	public IPath getDepotPath()
 	{
-		return new Path(get("dir"));
+		return new Path(get("dir")); //$NON-NLS-1$
 	}
 
 	public DepotFile[] getFiles(boolean includeDeleted) throws CoreException
@@ -44,10 +44,10 @@ public class DepotFolder extends DepotObject
 	{
 		FileSpec listPath = getListPath();
 		String[] args = includeDeleted
-				? new String[] { "-D", listPath.toString() }
+				? new String[] { "-D", listPath.toString() } //$NON-NLS-1$
 				: new String[] { listPath.toString() };
 		Connection conn = getConnection();
-		List<Map<String, String>> data = conn.exec("dirs", args);
+		List<Map<String, String>> data = conn.exec("dirs", args); //$NON-NLS-1$
 
 		int top = data.size();
 		DepotFolder[] folders = new DepotFolder[top];
@@ -59,7 +59,7 @@ public class DepotFolder extends DepotObject
 
 	public IPath getClientPath() throws CoreException
 	{
-		String path = getConnection().where(getDepotPath().append("..."))[2];
+		String path = getConnection().where(getDepotPath().append("..."))[2]; //$NON-NLS-1$
 		return new Path(path.substring(0, path.length() - 4));
 	}
 
@@ -101,6 +101,6 @@ public class DepotFolder extends DepotObject
 
 	private FileSpec getListPath()
 	{
-		return new FileSpec(getDepotPath().append("*"), m_revision);
+		return new FileSpec(getDepotPath().append("*"), m_revision); //$NON-NLS-1$
 	}
 }

@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,7 +44,7 @@ import org.osgi.service.url.AbstractURLStreamHandlerService;
  */
 public class Handler extends AbstractURLStreamHandlerService 
 {
-	public static final String PROTOCOL = "p4";
+	public static final String PROTOCOL = "p4"; //$NON-NLS-1$
 
 	@Override
 	public URLConnection openConnection(URL url)
@@ -76,15 +77,15 @@ public class Handler extends AbstractURLStreamHandlerService
 				IPath path = new Path(uri.getPath());
 
 				if(path.segmentCount() < 2)
-					throw new MalformedURLException("The path of a p4 URL must have at least 2 segments");
+					throw new MalformedURLException(Messages.the_path_of_a_p4_URL_must_have_at_least_2_segments);
 				if(path.hasTrailingSeparator())
-					throw new MalformedURLException("The path of a p4 URL must not have a trailing separator");
+					throw new MalformedURLException(Messages.the_path_of_a_p4_URL_must_not_have_a_trailing_separator);
 
 				URI parentUri = new URI(uri.getScheme(), uri.getHost(), path.removeLastSegments(1).toPortableString(), uri.getFragment());
 				m_fileName = path.lastSegment();
 
-				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, parentUri.toString(), null);
-				IReaderType p4ReaderType = plugin.getReaderType("p4");
+				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, parentUri.toString(), null); //$NON-NLS-1$
+				IReaderType p4ReaderType = plugin.getReaderType("p4"); //$NON-NLS-1$
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 				cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));

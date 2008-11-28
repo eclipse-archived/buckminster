@@ -15,9 +15,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author thhal
@@ -32,7 +34,7 @@ public abstract class DepotObject
 		public ViewEntry(IPath depotPath, IPath localPath)
 		{
 			if(!(depotPath.isUNC() && localPath.isUNC()))
-				throw new IllegalArgumentException("Only UNC paths are accepted");
+				throw new IllegalArgumentException(Messages.only_UNC_paths_are_accepted);
 			m_depotPath = depotPath;
 			m_localPath = localPath;
 		}
@@ -134,16 +136,16 @@ public abstract class DepotObject
 			switch(c)
 			{
 			case '@':
-				bld.append("%40");
+				bld.append("%40"); //$NON-NLS-1$
 				continue;
 			case '#':
-				bld.append("%23");
+				bld.append("%23"); //$NON-NLS-1$
 				continue;
 			case '*':
-				bld.append("%2a");
+				bld.append("%2a"); //$NON-NLS-1$
 				continue;
 			case '%':
-				bld.append("%25");
+				bld.append("%25"); //$NON-NLS-1$
 				continue;
 			}
 			bld.append(c);
@@ -179,7 +181,7 @@ public abstract class DepotObject
 					if(entry.charAt(idx) == '"')
 						body = entry.substring(start, idx++);
 				if(body == null)
-					throw new IllegalArgumentException("Missing ending quote view file entry: " + entry);
+					throw new IllegalArgumentException(NLS.bind(Messages.missing_ending_quote_view_file_entry_0, entry));
 			}
 			else
 			{
@@ -291,7 +293,7 @@ public abstract class DepotObject
 		int entryNum = 0;
 		for(;; ++entryNum)
 		{
-			String pair = this.get("View" + Integer.toString(entryNum));
+			String pair = this.get("View" + Integer.toString(entryNum)); //$NON-NLS-1$
 			if(pair == null)
 				break;
 			entries.add(new ViewEntry(pair));
@@ -303,7 +305,7 @@ public abstract class DepotObject
 	{
 		String[] paths = splitMultiPaths(viewSpecLine);
 		if(paths.length != 2)
-			throw new IllegalArgumentException("Pair with depot path and client path expected");
+			throw new IllegalArgumentException(Messages.pair_with_depot_path_and_client_path_expected);
 
 		return new IPath[]
 		{

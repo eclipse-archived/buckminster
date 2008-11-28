@@ -98,7 +98,7 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		if(len <= 0 || len > 31)
 			throw new StreamCorruptedException();
 		this.readFully(m_buf, 0, len);
-		return Double.parseDouble(new String(m_buf, 0, len, "US-ASCII"));
+		return Double.parseDouble(new String(m_buf, 0, len, "US-ASCII")); //$NON-NLS-1$
 	}
 
 	private String readString() throws IOException
