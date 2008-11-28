@@ -28,9 +28,39 @@ public class GenericUiPlugin extends AbstractUIPlugin
 	//
 	static private final String s_id = "org.eclipse.buckminster.generic.ui"; //$NON-NLS-1$
 
+	/**
+	 * Returns the shared instance.
+	 */
+	public static GenericUiPlugin getDefault()
+	{
+		return s_plugin;
+	}
+
 	static public String getID()
 	{
 		return s_id;
+	}
+
+	/**
+	 * Returns an image descriptor for the image file at the given plug-in relative path.
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the image descriptor
+	 */
+	public static ImageDescriptor getImageDescriptor(String path)
+	{
+		return AbstractUIPlugin.imageDescriptorFromPlugin(getID(), path); 
+	}
+
+	public static IStatus toStatus(Throwable t)
+	{
+		IStatus status = null;
+		if(t instanceof CoreException)
+			status = ((CoreException)t).getStatus();
+		else
+			status = new Status(IStatus.ERROR, getID(), -1, t.getMessage(), t);
+		return status;
 	}
 
 	/**
@@ -59,35 +89,5 @@ public class GenericUiPlugin extends AbstractUIPlugin
 	{
 		super.stop(context);
 		s_plugin = null;
-	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static GenericUiPlugin getDefault()
-	{
-		return s_plugin;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative path.
-	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path)
-	{
-		return AbstractUIPlugin.imageDescriptorFromPlugin(getID(), path); //$NON-NLS-1$
-	}
-
-	public static IStatus toStatus(Throwable t)
-	{
-		IStatus status = null;
-		if(t instanceof CoreException)
-			status = ((CoreException)t).getStatus();
-		else
-			status = new Status(IStatus.ERROR, getID(), -1, t.getMessage(), t);
-		return status;
 	}
 }

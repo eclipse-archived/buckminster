@@ -32,6 +32,13 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 
 	private T m_selected;
 
+	public Shell getShell()
+	{
+		if(m_activePart == null)
+			throw new IllegalStateException(Messages.active_part_not_set);
+		return m_activePart.getSite().getShell();
+	}
+
 	public void run(IAction action)
 	{
 		if(m_activePart == null)
@@ -46,20 +53,6 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 		}
 		run(m_selected, m_activePart.getSite().getShell());
 	}
-	public Shell getShell()
-	{
-		if(m_activePart == null)
-			throw new IllegalStateException(Messages.active_part_not_set);
-		return m_activePart.getSite().getShell();
-	}
-	protected abstract Class<T> getType();
-	
-	protected abstract void run(T instance, Shell shell);
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_activePart = targetPart;
-	}
 
 	public void selectionChanged(IAction action, ISelection selection)
 	{
@@ -73,50 +66,57 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 
 		Object first = s.getFirstElement();
 		// If the selected object is an instance of wanted type, or is adaptable to that type, use it.
-		
+
 		if(getType().isInstance(first))
 			m_selected = getType().cast(first);
 		else
 			m_selected = adapt(first);
 
 		action.setEnabled(m_selected != null);
-		
+
 	}
-	protected void setSelected(T selected)
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart)
 	{
-		m_selected = selected;
+		m_activePart = targetPart;
 	}
 
 	protected T adapt(Object selected)
 	{
 		return getType().cast(((IAdaptable)selected).getAdapter(getType()));
 	}
-	
-	protected void showMessage(String title, String message)
+
+	protected abstract Class<T> getType();
+
+	protected abstract void run(T instance, Shell shell);
+
+	protected void setSelected(T selected)
 	{
-		MessageDialog.openInformation(getShell(), title, message);
+		m_selected = selected;
 	}
-	protected void showError(String title, String message, Throwable e)
-	{
-		ErrorDialog.openError(getShell(), title, 
-				message,
-				new Status(IStatus.ERROR,
-						"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
-						e.getMessage(),
-						e));
-	}
-	protected void showError(String title, String message)
-	{
-		ErrorDialog.openError(getShell(), title, 
-				message,
-				new Status(IStatus.ERROR,
-						"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
-						message
-						));
-	}
+
 	protected boolean showConfirm(String title, String question)
 	{
 		return MessageDialog.openConfirm(getShell(), title, question);
 	}
-	
+
+	protected void showError(String title, String message)
+	{
+		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR,
+				"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
+				message));
+	}
+
+	protected void showError(String title, String message, Throwable e)
+	{
+		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR,
+				"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
+				e.getMessage(), e));
+	}
+
+	protected void showMessage(String title, String message)
+	{
+		MessageDialog.openInformation(getShell(), title, message);
+	}
+
 }

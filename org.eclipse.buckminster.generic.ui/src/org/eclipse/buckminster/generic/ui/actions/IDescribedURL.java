@@ -13,30 +13,36 @@ import java.net.URL;
 
 /**
  * Interface implemented by something that can be viewed in a browser.
+ * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public interface IDescribedURL
 {
 	/**
+	 * Get the URI (same as the URL, but in URI form).
+	 * 
+	 * @return
+	 */
+	URI getBrowseableURI();
+
+	/**
 	 * The URL that can be viewed in a browser.
+	 * 
 	 * @return
 	 */
 	URL getBrowseableURL();
 
 	/**
-	 * Get the URI (same as the URL, but in URI form).
-	 * @return
-	 */
-	URI getBrowseableURI();
-	/**
 	 * The name shown for the browser instance.
+	 * 
 	 * @return
 	 */
 	String getName();
-	
+
 	/**
 	 * The tooltip shown for the browser instance.
+	 * 
 	 * @return
 	 */
 	String getTooltip();

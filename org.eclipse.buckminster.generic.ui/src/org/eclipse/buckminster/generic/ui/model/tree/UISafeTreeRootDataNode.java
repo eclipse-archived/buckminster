@@ -17,13 +17,12 @@ import org.eclipse.buckminster.generic.model.tree.TreeDataEvent;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * A Tree Root that is safe to use when triggering event listeners that must be called on
- * the UI thread.
+ * A Tree Root that is safe to use when triggering event listeners that must be called on the UI thread.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
-public class UISafeTreeRootDataNode extends AbstractTreeRootDataNode 
+public class UISafeTreeRootDataNode extends AbstractTreeRootDataNode
 {
 	public UISafeTreeRootDataNode(Object data)
 	{
@@ -40,7 +39,7 @@ public class UISafeTreeRootDataNode extends AbstractTreeRootDataNode
 			{
 				UISafeTreeRootDataNode.this.inProcTriggerListeners(e);
 			}
-			
+
 		});
 	}
 

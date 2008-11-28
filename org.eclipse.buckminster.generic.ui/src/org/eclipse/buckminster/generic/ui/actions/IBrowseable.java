@@ -8,10 +8,11 @@
 
 package org.eclipse.buckminster.generic.ui.actions;
 
-/** 
+/**
  * Marker Interface implemented by something that can be viewed in a browser.
+ * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public interface IBrowseable extends IDescribedURL
 {
