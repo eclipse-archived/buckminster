@@ -30,6 +30,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	public static final Command.LocalOption HEADERS_ONLY = new CVSReaderType.MyLocalOption("-h"); //$NON-NLS-1$
 
 	private RepositoryMetaData m_metaData;
+
 	private final CVSSession m_session;
 
 	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
@@ -44,13 +45,13 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 		m_session.close();
 	}
 
-	private RepositoryMetaData getMetaData(IProgressMonitor monitor) throws CoreException
+	@Override
+	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
 	{
-		if(m_metaData == null)
-			m_metaData = RepositoryMetaData.getMetaData(m_session, null, monitor);
-		else
-			MonitorUtils.complete(monitor);
-		return m_metaData;
+		// The component exists or we would not have been able to obtain its meta-data
+		//
+		MonitorUtils.complete(monitor);
+		return true;
 	}
 
 	@Override
@@ -67,7 +68,9 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 		if(timestamp != null && timestamp.compareTo(lastModTime) < 0)
 			lastModTime = timestamp;
 
-		String[] names = branches ? metaData.getBranchNames() : metaData.getTagNames(); 
+		String[] names = branches
+				? metaData.getBranchNames()
+				: metaData.getTagNames();
 		if(names.length == 0)
 			return Collections.emptyList();
 
@@ -87,12 +90,12 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 		return new RevisionEntry(null, lastModTime, -1);
 	}
 
-	@Override
-	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
+	private RepositoryMetaData getMetaData(IProgressMonitor monitor) throws CoreException
 	{
-		// The component exists or we would not have been able to obtain its meta-data
-		//
-		MonitorUtils.complete(monitor);
-		return true;
+		if(m_metaData == null)
+			m_metaData = RepositoryMetaData.getMetaData(m_session, null, monitor);
+		else
+			MonitorUtils.complete(monitor);
+		return m_metaData;
 	}
 }

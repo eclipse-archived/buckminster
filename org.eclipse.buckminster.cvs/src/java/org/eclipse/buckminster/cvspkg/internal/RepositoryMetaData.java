@@ -48,85 +48,21 @@ public class RepositoryMetaData implements Serializable
 {
 	private static final long serialVersionUID = 6869163410872011769L;
 
-	private static final HashMap<UUID,RepositoryMetaData> s_metaDataCache = new HashMap<UUID, RepositoryMetaData>();
+	private static final HashMap<UUID, RepositoryMetaData> s_metaDataCache = new HashMap<UUID, RepositoryMetaData>();
 
-	private final String[] m_branchNames;
-	private final String[] m_tagNames;
-	private final Date m_lastModification;
-	private final Date m_timestamp;
-
-	private static Set<String> concat(String[] names, Set<String> moreNames)
-	{
-		HashSet<String> result = new HashSet<String>(names.length + moreNames.size());
-		for(String name : names)
-			result.add(name);
-		result.addAll(moreNames);
-		return result;
-	}
-
-	private static String[] orderedArray(Set<String> names)
-	{
-		String[] ordered = names.toArray(new String[names.size()]);
-		Arrays.sort(ordered);
-		return ordered;
-	}
-
-	private RepositoryMetaData(Set<String> branches, Set<String> tags, Date lastModification, Date timestamp)
-	{
-		m_branchNames = orderedArray(branches);
-		m_tagNames = orderedArray(tags);
-		m_lastModification = lastModification;
-		m_timestamp = timestamp;
-	}
-
-	public RepositoryMetaData(MetaDataCollector collector, Date timestamp)
-	{
-		this(collector.getBranchNames(), collector.getTagNames(), collector.getLastModificationTime(), timestamp);
-	}
-
-	public RepositoryMetaData merge(MetaDataCollector collector, Date timestamp)
-	{
-		Date lastModTime = collector.getLastModificationTime();
-		if(lastModTime == null)
-			lastModTime = m_lastModification;
-
-		return new RepositoryMetaData(
-			concat(m_branchNames, collector.getBranchNames()),
-			concat(m_tagNames, collector.getTagNames()),
-			lastModTime, timestamp);
-	}
-
-	public final String[] getBranchNames()
-	{
-		return m_branchNames;
-	}
-
-	public final String[] getTagNames()
-	{
-		return m_tagNames;
-	}
-
-	public final Date getTimestamp()
-	{
-		return m_timestamp;
-	}
-
-	public final Date getLastModification()
-	{
-		return m_lastModification;
-	}
-
-	public static RepositoryMetaData getMetaData(CVSSession cvsSession, CVSTag fixedTag, IProgressMonitor monitor) throws CoreException
+	public static RepositoryMetaData getMetaData(CVSSession cvsSession, CVSTag fixedTag, IProgressMonitor monitor)
+			throws CoreException
 	{
 		String repository = cvsSession.getRepository();
 		RepositoryMetaData result = RepositoryMetaData.load(fixedTag, repository);
 
 		Date now = new Date(System.currentTimeMillis());
-		
+
 		if(result != null)
 		{
 			Date resultTime = result.getTimestamp();
-			if(fixedTag != null && fixedTag.getType() == CVSTag.DATE && CVSReader.getTagDate(fixedTag).compareTo(resultTime) <= 0)
+			if(fixedTag != null && fixedTag.getType() == CVSTag.DATE
+					&& CVSReader.getTagDate(fixedTag).compareTo(resultTime) <= 0)
 				//
 				// Meta-data is newer then requested fixed date.
 				//
@@ -181,8 +117,9 @@ public class RepositoryMetaData implements Serializable
 
 			String[] args = new String[] { cvsSession.getModuleName() };
 			MetaDataCollector collector = new MetaDataCollector();
-			IStatus status = new RLog().execute(session, Command.NO_GLOBAL_OPTIONS, opts.toArray(new Command.LocalOption[opts.size()]), args, collector,
-					new SubProgressMonitor(monitor, 90, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
+			IStatus status = new RLog().execute(session, Command.NO_GLOBAL_OPTIONS, opts
+					.toArray(new Command.LocalOption[opts.size()]), args, collector, new SubProgressMonitor(monitor,
+					90, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 
 			if(!status.isOK())
 				throw new CVSException(status);
@@ -245,6 +182,15 @@ public class RepositoryMetaData implements Serializable
 		}
 	}
 
+	private static Set<String> concat(String[] names, Set<String> moreNames)
+	{
+		HashSet<String> result = new HashSet<String>(names.length + moreNames.size());
+		for(String name : names)
+			result.add(name);
+		result.addAll(moreNames);
+		return result;
+	}
+
 	private static UUID getRepositoryId(CVSTag fixedTag, String repository)
 	{
 		if(fixedTag != null && fixedTag.getType() != CVSTag.DATE)
@@ -252,6 +198,70 @@ public class RepositoryMetaData implements Serializable
 		return UUID.nameUUIDFromBytes(repository.getBytes());
 
 	}
+
+	private static File getStateFile(UUID id)
+	{
+		return CVSPlugin.getDefault().getStateLocation().append(id.toString()).toFile();
+	}
+
+	private static String[] orderedArray(Set<String> names)
+	{
+		String[] ordered = names.toArray(new String[names.size()]);
+		Arrays.sort(ordered);
+		return ordered;
+	}
+
+	private final String[] m_branchNames;
+
+	private final String[] m_tagNames;
+
+	private final Date m_lastModification;
+
+	private final Date m_timestamp;
+
+	public RepositoryMetaData(MetaDataCollector collector, Date timestamp)
+	{
+		this(collector.getBranchNames(), collector.getTagNames(), collector.getLastModificationTime(), timestamp);
+	}
+
+	private RepositoryMetaData(Set<String> branches, Set<String> tags, Date lastModification, Date timestamp)
+	{
+		m_branchNames = orderedArray(branches);
+		m_tagNames = orderedArray(tags);
+		m_lastModification = lastModification;
+		m_timestamp = timestamp;
+	}
+
+	public final String[] getBranchNames()
+	{
+		return m_branchNames;
+	}
+
+	public final Date getLastModification()
+	{
+		return m_lastModification;
+	}
+
+	public final String[] getTagNames()
+	{
+		return m_tagNames;
+	}
+
+	public final Date getTimestamp()
+	{
+		return m_timestamp;
+	}
+
+	public RepositoryMetaData merge(MetaDataCollector collector, Date timestamp)
+	{
+		Date lastModTime = collector.getLastModificationTime();
+		if(lastModTime == null)
+			lastModTime = m_lastModification;
+
+		return new RepositoryMetaData(concat(m_branchNames, collector.getBranchNames()), concat(m_tagNames, collector
+				.getTagNames()), lastModTime, timestamp);
+	}
+
 	public void store(CVSTag fixedTag, String repository) throws CoreException
 	{
 		UUID id = getRepositoryId(fixedTag, repository);
@@ -270,10 +280,5 @@ public class RepositoryMetaData implements Serializable
 		{
 			IOUtils.close(output);
 		}
-	}
-
-	private static File getStateFile(UUID id)
-	{
-		return CVSPlugin.getDefault().getStateLocation().append(id.toString()).toFile();
 	}
 }

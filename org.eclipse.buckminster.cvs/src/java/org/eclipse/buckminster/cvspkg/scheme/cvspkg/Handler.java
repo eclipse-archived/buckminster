@@ -56,14 +56,6 @@ import org.osgi.service.url.AbstractURLStreamHandlerService;
  */
 public class Handler extends AbstractURLStreamHandlerService
 {
-	public static final String PROTOCOL = "cvs"; //$NON-NLS-1$
-
-	@Override
-	public URLConnection openConnection(URL url) throws IOException
-	{
-		return new CVSConnection(url);
-	}
-
 	class CVSConnection extends URLConnection
 	{
 		private ICatalogReader m_reader;
@@ -217,5 +209,13 @@ public class Handler extends AbstractURLStreamHandlerService
 				throw new IOException(e.getMessage());
 			}
 		}
+	}
+
+	public static final String PROTOCOL = "cvs"; //$NON-NLS-1$
+
+	@Override
+	public URLConnection openConnection(URL url) throws IOException
+	{
+		return new CVSConnection(url);
 	}
 }

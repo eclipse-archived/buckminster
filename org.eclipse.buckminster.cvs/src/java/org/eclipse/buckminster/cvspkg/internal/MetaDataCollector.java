@@ -39,8 +39,11 @@ import org.eclipse.team.internal.ccvs.core.client.CommandOutputListener;
 public class MetaDataCollector extends CommandOutputListener
 {
 	private static final int BEGIN = 0;
+
 	private static final int HEADER = 1;
+
 	private static final int REVISION = 3;
+
 	private static final int NEXT_REV_OR_BEGIN = 4;
 
 	private static final String LOG_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss zzz";//$NON-NLS-1$
@@ -55,86 +58,10 @@ public class MetaDataCollector extends CommandOutputListener
 	//
 	private static final String NOTHING_KNOWN_ABOUT = "nothing known about "; //$NON-NLS-1$
 
-	private static final Pattern s_revDataExpr = Pattern.compile("^date:\\s*([^;]+);\\s*author:[^;]+;\\s*state:\\s*([^;]+);.*$", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+	private static final Pattern s_revDataExpr = Pattern.compile(
+			"^date:\\s*([^;]+);\\s*author:[^;]+;\\s*state:\\s*([^;]+);.*$", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
 
 	private static final int SYMBOLIC_NAMES = 2;
-
-	private final HashSet<String> m_branches = new HashSet<String>();
-
-	private final HashSet<String> m_tags = new HashSet<String>();
-
-	private Date m_lastModificationTime;
-
-	private int m_state = BEGIN;
-
-	@Override
-	public IStatus errorLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
-			IProgressMonitor monitor)
-	{
-		String serverMessage = getServerMessage(line, location);
-		if(serverMessage != null && serverMessage.startsWith(NOTHING_KNOWN_ABOUT))
-			return new CVSStatus(
-				IStatus.ERROR,
-				CVSStatus.DOES_NOT_EXIST,
-				NLS.bind(CVSMessages.CVSStatus_messageWithRoot, new String[] { commandRoot.getName(), line }),
-				(Throwable)null);
-		return OK;
-	}
-
-	/**
-	 * Returns the names of all branches found in this repository
-	 * @return All known branch names.
-	 */
-	public Set<String> getBranchNames()
-	{
-		return m_branches;
-	}
-
-	public Date getLastModificationTime()
-	{
-		return m_lastModificationTime;
-	}
-
-	/**
-	 * Returns the names of all tags found in this repository
-	 * @return All known tag names.
-	 */
-	public Set<String> getTagNames()
-	{
-		return m_tags;
-	}
-
-	@Override
-	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
-			IProgressMonitor monitor)
-	{
-		switch(m_state)
-		{
-		case BEGIN:
-			if(line.startsWith("RCS file:")) //$NON-NLS-1$
-				m_state = HEADER;
-			break;
-		case NEXT_REV_OR_BEGIN:
-		case HEADER:
-			if(line.startsWith("RCS file:")) //$NON-NLS-1$
-				m_state = HEADER;
-			else if(line.startsWith("revision ")) //$NON-NLS-1$
-				m_state = REVISION;
-			else if(line.startsWith("symbolic names:")) //$NON-NLS-1$
-				m_state = SYMBOLIC_NAMES;
-			break;
-		case SYMBOLIC_NAMES:
-			if(line.startsWith("keyword substitution:")) //$NON-NLS-1$
-				m_state = HEADER;
-			else
-				this.symbolicName(line);
-			break;
-		case REVISION:
-			this.revision(line, location);
-			break;
-		}
-		return OK;
-	}
 
 	/**
 	 * Converts a time stamp as sent from a cvs server for a "log" command into a <code>Date</code>.
@@ -191,6 +118,83 @@ public class MetaDataCollector extends CommandOutputListener
 		return tagName.charAt(lastDot - 1) == '0' && tagName.charAt(lastDot - 2) == '.';
 	}
 
+	private final HashSet<String> m_branches = new HashSet<String>();
+
+	private final HashSet<String> m_tags = new HashSet<String>();
+
+	private Date m_lastModificationTime;
+
+	private int m_state = BEGIN;
+
+	@Override
+	public IStatus errorLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
+			IProgressMonitor monitor)
+	{
+		String serverMessage = getServerMessage(line, location);
+		if(serverMessage != null && serverMessage.startsWith(NOTHING_KNOWN_ABOUT))
+			return new CVSStatus(IStatus.ERROR, CVSStatus.DOES_NOT_EXIST, NLS.bind(
+					CVSMessages.CVSStatus_messageWithRoot, new String[] { commandRoot.getName(), line }),
+					(Throwable)null);
+		return OK;
+	}
+
+	/**
+	 * Returns the names of all branches found in this repository
+	 * 
+	 * @return All known branch names.
+	 */
+	public Set<String> getBranchNames()
+	{
+		return m_branches;
+	}
+
+	public Date getLastModificationTime()
+	{
+		return m_lastModificationTime;
+	}
+
+	/**
+	 * Returns the names of all tags found in this repository
+	 * 
+	 * @return All known tag names.
+	 */
+	public Set<String> getTagNames()
+	{
+		return m_tags;
+	}
+
+	@Override
+	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
+			IProgressMonitor monitor)
+	{
+		switch(m_state)
+		{
+		case BEGIN:
+			if(line.startsWith("RCS file:")) //$NON-NLS-1$
+				m_state = HEADER;
+			break;
+		case NEXT_REV_OR_BEGIN:
+		case HEADER:
+			if(line.startsWith("RCS file:")) //$NON-NLS-1$
+				m_state = HEADER;
+			else if(line.startsWith("revision ")) //$NON-NLS-1$
+				m_state = REVISION;
+			else if(line.startsWith("symbolic names:")) //$NON-NLS-1$
+				m_state = SYMBOLIC_NAMES;
+			break;
+		case SYMBOLIC_NAMES:
+			if(line.startsWith("keyword substitution:")) //$NON-NLS-1$
+				m_state = HEADER;
+			else
+				this.symbolicName(line);
+			break;
+		case REVISION:
+			this.revision(line, location);
+			break;
+		}
+		return OK;
+	}
+
 	private void revision(String line, ICVSRepositoryLocation location)
 	{
 		Matcher matcher = s_revDataExpr.matcher(line);
@@ -211,6 +215,6 @@ public class MetaDataCollector extends CommandOutputListener
 		if(isBranchTag(rev))
 			m_branches.add(tag);
 		else
-			m_tags.add(tag);		
+			m_tags.add(tag);
 	}
 }

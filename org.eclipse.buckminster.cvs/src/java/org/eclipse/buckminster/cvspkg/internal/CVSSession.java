@@ -70,15 +70,6 @@ public class CVSSession implements Closeable
 		}
 	}
 
-	public String getRepository()
-	{
-		String location = m_location.getLocation(false);
-		if(m_moduleName == null)
-			return location;
-
-		return location + '/' + m_moduleName;
-	}
-
 	public String getFilePrefix()
 	{
 		StringBuilder bld = new StringBuilder(m_location.getRootDirectory());
@@ -99,6 +90,15 @@ public class CVSSession implements Closeable
 	public final String getModuleName()
 	{
 		return m_moduleName;
+	}
+
+	public String getRepository()
+	{
+		String location = m_location.getLocation(false);
+		if(m_moduleName == null)
+			return location;
+
+		return location + '/' + m_moduleName;
 	}
 
 	synchronized Session getReaderSession(IProgressMonitor monitor) throws CoreException

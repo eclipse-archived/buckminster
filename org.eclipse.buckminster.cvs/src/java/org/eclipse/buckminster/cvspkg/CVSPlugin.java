@@ -19,7 +19,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
 
-
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -60,4 +59,3 @@ public class CVSPlugin extends LogAwarePlugin
 		s_plugin = null;
 	}
 }
-

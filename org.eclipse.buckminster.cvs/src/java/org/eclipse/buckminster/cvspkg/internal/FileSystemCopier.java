@@ -40,35 +40,18 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 @SuppressWarnings("restriction")
 public class FileSystemCopier implements ICVSResourceVisitor
 {
-	/** the famous CVS meta directory name */
-	public static final String CVS_DIRNAME = "CVS"; //$NON-NLS-1$
-
-	// CVS meta files located in the CVS subdirectory
-	//
-	public static final String REPOSITORY = "Repository"; //$NON-NLS-1$
-
-	public static final String ROOT = "Root"; //$NON-NLS-1$
-
-	public static final String STATIC = "Entries.Static"; //$NON-NLS-1$
-
-	public static final String TAG = "Tag"; //$NON-NLS-1$
-
-	public static final String ENTRIES = "Entries"; //$NON-NLS-1$
-
-	private final IPath m_fsRoot;
-	private final ICVSFolder m_cvsRoot;
-	private final IProgressMonitor m_monitor;
-
 	/**
-	 * An instance of this class is created whenever we enter a folder and pushed
-	 * on a stack. It manages all the sync information for the elements of that
-	 * folder.
+	 * An instance of this class is created whenever we enter a folder and pushed on a stack. It manages all the sync
+	 * information for the elements of that folder.
 	 */
 	private static class FolderInfo
 	{
 		private final IPath m_path;
+
 		private final ArrayList<byte[]> m_entries;
+
 		private final ICVSFolder m_folder;
+
 		private boolean m_isCreated;
 
 		FolderInfo(ICVSFolder folder, IPath path) throws CVSException
@@ -81,6 +64,15 @@ public class FileSystemCopier implements ICVSResourceVisitor
 		void addEntry(byte[] entry)
 		{
 			m_entries.add(entry);
+		}
+
+		void assertCreated() throws CVSException
+		{
+			if(!m_isCreated)
+			{
+				createDirectory(m_path);
+				m_isCreated = true;
+			}
 		}
 
 		byte[] getFolderSyncBytes() throws CVSException
@@ -103,19 +95,9 @@ public class FileSystemCopier implements ICVSResourceVisitor
 			return m_path.isPrefixOf(path);
 		}
 
-		void assertCreated() throws CVSException
-		{
-			if(!m_isCreated)
-			{
-				createDirectory(m_path);
-				m_isCreated = true;
-			}
-		}
-
 		/**
-		 * Writes the CVS/Root, CVS/Repository, CVS/Tag, CVS/Entries, and
-		 * CVS/Entries.static files to the specified folder using the data
-		 * contained in the specified FolderSyncInfo instance.
+		 * Writes the CVS/Root, CVS/Repository, CVS/Tag, CVS/Entries, and CVS/Entries.static files to the specified
+		 * folder using the data contained in the specified FolderSyncInfo instance.
 		 */
 		void writeSync() throws CVSException
 		{
@@ -157,6 +139,54 @@ public class FileSystemCopier implements ICVSResourceVisitor
 		}
 	}
 
+	/** the famous CVS meta directory name */
+	public static final String CVS_DIRNAME = "CVS"; //$NON-NLS-1$
+
+	// CVS meta files located in the CVS subdirectory
+	//
+	public static final String REPOSITORY = "Repository"; //$NON-NLS-1$
+
+	public static final String ROOT = "Root"; //$NON-NLS-1$
+
+	public static final String STATIC = "Entries.Static"; //$NON-NLS-1$
+
+	public static final String TAG = "Tag"; //$NON-NLS-1$
+
+	public static final String ENTRIES = "Entries"; //$NON-NLS-1$
+
+	private static IPath createDirectory(IPath parentFolder) throws CVSException
+	{
+		File dir = parentFolder.toFile();
+		if(!dir.mkdirs() && !dir.exists())
+			throw new CVSException(NLS.bind(Messages.unable_to_create_directory_0, dir));
+		return parentFolder;
+	}
+
+	private static void writeLines(IPath parentFolder, String metaFile, String... lines) throws CVSException
+	{
+		PrintWriter out = null;
+		try
+		{
+			out = new PrintWriter(parentFolder.append(metaFile).toFile());
+			for(String line : lines)
+				out.println(line);
+		}
+		catch(FileNotFoundException e)
+		{
+			throw CVSException.wrapException(e);
+		}
+		finally
+		{
+			IOUtils.close(out);
+		}
+	}
+
+	private final IPath m_fsRoot;
+
+	private final ICVSFolder m_cvsRoot;
+
+	private final IProgressMonitor m_monitor;
+
 	// This stack helps us keep track of what folder is current and when we leave
 	// that folder (the path of the top FolderInfo is no longer a prefix of the
 	// current element).
@@ -169,6 +199,13 @@ public class FileSystemCopier implements ICVSResourceVisitor
 		m_fsRoot = fsRoot;
 		m_monitor = monitor;
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+	}
+
+	public void done() throws CVSException
+	{
+		while(!m_currentPath.isEmpty())
+			this.visitFolderEnd();
+		m_monitor.done();
 	}
 
 	public void visitFile(ICVSFile file) throws CVSException
@@ -215,13 +252,6 @@ public class FileSystemCopier implements ICVSResourceVisitor
 		m_currentPath.push(new FolderInfo(folder, m_fsRoot.append(folder.getRelativePath(m_cvsRoot))));
 	}
 
-	public void done() throws CVSException
-	{
-		while(!m_currentPath.isEmpty())
-			this.visitFolderEnd();
-		m_monitor.done();
-	}
-
 	private void checkFolderEnd(ICVSFolder folder) throws CVSException
 	{
 		if(!m_currentPath.isEmpty())
@@ -243,32 +273,5 @@ public class FileSystemCopier implements ICVSResourceVisitor
 
 		if(!m_currentPath.isEmpty())
 			m_currentPath.peek().addEntry(info.getFolderSyncBytes());
-	}
-
-	private static IPath createDirectory(IPath parentFolder) throws CVSException
-	{
-		File dir = parentFolder.toFile();
-		if(!dir.mkdirs() && !dir.exists())
-			throw new CVSException(NLS.bind(Messages.unable_to_create_directory_0, dir));
-		return parentFolder;
-	}
-
-	private static void writeLines(IPath parentFolder, String metaFile, String... lines) throws CVSException
-	{
-		PrintWriter out = null;
-		try
-		{
-			out = new PrintWriter(parentFolder.append(metaFile).toFile());
-			for(String line : lines)
-				out.println(line);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw CVSException.wrapException(e);
-		}
-		finally
-		{
-			IOUtils.close(out);
-		}
 	}
 }
