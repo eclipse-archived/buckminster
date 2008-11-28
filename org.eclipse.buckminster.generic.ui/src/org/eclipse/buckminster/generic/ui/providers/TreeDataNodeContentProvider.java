@@ -17,6 +17,7 @@ import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeRootNode;
 import org.eclipse.buckminster.generic.model.tree.TreeDataEvent;
+import org.eclipse.buckminster.generic.ui.Messages;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -39,7 +40,7 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 		public void inputChanged(Viewer v, Object oldInput, Object newInput)
 		{
 			if(!(v instanceof TreeViewer))
-				throw new IllegalArgumentException("Only TreeView accepted as view");
+				throw new IllegalArgumentException(Messages.only_TreeView_accepted);
 			m_treeViewer = (TreeViewer)v;
 		}
 

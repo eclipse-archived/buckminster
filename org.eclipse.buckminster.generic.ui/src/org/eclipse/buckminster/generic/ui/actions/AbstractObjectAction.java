@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.generic.ui.actions;
 
+import org.eclipse.buckminster.generic.ui.Messages;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,7 +41,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 		final Shell shell = site.getShell();
 		if(m_selected == null)
 		{
-			MessageDialog.openInformation(shell, null, "nothing is selected");
+			MessageDialog.openInformation(shell, null, Messages.nothing_selected);
 			return;
 		}
 		run(m_selected, m_activePart.getSite().getShell());
@@ -48,7 +49,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
 	public Shell getShell()
 	{
 		if(m_activePart == null)
-			throw new IllegalStateException("active part not set");
+			throw new IllegalStateException(Messages.active_part_not_set);
 		return m_activePart.getSite().getShell();
 	}
 	protected abstract Class<T> getType();
