@@ -13,11 +13,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.generic.Messages;
 import org.eclipse.buckminster.generic.plugin.AbstractPlugin;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -47,7 +49,7 @@ public class IoUtils
 		}
 		catch(Exception e)
 		{
-			plugin.logError(String.format("error while closing instance of %s", stream.getClass().getName()), e);
+			plugin.logError(NLS.bind(Messages.error_closing_instance_0, stream.getClass().getName()), e);
 		}
 	}
 	

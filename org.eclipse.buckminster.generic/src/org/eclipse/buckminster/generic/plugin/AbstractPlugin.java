@@ -7,6 +7,7 @@
  ******************************************************************/
 
 package org.eclipse.buckminster.generic.plugin;
+import org.eclipse.buckminster.generic.Messages;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.Plugin;
@@ -27,7 +28,7 @@ public abstract class AbstractPlugin extends Plugin
 	}
 	public void logError(Throwable e)
 	{
-		logError("Unexpected Exception", e);
+		logError(Messages.unexpected_exception, e);
 	}
 	public void logError(String message, Throwable e)
 	{

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.generic.model.tree;
 
+import org.eclipse.buckminster.generic.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,7 +27,7 @@ public abstract class PendingTreeDataNode extends BasicTreeDataNode
 	private Job m_getNodeJob;
 	public PendingTreeDataNode()
 	{
-		super("Pending...");
+		super(Messages.pending_);
 	}
 	/**
 	 * Schedules a job that replaces the pending node with the node

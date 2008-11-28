@@ -8,13 +8,16 @@
 
 package org.eclipse.buckminster.generic.utils;
 
+import org.eclipse.buckminster.generic.Messages;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * A set of utility methods for handling of common plugin tasks.
+ * 
  * @author Thomas Hallgren
  * @author Henrik Lindberg
- *
+ * 
  */
 public class PluginUtils
 {
@@ -34,7 +37,7 @@ public class PluginUtils
 			return value;
 		if(defaultValue != null)
 			return defaultValue;
-		throw new IllegalArgumentException("Missing " + name + " attribute");
+		throw new IllegalArgumentException(NLS.bind(Messages.missing_attribute_0, name));
 	}
 
 	/**
@@ -50,7 +53,7 @@ public class PluginUtils
 	{
 		IConfigurationElement[] childElements = configElement.getChildren(name);
 		if(childElements.length < 1)
-			throw new IllegalArgumentException("Missing " + name + " sequence"); //$NON-NLS-2$
+			throw new IllegalArgumentException(NLS.bind(Messages.missing_sequence_0, name));
 		String[] result = new String[childElements.length];
 		for(int i = 0; i < childElements.length; i++)
 			result[i] = getAttribute(childElements[i], "name", null); //$NON-NLS-1$
