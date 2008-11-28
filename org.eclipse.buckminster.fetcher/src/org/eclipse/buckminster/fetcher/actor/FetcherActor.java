@@ -133,35 +133,6 @@ public class FetcherActor extends AbstractActor
 	}
 
 	/**
-	 * @return the correct IResourceFetcher according to the uncompress flag.
-	 * @throws MalformedURLException
-	 * @throws CoreException
-	 */
-	private IResourceFetcher getResourceFetcher() throws MalformedURLException, CoreException
-	{
-		final URL url = getUrl();
-		final String destinationDirectory = getDestinationDirectory();
-		if(shouldUncompress())
-		{
-			return StreamProcessorFactory.getUncompressInstance(url, destinationDirectory, getIncludes(),
-					shouldFlatten());
-		}
-		// regular file copy
-		final String localFileName = getLocalFileNameFromUrl(url);
-		return StreamProcessorFactory.getCopyInstance(url, destinationDirectory, localFileName);
-	}
-
-	/**
-	 * @param url
-	 * @return the name of the archive as stated by the provided url ie : http://www.example.com/download/file.tar.gz
-	 *         returns file.tar.gz
-	 */
-	private String getLocalFileNameFromUrl(URL url)
-	{
-		return new File(url.getFile()).getName();
-	}
-
-	/**
 	 * @return the destination directory if set or the component home otherwise
 	 * @throws CoreException
 	 */
@@ -176,60 +147,6 @@ public class FetcherActor extends AbstractActor
 		if(new File(toDir).isAbsolute())
 			return toDir;
 		return homePath + toDir + File.separatorChar;
-	}
-
-	/**
-	 * @return the URL to use
-	 * @throws MalformedURLException
-	 * @throws CoreException
-	 */
-	private URL getUrl() throws MalformedURLException, CoreException
-	{
-		return new URL(getSafeProperty(FETCHER_URL));
-	}
-
-	/**
-	 * @param property
-	 * @return an expanded property or null if property is not set
-	 * @throws CoreException
-	 */
-	final private String getSafeProperty(String property) throws CoreException
-	{
-		final String p = TextUtils.notEmptyTrimmedString(this.getActorProperty(property));
-		if(p == null)
-			return null;
-		return m_expander.expand(p);
-	}
-
-	/**
-	 * @return a set of options
-	 * @throws CoreException
-	 */
-	private HashSet<String> getOptions() throws CoreException
-	{
-		final HashSet<String> options = new HashSet<String>();
-		final String optionActorProperty = getSafeProperty(FETCHER_OPTIONS);
-		if(optionActorProperty == null)
-			return options;
-		final String[] split = optionActorProperty.split(";"); //$NON-NLS-1$
-		for(String option : split)
-			options.add(option);
-		return options;
-	}
-
-	private boolean hasOption(String option) throws CoreException
-	{
-		return getOptions().contains(option);
-	}
-
-	private boolean shouldUncompress() throws CoreException
-	{
-		return hasOption(FETCHER_UNCOMPRESS);
-	}
-
-	private boolean shouldFlatten() throws CoreException
-	{
-		return hasOption(FETCHER_FLATTEN);
 	}
 
 	/**
@@ -249,5 +166,88 @@ public class FetcherActor extends AbstractActor
 			}
 		}
 		return includes;
+	}
+
+	/**
+	 * @param url
+	 * @return the name of the archive as stated by the provided url ie : http://www.example.com/download/file.tar.gz
+	 *         returns file.tar.gz
+	 */
+	private String getLocalFileNameFromUrl(URL url)
+	{
+		return new File(url.getFile()).getName();
+	}
+
+	/**
+	 * @return a set of options
+	 * @throws CoreException
+	 */
+	private HashSet<String> getOptions() throws CoreException
+	{
+		final HashSet<String> options = new HashSet<String>();
+		final String optionActorProperty = getSafeProperty(FETCHER_OPTIONS);
+		if(optionActorProperty == null)
+			return options;
+		final String[] split = optionActorProperty.split(";"); //$NON-NLS-1$
+		for(String option : split)
+			options.add(option);
+		return options;
+	}
+
+	/**
+	 * @return the correct IResourceFetcher according to the uncompress flag.
+	 * @throws MalformedURLException
+	 * @throws CoreException
+	 */
+	private IResourceFetcher getResourceFetcher() throws MalformedURLException, CoreException
+	{
+		final URL url = getUrl();
+		final String destinationDirectory = getDestinationDirectory();
+		if(shouldUncompress())
+		{
+			return StreamProcessorFactory.getUncompressInstance(url, destinationDirectory, getIncludes(),
+					shouldFlatten());
+		}
+		// regular file copy
+		final String localFileName = getLocalFileNameFromUrl(url);
+		return StreamProcessorFactory.getCopyInstance(url, destinationDirectory, localFileName);
+	}
+
+	/**
+	 * @param property
+	 * @return an expanded property or null if property is not set
+	 * @throws CoreException
+	 */
+	final private String getSafeProperty(String property) throws CoreException
+	{
+		final String p = TextUtils.notEmptyTrimmedString(this.getActorProperty(property));
+		if(p == null)
+			return null;
+		return m_expander.expand(p);
+	}
+
+	/**
+	 * @return the URL to use
+	 * @throws MalformedURLException
+	 * @throws CoreException
+	 */
+	private URL getUrl() throws MalformedURLException, CoreException
+	{
+		return new URL(getSafeProperty(FETCHER_URL));
+	}
+
+	private boolean hasOption(String option) throws CoreException
+	{
+		return getOptions().contains(option);
+	}
+
+	private boolean shouldFlatten() throws CoreException
+	{
+		return hasOption(FETCHER_FLATTEN);
+	}
+
+	private boolean shouldUncompress() throws CoreException
+	{
+		return hasOption(FETCHER_UNCOMPRESS);
 	}
 }

@@ -13,14 +13,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface IResourceFetcher
 {
 	/**
-	 * Set credential for this resource
-	 * 
-	 * @param login
-	 * @param password
-	 */
-	public void setBasicAuthCredential(String login, String password);
-
-	/**
 	 * Actually fetches the resource
 	 * 
 	 * @param monitor
@@ -28,4 +20,12 @@ public interface IResourceFetcher
 	 * @throws CoreException
 	 */
 	public void fetch(IProgressMonitor monitor) throws IOException, CoreException;
+
+	/**
+	 * Set credential for this resource
+	 * 
+	 * @param login
+	 * @param password
+	 */
+	public void setBasicAuthCredential(String login, String password);
 }

@@ -32,27 +32,6 @@ public class ArchivedResourceFetcher extends AbstractResourceFetcher
 			}
 		}
 
-		private boolean isSubtract(String patt)
-		{
-			return patt.startsWith("-"); //$NON-NLS-1$
-		}
-
-		private String rawPatt(String patt)
-		{
-			if(!isSubtract(patt))
-				return patt;
-			return patt.substring(1);
-		}
-
-		private boolean match(String p, File rel)
-		{
-			String s = rel.getName();
-			if(p.indexOf('/') >= 0)
-				s = rel.toString();
-			s = s.replace(SEP, "/"); //$NON-NLS-1$
-			return s.matches(p);
-		}
-
 		public boolean accept(File pathname)
 		{
 			if(m_patterns.isEmpty())
@@ -69,6 +48,27 @@ public class ArchivedResourceFetcher extends AbstractResourceFetcher
 					ok = true;
 			}
 			return ok;
+		}
+
+		private boolean isSubtract(String patt)
+		{
+			return patt.startsWith("-"); //$NON-NLS-1$
+		}
+
+		private boolean match(String p, File rel)
+		{
+			String s = rel.getName();
+			if(p.indexOf('/') >= 0)
+				s = rel.toString();
+			s = s.replace(SEP, "/"); //$NON-NLS-1$
+			return s.matches(p);
+		}
+
+		private String rawPatt(String patt)
+		{
+			if(!isSubtract(patt))
+				return patt;
+			return patt.substring(1);
 		}
 	}
 

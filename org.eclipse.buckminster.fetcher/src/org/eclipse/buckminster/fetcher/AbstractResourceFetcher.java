@@ -34,14 +34,6 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher
 		m_destinationDir = dir;
 	}
 
-	public void setBasicAuthCredential(String login,String password)
-	{
-		if(login == null || password == null)
-			throw new NullPointerException(Messages.login_and_password_must_be_not_null);
-		m_login = login;
-		m_password = password;
-	}
-
 	public void fetch(IProgressMonitor monitor) throws IOException, CoreException
 	{
 		URLConnection conn = null;
@@ -76,10 +68,15 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher
 		}
 	}
 
-	final private void prepareDirectories(String dir)
+	public void setBasicAuthCredential(String login, String password)
 	{
-		new File(dir).mkdirs();
+		if(login == null || password == null)
+			throw new NullPointerException(Messages.login_and_password_must_be_not_null);
+		m_login = login;
+		m_password = password;
 	}
+
+	protected abstract void consume(InputStream stream, IProgressMonitor monitor) throws IOException, CoreException;
 
 	final protected String getDestinationDir()
 	{
@@ -91,5 +88,8 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher
 		return m_url;
 	}
 
-	protected abstract void consume(InputStream stream, IProgressMonitor monitor) throws IOException, CoreException;
+	final private void prepareDirectories(String dir)
+	{
+		new File(dir).mkdirs();
+	}
 }
