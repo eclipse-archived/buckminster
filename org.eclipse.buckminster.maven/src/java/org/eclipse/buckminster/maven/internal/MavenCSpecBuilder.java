@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -49,7 +50,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
 		monitor.beginTask(null, 3000);
-		monitor.subTask("Generating cspec from Maven artifact");
+		monitor.subTask(Messages.generating_cspec_from_maven_artifact);
 		try
 		{
 			Document pomDoc;
@@ -73,11 +74,11 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 					{
 						try
 						{
-							pomDoc = ((ICatalogReader)reader).readFile("pom.xml", this, subMon);
+							pomDoc = ((ICatalogReader)reader).readFile("pom.xml", this, subMon); //$NON-NLS-1$
 						}
 						catch(FileNotFoundException e)
 						{
-							pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon);
+							pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon); //$NON-NLS-1$
 						}
 					}
 					else
@@ -127,11 +128,11 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			catch(SAXParseException e)
 			{
 				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8"))
+				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
 				
 				InputSource input = new InputSource(buffer.getInputStream());
-				input.setEncoding("ISO-8859-1");
+				input.setEncoding("ISO-8859-1"); //$NON-NLS-1$
 				docBld.reset();
 				return docBld.parse(input);
 			}

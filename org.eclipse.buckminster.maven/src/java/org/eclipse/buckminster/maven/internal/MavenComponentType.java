@@ -36,6 +36,7 @@ import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.maven.MavenPlugin;
+import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -43,6 +44,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -57,12 +59,12 @@ public class MavenComponentType extends AbstractComponentType
 {
 	private static final MavenCSpecBuilder s_builder = new MavenCSpecBuilder();
 
-	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
-	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss", Locale.US);
+	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US); //$NON-NLS-1$
+	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss", Locale.US); //$NON-NLS-1$
 
 	private static final Pattern s_timestampPattern = Pattern.compile(//
-			"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + //
-			"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$");
+			"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
+			"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
 
 	public static IVersion createVersion(String versionStr) throws CoreException
 	{
@@ -101,17 +103,17 @@ public class MavenComponentType extends AbstractComponentType
 				continue;
 
 			String nodeName = child.getNodeName();
-			if("parent".equals(nodeName))
+			if("parent".equals(nodeName)) //$NON-NLS-1$
 				parentNode = child;
-			else if("properties".equals(nodeName))
+			else if("properties".equals(nodeName)) //$NON-NLS-1$
 				propertiesNode = child;
-			else if("dependencies".equals(nodeName))
+			else if("dependencies".equals(nodeName)) //$NON-NLS-1$
 				dependenciesNode = child;
-			else if("groupId".equals(nodeName))
+			else if("groupId".equals(nodeName)) //$NON-NLS-1$
 				groupId = child.getTextContent().trim();
-			else if("artifactId".equals(nodeName))
+			else if("artifactId".equals(nodeName)) //$NON-NLS-1$
 				artifactId = child.getTextContent().trim();
-			else if("version".equals(nodeName))
+			else if("version".equals(nodeName)) //$NON-NLS-1$
 				versionStr = child.getTextContent().trim();
 		}
 
@@ -121,23 +123,23 @@ public class MavenComponentType extends AbstractComponentType
 		if(groupId != null)
 		{
 			groupId = ExpandingProperties.expand(properties, groupId, 0);
-			properties.put("project.groupId", groupId, true);
-			properties.put("pom.groupId", groupId, true);
-			properties.put("groupId", groupId, true);
+			properties.put("project.groupId", groupId, true); //$NON-NLS-1$
+			properties.put("pom.groupId", groupId, true); //$NON-NLS-1$
+			properties.put("groupId", groupId, true); //$NON-NLS-1$
 		}
 		if(artifactId != null)
 		{
 			artifactId = ExpandingProperties.expand(properties, artifactId, 0);
-			properties.put("project.artifactId", artifactId, true);
-			properties.put("pom.artifactId", artifactId, true);
-			properties.put("artifactId", artifactId, true);
+			properties.put("project.artifactId", artifactId, true); //$NON-NLS-1$
+			properties.put("pom.artifactId", artifactId, true); //$NON-NLS-1$
+			properties.put("artifactId", artifactId, true); //$NON-NLS-1$
 		}
 		if(versionStr != null)
 		{
 			versionStr = ExpandingProperties.expand(properties, versionStr, 0);
-			properties.put("project.version", versionStr, true);
-			properties.put("pom.version", versionStr, true);
-			properties.put("version", versionStr, true);
+			properties.put("project.version", versionStr, true); //$NON-NLS-1$
+			properties.put("pom.version", versionStr, true); //$NON-NLS-1$
+			properties.put("version", versionStr, true); //$NON-NLS-1$
 		}
 
 		if(propertiesNode != null)
@@ -149,7 +151,7 @@ public class MavenComponentType extends AbstractComponentType
 			ComponentQuery query = reader.getNodeQuery().getComponentQuery();
 			for(Node dep = dependenciesNode.getFirstChild(); dep != null; dep = dep.getNextSibling())
 			{
-				if(dep.getNodeType() == Node.ELEMENT_NODE && "dependency".equals(dep.getNodeName()))
+				if(dep.getNodeType() == Node.ELEMENT_NODE && "dependency".equals(dep.getNodeName())) //$NON-NLS-1$
 					addDependency(query, provider, cspec, archives, properties, dep);
 			}
 		}
@@ -177,7 +179,7 @@ public class MavenComponentType extends AbstractComponentType
 		char leadIn = versionStr.charAt(0);
 		if(leadIn == '[' || leadIn == '(')
 		{
-			if(leadIn == '[' && versionStr.endsWith(",)"))
+			if(leadIn == '[' && versionStr.endsWith(",)")) //$NON-NLS-1$
 			{
 				versionStr = versionStr.substring(1, versionStr.length() - 2);
 				IVersion version = createVersion(versionStr);
@@ -206,7 +208,7 @@ public class MavenComponentType extends AbstractComponentType
 
 	static boolean isSnapshotVersion(IVersion version)
 	{
-		return version != null && version.toString().endsWith("SNAPSHOT");
+		return version != null && version.toString().endsWith("SNAPSHOT"); //$NON-NLS-1$
 	}
 
 	static IVersion stripFromSnapshot(IVersion version)
@@ -215,7 +217,7 @@ public class MavenComponentType extends AbstractComponentType
 			return null;
 
 		String vstr = version.toString();
-		if(vstr.endsWith("SNAPSHOT"))
+		if(vstr.endsWith("SNAPSHOT")) //$NON-NLS-1$
 		{
 			int stripLen = 8;
 			if(vstr.charAt(vstr.length() - (stripLen + 1)) == '-')
@@ -248,17 +250,17 @@ public class MavenComponentType extends AbstractComponentType
 
 			String localName = depChild.getNodeName();
 			String nodeValue = depChild.getTextContent().trim();
-			if("groupId".equals(localName))
+			if("groupId".equals(localName)) //$NON-NLS-1$
 				groupId = nodeValue;
-			else if("artifactId".equals(localName))
+			else if("artifactId".equals(localName)) //$NON-NLS-1$
 				artifactId = nodeValue;
-			else if("version".equals(localName))
+			else if("version".equals(localName)) //$NON-NLS-1$
 				versionStr = nodeValue;
-			else if("id".equals(localName))
+			else if("id".equals(localName)) //$NON-NLS-1$
 				id = nodeValue;
-			else if("type".equals(localName))
+			else if("type".equals(localName)) //$NON-NLS-1$
 				type = nodeValue;
-			else if("optional".equals(localName))
+			else if("optional".equals(localName)) //$NON-NLS-1$
 				optional = Boolean.parseBoolean(nodeValue);
 		}
 
@@ -275,7 +277,7 @@ public class MavenComponentType extends AbstractComponentType
 		if(artifactId == null)
 			return;
 
-		if("plugin".equals(type))
+		if("plugin".equals(type)) //$NON-NLS-1$
 			//
 			// Maven plugin (required for Maven builds). We don't want it.
 			//
@@ -293,11 +295,11 @@ public class MavenComponentType extends AbstractComponentType
 				? ((MavenProvider)provider).getComponentName(groupId, artifactId)
 				: MavenProvider.getDefaultName(groupId, artifactId);
 
-		if(componentName.contains("${"))
+		if(componentName.contains("${")) //$NON-NLS-1$
 		{
 			// Unresolved property. We can't use this so skip it.
 			//
-			MavenPlugin.getLogger().warning("Unable to resolve component name %s. Skipping dependency", componentName);
+			MavenPlugin.getLogger().warning(NLS.bind(Messages.unable_to_resolve_component_name_0_skipping_dependency, componentName));
 			return;
 		}
 
@@ -339,27 +341,27 @@ public class MavenComponentType extends AbstractComponentType
 
 			String localName = child.getNodeName();
 			String nodeValue = child.getTextContent().trim();
-			if("groupId".equals(localName))
+			if("groupId".equals(localName)) //$NON-NLS-1$
 				groupId = nodeValue;
-			else if("artifactId".equals(localName))
+			else if("artifactId".equals(localName)) //$NON-NLS-1$
 				artifactId = nodeValue;
-			else if("version".equals(localName))
+			else if("version".equals(localName)) //$NON-NLS-1$
 				versionStr = nodeValue;
 		}
 
 		if(groupId != null)
 		{
 			groupId = ExpandingProperties.expand(properties, groupId, 0);
-			properties.put("project.groupId", groupId, true);
-			properties.put("pom.groupId", groupId, true);
-			properties.put("groupId", groupId, true);
+			properties.put("project.groupId", groupId, true); //$NON-NLS-1$
+			properties.put("pom.groupId", groupId, true); //$NON-NLS-1$
+			properties.put("groupId", groupId, true); //$NON-NLS-1$
 		}
 		if(artifactId != null)
 		{
 			artifactId = ExpandingProperties.expand(properties, artifactId, 0);
-			properties.put("project.artifactId", artifactId, true);
-			properties.put("pom.artifactId", artifactId, true);
-			properties.put("artifactId", artifactId, true);
+			properties.put("project.artifactId", artifactId, true); //$NON-NLS-1$
+			properties.put("pom.artifactId", artifactId, true); //$NON-NLS-1$
+			properties.put("artifactId", artifactId, true); //$NON-NLS-1$
 		}
 
 		Provider provider = reader.getProviderMatch().getProvider();
@@ -377,7 +379,7 @@ public class MavenComponentType extends AbstractComponentType
 		parentPath = mrt.getPomPath(entry, vm);
 
 		MavenPlugin.getLogger().debug(
-				"Getting POM information for parent: %s - %s at path %s", groupId, artifactId, parentPath);
+				NLS.bind(Messages.getting_POM_information_for_parent_0_to_1_at_path_2, new Object[]{groupId, artifactId, parentPath}));
 		Document parentDoc = reader.getPOMDocument(entry, vm, parentPath, new NullProgressMonitor());
 		if(parentDoc == null)
 			return;

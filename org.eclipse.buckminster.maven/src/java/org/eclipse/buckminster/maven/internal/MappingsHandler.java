@@ -48,7 +48,7 @@ class MappingsHandler extends ExtensionAwareHandler implements ChildPoppedListen
 				m_mapEntryHandler = new MapEntryHandler(this);
 			ch = m_mapEntryHandler;
 		}
-		else if(localName.equals("rule"))
+		else if(localName.equals("rule")) //$NON-NLS-1$
 		{
 			if(m_transformerHandler == null)
 				m_transformerHandler = new BidirectionalTransformerHandler(this);

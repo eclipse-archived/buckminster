@@ -89,8 +89,8 @@ public class MavenReader extends URLFileReader
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			String repoPath = repoURL.getPath();
-			if(!repoPath.endsWith("/"))
-				repoPath += "/";
+			if(!repoPath.endsWith("/")) //$NON-NLS-1$
+				repoPath += "/"; //$NON-NLS-1$
 			repoPath += pomPath;
 			try
 			{
@@ -101,14 +101,14 @@ public class MavenReader extends URLFileReader
 			catch(SAXParseException e)
 			{
 				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8"))
+				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
 				
 				IOUtils.close(input);
 				input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 				InputSource source = new InputSource(new BufferedInputStream(input));
 				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment()).toString());
-				source.setEncoding("ISO-8859-1");
+				source.setEncoding("ISO-8859-1"); //$NON-NLS-1$
 				builder.reset();
 				return builder.parse(source);
 			}

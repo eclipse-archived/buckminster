@@ -138,7 +138,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendFolder(pbld, mapEntry.getGroupId());
-		appendFolder(pbld, "jars");
+		appendFolder(pbld, "jars"); //$NON-NLS-1$
 	}
 
 	void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension)
@@ -170,7 +170,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	void appendFolder(StringBuilder pbld, String folder)
 	{
 		pbld.append(folder);
-		if(!folder.endsWith("/"))
+		if(!folder.endsWith("/")) //$NON-NLS-1$
 			pbld.append('/');
 	}
 
@@ -183,13 +183,13 @@ public class MavenReaderType extends URLCatalogReaderType
 	void appendPathToPom(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendPomFolder(pbld, mapEntry, vs);
-		appendFileName(pbld, mapEntry.getArtifactId(), vs, ".pom");
+		appendFileName(pbld, mapEntry.getArtifactId(), vs, ".pom"); //$NON-NLS-1$
 	}
 
 	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendFolder(pbld, mapEntry.getGroupId());
-		appendFolder(pbld, "poms");
+		appendFolder(pbld, "poms"); //$NON-NLS-1$
 	}
 
 	static URL createURL(URI repoURI, String path) throws CoreException
@@ -225,7 +225,7 @@ public class MavenReaderType extends URLCatalogReaderType
 
 	IPath getDefaultLocalRepoPath()
 	{
-		return new Path(System.getProperty("user.home")).append(".maven").append("cache");
+		return new Path(System.getProperty("user.home")).append(".maven").append("cache"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	LocalCache getLocalCache()
@@ -235,7 +235,7 @@ public class MavenReaderType extends URLCatalogReaderType
 
 	String getMaterializationFolder()
 	{
-		return "maven";
+		return "maven"; //$NON-NLS-1$
 	}
 
 	IPath getPomPath(MapEntry mapEntry, VersionMatch vs) throws CoreException

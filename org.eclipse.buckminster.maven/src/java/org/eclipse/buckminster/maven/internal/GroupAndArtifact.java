@@ -16,9 +16,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 class GroupAndArtifact extends AbstractSaxableElement
 {
-	public static final String ALIAS_TAG = "alias";
-	public static final String ATTR_GROUP_ID = "groupId";
-	public static final String ATTR_ARTIFACT_ID = "artifactId";
+	public static final String ALIAS_TAG = "alias"; //$NON-NLS-1$
+	public static final String ATTR_GROUP_ID = "groupId"; //$NON-NLS-1$
+	public static final String ATTR_ARTIFACT_ID = "artifactId"; //$NON-NLS-1$
 
 	private final String m_groupId;
 	private final String m_artifactId;

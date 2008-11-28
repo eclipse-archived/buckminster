@@ -65,7 +65,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		NodeQuery query = getQuery();
 		IVersionDesignator designator = query.getVersionDesignator();
 		if(designator == null)
-			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0");
+			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0"); //$NON-NLS-1$
 		else
 		{
 			if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
@@ -90,17 +90,17 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		try
 		{
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"),
+			Document doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), //$NON-NLS-1$
 					lc, cctx, monitor);
 			for(String versionStr : getVersions(doc))
 			{
 				String v = versionStr;
-				if(v.endsWith("SNAPSHOT"))
+				if(v.endsWith("SNAPSHOT")) //$NON-NLS-1$
 				{
 					try
 					{
-						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/"
-								+ "maven-metadata.xml"), lc, cctx, new NullProgressMonitor());
+						doc = getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + v + "/" //$NON-NLS-1$
+								+ "maven-metadata.xml"), lc, cctx, new NullProgressMonitor()); //$NON-NLS-1$
 						v = getSnapshotVersion(doc, v);
 						if(v == null)
 							continue;
@@ -140,7 +140,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				pbld.append(getMapEntry().getArtifactId());
 				pbld.append('-');
 				pbld.append(version);
-				pbld.append(".jar");
+				pbld.append(".jar"); //$NON-NLS-1$
 				versions.add(new VersionMatch(version, null, -1, null, pbld.toString()));
 			}
 			return versions;
@@ -163,13 +163,13 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	{
 		List<String> versionList = null;
 
-		Element versioningElement = getElement(doc, "versioning");
+		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
 		if(versioningElement != null)
 		{
-			Element versionsElement = getElement(versioningElement, "versions");
+			Element versionsElement = getElement(versioningElement, "versions"); //$NON-NLS-1$
 			if(versionsElement != null)
 			{
-				NodeList versions = versionsElement.getElementsByTagName("version");
+				NodeList versions = versionsElement.getElementsByTagName("version"); //$NON-NLS-1$
 				int top = versions.getLength();
 				for(int i = 0; i < top; i++)
 				{
@@ -186,22 +186,22 @@ public class Maven2VersionFinder extends MavenVersionFinder
 
 	public static IPath getDefaultLocalRepoPath()
 	{
-		return new Path(System.getProperty("user.home")).append(".m2").append("repository");
+		return new Path(System.getProperty("user.home")).append(".m2").append("repository"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	public static String getSnapshotVersion(Document doc, String version)
 	{
 		String v = null;
-		Element versioningElement = getElement(doc, "versioning");
+		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
 		if(versioningElement != null)
 		{
-			Element snapshotElement = getElement(versioningElement, "snapshot");
+			Element snapshotElement = getElement(versioningElement, "snapshot"); //$NON-NLS-1$
 			if(snapshotElement != null)
 			{
-				Element buildNum = getElement(snapshotElement, "buildNumber");
+				Element buildNum = getElement(snapshotElement, "buildNumber"); //$NON-NLS-1$
 				if(buildNum != null)
 				{
-					Element ts = getElement(snapshotElement, "timestamp");
+					Element ts = getElement(snapshotElement, "timestamp"); //$NON-NLS-1$
 					if(ts != null)
 						v = version.substring(0, version.length() - 8) + ts.getTextContent() + '-'
 								+ buildNum.getTextContent();
@@ -244,11 +244,11 @@ public class Maven2VersionFinder extends MavenVersionFinder
 			catch(SAXParseException e)
 			{
 				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8"))
+				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
 
 				InputSource input = new InputSource(buffer.getInputStream());
-				input.setEncoding("ISO-8859-1");
+				input.setEncoding("ISO-8859-1"); //$NON-NLS-1$
 				docBld.reset();
 				return docBld.parse(input);
 			}

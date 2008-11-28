@@ -18,8 +18,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 class MapEntry extends GroupAndArtifact
 {
-	public static final String TAG = "entry";
-	public static final String ATTR_NAME = "name";
+	public static final String TAG = "entry"; //$NON-NLS-1$
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
 	private final String m_name;
 	private List<GroupAndArtifact> m_aliases;

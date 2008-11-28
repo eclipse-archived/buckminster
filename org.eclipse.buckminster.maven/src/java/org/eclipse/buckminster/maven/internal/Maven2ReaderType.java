@@ -73,7 +73,7 @@ public class Maven2ReaderType extends MavenReaderType
 
 	void appendEntryFolder(StringBuilder pbld, MapEntry mapEntry) throws CoreException
 	{
-		StringTokenizer tokens = new StringTokenizer(mapEntry.getGroupId(), ".");
+		StringTokenizer tokens = new StringTokenizer(mapEntry.getGroupId(), "."); //$NON-NLS-1$
 		while(tokens.hasMoreTokens())
 			appendFolder(pbld, tokens.nextToken());
 		appendFolder(pbld, mapEntry.getArtifactId());
@@ -88,6 +88,6 @@ public class Maven2ReaderType extends MavenReaderType
 	@Override
 	String getMaterializationFolder()
 	{
-		return "maven2";
+		return "maven2"; //$NON-NLS-1$
 	}
 }

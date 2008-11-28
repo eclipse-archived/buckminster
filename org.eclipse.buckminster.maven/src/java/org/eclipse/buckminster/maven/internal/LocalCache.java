@@ -23,12 +23,14 @@ import java.util.Arrays;
 
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.maven.MavenPlugin;
+import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -79,7 +81,7 @@ public class LocalCache
 		}
 
 		if(totRead != buffer.length)
-			throw BuckminsterException.fromMessage("Unable to read the %d character hexadecimal form of the digest for %s", Integer.valueOf(size), name);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_read_the_0_character_hexadecimal_form_of_the_digest_for_1, Integer.valueOf(size), name));
 
 		byte[] result = new byte[size];
 		for(int idx = 0; idx < size; ++idx)
@@ -109,7 +111,7 @@ public class LocalCache
 			try
 			{
 				localFile = obtainLocalFile(repository, cctx, path, failureCounter, subMonitor);
-				monitor.subTask("Verifying digest...");
+				monitor.subTask(Messages.verifying_digest_with_dots);
 				return new FileInputStream(localFile);
 			}
 			catch(CoreException e)
@@ -122,9 +124,9 @@ public class LocalCache
 			}
 			catch(IOException e)
 			{
-				monitor.subTask("Digest verification failed" + (failureCounter < MAX_FAILURES
-						? ". Trying again..."
-						: ""));
+				monitor.subTask(Messages.digest_verification_failed + (failureCounter < MAX_FAILURES
+						? Messages.trying_again_with_dots
+						: "")); //$NON-NLS-1$
 				if(++failureCounter == MAX_FAILURES)
 					throw e;
 
@@ -157,11 +159,11 @@ public class LocalCache
 		}
 	}
 
-	private static final String SHA1_SUFFIX = ".sha1";
+	private static final String SHA1_SUFFIX = ".sha1"; //$NON-NLS-1$
 
 	private static final int SHA1_LEN = 20;
 
-	private static final String MD5_SUFFIX = ".md5";
+	private static final String MD5_SUFFIX = ".md5"; //$NON-NLS-1$
 
 	private static final int MD5_LEN = 16;
 
@@ -248,8 +250,8 @@ public class LocalCache
 		try
 		{
 			md = MessageDigest.getInstance(remoteSha1 == null
-					? "MD5"
-					: "SHA1");
+					? "MD5" //$NON-NLS-1$
+					: "SHA1"); //$NON-NLS-1$
 			md.reset();
 		}
 		catch(NoSuchAlgorithmException e)
@@ -262,7 +264,7 @@ public class LocalCache
 		{
 			File outputDir = containingFolder.toFile();
 			if(!(outputDir.exists() || outputDir.mkdirs()))
-				throw new IOException("Unable to create directory " + outputDir);
+				throw new IOException(NLS.bind(Messages.unable_to_create_directory_0, outputDir));
 
 			output = new DigestOutputStream(new FileOutputStream(file), md);
 			DownloadManager.readInto(remoteURL, cctx, output, monitor);
@@ -277,7 +279,7 @@ public class LocalCache
 		boolean matchingDigest;
 		if(remoteDigest == null)
 		{
-			MavenPlugin.getLogger().warning("Unable to find Digest for %s", remoteURL);
+			MavenPlugin.getLogger().warning(NLS.bind(Messages.unable_to_find_digest_for_0, remoteURL));
 			matchingDigest = false;
 		}
 		else
@@ -292,7 +294,7 @@ public class LocalCache
 				// due to replace of the actual jar
 				//
 				MavenPlugin.getLogger().warning(
-					"Digest for %s still doesn't match after %d download attempts. Corrupt repo?", remoteURL, new Integer(MAX_FAILURES));
+					NLS.bind(Messages.digest_for_0_still_doesnt_match_after_1_download_attempts_corrupt_repo, remoteURL, new Integer(MAX_FAILURES)));
 
 			try
 			{
@@ -310,7 +312,7 @@ public class LocalCache
 		//
 		localDigestFile.delete();
 		file.delete();
-		throw new IOException("Digest mismatch after download for " + remoteURL);
+		throw new IOException(NLS.bind(Messages.digest_mismatch_after_download_for_0, remoteURL));
 	}
 
 	public IPath getRootPath()

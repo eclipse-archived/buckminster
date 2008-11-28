@@ -24,10 +24,12 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.IVersionConverter;
+import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -35,13 +37,13 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class MavenProvider extends Provider
 {
-	public static final String BM_MAVEN_PROVIDER_NS = XMLConstants.BM_PREFIX + "MavenProvider-1.0";
+	public static final String BM_MAVEN_PROVIDER_NS = XMLConstants.BM_PREFIX + "MavenProvider-1.0"; //$NON-NLS-1$
 
-	public static final String BM_MAVEN_PROVIDER_PREFIX = "mp";
+	public static final String BM_MAVEN_PROVIDER_PREFIX = "mp"; //$NON-NLS-1$
 
-	public static final String ELEM_MAPPINGS = "mappings";
+	public static final String ELEM_MAPPINGS = "mappings"; //$NON-NLS-1$
 
-	public static final String ELEM_RULE = "rule";
+	public static final String ELEM_RULE = "rule"; //$NON-NLS-1$
 
 	/**
 	 * Apply default rules. I.e.<ul>
@@ -121,8 +123,8 @@ public class MavenProvider extends Provider
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type",
-			"CDATA", BM_MAVEN_PROVIDER_PREFIX + ":MavenProvider");
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", //$NON-NLS-1$ //$NON-NLS-2$
+			"CDATA", BM_MAVEN_PROVIDER_PREFIX + ":MavenProvider"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
@@ -190,7 +192,7 @@ public class MavenProvider extends Provider
 
 		int slashPos = transformed.indexOf('/');
 		if(slashPos < 0)
-			throw BuckminsterException.fromMessage("The result of applying a match rule had no separator slash: %s", transformed);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
 
 		return new MapEntry(name, transformed.substring(0, slashPos), transformed.substring(slashPos + 1), null);
 	}

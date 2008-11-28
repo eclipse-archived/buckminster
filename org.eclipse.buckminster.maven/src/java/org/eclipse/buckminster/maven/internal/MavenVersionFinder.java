@@ -25,11 +25,13 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * The URL used by the MavenReader denotes the group directory within one specific repository. The format must be <br/>
@@ -41,7 +43,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class MavenVersionFinder extends AbstractVersionFinder
 {
-	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" };
+	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 	private final MavenReaderType m_readerType;
 
@@ -79,7 +81,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		StringBuilder pbld = new StringBuilder();
 		m_readerType.appendFolder(pbld, m_uri.getPath());
 		m_readerType.appendFolder(pbld, m_mapEntry.getGroupId());
-		m_readerType.appendFolder(pbld, "jars");
+		m_readerType.appendFolder(pbld, "jars"); //$NON-NLS-1$
 		URL jarsURL = MavenReaderType.createURL(m_uri, pbld.toString());
 		return URLCatalogReaderType.list(jarsURL, getConnectContext(), monitor);
 	}
@@ -97,7 +99,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		VersionMatch selected;
 		VersionMatch rejected;
 
-		String msgFormat = "%s has no version";
+		String msgFormat = Messages._0_has_no_version;
 		if(av == null)
 		{
 			if(bv == null)
@@ -117,7 +119,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 			IVersionType bt = bv.getType();
 			if(at.isComparableTo(bt))
 			{
-				msgFormat = "%s is a better match";
+				msgFormat = Messages._0_is_a_better_match;
 				if(getQuery().compare(a, b) > 0)
 				{
 					rejected = b;
@@ -134,7 +136,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				// We only deal with triplets, timestamps, and snapshots here. The
 				// order of precedence is triplet, timestamp, snapshot
 				//
-				msgFormat = "only %s is a triplet";
+				msgFormat = Messages.only_0_is_a_triplet;
 				if(at.equals(VersionFactory.TripletType))
 				{
 					rejected = b;
@@ -147,7 +149,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				}
 				else
 				{
-					msgFormat = "timestamp %s is more strict";
+					msgFormat = Messages.timestamp_0_is_more_strict;
 					if(at.equals(VersionFactory.TimestampType))
 					{
 						rejected = b;
@@ -161,7 +163,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				}
 			}
 		}
-		logDecision(ResolverDecisionType.MATCH_REJECTED, rejected, String.format(msgFormat, selected));
+		logDecision(ResolverDecisionType.MATCH_REJECTED, rejected, NLS.bind(msgFormat, selected));
 		return selected;
 	}
 
@@ -176,7 +178,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		NodeQuery query = getQuery();
 		IVersionDesignator designator = query.getVersionDesignator();
 		if(designator == null)
-			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0");
+			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0"); //$NON-NLS-1$
 		else
 		{
 			if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
