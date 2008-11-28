@@ -72,13 +72,6 @@ public class CVSTest extends TestCase
 	private static String NON_EXISTING_FILE = "foobar.txt";
 
 	private static String REPO_LOCATION = ":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.dash/org.eclipse.dash.siteassembler";
-	private final CVSSession m_session;
-
-	public CVSTest(String methodName, CVSSession session)
-	{
-		super(methodName);
-		m_session = session;
-	}
 
 	public static Test suite() throws Exception
 	{
@@ -94,6 +87,14 @@ public class CVSTest extends TestCase
 		suite.addTest(new CVSTest("testDeadFile", session));
 		// suite.addTest(new CVSTest("testTags", session));
 		return suite;
+	}
+
+	private final CVSSession m_session;
+
+	public CVSTest(String methodName, CVSSession session)
+	{
+		super(methodName);
+		m_session = session;
 	}
 
 	public void testCheckOut() throws Exception
@@ -119,13 +120,42 @@ public class CVSTest extends TestCase
 			copier.done();
 		}
 		assertTrue(new File(destDir, EXISTING_FILE).isFile());
-		
+
 		CorePlugin plugin = CorePlugin.getDefault();
 		IReaderType rd = plugin.getReaderType("cvs");
 		Date lastRemote = rd.getLastModification(REPO_LOCATION, null, nullMonitor);
 		System.out.println("Last modified date " + lastRemote);
 		Date lastLocal = rd.getLastModification(destDir, nullMonitor);
 		assertEquals(lastRemote, lastLocal);
+	}
+
+	public void testDeadFile() throws Exception
+	{
+		try
+		{
+			readFile(DEAD_FILE);
+			assertTrue("Found dead file", false);
+		}
+		catch(FileNotFoundException e)
+		{
+		}
+	}
+
+	public void testGetFile() throws Exception
+	{
+		readFile(EXISTING_FILE);
+	}
+
+	public void testNonExistentFile() throws Exception
+	{
+		try
+		{
+			readFile(NON_EXISTING_FILE);
+			assertTrue("Found non existing file", false);
+		}
+		catch(FileNotFoundException e)
+		{
+		}
 	}
 
 	public void testRepositories()
@@ -136,14 +166,44 @@ public class CVSTest extends TestCase
 			System.out.println(location.getLocation(false));
 	}
 
-	public void testGetFile() throws Exception
+	public void testTags() throws Exception
 	{
-		readFile(EXISTING_FILE);
+		CorePlugin plugin = CorePlugin.getDefault();
+		IReaderType rd = plugin.getReaderType("cvs");
+		VersionConverterDesc vd = new VersionConverterDesc("tag", VersionFactory.OSGiType,
+				new BidirectionalTransformer[] {
+						new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"),
+								"$1.$2.$3.$4", Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"),
+								"REL$1_$2_$3$4"),
+						new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3",
+								Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
+						new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3", Pattern
+								.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
+
+		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
+		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
+				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null,
+				false, false, null, null);
+		ComponentQueryBuilder cq = new ComponentQueryBuilder();
+		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
+		rqBld.setName("pgsql");
+		rqBld.setVersionDesignator("[8.0.0,8.0.4]", null);
+		cq.setResourceMapURL(getClass().getResource("test.rmap").toString());
+		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
+		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(),
+				new NullProgressMonitor());
+		try
+		{
+			System.out.println("[8.0.0,8.0.4] resulted in version: "
+					+ versionFinder.getBestVersion(new NullProgressMonitor()));
+		}
+		finally
+		{
+			versionFinder.close();
+		}
 	}
 
-	private void readFile(String fileName)
-	throws CoreException,
-		IOException
+	private void readFile(String fileName) throws CoreException, IOException
 	{
 		// Build the local options
 		//
@@ -154,10 +214,12 @@ public class CVSTest extends TestCase
 		try
 		{
 			CVSTag tag = CVSTag.DEFAULT;
-			IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
+			IPath parentPath = Path.fromPortableString(m_session.getModuleName())
+					.append(filePath.removeLastSegments(1));
 			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
 			RemoteFolder folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), tag);
-			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, tag, IResource.DEPTH_ONE, nullMon);
+			folder = UpdateContentCachingService
+					.buildRemoteTree(cvsLocation, folder, tag, IResource.DEPTH_ONE, nullMon);
 
 			ICVSResource cvsFile;
 			try
@@ -180,65 +242,6 @@ public class CVSTest extends TestCase
 		{
 			IOUtils.close(out);
 			IOUtils.close(in);
-		}
-	}
-
-	public void testDeadFile() throws Exception
-	{
-		try
-		{
-			readFile(DEAD_FILE);
-			assertTrue("Found dead file", false);
-		}
-		catch(FileNotFoundException e)
-		{
-		}
-	}
-
-	public void testNonExistentFile() throws Exception
-	{
-		try
-		{
-			readFile(NON_EXISTING_FILE);
-			assertTrue("Found non existing file", false);
-		}
-		catch(FileNotFoundException e)
-		{
-		}
-	}
-
-	public void testTags() throws Exception
-	{
-		CorePlugin plugin = CorePlugin.getDefault();
-		IReaderType rd = plugin.getReaderType("cvs");
-		VersionConverterDesc vd = new VersionConverterDesc("tag", VersionFactory.OSGiType, new BidirectionalTransformer[] {
-				new BidirectionalTransformer(
-						Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"), "$1.$2.$3.$4",
-						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3$4"),
-				new BidirectionalTransformer(
-						Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3",
-						Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
-				new BidirectionalTransformer(
-						Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3",
-						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
-
-		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
-				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null, false, false, null, null);
-		ComponentQueryBuilder cq = new ComponentQueryBuilder();
-		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
-		rqBld.setName("pgsql");
-		rqBld.setVersionDesignator("[8.0.0,8.0.4]", null);
-		cq.setResourceMapURL(getClass().getResource("test.rmap").toString());
-		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
-		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(), new NullProgressMonitor());
-		try
-		{
-			System.out.println("[8.0.0,8.0.4] resulted in version: " + versionFinder.getBestVersion(new NullProgressMonitor()));
-		}
-		finally
-		{
-			versionFinder.close();
 		}
 	}
 }
