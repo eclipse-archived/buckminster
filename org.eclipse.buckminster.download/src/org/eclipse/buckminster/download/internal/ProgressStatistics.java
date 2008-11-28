@@ -13,6 +13,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import org.eclipse.buckminster.download.Messages;
+import org.eclipse.osgi.util.NLS;
+
 public class ProgressStatistics
 {
 	private static final int DEFAULT_REPORT_INTERVAL = 1000;
@@ -32,13 +35,11 @@ public class ProgressStatistics
 		return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024))); //$NON-NLS-1$
 	}
 
-	private final StringBuilder m_reportBuilder;
+	private final String m_fileName;
 
 	private final long m_total;
 
 	private final long m_startTime;
-
-	private final int m_leadInLength;
 
 	private long m_current;
 
@@ -53,11 +54,7 @@ public class ProgressStatistics
 	public ProgressStatistics(String fileName, long total)
 	{
 		m_startTime = System.currentTimeMillis();
-		m_reportBuilder = new StringBuilder(fileName.length() + 30);
-		m_reportBuilder.append("Fetching ");
-		m_reportBuilder.append(fileName);
-		m_reportBuilder.append(" (");
-		m_leadInLength = m_reportBuilder.length();
+		m_fileName = fileName;
 
 		m_total = total;
 
@@ -128,17 +125,11 @@ public class ProgressStatistics
 
 	public synchronized String report()
 	{
-		m_reportBuilder.setLength(m_leadInLength);
-		m_reportBuilder.append(convert(m_current));
-		if(m_total != -1)
-		{
-			m_reportBuilder.append(" of ");
-			m_reportBuilder.append(convert(m_total));
-		}
-		m_reportBuilder.append(" at ");
-		m_reportBuilder.append(convert(getRecentSpeed()));
-		m_reportBuilder.append("/s)");
-		return m_reportBuilder.toString();
+		return m_total != -1
+				? NLS.bind(Messages.fetching_0_1_of_2_at_3, new String[] { m_fileName, convert(m_current),
+						convert(m_total), convert(getRecentSpeed()) })
+				: NLS.bind(Messages.fetching_0_1_at_2, new String[] { m_fileName, convert(m_current),
+						convert(getRecentSpeed()) });
 	}
 
 	public void setReportInterval(int reportInterval)
