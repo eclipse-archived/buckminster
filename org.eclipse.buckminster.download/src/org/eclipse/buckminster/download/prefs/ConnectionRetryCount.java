@@ -29,8 +29,8 @@ public class ConnectionRetryCount extends BasicPreferenceHandler
 		catch(NumberFormatException e)
 		{
 		}
-		throw new IllegalArgumentException(String.format(
-				NLS.bind(Messages.value_0_illegal_for_1, prefValue, Messages.connection_retry_count)));
+		throw new IllegalArgumentException(String.format(NLS.bind(Messages.value_0_illegal_for_1, prefValue,
+				Messages.connection_retry_count)));
 	}
 
 	@Override

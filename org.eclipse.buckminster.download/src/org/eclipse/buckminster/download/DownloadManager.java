@@ -31,12 +31,6 @@ public class DownloadManager
 {
 	private static ICache s_instance;
 
-	public static boolean isWindows()
-	{
-		String os = System.getProperty("os.name"); //$NON-NLS-1$
-		return os != null && os.toLowerCase().startsWith("windows"); //$NON-NLS-1$
-	}
-
 	public static synchronized ICache getCache() throws CoreException
 	{
 		if(s_instance != null)
@@ -69,6 +63,12 @@ public class DownloadManager
 
 		s_instance = new CacheImpl(new File(buckDir, "repository")); //$NON-NLS-1$
 		return s_instance;
+	}
+
+	public static boolean isWindows()
+	{
+		String os = System.getProperty("os.name"); //$NON-NLS-1$
+		return os != null && os.toLowerCase().startsWith("windows"); //$NON-NLS-1$
 	}
 
 	public static InputStream read(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException

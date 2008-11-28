@@ -48,23 +48,6 @@ public class Installer
 
 	private static final Installer s_plainInstaller = new Installer(null, null);
 
-	private final List<IDecompressor> m_decompressors;
-
-	private final IExpander m_expander;
-
-	private Installer(List<IDecompressor> decompressors, IExpander expander)
-	{
-		m_decompressors = (decompressors == null)
-				? Collections.<IDecompressor> emptyList()
-				: decompressors;
-		m_expander = expander;
-	}
-
-	public static Installer getPlainInstaller()
-	{
-		return s_plainInstaller;
-	}
-
 	public static Installer getInstaller(final String fileName, boolean expand) throws CoreException
 	{
 		synchronized(s_installerCache)
@@ -176,31 +159,21 @@ public class Installer
 		}
 	}
 
-	public void validate(File file, IProgressMonitor monitor) throws CoreException
+	public static Installer getPlainInstaller()
 	{
-		if(m_decompressors.size() == 0 && m_expander == null)
-			return;
-
-		InputStream input = null;
-		try
-		{
-			input = new FileInputStream(file);
-			install(input, null, monitor);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
+		return s_plainInstaller;
 	}
 
-	public void install(InputStream input, File destination, IProgressMonitor monitor) throws IOException,
-			CoreException
+	private final List<IDecompressor> m_decompressors;
+
+	private final IExpander m_expander;
+
+	private Installer(List<IDecompressor> decompressors, IExpander expander)
 	{
-		install(input, destination, null, false, monitor);
+		m_decompressors = (decompressors == null)
+				? Collections.<IDecompressor> emptyList()
+				: decompressors;
+		m_expander = expander;
 	}
 
 	public void install(InputStream input, File destination, FileFilter fileFilter, boolean flattenHierarchy,
@@ -247,7 +220,8 @@ public class Installer
 					{
 						File parentFolder = destination.getParentFile();
 						if(!(parentFolder == null || parentFolder.isDirectory() || parentFolder.mkdirs()))
-							throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_access_directory_0, parentFolder));
+							throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_access_directory_0,
+									parentFolder));
 						output = new FileOutputStream(destination);
 					}
 					IOUtils.copy(input, output, subMon);
@@ -264,6 +238,33 @@ public class Installer
 			if(dcCount > 0)
 				IOUtils.close(input);
 			MonitorUtils.done(monitor);
+		}
+	}
+
+	public void install(InputStream input, File destination, IProgressMonitor monitor) throws IOException,
+			CoreException
+	{
+		install(input, destination, null, false, monitor);
+	}
+
+	public void validate(File file, IProgressMonitor monitor) throws CoreException
+	{
+		if(m_decompressors.size() == 0 && m_expander == null)
+			return;
+
+		InputStream input = null;
+		try
+		{
+			input = new FileInputStream(file);
+			install(input, null, monitor);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
 		}
 	}
 }

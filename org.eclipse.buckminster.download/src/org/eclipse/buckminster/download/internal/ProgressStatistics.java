@@ -21,6 +21,17 @@ public class ProgressStatistics
 
 	private static final int SPEED_RESOLUTION = 1000;
 
+	private static String convert(long amount)
+	{
+		if(amount < 1024)
+			return String.format(Locale.US, "%dB", Long.valueOf(amount)); //$NON-NLS-1$
+
+		if(amount < 1024 * 1024)
+			return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024)); //$NON-NLS-1$
+
+		return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024))); //$NON-NLS-1$
+	}
+
 	private final StringBuilder m_reportBuilder;
 
 	private final long m_total;
@@ -57,17 +68,6 @@ public class ProgressStatistics
 		m_recentSpeedMapKey = 0L;
 	}
 
-	public void increase(long inc)
-	{
-		registerRecentSpeed(getDuration() / SPEED_RESOLUTION, inc);
-		m_current += inc;
-	}
-
-	public long getDuration()
-	{
-		return System.currentTimeMillis() - m_startTime;
-	}
-
 	public long getAverageSpeed()
 	{
 		long dur = getDuration();
@@ -76,6 +76,19 @@ public class ProgressStatistics
 			return m_current / (dur / 1000);
 
 		return 0L;
+	}
+
+	public long getDuration()
+	{
+		return System.currentTimeMillis() - m_startTime;
+	}
+
+	public double getPercentage()
+	{
+		if(m_total > 0)
+			return ((double)m_current) / ((double)m_total);
+
+		return 0.0;
 	}
 
 	synchronized public long getRecentSpeed()
@@ -97,14 +110,6 @@ public class ProgressStatistics
 		return 0L;
 	}
 
-	public double getPercentage()
-	{
-		if(m_total > 0)
-			return ((double)m_current) / ((double)m_total);
-
-		return 0.0;
-	}
-
 	public int getReportInterval()
 	{
 		return m_reportInterval;
@@ -113,6 +118,27 @@ public class ProgressStatistics
 	public long getTotal()
 	{
 		return m_total;
+	}
+
+	public void increase(long inc)
+	{
+		registerRecentSpeed(getDuration() / SPEED_RESOLUTION, inc);
+		m_current += inc;
+	}
+
+	public synchronized String report()
+	{
+		m_reportBuilder.setLength(m_leadInLength);
+		m_reportBuilder.append(convert(m_current));
+		if(m_total != -1)
+		{
+			m_reportBuilder.append(" of ");
+			m_reportBuilder.append(convert(m_total));
+		}
+		m_reportBuilder.append(" at ");
+		m_reportBuilder.append(convert(getRecentSpeed()));
+		m_reportBuilder.append("/s)");
+		return m_reportBuilder.toString();
 	}
 
 	public void setReportInterval(int reportInterval)
@@ -129,21 +155,6 @@ public class ProgressStatistics
 			return true;
 		}
 		return false;
-	}
-
-	public synchronized String report()
-	{
-		m_reportBuilder.setLength(m_leadInLength);
-		m_reportBuilder.append(convert(m_current));
-		if(m_total != -1)
-		{
-			m_reportBuilder.append(" of ");
-			m_reportBuilder.append(convert(m_total));
-		}
-		m_reportBuilder.append(" at ");
-		m_reportBuilder.append(convert(getRecentSpeed()));
-		m_reportBuilder.append("/s)");
-		return m_reportBuilder.toString();
 	}
 
 	@Override
@@ -173,16 +184,5 @@ public class ProgressStatistics
 	{
 		long threshold = lastKey - SPEED_INTERVAL / SPEED_RESOLUTION;
 		m_recentSpeedMap.headMap(Long.valueOf(threshold)).clear();
-	}
-
-	private static String convert(long amount)
-	{
-		if(amount < 1024)
-			return String.format(Locale.US, "%dB", Long.valueOf(amount)); //$NON-NLS-1$
-
-		if(amount < 1024 * 1024)
-			return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024)); //$NON-NLS-1$
-
-		return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024))); //$NON-NLS-1$
 	}
 }

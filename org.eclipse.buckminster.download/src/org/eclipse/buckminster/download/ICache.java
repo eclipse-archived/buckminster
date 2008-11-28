@@ -30,11 +30,65 @@ public interface ICache
 	boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException;
 
-	boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor) throws CoreException,
-			FileNotFoundException;
-
-	boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IProgressMonitor monitor)
+	boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException;
+
+	boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm,
+			IProgressMonitor monitor) throws CoreException, FileNotFoundException;
+
+	/**
+	 * <p>
+	 * This method will first assert that the remoteFile is placed in the cache. It will then return an stream that
+	 * reads from the locally cached file.
+	 * </p>
+	 * <p>
+	 * The cached file is kept up to date using the specified fetchPolicy.
+	 * </p>
+	 * 
+	 * @param fetchPolicy
+	 *            The policy used to keep the locally cached file up to date.
+	 * @param remoteFile
+	 *            The the remote file that should be cached
+	 * @param fileInfoHandle
+	 *            a one element array to receive the file info of the opened file. Can be <code>null</code>.
+	 * @param monitor
+	 *            A progress monitor tracking the download
+	 * 
+	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
+	 * @throws CoreException
+	 */
+	InputStream open(IFetchPolicy fetchPolicy, URL remoteFile, IFileInfo[] fileInfoHandle, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException;
+
+	/**
+	 * <p>
+	 * This method will first assert that the remoteFile is placed in the cache. It will then return an stream that
+	 * reads from the locally cached file.
+	 * </p>
+	 * <p>
+	 * A file that is placed in the cache might be subject to a dry run by {@link IDecompressor} instances and possibly
+	 * also by an {@link IExpander}. This will happen if the remoteName matches decompressors and expanders that has
+	 * been registered with their respective extension points {@link Activator#DECOMPRESSORS_POINT} and
+	 * {@link Activator#EXPANDERS_POINT}.
+	 * <p>
+	 * The cached file will be trusted as long as its size is equal to the size of the remote file and its timestamp is
+	 * younger then the timestamp of the remote file.
+	 * </p>
+	 * 
+	 * @param remoteFile
+	 *            The the remote file that should be cached
+	 * @param remoteName
+	 *            This parameter is normally <code>null</code> but it can be used as an override in case the name
+	 *            obtained from the connection response cannot be trusted.
+	 * @param fileInfoHandle
+	 *            a one element array to receive the file info of the opened file. Can be <code>null</code>.
+	 * @param monitor
+	 *            A progress monitor tracking the download
+	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
+	 * @throws CoreException
+	 */
+	InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fileInfoHandle,
+			IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
 	/**
 	 * <p>
@@ -71,62 +125,8 @@ public interface ICache
 	 *             if the remote source could not be found
 	 * @throws CoreException
 	 */
-	InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IFileInfo[] fileInfoHandle,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException;
-
-	/**
-	 * <p>
-	 * This method will first assert that the remoteFile is placed in the cache. It will then return an stream that
-	 * reads from the locally cached file.
-	 * </p>
-	 * <p>
-	 * A file that is placed in the cache might be subject to a dry run by {@link IDecompressor} instances and possibly
-	 * also by an {@link IExpander}. This will happen if the remoteName matches decompressors and expanders that has
-	 * been registered with their respective extension points {@link Activator#DECOMPRESSORS_POINT} and
-	 * {@link Activator#EXPANDERS_POINT}.
-	 * <p>
-	 * The cached file will be trusted as long as its size is equal to the size of the remote file and its timestamp is
-	 * younger then the timestamp of the remote file.
-	 * </p>
-	 * 
-	 * @param remoteFile
-	 *            The the remote file that should be cached
-	 * @param remoteName
-	 *            This parameter is normally <code>null</code> but it can be used as an override in case the name
-	 *            obtained from the connection response cannot be trusted.
-	 * @param fileInfoHandle
-	 *            a one element array to receive the file info of the opened file. Can be <code>null</code>.
-	 * @param monitor
-	 *            A progress monitor tracking the download
-	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
-	 * @throws CoreException
-	 */
-	InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fileInfoHandle, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException;
-
-	/**
-	 * <p>
-	 * This method will first assert that the remoteFile is placed in the cache. It will then return an stream that
-	 * reads from the locally cached file.
-	 * </p>
-	 * <p>
-	 * The cached file is kept up to date using the specified fetchPolicy.
-	 * </p>
-	 * 
-	 * @param fetchPolicy
-	 *            The policy used to keep the locally cached file up to date.
-	 * @param remoteFile
-	 *            The the remote file that should be cached
-	 * @param fileInfoHandle
-	 *            a one element array to receive the file info of the opened file. Can be <code>null</code>.
-	 * @param monitor
-	 *            A progress monitor tracking the download
-	 * 
-	 * @return A stream suitable for reading the local copy of the cached <code>remoteFile</code>.
-	 * @throws CoreException
-	 */
-	InputStream open(IFetchPolicy fetchPolicy, URL remoteFile, IFileInfo[] fileInfoHandle, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException;
+	InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm,
+			IFileInfo[] fileInfoHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException;
 
 	InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException;
 }

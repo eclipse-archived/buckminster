@@ -28,6 +28,17 @@ public class Activator implements BundleActivator
 
 	public static final String DECOMPRESSORS_POINT = PLUGIN_ID + ".decompressors"; //$NON-NLS-1$
 
+	public static Activator getDefault()
+	{
+		return s_plugin;
+	}
+
+	public synchronized IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
+	{
+		return (IRetrieveFileTransferContainerAdapter)m_container
+				.getAdapter(IRetrieveFileTransferContainerAdapter.class);
+	}
+
 	public void start(BundleContext context) throws Exception
 	{
 		s_plugin = this;
@@ -38,15 +49,5 @@ public class Activator implements BundleActivator
 	{
 		s_plugin = null;
 		m_container = null;
-	}
-
-	public static Activator getDefault()
-	{
-		return s_plugin;
-	}
-
-	public synchronized IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
-	{
-		return (IRetrieveFileTransferContainerAdapter)m_container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
 	}
 }

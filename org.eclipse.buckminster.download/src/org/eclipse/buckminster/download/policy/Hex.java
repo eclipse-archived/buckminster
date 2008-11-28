@@ -23,16 +23,41 @@ public class Hex
 {
 	public static final int MAX_FAILURES = 2;
 
-	private static int hexDigit(byte c)
+	public static byte[] decode(byte[] hexChars)
 	{
-		int v = 0;
-		if(c >= '0' && c <= '9')
-			v = c - '0';
-		else if(c >= 'a' && c <= 'f')
-			v = (c - 'a') + 10;
-		else if(c >= 'A' && c <= 'F')
-			v = (c - 'A') + 10;
-		return v;
+		return decode(hexChars, hexChars.length);
+	}
+
+	public static byte[] decode(byte[] hexChars, int length)
+	{
+		int size = length / 2;
+		byte[] result = new byte[size];
+		for(int idx = 0; idx < size; ++idx)
+		{
+			int cidx = idx << 1;
+			int b = (hexDigit(hexChars[cidx]) << 4) | hexDigit(hexChars[cidx + 1]);
+			result[idx] = (byte)(b & 0xff);
+		}
+		return result;
+	}
+
+	public static byte[] readHex(String name, InputStream stream, int size) throws IOException
+	{
+		byte[] buffer = new byte[size * 2];
+		int bytesRead;
+		int remain = buffer.length;
+		int totRead = 0;
+		while(remain > 0 && (bytesRead = stream.read(buffer, totRead, remain)) > 0)
+		{
+			totRead += bytesRead;
+			remain -= bytesRead;
+		}
+
+		if(totRead != buffer.length)
+			throw new IOException(NLS.bind(Messages.unable_to_read_0_hex_chars_from_1, String.valueOf(buffer.length),
+					name));
+
+		return decode(buffer);
 	}
 
 	public static void writeHex(byte[] bytes, OutputStream stream) throws IOException
@@ -51,39 +76,15 @@ public class Hex
 		}
 	}
 
-	public static byte[] readHex(String name, InputStream stream, int size) throws IOException
+	private static int hexDigit(byte c)
 	{
-		byte[] buffer = new byte[size * 2];
-		int bytesRead;
-		int remain = buffer.length;
-		int totRead = 0;
-		while(remain > 0 && (bytesRead = stream.read(buffer, totRead, remain)) > 0)
-		{
-			totRead += bytesRead;
-			remain -= bytesRead;
-		}
-
-		if(totRead != buffer.length)
-			throw new IOException(NLS.bind(Messages.unable_to_read_0_hex_chars_from_1, String.valueOf(buffer.length),  name));
-
-		return decode(buffer);
-	}
-
-	public static byte[] decode(byte[] hexChars)
-	{
-		return decode(hexChars, hexChars.length);
-	}
-
-	public static byte[] decode(byte[] hexChars, int length)
-	{
-		int size = length / 2;
-		byte[] result = new byte[size];
-		for(int idx = 0; idx < size; ++idx)
-		{
-			int cidx = idx << 1;
-			int b = (hexDigit(hexChars[cidx]) << 4) | hexDigit(hexChars[cidx + 1]);
-			result[idx] = (byte)(b & 0xff);
-		}
-		return result;
+		int v = 0;
+		if(c >= '0' && c <= '9')
+			v = c - '0';
+		else if(c >= 'a' && c <= 'f')
+			v = (c - 'a') + 10;
+		else if(c >= 'A' && c <= 'F')
+			v = (c - 'A') + 10;
+		return v;
 	}
 }

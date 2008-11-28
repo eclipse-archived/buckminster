@@ -118,14 +118,6 @@ public class ZipExpander implements IExpander
 		}
 	}
 
-	private String getName(ZipEntry entry)
-	{
-		String name = entry.getName();
-		return m_flatten
-				? new File(name).getName()
-				: name;
-	}
-
 	public void setFilter(FileFilter filter)
 	{
 		m_filter = filter;
@@ -134,5 +126,13 @@ public class ZipExpander implements IExpander
 	public void setFlattenHierarchy(boolean shouldFlatten)
 	{
 		m_flatten = shouldFlatten;
+	}
+
+	private String getName(ZipEntry entry)
+	{
+		String name = entry.getName();
+		return m_flatten
+				? new File(name).getName()
+				: name;
 	}
 }

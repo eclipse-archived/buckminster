@@ -36,6 +36,31 @@ public class ArchivePolicy extends AbstractFetchPolicy
 {
 	private static final Object THREADLOCK = new Object();
 
+	/**
+	 * Creates directories in a synchronized block. Note: The same method is in the
+	 * org.eclipse.buckminster.core.helpers.FileUtils class, however, for the dependency hierarchy reasons, this package
+	 * is not accessible from here. This could be solved by refactoring the dependencies.
+	 * 
+	 * @param directory
+	 *            The path for which all directories should be created
+	 * @throws CoreException
+	 *             If the directories cannot be created
+	 */
+	private static void mkdirs(File directory) throws CoreException
+	{
+		synchronized(THREADLOCK)
+		{
+			if(directory == null || directory.exists() && !directory.isDirectory())
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.error_0_cause_1, NLS.bind(
+						Messages.unable_to_create_directory_0, directory != null
+								? directory
+								: "(null)"), Messages.not_a_directory)); //$NON-NLS-1$
+
+			if(!directory.exists() && !directory.mkdirs())
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_create_directory_0, directory));
+		}
+	}
+
 	private final String m_remoteName;
 
 	private final IConnectContext m_connectContext;
@@ -141,31 +166,6 @@ public class ArchivePolicy extends AbstractFetchPolicy
 		finally
 		{
 			IOUtils.close(output);
-		}
-	}
-
-	/**
-	 * Creates directories in a synchronized block. Note: The same method is in the
-	 * org.eclipse.buckminster.core.helpers.FileUtils class, however, for the dependency hierarchy reasons, this package
-	 * is not accessible from here. This could be solved by refactoring the dependencies.
-	 * 
-	 * @param directory
-	 *            The path for which all directories should be created
-	 * @throws CoreException
-	 *             If the directories cannot be created
-	 */
-	private static void mkdirs(File directory) throws CoreException
-	{
-		synchronized(THREADLOCK)
-		{
-			if(directory == null || directory.exists() && !directory.isDirectory())
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.error_0_cause_1, NLS.bind(
-						Messages.unable_to_create_directory_0, directory != null
-								? directory
-								: "(null)"), Messages.not_a_directory)); //$NON-NLS-1$
-
-			if(!directory.exists() && !directory.mkdirs())
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_create_directory_0, directory));
 		}
 	}
 

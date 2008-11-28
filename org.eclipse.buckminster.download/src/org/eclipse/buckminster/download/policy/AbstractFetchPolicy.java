@@ -37,6 +37,31 @@ import org.eclipse.osgi.util.NLS;
  */
 public abstract class AbstractFetchPolicy implements IFetchPolicy
 {
+	protected static void safeRename(File sourceFile, File destFile) throws CoreException
+	{
+		File toDelete = null;
+		if(destFile.exists())
+		{
+			toDelete = new File(destFile.getPath() + ".old"); //$NON-NLS-1$
+			if(toDelete.exists())
+				toDelete.delete();
+			if(!destFile.renameTo(toDelete))
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_rename_0, destFile));
+		}
+
+		if(sourceFile.renameTo(destFile))
+		{
+			if(toDelete != null)
+				toDelete.delete();
+		}
+		else
+		{
+			if(toDelete != null)
+				toDelete.renameTo(destFile);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_rename_temp_0, destFile));
+		}
+	}
+
 	private final ICache m_cache;
 
 	protected AbstractFetchPolicy(ICache cache)
@@ -49,25 +74,12 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 		return m_cache;
 	}
 
-	protected void saveLocalFileInfo(URL url, IFileInfo fileInfo) throws CoreException
+	protected File getFileInfoFile(URL url)
 	{
-		FileInfoBuilder fiBld = (fileInfo instanceof FileInfoBuilder) ? (FileInfoBuilder)fileInfo : new FileInfoBuilder(fileInfo);
-		Properties saveProps = new Properties();
-		fiBld.addProperties(saveProps);
-		OutputStream out = null;
-		try
-		{
-			out = new BufferedOutputStream(new FileOutputStream(getFileInfoFile(url)));
-			saveProps.store(out, null);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(out);
-		}
+		CacheImpl cache = (CacheImpl)getCache();
+		File folder = cache.getSubFolder(url);
+		UUID hash = cache.getHash(url.toString());
+		return new File(folder, hash.toString() + ".properties"); //$NON-NLS-1$
 	}
 
 	protected IFileInfo readLocalFileInfo(URL url) throws CoreException
@@ -94,36 +106,26 @@ public abstract class AbstractFetchPolicy implements IFetchPolicy
 		return new FileInfoBuilder(loadProps);
 	}
 
-	protected static void safeRename(File sourceFile, File destFile) throws CoreException
+	protected void saveLocalFileInfo(URL url, IFileInfo fileInfo) throws CoreException
 	{
-		File toDelete = null;
-		if(destFile.exists())
+		FileInfoBuilder fiBld = (fileInfo instanceof FileInfoBuilder)
+				? (FileInfoBuilder)fileInfo
+				: new FileInfoBuilder(fileInfo);
+		Properties saveProps = new Properties();
+		fiBld.addProperties(saveProps);
+		OutputStream out = null;
+		try
 		{
-			toDelete = new File(destFile.getPath() + ".old"); //$NON-NLS-1$
-			if(toDelete.exists())
-				toDelete.delete();
-			if(!destFile.renameTo(toDelete))
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_rename_0, destFile));
+			out = new BufferedOutputStream(new FileOutputStream(getFileInfoFile(url)));
+			saveProps.store(out, null);
 		}
-
-		if(sourceFile.renameTo(destFile))
+		catch(IOException e)
 		{
-			if(toDelete != null)
-				toDelete.delete();
+			throw BuckminsterException.wrap(e);
 		}
-		else
+		finally
 		{
-			if(toDelete != null)
-				toDelete.renameTo(destFile);
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_rename_temp_0, destFile));
+			IOUtils.close(out);
 		}
-	}
-	
-	protected File getFileInfoFile(URL url)
-	{
-		CacheImpl cache = (CacheImpl)getCache();
-		File folder = cache.getSubFolder(url);
-		UUID hash = cache.getHash(url.toString());
-		return new File(folder, hash.toString() + ".properties"); //$NON-NLS-1$
 	}
 }

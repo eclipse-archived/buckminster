@@ -38,17 +38,17 @@ public interface IExpander
 	void expand(InputStream input, File finalLocation, IProgressMonitor monitor) throws IOException, CoreException;
 
 	/**
-	 * Specify whether the folder hierarchy within the archive should be flatten or not. Default is no.
-	 * 
-	 * @param shouldFlatten
-	 */
-	void setFlattenHierarchy(boolean shouldFlatten);
-
-	/**
 	 * Specify a filter to include/exclude patterns of filename to extract.
 	 * 
 	 * @param filter
 	 *            null means no filtering.
 	 */
 	void setFilter(FileFilter filter);
+
+	/**
+	 * Specify whether the folder hierarchy within the archive should be flatten or not. Default is no.
+	 * 
+	 * @param shouldFlatten
+	 */
+	void setFlattenHierarchy(boolean shouldFlatten);
 }

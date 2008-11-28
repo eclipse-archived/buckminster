@@ -29,8 +29,8 @@ public class ConnectionRetryDelay extends BasicPreferenceHandler
 		catch(NumberFormatException e)
 		{
 		}
-		throw new IllegalArgumentException(String.format(
-				NLS.bind(Messages.value_0_illegal_for_1, prefValue, Messages.connection_retry_delay)));
+		throw new IllegalArgumentException(String.format(NLS.bind(Messages.value_0_illegal_for_1, prefValue,
+				Messages.connection_retry_delay)));
 	}
 
 	@Override

@@ -53,8 +53,8 @@ public class DigestPolicy extends AbstractFetchPolicy
 		public synchronized byte[] getBytes() throws CoreException
 		{
 			if(m_byteCount > count)
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1,
-					String.valueOf(m_byteCount), String.valueOf(count)));
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1, String
+						.valueOf(m_byteCount), String.valueOf(count)));
 			return Hex.decode(buf, m_byteCount);
 		}
 	}
@@ -73,7 +73,8 @@ public class DigestPolicy extends AbstractFetchPolicy
 
 	private final int m_maxDigestAge;
 
-	public DigestPolicy(ICache cache, URL remoteDigest, IConnectContext cctx, String algorithm, int maxDigestAge) throws CoreException
+	public DigestPolicy(ICache cache, URL remoteDigest, IConnectContext cctx, String algorithm, int maxDigestAge)
+			throws CoreException
 	{
 		super(cache);
 		m_remoteDigest = remoteDigest;
@@ -90,12 +91,15 @@ public class DigestPolicy extends AbstractFetchPolicy
 		}
 	}
 
-	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle,
+			IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
 		byte[] localDigest;
 		byte[] remoteDigest = null;
 
-		MonitorUtils.begin(monitor, checkOnly ? 100 : 1000);
+		MonitorUtils.begin(monitor, checkOnly
+				? 100
+				: 1000);
 		try
 		{
 			File localDigestFile = getLocalDigest(localFile);
@@ -139,10 +143,10 @@ public class DigestPolicy extends AbstractFetchPolicy
 				if(checkOnly)
 					return true;
 
-				remoteDigest = readRemoteDigest();				
+				remoteDigest = readRemoteDigest();
 			}
 
-			MonitorUtils.worked(monitor, 100);	
+			MonitorUtils.worked(monitor, 100);
 			File tempFile = new File(localFile.getPath() + ".tmp"); //$NON-NLS-1$
 
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 800);
@@ -173,7 +177,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 					}
 					throw e;
 				}
-	
+
 				if(Arrays.equals(remoteDigest, localDigest))
 				{
 					// File transfer was successful
@@ -182,11 +186,11 @@ public class DigestPolicy extends AbstractFetchPolicy
 					writeLocalDigest(localDigestFile, localDigest);
 					return true;
 				}
-	
+
 				tempFile.delete();
 				if(idx < MAX_RETRIES)
 					continue;
-	
+
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_mismatch_reading_0, remoteFile));
 			}
 		}
@@ -231,6 +235,11 @@ public class DigestPolicy extends AbstractFetchPolicy
 		}
 	}
 
+	protected File getLocalDigest(File localFile)
+	{
+		return new File(localFile.getPath() + '.' + m_algorithm.toLowerCase());
+	}
+
 	protected byte[] readLocalDigest(File localDigestFile) throws CoreException
 	{
 		InputStream input = null;
@@ -257,7 +266,8 @@ public class DigestPolicy extends AbstractFetchPolicy
 		return digestByteBuilder.getBytes();
 	}
 
-	protected byte[] readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	protected byte[] readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException
 	{
 		// Set up the file transfer
 		//
@@ -302,10 +312,5 @@ public class DigestPolicy extends AbstractFetchPolicy
 		{
 			IOUtils.close(output);
 		}
-	}
-
-	protected File getLocalDigest(File localFile)
-	{
-		return new File(localFile.getPath() + '.' + m_algorithm.toLowerCase());
 	}
 }
