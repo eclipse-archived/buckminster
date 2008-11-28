@@ -16,7 +16,7 @@ public class ArchivedResourceFetcher extends AbstractResourceFetcher
 {
 	private static class PatternFileFilter implements FileFilter
 	{
-		private static final String SEP = System.getProperty("file.separator");
+		private static final String SEP = System.getProperty("file.separator"); //$NON-NLS-1$
 
 		private List<String> m_patterns = new ArrayList<String>();
 
@@ -24,17 +24,17 @@ public class ArchivedResourceFetcher extends AbstractResourceFetcher
 		{
 			for(String p : patternsToInclude)
 			{
-				p = p.replace(SEP, "/");
-				p = p.replace(".", "\\.");
-				p = p.replace("*", ".*");
-				p = p.replace("?", ".?");
+				p = p.replace(SEP, "/"); //$NON-NLS-1$
+				p = p.replace(".", "\\."); //$NON-NLS-1$ //$NON-NLS-2$
+				p = p.replace("*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
+				p = p.replace("?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
 				m_patterns.add(p);
 			}
 		}
 
 		private boolean isSubtract(String patt)
 		{
-			return patt.startsWith("-");
+			return patt.startsWith("-"); //$NON-NLS-1$
 		}
 
 		private String rawPatt(String patt)
@@ -49,7 +49,7 @@ public class ArchivedResourceFetcher extends AbstractResourceFetcher
 			String s = rel.getName();
 			if(p.indexOf('/') >= 0)
 				s = rel.toString();
-			s = s.replace(SEP, "/");
+			s = s.replace(SEP, "/"); //$NON-NLS-1$
 			return s.matches(p);
 		}
 

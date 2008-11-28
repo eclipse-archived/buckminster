@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.helpers.PropertyExpander;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.fetcher.IResourceFetcher;
+import org.eclipse.buckminster.fetcher.Messages;
 import org.eclipse.buckminster.fetcher.StreamProcessorFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Buckminster's Actor to fetch resources from the web. It can uncompress archives, flatten and filter contents.
@@ -32,28 +34,28 @@ import org.eclipse.core.runtime.Status;
  */
 public class FetcherActor extends AbstractActor
 {
-	private static final String INCLUDE = "include=";
+	private static final String INCLUDE = "include="; //$NON-NLS-1$
 
-	private static final String FETCHER_URL = "url";
+	private static final String FETCHER_URL = "url"; //$NON-NLS-1$
 
-	private static final String FETCHER_TO_DIR = "dir";
+	private static final String FETCHER_TO_DIR = "dir"; //$NON-NLS-1$
 
-	private static final String FETCHER_OPTIONS = "options";
+	private static final String FETCHER_OPTIONS = "options"; //$NON-NLS-1$
 
-	private static final String FETCHER_UNCOMPRESS = "uncompress";
+	private static final String FETCHER_UNCOMPRESS = "uncompress"; //$NON-NLS-1$
 
-	private static final String FETCHER_FLATTEN = "flatten";
+	private static final String FETCHER_FLATTEN = "flatten"; //$NON-NLS-1$
 
-	private static final String FETCHER_LOGIN = "login";
+	private static final String FETCHER_LOGIN = "login"; //$NON-NLS-1$
 
-	private static final String FETCHER_PASSWORD = "pass";
+	private static final String FETCHER_PASSWORD = "pass"; //$NON-NLS-1$
 
 	private static final String[] validProperties = { FETCHER_URL, FETCHER_TO_DIR, FETCHER_OPTIONS, FETCHER_LOGIN,
 			FETCHER_PASSWORD };
 
 	private static final String[] validOptions = { FETCHER_FLATTEN, FETCHER_UNCOMPRESS };
 
-	private static final String PLUGIN_ID = "org.eclipse.buckminster.fetcher";
+	private static final String PLUGIN_ID = "org.eclipse.buckminster.fetcher"; //$NON-NLS-1$
 
 	private PropertyExpander m_expander;
 
@@ -106,11 +108,11 @@ public class FetcherActor extends AbstractActor
 		{
 			if(validSet.contains(property) == false)
 			{
-				final StringBuffer buffer = new StringBuffer("ActorProperty \"" + property
-						+ "\" is not a valid one. Valid keys are :\n");
+				final StringBuffer buffer = new StringBuffer();
 				for(String validProperty : validSet)
 					buffer.append(validProperty).append(' ');
-				throw new IllegalStateException(buffer.toString());
+				throw new IllegalStateException(NLS.bind(Messages.actorProperty_0_invalid_valid_are_1, property, buffer
+						.toString()));
 			}
 		}
 		validSet.clear();
@@ -120,12 +122,12 @@ public class FetcherActor extends AbstractActor
 		{
 			if(validSet.contains(option) == false && option.startsWith(INCLUDE) == false)
 			{
-				final StringBuffer buffer = new StringBuffer("ActorProperty options \"" + option
-						+ "\" is not a valid one. Valid options are :\n");
+				final StringBuffer buffer = new StringBuffer();
 				for(String validProperty : validSet)
 					buffer.append(validProperty).append(' ');
 				buffer.append(INCLUDE);
-				throw new IllegalStateException(buffer.toString());
+				throw new IllegalStateException(NLS.bind(Messages.actorProperty_option_0_invalid_valid_are_1, option,
+						buffer.toString()));
 			}
 		}
 	}
@@ -165,7 +167,7 @@ public class FetcherActor extends AbstractActor
 	 */
 	private String getDestinationDirectory() throws CoreException
 	{
-		final String homePath = getActiveContext().getProperties().get("buckminster.home");
+		final String homePath = getActiveContext().getProperties().get("buckminster.home"); //$NON-NLS-1$
 		final String toDir = getSafeProperty(FETCHER_TO_DIR);
 		if(toDir == null)
 		{
@@ -209,7 +211,7 @@ public class FetcherActor extends AbstractActor
 		final String optionActorProperty = getSafeProperty(FETCHER_OPTIONS);
 		if(optionActorProperty == null)
 			return options;
-		final String[] split = optionActorProperty.split(";");
+		final String[] split = optionActorProperty.split(";"); //$NON-NLS-1$
 		for(String option : split)
 			options.add(option);
 		return options;

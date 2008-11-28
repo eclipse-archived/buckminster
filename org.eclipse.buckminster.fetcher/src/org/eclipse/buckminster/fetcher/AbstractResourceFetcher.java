@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.util.Base64;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Base class for {@link IResourceFetcher}. Provides authentication and fetch entry point for children classes. Also
@@ -36,7 +37,7 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher
 	public void setBasicAuthCredential(String login,String password)
 	{
 		if(login == null || password == null)
-			throw new NullPointerException("login and password must be not null");
+			throw new NullPointerException(Messages.login_and_password_must_be_not_null);
 		m_login = login;
 		m_password = password;
 	}
@@ -52,12 +53,12 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher
 			{
 				final String userPassword = m_login + ':' + m_password;
 				final String encoding = Base64.encode(userPassword.getBytes());
-				conn.setRequestProperty("Authorization", "Basic " + encoding);
+				conn.setRequestProperty("Authorization", "Basic " + encoding); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			in = conn.getInputStream();
-			monitor.subTask("Preparing destination folder " + m_destinationDir);
+			monitor.subTask(NLS.bind(Messages.preparing_destination_folder_0, m_destinationDir));
 			prepareDirectories(m_destinationDir);
-			monitor.subTask("Fetching " + getUrl());
+			monitor.subTask(NLS.bind(Messages.fetching_0, getUrl().toString()));
 			consume(new BufferedInputStream(in), monitor);
 		}
 		finally
