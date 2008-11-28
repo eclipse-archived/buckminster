@@ -16,12 +16,14 @@ import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.helpers.PropertyExpander;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.executor.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * This class declares a new Buckminster Actor that allow execution of commands directly from the CSpec
@@ -31,22 +33,22 @@ import org.eclipse.core.runtime.Status;
  */
 public class ExecutorActor extends AbstractActor
 {
-	private static final String EXECUTOR_ENV = "env";
+	private static final String EXECUTOR_ENV = "env"; //$NON-NLS-1$
 
-	private static final String EXECUTOR_EXEC_ACTION = "exec";
+	private static final String EXECUTOR_EXEC_ACTION = "exec"; //$NON-NLS-1$
 
-	private static final String EXECUTOR_EXEC_DIR_ACTION = "execDir";
+	private static final String EXECUTOR_EXEC_DIR_ACTION = "execDir"; //$NON-NLS-1$
 
-	private static final String EXECUTOR_SHELL_ACTION = "shell";
+	private static final String EXECUTOR_SHELL_ACTION = "shell"; //$NON-NLS-1$
 
-	private static final String EXECUTOR_NEW_ENVIRONMENT_ACTION = "newenvironment";
+	private static final String EXECUTOR_NEW_ENVIRONMENT_ACTION = "newenvironment"; //$NON-NLS-1$
 
-	private static final String EXECUTOR_FAIL_ON_ERROR = "failonerror";
+	private static final String EXECUTOR_FAIL_ON_ERROR = "failonerror"; //$NON-NLS-1$
 
 	private static final String[] validProperties = { EXECUTOR_ENV, EXECUTOR_EXEC_ACTION, EXECUTOR_EXEC_DIR_ACTION,
 			EXECUTOR_SHELL_ACTION, EXECUTOR_NEW_ENVIRONMENT_ACTION, EXECUTOR_FAIL_ON_ERROR };
 
-	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor";
+	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor"; //$NON-NLS-1$
 
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
@@ -57,14 +59,15 @@ public class ExecutorActor extends AbstractActor
 		try
 		{
 			checkProperties();
+			final String EXE = "[EXE] "; //$NON-NLS-1$
 			final PropertyExpander expander = new PropertyExpander(ctx);
 			final PrintStream errorStream = ctx.getErrorStream();
 			final PrintStream outputStream = ctx.getOutputStream();
 			final File executionDir = getExecutionDir(ctx);
 			final String command = expander.expand(prepareCommandLine());
 			final String[] env = prepareEnvironmentVariables(expander);
-			CorePlugin.getLogger().info("[EXE] now executing : " + command);
-			CorePlugin.getLogger().info("[EXE] in directory : " + executionDir);
+			CorePlugin.getLogger().info(EXE + NLS.bind(Messages.now_executing_0, command));
+			CorePlugin.getLogger().info(EXE + NLS.bind(Messages.in_directory_0, executionDir));
 			final Process proc = Runtime.getRuntime().exec(command, env, executionDir);
 			// any error message ?
 			final StreamGobblerRedirector errorGobbler = new StreamGobblerRedirector(proc.getErrorStream(), errorStream);
@@ -78,7 +81,8 @@ public class ExecutorActor extends AbstractActor
 			outputStream.flush();
 			if(returnCode != 0)
 			{
-				CorePlugin.getLogger().error("Program " + command + " returned exit code " + returnCode);
+				CorePlugin.getLogger().error(
+						NLS.bind(Messages.program_0_exit_code_1, command, String.valueOf(returnCode)));
 				if(getFailStatus())
 					return Status.CANCEL_STATUS;
 			}
@@ -125,11 +129,11 @@ public class ExecutorActor extends AbstractActor
 		{
 			if(validSet.contains(property) == false)
 			{
-				final StringBuffer buffer = new StringBuffer("ActorProperty \"" + property
-						+ "\" is not a valid one. Valid keys are :\n");
+				final StringBuffer buffer = new StringBuffer();
 				for(String validProperty : validSet)
 					buffer.append(validProperty).append(' ');
-				throw new IllegalStateException(buffer.toString());
+				throw new IllegalStateException(NLS.bind(Messages.actorProperty_0_invalid_valid_are_1, property, buffer
+						.toString()));
 			}
 		}
 	}
@@ -154,10 +158,9 @@ public class ExecutorActor extends AbstractActor
 		final String execCommand = getExecCommand();
 		final String shellCommand = getShellCommand();
 		if(execCommand == null && shellCommand == null)
-			throwError("You should specify at least one shell or one exec actorProperty");
+			throwError(NLS.bind(Messages.actorProperty_at_least_one_0_1, EXECUTOR_EXEC_ACTION, EXECUTOR_SHELL_ACTION));
 		if(execCommand != null && shellCommand != null)
-			throwError("You can specify \"" + EXECUTOR_EXEC_ACTION + "\" or \"" + EXECUTOR_SHELL_ACTION
-					+ "\" actorProperty, but not both.");
+			throwError(NLS.bind(Messages.actorProperty_at_most_one_0_1, EXECUTOR_EXEC_ACTION, EXECUTOR_SHELL_ACTION));
 		if(execCommand != null)
 		{
 			return execCommand;
@@ -165,8 +168,7 @@ public class ExecutorActor extends AbstractActor
 
 		final String shell = ShellCommand.getShellCommand();
 		if(shell == null)
-			throw new Error("Shell interpreter for OS " + ShellCommand.getOsName()
-					+ " is not currently supported\nPlease submit a bug report");
+			throw new Error(NLS.bind(Messages.shell_interpreter_for_0_not_supported, ShellCommand.getOsName()));
 		return shell + ' ' + shellCommand;
 	}
 
@@ -207,14 +209,13 @@ public class ExecutorActor extends AbstractActor
 	 */
 	private String[] prepareEnvironmentVariables(PropertyExpander expander) throws CoreException
 	{
-		final String ENV = "[ENV] ";
+		final String ENV = "[ENV] "; //$NON-NLS-1$
 		final Set<String> envSet = new HashSet<String>();
 		final String envProperty = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_ENV));
 
 		final boolean useEnvironment = !Boolean.parseBoolean(this.getActorProperty(EXECUTOR_NEW_ENVIRONMENT_ACTION));
-		CorePlugin.getLogger().info(
-				ENV + "Using system environment : " + useEnvironment
-						+ " (use DEBUG log level to see environment variables)");
+		CorePlugin.getLogger()
+				.info(ENV + NLS.bind(Messages.using_system_environment_0, String.valueOf(useEnvironment)));
 		if(useEnvironment)
 		{
 			final Map<String, String> getenv = System.getenv();
@@ -229,10 +230,10 @@ public class ExecutorActor extends AbstractActor
 		}
 		if(envSet.isEmpty() == false)
 		{
-			final StringBuffer buffer = new StringBuffer("Setting environment variables :\n");
+			final StringBuffer buffer = new StringBuffer();
 			for(String string : envSet)
 				buffer.append(string).append('\n');
-			CorePlugin.getLogger().debug(ENV + buffer.toString());
+			CorePlugin.getLogger().debug(ENV + NLS.bind(Messages.setting_environment_variables_0, buffer.toString()));
 		}
 		return envSet.toArray(new String[envSet.size()]);
 	}
@@ -249,7 +250,7 @@ public class ExecutorActor extends AbstractActor
 		final List<Integer> semicolonIndexes = indexesOf(env, ';');
 		final List<Integer> quoteIndexes = indexesOf(env, '\"');
 		if(quoteIndexes.size() % 2 != 0)
-			throw new IllegalStateException("Odd number of quoting characters in " + env);
+			throw new IllegalStateException(NLS.bind(Messages.odd_number_of_quoting_chars_in_0, env));
 		// removing semicolon indexes between quote indexes
 		final Iterator<Integer> quoteItr = quoteIndexes.iterator();
 		while(quoteItr.hasNext())

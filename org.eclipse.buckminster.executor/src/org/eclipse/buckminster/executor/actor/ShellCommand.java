@@ -9,22 +9,22 @@ import java.util.HashMap;
  */
 public final class ShellCommand
 {
-	private static final String WINDOWS_CMD = "cmd.exe /C";
-	private static final String LINUX_CMD = "sh -c";
+	private static final String WINDOWS_CMD = "cmd.exe /C"; //$NON-NLS-1$
+	private static final String LINUX_CMD = "sh -c"; //$NON-NLS-1$
 	private static final HashMap<String, String> s_shellCommands;
 
 	static
 	{
 		s_shellCommands = new HashMap<String, String>();
-		s_shellCommands.put("Windows 95", "command.com /C");
-		s_shellCommands.put("Windows 98", "command.com /C");
-		s_shellCommands.put("Windows NT", WINDOWS_CMD);
-		s_shellCommands.put("Windows 2000", WINDOWS_CMD);
-		s_shellCommands.put("Windows 2003", WINDOWS_CMD);
-		s_shellCommands.put("Windows XP", WINDOWS_CMD);
-		s_shellCommands.put("Linux", LINUX_CMD);
-		s_shellCommands.put("Mac OS X", LINUX_CMD);
-		s_shellCommands.put("Linux", LINUX_CMD);
+		s_shellCommands.put("Windows 95", "command.com /C"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_shellCommands.put("Windows 98", "command.com /C"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_shellCommands.put("Windows NT", WINDOWS_CMD); //$NON-NLS-1$
+		s_shellCommands.put("Windows 2000", WINDOWS_CMD); //$NON-NLS-1$
+		s_shellCommands.put("Windows 2003", WINDOWS_CMD); //$NON-NLS-1$
+		s_shellCommands.put("Windows XP", WINDOWS_CMD); //$NON-NLS-1$
+		s_shellCommands.put("Linux", LINUX_CMD); //$NON-NLS-1$
+		s_shellCommands.put("Mac OS X", LINUX_CMD); //$NON-NLS-1$
+		s_shellCommands.put("Linux", LINUX_CMD); //$NON-NLS-1$
 	}
 
 	public static String getShellCommand()
@@ -34,6 +34,6 @@ public final class ShellCommand
 
 	public static String getOsName()
 	{
-		return System.getProperty("os.name");
+		return System.getProperty("os.name"); //$NON-NLS-1$
 	}
 }
