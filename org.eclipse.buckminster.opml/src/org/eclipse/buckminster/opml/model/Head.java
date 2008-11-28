@@ -27,23 +27,23 @@ import org.xml.sax.SAXException;
  */
 public class Head extends AbstractSaxableElement implements IHead
 {
-	public static final String ELEM_DATE_CREATED = "dateCreated";
-	public static final String ELEM_DATE_MODIFIED = "dateModified";
+	public static final String ELEM_DATE_CREATED = "dateCreated"; //$NON-NLS-1$
+	public static final String ELEM_DATE_MODIFIED = "dateModified"; //$NON-NLS-1$
 
-	public static final String ELEM_DOCS = "docs";
-	public static final String ELEM_EXPANSION_STATE = "expansionState"; 
-	public static final String ELEM_OWNER_EMAIL = "ownerEmail";
-	public static final String ELEM_OWNER_ID = "ownerId";
-	public static final String ELEM_OWNER_NAME = "ownerName";
-	public static final String ELEM_TITLE = "title";
-	public static final String ELEM_VERT_SCROLL_STATE = "vertScrollState";
-	public static final String ELEM_WINDOW_BOTTOM = "windowBottom";
-	public static final String ELEM_WINDOW_LEFT = "windowLeft";
-	public static final String ELEM_WINDOW_RIGHT = "windowRight";
-	public static final String ELEM_WINDOW_TOP = "windowTop";
-	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
-	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z", Locale.US);
-	public static final String TAG = "head";
+	public static final String ELEM_DOCS = "docs"; //$NON-NLS-1$
+	public static final String ELEM_EXPANSION_STATE = "expansionState";  //$NON-NLS-1$
+	public static final String ELEM_OWNER_EMAIL = "ownerEmail"; //$NON-NLS-1$
+	public static final String ELEM_OWNER_ID = "ownerId"; //$NON-NLS-1$
+	public static final String ELEM_OWNER_NAME = "ownerName"; //$NON-NLS-1$
+	public static final String ELEM_TITLE = "title"; //$NON-NLS-1$
+	public static final String ELEM_VERT_SCROLL_STATE = "vertScrollState"; //$NON-NLS-1$
+	public static final String ELEM_WINDOW_BOTTOM = "windowBottom"; //$NON-NLS-1$
+	public static final String ELEM_WINDOW_LEFT = "windowLeft"; //$NON-NLS-1$
+	public static final String ELEM_WINDOW_RIGHT = "windowRight"; //$NON-NLS-1$
+	public static final String ELEM_WINDOW_TOP = "windowTop"; //$NON-NLS-1$
+	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US); //$NON-NLS-1$
+	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z", Locale.US); //$NON-NLS-1$
+	public static final String TAG = "head"; //$NON-NLS-1$
 
 	private final Date m_dateCreated;
 	private final Date m_dateModified;

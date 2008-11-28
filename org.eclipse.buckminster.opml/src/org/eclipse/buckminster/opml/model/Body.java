@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  */
 public class Body extends AbstractSaxableElement implements IBody
 {
-	public static final String TAG = "body";
+	public static final String TAG = "body"; //$NON-NLS-1$
 
 	private final List<Outline> m_outlines;
 

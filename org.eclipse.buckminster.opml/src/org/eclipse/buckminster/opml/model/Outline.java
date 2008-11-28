@@ -25,21 +25,21 @@ import org.xml.sax.helpers.AttributesImpl;
 public class Outline extends Body implements IOutline
 {
 	@SuppressWarnings("hiding")
-	public static final String TAG = "outline";
+	public static final String TAG = "outline"; //$NON-NLS-1$
 
-	public static final String ATTR_CATEGORY = "category";
-	public static final String ATTR_CREATED = "created";
-	public static final String ATTR_DESCRIPTION = "description";
-	public static final String ATTR_HTML_URL = "htmlUrl";
-	public static final String ATTR_IS_BREAKPOINT = "isBreakpoint";
-	public static final String ATTR_IS_COMMENT = "isComment";
-	public static final String ATTR_LANGUAGE = "language";
-	public static final String ATTR_TEXT = "text";
-	public static final String ATTR_TITLE = "title";
-	public static final String ATTR_TYPE = "type";
-	public static final String ATTR_URL = "url";
-	public static final String ATTR_VERSION = "version";
-	public static final String ATTR_XML_URL = "xmlUrl";
+	public static final String ATTR_CATEGORY = "category"; //$NON-NLS-1$
+	public static final String ATTR_CREATED = "created"; //$NON-NLS-1$
+	public static final String ATTR_DESCRIPTION = "description"; //$NON-NLS-1$
+	public static final String ATTR_HTML_URL = "htmlUrl"; //$NON-NLS-1$
+	public static final String ATTR_IS_BREAKPOINT = "isBreakpoint"; //$NON-NLS-1$
+	public static final String ATTR_IS_COMMENT = "isComment"; //$NON-NLS-1$
+	public static final String ATTR_LANGUAGE = "language"; //$NON-NLS-1$
+	public static final String ATTR_TEXT = "text"; //$NON-NLS-1$
+	public static final String ATTR_TITLE = "title"; //$NON-NLS-1$
+	public static final String ATTR_TYPE = "type"; //$NON-NLS-1$
+	public static final String ATTR_URL = "url"; //$NON-NLS-1$
+	public static final String ATTR_VERSION = "version"; //$NON-NLS-1$
+	public static final String ATTR_XML_URL = "xmlUrl"; //$NON-NLS-1$
 
 	private final boolean m_breakpoint;
 	private final String m_category;
@@ -163,9 +163,9 @@ public class Outline extends Body implements IOutline
 		if(m_htmlUrl != null)
 			Utils.addAttribute(attrs, ATTR_HTML_URL, m_htmlUrl.toString());
 		if(m_breakpoint)
-			Utils.addAttribute(attrs, ATTR_IS_BREAKPOINT, "true");
+			Utils.addAttribute(attrs, ATTR_IS_BREAKPOINT, "true"); //$NON-NLS-1$
 		if(m_comment)
-			Utils.addAttribute(attrs, ATTR_IS_COMMENT, "true");
+			Utils.addAttribute(attrs, ATTR_IS_COMMENT, "true"); //$NON-NLS-1$
 		if(m_language != null)
 			Utils.addAttribute(attrs, ATTR_LANGUAGE, m_language);
 		if(m_text != null)

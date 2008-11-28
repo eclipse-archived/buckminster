@@ -24,12 +24,12 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class OPML extends UUIDKeyed implements IOPML
 {
-	public static final String OPML_NAMESPACE = "http://opml.org/spec2";
-	public static final String OPML_PREFIX = "opml";
-	public static final String OPML_NS_RESOURCE = "/opml-2.0-ns.xsd";
+	public static final String OPML_NAMESPACE = "http://opml.org/spec2"; //$NON-NLS-1$
+	public static final String OPML_PREFIX = "opml"; //$NON-NLS-1$
+	public static final String OPML_NS_RESOURCE = "/opml-2.0-ns.xsd"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION = "version";
-	public static final String TAG = "opml";
+	public static final String ATTR_VERSION = "version"; //$NON-NLS-1$
+	public static final String TAG = "opml"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 1;
 
@@ -80,7 +80,7 @@ public class OPML extends UUIDKeyed implements IOPML
 	public void toSax(ContentHandler receiver) throws SAXException
 	{
 		receiver.startDocument();
-		toSax(receiver, "", "", TAG);
+		toSax(receiver, "", "", TAG); //$NON-NLS-1$ //$NON-NLS-2$
 		receiver.endDocument();
 	}
 
@@ -101,12 +101,12 @@ public class OPML extends UUIDKeyed implements IOPML
 	@Override
 	protected String getElementNamespace(String namespace)
 	{
-		return "".equals(namespace) ? "" : OPML_NAMESPACE;
+		return "".equals(namespace) ? "" : OPML_NAMESPACE; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
 	protected String getElementPrefix(String prefix)
 	{
-		return "".equals(prefix) ? "" : OPML_PREFIX;
+		return "".equals(prefix) ? "" : OPML_PREFIX; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

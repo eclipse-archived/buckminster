@@ -12,9 +12,11 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.eclipse.buckminster.opml.Messages;
 import org.eclipse.buckminster.opml.model.Head;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -43,7 +45,7 @@ abstract class ElementHandler extends ChildHandler
 		}
 		catch(ParseException e)
 		{
-			throw new SAXParseException("Attribute " + attrName + " does not represent a valid RFC822 formatted date", getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.attribute_0_does_not_represent_a_valid_RFC822_formatted_date, attrName), getDocumentLocator());
 		}
 	}
 
@@ -59,7 +61,7 @@ abstract class ElementHandler extends ChildHandler
 		}
 		catch(URISyntaxException e)
 		{
-			throw new SAXParseException("Attribute " +attrName + " does not represent a valid URI", getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.attribute_0_does_not_represent_a_valid_URI, attrName), getDocumentLocator());
 		}
 	}
 }

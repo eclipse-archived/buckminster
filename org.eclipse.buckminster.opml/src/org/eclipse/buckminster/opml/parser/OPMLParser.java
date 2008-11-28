@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.eclipse.buckminster.opml.Messages;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -43,16 +44,16 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 		XMLReader reader = getXMLReader();
 		if(validating)
 		{
-			reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+			reader.setFeature("http://apache.org/xml/features/validation/schema", true); //$NON-NLS-1$
+			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); //$NON-NLS-1$
 		}
 
 		setNamespaceAware(false);
 		setErrorHandler(this);
 
-		m_schemaURL = OPMLParser.class.getResource("/opml-2.0.xsd");
+		m_schemaURL = OPMLParser.class.getResource("/opml-2.0.xsd"); //$NON-NLS-1$
 		if(m_schemaURL == null)
-			throw new SAXException("Unable to find XMLSchema for opml");
+			throw new SAXException(Messages.unable_to_find_XMLschema_for_opml);
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -77,7 +78,7 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 		XMLReader reader = getXMLReader();
 		try
 		{
-			reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", m_schemaURL.toString());
+			reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", m_schemaURL.toString()); //$NON-NLS-1$
 			reader.parse(source);
 		}
 		finally

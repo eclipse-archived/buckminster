@@ -110,8 +110,8 @@ public class OutlineBuilder extends BodyBuilder implements IOutline
 			String tmp = m_typeString.toUpperCase();
 			try
 			{
-				if("TEXT/X-OPML".equals(tmp))
-					tmp = "OPML";
+				if("TEXT/X-OPML".equals(tmp)) //$NON-NLS-1$
+					tmp = "OPML"; //$NON-NLS-1$
 				type = OutlineType.valueOf(tmp);
 			}
 			catch(IllegalArgumentException e)

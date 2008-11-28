@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.opml.Messages;
 import org.eclipse.buckminster.opml.builder.HeadBuilder;
 import org.eclipse.buckminster.opml.model.Head;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.StringElementHandler;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -89,7 +91,7 @@ class HeadHandler extends ChildHandler
 			}
 			catch(ParseException e)
 			{
-				throw new SAXParseException("Element " + localName + " does not represent a valid RFC822 formatted date", getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_RFC822_formatted_date, localName), getDocumentLocator());
 			}
 		}
 
@@ -97,7 +99,7 @@ class HeadHandler extends ChildHandler
 		{
 			try
 			{
-				StringTokenizer tokens = new StringTokenizer(getString(), ",");
+				StringTokenizer tokens = new StringTokenizer(getString(), ","); //$NON-NLS-1$
 				ArrayList<String> values = new ArrayList<String>();
 				while(tokens.hasMoreTokens())
 					values.add(tokens.nextToken().trim());
@@ -109,7 +111,7 @@ class HeadHandler extends ChildHandler
 			}
 			catch(NumberFormatException e)
 			{
-				throw new SAXParseException("Element " + localName + " does not represent a valid list of integers", getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_list_of_integers, localName), getDocumentLocator());
 			}
 		}
 
@@ -121,7 +123,7 @@ class HeadHandler extends ChildHandler
 			}
 			catch(NumberFormatException e)
 			{
-				throw new SAXParseException("Element " + localName + " does not represent a valid integer", getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_integer, localName), getDocumentLocator());
 			}
 		}
 
@@ -133,7 +135,7 @@ class HeadHandler extends ChildHandler
 			}
 			catch(URISyntaxException e)
 			{
-				throw new SAXParseException("Element " + localName + " does not represent a valid URI", getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_URI, localName), getDocumentLocator());
 			}
 		}
 
