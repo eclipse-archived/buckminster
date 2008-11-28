@@ -43,6 +43,7 @@ public class Messages extends NLS
 	public static String retrieving_0;
 
 	public static String unable_to_create_directory_0;
+
 	static
 	{
 		// initialize resource bundle
