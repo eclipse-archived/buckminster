@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.configuration.ILocalSite;
 import org.eclipse.update.core.IFeature;
@@ -45,7 +46,7 @@ public class ListSite extends AbstractCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException("Too many arguments");
+			throw new SimpleErrorExitException(Messages.too_many_arguments);
 		if(len == 1)
 			m_site = Install.normalizeToURL(unparsed[0]);
 	}
@@ -60,7 +61,7 @@ public class ListSite extends AbstractCommand
 		try
 		{
 			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-			monitor.subTask("Searching " + (m_site == null ? "local site" : m_site.toString()) + "...");
+			monitor.subTask(NLS.bind(Messages.searching_0_, m_site == null ? Messages.local_site : m_site.toString()));
 
 			ISite[] sites;
 			if (m_site == null)
@@ -105,21 +106,21 @@ public class ListSite extends AbstractCommand
 			monitor.done();
 		}
 
-		System.out.println("Features:");
+		System.out.println(Messages.feature_listing_heading);
 		Iterator<Map.Entry<VersionedIdentifier,IAdaptable>> itor = features.entrySet().iterator();
 		while(itor.hasNext())
 		{
 			Map.Entry<VersionedIdentifier,IAdaptable> entry = itor.next();
 			IAdaptable f = entry.getValue();
-			System.out.print("  ");
+			System.out.print("  "); //$NON-NLS-1$
 			System.out.print(entry.getKey());
-			System.out.print(" (");
+			System.out.print(" ("); //$NON-NLS-1$
 			System.out.print((f instanceof IFeature) ? ((IFeature)f).getLabel() : ((IFeatureReference)f).getName());
-			System.out.println(")");
+			System.out.println(")"); //$NON-NLS-1$
 
 			if(f instanceof IFeatureReference)
 			{
-				System.out.println("    only the reference was found. Unable to locate the actual feature");
+				System.out.println("    " + Messages.only_reference_found); //$NON-NLS-1$
 				continue;
 			}
 
@@ -134,10 +135,10 @@ public class ListSite extends AbstractCommand
 			{
 				IStatus[] children = ((MultiStatus)brokenStatus).getChildren();
 				for(int idx = 0; idx < children.length; ++idx)
-					System.out.println("    " + children[idx].getMessage());
+					System.out.println("    " + children[idx].getMessage()); //$NON-NLS-1$
 			}
 			else
-				System.out.println("    " + brokenStatus.getMessage());
+				System.out.println("    " + brokenStatus.getMessage()); //$NON-NLS-1$
 		}
 		return 0;
 	}

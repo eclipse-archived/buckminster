@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IFeatureReference;
@@ -46,7 +47,7 @@ public class Install extends AbstractCommand
 	{
 		int len = unparsed.length;
 		if(len > 3)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.too_many_arguments);
 		if(len > 0)
 			m_site = normalizeToURL(unparsed[0]);
 		if(len > 1)
@@ -58,17 +59,18 @@ public class Install extends AbstractCommand
 	@Override
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
-		if (m_site == null)
-			throw new UsageException("No site provided");
-		if (m_feature == null)
-			throw new UsageException("No feature id provided");
+		if(m_site == null)
+			throw new UsageException(Messages.no_site_provided);
+		if(m_feature == null)
+			throw new UsageException(Messages.no_feature_id_provided);
 
 		IFeature featureToInstall = null;
-		
-		VersionedIdentifier vidToFind = new VersionedIdentifier(m_feature, m_version == null ? "0.0.0" : m_version);
+
+		VersionedIdentifier vidToFind = new VersionedIdentifier(m_feature, m_version == null
+				? "0.0.0" : m_version); //$NON-NLS-1$
 
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-		monitor.subTask("Searching for " + vidToFind + " in " + m_site + "...");
+		monitor.subTask(NLS.bind(Messages.searching_for_0_in_1_, vidToFind, m_site));
 
 		ISite site = SiteManager.getSite(m_site, MonitorUtils.subMonitor(monitor, 1000));
 
@@ -81,14 +83,15 @@ public class Install extends AbstractCommand
 		{
 			IFeatureReference featureRef = references[idx];
 			VersionedIdentifier vid = featureRef.getVersionedIdentifier();
-			if (vid.getIdentifier().equals(m_feature))
+			if(vid.getIdentifier().equals(m_feature))
 			{
-				if (m_version == null)
+				if(m_version == null)
 				{
-					if (match == null || VersionedIdentifierComparator.compareStatic(vid, match.getVersionedIdentifier()) > 0)
+					if(match == null
+							|| VersionedIdentifierComparator.compareStatic(vid, match.getVersionedIdentifier()) > 0)
 						match = featureRef;
 				}
-				else if (vid.equals(vidToFind))
+				else if(vid.equals(vidToFind))
 				{
 					match = featureRef;
 					break;
@@ -97,21 +100,21 @@ public class Install extends AbstractCommand
 			MonitorUtils.worked(monitor, 1);
 		}
 
-		if (match == null)
-			throw new SimpleErrorExitException("No suitable feature/version found");
+		if(match == null)
+			throw new SimpleErrorExitException(Messages.no_suitable_feature_version_found);
 		featureToInstall = match.getFeature(MonitorUtils.subMonitor(monitor, 1000));
 
-		if (Platform.inDevelopmentMode())
-			throw new SimpleErrorExitException("Will not install in development mode");
+		if(Platform.inDevelopmentMode())
+			throw new SimpleErrorExitException(Messages.no_install_in_development_mode);
 
-		monitor.subTask("Installing " + featureToInstall.getVersionedIdentifier() + "...");
+		monitor.subTask(NLS.bind(Messages.installing_0_, featureToInstall.getVersionedIdentifier()));
 
-		IConfiguredSite installSite = null;		
+		IConfiguredSite installSite = null;
 		IConfiguredSite[] configuredSites = SiteManager.getLocalSite().getCurrentConfiguration().getConfiguredSites();
 		for(idx = 0; idx < configuredSites.length; ++idx)
 		{
 			IConfiguredSite configuredSite = configuredSites[idx];
-			if (configuredSite.isProductSite() && configuredSite.isUpdatable())
+			if(configuredSite.isProductSite() && configuredSite.isUpdatable())
 			{
 				installSite = configuredSite;
 				break;
@@ -119,8 +122,8 @@ public class Install extends AbstractCommand
 			MonitorUtils.worked(monitor, 1);
 		}
 
-		if (installSite == null)
-			throw new SimpleErrorExitException("Could not find a site to install to");
+		if(installSite == null)
+			throw new SimpleErrorExitException(Messages.site_to_install_to_not_found);
 
 		IStatus brokenStatus = OperationsManager.getValidator().validatePendingInstall(null, featureToInstall);
 		if(brokenStatus != null)
@@ -145,7 +148,7 @@ public class Install extends AbstractCommand
 			}
 			catch(MalformedURLException e2)
 			{
-				throw new IllegalArgumentException(surl + " cannot be converted to a URL");
+				throw new IllegalArgumentException(NLS.bind(Messages.URL_0_malformed, surl));
 			}
 		}
 		return url;
