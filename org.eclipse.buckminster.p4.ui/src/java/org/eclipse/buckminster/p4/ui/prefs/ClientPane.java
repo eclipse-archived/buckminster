@@ -18,6 +18,7 @@ import java.util.regex.PatternSyntaxException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.DepotMapping;
+import org.eclipse.buckminster.p4.ui.Messages;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.Path;
@@ -116,7 +117,7 @@ public class ClientPane extends NodeListPrefPane
 	void assignRenamedDepotMapping(DepotMapping depotMapping)
 	{
 		m_depotMapping = depotMapping;
-		m_depotMappingName.setText(depotMapping == null ? "" : depotMapping.getName());
+		m_depotMappingName.setText(depotMapping == null ? "" : depotMapping.getName()); //$NON-NLS-1$
 	}
 
 	boolean setDepotMapping(DepotMapping depotMapping)
@@ -187,17 +188,17 @@ public class ClientPane extends NodeListPrefPane
 	protected void clearClient()
 	{
 		m_client = null;
-		m_clientName.setText("");
-		m_localRoot.setText("");
+		m_clientName.setText(""); //$NON-NLS-1$
+		m_localRoot.setText(""); //$NON-NLS-1$
 		m_defaultClient.setSelection(false);
 	}
 
 	protected void clearDepotMapping()
 	{
 		m_depotMapping = null;
-		m_depotMappingName.setText("");
-		m_depotPattern.setText("");
-		m_localReplacement.setText("");
+		m_depotMappingName.setText(""); //$NON-NLS-1$
+		m_depotPattern.setText(""); //$NON-NLS-1$
+		m_localReplacement.setText(""); //$NON-NLS-1$
 	}
 
 	@Override
@@ -206,7 +207,7 @@ public class ClientPane extends NodeListPrefPane
 		if(!this.assignClientValues())
 			return;
 
-		String depotMappingName = this.queryNodeName("Add Client depot mapping", "Depot mapping name", null);
+		String depotMappingName = this.queryNodeName(Messages.add_client_depot_mapping, Messages.depot_mapping_name, null);
 		if(depotMappingName == null)
 			return;
 
@@ -230,7 +231,7 @@ public class ClientPane extends NodeListPrefPane
 
 		DepotMapping depotMapping = m_depotMapping;
 		String oldName = depotMapping.getName();
-		String newName = this.queryNodeName("Rename Client depot mapping", "Depot mapping name", oldName);
+		String newName = this.queryNodeName(Messages.rename_client_depot_mapping, Messages.depot_mapping_name, oldName);
 		if(newName == null || newName.equals(oldName))
 			return;
 
@@ -314,10 +315,10 @@ public class ClientPane extends NodeListPrefPane
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		clientFields.setLayout(layout);
-		m_clientName = UiUtils.createLabeledText(clientFields, "Name", SWT.READ_ONLY, s_tooltipRefresh);
+		m_clientName = UiUtils.createLabeledText(clientFields, Messages.name, SWT.READ_ONLY, s_tooltipRefresh);
 		m_clientName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-		m_localRoot = UiUtils.createLabeledText(clientFields, "Local root:", SWT.NONE, s_tooltipRefresh);
+		m_localRoot = UiUtils.createLabeledText(clientFields, Messages.local_root_with_colon, SWT.NONE, s_tooltipRefresh);
 		m_localRoot.addModifyListener(new ModifyListener()
 		{
 			public void modifyText(ModifyEvent e)
@@ -329,8 +330,8 @@ public class ClientPane extends NodeListPrefPane
 				{
 					File file = new File(dirName);
 					valid = file.exists();
-					if(!valid && !dirName.contains("${"))
-						errMsg = dirName + " does not exist";
+					if(!valid && !dirName.contains("${")) //$NON-NLS-1$
+						errMsg = dirName + Messages._does_not_exist;
 				}
 
 				PreferencePage prefPage = getPreferencePage();
@@ -339,7 +340,7 @@ public class ClientPane extends NodeListPrefPane
 			}
 		});
 		m_browse = new Button(clientFields, SWT.PUSH);
-		m_browse.setText("Browse...");
+		m_browse.setText(Messages.browse_with_dots);
 		m_browse.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -351,9 +352,9 @@ public class ClientPane extends NodeListPrefPane
 
 		m_defaultClient = new Button(clientFields, SWT.CHECK);	 
 		m_defaultClient.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1));
-		m_defaultClient.setText("This is the default client");
+		m_defaultClient.setText(Messages.this_is_the_default_client);
 		m_defaultClient.setEnabled(false);
-		this.createListContents("Depot mappings");
+		this.createListContents(Messages.depot_mappings);
 
 		Composite depotMappingFields = new Composite(this, SWT.NONE);
 		depotMappingFields.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
@@ -362,8 +363,8 @@ public class ClientPane extends NodeListPrefPane
 		layout.marginWidth = 0;
 		depotMappingFields.setLayout(layout);
 
-		m_depotMappingName = UiUtils.createLabeledText(depotMappingFields, "Name", SWT.READ_ONLY, null);
-		m_depotPattern = UiUtils.createLabeledText(depotMappingFields, "Depot pattern:", SWT.NONE, new ModifyListener()
+		m_depotMappingName = UiUtils.createLabeledText(depotMappingFields, Messages.name, SWT.READ_ONLY, null);
+		m_depotPattern = UiUtils.createLabeledText(depotMappingFields, Messages.depot_pattern_with_colon, SWT.NONE, new ModifyListener()
 		{
 			public void modifyText(ModifyEvent ev)
 			{
@@ -386,25 +387,19 @@ public class ClientPane extends NodeListPrefPane
 			}
 		});
 
-		m_depotPattern.setToolTipText(String.format("%s%n%s%n%s",
-			"A regular expression used when creating a client root relative ",
-			"path that will be used for component materialization ",
-			"based on the full depot path of a component"));
+		m_depotPattern.setToolTipText(Messages.a_regular_expression_used_when_creating_a_client_root_relative_path_that_will_be_used_for_component_materialization_based_on_the_full_depot_path_of_a_component);
 
-		m_localReplacement = UiUtils.createLabeledText(depotMappingFields, "Local replacement:", SWT.NONE, null);
-		m_localReplacement.setToolTipText(String.format("%s%n%s%n%s",
-			"The replacement string used when creating the client root relative ",
-			"path that will be used for component materialization ",
-			"based on the full depot path of a component"));
+		m_localReplacement = UiUtils.createLabeledText(depotMappingFields, Messages.local_replacement_with_colon, SWT.NONE, null);
+		m_localReplacement.setToolTipText(Messages.the_replacement_string_used_when_creating_the_client_root_relative_path_that_will_be_used_for_component_materialization_based_on_the_full_depot_path_of_a_component);
 	}
 
 	void browseButtonPressed()
 	{
 		DirectoryDialog dialog = new DirectoryDialog(this.getShell());
-		dialog.setMessage("P4 Client root");
+		dialog.setMessage(Messages.P4_client_root);
 
 		String dirName = m_localRoot.getText();
-		if(!dirName.equals(""))
+		if(!dirName.equals("")) //$NON-NLS-1$
 		{
 			File path = new File(dirName);
 			if(path.exists())

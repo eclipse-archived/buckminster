@@ -86,7 +86,7 @@ public class P4UiPlugin extends AbstractUIPlugin
 		try
 		{
 			if (m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.p4.ui.P4UiPluginResources");
+				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.p4.ui.P4UiPluginResources"); //$NON-NLS-1$
 		}
 		catch (MissingResourceException x)
 		{
@@ -105,7 +105,7 @@ public class P4UiPlugin extends AbstractUIPlugin
 	 */
 	public static ImageDescriptor getImageDescriptor(String path)
 	{
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.buckminster.p4.ui", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.buckminster.p4.ui", path); //$NON-NLS-1$
 	}
 }
 

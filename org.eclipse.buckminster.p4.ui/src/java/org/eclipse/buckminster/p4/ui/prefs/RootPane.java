@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
 import org.eclipse.buckminster.p4.preferences.Server;
 import org.eclipse.buckminster.p4.preferences.ServerParser;
+import org.eclipse.buckminster.p4.ui.Messages;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -48,8 +49,8 @@ public class RootPane extends NodeListPrefPane
 
 	public void init()
 	{
-		Composite buttonBox = this.createListContents("Known P4 Ports");
-		Button importButton = UiUtils.createPushButton(buttonBox, "Import...", new SelectionAdapter()
+		Composite buttonBox = this.createListContents(Messages.known_P4_ports);
+		Button importButton = UiUtils.createPushButton(buttonBox, Messages.import_with_dots, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -97,7 +98,7 @@ public class RootPane extends NodeListPrefPane
 	@Override
 	protected void newNode()
 	{
-		String serverName = this.queryNodeName("Add P4 Server", "P4 Port", null);
+		String serverName = this.queryNodeName(Messages.add_P4_server, Messages.P4_port, null);
 		if(serverName == null)
 			return;
 
@@ -118,7 +119,7 @@ public class RootPane extends NodeListPrefPane
 	{
 		Server server = m_serverPane.getServer();
 		String oldName = server.getName();
-		String newName = this.queryNodeName("Change P4 Port", "P4 Port", oldName);
+		String newName = this.queryNodeName(Messages.change_P4_port, Messages.P4_port, oldName);
 		if(newName == null || newName.equals(oldName))
 			return;
 
@@ -204,7 +205,7 @@ public class RootPane extends NodeListPrefPane
 			{
 				public boolean isReplaceOK(String serverName)
 				{
-					return MessageDialog.openConfirm(getShell(), null, "Ok to replace server " + serverName);
+					return MessageDialog.openConfirm(getShell(), null, Messages.ok_to_replace_server + serverName);
 				}
 			});
 			m_serverPane.assignRenamedServer(parser.parse(name, input));

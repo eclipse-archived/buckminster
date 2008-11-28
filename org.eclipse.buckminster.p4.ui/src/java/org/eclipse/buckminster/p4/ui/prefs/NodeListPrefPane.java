@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.p4.ui.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -40,7 +41,7 @@ import org.eclipse.swt.widgets.Text;
  */
 abstract class NodeListPrefPane extends Composite
 {
-	private static final Pattern s_namePattern = Pattern.compile("^(?:(?:\\$\\{[\\w\\.-]+\\})|[\\w\\.:-])+$");
+	private static final Pattern s_namePattern = Pattern.compile("^(?:(?:\\$\\{[\\w\\.-]+\\})|[\\w\\.:-])+$"); //$NON-NLS-1$
 
 	private final PreferencePage m_prefPage;
 
@@ -101,7 +102,7 @@ abstract class NodeListPrefPane extends Composite
 		layout.marginWidth = 0;
 		buttonBox.setLayout(layout);
 
-		m_newButton = UiUtils.createPushButton(buttonBox, "New", new SelectionAdapter()
+		m_newButton = UiUtils.createPushButton(buttonBox, Messages.newLabel, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -118,7 +119,7 @@ abstract class NodeListPrefPane extends Composite
 		});
 		m_newButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, "Remove", new SelectionAdapter()
+		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -134,7 +135,7 @@ abstract class NodeListPrefPane extends Composite
 		});
 		m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		m_renameButton = UiUtils.createPushButton(buttonBox, "Rename", new SelectionAdapter()
+		m_renameButton = UiUtils.createPushButton(buttonBox, Messages.rename, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -219,12 +220,12 @@ abstract class NodeListPrefPane extends Composite
 
 	protected static void displayException(Shell parentShell, Exception e)
 	{
-		ErrorDialog.openError(parentShell, "Error reading preferences", null, BuckminsterException.wrap(e).getStatus());
+		ErrorDialog.openError(parentShell, Messages.error_reading_preferences, null, BuckminsterException.wrap(e).getStatus());
 	}
 
 	protected static void setTooltipText(Text text, String value)
 	{
-		if(value != null && value.contains("${"))
+		if(value != null && value.contains("${")) //$NON-NLS-1$
 			text.setToolTipText(ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), value, 0));
 		else
 			text.setToolTipText(null);
@@ -237,7 +238,7 @@ abstract class NodeListPrefPane extends Composite
 			public String isValid(String newText)
 			{
 				if(!s_namePattern.matcher(newText).matches())
-					return "Name is invalid";
+					return Messages.name_is_invalid;
 				return null;
 			}
 		});

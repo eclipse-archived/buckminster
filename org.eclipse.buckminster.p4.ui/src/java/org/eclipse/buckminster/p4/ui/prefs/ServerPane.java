@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.p4.P4Plugin;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.Server;
+import org.eclipse.buckminster.p4.ui.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -124,7 +126,7 @@ public class ServerPane extends NodeListPrefPane
 		String newPassword = UiUtils.trimmedValue(m_password);
 		if(newPassword != null && !newPassword.equals(UiUtils.trimmedValue(m_passwordCheck)))
 		{
-			MessageDialog.openError(this.getShell(), null, "Passwords don't match");
+			MessageDialog.openError(this.getShell(), null, Messages.passwords_dont_match);
 			return false;
 		}
 		m_server.setPassword(newPassword);
@@ -143,10 +145,10 @@ public class ServerPane extends NodeListPrefPane
 	protected void clearServer()
 	{
 		m_server = null;
-		m_serverName.setText("");
-		m_user.setText("");
-		m_password.setText("");
-		m_passwordCheck.setText("");
+		m_serverName.setText(""); //$NON-NLS-1$
+		m_user.setText(""); //$NON-NLS-1$
+		m_password.setText(""); //$NON-NLS-1$
+		m_passwordCheck.setText(""); //$NON-NLS-1$
 		m_defaultServer.setSelection(false);
 		m_clientPane.clearClient();
 		this.updateList();
@@ -158,7 +160,7 @@ public class ServerPane extends NodeListPrefPane
 		if(!this.assignServerValues())
 			return;
 
-		String clientName = this.queryNodeName("Add P4 Client", "Client name", null);
+		String clientName = this.queryNodeName(Messages.add_P4_client, Messages.client_name, null);
 		if(clientName == null)
 			return;
 
@@ -182,7 +184,7 @@ public class ServerPane extends NodeListPrefPane
 
 		Client client = m_clientPane.getClient();
 		String oldName = client.getName();
-		String newName = this.queryNodeName("Rename P4 Client", "Client name", oldName);
+		String newName = this.queryNodeName(Messages.rename_P4_client, Messages.client_name, oldName);
 		if(newName == null || newName.equals(oldName))
 			return;
 
@@ -266,7 +268,7 @@ public class ServerPane extends NodeListPrefPane
 
 	public void init(Composite buttonBox)
 	{
-		m_export = UiUtils.createPushButton(buttonBox, "Export...", new SelectionAdapter()
+		m_export = UiUtils.createPushButton(buttonBox, Messages.export_with_dots, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -285,16 +287,16 @@ public class ServerPane extends NodeListPrefPane
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		serverFields.setLayout(layout);
-		m_serverName = UiUtils.createLabeledText(serverFields, "P4 port:", SWT.READ_ONLY, s_tooltipRefresh);
-		m_user = UiUtils.createLabeledText(serverFields, "User:", SWT.NONE, s_tooltipRefresh);
-		m_password = UiUtils.createLabeledText(serverFields, "Password:", SWT.PASSWORD, null);
-		m_passwordCheck = UiUtils.createLabeledText(serverFields, "Retype password:", SWT.PASSWORD, null);
+		m_serverName = UiUtils.createLabeledText(serverFields, Messages.P4_port_with_colon, SWT.READ_ONLY, s_tooltipRefresh);
+		m_user = UiUtils.createLabeledText(serverFields, Messages.user, SWT.NONE, s_tooltipRefresh);
+		m_password = UiUtils.createLabeledText(serverFields, Messages.password, SWT.PASSWORD, null);
+		m_passwordCheck = UiUtils.createLabeledText(serverFields, Messages.retype_password, SWT.PASSWORD, null);
 
 		m_defaultServer = new Button(serverFields, SWT.CHECK);	 
 		m_defaultServer.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1));
-		m_defaultServer.setText("This is the default server");
+		m_defaultServer.setText(Messages.this_is_the_default_server);
 		m_defaultServer.setEnabled(false);
-		this.createListContents("P4 Clients");
+		this.createListContents(Messages.P4_clients);
 
 		m_clientPane = new ClientPane(this.getPreferencePage(), this);
 		m_clientPane.init();
@@ -316,7 +318,7 @@ public class ServerPane extends NodeListPrefPane
 		catch(Exception e)
 		{
 			CoreException t = BuckminsterException.wrap(e);
-			String msg = "Unable to save file " + location;
+			String msg = NLS.bind(Messages.unable_to_save_file_0, location);
 			P4Plugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
 		}
