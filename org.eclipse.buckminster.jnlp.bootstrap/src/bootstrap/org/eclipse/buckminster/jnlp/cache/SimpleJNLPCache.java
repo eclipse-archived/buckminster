@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
+import org.eclipse.buckminster.jnlp.bootstrap.Messages;
 import org.eclipse.buckminster.jnlp.bootstrap.OperationCanceledException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
@@ -79,12 +80,12 @@ import org.w3c.dom.NodeList;
  */
 public class SimpleJNLPCache
 {
-	private static final String TEMP_SEGMENT = "temp";
+	private static final String TEMP_SEGMENT = "temp"; //$NON-NLS-1$
 
 	// Delete everything which is not the latest and is older than 24 hours
 	private static final long OBSOLETE_THRESHOLD = 86400000;
 
-	private static final String CORRUPTED_DOWNLOAD_FOLDER = "corrupted.download";
+	private static final String CORRUPTED_DOWNLOAD_FOLDER = "corrupted.download"; //$NON-NLS-1$
 	
 	private final SimpleJNLPCacheClassLoader m_classLoader;
 
@@ -114,8 +115,8 @@ public class SimpleJNLPCache
 		jnlpCacheBase.mkdirs();
 
 		if(!jnlpCacheBase.isDirectory())
-			throw new JNLPException("Unable to create a cache entry for " + jnlp.toString(),
-					"Check your access permissions", BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION);
+			throw new JNLPException(Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
+					Messages.getString("check_your_access_permissions"), BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION); //$NON-NLS-1$
 
 		long currentTimestatmp = new Date().getTime();
 		long thresholdTimestamp = currentTimestatmp - OBSOLETE_THRESHOLD;
@@ -125,7 +126,7 @@ public class SimpleJNLPCache
 
 		for(File file : jnlpCacheBase.listFiles())
 		{
-			String[] segments = file.getName().split("\\.");
+			String[] segments = file.getName().split("\\."); //$NON-NLS-1$
 
 			// Check if the file is a folder and its name is not broken
 			if(!file.isDirectory() || segments.length < 2 || segments.length > 3)
@@ -166,29 +167,29 @@ public class SimpleJNLPCache
 
 			updated = true;
 
-			String dirname = Utils.formatDate(resource.getLastModified()) + "."
+			String dirname = Utils.formatDate(resource.getLastModified()) + "." //$NON-NLS-1$
 					+ Utils.formatDate(Long.valueOf(currentTimestatmp));
-			String tempdirname = dirname + "." + TEMP_SEGMENT;
+			String tempdirname = dirname + "." + TEMP_SEGMENT; //$NON-NLS-1$
 			File tempRoot = new File(jnlpCacheBase, tempdirname);
-			File jarDir = new File(tempRoot, "jars");
-			File resourceDir = new File(tempRoot, "resources");
+			File jarDir = new File(tempRoot, "jars"); //$NON-NLS-1$
+			File resourceDir = new File(tempRoot, "resources"); //$NON-NLS-1$
 
 			try
 			{
 				if(!tempRoot.mkdir() || !jarDir.mkdir() || !resourceDir.mkdir())
-					throw new JNLPException("Unable to create a cache entry for " + jnlp.toString(),
-							"Check your access permissions", BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION);
+					throw new JNLPException(Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
+							Messages.getString("check_your_access_permissions"), BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION); //$NON-NLS-1$
 
 				try
 				{
-					PrintWriter jnlpOutput = new PrintWriter(new File(tempRoot, "cached.jnlp"));
+					PrintWriter jnlpOutput = new PrintWriter(new File(tempRoot, "cached.jnlp")); //$NON-NLS-1$
 					jnlpOutput.print(resource.getContent());
 					jnlpOutput.close();
 				}
 				catch(Throwable e)
 				{
-					throw new JNLPException("Unable to create a cache entry for " + jnlp.toString() + ": "
-							+ e.getMessage(), "Check your access permissions",
+					throw new JNLPException(Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString() + ": " //$NON-NLS-1$ //$NON-NLS-2$
+							+ e.getMessage(), Messages.getString("check_your_access_permissions"), //$NON-NLS-1$
 							BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION, e);
 				}
 
@@ -197,8 +198,8 @@ public class SimpleJNLPCache
 				latestFile = new File(jnlpCacheBase, dirname);
 
 				if(!tempRoot.renameTo(latestFile))
-					throw new JNLPException("Unable to commit a cache entry for " + jnlp.toString(),
-							"Check your access permissions", BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION);
+					throw new JNLPException(Messages.getString("unable_to_commit_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
+							Messages.getString("check_your_access_permissions"), BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION); //$NON-NLS-1$
 
 			}
 			finally
@@ -216,8 +217,8 @@ public class SimpleJNLPCache
 		else if(latestFile != null)
 			obsoleteCandidates.remove(latestFile);
 
-		File jarDir = new File(latestFile, "jars");
-		File resourceDir = new File(latestFile, "resources");
+		File jarDir = new File(latestFile, "jars"); //$NON-NLS-1$
+		File resourceDir = new File(latestFile, "resources"); //$NON-NLS-1$
 		try
 		{
 			m_classLoader.addUrl(resourceDir.toURI().toURL());
@@ -229,7 +230,7 @@ public class SimpleJNLPCache
 		}
 		catch(MalformedURLException e)
 		{
-			throw new JNLPException("Unable to delegate a cache entry to the class loader", "Report to vendor",
+			throw new JNLPException(Messages.getString("unable_to_delegate_a_cache_entry_to_the_class_loader"), Messages.getString("report_to_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
 					BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION);
 		}
 
@@ -264,8 +265,8 @@ public class SimpleJNLPCache
 			}
 			catch(IOException e)
 			{
-				throw new JNLPException("Can not create a new file",
-						"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+				throw new JNLPException(Messages.getString("can_not_create_a_new_file"), //$NON-NLS-1$
+						Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 			}
 			m_latestFile = null;
 		}
@@ -284,19 +285,19 @@ public class SimpleJNLPCache
 	private void performDownloads(JNLPResource resource, File jarDir, File resourceDir, IDownloadMonitor progress)
 			throws DOMException, JNLPException, OperationCanceledException
 	{
-		NodeList allJars = resource.getDocument().getElementsByTagName("jar");
+		NodeList allJars = resource.getDocument().getElementsByTagName("jar"); //$NON-NLS-1$
 
-		String osName = System.getProperty("os.name");
-		String osArch = System.getProperty("os.arch");
+		String osName = System.getProperty("os.name"); //$NON-NLS-1$
+		String osArch = System.getProperty("os.arch"); //$NON-NLS-1$
 
 		if(osName != null)
 			osName = osName.toLowerCase();
 		else
-			osName = "";
+			osName = ""; //$NON-NLS-1$
 		if(osArch != null)
 			osArch = osArch.toLowerCase();
 		else
-			osArch = "";
+			osArch = ""; //$NON-NLS-1$
 
 		int fileId = 0;
 
@@ -306,18 +307,18 @@ public class SimpleJNLPCache
 			Node jarNode = allJars.item(i);
 			Node resourcesNode = jarNode.getParentNode();
 
-			if(resourcesNode == null || !"resources".equals(resourcesNode.getNodeName()))
+			if(resourcesNode == null || !"resources".equals(resourcesNode.getNodeName())) //$NON-NLS-1$
 				continue;
 
 			NamedNodeMap resourcesAttributes = resourcesNode.getAttributes();
-			Node osNode = resourcesAttributes.getNamedItem("os");
+			Node osNode = resourcesAttributes.getNamedItem("os"); //$NON-NLS-1$
 			if(osNode != null)
 			{
 				String osReq = osNode.getNodeValue().toLowerCase();
 				if(!osName.startsWith(osReq))
 					continue;
 			}
-			Node archNode = resourcesAttributes.getNamedItem("arch");
+			Node archNode = resourcesAttributes.getNamedItem("arch"); //$NON-NLS-1$
 			if(archNode != null)
 			{
 				String archReq = archNode.getNodeValue().toLowerCase();
@@ -326,8 +327,8 @@ public class SimpleJNLPCache
 			}
 
 			NamedNodeMap jarAttributes = jarNode.getAttributes();
-			String fileName = String.format("%010d", Integer.valueOf(fileId++)) + ".jar";
-			performDownload(jarDir, jarAttributes.getNamedItem("href").getNodeValue(), fileName, progress);
+			String fileName = String.format("%010d", Integer.valueOf(fileId++)) + ".jar"; //$NON-NLS-1$ //$NON-NLS-2$
+			performDownload(jarDir, jarAttributes.getNamedItem("href").getNodeValue(), fileName, progress); //$NON-NLS-1$
 		}
 	}
 
@@ -366,7 +367,7 @@ public class SimpleJNLPCache
 		catch(Throwable e)
 		{
 			progress.downloadFailed(url, null);
-			throw new JNLPException("Download failed for " + url.toString() + ": " + e.getMessage(), "Try again later",
+			throw new JNLPException(Messages.getString("download_failed_for") + url.toString() + ": " + e.getMessage(), Messages.getString("try_again_later"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION, e);
 		}
 	}

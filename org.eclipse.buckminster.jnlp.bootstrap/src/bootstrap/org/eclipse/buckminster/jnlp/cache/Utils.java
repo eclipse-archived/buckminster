@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
+import org.eclipse.buckminster.jnlp.bootstrap.Messages;
 
 import sun.misc.BASE64Encoder;
 
@@ -62,11 +63,11 @@ public class Utils
 
 		try
 		{
-			md = MessageDigest.getInstance("MD5");
+			md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
 		}
 		catch(NoSuchAlgorithmException e)
 		{
-			throw new JNLPException(e.getMessage(), "Report problem to distro vendor",
+			throw new JNLPException(e.getMessage(), Messages.getString("report_problem_to_distro_vendor"), //$NON-NLS-1$
 					BootstrapConstants.ERROR_CODE_JNLP_SAX_EXCEPTION, e);
 		}
 
@@ -93,7 +94,7 @@ public class Utils
 	 */
 	public static String formatDate(Long timestamp)
 	{
-		return String.format("%d", timestamp);
+		return String.format("%d", timestamp); //$NON-NLS-1$
 	}
 
 	public static void deleteRecursive(File file) throws JNLPException
@@ -114,14 +115,14 @@ public class Utils
 			}
 
 			if(!file.delete() && file.exists())
-				throw new JNLPException("Unable to delete " + file.getAbsolutePath(), "Check file permissions",
+				throw new JNLPException(Messages.getString("unable_to_delete") + file.getAbsolutePath(), Messages.getString("check_file_permissions"), //$NON-NLS-1$ //$NON-NLS-2$
 						BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION);
 		
 		}
 		catch(SecurityException e)
 		{
-			throw new JNLPException("Unable to delete " + file.getAbsolutePath() + ": " + e.getMessage(),
-					"Check file permissions", BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e);
+			throw new JNLPException(Messages.getString("unable_to_delete") + file.getAbsolutePath() + ": " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("check_file_permissions"), BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 		}
 	}
 }

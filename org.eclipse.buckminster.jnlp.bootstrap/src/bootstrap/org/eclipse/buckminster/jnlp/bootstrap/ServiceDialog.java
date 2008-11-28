@@ -35,11 +35,11 @@ public class ServiceDialog extends JNLPDialog
 {
 	private static final long serialVersionUID = 0L;
 
-	private static final String SERVICE_TITLE = "Service Message";
+	private static final String SERVICE_TITLE = Messages.getString("service_message"); //$NON-NLS-1$
 
-	private static final String SERVICE_ICON = "warning.png";
+	private static final String SERVICE_ICON = "warning.png"; //$NON-NLS-1$
 
-	private static final String SERVICE_NOT_AVAILABLE = "SERVICE IS NOT AVAILABLE NOW!!";
+	private static final String SERVICE_NOT_AVAILABLE = Messages.getString("uppercase_service_is_not_available_now"); //$NON-NLS-1$
 	
 	private static final int MIN_H_SIZE = 400;
 
@@ -66,24 +66,24 @@ public class ServiceDialog extends JNLPDialog
 		setBackground(SystemColor.control);
 		
 		Panel p = new Panel(new FlowLayout(FlowLayout.LEFT, 15, 15));
-		add("West", p);
+		add("West", p); //$NON-NLS-1$
 
 		Label c = new ImageLabel(SERVICE_ICON);
 		c.setPreferredSize(new Dimension(48, 48));
 		p.add(c);
 
 		Panel tp = new Panel(new BorderLayout());
-		add("Center", tp);
+		add("Center", tp); //$NON-NLS-1$
 
 		p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
-		tp.add("North", p);
+		tp.add("North", p); //$NON-NLS-1$
 		Panel mp = new Panel(new BorderLayout());
 		p.add(mp);
 		
-		mp.add("North", new Label(SERVICE_TITLE + ":"));
+		mp.add("North", new Label(SERVICE_TITLE + ":")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		p = new Panel(new FlowLayout(FlowLayout.LEFT));
-		mp.add("Center", p);
+		mp.add("Center", p); //$NON-NLS-1$
 		
 		TextArea ta = new TextArea(message, 5, 70);
 		ta.setEditable(false);
@@ -114,11 +114,11 @@ public class ServiceDialog extends JNLPDialog
 		
 		if(! serviceAvailable)
 		{
-			tp.add("South", new Label(SERVICE_NOT_AVAILABLE));
+			tp.add("South", new Label(SERVICE_NOT_AVAILABLE)); //$NON-NLS-1$
 		}
 		
 		p = new Panel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
-		m_okButton = new Button("OK");
+		m_okButton = new Button(Messages.getString("ok")); //$NON-NLS-1$
 		m_okButton.setPreferredSize(new Dimension(73, 20));
 
 		m_okButton.addFocusListener(new FocusAdapter(){
@@ -149,7 +149,7 @@ public class ServiceDialog extends JNLPDialog
 			}
 		});
 		p.add(m_okButton);
-		add("South", p);
+		add("South", p); //$NON-NLS-1$
 
 		pack();
 

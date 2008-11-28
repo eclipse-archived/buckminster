@@ -35,18 +35,19 @@ import org.eclipse.buckminster.jnlp.bootstrap.CorruptedFileException;
 import org.eclipse.buckminster.jnlp.bootstrap.IProductInstaller;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
 import org.eclipse.buckminster.jnlp.bootstrap.Main;
+import org.eclipse.buckminster.jnlp.bootstrap.Messages;
 import org.eclipse.buckminster.jnlp.bootstrap.OperationCanceledException;
 import org.eclipse.buckminster.jnlp.bootstrap.ProgressFacade;
 
 public class ProductInstaller implements IProductInstaller
 {
-	private static final String INSTALL_FOLDER = "installer";
+	private static final String INSTALL_FOLDER = "installer"; //$NON-NLS-1$
 	
-	private static final String PACK_PROPERTIES_FILE = "pack.properties";
+	private static final String PACK_PROPERTIES_FILE = "pack.properties"; //$NON-NLS-1$
 	
-	private static final String INSTALL_DONE_FOLDER = "installation.completed";
+	private static final String INSTALL_DONE_FOLDER = "installation.completed"; //$NON-NLS-1$
 	
-	private static final String PACK_SUFFIX = ".pack.gz";
+	private static final String PACK_SUFFIX = ".pack.gz"; //$NON-NLS-1$
 
 	private static final int PACK_SUFFIX_LEN = PACK_SUFFIX.length();
 
@@ -54,7 +55,7 @@ public class ProductInstaller implements IProductInstaller
 
 	static
 	{
-		String fileSep = System.getProperty("file.separator");
+		String fileSep = System.getProperty("file.separator"); //$NON-NLS-1$
 		s_fileSep = (fileSep == null || fileSep.length() < 1)
 				? '/'
 				: fileSep.charAt(0);
@@ -71,7 +72,7 @@ public class ProductInstaller implements IProductInstaller
 
 	private Unpacker m_unpacker;
 
-	private static final String PROP_UNPACK_COUNT = "unpackCount";
+	private static final String PROP_UNPACK_COUNT = "unpackCount"; //$NON-NLS-1$
 
 	private static final int DEFAULT_UNPACK_COUNT = 80;
 
@@ -83,7 +84,7 @@ public class ProductInstaller implements IProductInstaller
 		// everything in one go, it's a bit hard to find the exact number.
 		//
 		int unpackCount = Integer.getInteger(PROP_UNPACK_COUNT, DEFAULT_UNPACK_COUNT).intValue();
-		monitor.setTask("Unpacking", unpackCount + 30);
+		monitor.setTask(Messages.getString("unpacking"), unpackCount + 30); //$NON-NLS-1$
 
 		for(String folder : getInstallFolders())
 		{
@@ -93,9 +94,9 @@ public class ProductInstaller implements IProductInstaller
 
 		monitor.checkCanceled();
 		
-		installResource("product.zip", monitor);
-		installResource("platform.zip", monitor);
-		installResource("extensions.zip", monitor, false);
+		installResource("product.zip", monitor); //$NON-NLS-1$
+		installResource("platform.zip", monitor); //$NON-NLS-1$
+		installResource("extensions.zip", monitor, false); //$NON-NLS-1$
 		
 		File appFolder = new File(m_main.getInstallLocation(), getApplicationFolder());
 		try
@@ -104,8 +105,8 @@ public class ProductInstaller implements IProductInstaller
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not create a new file",
-					"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+			throw new JNLPException(Messages.getString("can_not_create_a_new_file"), //$NON-NLS-1$
+					Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 		}
 		
 		monitor.taskDone();
@@ -129,13 +130,13 @@ public class ProductInstaller implements IProductInstaller
 			}
 
 			if(!file.delete() && file.exists())
-				throw new JNLPException("Unable to delete " + file.getAbsolutePath(), "Check file permissions",
+				throw new JNLPException(Messages.getString("unable_to_delete") + file.getAbsolutePath(), Messages.getString("check_file_permissions"), //$NON-NLS-1$ //$NON-NLS-2$
 						BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION);
 		}
 		catch(SecurityException e)
 		{
-			throw new JNLPException("Unable to delete " + file.getAbsolutePath() + ": " + e.getMessage(),
-					"Check file permissions", BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e);
+			throw new JNLPException(Messages.getString("unable_to_delete") + file.getAbsolutePath() + ": " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("check_file_permissions"), BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 		}
 	}
 
@@ -148,7 +149,7 @@ public class ProductInstaller implements IProductInstaller
 	{
 		monitor.taskIncrementalProgress(5);
 		InputStream resourceZip = getClass().getResourceAsStream(resourceName);
-		InputStream resourceZipMD5 = getClass().getResourceAsStream(resourceName + ".MD5");
+		InputStream resourceZipMD5 = getClass().getResourceAsStream(resourceName + ".MD5"); //$NON-NLS-1$
 		monitor.taskIncrementalProgress(5);
 		if(resourceZip == null)
 		{
@@ -156,7 +157,7 @@ public class ProductInstaller implements IProductInstaller
 			// Nothing to install
 			//
 			if(required)
-				throw new RuntimeException("Missing " + resourceName + " resource");
+				throw new RuntimeException(Messages.getString("missing_0_resource", resourceName)); //$NON-NLS-1$
 			
 			return;
 		}
@@ -177,7 +178,7 @@ public class ProductInstaller implements IProductInstaller
 		try
 		{
 			byte[] productBytes = readStream(productZip);
-			String computedMD5 = encrypt(productBytes, "MD5").trim();
+			String computedMD5 = encrypt(productBytes, "MD5").trim(); //$NON-NLS-1$
 			String originalMD5 = new String(readStream(productZipMD5)).trim();
 			
 			if(!computedMD5.equals(originalMD5))
@@ -208,7 +209,7 @@ zipEntryCycle:
 				
 				if(!folderOK)
 				{
-					throw new JNLPException("Materializer error", "Materializer is probably corrupted. Report the error.", ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION);
+					throw new JNLPException(Messages.getString("materializer_error"), Messages.getString("materializer_is_probably_corrupted_report_the_error"), ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 				String name = osAdjustName(zipEntry.getName());
@@ -232,8 +233,8 @@ zipEntryCycle:
 						}
 						catch(FileNotFoundException e)
 						{
-							throw new JNLPException("Can not create file: " + file.toString(),
-									"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION,
+							throw new JNLPException(Messages.getString("can_not_create_file_colon") + file.toString(), //$NON-NLS-1$
+									Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, //$NON-NLS-1$
 									e);
 						}
 						try
@@ -244,8 +245,8 @@ zipEntryCycle:
 							}
 							catch(IOException e)
 							{
-								throw new JNLPException("Can not unzip and save to file: " + file.toString(),
-										"Check disk space, system permissions and try again",
+								throw new JNLPException(Messages.getString("can_not_unzip_and_save_to_file_colon") + file.toString(), //$NON-NLS-1$
+										Messages.getString("check_disk_space_system_permissions_and_try_again"), //$NON-NLS-1$
 										ERROR_CODE_FILE_IO_EXCEPTION, e);
 							}
 							monitor.taskIncrementalProgress(1);
@@ -266,13 +267,13 @@ zipEntryCycle:
 						}
 						catch(IOException e)
 						{
-							throw new JNLPException("Can not save to file: " + file.toString(),
-									"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION,
+							throw new JNLPException(Messages.getString("can_not_save_to_file_colon") + file.toString(), //$NON-NLS-1$
+									Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, //$NON-NLS-1$
 									e);
 						}
 					}
 
-					if(file.getName().endsWith(".jar"))
+					if(file.getName().endsWith(".jar")) //$NON-NLS-1$
 					{
 						try
 						{
@@ -281,8 +282,8 @@ zipEntryCycle:
 						}
 						catch(IOException e)
 						{
-							throw new JNLPException("Can not unpack file: " + file.toString(),
-									"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION,
+							throw new JNLPException(Messages.getString("can_not_unpack_file_colon") + file.toString(), //$NON-NLS-1$
+									Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, //$NON-NLS-1$
 									e);
 						}
 					}
@@ -295,8 +296,8 @@ zipEntryCycle:
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not read materialization wizard resource",
-					"Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+			throw new JNLPException(Messages.getString("can_not_read_materialization_wizard_resource"), //$NON-NLS-1$
+					Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_REMOTE_IO_EXCEPTION, e); //$NON-NLS-1$
 		}
 	}
 
@@ -313,7 +314,7 @@ zipEntryCycle:
 	
 	private static String encrypt(byte[] bytes, String algorithmName)
 	{
-		String md5val = "";
+		String md5val = ""; //$NON-NLS-1$
 		MessageDigest algorithm = null;
 
 		try
@@ -322,7 +323,7 @@ zipEntryCycle:
 		}
 		catch(NoSuchAlgorithmException nsae)
 		{
-			throw new IllegalArgumentException("Unknown encrypt algorithm: " + algorithmName);
+			throw new IllegalArgumentException(Messages.getString("unknown_encrypt_algorithm_colon") + algorithmName); //$NON-NLS-1$
 		}
 
 		algorithm.reset();
@@ -368,7 +369,7 @@ zipEntryCycle:
 			// We need to repack this jar
 			//
 			byte[] copyBuf = new byte[8192];
-			tempFile = File.createTempFile("unpack", ".jar", file.getParentFile());
+			tempFile = File.createTempFile("unpack", ".jar", file.getParentFile()); //$NON-NLS-1$ //$NON-NLS-2$
 			jarOutput = new JarOutputStream(new FileOutputStream(tempFile), jarFile.getManifest());
 			entries = jarFile.entries();
 			while(entries.hasMoreElements())
@@ -377,7 +378,7 @@ zipEntryCycle:
 				String entryName = entry.getName();
 				if(entry.isDirectory())
 				{
-					if(!entryName.equalsIgnoreCase("meta-inf"))
+					if(!entryName.equalsIgnoreCase("meta-inf")) //$NON-NLS-1$
 						//
 						// It's there already.
 						//
@@ -385,7 +386,7 @@ zipEntryCycle:
 					continue;
 				}
 
-				if(entryName.equalsIgnoreCase("meta-inf/manifest.mf"))
+				if(entryName.equalsIgnoreCase("meta-inf/manifest.mf")) //$NON-NLS-1$
 					//
 					// Manifest is already written to output
 					//
@@ -421,7 +422,7 @@ zipEntryCycle:
 			Main.close(jarOutput);
 			jarFile.close();
 		}
-		File mvTemp = new File(file.getAbsolutePath() + ".move");
+		File mvTemp = new File(file.getAbsolutePath() + ".move"); //$NON-NLS-1$
 		mvTemp.delete();
 		renameFile(file, mvTemp);
 		renameFile(tempFile, file);
@@ -432,7 +433,7 @@ zipEntryCycle:
 	private static void renameFile(File from, File to)
 	{
 		if(!from.renameTo(to))
-			throw new RuntimeException(String.format("Unable to rename \"%s\" to \"%s\"", from, to));
+			throw new RuntimeException(Messages.getString("unable_to_rename_0_to_1", from, to)); //$NON-NLS-1$
 	}
 
 	private synchronized void storeUnpacked(InputStream packedInput, OutputStream result) throws IOException

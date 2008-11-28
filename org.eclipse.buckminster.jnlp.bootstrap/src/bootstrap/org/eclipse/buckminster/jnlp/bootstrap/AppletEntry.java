@@ -34,14 +34,14 @@ public class AppletEntry extends Applet
 	{
 		try
 		{
-			String jnlpLink = getParameter("jnlpLink");
+			String jnlpLink = getParameter("jnlpLink"); //$NON-NLS-1$
 			
 			/* Parse JNLP descriptor which would normally be used for launching the application
 			   with Java Web Start. Extract only the most important information - command line
 			   arguments and use them for launching the application.
 			*/
 			JNLPResource resource = new JNLPResource(new URL(jnlpLink));
-			NodeList arguments = resource.getDocument().getElementsByTagName("argument");
+			NodeList arguments = resource.getDocument().getElementsByTagName("argument"); //$NON-NLS-1$
 			
 			int len = arguments.getLength();
 			List<String> args = new ArrayList<String>();
@@ -56,7 +56,7 @@ public class AppletEntry extends Applet
 		}
 		catch(Exception e)
 		{
-			throw new Error("Unable to initialize applet: " + e.getMessage(), e);
+			throw new Error(Messages.getString("unable_to_initialize_applet_colon") + e.getMessage(), e); //$NON-NLS-1$
 		}
 	}
 }

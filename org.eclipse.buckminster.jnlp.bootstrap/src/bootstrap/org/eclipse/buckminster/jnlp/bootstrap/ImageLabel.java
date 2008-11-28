@@ -32,7 +32,7 @@ class ImageLabel extends Label
 	private Image getImage(String imageName)
 	{
 		Class<?> myClass = this.getClass();
-		String imageResource = "/icons/" + imageName;
+		String imageResource = "/icons/" + imageName; //$NON-NLS-1$
 		URL imageUrl = myClass.getResource(imageResource);
 		return Toolkit.getDefaultToolkit().createImage(imageUrl);
 	}

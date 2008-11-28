@@ -61,37 +61,37 @@ public class Main
 	// The package of the product.zip must correspond with the package declaration
 	// in the product.jnlp file.
 	//
-	private static final String PRODUCT_INSTALLER_CLASS = "org.eclipse.buckminster.jnlp.product.ProductInstaller";
+	private static final String PRODUCT_INSTALLER_CLASS = "org.eclipse.buckminster.jnlp.product.ProductInstaller"; //$NON-NLS-1$
 
 	// private static final String PRODUCT = "product";
 
-	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot";
+	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot"; //$NON-NLS-1$
 
-	public static final String PROP_SPLASH_IMAGE = "splashImage";
+	public static final String PROP_SPLASH_IMAGE = "splashImage"; //$NON-NLS-1$
 
-	public static final String PROP_WINDOW_ICON = "windowIcon";
+	public static final String PROP_WINDOW_ICON = "windowIcon"; //$NON-NLS-1$
 
-	public static final String PROP_SERVICE_AVAILABLE = "serviceAvailable";
+	public static final String PROP_SERVICE_AVAILABLE = "serviceAvailable"; //$NON-NLS-1$
 
-	public static final String PROP_SERVICE_MESSAGE = "serviceMessage";
+	public static final String PROP_SERVICE_MESSAGE = "serviceMessage"; //$NON-NLS-1$
 
-	public static final String PROP_MAX_CAPTURED_LINES = "maxErrorLines";
+	public static final String PROP_MAX_CAPTURED_LINES = "maxErrorLines"; //$NON-NLS-1$
 
 	public static final int DEFAULT_MAX_CAPTURED_LINES = 1000;
 
-	public static final String PROP_ERROR_URL = "errorURL";
+	public static final String PROP_ERROR_URL = "errorURL"; //$NON-NLS-1$
 
-	public static final String PROP_STARTUP_TIME = "startupTime";
+	public static final String PROP_STARTUP_TIME = "startupTime"; //$NON-NLS-1$
 
 	public static final int DEFAULT_STARTUP_TIME = 4000;
 
-	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout";
+	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout"; //$NON-NLS-1$
 	
-	public static final String PROP_BASE_PATH_URL = "basePathURL";
+	public static final String PROP_BASE_PATH_URL = "basePathURL"; //$NON-NLS-1$
 	
-	public static final String REPORT_ERROR_VIEW = "feedback.seam";
+	public static final String REPORT_ERROR_VIEW = "feedback.seam"; //$NON-NLS-1$
 	
-	public static final String REPORT_ERROR_PREFIX = "Materializator-";
+	public static final String REPORT_ERROR_PREFIX = "Materializator-"; //$NON-NLS-1$
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
 	
@@ -132,7 +132,7 @@ public class Main
 		final Main main = new Main();
 		try
 		{
-			ThreadGroup trustedGroup = new ThreadGroup("buckminster.bootstrap.threadgroup");
+			ThreadGroup trustedGroup = new ThreadGroup("buckminster.bootstrap.threadgroup"); //$NON-NLS-1$
 
 			class BootstrapThread extends Thread
 			{
@@ -168,7 +168,7 @@ public class Main
 			try
 			{
 				cacheSecurityManager.addTrustedThreadGroup(trustedGroup);
-				bootstrap = new BootstrapThread(trustedGroup, "buckminster.bootstrap.thread");
+				bootstrap = new BootstrapThread(trustedGroup, "buckminster.bootstrap.thread"); //$NON-NLS-1$
 				bootstrap.start();
 				bootstrap.join();
 			}
@@ -185,7 +185,7 @@ public class Main
 		}
 		catch(OperationCanceledException e)
 		{
-			System.err.println("Warning: Operation was canceled by user");
+			System.err.println(Messages.getString("warning_operation_was_canceled_by_user")); //$NON-NLS-1$
 			
 			if(!fromApplet)
 				Runtime.getRuntime().exit(-1);
@@ -202,13 +202,13 @@ public class Main
 
 				if(e.getCause() != null)
 				{
-					problem += "\n\nStack Trace:\n" + getStackTrace(e.getCause());
+					problem += "\n\n" + Messages.getString("stack_trace_colon") + "\n" + getStackTrace(e.getCause()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 
-				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem, e.getSolution(),
+				new ErrorDialog(main.getWindowIconImage(), Messages.getString("materializer_can_not_be_started"), problem, e.getSolution(), //$NON-NLS-1$
 						main.getErrorURL() == null
 								? null
-								: main.getErrorURL() + "?errorCode=" + errorCode).open();
+								: main.getErrorURL() + "?errorCode=" + errorCode).open(); //$NON-NLS-1$
 			}
 			else
 			{
@@ -217,20 +217,20 @@ public class Main
 
 				if(problem == null)
 				{
-					problem = "Unknonw runtime exception";
+					problem = Messages.getString("unknown_runtime_exception"); //$NON-NLS-1$
 				}
 
-				problem += "\n\nStack Trace:\n" + getStackTrace(t);
+				problem += "\n\n" + Messages.getString("stack_trace_colon") + "\n" + getStackTrace(t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				new ErrorDialog(main.getWindowIconImage(), "Materializer can not be started", problem,
-						"Check your java installation and try again", main.getErrorURL() == null
+				new ErrorDialog(main.getWindowIconImage(), Messages.getString("materializer_can_not_be_started"), problem, //$NON-NLS-1$
+						Messages.getString("check_your_java_installation_and_try_again"), main.getErrorURL() == null //$NON-NLS-1$
 								? null
-								: main.getErrorURL() + "?errorCode=" + errorCode).open();
+								: main.getErrorURL() + "?errorCode=" + errorCode).open(); //$NON-NLS-1$
 			}
 
 			try
 			{
-				File errorFile = new File(main.getInstallLocation(), "error.log");
+				File errorFile = new File(main.getInstallLocation(), "error.log"); //$NON-NLS-1$
 				PrintStream ps = new PrintStream(new FileOutputStream(errorFile));
 				t.printStackTrace(ps);
 				ps.close();
@@ -268,11 +268,11 @@ public class Main
 		if(s_basePathUrl == null)
 			return;
 		
-		String javaVersion = URLEncoder.encode(System.getProperty("java.version"), "UTF-8");
-		String javaVendor = URLEncoder.encode(System.getProperty("java.vendor"), "UTF-8");
+		String javaVersion = URLEncoder.encode(System.getProperty("java.version"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+		String javaVendor = URLEncoder.encode(System.getProperty("java.vendor"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		String string = s_basePathUrl + REPORT_ERROR_VIEW + "?errorCode=" + REPORT_ERROR_PREFIX + errorCode +
-		"&javaVersion=" + javaVersion + "&javaVendor=" + javaVendor;
+		String string = s_basePathUrl + REPORT_ERROR_VIEW + "?errorCode=" + REPORT_ERROR_PREFIX + errorCode + //$NON-NLS-1$
+		"&javaVersion=" + javaVersion + "&javaVendor=" + javaVendor; //$NON-NLS-1$ //$NON-NLS-2$
 		URL feedbackURL = new URL(string);
 		// ping feedback view to report it to apache log
 		InputStream is = feedbackURL.openStream();
@@ -289,20 +289,20 @@ public class Main
 		{
 			if(isWindows())
 			{
-				String appDataEnv = System.getenv("APPDATA");
+				String appDataEnv = System.getenv("APPDATA"); //$NON-NLS-1$
 
 				if(appDataEnv != null)
 					m_applicationData = new File(appDataEnv);
 				else
 				{
-					String userHome = System.getProperty("user.home");
+					String userHome = System.getProperty("user.home"); //$NON-NLS-1$
 					if(userHome != null)
-						m_applicationData = new File(userHome, "Application Data");
+						m_applicationData = new File(userHome, "Application Data"); //$NON-NLS-1$
 				}
 			}
 			else
 			{
-				String userHome = System.getProperty("user.home");
+				String userHome = System.getProperty("user.home"); //$NON-NLS-1$
 				if(userHome != null)
 					m_applicationData = new File(userHome);
 			}
@@ -317,20 +317,20 @@ public class Main
 			if(getApplicationDataLocation() != null)
 			{
 				if(isWindows())
-					m_installLocation = new File(getApplicationDataLocation(), "buckminster");
+					m_installLocation = new File(getApplicationDataLocation(), "buckminster"); //$NON-NLS-1$
 				else
-					m_installLocation = new File(getApplicationDataLocation(), ".buckminster");
+					m_installLocation = new File(getApplicationDataLocation(), ".buckminster"); //$NON-NLS-1$
 			}
 			else
 			{
 				try
 				{
-					m_installLocation = File.createTempFile("bucky", ".site");
+					m_installLocation = File.createTempFile("bucky", ".site"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not create a temp file",
-							"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException(Messages.getString("can_not_create_a_temp_file"), //$NON-NLS-1$
+							Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 				}
 			}
 			m_installLocation.mkdirs();
@@ -341,22 +341,22 @@ public class Main
 
 	public static boolean isWindows()
 	{
-		return isOs("windows");
+		return isOs("windows"); //$NON-NLS-1$
 	}
 
 	public static boolean isAix()
 	{
-		return isOs("aix");
+		return isOs("aix"); //$NON-NLS-1$
 	}
 
 	public static boolean isMaxOSx()
 	{
-		return isOs("mac os x");
+		return isOs("mac os x"); //$NON-NLS-1$
 	}
 
 	public static boolean isOs(String osName)
 	{
-		String os = System.getProperty("os.name");
+		String os = System.getProperty("os.name"); //$NON-NLS-1$
 		return os != null && os.length() >= osName.length()
 				&& osName.equalsIgnoreCase(os.substring(0, osName.length()));
 	}
@@ -369,14 +369,14 @@ public class Main
 
 	public File getCacheLocation() throws JNLPException
 	{
-		return new File(getInstallLocation(), "cache");
+		return new File(getInstallLocation(), "cache"); //$NON-NLS-1$
 	}
 
 	private String getJnlpRef(String[] args) throws JNLPException
 	{
 		for(int idx = 0; idx < args.length; ++idx)
 		{
-			if("-productJNLP".equals(args[idx]))
+			if("-productJNLP".equals(args[idx])) //$NON-NLS-1$
 			{
 				if(++idx < args.length)
 				{
@@ -390,8 +390,8 @@ public class Main
 			}
 		}
 
-		throw new JNLPException("Missing required argument -productJNLP <URL to product JNLP descriptor>",
-				"Report the error and try later", ERROR_CODE_MISSING_ARGUMENT_EXCEPTION);
+		throw new JNLPException(Messages.getString("missing_required_argument_productJNLP_URL_to_product_JNLP_descriptor"), //$NON-NLS-1$
+				Messages.getString("report_the_error_and_try_later"), ERROR_CODE_MISSING_ARGUMENT_EXCEPTION); //$NON-NLS-1$
 	}
 
 	private Properties parseArguments(String[] args) throws JNLPException
@@ -399,7 +399,7 @@ public class Main
 		int urlIdx = -1;
 		for(int idx = 0; idx < args.length; ++idx)
 		{
-			if("-configURL".equals(args[idx]))
+			if("-configURL".equals(args[idx])) //$NON-NLS-1$
 			{
 				if(++idx < args.length)
 				{
@@ -416,8 +416,8 @@ public class Main
 
 		if(urlIdx == -1)
 		{
-			throw new JNLPException("Missing required argument -configURL <URL to config properties>",
-					"Report the error and try later", ERROR_CODE_MISSING_ARGUMENT_EXCEPTION);
+			throw new JNLPException(Messages.getString("missing_required_argument_configURL_URL_to_config_properties"), //$NON-NLS-1$
+					Messages.getString("report_the_error_and_try_later"), ERROR_CODE_MISSING_ARGUMENT_EXCEPTION); //$NON-NLS-1$
 		}
 
 		InputStream propStream = null;
@@ -432,10 +432,10 @@ public class Main
 			}
 			catch(MalformedURLException e)
 			{
-				throw new JNLPException("Can not read URL to config properties", "Report the error and try later",
+				throw new JNLPException(Messages.getString("can_not_read_URL_to_config_properties"), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
 						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
-			if(!"file".equals(propertiesURL))
+			if(!"file".equals(propertiesURL)) //$NON-NLS-1$
 			{
 				// Copy to local file. The installer that we bootstrap will need
 				// this too and we don't want an extra http GET just to get it.
@@ -453,28 +453,28 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Unable to get information about the materialization",
-							"Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+					throw new JNLPException(Messages.getString("unable_to_get_information_about_the_materialization"), //$NON-NLS-1$
+							Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_PROPERTY_IO_EXCEPTION, e); //$NON-NLS-1$
 				}
 				bytes = bld.toByteArray();
 				propStream = new ByteArrayInputStream(bytes);
 
 				// Create the local file
 				//
-				File localTemp = new File(getInstallLocation(), "temp");
+				File localTemp = new File(getInstallLocation(), "temp"); //$NON-NLS-1$
 				if(!(localTemp.exists() || localTemp.mkdirs()))
-					throw new JNLPException("Unable to create directory " + localTemp,
-							"Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION);
+					throw new JNLPException(Messages.getString("unable_to_create_directory") + localTemp, //$NON-NLS-1$
+							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION); //$NON-NLS-1$
 
 				File localProps;
 				try
 				{
-					localProps = File.createTempFile("config", "properties", localTemp);
+					localProps = File.createTempFile("config", "properties", localTemp); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not create a temp file",
-							"Check disk space, system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException(Messages.getString("can_not_create_a_temp_file"), //$NON-NLS-1$
+							Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 				}
 				try
 				{
@@ -483,8 +483,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Can not write to a temp file",
-							"Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException(Messages.getString("can_not_write_to_a_temp_file"), //$NON-NLS-1$
+							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 				}
 
 				// Replace the configURL option value in the argument array with a pointer
@@ -497,8 +497,8 @@ public class Main
 				}
 				catch(MalformedURLException e)
 				{
-					throw new JNLPException("Can not read from a temp file",
-							"Check your system permissions and try again", ERROR_CODE_FILE_IO_EXCEPTION, e);
+					throw new JNLPException(Messages.getString("can_not_read_from_a_temp_file"), //$NON-NLS-1$
+							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 				}
 			}
 			else
@@ -508,8 +508,8 @@ public class Main
 				}
 				catch(IOException e)
 				{
-					throw new JNLPException("Unable to get information about the materialization",
-							"Check your internet connection and try again", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+					throw new JNLPException(Messages.getString("unable_to_get_information_about_the_materialization"), //$NON-NLS-1$
+							Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_PROPERTY_IO_EXCEPTION, e); //$NON-NLS-1$
 				}
 
 			Properties props = new Properties();
@@ -519,8 +519,8 @@ public class Main
 			}
 			catch(IOException e)
 			{
-				throw new JNLPException("Unable to read materialization information",
-						"Check your system permissions, internet connection and try again",
+				throw new JNLPException(Messages.getString("unable_to_read_materialization_information"), //$NON-NLS-1$
+						Messages.getString("check_your_system_permissions_internet_connection_and_try_again"), //$NON-NLS-1$
 						ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 			}
 			return props;
@@ -551,7 +551,7 @@ public class Main
 
 			boolean serviceAvailable = true;
 
-			if(tmp != null && "false".equalsIgnoreCase(tmp))
+			if(tmp != null && "false".equalsIgnoreCase(tmp)) //$NON-NLS-1$
 			{
 				serviceAvailable = false;
 			}
@@ -626,8 +626,8 @@ public class Main
 			}
 			catch(MalformedURLException e)
 			{
-				throw new JNLPException("Unable to create a URL from " + jnlpString + ": " + e.getMessage(),
-						"Report to vendor", ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+				throw new JNLPException(Messages.getString("unable_to_create_a_URL_from_0_colon_1", jnlpString, e.getMessage()), //$NON-NLS-1$
+						Messages.getString("report_to_vendor"), ERROR_CODE_PROPERTY_IO_EXCEPTION, e); //$NON-NLS-1$
 			}
 
 			boolean productUpdated = cache.registerJNLP(url, monitor);
@@ -642,8 +642,8 @@ public class Main
 			}
 			catch(Exception e)
 			{
-				throw new JNLPException("Can not find materialization wizard resource",
-						"Report the error and try later", ERROR_CODE_RESOURCE_EXCEPTION, e);
+				throw new JNLPException(Messages.getString("can_not_find_materialization_wizard_resource"), //$NON-NLS-1$
+						Messages.getString("report_the_error_and_try_later"), ERROR_CODE_RESOURCE_EXCEPTION, e); //$NON-NLS-1$
 			}
 
 			if(productUpdated || !installer.isInstalled(getInstallLocation()))
@@ -669,8 +669,8 @@ public class Main
 				{
 					cache.removeLatest();
 					
-					throw new JNLPException("The downloaded materialization wizard a contains corrupted file",
-							"Trigger the materialization again", ERROR_CODE_CORRUPTED_FILE_EXCEPTION);
+					throw new JNLPException(Messages.getString("the_downloaded_materialization_wizard_a_contains_corrupted_file"), //$NON-NLS-1$
+							Messages.getString("trigger_the_materialization_again"), ERROR_CODE_CORRUPTED_FILE_EXCEPTION); //$NON-NLS-1$
 				}
 			}
 			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
@@ -695,7 +695,7 @@ public class Main
 				}
 
 				startupTime /= 100;
-				monitor.setTask("Starting", startupTime);
+				monitor.setTask(Messages.getString("starting"), startupTime); //$NON-NLS-1$
 				while(--startupTime >= 0 && !m_jnlpProductStarted)
 				{
 					monitor.checkCanceled();
@@ -735,18 +735,18 @@ public class Main
 						String capturedErrors = m_tailErr.getLinesAsString();
 						String capturedOutput = m_tailOut.getLinesAsString();
 
-						throw new JNLPException("Unable to launch materializer:\nExit code: " + processExitValue
+						throw new JNLPException(Messages.getString("unable_to_launch_materializer_colon") + "\nExit code: " + processExitValue //$NON-NLS-1$ //$NON-NLS-2$
 								+ (capturedErrors != null
-										? "\nCaptured errors:\n" + capturedErrors
-										: "") + (capturedOutput != null
-										? "\nCaptured output:\n" + capturedOutput
-										: ""), "Read error description above",
+										? "\n" + Messages.getString("captured_errors_colon") + "\n" + capturedErrors //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+										: "") + (capturedOutput != null //$NON-NLS-1$
+										? "\n" + Messages.getString("captured_output_colon") + "\n" + capturedOutput //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+										: ""), Messages.getString("read_error_description_above"), //$NON-NLS-1$ //$NON-NLS-2$
 								ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
 					}
 
 					m_process.destroy();
-					throw new JNLPException("Unable to launch materializer within timeout",
-							"Check your machine (might be too slow or too busy)",
+					throw new JNLPException(Messages.getString("unable_to_launch_materializer_within_timeout"), //$NON-NLS-1$
+							Messages.getString("check_your_machine_might_be_too_slow_or_too_busy"), //$NON-NLS-1$
 							ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
 				}
 			}
@@ -786,8 +786,8 @@ public class Main
 			}
 			catch(IOException e)
 			{
-				throw new JNLPException("Unable to read a splash screen or window icon image",
-						"Check your internet connection and try again", ERROR_CODE_REMOTE_IO_EXCEPTION, e);
+				throw new JNLPException(Messages.getString("unable_to_read_a_splash_screen_or_window_icon_image"), //$NON-NLS-1$
+						Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_REMOTE_IO_EXCEPTION, e); //$NON-NLS-1$
 			}
 			finally
 			{
@@ -801,40 +801,40 @@ public class Main
 	public void startProduct(String applicationFolder, String[] args, long popupAfter) throws JNLPException
 	{
 		File launcherFile = findEclipseLauncher(applicationFolder);
-		String javaHome = System.getProperty("java.home");
+		String javaHome = System.getProperty("java.home"); //$NON-NLS-1$
 		if(javaHome == null)
 		{
-			throw new JNLPException("System propery java.home is not set",
-					"Set the system property which should point to java home directory and try again",
+			throw new JNLPException(Messages.getString("system_property_0_is_not_set", "java.home"), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("set_the_system_property_which_should_point_to_java_home_directory_and_try_again"), //$NON-NLS-1$
 					ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
 		}
 
-		File javaBin = new File(javaHome, "bin");
+		File javaBin = new File(javaHome, "bin"); //$NON-NLS-1$
 		File javaExe = new File(javaBin, isWindows()
-				? "javaw.exe"
-				: "java");
+				? "javaw.exe" //$NON-NLS-1$
+				: "java"); //$NON-NLS-1$
 
 		if(!javaExe.exists())
 		{
-			throw new JNLPException("Unable to locate java runtime", "Check java installation and try again",
+			throw new JNLPException(Messages.getString("unable_to_locate_java_runtime"), Messages.getString("check_java_installation_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
 		}
 
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(javaExe.toString());
 		allArgs.addAll(parseExtraArgs(args));
-		allArgs.add("-Xmx512m");
-		allArgs.add("-jar");
+		allArgs.add("-Xmx512m"); //$NON-NLS-1$
+		allArgs.add("-jar"); //$NON-NLS-1$
 		allArgs.add(launcherFile.toString());
 
 		String wsDir = getWorkspaceDir();
 		if(wsDir != null)
 		{
-			allArgs.add("-data");
+			allArgs.add("-data"); //$NON-NLS-1$
 			allArgs.add(wsDir);
 		}
-		allArgs.add("-application");
-		allArgs.add("org.eclipse.buckminster.jnlp.application");
+		allArgs.add("-application"); //$NON-NLS-1$
+		allArgs.add("org.eclipse.buckminster.jnlp.application"); //$NON-NLS-1$
 		for(String arg : args)
 			allArgs.add(arg);
 
@@ -844,32 +844,32 @@ public class Main
 		}
 		catch(URISyntaxException e)
 		{
-			throw new JNLPException("Unable to detect proxy settings", "Report the problem",
+			throw new JNLPException(Messages.getString("unable_to_detect_proxy_settings"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
 		}
 
-		final String syncString = "sync info: application launched";
-		allArgs.add("-syncString");
+		final String syncString = "sync info: application launched"; //$NON-NLS-1$
+		allArgs.add("-syncString"); //$NON-NLS-1$
 		allArgs.add(syncString);
 
-		allArgs.add("-consoleLog");
+		allArgs.add("-consoleLog"); //$NON-NLS-1$
 
-		allArgs.add("-popupAfter");
-		allArgs.add("" + popupAfter);
+		allArgs.add("-popupAfter"); //$NON-NLS-1$
+		allArgs.add("" + popupAfter); //$NON-NLS-1$
 
-		allArgs.add("-ws");
+		allArgs.add("-ws"); //$NON-NLS-1$
 
 		if(isWindows())
-			allArgs.add("win32");
+			allArgs.add("win32"); //$NON-NLS-1$
 		else if(isAix())
-			allArgs.add("motif");
+			allArgs.add("motif"); //$NON-NLS-1$
 		else if(isMaxOSx())
 		{
-			allArgs.add("carbon");
-			allArgs.add("-XstartOnFirstThread");
+			allArgs.add("carbon"); //$NON-NLS-1$
+			allArgs.add("-XstartOnFirstThread"); //$NON-NLS-1$
 		}
 		else
-			allArgs.add("gtk");
+			allArgs.add("gtk"); //$NON-NLS-1$
 
 		Runtime runtime = Runtime.getRuntime();
 		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
@@ -902,7 +902,7 @@ public class Main
 					}
 					catch(IOException e)
 					{
-						System.err.println("Error reading from JNLP application standard output: " + e.getMessage());
+						System.err.println(Messages.getString("error_reading_from_JNLP_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -924,7 +924,7 @@ public class Main
 					}
 					catch(IOException e)
 					{
-						System.err.println("Error reading from JNLP application standard error: " + e.getMessage());
+						System.err.println(Messages.getString("error_reading_from_JNLP_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -935,7 +935,7 @@ public class Main
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Can not run materializer wizard", "Check your system permissions and try again",
+			throw new JNLPException(Messages.getString("can_not_run_materializer_wizard"), Messages.getString("check_your_system_permissions_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
 		}
 	}
@@ -951,12 +951,12 @@ public class Main
 	{
 		for(int i=0; i < args.length; i++)
 		{
-			if("-extra".equals(args[i]))
+			if("-extra".equals(args[i])) //$NON-NLS-1$
 			{
 				String extraArgsString = args[++i];
-				if(extraArgsString != null && !"null".equals(extraArgsString))
+				if(extraArgsString != null && !"null".equals(extraArgsString)) //$NON-NLS-1$
 				{
-					String[] extraArgs = extraArgsString.split(" ");
+					String[] extraArgs = extraArgsString.split(" "); //$NON-NLS-1$
 					
 					return Arrays.asList(extraArgs);
 				}
@@ -992,8 +992,8 @@ public class Main
 		List<String> args = new ArrayList<String>();
 		ProxySelector proxySelector = ProxySelector.getDefault();
 
-		for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"),
-				new URI("ftp://dummy.host.com") })
+		for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"), //$NON-NLS-1$ //$NON-NLS-2$
+				new URI("ftp://dummy.host.com") }) //$NON-NLS-1$
 		{
 			List<Proxy> proxies = proxySelector.select(uri);
 			String protocol = uri.getScheme();
@@ -1007,12 +1007,12 @@ public class Main
 				if(address instanceof InetSocketAddress)
 				{
 					InetSocketAddress iaddr = (InetSocketAddress)address;
-					args.add("-" + protocol + ".proxyHost");
+					args.add("-" + protocol + ".proxyHost"); //$NON-NLS-1$ //$NON-NLS-2$
 					args.add(iaddr.getHostName());
-					args.add("-" + protocol + ".proxyPort");
-					args.add("" + iaddr.getPort());
-					args.add("-" + protocol + ".nonProxyHosts");
-					args.add("localhost|127.0.0.1");
+					args.add("-" + protocol + ".proxyPort"); //$NON-NLS-1$ //$NON-NLS-2$
+					args.add("" + iaddr.getPort()); //$NON-NLS-1$
+					args.add("-" + protocol + ".nonProxyHosts"); //$NON-NLS-1$ //$NON-NLS-2$
+					args.add("localhost|127.0.0.1"); //$NON-NLS-1$
 					break;
 				}
 			}
@@ -1021,7 +1021,7 @@ public class Main
 		return args;
 	}
 
-	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$");
+	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$"); //$NON-NLS-1$
 
 	public File findEclipseLauncher(String applicationFolder) throws JNLPException
 	{
@@ -1032,15 +1032,15 @@ public class Main
 		File siteRoot = new File(getInstallLocation(), applicationFolder);
 		if(!siteRoot.isDirectory())
 		{
-			throw new JNLPException("Unable to locate the site root of " + getInstallLocation(),
-					"Check disk space, system permissions and try again", ERROR_CODE_SITE_ROOT_EXCEPTION);
+			throw new JNLPException(Messages.getString("unable_to_locate_the_site_root_of_0", getInstallLocation()), //$NON-NLS-1$
+					Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_SITE_ROOT_EXCEPTION); //$NON-NLS-1$
 		}
 
-		File pluginsDir = new File(siteRoot, "plugins");
+		File pluginsDir = new File(siteRoot, "plugins"); //$NON-NLS-1$
 		String[] names = pluginsDir.list();
 		if(names == null)
 		{
-			throw new JNLPException(pluginsDir + " is not a directory", "Report the error and try later",
+			throw new JNLPException(Messages.getString("_0_is_not_a_directory", pluginsDir), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_DIRECTORY_EXCEPTION);
 		}
 
@@ -1066,12 +1066,12 @@ public class Main
 		{
 			// Are we building against an older platform perhaps?
 			//
-			launcher = new File(siteRoot, "startup.jar");
+			launcher = new File(siteRoot, "startup.jar"); //$NON-NLS-1$
 			if(!launcher.exists())
 			{
-				throw new JNLPException("Can not find file: " + pluginsDir
-						+ "org.eclipse.equinox.launcher_<version>.jar",
-						"Clear your java cache, browser cache and try again", ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION);
+				throw new JNLPException(Messages.getString("can_not_find_file_colon") + pluginsDir //$NON-NLS-1$
+						+ "org.eclipse.equinox.launcher_<version>.jar", //$NON-NLS-1$
+						Messages.getString("clear_your_java_cache_browser_cache_and_try_again"), ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION); //$NON-NLS-1$
 			}
 		}
 		else

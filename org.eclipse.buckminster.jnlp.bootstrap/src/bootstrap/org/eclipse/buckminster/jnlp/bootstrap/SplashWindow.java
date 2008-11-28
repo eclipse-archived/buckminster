@@ -88,10 +88,10 @@ public class SplashWindow extends Frame
 	private static final int STOP_ICON_DG_ID = 5;
 	private static final int STOP_ICON_BG_ID = 6;
 
-	private static final String STOP_ICON_DB = "stop.gif";
-	private static final String STOP_ICON_BB = "stop_border.gif";
-	private static final String STOP_ICON_DG = "stop_gray.gif";
-	private static final String STOP_ICON_BG = "stop_border_gray.gif";
+	private static final String STOP_ICON_DB = "stop.gif"; //$NON-NLS-1$
+	private static final String STOP_ICON_BB = "stop_border.gif"; //$NON-NLS-1$
+	private static final String STOP_ICON_DG = "stop_gray.gif"; //$NON-NLS-1$
+	private static final String STOP_ICON_BG = "stop_border_gray.gif"; //$NON-NLS-1$
 
 	private Image m_stopIcon;
 	
@@ -116,7 +116,7 @@ public class SplashWindow extends Frame
 	// Please keep this variable, even if it is not read - future functionality will make use
 	// of it
 	@SuppressWarnings("unused")
-	private static String s_taskName = "Run";
+	private static String s_taskName = Messages.getString("run"); //$NON-NLS-1$
 
 	/**
 	 * This attribute indicates whether the method paint(Graphics) has been called at least once since the construction
@@ -194,29 +194,29 @@ public class SplashWindow extends Frame
 		}
 
 		setUndecorated(true);
-		setTitle("Configuring Materialization Infrastructure");
+		setTitle(Messages.getString("configuring_materialization_infrastructure")); //$NON-NLS-1$
 
 		if(m_stopIconDB != null && mt.isErrorID(STOP_ICON_DB_ID))
 		{
-			System.err.println("Warning: SplashWindow couldn't load stop image.");
+			System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_stop_image")); //$NON-NLS-1$
 			m_stopIconDB = null;
 		}
 
 		if(m_stopIconBB != null && mt.isErrorID(STOP_ICON_BB_ID))
 		{
-			System.err.println("Warning: SplashWindow couldn't load border stop image.");
+			System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_border_stop_image")); //$NON-NLS-1$
 			m_stopIconBB = null;
 		}
 
 		if(m_stopIconDG != null && mt.isErrorID(STOP_ICON_DG_ID))
 		{
-			System.err.println("Warning: SplashWindow couldn't load gray stop image.");
+			System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_gray_stop_image")); //$NON-NLS-1$
 			m_stopIconDG = null;
 		}
 
 		if(m_stopIconBG != null && mt.isErrorID(STOP_ICON_BG_ID))
 		{
-			System.err.println("Warning: SplashWindow couldn't load gray border stop image.");
+			System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_gray_border_stop_image")); //$NON-NLS-1$
 			m_stopIconBG = null;
 		}
 
@@ -225,18 +225,18 @@ public class SplashWindow extends Frame
 			if(!mt.isErrorID(WINDOW_ICON_ID))
 				setIconImage(windowIconImage);
 			else
-				System.err.println("Warning: SplashWindow couldn't load window icon.");
+				System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_window_icon")); //$NON-NLS-1$
 		}
 
 		if(splashImageBoot != null && mt.isErrorID(SPLASH_IMAGE_BOOT_ID))
 		{
-			System.err.println("Warning: SplashWindow couldn't load splash boot image.");
+			System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_splash_boot_image")); //$NON-NLS-1$
 			splashImageBoot = null;
 		}
 
 		if(splashImage != null && mt.isErrorID(SPLASH_IMAGE_ID))
 		{
-			System.err.println("Warning: SplashWindow couldn't load splash image.");
+			System.err.println(Messages.getString("warning_SplashWindow_couldnt_load_splash_image")); //$NON-NLS-1$
 			splashImage = null;
 		}
 		
@@ -343,7 +343,7 @@ public class SplashWindow extends Frame
 	private Image getImageFromResources(String imageName)
 	{
 			Class<?> myClass = this.getClass();
-			String imageResource = "/icons/" + imageName;
+			String imageResource = "/icons/" + imageName; //$NON-NLS-1$
 			URL imageUrl = myClass.getResource(imageResource);
 			return Toolkit.getDefaultToolkit().createImage(imageUrl);
 	}
@@ -356,7 +356,7 @@ public class SplashWindow extends Frame
 	private void setImageId(int imageId)
 	{
 		if(!(imageId == SPLASH_IMAGE_BOOT_ID || imageId == SPLASH_IMAGE_ID))
-			throw new IllegalArgumentException("Splash imageId is out of range");
+			throw new IllegalArgumentException(Messages.getString("splash_imageId_is_out_of_range")); //$NON-NLS-1$
 
 		Image image = m_images[imageId];
 		if(image == null)
@@ -514,7 +514,7 @@ public class SplashWindow extends Frame
 
 	public static String getDebugString()
 	{
-		return "";
+		return ""; //$NON-NLS-1$
 // return s_debugInfo.toString();
 	}
 

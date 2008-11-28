@@ -21,7 +21,7 @@ public class ProgressFacade implements IDownloadMonitor // DownloadServiceListen
 	 */
 	public void downloadFailed(URL arg0, String arg1)
 	{
-		SplashWindow.setTaskName("Failed");
+		SplashWindow.setTaskName(Messages.getString("failed")); //$NON-NLS-1$
 		// Don't know what to do... errors are up to someone else to display
 		SplashWindow.setProgress(0);
 	}
@@ -32,7 +32,7 @@ public class ProgressFacade implements IDownloadMonitor // DownloadServiceListen
 	 */
 	public void progress(URL url, String version, long readSoFar, long total, int overallPercent)
 	{
-		SplashWindow.setTaskName("Progress");
+		SplashWindow.setTaskName(Messages.getString("progress")); //$NON-NLS-1$
 		int progress = (int)((total <= 0)
 				? 0
 				: (readSoFar * 100) / total);
@@ -45,7 +45,7 @@ public class ProgressFacade implements IDownloadMonitor // DownloadServiceListen
 	 */
 	public void upgradingArchive(URL url, String version, int patchPercent, int overallPercent)
 	{
-		SplashWindow.setTaskName("Upgrading");
+		SplashWindow.setTaskName(Messages.getString("upgrading")); //$NON-NLS-1$
 		SplashWindow.setProgress(patchPercent);
 	}
 
@@ -55,7 +55,7 @@ public class ProgressFacade implements IDownloadMonitor // DownloadServiceListen
 	 */
 	public void validating(URL url, String version, long entry, long total, int overallPercent)
 	{
-		SplashWindow.setTaskName("Validating");
+		SplashWindow.setTaskName(Messages.getString("Validating")); //$NON-NLS-1$
 		int progress = (int)((total <= 0)
 				? 0
 				: (entry * 100) / total);

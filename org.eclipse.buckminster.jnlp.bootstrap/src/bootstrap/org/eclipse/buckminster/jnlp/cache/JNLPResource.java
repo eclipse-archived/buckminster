@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants;
 import org.eclipse.buckminster.jnlp.bootstrap.JNLPException;
+import org.eclipse.buckminster.jnlp.bootstrap.Messages;
 import org.w3c.dom.Document;
 
 /**
@@ -71,7 +72,7 @@ public class JNLPResource
 		}
 		catch(Exception e)
 		{
-			throw new JNLPException("Unable to read JNLP file: " + e.getMessage(), "Report problem to distro vendor",
+			throw new JNLPException(Messages.getString("unable_to_read_JNLP_file_colon") + e.getMessage(), Messages.getString("report_problem_to_distro_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
 					BootstrapConstants.ERROR_CODE_JNLP_SAX_EXCEPTION, e);
 		}
 	}
