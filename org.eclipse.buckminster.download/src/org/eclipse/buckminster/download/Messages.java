@@ -12,6 +12,10 @@ public class Messages extends NLS
 
 	public static String connection_to_0_failed_on_1_retry_attempt_2;
 
+	public static String fetching_0_1_at_2;
+
+	public static String fetching_0_1_of_2_at_3;
+
 	public static String digest_mismatch_reading_0;
 
 	public static String digest_not_fully_read_expected_0_got_1;
