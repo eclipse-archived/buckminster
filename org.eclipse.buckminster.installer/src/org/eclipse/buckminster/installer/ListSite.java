@@ -55,16 +55,18 @@ public class ListSite extends AbstractCommand
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		VersionedIdentifierComparator vidc = VersionedIdentifierComparator.ASCENDING;
-		SortedMap<VersionedIdentifier,IAdaptable> features = new TreeMap<VersionedIdentifier,IAdaptable>(vidc);
+		SortedMap<VersionedIdentifier, IAdaptable> features = new TreeMap<VersionedIdentifier, IAdaptable>(vidc);
 
 		ILocalSite localSite = null;
 		try
 		{
 			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-			monitor.subTask(NLS.bind(Messages.searching_0_, m_site == null ? Messages.local_site : m_site.toString()));
+			monitor.subTask(NLS.bind(Messages.searching_0_, m_site == null
+					? Messages.local_site
+					: m_site.toString()));
 
 			ISite[] sites;
-			if (m_site == null)
+			if(m_site == null)
 			{
 				localSite = SiteManager.getLocalSite();
 				IConfiguredSite[] cSites = localSite.getCurrentConfiguration().getConfiguredSites();
@@ -107,15 +109,17 @@ public class ListSite extends AbstractCommand
 		}
 
 		System.out.println(Messages.feature_listing_heading);
-		Iterator<Map.Entry<VersionedIdentifier,IAdaptable>> itor = features.entrySet().iterator();
+		Iterator<Map.Entry<VersionedIdentifier, IAdaptable>> itor = features.entrySet().iterator();
 		while(itor.hasNext())
 		{
-			Map.Entry<VersionedIdentifier,IAdaptable> entry = itor.next();
+			Map.Entry<VersionedIdentifier, IAdaptable> entry = itor.next();
 			IAdaptable f = entry.getValue();
 			System.out.print("  "); //$NON-NLS-1$
 			System.out.print(entry.getKey());
 			System.out.print(" ("); //$NON-NLS-1$
-			System.out.print((f instanceof IFeature) ? ((IFeature)f).getLabel() : ((IFeatureReference)f).getName());
+			System.out.print((f instanceof IFeature)
+					? ((IFeature)f).getLabel()
+					: ((IFeatureReference)f).getName());
 			System.out.println(")"); //$NON-NLS-1$
 
 			if(f instanceof IFeatureReference)

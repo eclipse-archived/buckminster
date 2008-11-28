@@ -24,18 +24,6 @@ public class VersionedIdentifierComparator implements Comparator<VersionedIdenti
 
 	public final static VersionedIdentifierComparator DESCENDING = new VersionedIdentifierComparator(-1);
 
-	private final int m_direction;
-
-	private VersionedIdentifierComparator(int direction)
-	{
-		m_direction = direction;
-	}
-
-	public int compare(VersionedIdentifier vid1, VersionedIdentifier vid2)
-	{
-		return internalCompare(vid1, vid2) * m_direction;
-	}
-
 	public static int compareStatic(VersionedIdentifier vid1, VersionedIdentifier vid2)
 	{
 		return internalCompare(vid1, vid2);
@@ -65,5 +53,17 @@ public class VersionedIdentifierComparator implements Comparator<VersionedIdenti
 		// the first is less than the second
 		//
 		return -1;
+	}
+
+	private final int m_direction;
+
+	private VersionedIdentifierComparator(int direction)
+	{
+		m_direction = direction;
+	}
+
+	public int compare(VersionedIdentifier vid1, VersionedIdentifier vid2)
+	{
+		return internalCompare(vid1, vid2) * m_direction;
 	}
 }

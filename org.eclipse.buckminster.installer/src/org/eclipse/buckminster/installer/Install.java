@@ -36,6 +36,27 @@ import org.eclipse.update.operations.OperationsManager;
  */
 public class Install extends AbstractCommand
 {
+	static URL normalizeToURL(String surl)
+	{
+		URL url;
+		try
+		{
+			url = new URL(surl);
+		}
+		catch(MalformedURLException e)
+		{
+			try
+			{
+				url = new File(surl).toURI().toURL();
+			}
+			catch(MalformedURLException e2)
+			{
+				throw new IllegalArgumentException(NLS.bind(Messages.URL_0_malformed, surl));
+			}
+		}
+		return url;
+	}
+
 	private URL m_site;
 
 	private String m_version;
@@ -131,26 +152,5 @@ public class Install extends AbstractCommand
 
 		installSite.install(featureToInstall, null, MonitorUtils.subMonitor(monitor, 1000));
 		return 0;
-	}
-
-	static URL normalizeToURL(String surl)
-	{
-		URL url;
-		try
-		{
-			url = new URL(surl);
-		}
-		catch(MalformedURLException e)
-		{
-			try
-			{
-				url = new File(surl).toURI().toURL();
-			}
-			catch(MalformedURLException e2)
-			{
-				throw new IllegalArgumentException(NLS.bind(Messages.URL_0_malformed, surl));
-			}
-		}
-		return url;
 	}
 }
