@@ -46,17 +46,6 @@ public class PluginClassHandle<T>
 					configElement.getName(), requiredElement));
 	}
 
-	protected void logLoadError(IConfigurationElement configElement, Exception e)
-	{
-		String name = m_configElement.getName();
-		String msg = NLS.bind(Messages.failed_to_load_extension_point_element_0_in_1, (name == null
-				? "[" + Messages.missing_name_attribute + "]" //$NON-NLS-1$ //$NON-NLS-2$
-				: name), configElement.getDeclaringExtension().getNamespaceIdentifier());
-		ILog log = m_plugin.getLog();
-
-		log.log(new Status(IStatus.ERROR, m_plugin.getBundle().getSymbolicName(), msg));
-	}
-
 	public synchronized T getHandle()
 	{
 		if(m_handle != null)
@@ -70,5 +59,16 @@ public class PluginClassHandle<T>
 			logLoadError(m_configElement, e);
 		}
 		return m_handle;
+	}
+
+	protected void logLoadError(IConfigurationElement configElement, Exception e)
+	{
+		String name = m_configElement.getName();
+		String msg = NLS.bind(Messages.failed_to_load_extension_point_element_0_in_1, (name == null
+				? "[" + Messages.missing_name_attribute + "]" //$NON-NLS-1$ //$NON-NLS-2$
+				: name), configElement.getDeclaringExtension().getNamespaceIdentifier());
+		ILog log = m_plugin.getLog();
+
+		log.log(new Status(IStatus.ERROR, m_plugin.getBundle().getSymbolicName(), msg));
 	}
 }

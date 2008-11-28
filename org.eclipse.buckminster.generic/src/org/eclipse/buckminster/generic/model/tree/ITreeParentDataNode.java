@@ -14,26 +14,36 @@ package org.eclipse.buckminster.generic.model.tree;
 
 /**
  * A Tree Data Node that has children.
+ * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public interface ITreeParentDataNode extends ITreeDataNode
 {
-		void addChild(ITreeDataNode child);
-		void removeChild(ITreeDataNode child);
-		void removeAllChildren();
-		void replaceChild(ITreeDataNode oldChild, ITreeDataNode[] newChildren);
-		void replaceChild(ITreeDataNode oldChild, ITreeDataNode newChild);
-		ITreeDataNode[] getChildren();
-		boolean hasChildren();
-		public int getChildCount();
+	/**
+	 * Return the child that represents the data
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public ITreeDataNode findChild(Object data);
 
-		/**
-		 * Return the child that represents the data
-		 * @param data
-		 * @return
-		 */
-		public ITreeDataNode findChild(Object data);
-		void onOpen();
-		
+	public int getChildCount();
+
+	void addChild(ITreeDataNode child);
+
+	ITreeDataNode[] getChildren();
+
+	boolean hasChildren();
+
+	void onOpen();
+
+	void removeAllChildren();
+
+	void removeChild(ITreeDataNode child);
+
+	void replaceChild(ITreeDataNode oldChild, ITreeDataNode newChild);
+
+	void replaceChild(ITreeDataNode oldChild, ITreeDataNode[] newChildren);
+
 }

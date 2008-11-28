@@ -15,34 +15,24 @@ package org.eclipse.buckminster.generic.model.tree;
 import org.eclipse.buckminster.generic.model.IPropertyChange;
 
 /**
- * A Basic Parent Tree Data Node - it passivly refers to some data, and passivly holds
- * children. An instance of this class is usful for static "folder nodes" in a tree.
+ * A Basic Parent Tree Data Node - it passivly refers to some data, and passivly holds children. An instance of this
+ * class is usful for static "folder nodes" in a tree.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class BasicTreeParentDataNode extends AbstractTreeParentDataNode
 {
 	private final Object m_data;
+
 	public BasicTreeParentDataNode(Object data)
 	{
 		m_data = data;
 		if(data instanceof IPropertyChange)
 			((IPropertyChange)data).addPropertyChangeListener(this);
 	}
-	@Override
-	public String toString()
-	{
-		return getData().toString();
-	}
 
-	@Override
-	public Object getData()
-	{
-		return m_data;
-	}
-
-	/** 
+	/**
 	 * Disposes all children
 	 */
 	@Override
@@ -53,8 +43,22 @@ public class BasicTreeParentDataNode extends AbstractTreeParentDataNode
 		// dispose all recursively
 		dispose(getChildren());
 	}
+
+	@Override
+	public Object getData()
+	{
+		return m_data;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getData().toString();
+	}
+
 	/**
 	 * Recursive disposal of children
+	 * 
 	 * @param children
 	 */
 	private void dispose(ITreeDataNode children[])

@@ -18,7 +18,7 @@ import java.util.EventListener;
  * Interface for a listener to TreeDataEvents.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public interface ITreeDataListener extends EventListener
 {

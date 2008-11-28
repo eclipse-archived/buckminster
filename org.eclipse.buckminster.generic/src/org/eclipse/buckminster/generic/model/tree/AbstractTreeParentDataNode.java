@@ -41,14 +41,53 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	}
 
 	/**
-	 * Removes a child node and notifies the parent that this node has changed.
+	 * Disposes all children
 	 */
-	public void removeChild(ITreeDataNode child)
+	@Override
+	public void dispose()
 	{
-		m_children.remove(child);
-		child.setParent(null);
-		childNodeChanged(this); // this node was changed
+		// dispose all recursively
+		dispose(getChildren());
 	}
+
+	/**
+	 * Returns a child node that has a data object that equals the searched data. Only the immediate children are
+	 * searched for matching data.
+	 */
+	public ITreeDataNode findChild(Object data)
+	{
+		for(ITreeDataNode node : m_children)
+			if(node.getData().equals(data))
+				return node;
+		return null;
+	}
+
+	public int getChildCount()
+	{
+		return m_children.size();
+	}
+
+	/**
+	 * Returns the children of this node.
+	 */
+	public ITreeDataNode[] getChildren()
+	{
+		return m_children.toArray(new ITreeDataNode[m_children.size()]);
+	}
+
+	public boolean hasChildren()
+	{
+		return m_children.size() > 0;
+	}
+
+	/**
+	 * Does nothing
+	 */
+	public void onOpen()
+	{
+		// Does nothing
+	}
+
 	public void removeAllChildren()
 	{
 		for(ITreeDataNode child : m_children)
@@ -56,20 +95,14 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 		m_children.clear();
 		childNodeChanged(this);
 	}
+
 	/**
-	 * Replaces a child node with several children 
-	 * and notifies the parent that this node has changed.
+	 * Removes a child node and notifies the parent that this node has changed.
 	 */
-	public void replaceChild(ITreeDataNode child, ITreeDataNode[] newChildren)
+	public void removeChild(ITreeDataNode child)
 	{
-		int idx = m_children.indexOf(child);
-		m_children.remove(idx);
+		m_children.remove(child);
 		child.setParent(null);
-		for(int i = 0; i< newChildren.length;i++)
-		{
-			m_children.add(idx+i,newChildren[i]);
-			newChildren[i].setParent(this);
-		}
 		childNodeChanged(this); // this node was changed
 	}
 
@@ -86,43 +119,19 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	}
 
 	/**
-	 * Returns the children of this node.
+	 * Replaces a child node with several children and notifies the parent that this node has changed.
 	 */
-	public ITreeDataNode[] getChildren()
+	public void replaceChild(ITreeDataNode child, ITreeDataNode[] newChildren)
 	{
-		return m_children.toArray(new ITreeDataNode[m_children.size()]);
-	}
-
-	public boolean hasChildren()
-	{
-		return m_children.size() > 0;
-	}
-
-	public int getChildCount()
-	{
-		return m_children.size();
-	}
-
-	/**
-	 * Returns a child node that has a data object that equals the searched data. Only the immediate children are
-	 * searched for matching data.
-	 */
-	public ITreeDataNode findChild(Object data)
-	{
-		for(ITreeDataNode node : m_children)
-			if(node.getData().equals(data))
-				return node;
-		return null;
-	}
-
-	/**
-	 * Disposes all children
-	 */
-	@Override
-	public void dispose()
-	{
-		// dispose all recursively
-		dispose(getChildren());
+		int idx = m_children.indexOf(child);
+		m_children.remove(idx);
+		child.setParent(null);
+		for(int i = 0; i < newChildren.length; i++)
+		{
+			m_children.add(idx + i, newChildren[i]);
+			newChildren[i].setParent(this);
+		}
+		childNodeChanged(this); // this node was changed
 	}
 
 	/**
@@ -136,12 +145,5 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 			return;
 		for(int i = 0; i < children.length; i++)
 			children[i].dispose();
-	}
-	/**
-	 * Does nothing
-	 */
-	public void onOpen()
-	{
-		// Does nothing
 	}
 }

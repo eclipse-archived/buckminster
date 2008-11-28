@@ -14,12 +14,41 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 
 /**
  * A set of utility methods for dealing with progress monitors.
+ * 
  * @author Thomas Hallgren
  * @author Henrik Lindberg
- *
+ * 
  */
 public class ProgressUtils
 {
+	/**
+	 * Check for cancellation.
+	 * 
+	 * @param monitor
+	 *            The monitor to check
+	 * @throws OperationCanceledException
+	 *             if the monitor is cancelled.
+	 */
+	public static void checkIfCancelled(IProgressMonitor monitor)
+	{
+		if(monitor.isCanceled())
+			throw new OperationCanceledException();
+	}
+
+	/**
+	 * Check for cancellation, begin a new task, then end it. Used for monitors passed to methods that discovers that
+	 * they don't need to do any work.
+	 * 
+	 * @param monitor
+	 *            The monitor to begin and end.
+	 */
+	public static void noop(IProgressMonitor monitor)
+	{
+		checkIfCancelled(monitor);
+		monitor.beginTask(null, 1);
+		monitor.done();
+	}
+
 	/**
 	 * Check for cancellation and create a sub progress monitor.
 	 * 
@@ -51,33 +80,5 @@ public class ProgressUtils
 	{
 		checkIfCancelled(monitor);
 		monitor.worked(work);
-	}
-	
-	/**
-	 * Check for cancellation, begin a new task, then end it. Used for monitors passed to methods that discovers that
-	 * they don't need to do any work.
-	 * 
-	 * @param monitor
-	 *            The monitor to begin and end.
-	 */
-	public static void noop(IProgressMonitor monitor)
-	{
-		checkIfCancelled(monitor);
-		monitor.beginTask(null, 1);
-		monitor.done();
-	}
-	
-	/**
-	 * Check for cancellation.
-	 * 
-	 * @param monitor
-	 *            The monitor to check
-	 * @throws OperationCanceledException
-	 *             if the monitor is cancelled.
-	 */
-	public static void checkIfCancelled(IProgressMonitor monitor)
-	{
-		if(monitor.isCanceled())
-			throw new OperationCanceledException();
 	}
 }

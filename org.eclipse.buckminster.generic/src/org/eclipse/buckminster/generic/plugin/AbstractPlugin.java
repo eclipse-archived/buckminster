@@ -7,6 +7,7 @@
  ******************************************************************/
 
 package org.eclipse.buckminster.generic.plugin;
+
 import org.eclipse.buckminster.generic.Messages;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -14,37 +15,50 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * Abstract Base Class for a Plugin that supports convenient calls to logging 
+ * Abstract Base Class for a Plugin that supports convenient calls to logging
+ * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public abstract class AbstractPlugin extends Plugin
 {
 	private AbstractPlugin m_plugin;
-	
-	public void logInfo(String message)
-	{
-		log(IStatus.INFO, IStatus.OK, message, null);
-	}
-	public void logError(Throwable e)
-	{
-		logError(Messages.unexpected_exception, e);
-	}
-	public void logError(String message, Throwable e)
-	{
-		log(IStatus.ERROR, IStatus.OK, message, e);
-	}
-	public void log(int severity, int code, String message, Throwable e)
-	{
-		log(createStatus(severity, code, message, e));
-	}
+
 	public IStatus createStatus(int severity, int code, String message, Throwable e)
 	{
 		return new Status(severity, getPluginId(), code, message, e);
 	}
+
+	public AbstractPlugin getDefault()
+	{
+		return m_plugin;
+	}
+
+	public abstract String getPluginId();
+
+	public void log(int severity, int code, String message, Throwable e)
+	{
+		log(createStatus(severity, code, message, e));
+	}
+
 	public void log(IStatus status)
 	{
 		getDefault().getLog().log(status);
+	}
+
+	public void logError(String message, Throwable e)
+	{
+		log(IStatus.ERROR, IStatus.OK, message, e);
+	}
+
+	public void logError(Throwable e)
+	{
+		logError(Messages.unexpected_exception, e);
+	}
+
+	public void logInfo(String message)
+	{
+		log(IStatus.INFO, IStatus.OK, message, null);
 	}
 
 	@Override
@@ -53,15 +67,11 @@ public abstract class AbstractPlugin extends Plugin
 		super.start(context);
 		m_plugin = this;
 	}
-	public AbstractPlugin getDefault()
-	{
-		return m_plugin;
-	}
+
 	@Override
 	public void stop(BundleContext context) throws Exception
 	{
 		m_plugin = null;
 		super.stop(context);
 	}
-	public abstract String getPluginId();
 }

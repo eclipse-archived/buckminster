@@ -15,7 +15,7 @@ package org.eclipse.buckminster.generic.model.tree;
  * A root node of a Tree Data tree. Support listening to changes in the tree.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public interface ITreeRootNode extends ITreeParentDataNode, ITreeDataChange
 {

@@ -15,13 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-/** 
- * Utility class helping to read properties as Strings.
- * Usage:
- * - instantiate from java.util.Properties instance
- * - modify the map
- * - get Properties instance back
- *
+/**
+ * Utility class helping to read properties as Strings. Usage: - instantiate from java.util.Properties instance - modify
+ * the map - get Properties instance back
+ * 
  */
 public class PropertiesMap extends HashMap<String, String>
 {
@@ -34,39 +31,34 @@ public class PropertiesMap extends HashMap<String, String>
 	{
 		// do nothing
 	}
-	/** Create a properties map initialized from Properties
+
+	/**
+	 * Create a properties map initialized from Properties
 	 * 
 	 * @param properties
 	 */
 	public PropertiesMap(Properties properties)
-	{		
-		// add all the properties 
-		for(Map.Entry<Object, Object>e : properties.entrySet())
+	{
+		// add all the properties
+		for(Map.Entry<Object, Object> e : properties.entrySet())
 		{
 			String key = (String)e.getKey();
 			String val = (String)e.getValue();
 			put(key, val);
 		}
 	}
+
 	public Properties asProperties()
 	{
 		Properties p = new Properties();
 		p.putAll(this);
 		return p;
 	}
-	/** Returns the value of the property, or the default value if
-	 * it did not exist.
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	public String getStringProperty(String key, String defaultValue)
-	{
-		String val = get(key);
-		return val == null ? defaultValue : val;
-	}
-	/** Returns the value of the property, or the default value if
-	 * it did not exist. The property is parsed using Boolean.parseBoolean(String)
+
+	/**
+	 * Returns the value of the property, or the default value if it did not exist. The property is parsed using
+	 * Boolean.parseBoolean(String)
+	 * 
 	 * @param key
 	 * @param defaultValue
 	 * @return
@@ -74,6 +66,23 @@ public class PropertiesMap extends HashMap<String, String>
 	public boolean getBooleanProperty(String key, boolean defaultValue)
 	{
 		String val = get(key);
-		return val == null ? defaultValue : Boolean.parseBoolean(val);
+		return val == null
+				? defaultValue
+				: Boolean.parseBoolean(val);
+	}
+
+	/**
+	 * Returns the value of the property, or the default value if it did not exist.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public String getStringProperty(String key, String defaultValue)
+	{
+		String val = get(key);
+		return val == null
+				? defaultValue
+				: val;
 	}
 }

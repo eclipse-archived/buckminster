@@ -26,11 +26,13 @@ public interface ITreeDataNode extends PropertyChangeListener, IAdaptable
 {
 	static final ITreeDataNode[] EMPTY_NODE_ARRAY = new ITreeDataNode[0];
 
-	void setParent(ITreeParentDataNode parent);
+	/**
+	 * Should be called when a node has been changed - either this node, or a node below. The event should bubble up to
+	 * the root of the tree.
+	 */
+	void childNodeChanged(ITreeDataNode child);
 
-	ITreeParentDataNode getParent();
-
-	String toString();
+	void dispose();
 
 	/**
 	 * Return the data this node represents.
@@ -39,11 +41,9 @@ public interface ITreeDataNode extends PropertyChangeListener, IAdaptable
 	 */
 	Object getData();
 
-	void dispose();
+	ITreeParentDataNode getParent();
 
-	/**
-	 * Should be called when a node has been changed - either this node, or a node below. The event should bubble up to
-	 * the root of the tree.
-	 */
-	void childNodeChanged(ITreeDataNode child);
+	void setParent(ITreeParentDataNode parent);
+
+	String toString();
 }

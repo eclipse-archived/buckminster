@@ -16,37 +16,43 @@ import java.util.EventObject;
 
 /**
  * Event object describing the changed node in a Tree Data tree.
+ * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public class TreeDataEvent extends EventObject
 {
 
+	public enum Type
+	{
+		CHANGE, ;
+	}
+
 	private static final long serialVersionUID = -7493609364097227394L;
-	private ITreeDataNode m_node;
-	public enum Type {
-		CHANGE,
-		;
+
+	public static TreeDataEvent changed(ITreeRootNode source, ITreeDataNode node)
+	{
+		return new TreeDataEvent(source, node, Type.CHANGE);
 	};
+
+	private ITreeDataNode m_node;
+
 	private Type m_type;
-	
+
 	public TreeDataEvent(ITreeRootNode treeSource, ITreeDataNode node, Type type)
 	{
 		super(treeSource);
 		m_node = node;
 		m_type = type;
 	}
-	public Type getType()
-	{
-		return m_type;
-	}
-	
+
 	public ITreeDataNode getNode()
 	{
 		return m_node;
 	}
-	public static TreeDataEvent changed(ITreeRootNode source, ITreeDataNode node)
+
+	public Type getType()
 	{
-		return new TreeDataEvent(source, node, Type.CHANGE);
+		return m_type;
 	}
 }

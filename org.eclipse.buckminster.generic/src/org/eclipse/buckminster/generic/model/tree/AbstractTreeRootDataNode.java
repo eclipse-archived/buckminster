@@ -16,23 +16,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
- * A Tree Parent Data Node that is useful as the top node in a data tree. 
- * This class supports listening to TreeData events (see ITreeRootNode).
- * When a childNodeChange() has bubbled to this root, a TreeRootNode event is
- * fired.
+ * A Tree Parent Data Node that is useful as the top node in a data tree. This class supports listening to TreeData
+ * events (see ITreeRootNode). When a childNodeChange() has bubbled to this root, a TreeRootNode event is fired.
  * 
- * This enables a view to register a listener for this top node only, and still be notified
- * about any change in the tree.
+ * This enables a view to register a listener for this top node only, and still be notified about any change in the
+ * tree.
  * 
  * @author Henrik Lindberg
- *
+ * 
  */
 public abstract class AbstractTreeRootDataNode extends BasicTreeParentDataNode implements ITreeRootNode
 {
 	private final List<ITreeDataListener> m_listeners;
-	
+
 	public AbstractTreeRootDataNode(Object data)
 	{
 		super(data);
@@ -40,21 +37,7 @@ public abstract class AbstractTreeRootDataNode extends BasicTreeParentDataNode i
 	}
 
 	/**
-	 * Whenever a child node has changed, a TreeDataEvent is sent to registered listeners.
-	 * Also, if this root has a parent, the event bubbles further up the chain.
-	 */
-	@Override
-	public void childNodeChanged(ITreeDataNode child)
-	{
-		fireTreeDataChanged(child);
-		ITreeParentDataNode parent = getParent();
-		if(parent != null)
-			parent.childNodeChanged(child);		
-	}
-
-	/**
-	 * Adds a tree data listener to the set of listeners. 
-	 * A listener is only added once.
+	 * Adds a tree data listener to the set of listeners. A listener is only added once.
 	 */
 	public void addTreeDataListener(ITreeDataListener listener)
 	{
@@ -63,16 +46,30 @@ public abstract class AbstractTreeRootDataNode extends BasicTreeParentDataNode i
 	}
 
 	/**
-	 * Removes a tree data listener from the set of listeners.
-	 * Does nothing if the listener is not a registered listener.
+	 * Whenever a child node has changed, a TreeDataEvent is sent to registered listeners. Also, if this root has a
+	 * parent, the event bubbles further up the chain.
+	 */
+	@Override
+	public void childNodeChanged(ITreeDataNode child)
+	{
+		fireTreeDataChanged(child);
+		ITreeParentDataNode parent = getParent();
+		if(parent != null)
+			parent.childNodeChanged(child);
+	}
+
+	/**
+	 * Removes a tree data listener from the set of listeners. Does nothing if the listener is not a registered
+	 * listener.
 	 */
 	public void removeTreeDataListener(ITreeDataListener listener)
 	{
 		m_listeners.remove(listener);
 	}
+
 	/**
-	 * Fires a tree data change event to register listeners that the changedNode 
-	 * has changed. The listeners are notified in a UI thread.
+	 * Fires a tree data change event to register listeners that the changedNode has changed. The listeners are notified
+	 * in a UI thread.
 	 * 
 	 * @param changedNode
 	 */
@@ -80,31 +77,31 @@ public abstract class AbstractTreeRootDataNode extends BasicTreeParentDataNode i
 	{
 		triggerListeners(TreeDataEvent.changed(this, changedNode));
 	}
-	
-	/**
-	 * Called to trigger listeners - a derived class should create a suitable thread
-	 * to update listeners. A non UI implementation that does not need asynch handling
-	 * could call the inProcTriggerListeners method directly. An implementation to use
-	 * with the UI should perform an asynch exec in the UI thread and call the 
-	 * inProcTriggerListeners from that thread.
-	 * @param e
-	 */
-	abstract protected void triggerListeners(final TreeDataEvent e);
 
 	/**
-	 * Calls listeners in the current thread. A derived class should call this method from
-	 * its triggerListener where a suitable runnable for the environment should have been
-	 * created.
+	 * Calls listeners in the current thread. A derived class should call this method from its triggerListener where a
+	 * suitable runnable for the environment should have been created.
+	 * 
 	 * @param e
 	 */
 	protected void inProcTriggerListeners(final TreeDataEvent e)
 	{
 		// copy the listener list or face consequences of event listeners adding or removing
 		// listeners when processing events
-		ArrayList<ITreeDataListener> listeners =new ArrayList<ITreeDataListener>(m_listeners.size());
+		ArrayList<ITreeDataListener> listeners = new ArrayList<ITreeDataListener>(m_listeners.size());
 		listeners.addAll(m_listeners);
 		for(ITreeDataListener a : listeners)
 			a.treeNodeChanged(e);
 	}
+
+	/**
+	 * Called to trigger listeners - a derived class should create a suitable thread to update listeners. A non UI
+	 * implementation that does not need asynch handling could call the inProcTriggerListeners method directly. An
+	 * implementation to use with the UI should perform an asynch exec in the UI thread and call the
+	 * inProcTriggerListeners from that thread.
+	 * 
+	 * @param e
+	 */
+	abstract protected void triggerListeners(final TreeDataEvent e);
 
 }

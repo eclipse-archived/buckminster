@@ -16,24 +16,23 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
 /**
- * AbstractModel handles delegation to an instance of PropertyChangeSupport. This makes it possible to
- * handle an extending class as a Model in a Model-View relationship, and using eclipse data binding in
- * particular.
+ * AbstractModel handles delegation to an instance of PropertyChangeSupport. This makes it possible to handle an
+ * extending class as a Model in a Model-View relationship, and using eclipse data binding in particular.
  * 
- * Abstract Model also has a basic implementation of IAdaptable returning the instance if
- * it is an instance of the requested class.
+ * Abstract Model also has a basic implementation of IAdaptable returning the instance if it is an instance of the
+ * requested class.
  * 
  * @author Henrik Lindberg
  */
 public class AbstractModel implements IPropertyChange, IAdaptable
 {
 	private final PropertyChangeSupport m_changeSupport;
-	
+
 	public AbstractModel()
 	{
 		m_changeSupport = new PropertyChangeSupport(this);
 	}
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener listener)
 	{
 		m_changeSupport.addPropertyChangeListener(listener);
@@ -43,6 +42,29 @@ public class AbstractModel implements IPropertyChange, IAdaptable
 	{
 		m_changeSupport.addPropertyChangeListener(propertyName, listener);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter)
+	{
+		if(adapter.isInstance(this))
+			return this;
+		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
+
+	public PropertyChangeListener[] getPropertyChangeListeners()
+	{
+		return m_changeSupport.getPropertyChangeListeners();
+	}
+
+	public PropertyChangeListener[] getPropertyChangeListeners(String propertyName)
+	{
+		return m_changeSupport.getPropertyChangeListeners(propertyName);
+	}
+
+	public boolean hasListeners(String propertyName)
+	{
+		return m_changeSupport.hasListeners(propertyName);
 	}
 
 	public void removePropertyChangeListener(PropertyChangeListener listener)
@@ -88,29 +110,6 @@ public class AbstractModel implements IPropertyChange, IAdaptable
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
 		m_changeSupport.firePropertyChange(propertyName, oldValue, newValue);
-	}
-
-	public PropertyChangeListener[] getPropertyChangeListeners()
-	{
-		return m_changeSupport.getPropertyChangeListeners();
-	}
-
-	public PropertyChangeListener[] getPropertyChangeListeners(String propertyName)
-	{
-		return m_changeSupport.getPropertyChangeListeners(propertyName);
-	}
-
-	public boolean hasListeners(String propertyName)
-	{
-		return m_changeSupport.hasListeners(propertyName);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter)
-	{
-		if(adapter.isInstance(this))
-			return this;
-		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
 }
