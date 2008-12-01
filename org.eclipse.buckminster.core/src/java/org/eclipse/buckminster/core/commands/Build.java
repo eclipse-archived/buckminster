@@ -17,6 +17,7 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -29,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class Build extends WorkspaceCommand
 {
-	static private final OptionDescriptor s_cleanDescriptor = new OptionDescriptor('c', "clean", OptionValueType.NONE);
+	static private final OptionDescriptor s_cleanDescriptor = new OptionDescriptor('c', "clean", OptionValueType.NONE); //$NON-NLS-1$
 
 	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
 
@@ -41,16 +42,16 @@ public class Build extends WorkspaceCommand
 	{
 		StringBuilder bld = new StringBuilder();
 		bld.append(type);
-		bld.append(": file ");
+		bld.append(": file "); //$NON-NLS-1$
 		bld.append(problem.getResource().getLocation().toOSString());
 		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
 		if(line > 0)
 		{
-			bld.append(", line ");
+			bld.append(", line "); //$NON-NLS-1$
 			bld.append(line);
 		}
-		bld.append(": ");
-		bld.append(problem.getAttribute(IMarker.MESSAGE, ""));
+		bld.append(": "); //$NON-NLS-1$
+		bld.append(problem.getAttribute(IMarker.MESSAGE, "")); //$NON-NLS-1$
 		return bld.toString();
 	}
 
@@ -71,7 +72,7 @@ public class Build extends WorkspaceCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		if(unparsed.length > 0)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.Build_Too_many_arguments);
 	}
 
 	@Override
@@ -152,13 +153,13 @@ public class Build extends WorkspaceCommand
 				{
 				case IMarker.SEVERITY_ERROR:
 					exitValue = 1;
-					System.err.println(formatMarkerMessage("Error", problem));
+					System.err.println(formatMarkerMessage("Error", problem)); //$NON-NLS-1$
 					break;
 				case IMarker.SEVERITY_WARNING:
-					System.err.println(formatMarkerMessage("Warning", problem));
+					System.err.println(formatMarkerMessage("Warning", problem)); //$NON-NLS-1$
 					break;
 				case IMarker.SEVERITY_INFO:
-					System.out.println(formatMarkerMessage("Info", problem));
+					System.out.println(formatMarkerMessage("Info", problem)); //$NON-NLS-1$
 				}
 			}
 			return exitValue;

@@ -27,7 +27,7 @@ import org.eclipse.buckminster.sax.AbstractSaxableElement;
  */
 public abstract class ValueHolder extends AbstractSaxableElement
 {
-	public static final String NO_VALUE = "";
+	public static final String NO_VALUE = ""; //$NON-NLS-1$
 
 	private boolean m_mutable;
 

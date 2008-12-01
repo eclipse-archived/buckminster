@@ -18,11 +18,13 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -31,9 +33,9 @@ import org.xml.sax.SAXException;
  */
 public class RxAssembly extends AbstractSaxableElement
 {
-	public static final String TAG = "rxAssembly";
+	public static final String TAG = "rxAssembly"; //$NON-NLS-1$
 
-	public static final String ATTR_REPLACEMENT = "replacement";
+	public static final String ATTR_REPLACEMENT = "replacement"; //$NON-NLS-1$
 
 	private final List<RxPart> m_parts;
 
@@ -53,7 +55,7 @@ public class RxAssembly extends AbstractSaxableElement
 
 		String patternStr = bld.toString();
 		m_pattern = Pattern.compile(patternStr);
-		CorePlugin.getLogger().debug("URI pattern %s created", patternStr);
+		CorePlugin.getLogger().debug("URI pattern %s created", patternStr); //$NON-NLS-1$
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public class RxAssembly extends AbstractSaxableElement
 		Matcher m = m_pattern.matcher(input);
 		if(!m.matches())
 		{
-			logger.debug("URI pattern does not match %s", input);
+			logger.debug("URI pattern does not match %s", input); //$NON-NLS-1$
 			return null;
 		}
 
@@ -85,13 +87,13 @@ public class RxAssembly extends AbstractSaxableElement
 		int top = m_parameters.size();
 		if(logger.isDebugEnabled())
 		{
-			logger.debug("URI pattern captured %d groups in %s", Integer.valueOf(groupCount), input);
+			logger.debug("URI pattern captured %d groups in %s", Integer.valueOf(groupCount), input); //$NON-NLS-1$
 		}
 
 		if(top != groupCount)
 		{
-			logger.warning("URI pattern group count was %d, expected %d", Integer.valueOf(groupCount), Integer
-					.valueOf(top));
+			logger.warning(NLS.bind(Messages.RxAssembly_URI_pattern_group_count_was_0_expected_1, Integer
+					.valueOf(groupCount), Integer.valueOf(top)));
 			top = groupCount;
 		}
 
@@ -106,7 +108,7 @@ public class RxAssembly extends AbstractSaxableElement
 			String value = TextUtils.notEmptyString(m.group(idx + 1));
 			if(value != null)
 			{
-				logger.debug("Assigning URI pattern parameter %s=\"%s\"", param.getName(), value);
+				logger.debug("Assigning URI pattern parameter %s=\"%s\"", param.getName(), value); //$NON-NLS-1$
 				matchMap.put(param.getName(), value);
 			}
 		}

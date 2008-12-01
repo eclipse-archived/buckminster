@@ -61,7 +61,7 @@ public class RMContext extends ExpandingProperties
 
 		private TagInfo(String infoString)
 		{
-			m_tagId = String.format("%04d", new Integer(++m_tagInfoSquenceNumber));
+			m_tagId = String.format("%04d", new Integer(++m_tagInfoSquenceNumber)); //$NON-NLS-1$
 			m_infoString = infoString;
 		}
 
@@ -83,7 +83,7 @@ public class RMContext extends ExpandingProperties
 		@Override
 		public String toString()
 		{
-			return "TAG-ID " + m_tagId + " = " + m_infoString;
+			return "TAG-ID " + m_tagId + " = " + m_infoString; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -105,7 +105,7 @@ public class RMContext extends ExpandingProperties
 
 	private static String addTagId(String tagId, String msg)
 	{
-		String prefix = '[' + tagId + "] : ";
+		String prefix = '[' + tagId + "] : "; //$NON-NLS-1$
 		if(msg == null)
 			msg = prefix;
 		else if(!msg.startsWith(prefix))
@@ -120,13 +120,13 @@ public class RMContext extends ExpandingProperties
 		switch(status.getSeverity())
 		{
 		case IStatus.INFO:
-			wrt.append("INFO    ");
+			wrt.append("INFO    "); //$NON-NLS-1$
 			break;
 		case IStatus.WARNING:
-			wrt.append("WARNING ");
+			wrt.append("WARNING "); //$NON-NLS-1$
 			break;
 		case IStatus.ERROR:
-			wrt.append("ERROR   ");
+			wrt.append("ERROR   "); //$NON-NLS-1$
 			break;
 		}
 		wrt.append(status.getMessage());
@@ -168,16 +168,16 @@ public class RMContext extends ExpandingProperties
 		File homeFile = TargetPlatform.getPlatformInstallLocation();
 		if(homeFile != null)
 		{
-			CorePlugin.getLogger().debug("Platform install location: %s", homeFile);
-			additions.put("eclipse.home", homeFile.toString());
+			CorePlugin.getLogger().debug("Platform install location: %s", homeFile); //$NON-NLS-1$
+			additions.put("eclipse.home", homeFile.toString()); //$NON-NLS-1$
 		}
 		else
-			CorePlugin.getLogger().debug("Platform install location is NULL!");
+			CorePlugin.getLogger().debug("Platform install location is NULL!"); //$NON-NLS-1$
 
-		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString());
+		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString()); //$NON-NLS-1$
 		try
 		{
-			additions.put("localhost", InetAddress.getLocalHost().getHostName());
+			additions.put("localhost", InetAddress.getLocalHost().getHostName()); //$NON-NLS-1$
 		}
 		catch(UnknownHostException e1)
 		{
@@ -278,7 +278,7 @@ public class RMContext extends ExpandingProperties
 		{
 			m_status = new MultiStatus(CorePlugin.getID(), IStatus.OK, status instanceof MultiStatus
 					? ((MultiStatus)status).getChildren()
-					: new IStatus[] { status }, "Errors and Warnings", null);
+					: new IStatus[] { status }, "Errors and Warnings", null); //$NON-NLS-1$
 		}
 		else
 			m_status.merge(status);
@@ -450,7 +450,7 @@ public class RMContext extends ExpandingProperties
 			tagInfo.setUsed();
 			return tagInfo.getTagId();
 		}
-		return "0000";
+		return "0000"; //$NON-NLS-1$
 	}
 
 	public synchronized Map<ComponentRequest, TagInfo> getTagInfos()

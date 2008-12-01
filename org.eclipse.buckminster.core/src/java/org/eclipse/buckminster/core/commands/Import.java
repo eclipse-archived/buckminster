@@ -12,6 +12,7 @@ import java.net.URL;
 
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -48,9 +49,9 @@ public class Import extends WorkspaceInitCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.Import_Too_many_arguments);
 		else if(len < 1)
-			throw new UsageException("Missing BOM URL");
+			throw new UsageException(Messages.Import_Missing_BOM_URL);
 		setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
 
@@ -146,7 +147,7 @@ public class Import extends WorkspaceInitCommand
 		{
 			MonitorUtils.done(monitor);
 		}
-		logger.info("Import complete.");
+		logger.info(Messages.Import_Import_complete);
 		return 0;
 	}
 

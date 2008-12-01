@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -20,7 +21,7 @@ import org.xml.sax.SAXException;
  */
 public class RxGroup extends RxPart
 {
-	public static final String TAG = "group";
+	public static final String TAG = "group"; //$NON-NLS-1$
 
 	private final List<RxPart> m_parts;
 
@@ -39,7 +40,7 @@ public class RxGroup extends RxPart
 			namedParts.add(this);
 		}
 		else if(isOptional())
-			bld.append("(?:");
+			bld.append("(?:"); //$NON-NLS-1$
 
 		for(RxPart part : m_parts)
 			part.addPattern(bld, namedParts);
@@ -47,7 +48,7 @@ public class RxGroup extends RxPart
 		if(getName() != null)
 			bld.append(')');
 		else if(isOptional())
-			bld.append(")?");
+			bld.append(")?"); //$NON-NLS-1$
 	}
 
 	@Override

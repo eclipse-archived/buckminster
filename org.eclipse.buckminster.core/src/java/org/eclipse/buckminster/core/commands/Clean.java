@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.core.commands;
 
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -23,7 +24,7 @@ public class Clean extends WorkspaceCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		if(unparsed.length > 0)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.Clean_Too_many_arguments);
 	}
 
 	@Override

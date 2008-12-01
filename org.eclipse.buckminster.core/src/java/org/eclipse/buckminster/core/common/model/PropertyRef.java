@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.common.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
@@ -26,9 +27,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class PropertyRef extends ValueHolder
 {
-	public static final String TAG = "propertyRef";
+	public static final String TAG = "propertyRef"; //$NON-NLS-1$
 
-	public static final String ATTR_KEY = "key";
+	public static final String ATTR_KEY = "key"; //$NON-NLS-1$
 
 	private final String m_key;
 

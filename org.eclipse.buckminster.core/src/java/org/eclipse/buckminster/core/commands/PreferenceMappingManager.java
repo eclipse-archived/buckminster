@@ -19,11 +19,13 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
@@ -31,11 +33,11 @@ import org.eclipse.core.runtime.Platform;
  */
 public class PreferenceMappingManager
 {
-	static private final String PREFMAPPINGS_EXTPOINT = "org.eclipse.buckminster.cmdline.prefmappings";
+	static private final String PREFMAPPINGS_EXTPOINT = "org.eclipse.buckminster.cmdline.prefmappings"; //$NON-NLS-1$
 
-	static private final String CLASS_ATTRIBUTE = "class";
+	static private final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
-	static private final String TEST_PREFIX = "org.eclipse.buckminster.cmdline.test.";
+	static private final String TEST_PREFIX = "org.eclipse.buckminster.cmdline.test."; //$NON-NLS-1$
 
 	private static WeakReference<PreferenceMappingManager> s_instanceRef;
 
@@ -139,23 +141,21 @@ public class PreferenceMappingManager
 		}
 
 		if(matches == null)
-			throw new UsageException("No preference matches " + name);
+			throw new UsageException(NLS.bind(Messages.PreferenceMappingManager_No_preference_matches_0, name));
 
 		int foundMatches = matches.size();
 		if(foundMatches == 1)
 			return matches.get(0);
 
 		StringBuilder bld = new StringBuilder(80);
-		bld.append("Preference ");
-		bld.append(name);
-		bld.append(" is ambigous. It matches ");
+		bld.append(NLS.bind(Messages.PreferenceMappingManager_Preference_0_is_ambiguous, name));
 		for(int i = 0; i < foundMatches; i++)
 		{
 			if(i > 0)
 			{
-				bld.append(", ");
+				bld.append(", "); //$NON-NLS-1$
 				if(i + 1 == foundMatches)
-					bld.append("and ");
+					bld.append(Messages.PreferenceMappingManager_and);
 			}
 			bld.append(matches.get(i).getName());
 		}

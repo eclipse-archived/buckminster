@@ -17,11 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IExportedPreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -47,7 +49,7 @@ public class ImportPreferences extends AbstractPreferencesCommand
 		}
 		catch(IOException e)
 		{
-			throw new SimpleErrorExitException("Unable to open file: " + prefsFile);
+			throw new SimpleErrorExitException(NLS.bind(Messages.ImportPreferences_Unable_to_open_file_0, prefsFile));
 		}
 		finally
 		{

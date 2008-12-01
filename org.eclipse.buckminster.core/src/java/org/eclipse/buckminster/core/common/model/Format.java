@@ -22,9 +22,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Format extends ValueHolderFilter
 {
-	public static final String ATTR_FORMAT = "format";
+	public static final String ATTR_FORMAT = "format"; //$NON-NLS-1$
 
-	public static final String TAG = "format";
+	public static final String TAG = "format"; //$NON-NLS-1$
 
 	private final String m_format;
 

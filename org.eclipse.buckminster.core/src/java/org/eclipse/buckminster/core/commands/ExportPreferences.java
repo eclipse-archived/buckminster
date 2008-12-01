@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -43,7 +45,7 @@ public class ExportPreferences extends AbstractPreferencesCommand
 		}
 		catch(IOException e)
 		{
-			throw new SimpleErrorExitException("Unable to open file: " + prefsFile);
+			throw new SimpleErrorExitException(NLS.bind(Messages.ExportPreferences_Unable_to_open_file_0, prefsFile));
 		}
 		finally
 		{

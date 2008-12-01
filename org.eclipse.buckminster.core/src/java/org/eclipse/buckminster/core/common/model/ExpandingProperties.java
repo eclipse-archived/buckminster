@@ -281,9 +281,9 @@ public class ExpandingProperties implements IProperties
 	void emitProperties(ContentHandler handler, String namespace, String prefix, boolean includeDefaults)
 			throws SAXException
 	{
-		String plName = "property";
+		String plName = "property"; //$NON-NLS-1$
 		String pqName = Utils.makeQualifiedName(prefix, plName);
-		String pelName = "propertyElement";
+		String pelName = "propertyElement"; //$NON-NLS-1$
 		String peqName = Utils.makeQualifiedName(prefix, pelName);
 		AttributesImpl attrs = new AttributesImpl();
 
@@ -315,12 +315,12 @@ public class ExpandingProperties implements IProperties
 			}
 
 			attrs.clear();
-			Utils.addAttribute(attrs, "key", name);
+			Utils.addAttribute(attrs, "key", name); //$NON-NLS-1$
 			if(value.isMutable())
-				Utils.addAttribute(attrs, "mutable", "true");
+				Utils.addAttribute(attrs, "mutable", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 			if(value instanceof Constant)
 			{
-				Utils.addAttribute(attrs, "value", value.toString());
+				Utils.addAttribute(attrs, "value", value.toString()); //$NON-NLS-1$
 				handler.startElement(namespace, plName, pqName, attrs);
 				handler.endElement(namespace, plName, pqName);
 			}

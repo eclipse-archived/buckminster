@@ -23,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Split extends AbstractSplit
 {
-	public static final String ATTR_LIMIT = "limit";
+	public static final String ATTR_LIMIT = "limit"; //$NON-NLS-1$
 
 	private final int m_limit;
 

@@ -10,9 +10,11 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -20,13 +22,13 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class RxPattern extends RxPart
 {
-	public static final String TAG = "match";
+	public static final String TAG = "match"; //$NON-NLS-1$
 
-	public static final String ATTR_PATTERN = "pattern";
+	public static final String ATTR_PATTERN = "pattern"; //$NON-NLS-1$
 
-	public static final String ATTR_PREFIX = "prefix";
+	public static final String ATTR_PREFIX = "prefix"; //$NON-NLS-1$
 
-	public static final String ATTR_SUFFIX = "suffix";
+	public static final String ATTR_SUFFIX = "suffix"; //$NON-NLS-1$
 
 	private static void addEscapedPattern(StringBuilder bld, String pattern, boolean willBeGroup) throws CoreException
 	{
@@ -77,7 +79,7 @@ public class RxPattern extends RxPart
 					//
 					if(idx == 1)
 						stripOuter = true;
-					bld.append("(?");
+					bld.append("(?"); //$NON-NLS-1$
 					c = ':';
 				}
 				else
@@ -102,7 +104,8 @@ public class RxPattern extends RxPart
 		}
 
 		if(parenDepth != 0)
-			throw BuckminsterException.fromMessage("Unbalanced parenthesis in pattern: %s", pattern);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.RxPattern_Unbalanced_parenthesis_in_pattern_0,
+					pattern));
 
 		if(stripOuter)
 		{
@@ -123,7 +126,7 @@ public class RxPattern extends RxPart
 			//
 			String subExpr = bld.substring(startPos, bld.length());
 			bld.setLength(startPos);
-			bld.append("(?:");
+			bld.append("(?:"); //$NON-NLS-1$
 			bld.append(subExpr);
 			bld.append(')');
 		}
@@ -220,7 +223,7 @@ public class RxPattern extends RxPart
 		{
 			String name = getName();
 			if(name == null)
-				bld.append("?:"); // Non capturing group
+				bld.append("?:"); // Non capturing group //$NON-NLS-1$
 			else
 				namedParts.add(this);
 			addEscapedPattern(bld, m_pattern, true);
@@ -229,10 +232,10 @@ public class RxPattern extends RxPart
 		{
 			// Group as a whole must be a non capturing group
 			//
-			bld.append("?:");
+			bld.append("?:"); //$NON-NLS-1$
 			addInnerPattern(bld, namedParts, true);
 		}
-		bld.append(")?");
+		bld.append(")?"); //$NON-NLS-1$
 	}
 
 	public String getDefaultTag()

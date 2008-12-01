@@ -30,14 +30,14 @@ import org.xml.sax.SAXException;
  */
 public class Documentation extends FlowWithAttributes implements ISaxable
 {
-	public static final String BM_TAG = "documentation";
+	public static final String BM_TAG = "documentation"; //$NON-NLS-1$
 
-	public static final String XHTML_TAG = "div";
+	public static final String XHTML_TAG = "div"; //$NON-NLS-1$
 
-	private static final String LEAD_IN = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-			+ "<div xmlns=\"http://www.w3.org/1999/xhtml\">";
+	private static final String LEAD_IN = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" //$NON-NLS-1$
+			+ "<div xmlns=\"http://www.w3.org/1999/xhtml\">"; //$NON-NLS-1$
 
-	private static final String TAIL = "</div>";
+	private static final String TAIL = "</div>"; //$NON-NLS-1$
 
 	/**
 	 * Parse a text snipped into a Documentation object. This method will first wrap the snipped in a XHTML &lt;div&gt;
@@ -52,9 +52,9 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 	{
 		try
 		{
-			ByteArrayInputStream input = new ByteArrayInputStream((LEAD_IN + doc + TAIL).getBytes("UTF-8"));
+			ByteArrayInputStream input = new ByteArrayInputStream((LEAD_IN + doc + TAIL).getBytes("UTF-8")); //$NON-NLS-1$
 			IParser<Documentation> parser = new DocumentationParser();
-			return parser.parse("generated", input);
+			return parser.parse("generated", input); //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{
@@ -131,9 +131,9 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 	@Override
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
-		receiver.startPrefixMapping("", XMLConstants.XHTML_NS);
+		receiver.startPrefixMapping("", XMLConstants.XHTML_NS); //$NON-NLS-1$
 		super.toSax(receiver, namespace, prefix, localName);
-		receiver.endPrefixMapping("");
+		receiver.endPrefixMapping(""); //$NON-NLS-1$
 	}
 
 	/**
@@ -145,10 +145,10 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 		try
 		{
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			ContentHandler serializer = Utils.newSerializer(null, out, "UTF-8", -1, false);
+			ContentHandler serializer = Utils.newSerializer(null, out, "UTF-8", -1, false); //$NON-NLS-1$
 			toSax(serializer);
-			String xmlContent = new String(out.toByteArray(), "UTF-8");
-			int idx = xmlContent.indexOf("<" + XHTML_TAG);
+			String xmlContent = new String(out.toByteArray(), "UTF-8"); //$NON-NLS-1$
+			int idx = xmlContent.indexOf("<" + XHTML_TAG); //$NON-NLS-1$
 			if(idx < 0)
 				return null;
 			int top = xmlContent.length();
@@ -158,7 +158,7 @@ public class Documentation extends FlowWithAttributes implements ISaxable
 			if(idx == top)
 				return null;
 			++idx;
-			int lastIdx = xmlContent.lastIndexOf("</" + XHTML_TAG + ">");
+			int lastIdx = xmlContent.lastIndexOf("</" + XHTML_TAG + ">"); //$NON-NLS-1$ //$NON-NLS-2$
 			if(lastIdx < idx)
 				return null;
 

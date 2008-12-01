@@ -18,6 +18,7 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -29,17 +30,18 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  */
 public abstract class WorkspaceInitCommand extends WorkspaceCommand
 {
-	static final OptionDescriptor CONTINUE_ON_ERROR = new OptionDescriptor('C', "continueonerror", OptionValueType.NONE);
+	static final OptionDescriptor CONTINUE_ON_ERROR = new OptionDescriptor('C', "continueonerror", OptionValueType.NONE); //$NON-NLS-1$
 
-	static final OptionDescriptor MATERIALIZER = new OptionDescriptor('M', "materializer", OptionValueType.REQUIRED);
+	static final OptionDescriptor MATERIALIZER = new OptionDescriptor('M', "materializer", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static final OptionDescriptor TEMPLATE = new OptionDescriptor('T', "template", OptionValueType.REQUIRED);
+	static final OptionDescriptor TEMPLATE = new OptionDescriptor('T', "template", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	private static boolean isFolderEmpty(File folder)
 	{
@@ -105,15 +107,16 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 		{
 			File wsRoot = FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation().getURL()));
 			if(!isFolderEmpty(wsRoot))
-				throw new SimpleErrorExitException("Workspace at " + wsRoot + " is not empty");
+				throw new SimpleErrorExitException(NLS.bind(Messages.WorkspaceInitCommand_Workspace_at_0_is_not_empty,
+						wsRoot));
 
 			IProgressMonitor nullMon = new NullProgressMonitor();
 			URL template = FileLocator.toFileURL(m_template);
 			String path = template.getPath();
 			File fileTemplate;
-			if(path.endsWith(".zip") || path.endsWith(".jar"))
+			if(path.endsWith(".zip") || path.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
-				File dest = FileUtils.createTempFolder("bmtpl", ".tmp");
+				File dest = FileUtils.createTempFolder("bmtpl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 				InputStream input = null;
 				try
 				{
@@ -130,14 +133,15 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 			{
 				fileTemplate = FileUtils.getFile(template);
 				if(fileTemplate == null)
-					throw new SimpleErrorExitException("Only zip and jar files allowed for remote workspace templates");
+					throw new SimpleErrorExitException(
+							Messages.WorkspaceInitCommand_Only_zip_and_jar_files_allowed_for_remote_workspace_templates);
 
 				if(!fileTemplate.isAbsolute())
 					fileTemplate = fileTemplate.getAbsoluteFile();
 
 				if(!fileTemplate.isDirectory())
 					throw new SimpleErrorExitException(
-							"Only folders, zip, and jar files can be uses as workspace template");
+							Messages.WorkspaceInitCommand_Only_folders_zip_and_jar_files_can_be_uses_as_workspace_template);
 			}
 			FileUtils.deepCopyUnchecked(fileTemplate, wsRoot, nullMon);
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, nullMon);

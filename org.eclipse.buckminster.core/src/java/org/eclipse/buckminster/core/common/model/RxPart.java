@@ -20,9 +20,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public abstract class RxPart extends AbstractSaxableElement
 {
-	public static final String ATTR_NAME = "name";
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
-	public static final String ATTR_OPTIONAL = "optional";
+	public static final String ATTR_OPTIONAL = "optional"; //$NON-NLS-1$
 
 	private final String m_name;
 

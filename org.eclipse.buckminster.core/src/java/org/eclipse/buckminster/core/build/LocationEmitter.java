@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -39,15 +40,15 @@ import org.osgi.framework.Bundle;
  */
 public class LocationEmitter extends PropertiesEmitter
 {
-	public static final String ARG_PURPOSE = "purpose";
+	public static final String ARG_PURPOSE = "purpose"; //$NON-NLS-1$
 
-	public static final String ARG_FORMAT_LOCATION = "format.location";
+	public static final String ARG_FORMAT_LOCATION = "format.location"; //$NON-NLS-1$
 
-	public static final String ARG_FORMAT_ARTIFACTS = "format.artifacts";
+	public static final String ARG_FORMAT_ARTIFACTS = "format.artifacts"; //$NON-NLS-1$
 
-	public static final Format FORMAT_LOCATION = new MessageFormat("bm.location.{0}");
+	public static final Format FORMAT_LOCATION = new MessageFormat("bm.location.{0}"); //$NON-NLS-1$
 
-	public static final Format FORMAT_LOCATION_ARTIFACT = new MessageFormat("bm.artifacts.{0}.{1}");
+	public static final Format FORMAT_LOCATION_ARTIFACT = new MessageFormat("bm.artifacts.{0}.{1}"); //$NON-NLS-1$
 
 	private static boolean s_stateKnown = false;
 
@@ -72,7 +73,7 @@ public class LocationEmitter extends PropertiesEmitter
 	{
 		if(!s_stateKnown)
 		{
-			Bundle bundle = Platform.getBundle("org.eclipse.buckminster.jdt");
+			Bundle bundle = Platform.getBundle("org.eclipse.buckminster.jdt"); //$NON-NLS-1$
 			if(bundle == null)
 			{
 				s_stateKnown = true;
@@ -82,8 +83,8 @@ public class LocationEmitter extends PropertiesEmitter
 			try
 			{
 				Class<?> classpathEmitterClass = bundle
-						.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter");
-				s_getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder",
+						.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter"); //$NON-NLS-1$
+				s_getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder", //$NON-NLS-1$
 						new Class[] { IProject.class });
 			}
 			catch(Exception e)
@@ -114,7 +115,7 @@ public class LocationEmitter extends PropertiesEmitter
 		if(location.toFile().isFile())
 		{
 			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location.removeLastSegments(1)));
-			addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment());
+			addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment()); //$NON-NLS-1$
 		}
 		else
 		{
@@ -126,7 +127,7 @@ public class LocationEmitter extends PropertiesEmitter
 				//
 				IPath dfltOutput = getDefaultOutputFolder(project);
 				if(dfltOutput != null)
-					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput
+					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput //$NON-NLS-1$
 							.toOSString());
 			}
 			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location));

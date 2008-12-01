@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
@@ -38,35 +39,35 @@ import org.eclipse.core.runtime.Status;
  */
 public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuilder implements IResourceChangeListener
 {
-	public static final String ARG_REFRESH_RESOURCE = "refresh.resource";
+	public static final String ARG_REFRESH_RESOURCE = "refresh.resource"; //$NON-NLS-1$
 
-	public static final String ARG_DERIVED_RESOURCE = "derived.resource";
+	public static final String ARG_DERIVED_RESOURCE = "derived.resource"; //$NON-NLS-1$
 
-	public static final String ARG_GIVEN_NAME_KEY = "given.name";
+	public static final String ARG_GIVEN_NAME_KEY = "given.name"; //$NON-NLS-1$
 
-	public static final String ARG_DISABLED_KEY = "disabled";
+	public static final String ARG_DISABLED_KEY = "disabled"; //$NON-NLS-1$
 
-	public static final String ARG_DELTA_RESOURCE_KEY = "delta.resource";
+	public static final String ARG_DELTA_RESOURCE_KEY = "delta.resource"; //$NON-NLS-1$
 
-	public static final String ARG_AUTO_PRINTSTREAM_KEY = "auto.printstream";
+	public static final String ARG_AUTO_PRINTSTREAM_KEY = "auto.printstream"; //$NON-NLS-1$
 
-	public static final String ARG_CLEAN_PRINTSTREAM_KEY = "clean.printstream";
+	public static final String ARG_CLEAN_PRINTSTREAM_KEY = "clean.printstream"; //$NON-NLS-1$
 
-	public static final String ARG_FULL_PRINTSTREAM_KEY = "full.printstream";
+	public static final String ARG_FULL_PRINTSTREAM_KEY = "full.printstream"; //$NON-NLS-1$
 
-	public static final String ARG_INCREMENTAL_PRINTSTREAM_KEY = "incremental.printstream";
+	public static final String ARG_INCREMENTAL_PRINTSTREAM_KEY = "incremental.printstream"; //$NON-NLS-1$
 
 	public static String bestNameForBuilder(String givenName, IConfigurationElement ce)
 	{
 		StringBuilder sb = new StringBuilder();
 		if(givenName != null)
-			sb.append(givenName).append(" (");
+			sb.append(givenName).append(" ("); //$NON-NLS-1$
 		String s = ce.getDeclaringExtension().getLabel().trim();
 		if(s.length() == 0)
 			s = ce.getDeclaringExtension().getUniqueIdentifier();
 		sb.append(s);
 		if(givenName != null)
-			sb.append(")");
+			sb.append(")"); //$NON-NLS-1$
 		return sb.toString();
 	}
 
@@ -154,15 +155,15 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	public static String kindToString(int kind)
 	{
 		if(kind == AUTO_BUILD)
-			return "AUTO";
+			return "AUTO"; //$NON-NLS-1$
 		if(kind == CLEAN_BUILD)
-			return "CLEAN";
+			return "CLEAN"; //$NON-NLS-1$
 		if(kind == FULL_BUILD)
-			return "FULL";
+			return "FULL"; //$NON-NLS-1$
 		if(kind == INCREMENTAL_BUILD)
-			return "INCREMENTAL";
+			return "INCREMENTAL"; //$NON-NLS-1$
 
-		return "NONE";
+		return "NONE"; //$NON-NLS-1$
 	}
 
 	public static void setDisabled(Map<String, String> args, boolean disabled)
@@ -259,7 +260,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 				}
 
 				if(logger.isDebugEnabled())
-					logger.debug("[start AntBuilder(%s)] : %s - %s", kindToString(kind), getBestName(args),
+					logger.debug("[start AntBuilder(%s)] : %s - %s", kindToString(kind), getBestName(args), //$NON-NLS-1$
 							getProject().getName());
 
 				projects = doBuild(kind, args, monitor);
@@ -296,7 +297,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 			finally
 			{
 				if(logger.isDebugEnabled())
-					logger.debug(String.format("[end AntBuilder(%s)]", kindToString(kind)));
+					logger.debug(String.format("[end AntBuilder(%s)]", kindToString(kind))); //$NON-NLS-1$
 			}
 		}
 		return projects;
@@ -326,7 +327,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		if(kind == INCREMENTAL_BUILD)
 			return this.doIncrementalBuild(args, monitor);
 
-		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, "Unknown kind", null));
+		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, Messages.AbstractBuckminsterBuilder_Unknown_kind, null));
 	}
 
 	protected IProject[] doCleanBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
@@ -415,7 +416,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	{
 		// if someone has requested notification and then doesn't listen to it,
 		// they deserve to be punished
-		throw new IllegalStateException("Method not overridden");
+		throw new IllegalStateException(Messages.AbstractBuckminsterBuilder_Method_not_overridden);
 	}
 
 	@Override

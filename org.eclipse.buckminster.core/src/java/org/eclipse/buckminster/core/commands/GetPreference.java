@@ -16,6 +16,7 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -24,12 +25,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class GetPreference extends AbstractCommand
 {
-	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
+	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor DEFAULT_DESCRIPTOR = new OptionDescriptor('d', "default",
+	static private final OptionDescriptor DEFAULT_DESCRIPTOR = new OptionDescriptor('d', "default", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor ONLYVALUE_DESCRIPTOR = new OptionDescriptor(null, "onlyvalue",
+	static private final OptionDescriptor ONLYVALUE_DESCRIPTOR = new OptionDescriptor(null, "onlyvalue", //$NON-NLS-1$
 			OptionValueType.NONE);
 
 	private boolean m_test = false;
@@ -61,7 +62,7 @@ public class GetPreference extends AbstractCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException("Too many arguments");
+			throw new SimpleErrorExitException(Messages.GetPreference_Too_many_arguments);
 		if(len == 1)
 			m_name = unparsed[0];
 	}
@@ -70,12 +71,12 @@ public class GetPreference extends AbstractCommand
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		if(m_name == null)
-			throw new SimpleErrorExitException("You must provide a preference name");
+			throw new SimpleErrorExitException(Messages.GetPreference_You_must_provide_a_preference_name);
 
 		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);
 		String v = bph.get(m_default);
 		if(!m_onlyValue)
-			System.out.print(bph.getName() + "=");
+			System.out.print(bph.getName() + "="); //$NON-NLS-1$
 		if(v != null)
 			System.out.println(v);
 		return 0;

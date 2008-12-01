@@ -13,6 +13,7 @@ import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
@@ -37,7 +39,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 	{
 		Stack<IActionContext> ctxStack = s_actionContext.get();
 		if(ctxStack == null || ctxStack.isEmpty())
-			throw new IllegalStateException("No active IActionContext");
+			throw new IllegalStateException(Messages.AbstractActor_No_active_IActionContext);
 		return ctxStack.peek();
 	}
 
@@ -46,11 +48,12 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		String propVal = properties.get(key);
 		if(propVal == null)
 			return dflt;
-		if("true".equalsIgnoreCase(propVal))
+		if("true".equalsIgnoreCase(propVal)) //$NON-NLS-1$
 			return true;
-		if("false".equalsIgnoreCase(propVal))
+		if("false".equalsIgnoreCase(propVal)) //$NON-NLS-1$
 			return false;
-		throw new IllegalArgumentException('\'' + propVal + "' is not a valid value of a boolean property");
+		throw new IllegalArgumentException(NLS.bind(Messages.AbstractActor__0_not_valid_value_of_boolean_property,
+				propVal));
 	}
 
 	private String m_name;
@@ -92,7 +95,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		if(m_logger.isDebugEnabled())
 		{
 			StringBuilder bld = new StringBuilder();
-			bld.append("init actor: ");
+			bld.append("init actor: "); //$NON-NLS-1$
 			bld.append(this.getId());
 			bld.append('[');
 			action.toString(bld);
@@ -119,22 +122,26 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 	{
 		if(m_action.getPrerequisitesAlias() != null)
 		{
-			sb.append("\n  Prerequisite alias = ");
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.AbstractActor_Prerequisite_alias);
 			sb.append(m_action.getPrerequisitesAlias());
 		}
 		if(m_action.getPrerequisiteRebase() != null)
 		{
-			sb.append("\n  Prerequisite rebase = ");
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.AbstractActor_Prerequisite_rebase);
 			sb.append(m_action.getPrerequisiteRebase().toOSString());
 		}
 		if(m_action.getProductAlias() != null)
 		{
-			sb.append("\n  Product alias = ");
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.AbstractActor_Product_alias);
 			sb.append(m_action.getProductAlias());
 		}
 		if(m_action.getProductBase() != null)
 		{
-			sb.append("\n  Product base = ");
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.AbstractActor_Product_base);
 			sb.append(m_action.getProductBase().toOSString());
 		}
 	}
@@ -146,7 +153,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		{
 			if(sysProps.getProperty(entry.getKey()) == null)
 			{
-				sb.append("\n  ");
+				sb.append("\n  "); //$NON-NLS-1$
 				sb.append(entry.getKey()).append('=').append(entry.getValue());
 			}
 		}
@@ -173,7 +180,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 			if(isDebug || !quiet)
 			{
 				StringBuilder bld = new StringBuilder();
-				bld.append("[start ");
+				bld.append("[start "); //$NON-NLS-1$
 				action.toString(bld);
 				bld.append(']');
 				if(isDebug)
@@ -189,7 +196,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 			if(isDebug || !quiet)
 			{
 				StringBuilder bld = new StringBuilder();
-				bld.append("[end ");
+				bld.append("[end "); //$NON-NLS-1$
 				action.toString(bld);
 				bld.append(']');
 				m_logger.info(bld.toString());

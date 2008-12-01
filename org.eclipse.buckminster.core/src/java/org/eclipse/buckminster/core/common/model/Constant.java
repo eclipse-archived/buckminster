@@ -24,9 +24,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Constant extends ValueHolder
 {
-	public static final String TAG = "constant";
+	public static final String TAG = "constant"; //$NON-NLS-1$
 
-	public static final String ATTR_VALUE = "value";
+	public static final String ATTR_VALUE = "value"; //$NON-NLS-1$
 
 	private final String m_value;
 

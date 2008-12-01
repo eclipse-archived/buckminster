@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
@@ -69,7 +70,7 @@ public class Replace extends ValueHolderFilter
 			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
 			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);
 			if(m_quotePattern)
-				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true");
+				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true"); //$NON-NLS-1$
 		}
 
 		@Override
@@ -118,15 +119,15 @@ public class Replace extends ValueHolderFilter
 		}
 	}
 
-	public static final String TAG = "replace";
+	public static final String TAG = "replace"; //$NON-NLS-1$
 
-	public static final String MATCH_TAG = "match";
+	public static final String MATCH_TAG = "match"; //$NON-NLS-1$
 
-	public static final String ATTR_PATTERN = "pattern";
+	public static final String ATTR_PATTERN = "pattern"; //$NON-NLS-1$
 
-	public static final String ATTR_REPLACEMENT = "replacement";
+	public static final String ATTR_REPLACEMENT = "replacement"; //$NON-NLS-1$
 
-	public static final String ATTR_QUOTE_PATTERN = "quotePattern";
+	public static final String ATTR_QUOTE_PATTERN = "quotePattern"; //$NON-NLS-1$
 
 	private final ArrayList<Match> m_matchers = new ArrayList<Match>();
 

@@ -29,19 +29,19 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 {
 	private static ITargetPlatform s_instance = null;
 
-	public static final String TARGET_PLATFORM_PROVIDERS_POINT = CorePlugin.CORE_NAMESPACE + ".targetPlatformProviders";
+	public static final String TARGET_PLATFORM_PROVIDERS_POINT = CorePlugin.CORE_NAMESPACE + ".targetPlatformProviders"; //$NON-NLS-1$
 
-	public static final String TARGET_PREFIX = "target";
+	public static final String TARGET_PREFIX = "target"; //$NON-NLS-1$
 
-	public static final String TARGET_OS = TARGET_PREFIX + ".os";
+	public static final String TARGET_OS = TARGET_PREFIX + ".os"; //$NON-NLS-1$
 
-	public static final String TARGET_WS = TARGET_PREFIX + ".ws";
+	public static final String TARGET_WS = TARGET_PREFIX + ".ws"; //$NON-NLS-1$
 
-	public static final String TARGET_ARCH = TARGET_PREFIX + ".arch";
+	public static final String TARGET_ARCH = TARGET_PREFIX + ".arch"; //$NON-NLS-1$
 
-	public static final String TARGET_NL = TARGET_PREFIX + ".nl";
+	public static final String TARGET_NL = TARGET_PREFIX + ".nl"; //$NON-NLS-1$
 
-	public static final String TARGET_LOCATION = TARGET_PREFIX + ".location";
+	public static final String TARGET_LOCATION = TARGET_PREFIX + ".location"; //$NON-NLS-1$
 
 	public static synchronized ITargetPlatform getInstance() throws CoreException
 	{
@@ -54,7 +54,7 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 			int maxPrio = -1;
 			for(IConfigurationElement elem : elems)
 			{
-				String prioStr = elem.getAttribute("priority");
+				String prioStr = elem.getAttribute("priority"); //$NON-NLS-1$
 				if(prioStr == null)
 					//
 					// Bogus entry. The priority attribute is mandatory
@@ -78,9 +78,9 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 
 			if(candidate == null)
 				throw BuckminsterException
-						.fromMessage("No targetPlatformProvider has been registered with the targetPlatformProviders extension point");
-			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class");
-			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass());
+						.fromMessage(Messages.TargetPlatform_No_targetPlatformProvider_registered_with_targetPlatformProviders_extension_point);
+			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class"); //$NON-NLS-1$
+			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass()); //$NON-NLS-1$
 		}
 		return s_instance;
 	}
@@ -95,7 +95,7 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 		if(eclipseHome == null)
 			return null;
 
-		assert ("file".equals(eclipseHome.getProtocol()));
+		assert ("file".equals(eclipseHome.getProtocol())); //$NON-NLS-1$
 		return FileUtils.getFile(eclipseHome);
 	}
 

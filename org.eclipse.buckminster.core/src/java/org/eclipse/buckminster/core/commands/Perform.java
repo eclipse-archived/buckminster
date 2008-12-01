@@ -23,6 +23,7 @@ import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -37,22 +38,23 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osgi.util.NLS;
 
 public class Perform extends WorkspaceCommand
 {
-	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define",
+	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
-	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$");
+	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$"); //$NON-NLS-1$
 
-	static private final OptionDescriptor FORCED_DESCRIPTOR = new OptionDescriptor('F', "force", OptionValueType.NONE);
+	static private final OptionDescriptor FORCED_DESCRIPTOR = new OptionDescriptor('F', "force", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor QUIET_DESCRIPTOR = new OptionDescriptor('Q', "quiet", OptionValueType.NONE);
+	static private final OptionDescriptor QUIET_DESCRIPTOR = new OptionDescriptor('Q', "quiet", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings",
+	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties",
+	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
 	private final List<Attribute> m_attributes = new ArrayList<Attribute>();
@@ -89,16 +91,16 @@ public class Perform extends WorkspaceCommand
 	{
 		StringBuilder bld = new StringBuilder();
 		bld.append(type);
-		bld.append(": file ");
+		bld.append(": file "); //$NON-NLS-1$
 		bld.append(problem.getResource().getLocation().toOSString());
 		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
 		if(line > 0)
 		{
-			bld.append(", line ");
+			bld.append(", line "); //$NON-NLS-1$
 			bld.append(line);
 		}
-		bld.append(": ");
-		bld.append(problem.getAttribute(IMarker.MESSAGE, ""));
+		bld.append(": "); //$NON-NLS-1$
+		bld.append(problem.getAttribute(IMarker.MESSAGE, "")); //$NON-NLS-1$
 		return bld.toString();
 	}
 
@@ -120,10 +122,10 @@ public class Perform extends WorkspaceCommand
 			String v = option.getValue();
 			Matcher m = DEFINE_PATTERN.matcher(v);
 			if(!m.matches())
-				throw new IllegalArgumentException("Not a key[=value] string : " + v);
+				throw new IllegalArgumentException(NLS.bind(Messages.Perform_Not_a_key_value_string_0, v));
 			String key = m.group(1);
 			String value = m.group(2) == null
-					? ""
+					? "" //$NON-NLS-1$
 					: m.group(2);
 			addProperty(key, value);
 		}
@@ -139,7 +141,7 @@ public class Perform extends WorkspaceCommand
 			}
 			catch(MalformedURLException e)
 			{
-				throw new IllegalArgumentException("Invalid URL or Path: " + v);
+				throw new IllegalArgumentException(NLS.bind(Messages.Perform_Invalid_URL_or_Path_0, v));
 			}
 			finally
 			{
@@ -172,7 +174,8 @@ public class Perform extends WorkspaceCommand
 					component = null;
 			}
 			if(component == null || attribute == null)
-				throw new UsageException("Attribute names must be in the form <component name>#<attribute name>");
+				throw new UsageException(
+						Messages.Perform_Attribute_names_must_be_in_the_form_component_name_attribute_name);
 
 			CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
 			addAttribute(cspec.getRequiredAttribute(attribute));
@@ -183,7 +186,7 @@ public class Perform extends WorkspaceCommand
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		if(m_attributes.isEmpty())
-			throw new UsageException("No attributes specified");
+			throw new UsageException(Messages.Perform_No_attributes_specified);
 
 		IPerformManager pm = CorePlugin.getPerformManager();
 		IStatus status = pm.perform(m_attributes, m_props, m_forced, m_quiet, monitor).getStatus();
@@ -220,44 +223,44 @@ public class Perform extends WorkspaceCommand
 			case IMarker.SEVERITY_ERROR:
 				exitValue = 1;
 				errors++;
-				System.err.println(formatMarkerMessage("Error", problem));
+				System.err.println(formatMarkerMessage("Error", problem)); //$NON-NLS-1$
 				break;
 			case IMarker.SEVERITY_WARNING:
 				warnings++;
-				System.err.println(formatMarkerMessage("Warning", problem));
+				System.err.println(formatMarkerMessage("Warning", problem)); //$NON-NLS-1$
 				break;
 			case IMarker.SEVERITY_INFO:
-				System.out.println(formatMarkerMessage("Info", problem));
+				System.out.println(formatMarkerMessage("Info", problem)); //$NON-NLS-1$
 			}
 		}
 
 		if(warnings + errors > 0)
 		{
 			StringBuilder bld = new StringBuilder();
-			bld.append("Found ");
+			bld.append(Messages.Perform_Found);
 			if(errors > 0)
 			{
 				bld.append(errors);
-				bld.append(" errors");
+				bld.append(Messages.Perform_errors);
 				if(warnings > 0)
-					bld.append(" and ");
+					bld.append(Messages.Perform_and);
 			}
 			if(warnings > 0)
 			{
 				bld.append(warnings);
-				bld.append(" warnings");
+				bld.append(Messages.Perform_warnings);
 			}
 			System.err.println(bld.toString());
 		}
 
 		if(m_maxWarnings != -1 && warnings > m_maxWarnings)
 		{
-			System.err.println("Too many warnings. Exiting with error status");
+			System.err.println(Messages.Perform_Too_many_warnings_Exiting_with_error_status);
 			exitValue = 1;
 		}
 
 		if(exitValue > 0)
-			System.err.println("Build failed!");
+			System.err.println(Messages.Perform_Build_failed);
 		return exitValue;
 	}
 

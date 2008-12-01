@@ -8,7 +8,9 @@
 package org.eclipse.buckminster.core.actor;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,7 +21,10 @@ public class NoSuchActorException extends LocalizedException
 
 	public NoSuchActorException(String actorName, String actionName)
 	{
-		super("Action {0} refers to actor with id {1} but no such actor has been registered with extension-point {2}",
-				actionName, actorName, CorePlugin.ACTORS_POINT);
+		super(
+				NLS
+						.bind(
+								Messages.NoSuchActorException_Action_0_refers_to_actor_with_id_1_but_no_such_actor_registered_with_extension_point_2,
+								new Object[] { actionName, actorName, CorePlugin.ACTORS_POINT }));
 	}
 }

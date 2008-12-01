@@ -16,7 +16,9 @@ import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
@@ -24,7 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class UnsetPreference extends WorkspaceCommand
 {
-	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
+	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
 	private boolean m_test = false;
 
@@ -47,7 +49,7 @@ public class UnsetPreference extends WorkspaceCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException("Too many arguments");
+			throw new SimpleErrorExitException(Messages.UnsetPreference_Too_many_arguments);
 		if(len == 1)
 			m_name = unparsed[0];
 	}
@@ -56,11 +58,11 @@ public class UnsetPreference extends WorkspaceCommand
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		if(m_name == null)
-			throw new UsageException("You must provide a preference name");
+			throw new UsageException(Messages.UnsetPreference_You_must_provide_a_preference_name);
 
 		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);
 		bph.unset();
-		System.out.println("Unset the value for " + bph.getName());
+		System.out.println(NLS.bind(Messages.UnsetPreference_Unset_the_value_for_0, bph.getName()));
 		return 0;
 	}
 }

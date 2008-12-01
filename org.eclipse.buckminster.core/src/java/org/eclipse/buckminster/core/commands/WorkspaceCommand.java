@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.commands;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.materializer.WorkspaceBindingInstallJob;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -26,6 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * The workspace command ensures that the workspace is in good shape when the command terminates.
@@ -47,7 +49,8 @@ public abstract class WorkspaceCommand extends AbstractCommand
 		}
 		catch(Throwable e)
 		{
-			Buckminster.getLogger().error(e, "Error while saving workspace: %s", e.getMessage());
+			Buckminster.getLogger().error(e,
+					NLS.bind(Messages.WorkspaceCommand_Error_while_saving_workspace_0, e.getMessage()));
 		}
 		monitor.done();
 	}
@@ -80,8 +83,8 @@ public abstract class WorkspaceCommand extends AbstractCommand
 		// considered bad during a headless build.
 		//
 		JobBlocker jobBlocker = new JobBlocker();
-		jobBlocker.addClassBlock("org.eclipse.core.internal.events.AutoBuildJob");
-		jobBlocker.addClassBlock("org.eclipse.jdt.internal.core.search.processing.JobManager$1$ProgressJob");
+		jobBlocker.addClassBlock("org.eclipse.core.internal.events.AutoBuildJob"); //$NON-NLS-1$
+		jobBlocker.addClassBlock("org.eclipse.jdt.internal.core.search.processing.JobManager$1$ProgressJob"); //$NON-NLS-1$
 
 		try
 		{
@@ -98,7 +101,7 @@ public abstract class WorkspaceCommand extends AbstractCommand
 			else
 			{
 				final Logger logger = CorePlugin.getLogger();
-				logger.debug("Doing full workspace refresh");
+				logger.debug("Doing full workspace refresh"); //$NON-NLS-1$
 				try
 				{
 					ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE,
@@ -106,7 +109,8 @@ public abstract class WorkspaceCommand extends AbstractCommand
 				}
 				catch(Throwable e)
 				{
-					Buckminster.getLogger().error("Error while refreshing workspace: " + e.getMessage(), e);
+					Buckminster.getLogger().error(
+							NLS.bind(Messages.WorkspaceCommand_Error_while_refreshing_workspace_0, e.getMessage()), e);
 				}
 
 				// Suspend the job manager temporarily and wait for all jobs to drain
@@ -141,12 +145,12 @@ public abstract class WorkspaceCommand extends AbstractCommand
 							{
 								int state = job.getState();
 								if(state == Job.RUNNING)
-									logger.debug("  JOB: %s is still running", job.toString());
+									logger.debug("  JOB: %s is still running", job.toString()); //$NON-NLS-1$
 							}
 						}
 					}
 				};
-				logger.debug("Waiting for jobs to end");
+				logger.debug("Waiting for jobs to end"); //$NON-NLS-1$
 
 				// Wait at max 30 seconds for all jobs to complete. The normal case is that
 				// the join returns very quickly.

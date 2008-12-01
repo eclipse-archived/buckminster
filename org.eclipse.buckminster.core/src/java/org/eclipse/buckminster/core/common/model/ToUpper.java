@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class ToUpper extends ValueHolderFilter
 {
-	public static final String TAG = "toUpper";
+	public static final String TAG = "toUpper"; //$NON-NLS-1$
 
 	@Override
 	public String checkedGetValue(Map<String, String> props, int recursionGuard)

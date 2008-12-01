@@ -14,14 +14,16 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
  */
 public class SetPreference extends WorkspaceCommand
 {
-	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
+	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
 	private boolean m_test = false;
 
@@ -42,7 +44,7 @@ public class SetPreference extends WorkspaceCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		if(unparsed.length < 1)
-			throw new UsageException("You must provide at least one preference assignment, e.g. 'abc=123'");
+			throw new UsageException(Messages.SetPreference_You_must_provide_at_least_one_preference_assignment);
 		m_assignments = unparsed;
 	}
 
@@ -55,11 +57,11 @@ public class SetPreference extends WorkspaceCommand
 			String assignment = m_assignments[idx];
 			int eqIdx = assignment.indexOf('=');
 			if(eqIdx < 1 || eqIdx >= assignment.length() - 1)
-				throw new UsageException(assignment + " is not an assignment");
+				throw new UsageException(NLS.bind(Messages.SetPreference__0_is_not_an_assignment, assignment));
 			String key = assignment.substring(0, eqIdx);
 			String value = assignment.substring(eqIdx + 1);
 			prefManager.getHandler(key).set(value);
-			System.out.println(key + " set to the value '" + value + "'");
+			System.out.println(NLS.bind(Messages.SetPreference__0_set_to_the_value_1, key, value));
 		}
 		return 0;
 	}

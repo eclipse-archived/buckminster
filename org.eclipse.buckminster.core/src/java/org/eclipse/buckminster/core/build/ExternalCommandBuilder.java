@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.StreamPump;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -32,24 +33,25 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.IValueVariable;
 import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
  */
 public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implements ExternalCommandBuilderConstants
 {
-	private static Pattern s_extractQuotedItemPattern = Pattern.compile("^\"(.*?)(?<!\\\\)(\"|$)");
+	private static Pattern s_extractQuotedItemPattern = Pattern.compile("^\"(.*?)(?<!\\\\)(\"|$)"); //$NON-NLS-1$
 
-	private static Pattern s_whitespaceAndQuotationMarkPattern = Pattern.compile("\\s\"");
+	private static Pattern s_whitespaceAndQuotationMarkPattern = Pattern.compile("\\s\""); //$NON-NLS-1$
 
 	public static String getCommandLine(LauncherDefinition[] launcherDefs, String defToUse, String addArgs,
 			IProject project, int kind) throws CoreException
 	{
 		IStringVariableManager svm = VariablesPlugin.getDefault().getStringVariableManager();
 
-		IValueVariable projLocVar = svm.newValueVariable("buckminster.project.location", "");
+		IValueVariable projLocVar = svm.newValueVariable("buckminster.project.location", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		projLocVar.setValue(project.getLocation().toOSString());
-		IValueVariable buildTypeVar = svm.newValueVariable("buckminster.build.type", "");
+		IValueVariable buildTypeVar = svm.newValueVariable("buckminster.build.type", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		buildTypeVar.setValue(AbstractBuckminsterBuilder.kindToString(kind));
 		IValueVariable[] variables = new IValueVariable[] { projLocVar, buildTypeVar };
 		svm.addVariables(variables);
@@ -60,15 +62,16 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			try
 			{
 				if(defToUse == null || defToUse.length() == 0)
-					throw BuckminsterException.fromMessage("Missing value for 'definition to use'");
+					throw BuckminsterException
+							.fromMessage(Messages.ExternalCommandBuilder_Missing_value_for_definition_to_use);
 
 				String resolvedDefsToUse = svm.performStringSubstitution(defToUse);
 
 				Logger logger = CorePlugin.getLogger();
 				if(logger.isDebugEnabled())
 				{
-					logger.debug("Definition to use, before: '%s'", defToUse);
-					logger.debug("Definition to use, after: '%s'", resolvedDefsToUse);
+					logger.debug("Definition to use, before: '%s'", defToUse); //$NON-NLS-1$
+					logger.debug("Definition to use, after: '%s'", resolvedDefsToUse); //$NON-NLS-1$
 				}
 
 				for(LauncherDefinition ld : launcherDefs)
@@ -77,7 +80,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 					{
 						StringBuilder sb = new StringBuilder(ld.getCommandLine());
 						if(addArgs != null && addArgs.length() > 0)
-							sb.append(" ").append(addArgs);
+							sb.append(" ").append(addArgs); //$NON-NLS-1$
 						rawCommandLine = sb.toString();
 						break;
 					}
@@ -89,8 +92,8 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 					commandLine = svm.performStringSubstitution(rawCommandLine);
 					if(logger.isDebugEnabled())
 					{
-						logger.debug("Command line, before: '" + rawCommandLine + '\'');
-						logger.debug("Command line, after: '" + commandLine + '\'');
+						logger.debug("Command line, before: '" + rawCommandLine + '\''); //$NON-NLS-1$
+						logger.debug("Command line, after: '" + commandLine + '\''); //$NON-NLS-1$
 					}
 				}
 				return commandLine;
@@ -168,9 +171,9 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		//
 		IPath relativePath = new Path(launcherDefinitionsFile);
 		if(relativePath.isAbsolute())
-			throw BuckminsterException.fromMessage(
-					"The launcher definitions file name must be relative to the project root: %s",
-					launcherDefinitionsFile);
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.ExternalCommandBuilder_Launcher_definitions_file_name_not_relative_to_project_root_0,
+					launcherDefinitionsFile));
 		IPath fullPath = project.getLocation().append(relativePath);
 
 		return fullPath.toFile();
@@ -186,18 +189,18 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		String fullCommandLine = getCommandLine(launcherDefinitions, defToUse, addArgs, this.getProject(), kind);
 
 		if(fullCommandLine == null)
-			throw BuckminsterException.fromMessage("Couldn't resolve to a command line");
+			throw BuckminsterException.fromMessage(Messages.ExternalCommandBuilder_Could_not_resolve_to_a_command_line);
 
 		Logger logger = CorePlugin.getLogger();
-		logger.info("Command line: '%s'", fullCommandLine);
+		logger.info(NLS.bind(Messages.ExternalCommandBuilder_Command_line_0, fullCommandLine));
 
 		String[] splitCommandLine = this.splitCommandLine(fullCommandLine);
 
 		if(logger.isDebugEnabled())
 		{
-			logger.debug("Split cmd line:");
+			logger.debug("Split cmd line:"); //$NON-NLS-1$
 			for(String s : splitCommandLine)
-				logger.debug("=> " + s);
+				logger.debug("=> " + s); //$NON-NLS-1$
 		}
 
 		ProcessBuilder pb = new ProcessBuilder(splitCommandLine);
@@ -211,8 +214,9 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			thrStdOut.join();
 			int exitValue = p.waitFor();
 			if(exitValue != 0)
-				throw BuckminsterException.fromMessage("External command '%s' exited with %d", fullCommandLine, Integer
-						.valueOf(exitValue));
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.ExternalCommandBuilder_External_command_0_exited_with_1, fullCommandLine, Integer
+								.valueOf(exitValue)));
 		}
 		catch(Exception e)
 		{
@@ -232,7 +236,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 
 		List<String> parsed = new ArrayList<String>();
 
-		if(trimmedArg.startsWith("\""))
+		if(trimmedArg.startsWith("\"")) //$NON-NLS-1$
 		{
 			// now extract the first item from the string (skipping the citation
 			// marks)
@@ -247,7 +251,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 					Collections.addAll(parsed, this.splitCommandLine(trimmedArg.substring(end + 1)));
 			}
 			else
-				throw new RuntimeException("Unexpected non match");
+				throw new RuntimeException(Messages.ExternalCommandBuilder_Unexpected_non_match);
 		}
 		else if(wsAndQMmatcher.find())
 		{
@@ -258,7 +262,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			int end = wsAndQMmatcher.end();
 			String left = trimmedArg.substring(0, wsAndQMmatcher.end() - 1);
 			String right = trimmedArg.substring(end - 1);
-			Collections.addAll(parsed, left.split("\\s"));
+			Collections.addAll(parsed, left.split("\\s")); //$NON-NLS-1$
 			Collections.addAll(parsed, this.splitCommandLine(right));
 		}
 		else
@@ -266,7 +270,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			// no attempts to guard embedded whitespace exists, just split it
 			// all
 			//
-			Collections.addAll(parsed, trimmedArg.split("\\s"));
+			Collections.addAll(parsed, trimmedArg.split("\\s")); //$NON-NLS-1$
 		}
 
 		return parsed.toArray(new String[parsed.size()]);

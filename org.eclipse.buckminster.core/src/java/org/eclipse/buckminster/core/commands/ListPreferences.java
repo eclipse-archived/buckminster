@@ -19,14 +19,17 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
  */
 public class ListPreferences extends AbstractCommand
 {
-	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE);
+	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", //$NON-NLS-1$
+			OptionValueType.NONE);
 
 	private boolean m_test = false;
 
@@ -49,7 +52,7 @@ public class ListPreferences extends AbstractCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException("Too many arguments");
+			throw new SimpleErrorExitException(Messages.ListPreferences_Too_many_arguments);
 		if(len == 1)
 			m_pattern = unparsed[0];
 	}
@@ -62,36 +65,36 @@ public class ListPreferences extends AbstractCommand
 		int top = handlers.size();
 		if(top == 0)
 		{
-			out.print("No preferences found");
+			out.print(Messages.ListPreferences_No_preferences_found);
 			if(m_pattern != null)
-				out.format(" (is the pattern '%s' correct?)", m_pattern);
+				out.format(NLS.bind(Messages.ListPreferences_is_the_pattern_0_correct, m_pattern));
 			out.println();
 			return 0;
 		}
 
-		out.print("Found ");
+		out.print(Messages.ListPreferences_Found);
 		out.print(top);
-		out.println(" preference(s):");
+		out.println(Messages.ListPreferences_preferences);
 		for(int idx = 0; idx < top; ++idx)
 		{
 			BasicPreferenceHandler bph = handlers.get(idx);
 			out.println(bph.getName());
 			if(bph.getDescription() != null)
 			{
-				out.print("  Description: ");
+				out.print(Messages.ListPreferences_Description);
 				out.println(bph.getDescription());
 			}
 			if(bph.getKey() != null)
 			{
-				out.print("  Key        : ");
+				out.print(Messages.ListPreferences_Key);
 				out.println(bph.getKey());
 			}
 			String v = bph.get(null);
 			if(v == null)
-				out.println("  (no value set)");
+				out.println(Messages.ListPreferences_no_value_set);
 			else
 			{
-				out.print("  Value      : ");
+				out.print(Messages.ListPreferences_Value);
 				out.println(v);
 			}
 		}

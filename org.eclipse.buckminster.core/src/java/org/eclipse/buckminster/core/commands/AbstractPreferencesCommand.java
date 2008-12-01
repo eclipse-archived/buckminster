@@ -20,6 +20,7 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.PreferenceFilterEntry;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -57,9 +59,9 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 		}
 	}
 
-	static private final OptionDescriptor SCOPE_OPTION = new OptionDescriptor('S', "scope", OptionValueType.REQUIRED);
+	static private final OptionDescriptor SCOPE_OPTION = new OptionDescriptor('S', "scope", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor FILE_OPTION = new OptionDescriptor('F', "file", OptionValueType.REQUIRED);
+	static private final OptionDescriptor FILE_OPTION = new OptionDescriptor('F', "file", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	private IScopeContext m_scope;
 
@@ -122,7 +124,7 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 		if(option.is(SCOPE_OPTION))
 		{
 			if(m_scope != null)
-				throw new UsageException("Only one scope can be given");
+				throw new UsageException(Messages.AbstractPreferencesCommand_Only_one_scope_can_be_given);
 
 			String scopeName = option.getValue();
 			if(scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
@@ -130,13 +132,14 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 			else if(scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
 				m_scope = new ConfigurationScope();
 			else
-				throw new UsageException("Invalid scope. Valid scopes are " + ConfigurationScope.SCOPE + " and "
-						+ InstanceScope.SCOPE);
+				throw new UsageException(NLS.bind(
+						Messages.AbstractPreferencesCommand_Invalid_scope_Valid_scopes_are_0_and_1,
+						ConfigurationScope.SCOPE, InstanceScope.SCOPE));
 		}
 		else if(option.is(FILE_OPTION))
 		{
 			if(m_prefsFile != null)
-				throw new UsageException("Only one file can be given");
+				throw new UsageException(Messages.AbstractPreferencesCommand_Only_one_file_can_be_given);
 			m_prefsFile = new File(option.getValue());
 		}
 	}
@@ -163,14 +166,14 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 				else
 				{
 					rootKey = include.substring(0, sepIdx).trim();
-					subKeys = include.substring(sepIdx + 1).split(",");
+					subKeys = include.substring(sepIdx + 1).split(","); //$NON-NLS-1$
 					if(subKeys.length == 0)
 						subKeys = null;
 				}
 			}
 			if(rootKey == null || rootKey.length() == 0)
-				throw new UsageException("Illegal include: '" + include
-						+ "' Must be in the form <rootKey>[#<subKey>[,subKey...]]]");
+				throw new UsageException(NLS.bind(
+						Messages.AbstractPreferencesCommand_Illegal_include_0_Must_be_in_the_form, include));
 
 			if(subKeys == null)
 			{

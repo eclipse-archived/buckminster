@@ -64,7 +64,7 @@ public abstract class SAXEmitter
 				sorted.add(name);
 		}
 
-		String plName = "property";
+		String plName = "property"; //$NON-NLS-1$
 		String pqName = Utils.makeQualifiedName(prefix, plName);
 
 		AttributesImpl attrs = new AttributesImpl();
@@ -76,10 +76,10 @@ public abstract class SAXEmitter
 				continue;
 
 			attrs.clear();
-			Utils.addAttribute(attrs, "key", name);
-			Utils.addAttribute(attrs, "value", value);
+			Utils.addAttribute(attrs, "key", name); //$NON-NLS-1$
+			Utils.addAttribute(attrs, "value", value); //$NON-NLS-1$
 			if(withMutableAttr && ((IProperties)props).isMutable(name))
-				Utils.addAttribute(attrs, "mutable", "true");
+				Utils.addAttribute(attrs, "mutable", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 			handler.startElement(namespace, plName, pqName, attrs);
 			handler.endElement(namespace, plName, pqName);
 		}

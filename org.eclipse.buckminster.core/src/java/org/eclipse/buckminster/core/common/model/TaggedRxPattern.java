@@ -13,7 +13,7 @@ package org.eclipse.buckminster.core.common.model;
  */
 public class TaggedRxPattern extends RxPattern
 {
-	public static final String TAGGED_PREFIX = "tagged.";
+	public static final String TAGGED_PREFIX = "tagged."; //$NON-NLS-1$
 
 	private final String m_tag;
 

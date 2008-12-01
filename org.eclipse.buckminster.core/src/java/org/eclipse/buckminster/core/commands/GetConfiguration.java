@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.commands;
 import java.net.URL;
 
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
@@ -29,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 
 public class GetConfiguration extends WorkspaceCommand
 {
@@ -41,7 +43,7 @@ public class GetConfiguration extends WorkspaceCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.GetConfiguration_Too_many_arguments);
 		if(len == 1)
 			m_url = URLUtils.normalizeToURL(unparsed[0]);
 	}
@@ -49,7 +51,8 @@ public class GetConfiguration extends WorkspaceCommand
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
-		System.out.println("Using workspace at " + Platform.getInstanceLocation().getURL().toString() + "...");
+		System.out.println(NLS.bind(Messages.GetConfiguration_Using_workspace_at_0, Platform.getInstanceLocation()
+				.getURL().toString()));
 		monitor.beginTask(null, 3);
 		try
 		{
@@ -64,7 +67,7 @@ public class GetConfiguration extends WorkspaceCommand
 			case IStatus.ERROR:
 				throw new CoreException(status);
 			case IStatus.WARNING:
-				System.err.print("Warning: " + status.getMessage());
+				System.err.print(NLS.bind(Messages.GetConfiguration_Warning, status.getMessage()));
 				break;
 			case IStatus.INFO:
 				System.out.print(status.getMessage());
@@ -78,14 +81,13 @@ public class GetConfiguration extends WorkspaceCommand
 					context);
 			MaterializationJob.run(matCtx, true);
 			MonitorUtils.worked(monitor, 1);
-			System.out.println("Query complete.");
+			System.out.println(Messages.GetConfiguration_Query_complete);
 		}
 		catch(Throwable t)
 		{
 			CoreException be = BuckminsterException.wrap(t);
 			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
-				System.err
-						.println("ERROR: An SSL handshake exception occurred - are all server certificates available in your keystore?");
+				System.err.println(Messages.GetConfiguration_SSL_handshake_exception);
 			throw be;
 		}
 		finally

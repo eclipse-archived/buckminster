@@ -19,6 +19,7 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
@@ -43,9 +44,9 @@ import org.eclipse.ecf.core.security.IConnectContext;
  */
 public class Resolve extends WorkspaceInitCommand
 {
-	static private final OptionDescriptor BOM_FILE = new OptionDescriptor('B', "bomfile", OptionValueType.REQUIRED);
+	static private final OptionDescriptor BOM_FILE = new OptionDescriptor('B', "bomfile", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport", OptionValueType.NONE);
+	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport", OptionValueType.NONE); //$NON-NLS-1$
 
 	private File m_bomFile;
 
@@ -84,7 +85,7 @@ public class Resolve extends WorkspaceInitCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new UsageException("Too many arguments");
+			throw new UsageException(Messages.Resolve_Too_many_arguments);
 		if(len == 1)
 			setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
@@ -146,10 +147,10 @@ public class Resolve extends WorkspaceInitCommand
 			CoreException be = BuckminsterException.wrap(t);
 			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
 				logger
-						.error("An SSL handshake exception occurred - are all server certificates available in your keystore?");
+						.error(Messages.Resolve_An_SSL_handshake_exception_occurred_keystore);
 			throw be;
 		}
-		logger.info("Query complete.");
+		logger.info(Messages.Resolve_Query_complete);
 		return 0;
 	}
 

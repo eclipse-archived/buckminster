@@ -67,6 +67,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.Utilities;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -78,39 +79,39 @@ import org.osgi.framework.BundleContext;
  */
 public class CorePlugin extends LogAwarePlugin
 {
-	public static final String CORE_NAMESPACE = Buckminster.NAMESPACE + ".core";
+	public static final String CORE_NAMESPACE = Buckminster.NAMESPACE + ".core"; //$NON-NLS-1$
 
-	public static final String ANT_TASK_GENERATORS = CORE_NAMESPACE + ".anttaskGenerators";
+	public static final String ANT_TASK_GENERATORS = CORE_NAMESPACE + ".anttaskGenerators"; //$NON-NLS-1$
 
-	public static final String BOM_FILE = "buckminster.bom";
+	public static final String BOM_FILE = "buckminster.bom"; //$NON-NLS-1$
 
-	public static final String COMPONENT_TYPE_POINT = CORE_NAMESPACE + ".componentTypes";
+	public static final String COMPONENT_TYPE_POINT = CORE_NAMESPACE + ".componentTypes"; //$NON-NLS-1$
 
-	public static final String CQUERY_FILE = "buckminster.cquery";
+	public static final String CQUERY_FILE = "buckminster.cquery"; //$NON-NLS-1$
 
-	public static final String CSPEC_BUILDER_POINT = CORE_NAMESPACE + ".cspecBuilders";
+	public static final String CSPEC_BUILDER_POINT = CORE_NAMESPACE + ".cspecBuilders"; //$NON-NLS-1$
 
-	public static final String CSPEC_FILE = "buckminster.cspec";
+	public static final String CSPEC_FILE = "buckminster.cspec"; //$NON-NLS-1$
 
-	public static final String CSPECEXT_FILE = "buckminster.cspex";
+	public static final String CSPECEXT_FILE = "buckminster.cspex"; //$NON-NLS-1$
 
-	public static final String OPML_FILE = "buckminster.opml";
+	public static final String OPML_FILE = "buckminster.opml"; //$NON-NLS-1$
 
-	public static final String FORCED_ACTIVATIONS_POINT = CORE_NAMESPACE + ".forcedActivations";
+	public static final String FORCED_ACTIVATIONS_POINT = CORE_NAMESPACE + ".forcedActivations"; //$NON-NLS-1$
 
-	public static final String QUALIFIER_GENERATOR_POINT = CORE_NAMESPACE + ".qualifierGenerators";
+	public static final String QUALIFIER_GENERATOR_POINT = CORE_NAMESPACE + ".qualifierGenerators"; //$NON-NLS-1$
 
-	public static final String READER_TYPE_POINT = CORE_NAMESPACE + ".readerTypes";
+	public static final String READER_TYPE_POINT = CORE_NAMESPACE + ".readerTypes"; //$NON-NLS-1$
 
-	public static final String VERSION_TYPES_POINT = CORE_NAMESPACE + ".versionTypes";
+	public static final String VERSION_TYPES_POINT = CORE_NAMESPACE + ".versionTypes"; //$NON-NLS-1$
 
-	public static final String VERSION_CONVERTERS_POINT = CORE_NAMESPACE + ".versionConverters";
+	public static final String VERSION_CONVERTERS_POINT = CORE_NAMESPACE + ".versionConverters"; //$NON-NLS-1$
 
-	public static final String ACTORS_POINT = CORE_NAMESPACE + ".actors";
+	public static final String ACTORS_POINT = CORE_NAMESPACE + ".actors"; //$NON-NLS-1$
 
-	public static final String INTERNAL_ACTORS_POINT = CORE_NAMESPACE + ".internalActors";
+	public static final String INTERNAL_ACTORS_POINT = CORE_NAMESPACE + ".internalActors"; //$NON-NLS-1$
 
-	public static final String BUCKMINSTER_PROJECT = ".buckminster";
+	public static final String BUCKMINSTER_PROJECT = ".buckminster"; //$NON-NLS-1$
 
 	private static CorePlugin s_plugin;
 
@@ -225,7 +226,7 @@ public class CorePlugin extends LogAwarePlugin
 					line.append(reasonMsg);
 				else if(!msg.equals(reasonMsg))
 				{
-					line.append(": ");
+					line.append(": "); //$NON-NLS-1$
 					line.append(reasonMsg);
 				}
 			}
@@ -235,7 +236,7 @@ public class CorePlugin extends LogAwarePlugin
 		}
 	}
 
-	private final RemoteFileCache m_remoteFileCache = new RemoteFileCache(30000, "bm-remote", ".cache", null);
+	private final RemoteFileCache m_remoteFileCache = new RemoteFileCache(30000, "bm-remote", ".cache", null); //$NON-NLS-1$ //$NON-NLS-2$
 
 	private ResourceBundle m_resourceBundle;
 
@@ -312,7 +313,7 @@ public class CorePlugin extends LogAwarePlugin
 			return null;
 
 		monitor.beginTask(null, 2000);
-		monitor.subTask("Creating .buckminster project");
+		monitor.subTask("Creating .buckminster project"); //$NON-NLS-1$
 		IPath path = getBuckminsterProjectLocation();
 		IPath defaultLocation = wsRoot.getLocation().append(CorePlugin.BUCKMINSTER_PROJECT);
 
@@ -393,9 +394,9 @@ public class CorePlugin extends LogAwarePlugin
 
 		for(IConfigurationElement elem : elems)
 		{
-			if(elem.getAttribute("id").equals(instanceId))
+			if(elem.getAttribute("id").equals(instanceId)) //$NON-NLS-1$
 			{
-				extension = elem.createExecutableExtension("class");
+				extension = elem.createExecutableExtension("class"); //$NON-NLS-1$
 				if(useSingleton)
 				{
 					if(singletonCache == null)
@@ -424,7 +425,7 @@ public class CorePlugin extends LogAwarePlugin
 		int idx = elems.length;
 		String[] ids = new String[idx];
 		while(--idx >= 0)
-			ids[idx] = elems[idx].getAttribute("id");
+			ids[idx] = elems[idx].getAttribute("id"); //$NON-NLS-1$
 		return ids;
 	}
 
@@ -451,7 +452,8 @@ public class CorePlugin extends LogAwarePlugin
 				qualifierGenerator, true);
 		if(vm != null)
 			return vm;
-		throw BuckminsterException.fromMessage("Missing qualifier generator for id %s", qualifierGenerator);
+		throw BuckminsterException.fromMessage(NLS.bind(Messages.CorePlugin_Missing_qualifier_generator_for_id_0,
+				qualifierGenerator));
 	}
 
 	public IReaderType getReaderType(String readerType) throws CoreException
@@ -487,7 +489,7 @@ public class CorePlugin extends LogAwarePlugin
 		try
 		{
 			if(m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle(CORE_NAMESPACE + ".CorePluginResources");
+				m_resourceBundle = ResourceBundle.getBundle(CORE_NAMESPACE + ".CorePluginResources"); //$NON-NLS-1$
 		}
 		catch(MissingResourceException x)
 		{
@@ -499,7 +501,7 @@ public class CorePlugin extends LogAwarePlugin
 	public IVersionConverter getVersionConverter(String versionConverter) throws CoreException
 	{
 		if(versionConverter == null)
-			versionConverter = "tag";
+			versionConverter = "tag"; //$NON-NLS-1$
 
 		IVersionConverter vc = getExecutableExtension(IVersionConverter.class, VERSION_CONVERTERS_POINT,
 				versionConverter, false);
@@ -553,7 +555,7 @@ public class CorePlugin extends LogAwarePlugin
 	public void start(BundleContext context) throws Exception
 	{
 		super.start(context);
-		Job startJob = new Job("Core plugin starter")
+		Job startJob = new Job("Core plugin starter") //$NON-NLS-1$
 		{
 			@Override
 			public IStatus run(IProgressMonitor monitor)
@@ -572,15 +574,15 @@ public class CorePlugin extends LogAwarePlugin
 				monitor.beginTask(null, forcedActivations.length);
 				for(IConfigurationElement elem : forcedActivations)
 				{
-					String pluginId = elem.getAttribute("pluginId");
+					String pluginId = elem.getAttribute("pluginId"); //$NON-NLS-1$
 					try
 					{
 						Bundle bundle = Platform.getBundle(pluginId);
-						bundle.loadClass(elem.getAttribute("class"));
+						bundle.loadClass(elem.getAttribute("class")); //$NON-NLS-1$
 					}
 					catch(Exception e)
 					{
-						getLogger().warning(e, "Unable to activate bundle %s", pluginId);
+						getLogger().warning(e, NLS.bind(Messages.CorePlugin_Unable_to_activate_bundle_0, pluginId));
 					}
 					monitor.worked(1);
 				}

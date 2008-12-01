@@ -24,11 +24,11 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public abstract class AbstractSplit extends ValueHolderFilter
 {
-	public static final String TAG = "split";
+	public static final String TAG = "split"; //$NON-NLS-1$
 
-	public static final String ATTR_STYLE = "style";
+	public static final String ATTR_STYLE = "style"; //$NON-NLS-1$
 
-	public static final String ATTR_PATTERN = "pattern";
+	public static final String ATTR_PATTERN = "pattern"; //$NON-NLS-1$
 
 	private final Pattern m_pattern;
 

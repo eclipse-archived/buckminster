@@ -26,7 +26,7 @@ public class Text implements ISaxableElement
 
 	public String getDefaultTag()
 	{
-		return "p";
+		return "p"; //$NON-NLS-1$
 	}
 
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException

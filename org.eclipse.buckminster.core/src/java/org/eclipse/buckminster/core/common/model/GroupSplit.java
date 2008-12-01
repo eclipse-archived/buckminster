@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.regex.Matcher;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -42,7 +43,7 @@ public class GroupSplit extends AbstractSplit
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_STYLE, "group");
+		Utils.addAttribute(attrs, ATTR_STYLE, "group"); //$NON-NLS-1$
 	}
 
 	protected String[] checkedGetValues(IProperties properties, int recursionGuard)
