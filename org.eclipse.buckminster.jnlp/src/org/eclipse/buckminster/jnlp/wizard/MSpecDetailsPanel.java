@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -184,11 +185,11 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 	{
 		List<ILabelProviderListener> m_listeners = new ArrayList<ILabelProviderListener>();
 		
-		private static final String ICON_RESOLVED = "node.resolved.gif";
+		private static final String ICON_RESOLVED = "node.resolved.gif"; //$NON-NLS-1$
 		
-		private static final String ICON_UNRESOLVED = "node.unresolved.gif";
+		private static final String ICON_UNRESOLVED = "node.unresolved.gif"; //$NON-NLS-1$
 		
-		private static final String ICON_UNRESOLVED_CHILD = "node.resolved_warning.gif";
+		private static final String ICON_UNRESOLVED_CHILD = "node.resolved_warning.gif"; //$NON-NLS-1$
 		
 		private final Image m_iconResolved = MaterializationUtils.getImage(ICON_RESOLVED);
 
@@ -421,10 +422,10 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 		public String getComponentShortDescription()
 		{
 			if(m_cspec == null)
-				return m_request.getName() + "/" + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID());
+				return m_request.getName() + "/" + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID()); //$NON-NLS-1$
 				
 			return (m_cspec.getShortDesc() == null ? m_cspec.getComponentIdentifier().getName() : m_cspec.getShortDesc()) +
-			 		"/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID());
+			 		"/" + MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier().getComponentTypeID()); //$NON-NLS-1$
 		}
 
 		public String getComponentDescription()
@@ -434,49 +435,49 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 			if(m_cspec != null)
 			{
 				if(m_resolveStatus == ResolveStatus.UNRESOLVED_CHILD)
-					smartList.add("*** DEPENDS ON AN UNRESOLVED ARTIFACT ***");
+					smartList.add(Messages.uppercase_depends_on_an_unresolved_artifact);
 					
 				if(m_cspec.getShortDesc() != null)
 				{
-					smartList.add("Description: " + m_cspec.getShortDesc());
+					smartList.add(Messages.description_with_colon + m_cspec.getShortDesc());
 				}
 				if(m_cspec.getComponentIdentifier().getName() != null)
 				{
-					smartList.add("Name: " + m_cspec.getComponentIdentifier().getName());
+					smartList.add(Messages.nema_with_colon + m_cspec.getComponentIdentifier().getName());
 				}
 				if(m_cspec.getComponentIdentifier().getComponentTypeID() != null)
 				{
-					smartList.add("Meta-Data Extractor: "
+					smartList.add(Messages.metadata_extractor_with_colon
 							+ MaterializationUtils.getHumanReadableComponentType(m_cspec.getComponentIdentifier()
 									.getComponentTypeID()));
 				}
 				if(m_cspec.getVersion() != null)
 				{
-					smartList.add("Version: " + m_cspec.getVersion());
+					smartList.add(Messages.version_with_colon + m_cspec.getVersion());
 				}
 				if(m_node.getInstallLocation() != null)
 				{
-					smartList.add("Destination Address: "
+					smartList.add(Messages.destination_address_with_colon
 							+ m_node.getInstallLocation().removeTrailingSeparator().toOSString());
 				}
 				if(m_node.getConflictResolution() != null)
 				{
-					smartList.add("Conflict Resolution: " + m_node.getConflictResolution());
+					smartList.add(Messages.conflict_resolution_with_colon + m_node.getConflictResolution());
 				}
 			}
 			else
 			{
-				smartList.add("*** UNRESOLVED ARTIFACT ***");
-				smartList.add("Requested Name: " + m_request.getName());
-				smartList.add("Requested Meta-data extractor: " + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID()));
-				smartList.add("Requested Version: " + (m_request.getVersionDesignator() == null ? "Any" : m_request.getVersionDesignator()));
+				smartList.add(Messages.uppercase_unresolved_artifact);
+				smartList.add(Messages.requested_name_with_colon + m_request.getName());
+				smartList.add(Messages.requested_metadata_extractor_with_colon + MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID()));
+				smartList.add(Messages.requested_version_with_colon + (m_request.getVersionDesignator() == null ? Messages.any : m_request.getVersionDesignator()));
 			}
 			
-			return smartList.toString("\n");
+			return smartList.toString("\n"); //$NON-NLS-1$
 		}
 	}
 
-	private final static String TOOL_TIP_UNPACK = "Unpack component after materialization";
+	private final static String TOOL_TIP_UNPACK = Messages.unpack_component_after_materialization;
 	
 	private MaterializationSpecBuilder m_mspec;
 	
@@ -577,7 +578,7 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 		new Label(pageComposite, SWT.NONE);
 
 		Group treeGroup = new Group(pageComposite, SWT.NONE);
-		treeGroup.setText("Components for Materialization");
+		treeGroup.setText(Messages.components_for_materialization);
 		treeGroup.setLayout(new GridLayout(2, true));
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 3;
@@ -717,17 +718,17 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 		detailsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		Label headerLabel = new Label(detailsComposite, SWT.BOLD);
-		headerLabel.setText("Override:");
+		headerLabel.setText(Messages.override_with_colon);
 		headerLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 3;
 		headerLabel.setLayoutData(gridData);
 		
-		m_detailDestForm = new DestinationForm(null, "", true, true, true, true, m_showBrowseButtons);
+		m_detailDestForm = new DestinationForm(null, "", true, true, true, true, m_showBrowseButtons); //$NON-NLS-1$
 		m_detailDestForm.createControl(detailsComposite);
 		
 		Label label = new Label(detailsComposite, SWT.NONE);
-		label.setText("Unpack Component:");
+		label.setText(Messages.unpack_component_with_colon);
 		label.setToolTipText(TOOL_TIP_UNPACK);
 		
 		m_unpackCheckBox = new Button(detailsComposite, SWT.CHECK);
@@ -789,7 +790,7 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 		}
 		catch(CoreException e)
 		{
-			throw new JNLPException("Error while reading artifact specification -\n\tbill of materials can not be read",
+			throw new JNLPException(Messages.error_while_reading_artifact_specification_bill_of_materials_can_not_be_read,
 					ERROR_CODE_BOM_IO_EXCEPTION, e);
 		}
 	}
@@ -874,7 +875,7 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 				}
 			}
 
-			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+			nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$")); //$NON-NLS-1$ //$NON-NLS-2$
 			if(nodeBuilder.getInstallLocation() != null)
 				nodeBuilder.setInstallLocation(MaterializationUtils.expandPath(m_mspec, nodeBuilder.getInstallLocation()));
 			if(componentType != null)

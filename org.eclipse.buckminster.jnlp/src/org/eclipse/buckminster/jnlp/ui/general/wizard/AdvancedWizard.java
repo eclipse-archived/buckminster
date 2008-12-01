@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.jnlp.ui.general.wizard;
 
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -45,7 +46,7 @@ public abstract class AdvancedWizard extends Wizard
     @Override
 	public void addPage(IWizardPage page)
     {
-    	throw new RuntimeException("Unsupported Operation");
+    	throw new RuntimeException(Messages.unsupported_operation);
     }
 
 	public void addAdvancedPage(AdvancedWizardPage page) {

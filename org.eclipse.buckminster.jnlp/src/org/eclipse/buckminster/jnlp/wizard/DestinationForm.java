@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -42,15 +43,15 @@ public class DestinationForm
 	private final static String[] DESTINATION_TYPES = { IMaterializer.FILE_SYSTEM, IMaterializer.WORKSPACE,
 			IMaterializer.TARGET_PLATFORM };
 
-	private final static String[] DESTINATION_TYPES_TO_SHOW = { "Filesystem", "Workspace", "Eclipse Installation" };
+	private final static String[] DESTINATION_TYPES_TO_SHOW = { Messages.filesystem, Messages.workspace, Messages.eclipse_installation };
 
-	private static final String TOOL_TIP_TYPE = "Destination type for materialization: Filesystem, Workspace, Eclipse Installation";
+	private static final String TOOL_TIP_TYPE = Messages.destination_type_for_materialization_filesystem_workspace_eclipse_installation;
 
-	private static final String TOOL_TIP_DIRECTORY = "Destination directory for materialization";
+	private static final String TOOL_TIP_DIRECTORY = Messages.destination_directory_for_materialization;
 
-	private static final String TOOL_TIP_BROWSE_DIRECTORY = "Browse destination directory for materialization";
+	private static final String TOOL_TIP_BROWSE_DIRECTORY = Messages.browse_destination_directory_for_materialization;
 
-	private static final String TOOL_TIP_CONFLICTS = "How to resolve filesystem conflicts:\nChoises: Fail, Replace, Keep";
+	private static final String TOOL_TIP_CONFLICTS = Messages.how_to_resolve_filesystem_conflicts_choises_fail_replace_keep;
 
 	private MaterializationDirectiveBuilder m_builder;
 
@@ -106,7 +107,7 @@ public class DestinationForm
 		if(m_showDestinationType)
 		{
 			Label label = new Label(parent, SWT.NONE);
-			label.setText("Destination Type:");
+			label.setText(Messages.destination_type_with_colon);
 			label.setToolTipText(TOOL_TIP_TYPE);
 
 			m_destinationTypes = new ArrayList<String>();
@@ -118,7 +119,7 @@ public class DestinationForm
 			if(m_allowEmptyDestinationType)
 			{
 				m_destinationTypes.add(0, null);
-				m_destinationTypesToShow.add(0, "");
+				m_destinationTypesToShow.add(0, ""); //$NON-NLS-1$
 			}
 
 			m_destTypeCombo = UiUtils.createGridArrayCombo(parent, 0, 0, m_destinationTypesToShow
@@ -143,12 +144,12 @@ public class DestinationForm
 		}
 
 		Label label = new Label(parent, SWT.NONE);
-		label.setText("Destination Address:");
+		label.setText(Messages.destination_address_with_colon);
 		label.setToolTipText(TOOL_TIP_DIRECTORY);
 
 		m_locationText = new Text(parent, SWT.BORDER);
 		m_locationText.setText(m_builder.getInstallLocation() == null
-				? ""
+				? "" //$NON-NLS-1$
 				: m_builder.getInstallLocation().removeTrailingSeparator().toOSString());
 		m_locationText.setToolTipText(TOOL_TIP_DIRECTORY);
 		m_locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -170,7 +171,7 @@ public class DestinationForm
 		{
 			m_browseButton = new Button(parent, SWT.PUSH);
 			m_browseButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-			m_browseButton.setText("Browse");
+			m_browseButton.setText(Messages.browse);
 			m_browseButton.setToolTipText(TOOL_TIP_BROWSE_DIRECTORY);
 			m_browseButton.addSelectionListener(new SelectionAdapter()
 			{
@@ -221,7 +222,7 @@ public class DestinationForm
 		if(m_showConflictResolution)
 		{
 			label = new Label(parent, SWT.NONE);
-			label.setText("Conflict Resolution:");
+			label.setText(Messages.conflict_resolution_with_colon);
 			label.setToolTipText(TOOL_TIP_CONFLICTS);
 
 			m_conflictResolutions = new ArrayList<ConflictResolution>();
@@ -241,7 +242,7 @@ public class DestinationForm
 			if(m_allowEmptyConflictResolution)
 			{
 				m_conflictResolutions.add(0, null);
-				m_conflictResolutionsToShow.add(0, "");
+				m_conflictResolutionsToShow.add(0, ""); //$NON-NLS-1$
 				m_defaultConflictResolution = 0;
 			}
 

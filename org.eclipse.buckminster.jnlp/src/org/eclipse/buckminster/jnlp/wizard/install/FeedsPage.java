@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp.wizard.install;
 
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,7 +36,7 @@ public class FeedsPage extends InstallWizardPage
 
 	private static final int HORIZONTAL_INDENT = 20;
 
-	private static final String ICON_ARROW = "incom_stat.gif";
+	private static final String ICON_ARROW = "incom_stat.gif"; //$NON-NLS-1$
 
 	private Label m_heading;
 
@@ -47,7 +48,7 @@ public class FeedsPage extends InstallWizardPage
 
 	protected FeedsPage()
 	{
-		super(MaterializationConstants.STEP_FEEDS, "Cloudfeeds", "Use Cloudfeeds to stay current with this distro.",
+		super(MaterializationConstants.STEP_FEEDS, "Cloudfeeds", Messages.use_cloudfeeds_to_stay_current_with_this_distro, //$NON-NLS-1$
 				null);
 		setPreviousPage(this);
 	}
@@ -93,7 +94,7 @@ public class FeedsPage extends InstallWizardPage
 
 		m_openHTML = new Link(pageComposite, SWT.NONE);
 		m_openHTML
-				.setText("Click <a>here</a> to see what feeds are available for this distro and add them to your reader.");
+				.setText(Messages.click_link_here_to_see_what_feeds_are_available_for_this_distro_and_add_them_to_your_reader);
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		m_openHTML.setLayoutData(layoutData);
@@ -121,7 +122,7 @@ public class FeedsPage extends InstallWizardPage
 
 		Label cloudreaderHeading = new Label(pageComposite, SWT.NONE);
 		cloudreaderHeading
-				.setText("To get the Cloudreader, use the following update site URLs (Eclipse 3.3 or later required):");
+				.setText(Messages.to_get_the_cloudreader_use_the_following_update_site_URLs_Eclipse_3_3_or_later_required_with_colon);
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		cloudreaderHeading.setLayoutData(layoutData);
@@ -137,13 +138,13 @@ public class FeedsPage extends InstallWizardPage
 
 		Text updateSite33Text = getSelectableItalicText(sitesComposite);
 		String u = getInstallWizard().getEclipseDistroTools33UpdateSiteURL();
-		updateSite33Text.setText(u == null ? "missing in input" : u);			
-		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.3");
+		updateSite33Text.setText(u == null ? Messages.missing_in_input : u);			
+		new Label(sitesComposite, SWT.NONE).setText(Messages.for_eclipse_3_3);
 
 		u = getInstallWizard().getEclipseDistroTools34UpdateSiteURL();
 		Text updateSite34Text = getSelectableItalicText(sitesComposite);
-		updateSite34Text.setText(u == null ? "missing in input" : u);			
-		new Label(sitesComposite, SWT.NONE).setText("for Eclipse 3.4");
+		updateSite34Text.setText(u == null ? Messages.missing_in_input : u);			
+		new Label(sitesComposite, SWT.NONE).setText(Messages.for_eclipse_3_4);
 
 		new Label(pageComposite, SWT.NONE);
 		new Label(pageComposite, SWT.NONE);
@@ -156,7 +157,7 @@ public class FeedsPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		Link learnMore = new Link(pageComposite, SWT.NONE);
-		learnMore.setText("Learn <a>more</a> about Cloudfeeds.");
+		learnMore.setText(Messages.learn_link_more_about_cloudfeeds);
 		layoutData = new GridData();
 		layoutData.horizontalIndent = HORIZONTAL_INDENT;
 		learnMore.setLayoutData(layoutData);
@@ -192,12 +193,12 @@ public class FeedsPage extends InstallWizardPage
 
 		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
 		m_heading
-				.setText("Cloudfeeds are web feeds providing updates, new dependents and other content a distro's publisher wants to share.");
+				.setText(Messages.cloudfeeds_are_web_feeds_providing_updates_new_dependents_and_other_content_a_distros_publisher_wants_to_share);
 		GridData layoutData = (GridData)m_heading.getLayoutData();
 		layoutData.widthHint = m_heading.getShell().getSize().x - 25;
 
 		m_heading2
-				.setText("View cloudfeeds in any reader supporting RSS/Atom, including the <a>Cloudreader</a> plug-in for Eclipse.  Feeds contain materialization links (cloudlinks), so you can get new distros directly from your reader!");
+				.setText(Messages.view_cloudfeeds_in_any_reader_supporting_RSS_Atom_including_the_link_cloudreader_plugin_for_eclipse_feeds_contain_materialization_links_cloudlinks_so_you_can_get_new_distros_directly_from_your_reader);
 		layoutData = (GridData)m_heading2.getLayoutData();
 		layoutData.widthHint = m_heading2.getShell().getSize().x - 25;
 
@@ -217,7 +218,7 @@ public class FeedsPage extends InstallWizardPage
 	@Override
 	public String getOverrideCancelButtonText()
 	{
-		return "Done";
+		return Messages.done;
 	}
 
 	@Override

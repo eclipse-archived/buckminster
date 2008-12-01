@@ -12,8 +12,10 @@ import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.wizard.LoginDialog;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -37,9 +39,9 @@ public class FolderRestrictionPage extends InstallWizardPage
 {
 	private static final int HORIZONTAL_SPACING = 15;
 
-	private static final String ICON_WARNING = "error.png";
+	private static final String ICON_WARNING = "error.png"; //$NON-NLS-1$
 
-	private static final String ICON_DOT = "brkp_obj.gif";
+	private static final String ICON_DOT = "brkp_obj.gif"; //$NON-NLS-1$
 
 	private Composite m_stackComposite;
 	
@@ -55,7 +57,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 	
 	protected FolderRestrictionPage()
 	{
-		super(MaterializationConstants.STEP_RESTRICTION, "Folder Restriction", "Cloudsmith folder has a restrictive access.",
+		super(MaterializationConstants.STEP_RESTRICTION, Messages.folder_restriction, Messages.cloudsmith_folder_has_a_restrictive_access,
 				null);
 	}
 
@@ -75,11 +77,11 @@ public class FolderRestrictionPage extends InstallWizardPage
 		GridData layoutData = new GridData();
 
 		label = new Label(warningComposite, SWT.WRAP);
-		label.setText("Access to the Cloudsmith folder is forbidden");
+		label.setText(Messages.access_to_the_cloudsmith_folder_is_forbidden);
 		
 		new Label(pageComposite, SWT.NONE);
 
-		new Label(pageComposite, SWT.NONE).setText("Solution:");
+		new Label(pageComposite, SWT.NONE).setText(Messages.solution_with_colon);
 
 		m_stackComposite = new Composite(pageComposite, SWT.NONE);
 		m_stackLayout = new StackLayout();
@@ -97,7 +99,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText("Confirm email Validation");
+		new Label(m_solutionEmailAndInvitationComposite, SWT.WRAP).setText(Messages.confirm_email_validation);
 		
 		label = new Label(m_solutionEmailAndInvitationComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_DOT));
@@ -106,7 +108,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		Link link = new Link(m_solutionEmailAndInvitationComposite, SWT.WRAP);
-		link.setText("Login to <a>" + getInstallWizard().getServiceProvider() + "</a> and accept the invitation");
+		link.setText(NLS.bind(Messages.login_to_link_0_and_accept_the_invitation, getInstallWizard().getServiceProvider()));
 		link.addSelectionListener(new SelectionAdapter()
 		{
 
@@ -130,7 +132,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		link = new Link(m_solutionInvitationComposite, SWT.WRAP);
-		link.setText("Login to <a>" + getInstallWizard().getServiceProvider() + "</a> and accept the invitation");
+		link.setText(NLS.bind(Messages.login_to_link_0_and_accept_the_invitation, getInstallWizard().getServiceProvider()));
 		link.addSelectionListener(new SelectionAdapter()
 		{
 
@@ -153,7 +155,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		layoutData.verticalAlignment = GridData.CENTER;
 		label.setLayoutData(layoutData);
 
-		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText("Ask the folder owner to invite you to the Cloudsmith folder");
+		new Label(m_solutionForbiddenComposite, SWT.WRAP).setText(Messages.ask_the_folder_owner_to_invite_you_to_the_cloudsmith_folder);
 		
 		label = new Label(m_solutionForbiddenComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_DOT));
@@ -162,7 +164,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		label.setLayoutData(layoutData);
 
 		link = new Link(m_solutionForbiddenComposite, SWT.WRAP);
-		link.setText("Login to <a>" + getInstallWizard().getServiceProvider() + "</a> and accept the invitation");
+		link.setText(NLS.bind(Messages.login_to_link_0_and_accept_the_invitation, getInstallWizard().getServiceProvider()));
 		link.addSelectionListener(new SelectionAdapter()
 		{
 
@@ -180,7 +182,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		infoComposite.setLayout(new GridLayout());
 
 		Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
-		infoGroup.setText("Login Info");
+		infoGroup.setText(Messages.login_info);
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.marginHeight = rowLayout.marginWidth = 5;
 		rowLayout.spacing = 0;
@@ -188,7 +190,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		infoGroup.setLayoutData(data);
 		
-		new Label(infoGroup, SWT.WRAP).setText("You are currently logged in as ");
+		new Label(infoGroup, SWT.WRAP).setText(Messages.you_are_currently_logged_in_as);
 		
 		m_userNameLabel = new Label(infoGroup, SWT.NONE);
 		// prepare bold font
@@ -197,9 +199,9 @@ public class FolderRestrictionPage extends InstallWizardPage
 			fontData.setStyle(SWT.ITALIC);
 		m_userNameLabel.setFont(new Font(getShell().getDisplay(), fontDatas));
 		
-		new Label(infoGroup, SWT.NONE).setText(", ");
+		new Label(infoGroup, SWT.NONE).setText(", "); //$NON-NLS-1$
 		Link loginLink = new Link(infoGroup, SWT.WRAP);
-		loginLink.setText("click <a>here</a> to change your identity.");
+		loginLink.setText(Messages.click_link_here_to_change_your_identity);
 		loginLink.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -208,7 +210,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 				LoginDialog loginDialog =
 					new LoginDialog(
 							getShell(), getInstallWizard(),
-							getInstallWizard().getWindowImage(), getInstallWizard().getWindowTitle() + " - Login Dialog",
+							getInstallWizard().getWindowImage(), getInstallWizard().getWindowTitle() + Messages.dash_login_dialog,
 							getInstallWizard().getWizardImage(), getInstallWizard().getServiceProvider(),
 							getInstallWizard().getHelpURL());
 				if(loginDialog.open() == IDialogConstants.OK_ID)
@@ -223,7 +225,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 
 	private void updateUserName()
 	{
-		m_userNameLabel.setText(getInstallWizard().getAuthenticatorCurrentUserName() + " "); // needs an extra space otherwise italic text misses the last part
+		m_userNameLabel.setText(getInstallWizard().getAuthenticatorCurrentUserName() + " "); // needs an extra space otherwise italic text misses the last part //$NON-NLS-1$
 		m_userNameLabel.getParent().pack();
 		((Composite)getControl()).layout();
 	}
@@ -251,7 +253,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 					result == IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS ||
 					result == IRemoteDistroProvider.FOLDER_ACCESS_INVITATION_EXISTS_EMAIL_NOT_VERIFIED)
 			{
-				setErrorMessage("Aceess forbidden - the invitation is not accepted");
+				setErrorMessage(Messages.aceess_forbidden_the_invitation_is_not_accepted);
 				return false;
 			}
 		}

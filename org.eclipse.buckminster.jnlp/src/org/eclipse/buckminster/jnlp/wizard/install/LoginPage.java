@@ -13,10 +13,12 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_N
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.wizard.LoginPanel;
 import org.eclipse.buckminster.jnlp.wizard.install.InstallWizardPage;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -40,7 +42,7 @@ public class LoginPage extends InstallWizardPage
 	
 	protected LoginPage(String provider)
 	{
-		super(MaterializationConstants.STEP_LOGIN, "Login", "Materialization requires login to " + provider + ".", null);
+		super(MaterializationConstants.STEP_LOGIN, Messages.login, NLS.bind(Messages.materialization_requires_login_to_0, provider), null); 
 	}
 
 	@Override
@@ -122,7 +124,7 @@ public class LoginPage extends InstallWizardPage
 
 				if(authenticator == null)
 				{
-					throw new JNLPException("Authenticator is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
+					throw new JNLPException(Messages.authenticator_is_not_available, ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 				}
 
 				if(m_login.isCurrentUser())
@@ -133,7 +135,7 @@ public class LoginPage extends InstallWizardPage
 						getInstallWizard().removeAuthenticatorLoginKey();
 
 					if(result != IRemoteDistroProvider.LOGIN_OK)
-						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
+						throw new JNLPException(Messages.cannot_login_try_to_login_using_USERNAME_and_PASSWORD, null);
 				}
 				else
 				{					
@@ -161,13 +163,13 @@ public class LoginPage extends InstallWizardPage
 	
 					if(authenticator.relogin(userName, password) != IRemoteDistroProvider.LOGIN_OK)
 					{
-						throw new JNLPException("Cannot login - check username and password and try again", null);
+						throw new JNLPException(Messages.cannot_login_check_username_and_password_and_try_again, null);
 					}
 				}
 				
 				if(!authenticator.isLoggedIn())
 				{
-					throw new JNLPException("Problem with the remote server - try to login later", null);
+					throw new JNLPException(Messages.problem_with_the_remote_server_try_to_login_later, null);
 				}
 			}
 			catch(Throwable e)

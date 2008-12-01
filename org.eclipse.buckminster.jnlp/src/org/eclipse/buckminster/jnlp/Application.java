@@ -90,7 +90,7 @@ public class Application implements IApplication
 				{
 					String arg = args[idx];
 
-					if("-configURL".equals(arg))
+					if("-configURL".equals(arg)) //$NON-NLS-1$
 					{
 						if(++idx < args.length)
 						{
@@ -103,7 +103,7 @@ public class Application implements IApplication
 							}
 						}
 					}
-					else if("-syncString".equals(arg))
+					else if("-syncString".equals(arg)) //$NON-NLS-1$
 					{
 						if(++idx < args.length)
 						{
@@ -116,7 +116,7 @@ public class Application implements IApplication
 							}
 						}
 					}
-					else if("-popupAfter".equals(arg))
+					else if("-popupAfter".equals(arg)) //$NON-NLS-1$
 					{
 						if(++idx < args.length)
 						{
@@ -130,9 +130,9 @@ public class Application implements IApplication
 							}
 						}
 					}
-					else if(arg.startsWith("-")
-							&& (arg.endsWith(".proxyHost") || arg.endsWith(".proxyPort") || arg
-									.endsWith(".nonProxyHosts")))
+					else if(arg.startsWith("-") //$NON-NLS-1$
+							&& (arg.endsWith(".proxyHost") || arg.endsWith(".proxyPort") || arg //$NON-NLS-1$ //$NON-NLS-2$
+									.endsWith(".nonProxyHosts"))) //$NON-NLS-1$
 					{
 						if(++idx < args.length)
 							System.setProperty(arg.substring(1), args[idx]);
@@ -143,7 +143,7 @@ public class Application implements IApplication
 			// We need to create a display first thing since many mechanisms
 			// depend on its presence.
 			//
-			Display.setAppName("Materializer");
+			Display.setAppName("Materializer"); //$NON-NLS-1$
 			Display display = Display.getDefault();
 
 			HelpLinkErrorDialog.setSyncString(m_syncString);
@@ -151,7 +151,7 @@ public class Application implements IApplication
 			if(!Platform.getInstanceLocation().lock())
 			{
 				errorCode = MaterializationConstants.ERROR_CODE_ALREADY_RUNNING_EXCEPTION;
-				throw BuckminsterException.fromMessage("Materializer is already running");
+				throw BuckminsterException.fromMessage(Messages.materializer_is_already_running);
 			}
 
 			BuckminsterPreferences.setLogLevelConsole(Logger.SILENT);
@@ -160,7 +160,7 @@ public class Application implements IApplication
 			if(configUrl == null)
 			{
 				errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
-				throw BuckminsterException.fromMessage("Missing required argument -configURL <URL to config properties>");
+				throw BuckminsterException.fromMessage(Messages.missing_required_argument_configURL_URL_to_config_properties);
 			}
 
 			Map<String, String> properties = new HashMap<String, String>();
@@ -182,7 +182,7 @@ public class Application implements IApplication
 			catch(IOException e)
 			{
 				errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
-				throw BuckminsterException.fromMessage(e, "Can not read materialization information");
+				throw BuckminsterException.fromMessage(e, Messages.can_not_read_materialization_information);
 			}
 			finally
 			{
@@ -228,7 +228,7 @@ public class Application implements IApplication
 						else
 						{
 							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
+									Messages.materializator_error, MaterializationConstants.ERROR_HELP_TITLE,
 									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
 						}
 
@@ -307,7 +307,7 @@ public class Application implements IApplication
 						public void run()
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materialization wizard failed", MaterializationConstants.ERROR_HELP_TITLE,
+									Messages.materialization_wizard_failed, MaterializationConstants.ERROR_HELP_TITLE,
 									m_errorURL, finalErrorCode, status);
 						}
 					});
@@ -334,7 +334,7 @@ public class Application implements IApplication
 				public void run()
 				{
 					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-							"Materialization cannot be started", MaterializationConstants.ERROR_HELP_TITLE,
+							Messages.materialization_cannot_be_started, MaterializationConstants.ERROR_HELP_TITLE,
 							m_errorURL, finalErrorCode, status);
 				}
 			});

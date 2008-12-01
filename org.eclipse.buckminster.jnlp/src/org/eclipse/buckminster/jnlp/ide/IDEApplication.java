@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.jnlp.wizard.install.InstallWizard;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -88,7 +89,7 @@ public class IDEApplication extends Observable
 			if(configUrl == null || configUrl.length() < 1)
 			{
 				m_errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
-				throw BuckminsterException.fromMessage("Missing required argument configUrl <URL to config properties>");
+				throw BuckminsterException.fromMessage(Messages.missing_required_argument_configUrl_URL_to_config_properties);
 			}
 
 			final Map<String, String> properties = new HashMap<String, String>();
@@ -111,7 +112,7 @@ public class IDEApplication extends Observable
 			{
 				m_errorCode = ERROR_CODE_REMOTE_IO_EXCEPTION;
 				setState(State.FAILED);
-				throw BuckminsterException.fromMessage(e, "Can not read materialization information");
+				throw BuckminsterException.fromMessage(e, Messages.can_not_read_materialization_information);
 			}
 			finally
 			{
@@ -159,7 +160,7 @@ public class IDEApplication extends Observable
 						else
 						{
 							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
+									Messages.materializator_error, MaterializationConstants.ERROR_HELP_TITLE,
 									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
 						}
 
@@ -212,7 +213,7 @@ public class IDEApplication extends Observable
 						public void run()
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materialization wizard failed", MaterializationConstants.ERROR_HELP_TITLE,
+									Messages.materialization_wizard_failed, MaterializationConstants.ERROR_HELP_TITLE,
 									m_errorURL, finalErrorCode, status);
 						}
 					});
@@ -240,7 +241,7 @@ public class IDEApplication extends Observable
 				public void run()
 				{
 					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-							"Materialization cannot be started", MaterializationConstants.ERROR_HELP_TITLE,
+							Messages.materialization_cannot_be_started, MaterializationConstants.ERROR_HELP_TITLE,
 							m_errorURL, finalErrorCode, status);
 				}
 			});
@@ -254,6 +255,6 @@ public class IDEApplication extends Observable
 	public static void main(String[] args) throws Exception
 	{
 		IDEApplication app = new IDEApplication();
-		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop");
+		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop"); //$NON-NLS-1$
 	}
 }

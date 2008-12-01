@@ -85,6 +85,7 @@ import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.MaterializerRunnable;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.MissingPropertyException;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.Distro;
@@ -108,6 +109,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -121,21 +123,20 @@ import org.eclipse.swt.widgets.MessageBox;
  */
 public class InstallWizard extends AdvancedWizard implements ILoginHandler
 {
-	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication";
+	static private final String AUTHENTICATION_EXTPOINT = "org.eclipse.buckminster.jnlp.authentication"; //$NON-NLS-1$
 
-	static private final String COMPONENTINFO_EXTPOINT = "org.eclipse.buckminster.jnlp.componentInfo";
+	static private final String COMPONENTINFO_EXTPOINT = "org.eclipse.buckminster.jnlp.componentInfo"; //$NON-NLS-1$
 
-	static private final String ATTRIBUTE_CLASS = "class";
+	static private final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
 
-	static private final String LEARNMORE_EXTPOINT = "org.eclipse.buckminster.jnlp.learnmore";
+	static private final String LEARNMORE_EXTPOINT = "org.eclipse.buckminster.jnlp.learnmore"; //$NON-NLS-1$
 
-	static private final String ATTRIBUTE_STRING = "string";
+	static private final String ATTRIBUTE_STRING = "string"; //$NON-NLS-1$
 
-	static private final String ATTRIBUTE_URL = "url";
+	static private final String ATTRIBUTE_URL = "url"; //$NON-NLS-1$
 
 	static private final String UNIVERSAL_ERROR_MESSAGE =
-		"Materialization failures typically occur because a distro's publisher failed to keep it current," +
-		" or because you experienced a network interruption while downloading.";
+		Messages.materialization_failures_typically_occur_because_a_distros_publisher_failed_to_keep_it_current_or_because_you_experienced_a_network_interruption_while_downloading;
 
 	private static MultiStatus createMultiStatusFromStatus(IStatus status)
 	{
@@ -339,7 +340,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	{
 		IRemoteDistroProvider auth = getDistroProvider();
 		return auth == null
-				? ""
+				? "" //$NON-NLS-1$
 				: auth.getCurrenlyLoggedUserName();
 	}
 
@@ -452,11 +453,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		if(m_unresolvedNodeHandler != null && m_unresolvedNodeHandler.isUnresolvedNodeIncluded())
 		{
 			MessageBox messageBox = new MessageBox(getContainer().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-			messageBox.setMessage("Some distro dependencies cannot be resolved. "
-					+ "You may decide to exclude the unresolved artifacts.\n"
-					+ "However, excluding an artifact may result in a configuration that will no longer build.\n\n"
-					+ "Do you want to exclude the unresolved artifacts?");
-			messageBox.setText("Warning");
+			messageBox.setMessage(Messages.some_distro_dependencies_cannot_be_resolved
+					+ Messages.you_may_decide_to_exclude_the_unresolved_artifacts + "\n" //$NON-NLS-1$
+					+ Messages.however_excluding_an_artifact_may_result_in_a_configuration_that_will_no_longer_build + "\n\n" //$NON-NLS-1$
+					+ Messages.do_you_want_to_exclude_the_unresolved_artifacts);
+			messageBox.setText(Messages.warning);
 			if(messageBox.open() == SWT.YES)
 				m_unresolvedNodeHandler.excludeUnresolvedNodes();
 			else
@@ -512,7 +513,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					CorePlugin.logWarningsAndErrors(status);
 					HelpLinkErrorDialog
 							.openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Cannot create an HTML page with additional distro infomation",
+									Messages.cannot_create_an_HTML_page_with_additional_distro_infomation,
 									MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
 									ERROR_CODE_RUNTIME_EXCEPTION, status);
 				}
@@ -523,7 +524,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		catch(InterruptedException e)
 		{
 			showOriginalPage(originalPage);
-			originalPage.setErrorMessage("Operation cancelled");
+			originalPage.setErrorMessage(Messages.operation_cancelled);
 		}
 		catch(Exception e)
 		{
@@ -535,7 +536,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 			CorePlugin.logWarningsAndErrors(status);
 			HelpLinkErrorDialog.openError(null, m_windowImage, MaterializationConstants.ERROR_WINDOW_TITLE,
-					"This distro failed to materialize", MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
+					Messages.this_distro_failed_to_materialize, MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
 					ERROR_CODE_MATERIALIZATION_EXCEPTION, status);
 		}
 		finally
@@ -579,7 +580,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		if(!m_problemInProperties)
 		{
 			m_loginPage = new LoginPage(m_distroProvider == null
-					? "Virtual Distro Provider"
+					? Messages.virtual_distro_provider
 					: getServiceProvider());
 			addAdvancedPage(m_loginPage);
 
@@ -867,7 +868,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 				{
 					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-					monitor.subTask("Retrieving stack variations");
+					monitor.subTask(Messages.retrieving_stack_variations);
 					
 					try
 					{
@@ -889,7 +890,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			if(e instanceof InvocationTargetException && e.getCause() != null)
 				originalException = e.getCause();
 				
-			throw new JNLPException("Cannot read stack variations", ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
+			throw new JNLPException(Messages.cannot_read_stack_variations, ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
 		}
 	}
 	
@@ -914,7 +915,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 					{
 						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-						monitor.subTask("Retrieving distro specification");
+						monitor.subTask(Messages.retrieving_distro_specification);
 						
 						try
 						{
@@ -929,7 +930,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						m_builder.initFrom(m_distro.getMspec());
 						
 						// extra properties
-						m_builder.getProperties().put("distro.name", m_artifactName);
+						m_builder.getProperties().put("distro.name", m_artifactName); //$NON-NLS-1$
 						
 						IPath location = m_builder.getInstallLocation() == null ?
 											Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName)) :
@@ -955,7 +956,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				if(e instanceof InvocationTargetException && e.getCause() != null)
 					originalException = e.getCause();
 
-				throw new JNLPException("Cannot read distro specification", ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
+				throw new JNLPException(Messages.cannot_read_distro_specification, ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
 			}
 		}
 	}
@@ -965,12 +966,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		File cachedBOMFile;
 		try
 		{
-			cachedBOMFile = File.createTempFile("jnlp", ".bom");
+			cachedBOMFile = File.createTempFile("jnlp", ".bom"); //$NON-NLS-1$ //$NON-NLS-2$
 			cachedBOMFile.deleteOnExit();
 		}
 		catch(IOException e)
 		{
-			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
+			throw new JNLPException(Messages.cannot_create_a_temp_file, ERROR_CODE_FILE_IO_EXCEPTION, e);
 		}
 
 		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
@@ -981,7 +982,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 		catch(MalformedURLException e)
 		{
-			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+			throw new JNLPException(Messages.cannot_create_URL_link_to_a_temp_file, ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 		}
 	}
 	
@@ -1074,7 +1075,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			if(elems.length != 1)
 			{
-				throw new JNLPException("Distro provider is not available", ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
+				throw new JNLPException(Messages.distro_provider_is_not_available, ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 			}
 
 			try
@@ -1097,7 +1098,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			}
 			catch(Throwable e)
 			{
-				throw new JNLPException("Cannot connect to the remote server", ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
+				throw new JNLPException(Messages.cannot_connect_to_the_remote_server, ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
 			}
 		}
 		catch(JNLPException e)
@@ -1132,7 +1133,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			}
 			catch(Throwable e)
 			{
-				throw new JNLPException("Cannot create component info provider", ERROR_CODE_RUNTIME_EXCEPTION, e);
+				throw new JNLPException(Messages.cannot_create_component_info_provider, ERROR_CODE_RUNTIME_EXCEPTION, e);
 			}
 		}
 		catch(JNLPException e)
@@ -1157,12 +1158,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		// Learn more items from properties
 		if(m_learnMoreURL != null)
 		{
-			learnMores.add(new LearnMoreItem("Create your own virtual distribution", m_learnMoreURL));
+			learnMores.add(new LearnMoreItem(Messages.create_your_own_virtual_distribution, m_learnMoreURL));
 		}
 
 		if(m_homePageURL != null)
 		{
-			learnMores.add(new LearnMoreItem("Search your components at " + m_serviceProvider, m_homePageURL));
+			learnMores.add(new LearnMoreItem(NLS.bind(Messages.search_your_components_at_0, m_serviceProvider), m_homePageURL));
 		}
 
 		// Learn more items from extension
@@ -1289,7 +1290,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		if(m_artifactDescription != null)
 			try
 			{
-				m_artifactDescription = new String(Base64.decodeBase64(m_artifactDescription.getBytes()), "UTF-8");
+				m_artifactDescription = new String(Base64.decodeBase64(m_artifactDescription.getBytes()), "UTF-8"); //$NON-NLS-1$
 			}
 			catch(UnsupportedEncodingException e1)
 			{
@@ -1301,7 +1302,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		if(m_artifactDocumentation != null)
 			try
 			{
-				m_artifactDocumentation = new String(Base64.decodeBase64(m_artifactDocumentation.getBytes()), "UTF-8");
+				m_artifactDocumentation = new String(Base64.decodeBase64(m_artifactDocumentation.getBytes()), "UTF-8"); //$NON-NLS-1$
 			}
 			catch(UnsupportedEncodingException e1)
 			{
@@ -1323,7 +1324,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			try
 			{
-				m_brandingString = new String(Base64.decodeBase64(tmp.getBytes()), "UTF-8");
+				m_brandingString = new String(Base64.decodeBase64(tmp.getBytes()), "UTF-8"); //$NON-NLS-1$
 			}
 			catch(UnsupportedEncodingException e1)
 			{
@@ -1400,7 +1401,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_loginRequired = false;
 		tmp = properties.get(PROP_LOGIN_REQUIRED);
-		if("true".equalsIgnoreCase(tmp))
+		if("true".equalsIgnoreCase(tmp)) //$NON-NLS-1$
 		{
 			m_loginRequired = true;
 		}
@@ -1518,7 +1519,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				public void run()
 				{
 					HelpLinkErrorDialog.openError(null, m_windowImage, ERROR_WINDOW_TITLE,
-							"Error while reading materialization information", ERROR_HELP_TITLE, m_errorURL,
+							Messages.error_while_reading_materialization_information, ERROR_HELP_TITLE, m_errorURL,
 							topErrorCode, topStatus);
 				}
 			});

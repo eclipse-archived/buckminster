@@ -11,6 +11,7 @@ package org.eclipse.buckminster.jnlp.progress;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.helpers.IJobInfo;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -35,11 +36,11 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class MaterializationProgressMonitor implements IProgressMonitor
 {
-	private static final String PROGRESS_STOP = "progress_stop.gif";
+	private static final String PROGRESS_STOP = "progress_stop.gif"; //$NON-NLS-1$
 
 	private static final long DONE_SLEEP = 2000;
 	
-	private static final String AVAILABLE = "available";
+	private static final String AVAILABLE = "available"; //$NON-NLS-1$
 
 	private MaterializationProgressProvider m_provider;
 	
@@ -70,7 +71,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		
 		if(job == null)
 		{
-			m_jobName = "operation";
+			m_jobName = Messages.operation;
 		}
 		else
 		{
@@ -169,7 +170,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 	private Image getImage(String imageName)
 	{
 		Class<?> myClass = this.getClass();
-		String imageResource = "/icons/" + imageName;
+		String imageResource = "/icons/" + imageName; //$NON-NLS-1$
 		URL imageUrl = myClass.getResource(imageResource);
 		return ImageDescriptor.createFromURL(imageUrl).createImage();
 	}
@@ -213,7 +214,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 			});
 		}
 
-		subTask(m_jobName + " " + (isCanceled() ? "canceled" : "completed"));
+		subTask(m_jobName + " " + (isCanceled() ? Messages.canceled : Messages.canceled)); //$NON-NLS-1$
 
 		final boolean[] visible = new boolean[1];
 		
@@ -314,7 +315,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 		{
 			public void run()
 			{
-				m_subTaskLabel.setText(name == null ? "" : name);
+				m_subTaskLabel.setText(name == null ? "" : name); //$NON-NLS-1$
 				
 				// because label can be wrapped we should call this
 				m_parentComposite.layout(true, true);

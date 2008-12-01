@@ -24,11 +24,13 @@ import org.eclipse.buckminster.core.helpers.CryptoUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.parser.IParser;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.distroprovider.Distro;
 import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.IAccountService;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.LoginResponse;
+import org.eclipse.osgi.util.NLS;
 import org.jabsorb.client.Client;
 import org.jabsorb.client.ErrorResponse;
 import org.jabsorb.client.HTTPSession;
@@ -48,7 +50,7 @@ public class DistroProvider implements IRemoteDistroProvider
 		{
 			if(m_currentStatus == AuthenticationStatus.BEFORE_INIT && m_remoteAccountService == null)
 			{
-				throw new Exception("Authenticator is not initialized - initialize method needs to be called");
+				throw new Exception(Messages.authenticator_is_not_initialized_initialize_method_needs_to_be_called);
 			}
 
 			try
@@ -65,7 +67,7 @@ public class DistroProvider implements IRemoteDistroProvider
 				}
 				catch(ErrorResponse e1)
 				{
-					throw new Exception("Cannot connect to the remote authentication service", e1);
+					throw new Exception(Messages.cannot_connect_to_the_remote_authentication_service, e1);
 				}
 			}
 		}
@@ -76,15 +78,15 @@ public class DistroProvider implements IRemoteDistroProvider
 		BEFORE_INIT, AFTER_INIT, AFTER_LOGIN
 	}
 
-	private static final String ACCOUNTSERVICE_BRIDGE_URL_SUFFIX = "json-rpc-bridge/accountService";
+	private static final String ACCOUNTSERVICE_BRIDGE_URL_SUFFIX = "json-rpc-bridge/accountService"; //$NON-NLS-1$
 
-	private static final String ACCOUNTSERVICE_URL_SUFFIX = "json-rpc/accountService";
+	private static final String ACCOUNTSERVICE_URL_SUFFIX = "json-rpc/accountService"; //$NON-NLS-1$
 
-	private static final String DISTROSERVICE_BRIDGE_URL_SUFFIX = "json-rpc-bridge/distroService";
+	private static final String DISTROSERVICE_BRIDGE_URL_SUFFIX = "json-rpc-bridge/distroService"; //$NON-NLS-1$
 
-	private static final String DISTROSERVICE_URL_SUFFIX = "json-rpc/distroService";
+	private static final String DISTROSERVICE_URL_SUFFIX = "json-rpc/distroService"; //$NON-NLS-1$
 
-	private static final String ENCRYPT_ALGORITHM = "SHA-256";
+	private static final String ENCRYPT_ALGORITHM = "SHA-256"; //$NON-NLS-1$
 
 	private AuthenticationStatus m_currentStatus = AuthenticationStatus.BEFORE_INIT;
 
@@ -108,7 +110,7 @@ public class DistroProvider implements IRemoteDistroProvider
 	{
 		if(serviceURL == null)
 		{
-			throw new Exception("Service URL is missing");
+			throw new Exception(Messages.service_URL_is_missing);
 		}
 
 		m_serviceURL = serviceURL;
@@ -126,8 +128,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
 				throw new IOException(
-						"Setup did not succeed - make sure the AccountServiceServlet servlet is running on "
-								+ serviceURL);
+						NLS.bind(Messages.setup_did_not_succeed_make_sure_the_AccountServiceServlet_servlet_is_running_on_0, serviceURL));
 		}
 		finally
 		{
@@ -145,7 +146,7 @@ public class DistroProvider implements IRemoteDistroProvider
 		session.setState(httpState);
 
 		Client jsonClient = new Client(session);
-		m_remoteAccountService = (IAccountService)jsonClient.openProxy("accountService", IAccountService.class);
+		m_remoteAccountService = (IAccountService)jsonClient.openProxy("accountService", IAccountService.class); //$NON-NLS-1$
 
 		m_currentStatus = AuthenticationStatus.AFTER_INIT;
 
@@ -156,8 +157,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
 				throw new IOException(
-						"Setup did not succeed - make sure the DistroServiceServlet servlet is running on "
-								+ serviceURL);
+						NLS.bind(Messages.setup_did_not_succeed_make_sure_the_DistroServiceServlet_servlet_is_running_on_0, serviceURL));
 		}
 		finally
 		{
@@ -171,7 +171,7 @@ public class DistroProvider implements IRemoteDistroProvider
 		session.setState(httpState);
 
 		jsonClient = new Client(session);
-		m_remoteDistroService = (IDistroService)jsonClient.openProxy("distroService", IDistroService.class);
+		m_remoteDistroService = (IDistroService)jsonClient.openProxy("distroService", IDistroService.class); //$NON-NLS-1$
 	}
 
 	public IRemoteDistroProvider createDuplicate(boolean login) throws Exception
@@ -467,10 +467,10 @@ public class DistroProvider implements IRemoteDistroProvider
 					return null;
 				
 				IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-				BillOfMaterials bom = bomParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getBomContent())));
+				BillOfMaterials bom = bomParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getBomContent()))); //$NON-NLS-1$
 				
 				IParser<MaterializationSpec> mspecParser = CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
-				MaterializationSpec mspec = mspecParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent())));
+				MaterializationSpec mspec = mspecParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent()))); //$NON-NLS-1$
 				
 				return new Distro(bom, mspec);
 

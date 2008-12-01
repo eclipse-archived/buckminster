@@ -17,17 +17,17 @@ import java.util.List;
  */
 public class DistroVariant
 {
-	public static final String TARGET_PREFIX = "target";
+	public static final String TARGET_PREFIX = "target"; //$NON-NLS-1$
 
-	public static final String TARGET_OS = TARGET_PREFIX + ".os";
+	public static final String TARGET_OS = TARGET_PREFIX + ".os"; //$NON-NLS-1$
 
-	public static final String TARGET_WS = TARGET_PREFIX + ".ws";
+	public static final String TARGET_WS = TARGET_PREFIX + ".ws"; //$NON-NLS-1$
 
-	public static final String TARGET_ARCH = TARGET_PREFIX + ".arch";
+	public static final String TARGET_ARCH = TARGET_PREFIX + ".arch"; //$NON-NLS-1$
 
-	public static final String TARGET_NL = TARGET_PREFIX + ".nl";
+	public static final String TARGET_NL = TARGET_PREFIX + ".nl"; //$NON-NLS-1$
 
-	public static final String RELEASE = "org.eclipse.release";
+	public static final String RELEASE = "org.eclipse.release"; //$NON-NLS-1$
 
 	public static final String[] SUPPORTED_PROPERTIES = {TARGET_OS, TARGET_WS, TARGET_ARCH, TARGET_NL, RELEASE};
 	

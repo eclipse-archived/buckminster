@@ -82,10 +82,10 @@ public class HelpLinkMessageDialog extends MessageDialog
 		layout.marginHeight = layout.marginWidth = 0;
 		linkComposite.setLayout(layout);
 
-		new Label(linkComposite, SWT.NONE).setText("Read more about:");
+		new Label(linkComposite, SWT.NONE).setText(Messages.read_more_about_with_colon);
 
 		Link helpLink = new Link(linkComposite, SWT.NONE);
-		helpLink.setText("<a>" + m_helpLinkTitle + "</a>");
+		helpLink.setText("<a>" + m_helpLinkTitle + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
 		helpLink.addSelectionListener(new SelectionAdapter()
 		{
 

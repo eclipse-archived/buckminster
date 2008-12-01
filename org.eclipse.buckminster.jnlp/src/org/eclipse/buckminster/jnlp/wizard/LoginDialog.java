@@ -12,9 +12,11 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_N
 
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedTitleAreaDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -44,7 +46,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 	{
 		super(
 				parentShell, windowImage, windowTitle,
-				wizardImage, "Login", "Publishing requires login to " + serviceProvider + ".", helpURL);
+				wizardImage, Messages.login, NLS.bind(Messages.publishing_requires_login_to_0, serviceProvider), helpURL);
 		m_loginHandler = loginHandler;
 	}
 
@@ -109,7 +111,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 		
 				if(authenticator == null)
 				{
-					throw new JNLPException("Publisher is not available", ERROR_CODE_NO_PUBLISHER_EXCEPTION);
+					throw new JNLPException(Messages.publisher_is_not_available, ERROR_CODE_NO_PUBLISHER_EXCEPTION);
 				}
 		
 				String userName = null;
@@ -124,7 +126,7 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 		
 					if(result != IRemoteDistroProvider.LOGIN_OK)
 					{
-						throw new JNLPException("Cannot login - try to login using USERNAME and PASSWORD", null);
+						throw new JNLPException(Messages.cannot_login_try_to_login_using_USERNAME_and_PASSWORD, null);
 					}					
 				} else
 				{					
@@ -140,13 +142,13 @@ public class LoginDialog extends AdvancedTitleAreaDialog
 		
 					if(authenticator.relogin(userName, password) != IRemoteDistroProvider.LOGIN_OK)
 					{
-						throw new JNLPException("Cannot login - check username and password and try again", null);
+						throw new JNLPException(Messages.cannot_login_check_username_and_password_and_try_again, null);
 					}
 				}
 		
 				if(!authenticator.isLoggedIn())
 				{
-					throw new JNLPException("Problem with the remote server - try to login later", null);
+					throw new JNLPException(Messages.problem_with_the_remote_server_try_to_login_later, null);
 				}
 		
 				m_loginHandler.getDistroProvider().releaseConnection();

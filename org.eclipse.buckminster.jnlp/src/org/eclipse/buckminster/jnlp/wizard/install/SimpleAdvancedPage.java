@@ -12,6 +12,7 @@ import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.jnlp.wizard.MSpecDetailsPanel;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -28,7 +29,7 @@ public class SimpleAdvancedPage extends InstallWizardPage
 	
 	protected SimpleAdvancedPage()
 	{
-		super(MaterializationConstants.STEP_ADVANCED_SETTINGS, "Advanced", "Select components for materialization.", null);
+		super(MaterializationConstants.STEP_ADVANCED_SETTINGS, Messages.advanced, Messages.select_components_for_materialization, null);
 	}
 
 	@Override

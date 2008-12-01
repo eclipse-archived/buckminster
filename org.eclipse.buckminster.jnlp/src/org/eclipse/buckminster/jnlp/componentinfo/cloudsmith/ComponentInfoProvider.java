@@ -26,6 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.buckminster.opml.IBody;
@@ -35,6 +36,7 @@ import org.eclipse.buckminster.opml.OutlineType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -45,81 +47,81 @@ import org.w3c.dom.Text;
  */
 public class ComponentInfoProvider implements IComponentInfoProvider
 {
-	private static final String SRC_HTML_FOLDER = "html";
+	private static final String SRC_HTML_FOLDER = "html"; //$NON-NLS-1$
 
-	private static final String SRC_HTML_IMG_FOLDER = "html" + IPath.SEPARATOR + "img";
+	private static final String SRC_HTML_IMG_FOLDER = "html" + IPath.SEPARATOR + "img"; //$NON-NLS-1$ //$NON-NLS-2$
 
-	private static final String IMG_FOLDER = "img";
+	private static final String IMG_FOLDER = "img"; //$NON-NLS-1$
 	
-	private static final String HTML_TEMPLATE = "componentinfo.page.template.html";
+	private static final String HTML_TEMPLATE = "componentinfo.page.template.html"; //$NON-NLS-1$
 
-	private static final String HTML_ENCODING = "UTF-8";
+	private static final String HTML_ENCODING = "UTF-8"; //$NON-NLS-1$
 
-	private static final String HTML_DOCTYPE_PUBLIC = "-//W3C//DTD XHTML 1.0 Strict//EN";
+	private static final String HTML_DOCTYPE_PUBLIC = "-//W3C//DTD XHTML 1.0 Strict//EN"; //$NON-NLS-1$
 
-	private static final String HTML_DOCTYPE_SYSTEM = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd";
+	private static final String HTML_DOCTYPE_SYSTEM = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"; //$NON-NLS-1$
 
-	private static final String HTML_BASEPATH_PLACEHOLDER = "#{basePath}";
+	private static final String HTML_BASEPATH_PLACEHOLDER = "#{basePath}"; //$NON-NLS-1$
 
-	private static final String IMG_FOOTER = "footer.bar.2.png";
+	private static final String IMG_FOOTER = "footer.bar.2.png"; //$NON-NLS-1$
 
-	private static final String IMG_FAVICON = "favicon.ico";
+	private static final String IMG_FAVICON = "favicon.ico"; //$NON-NLS-1$
 
-	private static final String IMG_LOGO = "logotype.2.png";
+	private static final String IMG_LOGO = "logotype.2.png"; //$NON-NLS-1$
 
-	private static final String IMG_RSS = "rsslink.gif";
+	private static final String IMG_RSS = "rsslink.gif"; //$NON-NLS-1$
 
-	private static final String PROP_PROVIDER_LOGO_URL = "providerLogo";
+	private static final String PROP_PROVIDER_LOGO_URL = "providerLogo"; //$NON-NLS-1$
 	
-	private static final String PROP_ARTIFACT_NAME = "artifactName";
+	private static final String PROP_ARTIFACT_NAME = "artifactName"; //$NON-NLS-1$
 
-	private static final String PROP_CSPEC_NAME = "cspecName";
+	private static final String PROP_CSPEC_NAME = "cspecName"; //$NON-NLS-1$
 
-	private static final String PROP_CSPEC_VERSION_STRING = "cspecVersionString";
+	private static final String PROP_CSPEC_VERSION_STRING = "cspecVersionString"; //$NON-NLS-1$
 
-	private static final String PROP_BASE_PATH_URL = "basePathURL";
+	private static final String PROP_BASE_PATH_URL = "basePathURL"; //$NON-NLS-1$
 
-	private static final String PROP_HOME_PAGE_URL = "homePageURL";
+	private static final String PROP_HOME_PAGE_URL = "homePageURL"; //$NON-NLS-1$
 
-	private static final String PROP_CLOUDPAGE_URL = "cloudpageURL";
+	private static final String PROP_CLOUDPAGE_URL = "cloudpageURL"; //$NON-NLS-1$
 
-	private static final String ID_HOME_PAGE_URL = "homeLink";
+	private static final String ID_HOME_PAGE_URL = "homeLink"; //$NON-NLS-1$
 
-	private static final String ID_CLOUDPAGE_URL = "cloudpageLink";
+	private static final String ID_CLOUDPAGE_URL = "cloudpageLink"; //$NON-NLS-1$
 
-	private static final String ID_DISTRO_NAME = "distroNameField";
+	private static final String ID_DISTRO_NAME = "distroNameField"; //$NON-NLS-1$
 
-	private static final String ID_DISTRO_VERSION = "distroVersionField";
+	private static final String ID_DISTRO_VERSION = "distroVersionField"; //$NON-NLS-1$
 
-	private static final String ID_FEED_TABLE = "feedTable";
+	private static final String ID_FEED_TABLE = "feedTable"; //$NON-NLS-1$
 
-	private static final String TAG_TR = "tr";
+	private static final String TAG_TR = "tr"; //$NON-NLS-1$
 
-	private static final String TAG_TD = "td";
+	private static final String TAG_TD = "td"; //$NON-NLS-1$
 
-	private static final String TAG_A = "a";
+	private static final String TAG_A = "a"; //$NON-NLS-1$
 
-	private static final String TAG_IMG = "img";
+	private static final String TAG_IMG = "img"; //$NON-NLS-1$
 
-	private static final String ATTR_HREF = "href";
+	private static final String ATTR_HREF = "href"; //$NON-NLS-1$
 
-	private static final String ATTR_VALUE = "value";
+	private static final String ATTR_VALUE = "value"; //$NON-NLS-1$
 	
-	private static final String ATTR_SRC = "src";
+	private static final String ATTR_SRC = "src"; //$NON-NLS-1$
 
-	private static final String ATTR_CLASS = "class";
+	private static final String ATTR_CLASS = "class"; //$NON-NLS-1$
 
-	private static final String ATTR_ALT = "alt";
+	private static final String ATTR_ALT = "alt"; //$NON-NLS-1$
 
-	private static final String ATTR_TITLE = "title";
+	private static final String ATTR_TITLE = "title"; //$NON-NLS-1$
 	
-	private static final String CELL_1 = "Cell-1";
+	private static final String CELL_1 = "Cell-1"; //$NON-NLS-1$
 	
-	private static final String CELL_N = "Cell-n";
+	private static final String CELL_N = "Cell-n"; //$NON-NLS-1$
 	
-	private static final String NBSP_VALUE = "\u00A0";
+	private static final String NBSP_VALUE = "\u00A0"; //$NON-NLS-1$
 
-	private static final String CLASS_BLUE_LINK = "BlueLink";
+	private static final String CLASS_BLUE_LINK = "BlueLink"; //$NON-NLS-1$
 
 	private static InputStream getResource(String resourcePath)
 	{
@@ -139,9 +141,9 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		if(opml == null)
 			return null;
 		if(properties == null)
-			throw new IllegalArgumentException("Properties are not set");
+			throw new IllegalArgumentException(Messages.properties_are_not_set);
 		if(destination == null)
-			throw new IllegalArgumentException("Target destination is not set");
+			throw new IllegalArgumentException(Messages.target_destination_is_not_set);
 
 		m_properties = properties;
 		m_opml = opml;
@@ -155,7 +157,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 
 		String basePath = m_properties.get(PROP_BASE_PATH_URL);
 		if(basePath == null)
-			throw new Exception("Missing required property '" + PROP_BASE_PATH_URL + '\'');
+			throw new Exception(NLS.bind(Messages.missing_required_property_0, PROP_BASE_PATH_URL));
 
 		string = string.replaceAll(Pattern.quote(HTML_BASEPATH_PLACEHOLDER), basePath);
 
@@ -169,7 +171,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		if(!(htmlDestDir.exists() && htmlDestDir.isDirectory()))
 			FileUtils.createDirectory(htmlDestDir, m_nullMonitor);
 
-		File imgDestDir = new File(htmlDestDir, "img");
+		File imgDestDir = new File(htmlDestDir, "img"); //$NON-NLS-1$
 
 		if(!(imgDestDir.exists() && imgDestDir.isDirectory()))
 			FileUtils.createDirectory(imgDestDir, m_nullMonitor);
@@ -182,9 +184,9 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, HTML_DOCTYPE_SYSTEM);
 		transformer.transform(new DOMSource(m_xml), result);
 
-		String htmlFileName = "distro." + m_properties.get(PROP_CSPEC_NAME) + "."
-				+ m_properties.get(PROP_CSPEC_VERSION_STRING) + ".html";
-		htmlFileName = htmlFileName.replaceAll("(?:/|\\\\|:|\\*|\\?|\"|<|>|\\|)", "_");
+		String htmlFileName = "distro." + m_properties.get(PROP_CSPEC_NAME) + "." //$NON-NLS-1$ //$NON-NLS-2$
+				+ m_properties.get(PROP_CSPEC_VERSION_STRING) + ".html"; //$NON-NLS-1$
+		htmlFileName = htmlFileName.replaceAll("(?:/|\\\\|:|\\*|\\?|\"|<|>|\\|)", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		htmlURL = destination + File.separator + htmlFileName;
 
@@ -235,7 +237,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 			a.setAttribute(ATTR_TITLE, outline.getDescription());
 			Element rssImg = m_xml.createElement(TAG_IMG);
 			a.appendChild(rssImg);
-			rssImg.setAttribute(ATTR_ALT, "rss icon");
+			rssImg.setAttribute(ATTR_ALT, "rss icon"); //$NON-NLS-1$
 			rssImg.setAttribute(ATTR_SRC, IMG_FOLDER + IPath.SEPARATOR + IMG_RSS);
 			
 			td = m_xml.createElement(TAG_TD);
@@ -246,7 +248,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 			a.setAttribute(ATTR_HREF, outline.getXmlUrl().toString());
 			a.setAttribute(ATTR_CLASS, CLASS_BLUE_LINK);
 			a.setAttribute(ATTR_TITLE, outline.getDescription());
-			Text linkText = m_xml.createTextNode("subscribe");
+			Text linkText = m_xml.createTextNode("subscribe"); //$NON-NLS-1$
 			a.appendChild(linkText);
 		}
 
@@ -290,7 +292,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 				try
 				{
 					if(value != null && value.length() > 0)
-						value = new String(Base64.decodeBase64(value.getBytes()), "UTF-8");
+						value = new String(Base64.decodeBase64(value.getBytes()), "UTF-8"); //$NON-NLS-1$
 				}
 				catch(UnsupportedEncodingException e)
 				{

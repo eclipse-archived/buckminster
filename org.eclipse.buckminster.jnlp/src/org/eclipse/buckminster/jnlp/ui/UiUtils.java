@@ -166,6 +166,6 @@ public class UiUtils
 	
 	public static String getNotNullString(String string)
 	{
-		return string == null ? "" : string;
+		return string == null ? "" : string; //$NON-NLS-1$
 	}
 }

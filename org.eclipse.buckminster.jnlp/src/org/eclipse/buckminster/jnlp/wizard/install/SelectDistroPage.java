@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -118,25 +120,25 @@ public class SelectDistroPage extends InstallWizardPage
 
 	}
 
-	private static final String DISTRO_COMPATIBLE = "1";
+	private static final String DISTRO_COMPATIBLE = "1"; //$NON-NLS-1$
 
-	private static final String DISTRO_BROKEN = "-1";
+	private static final String DISTRO_BROKEN = "-1"; //$NON-NLS-1$
 
-	private static final String DISTRO_INCOMPATIBLE = "0";
+	private static final String DISTRO_INCOMPATIBLE = "0"; //$NON-NLS-1$
 
-	private static final String ICON_COMPATIBLE = "distro.compatible.gif";
+	private static final String ICON_COMPATIBLE = "distro.compatible.gif"; //$NON-NLS-1$
 
-	private static final String ICON_INCOMPATIBLE = "distro.incompatible.gif";
+	private static final String ICON_INCOMPATIBLE = "distro.incompatible.gif"; //$NON-NLS-1$
 
-	private static final String ICON_BROKEN = "distro.broken.gif";
+	private static final String ICON_BROKEN = "distro.broken.gif"; //$NON-NLS-1$
 
-	private static final String IMAGE_BOX_COMPATIBLE = "box.enabled.compatible.png";
+	private static final String IMAGE_BOX_COMPATIBLE = "box.enabled.compatible.png"; //$NON-NLS-1$
 
-	private static final String IMAGE_BOX_INCOMPATIBLE = "box.enabled.incompatible.png";
+	private static final String IMAGE_BOX_INCOMPATIBLE = "box.enabled.incompatible.png"; //$NON-NLS-1$
 
-	private static final String IMAGE_BOX_BROKEN = "box.disabled.broken.png";
+	private static final String IMAGE_BOX_BROKEN = "box.disabled.broken.png"; //$NON-NLS-1$
 
-	private static final String IMAGE_BOX_DISABLED = "box.disabled.png";
+	private static final String IMAGE_BOX_DISABLED = "box.disabled.png"; //$NON-NLS-1$
 
 	private Font m_boldFont;
 
@@ -186,7 +188,7 @@ public class SelectDistroPage extends InstallWizardPage
 	
 	private Composite m_selectionDetailsComposite;
 	
-	private static final String UNSPECIFIED = "unspecified";
+	private static final String UNSPECIFIED = Messages.unspecified;
 
 	private List<DistroVariant> m_data;
 
@@ -194,8 +196,8 @@ public class SelectDistroPage extends InstallWizardPage
 
 	public SelectDistroPage()
 	{
-		super(MaterializationConstants.STEP_SELECT_DISTRO, "Select Distro",
-				"Select from the available packagings of this stack.", null);
+		super(MaterializationConstants.STEP_SELECT_DISTRO, Messages.select_distro,
+				Messages.select_from_the_available_packagings_of_this_stack, null);
 		m_iconCompatible = MaterializationUtils.getImage(ICON_COMPATIBLE);
 		m_iconIncompatible = MaterializationUtils.getImage(ICON_INCOMPATIBLE);
 		m_iconBroken = MaterializationUtils.getImage(ICON_BROKEN);
@@ -215,7 +217,7 @@ public class SelectDistroPage extends InstallWizardPage
 		m_noDistroPageComposite.setLayout(new GridLayout(1, false));
 
 		m_noDistroLabel = new Label(m_noDistroPageComposite, SWT.WRAP);
-		m_noDistroLabel.setText("Sorry! The publisher of this stack hasn't packaged it in a distro available for download.");
+		m_noDistroLabel.setText(Messages.sorry_the_publisher_of_this_stack_hasnt_packaged_it_in_a_distro_available_for_download);
 
 		FontData[] fontData = m_noDistroLabel.getFont().getFontData();	
 		fontData[0].setStyle(SWT.BOLD);
@@ -231,7 +233,7 @@ public class SelectDistroPage extends InstallWizardPage
 		m_pageComposite.setLayout(new GridLayout(1, false));
 		
 		Label label = new Label(m_pageComposite, SWT.NONE);
-		label.setText("The following distros appear to be compatible with your platform:");
+		label.setText(Messages.the_following_distros_appear_to_be_compatible_with_your_platform_with_colon);
 		label.setFont(m_boldFont);
 
 		Composite flagsComposite = new Composite(m_pageComposite, SWT.NONE);
@@ -240,16 +242,16 @@ public class SelectDistroPage extends InstallWizardPage
 		flagsComposite.setLayout(gridLayout);
 
 		label = new Label(flagsComposite, SWT.NONE);
-		label.setText("Show");
+		label.setText(Messages.show);
 		GridData gridData = new GridData();
 		gridData.verticalSpan = 2;
 		gridData.verticalAlignment = SWT.TOP;
 		label.setLayoutData(gridData);
 		m_incompatibleButton = new Button(flagsComposite, SWT.CHECK);
-		m_incompatibleButton.setText("incompatible packagings");
+		m_incompatibleButton.setText(Messages.incompatible_packagings);
 
 		m_brokenButton = new Button(flagsComposite, SWT.CHECK);
-		m_brokenButton.setText("broken packagings");
+		m_brokenButton.setText(Messages.broken_packagings);
 
 		SelectionListener distroFilterListener = new SelectionAdapter()
 		{
@@ -345,23 +347,23 @@ public class SelectDistroPage extends InstallWizardPage
 
 		m_columns = new ArrayList<TableColumn>();
 		TableColumn column = new TableColumn(variantsTable, SWT.NONE);
-		column.setText("Compatible");
+		column.setText(Messages.compatible);
 		column.setAlignment(SWT.CENTER);
 		m_columns.add(column);
 		column = new TableColumn(variantsTable, SWT.NONE);
-		column.setText("CPU Architecture");
+		column.setText(Messages.CPU_architecture);
 		m_columns.add(column);
 		column = new TableColumn(variantsTable, SWT.NONE);
-		column.setText("Operating System");
+		column.setText(Messages.operating_system);
 		m_columns.add(column);
 		column = new TableColumn(variantsTable, SWT.NONE);
-		column.setText("Windowing System");
+		column.setText(Messages.windowing_system);
 		m_columns.add(column);
 		column = new TableColumn(variantsTable, SWT.NONE);
-		column.setText("Other Releases");
+		column.setText(Messages.other_releases);
 		m_columns.add(column);
 		column = new TableColumn(variantsTable, SWT.NONE);
-		column.setText("Language");
+		column.setText(Messages.language);
 		m_columns.add(column);
 
 		SelectionListener columnSelectionListener = new SelectionAdapter()
@@ -404,19 +406,19 @@ public class SelectDistroPage extends InstallWizardPage
 
 					if(variant.isSimplePackaging())
 					{
-						m_selectionHeadingLabel.setText("Simple packaging:");
-						selectionDetailsLabel.setText("(unspecified)");
+						m_selectionHeadingLabel.setText(Messages.simple_packaging_with_colon);
+						selectionDetailsLabel.setText(Messages.unspecified_in_brackets);
 					}
 					else
 					{
-						m_selectionHeadingLabel.setText("Distro variant for:");
+						m_selectionHeadingLabel.setText(Messages.distro_variant_for_with_colon);
 						selectionDetailsLabel.setText(variant.getPlatformString());
 					}
 				}
 				else if(DISTRO_INCOMPATIBLE.equals(variantStatus))
 				{
 					m_selectionBoxLabel.setImage(m_imageBoxIncompatible);
-					m_selectionHeadingLabel.setText("Incompatible distro variant for:");
+					m_selectionHeadingLabel.setText(Messages.incompatible_distro_variant_for_with_colon);
 					
 					selectionDetailsLabel.dispose();					
 					addSelectionDetailsPlatformLabel(variant.getArch(), variant.isArchCompatible());
@@ -428,15 +430,15 @@ public class SelectDistroPage extends InstallWizardPage
 				else if(DISTRO_BROKEN.equals(variantStatus))
 				{
 					m_selectionBoxLabel.setImage(m_imageBoxBroken);
-					m_selectionHeadingLabel.setText("Distro broken - not downloadable:");
-					selectionDetailsLabel.setText("(publisher attention needed)");
+					m_selectionHeadingLabel.setText(Messages.distro_broken_not_downloadable_with_colon);
+					selectionDetailsLabel.setText(Messages.publisher_attention_needed_in_brackets);
 					selectionDetailsLabel.setFont(null);
 				}
 				else
 				{
 					m_selectionBoxLabel.setImage(m_imageBoxDisabled);
-					m_selectionHeadingLabel.setText("No selected packaging");
-					selectionDetailsLabel.setText("");
+					m_selectionHeadingLabel.setText(Messages.no_selected_packaging);
+					selectionDetailsLabel.setText(""); //$NON-NLS-1$
 				}
 				getContainer().updateButtons();
 				
@@ -669,7 +671,7 @@ public class SelectDistroPage extends InstallWizardPage
 			return variant.getNL();
 
 		default:
-			throw new IllegalArgumentException("Column number " + column + " does NOT exist.");
+			throw new IllegalArgumentException(NLS.bind(Messages.column_number_0_does_not_exist, Integer.valueOf(column)));
 		}
 	}
 	
@@ -693,6 +695,6 @@ public class SelectDistroPage extends InstallWizardPage
 	{
 		Label comma = new Label(m_selectionDetailsComposite, SWT.NONE);
 		comma.setFont(m_boldFont);
-		comma.setText(", ");
+		comma.setText(", "); //$NON-NLS-1$
 	}
 }

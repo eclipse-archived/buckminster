@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.eclipse.buckminster.jnlp;
 
+import org.eclipse.osgi.util.NLS;
+
 public class MissingPropertyException extends Exception
 {
 	private static final long serialVersionUID = 41992797592163523L;
 
 	public MissingPropertyException(String propertyKey)
 	{
-		super("Missing required property '" + propertyKey + '\'');
+		super(NLS.bind(Messages.missing_required_property_0, propertyKey));
 	}
 }

@@ -12,8 +12,10 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,9 +37,9 @@ public class DonePage extends InstallWizardPage
 
 	private static final int HORIZONTAL_INDENT = 20;
 
-	private static final String ICON_ARROW = "incom_stat.gif";
+	private static final String ICON_ARROW = "incom_stat.gif"; //$NON-NLS-1$
 
-	private static final String ICON_EXCLAMATION = "hprio_tsk.gif";
+	private static final String ICON_EXCLAMATION = "hprio_tsk.gif"; //$NON-NLS-1$
 
 	private ComponentListPanel m_componentListPanel;
 
@@ -53,7 +55,7 @@ public class DonePage extends InstallWizardPage
 
 	protected DonePage()
 	{
-		super(MaterializationConstants.STEP_DONE, "View Results", "Materialization of distro completed.", null);
+		super(MaterializationConstants.STEP_DONE, Messages.view_results, Messages.materialization_of_distro_completed, null);
 		setPreviousPage(this);
 	}
 
@@ -66,7 +68,7 @@ public class DonePage extends InstallWizardPage
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		m_heading1 = new Label(pageComposite, SWT.WRAP);
-		m_heading1.setText("The components that were downloaded, and their destination folders, are listed below.");
+		m_heading1.setText(Messages.the_components_that_were_downloaded_and_their_destination_folders_are_listed_below);
 		GridData layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		m_heading1.setLayoutData(layoutData);
@@ -135,7 +137,7 @@ public class DonePage extends InstallWizardPage
 		space.setLayoutData(layoutData);
 		
 		Link learnMore = new Link(pageComposite, SWT.NONE);
-		learnMore.setText("Click <a>here</a> to learn more about " + getInstallWizard().getServiceProvider() + ".");
+		learnMore.setText(NLS.bind(Messages.click_link_here_to_learn_more_about_0, getInstallWizard().getServiceProvider())); 
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		learnMore.setLayoutData(layoutData);
@@ -158,7 +160,7 @@ public class DonePage extends InstallWizardPage
 		space.setLayoutData(layoutData);
 
 		Group listGroup = new Group(pageComposite, SWT.NONE);
-		listGroup.setText("Materialized Components");
+		listGroup.setText(Messages.materialized_components);
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.marginHeight = gridLayout.marginWidth = 5;
 		listGroup.setLayout(gridLayout);
@@ -183,9 +185,9 @@ public class DonePage extends InstallWizardPage
 	{
 		if(failed > 0)
 			if(failed > 1)
-				setErrorMessage("Materialization of " + failed + " components was cancelled (check the list below)");
+				setErrorMessage(NLS.bind(Messages.materialization_of_0_components_was_cancelled_check_the_list_below, Integer.valueOf(failed)));
 			else
-				setErrorMessage("Materialization of 1 component was cancelled (check the list below)");
+				setErrorMessage(Messages.materialization_of_1_component_was_cancelled_check_the_list_below);
 		else
 			setErrorMessage(null);
 	}
@@ -196,22 +198,22 @@ public class DonePage extends InstallWizardPage
 
 		// Text of the label is set here to be able to WRAP it - no idea how to do it nicer
 		m_heading2
-				.setText("If you materialized  to an Eclipse workspace, you should be able to select the new workspace directly from within Eclipse.");
+				.setText(Messages.if_you_materialized_to_an_eclipse_workspace_you_should_be_able_to_select_the_new_workspace_directly_from_within_Eclipse);
 		GridData layoutData = (GridData)m_heading2.getLayoutData();
 		layoutData.widthHint = m_heading2.getShell().getSize().x - 35 - 2 * HORIZONTAL_INDENT - 11;
 
 		m_heading3
-				.setText("If you materialized to an Eclipse target platform, the new functionality should be available next time you start Eclipse.");
+				.setText(Messages.if_you_materialized_to_an_eclipse_target_platform_the_new_functionality_should_be_available_next_time_you_start_Eclipse);
 		layoutData = (GridData)m_heading3.getLayoutData();
 		layoutData.widthHint = m_heading3.getShell().getSize().x - 35 - 2 * HORIZONTAL_INDENT - 11;
 
 		m_heading4
-				.setText("If you materialized to a file system, the materialized content should be present in the designated location.");
+				.setText(Messages.if_you_materialized_to_a_file_system_the_materialized_content_should_be_present_in_the_designated_location);
 		layoutData = (GridData)m_heading4.getLayoutData();
 		layoutData.widthHint = m_heading4.getShell().getSize().x - 35 - 2 * HORIZONTAL_INDENT - 11;
 
 		m_heading5
-				.setText("Make sure to note this location before exiting the wizard.");
+				.setText(Messages.make_sure_to_note_this_location_before_exiting_the_wizard);
 		layoutData = (GridData)m_heading5.getLayoutData();
 		layoutData.widthHint = m_heading5.getShell().getSize().x - 50 - 2 * HORIZONTAL_INDENT - 11;
 
@@ -236,7 +238,7 @@ public class DonePage extends InstallWizardPage
 	@Override
 	public String getOverrideCancelButtonText()
 	{
-		return "Done";
+		return Messages.done;
 	}
 
 	@Override

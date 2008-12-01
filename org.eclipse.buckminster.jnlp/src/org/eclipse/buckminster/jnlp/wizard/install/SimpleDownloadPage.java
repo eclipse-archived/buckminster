@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp.wizard.install;
 
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.wizard.DestinationForm;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
@@ -26,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class SimpleDownloadPage extends InstallWizardPage
 {
-	private static final String TOOL_TIP_ADVANCED = "Customize your materialization";
+	private static final String TOOL_TIP_ADVANCED = Messages.customize_your_materialization;
 	 	 
 	private DestinationForm m_destinationForm;
 	
@@ -34,7 +35,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 	
 	protected SimpleDownloadPage()
 	{
-		super(MaterializationConstants.STEP_DOWNLOAD_LOCATION, "Select a Destination", "Select a target location for materialization.",
+		super(MaterializationConstants.STEP_DOWNLOAD_LOCATION, Messages.select_a_destination, Messages.select_a_target_location_for_materialization,
 				null);
 	}
 
@@ -60,7 +61,7 @@ public class SimpleDownloadPage extends InstallWizardPage
 		gridData.horizontalSpan = 3;
 		gridData.verticalIndent = 10;
 		m_advancedSettingsButton.setLayoutData(gridData);
-		m_advancedSettingsButton.setText("Advanced Settings");
+		m_advancedSettingsButton.setText(Messages.advanced_settings);
 		m_advancedSettingsButton.setToolTipText(TOOL_TIP_ADVANCED);
 		m_advancedSettingsButton.setSelection(false);
 		m_advancedSettingsButton.addSelectionListener(new SelectionAdapter()

@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp.ui.general.wizard;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
@@ -34,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AdvancedWizardDialog extends WizardDialog
 {
-	private static final String HELP_LABEL = "More Info";
+	private static final String HELP_LABEL = Messages.more_info;
 	
 	private boolean m_runningOperation = false;
 

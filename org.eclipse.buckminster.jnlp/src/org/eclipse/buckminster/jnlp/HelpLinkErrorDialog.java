@@ -136,10 +136,10 @@ public class HelpLinkErrorDialog extends ErrorDialog
 		layout.marginHeight = layout.marginWidth = 0;
 		linkComposite.setLayout(layout);
 
-		new Label(linkComposite, SWT.NONE).setText("Read more at:");
+		new Label(linkComposite, SWT.NONE).setText(Messages.HelpLinkErrorDialog_read_more_at);
 
 		Link helpLink = new Link(linkComposite, SWT.NONE);
-		helpLink.setText("<a>" + m_helpLinkTitle + "</a>");
+		helpLink.setText("<a>" + m_helpLinkTitle + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
 		helpLink.addSelectionListener(new SelectionAdapter()
 		{
 
@@ -153,7 +153,7 @@ public class HelpLinkErrorDialog extends ErrorDialog
 						Program.launch(m_helpLinkURL);
 					} else
 					{
-						Program.launch(m_helpLinkURL + "?errorCode=" + m_errorCode);
+						Program.launch(m_helpLinkURL + "?errorCode=" + m_errorCode); //$NON-NLS-1$
 					}
 				}
 			}

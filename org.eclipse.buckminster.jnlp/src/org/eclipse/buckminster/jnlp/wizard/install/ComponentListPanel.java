@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationStatistics;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -52,9 +53,9 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class ComponentListPanel
 {
-	private static final String ICON_STATUS_OK = "status.ok.gif";
+	private static final String ICON_STATUS_OK = "status.ok.gif"; //$NON-NLS-1$
 	
-	private static final String ICON_STATUS_FAILED = "status.error.gif";
+	private static final String ICON_STATUS_FAILED = "status.error.gif"; //$NON-NLS-1$
 	
 	private final Image m_iconStatusOK = MaterializationUtils.getImage(ICON_STATUS_OK);
 
@@ -172,14 +173,14 @@ public class ComponentListPanel
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		new TableColumn(table, SWT.LEFT, 0);
-		new TableColumn(table, SWT.LEFT, 1).setText("Component");
-		new TableColumn(table, SWT.LEFT, 2).setText("Destination Folder");
+		new TableColumn(table, SWT.LEFT, 1).setText(Messages.component);
+		new TableColumn(table, SWT.LEFT, 2).setText(Messages.destination_folder);
 
 		table.setHeaderVisible(true);
 
 	    m_tableMenu = new Menu(table);
 	    MenuItem menuItem = new MenuItem(m_tableMenu, SWT.CASCADE);
-	    menuItem.setText("Open Folder");
+	    menuItem.setText(Messages.open_folder);
 	    menuItem.addSelectionListener(new SelectionAdapter(){
 
 			@Override
@@ -203,10 +204,10 @@ public class ComponentListPanel
 			public void mouseHover(MouseEvent e)
 			{
 				TableItem item = table.getItem(new Point(e.x, e.y));
-				String toolTipText = "Double-click to open selected folder";
+				String toolTipText = Messages.doubleclick_to_open_selected_folder;
 
 				if(item != null && ((ComponentPath)item.getData()).isFailed())
-					toolTipText = "Cancelled";
+					toolTipText = Messages.cancelled;
 
 				table.setToolTipText(toolTipText);
 			}

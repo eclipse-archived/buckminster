@@ -98,16 +98,16 @@ public class MaterializationUtils
 	static
 	{
 		s_humanReadableComponentTypes = new HashMap<String, String>();
-		s_humanReadableComponentTypes.put(null, "Any");
-		s_humanReadableComponentTypes.put("unknown", "None");
-		s_humanReadableComponentTypes.put("cssite", "Cloudsmith");
-		s_humanReadableComponentTypes.put("osgi.bundle", "OSGi Bundle");
-		s_humanReadableComponentTypes.put("eclipse.feature", "Eclipse Feature");
-		s_humanReadableComponentTypes.put("maven", "Maven");
-		s_humanReadableComponentTypes.put("site.feature", "Eclipse Update Manager");
-		s_humanReadableComponentTypes.put("buckminster", "Buckminster");
-		s_humanReadableComponentTypes.put("jar", "Java Archive");
-		s_humanReadableComponentTypes.put("bom", "Bill of Materials");
+		s_humanReadableComponentTypes.put(null, "Any"); //$NON-NLS-1$
+		s_humanReadableComponentTypes.put("unknown", "None"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("cssite", "Cloudsmith"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("osgi.bundle", "OSGi Bundle"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("eclipse.feature", "Eclipse Feature"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("maven", "Maven"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("site.feature", "Eclipse Update Manager"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("buckminster", "Buckminster"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("jar", "Java Archive"); //$NON-NLS-1$ //$NON-NLS-2$
+		s_humanReadableComponentTypes.put("bom", "Bill of Materials"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -145,8 +145,8 @@ public class MaterializationUtils
 				break;
 			}
 
-			throw new JNLPException("Cannot read materialization specification", errorCode, BuckminsterException
-					.fromMessage("%s - %s", originalURL, HttpStatus.getStatusText(status)));
+			throw new JNLPException(Messages.cannot_read_materialization_specification, errorCode, BuckminsterException
+					.fromMessage("%s - %s", originalURL, HttpStatus.getStatusText(status))); //$NON-NLS-1$
 		}
 	}
 
@@ -163,21 +163,21 @@ public class MaterializationUtils
 		switch(result)
 		{
 		case IRemoteDistroProvider.REGISTER_FAIL:
-			throw new JNLPException("Registration was not successful", null);
+			throw new JNLPException(Messages.registration_was_not_successful, null);
 		case IRemoteDistroProvider.REGISTER_LOGIN_EXISTS:
-			throw new JNLPException("Login name already exists - choose a different one", null);
+			throw new JNLPException(Messages.login_name_already_exists_choose_a_different_one, null);
 		case IRemoteDistroProvider.REGISTER_LOGIN_TOO_SHORT:
-			throw new JNLPException("Login is too short - length must be between 3 and 25", null);
+			throw new JNLPException(Messages.login_is_too_short_length_must_be_between_3_and_25, null);
 		case IRemoteDistroProvider.REGISTER_LOGIN_CONTAINS_AT:
-			throw new JNLPException("Login name contains '@'", null);
+			throw new JNLPException(Messages.login_name_contains_at, null);
 		case IRemoteDistroProvider.REGISTER_LOGIN_INVALID:
-			throw new JNLPException("Login name is invalid", null);
+			throw new JNLPException(Messages.login_name_is_invalid, null);
 		case IRemoteDistroProvider.REGISTER_PASSWORD_TOO_SHORT:
-			throw new JNLPException("Password is too short - length must be between 4 and 25", null);
+			throw new JNLPException(Messages.password_is_too_short_length_must_be_between_4_and_25, null);
 		case IRemoteDistroProvider.REGISTER_EMAIL_FORMAT_ERROR:
-			throw new JNLPException("Email does not have standard format", null);
+			throw new JNLPException(Messages.email_does_not_have_standard_format, null);
 		case IRemoteDistroProvider.REGISTER_EMAIL_ALREADY_VALIDATED:
-			throw new JNLPException("Email is already verified for another user", null);
+			throw new JNLPException(Messages.email_is_already_verified_for_another_user, null);
 		}
 	}
 
@@ -261,9 +261,9 @@ public class MaterializationUtils
 			if(key.length() > len)
 				continue;
 
-			Pattern pattern = Pattern.compile("(^|/)(" + Pattern.quote(key) + ")/");
+			Pattern pattern = Pattern.compile("(^|/)(" + Pattern.quote(key) + ")/"); //$NON-NLS-1$ //$NON-NLS-2$
 			Matcher matcher = pattern.matcher(pathToGeneralize);
-			pathToGeneralize = matcher.replaceAll("$1\\${" + entry.getValue() + "}/");
+			pathToGeneralize = matcher.replaceAll("$1\\${" + entry.getValue() + "}/"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		return new Path(pathToGeneralize);
@@ -280,7 +280,7 @@ public class MaterializationUtils
 	{
 		String destination = null;
 
-		String userHome = System.getProperty("user.home");
+		String userHome = System.getProperty("user.home"); //$NON-NLS-1$
 
 		if(userHome != null)
 		{
@@ -295,7 +295,7 @@ public class MaterializationUtils
 	public static Image getImage(String imageName)
 	{
 		Class<?> myClass = MaterializationUtils.class;
-		String imageResource = "/icons/" + imageName;
+		String imageResource = "/icons/" + imageName; //$NON-NLS-1$
 		URL imageUrl = myClass.getResource(imageResource);
 		return ImageDescriptor.createFromURL(imageUrl).createImage();
 	}
@@ -334,13 +334,13 @@ public class MaterializationUtils
 
 	public static File getBackupFolder(File eclipseFolder)
 	{
-		String backupString = eclipseFolder.getPath() + ".backup";
+		String backupString = eclipseFolder.getPath() + ".backup"; //$NON-NLS-1$
 		File backupFile = new File(backupString);
 
 		int i = 0;
 		while(backupFile.exists())
 		{
-			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++)));
+			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++))); //$NON-NLS-1$
 		}
 
 		return backupFile;
@@ -381,7 +381,7 @@ public class MaterializationUtils
 						builder.setExclude(true);
 
 				MaterializationNodeBuilder nodeBuilder = mspec.addNodeBuilder();
-				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$"));
+				nodeBuilder.setNamePattern(Pattern.compile("^\\Q" + componentName + "\\E$")); //$NON-NLS-1$ //$NON-NLS-2$
 				nodeBuilder.setComponentTypeID(componentType);
 				nodeBuilder.setExclude(true);
 			}
@@ -410,11 +410,11 @@ public class MaterializationUtils
 		}
 		catch(FileNotFoundException e1)
 		{
-			throw new JNLPException("File cannot be opened or created", ERROR_CODE_FILE_IO_EXCEPTION, e1);
+			throw new JNLPException(Messages.file_cannot_be_opened_or_created, ERROR_CODE_FILE_IO_EXCEPTION, e1);
 		}
 		catch(SAXException e1)
 		{
-			throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
+			throw new JNLPException(Messages.unable_to_read_BOM_specification, ERROR_CODE_ARTIFACT_EXCEPTION, e1);
 		}
 		finally
 		{

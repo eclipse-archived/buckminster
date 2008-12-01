@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.jnlp.wizard.install;
 
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.ui.UiUtils;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -40,7 +41,7 @@ public class StartPage extends InstallWizardPage
 	
 	protected StartPage()
 	{
-		super(MaterializationConstants.STEP_START, "Materialization", "Please verify that what is described below is what you want to materialize.", null);
+		super(MaterializationConstants.STEP_START, Messages.materialization, Messages.please_verify_that_what_is_described_below_is_what_you_want_to_materialize, null);
 	}
 
 	public void createControl(Composite parent)
@@ -51,22 +52,22 @@ public class StartPage extends InstallWizardPage
 		pageComposite.setLayout(new GridLayout(1, false));
 
 		Group productGroup = new Group(pageComposite, SWT.NONE);
-		productGroup.setText("Product Summary");
+		productGroup.setText(Messages.product_summary);
 		productGroup.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		productGroup.setLayoutData(gridData);
 		
-		new Label(productGroup, SWT.NONE).setText("Name:");
+		new Label(productGroup, SWT.NONE).setText(Messages.name_with_colon);
 		m_artifactNameText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
 		m_artifactNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		m_artifactNameText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		
-		new Label(productGroup, SWT.NONE).setText("Version:");
+		new Label(productGroup, SWT.NONE).setText(Messages.version_with_colon);
 		m_artifactVersionText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
 		m_artifactVersionText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		m_artifactVersionText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		
-		new Label(productGroup, SWT.NONE).setText("Description:");
+		new Label(productGroup, SWT.NONE).setText(Messages.description_with_colon);
 		m_artifactDescriptionText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.READ_ONLY | SWT.WRAP);
 		m_artifactDescriptionText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		m_artifactDescriptionText.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
@@ -76,7 +77,7 @@ public class StartPage extends InstallWizardPage
 		gridData.verticalAlignment = SWT.TOP;
 		gridData.verticalIndent = 2;
 		label.setLayoutData(gridData);
-		label.setText("Documentation:");
+		label.setText(Messages.documentation_with_colon);
 		m_artifactDocumentationText = new Text(productGroup, SWT.BORDER | SWT.NO_FOCUS | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.heightHint = 60;
@@ -86,7 +87,7 @@ public class StartPage extends InstallWizardPage
 		new Label(pageComposite, SWT.NONE);
 		
 		Group publisherGroup = new Group(pageComposite, SWT.NONE);
-		publisherGroup.setText("Publisher Information");
+		publisherGroup.setText(Messages.publisher_information);
 		publisherGroup.setLayout(new GridLayout());
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		publisherGroup.setLayoutData(gridData);
@@ -106,7 +107,7 @@ public class StartPage extends InstallWizardPage
 			infoComposite.setLayout(new GridLayout());
 
 			Group infoGroup = new Group(pageComposite, SWT.BOTTOM);
-			infoGroup.setText("Info");
+			infoGroup.setText(Messages.info);
 			FillLayout fillLayout = new FillLayout();
 			fillLayout.marginHeight = fillLayout.marginWidth = 5;
 			infoGroup.setLayout(fillLayout);
@@ -114,7 +115,7 @@ public class StartPage extends InstallWizardPage
 			data.horizontalSpan = 2;
 			infoGroup.setLayoutData(data);
 
-			final String message = "Note that, on request of the publisher of this material, you will be asked to log in to ";
+			final String message = Messages.note_that_on_request_of_the_publisher_of_this_material_you_will_be_asked_to_log_in_to;
 			final String providerURL = null; //getInstallWizard().getServiceProviderHomePageURL();
 
 			if(providerURL == null)
@@ -124,7 +125,7 @@ public class StartPage extends InstallWizardPage
 			else
 			{
 				Link link = new Link(infoGroup, SWT.WRAP);
-				link.setText(message + "<a>" + getInstallWizard().getServiceProvider() + "</a>");
+				link.setText(message + "<a>" + getInstallWizard().getServiceProvider() + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
 				link.addSelectionListener(new SelectionAdapter()
 				{
 					@Override
@@ -143,7 +144,7 @@ public class StartPage extends InstallWizardPage
 	protected void beforeDisplaySetup()
 	{
 		m_artifactNameText.setText(getInstallWizard().getArtifactName());
-		m_artifactVersionText.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion());
+		m_artifactVersionText.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion()); //$NON-NLS-1$
 		m_artifactDescriptionText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));
 		m_artifactDocumentationText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
 		m_publisherInfoText.setText(getInstallWizard().getBrandingString());

@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.jnlp.wizard.install;
 
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
+import org.eclipse.buckminster.jnlp.Messages;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -28,7 +29,7 @@ public class OperationPage extends InstallWizardPage
 	
 	protected OperationPage()
 	{
-		super(MaterializationConstants.STEP_OPERATION, "Materialization in Progress", "Please wait until materialization finishes.", null);
+		super(MaterializationConstants.STEP_OPERATION, Messages.materialization_in_progress, Messages.please_wait_until_materialization_finishes, null);
 	}
 
 	public void createControl(Composite parent)

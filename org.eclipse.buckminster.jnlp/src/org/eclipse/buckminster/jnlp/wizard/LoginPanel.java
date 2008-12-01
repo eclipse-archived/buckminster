@@ -8,6 +8,8 @@
 
 package org.eclipse.buckminster.jnlp.wizard;
 
+import org.eclipse.buckminster.jnlp.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -74,8 +76,8 @@ public class LoginPanel
 	public LoginPanel(String loginKeyUserName, String initUserName, String initPassword)
 	{
 		m_loginKeyUserName = loginKeyUserName;
-		m_initUserName = initUserName == null ? "" : initUserName;
-		m_initPassword = initPassword == null ? "" : initPassword;
+		m_initUserName = initUserName == null ? "" : initUserName; //$NON-NLS-1$
+		m_initPassword = initPassword == null ? "" : initPassword; //$NON-NLS-1$
 	}
 	
 	public boolean isCurrentUser()
@@ -142,7 +144,7 @@ public class LoginPanel
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		m_currentUserButton = new Button(pageComposite, SWT.RADIO);
-		m_currentUserButton.setText(m_loginKeyUserName == null ? "Current user" : "Current user (" + m_loginKeyUserName + ")");
+		m_currentUserButton.setText(m_loginKeyUserName == null ? Messages.current_user : NLS.bind(Messages.current_user_user_in_brackets, m_loginKeyUserName)); 
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_currentUserButton.setLayoutData(gridData);
@@ -164,7 +166,7 @@ public class LoginPanel
 		m_currentUserLabelSeparator = new Label(pageComposite, SWT.NONE);
 
 		m_userButton = new Button(pageComposite, SWT.RADIO);
-		m_userButton.setText("Already user");
+		m_userButton.setText(Messages.already_user);
 		gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_userButton.setLayoutData(gridData);
@@ -188,14 +190,14 @@ public class LoginPanel
 		userGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		m_login1Label = new Label(userGroup, SWT.NONE);
-		m_login1Label.setText("Login:");
+		m_login1Label.setText(Messages.login_with_colon);
 		m_login1Text = new Text(userGroup, SWT.BORDER);
 		m_login1Text.setText(m_initUserName);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		m_login1Text.setLayoutData(gridData);
 
 		m_password1Label = new Label(userGroup, SWT.NONE);
-		m_password1Label.setText("Password:");
+		m_password1Label.setText(Messages.password_with_colon);
 		m_password1Text = new Text(userGroup, SWT.BORDER | SWT.PASSWORD);
 		m_password1Text.setText(m_initPassword);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -204,7 +206,7 @@ public class LoginPanel
 		new Label(pageComposite, SWT.NONE);
 
 		m_registerButton = new Button(pageComposite, SWT.RADIO);
-		m_registerButton.setText("New user");
+		m_registerButton.setText(Messages.new_user);
 		gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		m_registerButton.setLayoutData(gridData);
@@ -228,25 +230,25 @@ public class LoginPanel
 		registerGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		m_login2Label = new Label(registerGroup, SWT.NONE);
-		m_login2Label.setText("Login:");
+		m_login2Label.setText(Messages.login_with_colon);
 		m_login2Text = new Text(registerGroup, SWT.BORDER);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		m_login2Text.setLayoutData(gridData);
 
 		m_password2Label = new Label(registerGroup, SWT.NONE);
-		m_password2Label.setText("Password:");
+		m_password2Label.setText(Messages.password_with_colon);
 		m_password2Text = new Text(registerGroup, SWT.BORDER | SWT.PASSWORD);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		m_password2Text.setLayoutData(gridData);
 
 		m_retypePasswordLabel = new Label(registerGroup, SWT.NONE);
-		m_retypePasswordLabel.setText("Retype Password:");
+		m_retypePasswordLabel.setText(Messages.retype_password_with_colon);
 		m_retypePasswordText = new Text(registerGroup, SWT.BORDER | SWT.PASSWORD);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		m_retypePasswordText.setLayoutData(gridData);
 
 		m_emailLabel = new Label(registerGroup, SWT.NONE);
-		m_emailLabel.setText("Email Address:");
+		m_emailLabel.setText(Messages.email_address_with_colon);
 		m_emailText = new Text(registerGroup, SWT.BORDER);
 		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		m_emailText.setLayoutData(gridData);
@@ -330,50 +332,50 @@ public class LoginPanel
 		{
 			if(m_login1Text.getText().length() == 0)
 			{
-				return "Login cannot be empty";
+				return Messages.login_cannot_be_empty;
 			}
 			if(m_login1Text.getText().length() < 3)
 			{
-				return "Login is too short - length must be between 3 and 25";
+				return Messages.login_is_too_short_length_must_be_between_3_and_25;
 			}
 			if(m_password1Text.getText().length() == 0)
 			{
-				return "Password cannot be empty";
+				return Messages.password_cannot_be_empty;
 			}
 			if(m_password1Text.getText().length() < 4)
 			{
-				return "Password is too short - length must be between 4 and 25";
+				return Messages.password_is_too_short_length_must_be_between_4_and_25;
 			}
 		}
 		else
 		{
 			if(m_login2Text.getText().length() == 0)
 			{
-				return "Login cannot be empty";
+				return Messages.login_cannot_be_empty;
 			}
 			if(m_login2Text.getText().length() < 3)
 			{
-				return "Login is too short - length must be between 3 and 25";
+				return Messages.login_is_too_short_length_must_be_between_3_and_25;
 			}
 			if(m_password2Text.getText().length() == 0)
 			{
-				return "Password cannot be empty";
+				return Messages.password_cannot_be_empty;
 			}
 			if(m_password2Text.getText().length() < 4)
 			{
-				return "Password is too short - length must be between 4 and 25";
+				return Messages.password_is_too_short_length_must_be_between_4_and_25;
 			}
 			if(m_retypePasswordText.getText().length() == 0)
 			{
-				return "Retyped Password cannot be empty";
+				return Messages.retype_password_cannot_be_empty;
 			}
 			if(!m_password2Text.getText().equals(m_retypePasswordText.getText()))
 			{
-				return "Passwords are different";
+				return Messages.passwords_are_different;
 			}
 			if(m_emailText.getText().length() == 0)
 			{
-				return "Email cannot be empty";
+				return Messages.email_cannot_be_empty;
 			}
 		}
 		
