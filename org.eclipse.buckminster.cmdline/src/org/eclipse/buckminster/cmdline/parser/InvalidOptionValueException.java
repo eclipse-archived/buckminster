@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.eclipse.buckminster.cmdline.parser;
 
+import org.eclipse.buckminster.cmdline.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author kolwing
  * 
@@ -19,7 +22,7 @@ public class InvalidOptionValueException extends AbstractOptionParsingException
 
 	public InvalidOptionValueException(String optionName, String message)
 	{
-		super("The value for option '" + optionName + "' is invalid: " + message);
+		super(NLS.bind(Messages.InvalidOptionValueException_The_value_for_option_0_is_invalid, optionName) + message);
 	}
 
 }

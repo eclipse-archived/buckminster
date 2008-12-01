@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.CommandInfo;
+import org.eclipse.buckminster.cmdline.Messages;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
@@ -38,20 +39,20 @@ public class ListCommands extends AbstractCommand
 
 	private static final int SHORT = 3;
 
-	static private final OptionDescriptor DISABLED_OPT = new OptionDescriptor(null, "__disabled", OptionValueType.NONE);
+	static private final OptionDescriptor DISABLED_OPT = new OptionDescriptor(null, "__disabled", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor HIDDEN_OPT = new OptionDescriptor(null, "__hidden", OptionValueType.NONE);
+	static private final OptionDescriptor HIDDEN_OPT = new OptionDescriptor(null, "__hidden", OptionValueType.NONE); //$NON-NLS-1$
 
-	static private final OptionDescriptor STYLE_OPT = new OptionDescriptor(null, "style", OptionValueType.REQUIRED);
+	static private final OptionDescriptor STYLE_OPT = new OptionDescriptor(null, "style", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	private static int parseStyle(String styleStr) throws InvalidOptionValueException
 	{
 		int style;
-		if("long".equalsIgnoreCase(styleStr))
+		if("long".equalsIgnoreCase(styleStr)) //$NON-NLS-1$
 			style = LONG;
-		else if("normal".equalsIgnoreCase(styleStr))
+		else if("normal".equalsIgnoreCase(styleStr)) //$NON-NLS-1$
 			style = NORMAL;
-		else if("short".equalsIgnoreCase(styleStr))
+		else if("short".equalsIgnoreCase(styleStr)) //$NON-NLS-1$
 			style = SHORT;
 		else
 			throw new InvalidOptionValueException(STYLE_OPT.getLongName(), styleStr);
@@ -112,7 +113,7 @@ public class ListCommands extends AbstractCommand
 	private void showLong(CommandInfo[] implementors)
 	{
 		PrintStream out = System.out;
-		out.println("Available commands by namespace:");
+		out.println(Messages.ListCommands_Available_commands_by_namespace);
 		SortedMap<String, List<CommandInfo>> implementorsByNamespace = sortImplementorsByNamespace(implementors);
 		Iterator<Map.Entry<String, List<CommandInfo>>> allInfosItor = implementorsByNamespace.entrySet().iterator();
 		while(allInfosItor.hasNext())
@@ -136,26 +137,26 @@ public class ListCommands extends AbstractCommand
 				{
 					if(namespace != null)
 					{
-						out.print("  (");
+						out.print("  ("); //$NON-NLS-1$
 						out.print(namespace);
-						out.println(")");
+						out.println(")"); //$NON-NLS-1$
 						namespace = null;
 					}
-					out.print("    ");
+					out.print("    "); //$NON-NLS-1$
 					out.print(ci.getName());
 					String[] aliases = ci.getAliases();
 					if(aliases.length > 0)
 					{
-						out.print(" (");
+						out.print(" ("); //$NON-NLS-1$
 						out.print(aliases.length);
-						out.print(" alias");
+						out.print(" alias"); //$NON-NLS-1$
 						out.println(aliases.length > 1
-								? "es)"
-								: ")");
+								? "es)" //$NON-NLS-1$
+								: ")"); //$NON-NLS-1$
 						Arrays.sort(aliases);
 						for(int i = 0; i < aliases.length; ++i)
 						{
-							out.print("      ");
+							out.print("      "); //$NON-NLS-1$
 							out.println(aliases[i]);
 						}
 					}
@@ -169,7 +170,7 @@ public class ListCommands extends AbstractCommand
 	private void showNormal(CommandInfo[] implementors)
 	{
 		PrintStream out = System.out;
-		out.println("Available commands including aliases:");
+		out.println(Messages.ListCommands_Available_commands_including_aliases);
 		ArrayList<String> names = new ArrayList<String>();
 		for(int idx = 0; idx < implementors.length; ++idx)
 		{
@@ -185,7 +186,7 @@ public class ListCommands extends AbstractCommand
 		int top = names.size();
 		for(int idx = 0; idx < top; ++idx)
 		{
-			out.print("  ");
+			out.print("  "); //$NON-NLS-1$
 			out.println(names.get(idx));
 		}
 	}

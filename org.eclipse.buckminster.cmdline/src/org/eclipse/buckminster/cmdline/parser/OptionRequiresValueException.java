@@ -10,6 +10,9 @@
 
 package org.eclipse.buckminster.cmdline.parser;
 
+import org.eclipse.buckminster.cmdline.Messages;
+import org.eclipse.osgi.util.NLS;
+
 public class OptionRequiresValueException extends AbstractOptionParsingException
 {
 	/**
@@ -19,6 +22,6 @@ public class OptionRequiresValueException extends AbstractOptionParsingException
 
 	public OptionRequiresValueException(String message)
 	{
-		super("The option '" + message + "' requires a value");
+		super(NLS.bind(Messages.OptionRequiresValueException_The_option_0_requires_a_value, message));
 	}
 }

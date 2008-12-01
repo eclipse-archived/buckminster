@@ -13,15 +13,16 @@ package org.eclipse.buckminster.cmdline.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.buckminster.cmdline.Messages;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 
 public class ParseResult
 {
-	static private final String DASH = "-";
+	static private final String DASH = "-"; //$NON-NLS-1$
 
-	static private final String DOUBLEDASH = "--";
+	static private final String DOUBLEDASH = "--"; //$NON-NLS-1$
 
 	static public ParseResult parse(String[] args, List<OptionDescriptor> optionDescriptors)
 			throws NoOptionNameException, AmbiguousOptionException, InvalidOptionException,
@@ -57,13 +58,13 @@ public class ParseResult
 			// PDE automatically tacks '-pdelaunch' on to the cmd line
 			// when starting from the pde. Just throw it away!
 			//
-			if(arg.equals("-pdelaunch"))
+			if(arg.equals("-pdelaunch")) //$NON-NLS-1$
 				continue;
 
 			// Eclipse 3.3 adds a -launcher <path to executable>
 			// Skip those
 			//
-			if(arg.equals("-launcher"))
+			if(arg.equals("-launcher")) //$NON-NLS-1$
 			{
 				++i;
 				continue;
@@ -72,7 +73,7 @@ public class ParseResult
 			// Eclipse 3.3 adds a -name Eclipse <number>
 			// Skip those
 			//
-			if(arg.equals("-name"))
+			if(arg.equals("-name")) //$NON-NLS-1$
 			{
 				i += 2;
 				continue;
@@ -159,7 +160,7 @@ public class ParseResult
 				optionValue = args[++i];
 			}
 			else
-				throw new InternalError("Unknown OptionValueType");
+				throw new InternalError(Messages.ParseResult_Unknown_OptionValueType);
 
 			options.add(new Option(descriptorToUse, argName, optionValue, isLongName));
 		}

@@ -10,6 +10,9 @@
 
 package org.eclipse.buckminster.cmdline.parser;
 
+import org.eclipse.buckminster.cmdline.Messages;
+import org.eclipse.osgi.util.NLS;
+
 public class AmbiguousOptionException extends AbstractOptionParsingException
 {
 	/**
@@ -19,6 +22,6 @@ public class AmbiguousOptionException extends AbstractOptionParsingException
 
 	public AmbiguousOptionException(String message)
 	{
-		super("The option '" + message + "' is ambiguous");
+		super(NLS.bind(Messages.AmbiguousOptionException_The_option_0_is_ambiguous, message));
 	}
 }

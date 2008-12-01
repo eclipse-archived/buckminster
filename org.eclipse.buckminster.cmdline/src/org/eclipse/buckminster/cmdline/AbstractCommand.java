@@ -19,10 +19,11 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
+import org.eclipse.osgi.util.NLS;
 
 abstract public class AbstractCommand
 {
-	static private final OptionDescriptor s_helpDescriptor = new OptionDescriptor('?', "help", OptionValueType.NONE);
+	static private final OptionDescriptor s_helpDescriptor = new OptionDescriptor('?', "help", OptionValueType.NONE); //$NON-NLS-1$
 
 	private String m_calledUsingName;
 
@@ -87,7 +88,7 @@ abstract public class AbstractCommand
 	protected InputStream getHelpStream() throws Exception
 	{
 		Class<? extends AbstractCommand> myClass = getClass();
-		String helpResource = "/" + myClass.getName().replace('.', '/') + ".help";
+		String helpResource = "/" + myClass.getName().replace('.', '/') + ".help"; //$NON-NLS-1$ //$NON-NLS-2$
 		return myClass.getResourceAsStream(helpResource);
 	}
 
@@ -125,14 +126,12 @@ abstract public class AbstractCommand
 	protected void help(InputStream helpStream) throws Exception
 	{
 		if(helpStream == null)
-			System.err.println("Help missing for " + this.getFullName());
+			System.err.println(NLS.bind(Messages.AbstractCommand_Help_missing_for_0, this.getFullName()));
 		else
 		{
 			try
 			{
-				System.out.print("Help text for ");
-				System.out.print(this.getFullName());
-				System.out.println(":");
+				System.out.print(NLS.bind(Messages.AbstractCommand_Help_text_for_0, this.getFullName()));
 				IOUtils.copy(helpStream, System.out, null);
 			}
 			finally

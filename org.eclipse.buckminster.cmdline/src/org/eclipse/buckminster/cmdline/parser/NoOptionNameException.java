@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.cmdline.parser;
 
+import org.eclipse.buckminster.cmdline.Messages;
+
 public class NoOptionNameException extends AbstractOptionParsingException
 {
 	/**
@@ -19,6 +21,6 @@ public class NoOptionNameException extends AbstractOptionParsingException
 
 	public NoOptionNameException()
 	{
-		super("Missing option name");
+		super(Messages.NoOptionNameException_Missing_option_name);
 	}
 }

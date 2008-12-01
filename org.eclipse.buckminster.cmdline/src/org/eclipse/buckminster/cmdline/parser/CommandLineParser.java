@@ -12,6 +12,7 @@ package org.eclipse.buckminster.cmdline.parser;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.eclipse.buckminster.cmdline.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 
@@ -33,7 +34,7 @@ public class CommandLineParser implements Iterator<String>
 		}
 		catch(Error e)
 		{
-			return "ENV Variables are not supported unless you use Java 1.5 or higher";
+			return Messages.CommandLineParser_ENV_Variables_not_supported_unless_Java_1_5_or_higher;
 		}
 	}
 
@@ -120,10 +121,10 @@ public class CommandLineParser implements Iterator<String>
 			if(end > start)
 			{
 				String key = string.substring(start, end);
-				String value = (key.length() > 4 && "env:".equalsIgnoreCase(string.substring(0, 4)))
+				String value = (key.length() > 4 && "env:".equalsIgnoreCase(string.substring(0, 4))) //$NON-NLS-1$
 						? getenv(key.substring(4))
 						: System.getProperty(key);
-				logger.debug("key '%s' expanded to '%s'", key, value);
+				logger.debug("key '%s' expanded to '%s'", key, value); //$NON-NLS-1$
 				if(value != null)
 					bld.append(value);
 			}

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 public class CommandInfo
 {
@@ -29,21 +30,21 @@ public class CommandInfo
 
 	public static final int DISABLED = 3;
 
-	static private final String COMMAND_EXTPOINT = "org.eclipse.buckminster.cmdline.commands";
+	static private final String COMMAND_EXTPOINT = "org.eclipse.buckminster.cmdline.commands"; //$NON-NLS-1$
 
-	static private final String ALIAS_ELEMENTS = "alias";
+	static private final String ALIAS_ELEMENTS = "alias"; //$NON-NLS-1$
 
-	static private final String CLASS_ATTRIBUTE = "class";
+	static private final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
-	static private final String NAME_ATTRIBUTE = "name";
+	static private final String NAME_ATTRIBUTE = "name"; //$NON-NLS-1$
 
-	static private final String DEPRECATED_BY_ATTRIBUTE = "deprecatedBy";
+	static private final String DEPRECATED_BY_ATTRIBUTE = "deprecatedBy"; //$NON-NLS-1$
 
 	static private final char PERIOD_CHARACTER = '.';
 
-	static private final String STATUS_ATTRIBUTE = "status";
+	static private final String STATUS_ATTRIBUTE = "status"; //$NON-NLS-1$
 
-	static private final String ADD_HELP_FLAGS_ATTRIBUTE = "addhelpflags";
+	static private final String ADD_HELP_FLAGS_ATTRIBUTE = "addhelpflags"; //$NON-NLS-1$
 
 	static private CommandInfo[] s_commandInfos;
 
@@ -62,7 +63,7 @@ public class CommandInfo
 			String[] allNames = ci.getAllNames();
 			for(int nidx = 0; nidx < allNames.length; ++nidx)
 			{
-				String[] parts = allNames[nidx].split("\\.");
+				String[] parts = allNames[nidx].split("\\."); //$NON-NLS-1$
 				int len = parts.length;
 				for(int i = 0; i < len; i++)
 				{
@@ -81,23 +82,19 @@ public class CommandInfo
 
 		int foundMatches = matches.size();
 		if(foundMatches == 0)
-			throw new UsageException("Command '" + commandName + "' not found.");
+			throw new UsageException(NLS.bind(Messages.CommandInfo_Command_0_not_found, commandName));
 
 		if(foundMatches > 1)
 		{
 			sb.setLength(0);
-			sb.append("Multiple matches for '");
-			sb.append(commandName);
-			sb.append("':");
+			sb.append(NLS.bind(Messages.CommandInfo_Multiple_matches_for_0_for, commandName));
 			for(int idx = 0; idx < foundMatches; ++idx)
 			{
 				CommandInfo ci = matches.get(idx);
 				sb.append(ci.getFullName());
-				sb.append(" (implemented by class: ");
-				sb.append(ci.getImplementingClass());
-				sb.append(')');
+				sb.append(NLS.bind(Messages.CommandInfo_implemented_by_class_0, ci.getImplementingClass()));
 				if(idx < foundMatches - 1)
-					sb.append(", ");
+					sb.append(", "); //$NON-NLS-1$
 			}
 			throw new UsageException(sb.toString());
 		}
@@ -106,16 +103,12 @@ public class CommandInfo
 		if(ci.getStatus() == DEPRECATED)
 		{
 			sb.setLength(0);
-			sb.append("Command ");
-			sb.append(ci.getName());
-			sb.append(" is deprecated");
+			sb.append(NLS.bind(Messages.CommandInfo_Command_0_is_deprecated, ci.getName()));
 
 			String by = ci.getDeprecatedBy();
 			if(by != null)
 			{
-				sb.append(", use ");
-				sb.append(by);
-				sb.append(" instead");
+				sb.append(NLS.bind(Messages.CommandInfo_Use_command_0_instead, by));
 			}
 			Buckminster.getLogger().warning(sb.toString());
 		}
@@ -140,16 +133,17 @@ public class CommandInfo
 	private static int parseCommandStatus(String statusString)
 	{
 		int status;
-		if("normal".equalsIgnoreCase(statusString))
+		if("normal".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = NORMAL;
-		else if("deprecated".equalsIgnoreCase(statusString))
+		else if("deprecated".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = DEPRECATED;
-		else if("hidden".equalsIgnoreCase(statusString))
+		else if("hidden".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = HIDDEN;
-		else if("disabled".equalsIgnoreCase(statusString))
+		else if("disabled".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = DISABLED;
 		else
-			throw new IllegalArgumentException(statusString + " is not a valid command status");
+			throw new IllegalArgumentException(NLS.bind(Messages.CommandInfo__0_is_not_a_valid_command_status,
+					statusString));
 		return status;
 	}
 

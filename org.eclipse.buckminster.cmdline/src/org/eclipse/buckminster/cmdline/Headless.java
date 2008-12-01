@@ -68,7 +68,7 @@ public class Headless implements IApplication, OptionValueType
 			bld.append(m_name);
 			for(int idx = 0; idx < nargs; ++idx)
 			{
-				bld.append(" '");
+				bld.append(" '"); //$NON-NLS-1$
 				bld.append(m_args[idx]);
 				bld.append('\'');
 			}
@@ -79,7 +79,7 @@ public class Headless implements IApplication, OptionValueType
 	/**
 	 * The plug-in ID
 	 */
-	public static final String PLUGIN_ID = "org.eclipse.buckminster.cmdline";
+	public static final String PLUGIN_ID = "org.eclipse.buckminster.cmdline"; //$NON-NLS-1$
 
 	static final public int EXIT_FORCED = 2;
 
@@ -90,19 +90,19 @@ public class Headless implements IApplication, OptionValueType
 	// be a little less user-friendly by displaying nasty stack traces on
 	// exception
 	//
-	private static final OptionDescriptor DISPLAY_STACKTRACE = new OptionDescriptor(null, "displaystacktrace", NONE);
+	private static final OptionDescriptor DISPLAY_STACKTRACE = new OptionDescriptor(null, "displaystacktrace", NONE); //$NON-NLS-1$
 
 	// help options, treated equally
 	//
-	private static final OptionDescriptor HELP = new OptionDescriptor('?', "help", OptionValueType.NONE);
+	private static final OptionDescriptor HELP = new OptionDescriptor('?', "help", OptionValueType.NONE); //$NON-NLS-1$
 
 	// logging possibilities
 	//
-	private static final OptionDescriptor LOG_LEVEL = new OptionDescriptor('L', "loglevel", REQUIRED);
+	private static final OptionDescriptor LOG_LEVEL = new OptionDescriptor('L', "loglevel", REQUIRED); //$NON-NLS-1$
 
 	// logging possibilities
 	//
-	private static final OptionDescriptor FILE = new OptionDescriptor('S', "scriptfile", REQUIRED);
+	private static final OptionDescriptor FILE = new OptionDescriptor('S', "scriptfile", REQUIRED); //$NON-NLS-1$
 
 	private final ArrayList<Invocation> m_invocations = new ArrayList<Invocation>();
 
@@ -117,12 +117,12 @@ public class Headless implements IApplication, OptionValueType
 	protected void help(PrintStream ps) throws Exception
 	{
 		PrintStream out = System.out;
-		InputStream is = getClass().getResourceAsStream("Headless.help");
+		InputStream is = getClass().getResourceAsStream("Headless.help"); //$NON-NLS-1$
 		if(is == null)
-			out.println("Help is not available");
+			out.println(Messages.Headless_Help_is_not_available);
 		else
 		{
-			out.println("Help text for buckminster:");
+			out.println(Messages.Headless_Help_text_for_buckminster);
 			try
 			{
 				IOUtils.copy(is, out, null);
@@ -160,27 +160,27 @@ public class Headless implements IApplication, OptionValueType
 			{
 				int logLevel;
 				String arg = option.getValue();
-				if("info".equalsIgnoreCase(arg))
+				if("info".equalsIgnoreCase(arg)) //$NON-NLS-1$
 					logLevel = Logger.INFO;
-				else if("warning".equalsIgnoreCase(arg))
+				else if("warning".equalsIgnoreCase(arg)) //$NON-NLS-1$
 					logLevel = Logger.WARNING;
-				else if("error".equalsIgnoreCase(arg))
+				else if("error".equalsIgnoreCase(arg)) //$NON-NLS-1$
 					logLevel = Logger.ERROR;
-				else if("debug".equalsIgnoreCase(arg))
+				else if("debug".equalsIgnoreCase(arg)) //$NON-NLS-1$
 					logLevel = Logger.DEBUG;
 				else
 					throw new InvalidOptionValueException(option.getName(), option.getValue());
 				m_logLevel = logLevel;
 			}
 			else
-				throw new InternalError("Unexpected option");
+				throw new InternalError(Messages.Headless_Unexpected_option);
 		}
 
 		String[] unparsed = pr.getUnparsed();
 		if(unparsed.length > 0)
 		{
 			if(scriptFile != null)
-				throw new UsageException("The --scriptfile option cannot be combined with a command", true);
+				throw new UsageException(Messages.Headless_The_scriptfile_option_cannot_be_combined_with_a_command, true);
 
 			String[] commandArgs = new String[unparsed.length - 1];
 			System.arraycopy(unparsed, 1, commandArgs, 0, commandArgs.length);
@@ -191,7 +191,7 @@ public class Headless implements IApplication, OptionValueType
 			InputStream lines = null;
 			try
 			{
-				if(scriptFile.equals("-"))
+				if(scriptFile.equals("-")) //$NON-NLS-1$
 					lines = System.in;
 				else
 					lines = new FileInputStream(scriptFile);
@@ -230,11 +230,11 @@ public class Headless implements IApplication, OptionValueType
 		}
 		catch(OperationCanceledException e)
 		{
-			System.err.println("Command canceled");
+			System.err.println(Messages.Headless_Command_canceled);
 		}
 		catch(InterruptedException e)
 		{
-			System.err.println("Command was interrupted");
+			System.err.println(Messages.Headless_Command_was_interrupted);
 		}
 		catch(SimpleErrorExitException e)
 		{
@@ -272,10 +272,10 @@ public class Headless implements IApplication, OptionValueType
 		int top = m_invocations.size();
 		if(top == 0)
 		{
-			System.out.println("No command provided. Try one of:");
-			System.out.println("  buckminster --help");
-			System.out.println("  buckminster listcommands");
-			System.out.println("  buckminster <command> --help");
+			System.out.println(Messages.Headless_No_command_provided_Try_one_of);
+			System.out.println(Messages.Headless_buckminster__help);
+			System.out.println(Messages.Headless_buckminster_listcommands);
+			System.out.println(Messages.Headless_buckminster_command__help);
 			return EXIT_FAIL;
 		}
 

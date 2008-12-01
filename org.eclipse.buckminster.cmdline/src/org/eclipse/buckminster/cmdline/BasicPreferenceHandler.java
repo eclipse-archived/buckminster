@@ -24,11 +24,11 @@ import org.osgi.service.prefs.Preferences;
  */
 public class BasicPreferenceHandler implements IExecutableExtension
 {
-	private static final String NAME_ATTRIB = "name";
+	private static final String NAME_ATTRIB = "name"; //$NON-NLS-1$
 
-	private static final String KEY_ATTRIB = "key";
+	private static final String KEY_ATTRIB = "key"; //$NON-NLS-1$
 
-	private static final String DESC_ATTRIB = "description";
+	private static final String DESC_ATTRIB = "description"; //$NON-NLS-1$
 
 	private static final char SLASH = '/';
 
@@ -65,7 +65,7 @@ public class BasicPreferenceHandler implements IExecutableExtension
 	{
 		int lastSlash = path.lastIndexOf(SLASH);
 		if(lastSlash == -1)
-			throw new IllegalArgumentException("No slash in preference path");
+			throw new IllegalArgumentException(Messages.BasicPreferenceHandler_No_slash_in_preference_path);
 		return new String[] { path.substring(0, lastSlash), path.substring(lastSlash + 1) };
 	}
 
