@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.ant.AntBuilderConstants;
 import org.eclipse.buckminster.ant.AntRunner;
+import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
@@ -35,6 +36,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
 /**
@@ -43,11 +45,11 @@ import org.osgi.framework.Bundle;
  */
 public class AntActor extends AbstractActor
 {
-	public static final String ID = "ant";
+	public static final String ID = "ant"; //$NON-NLS-1$
 
-	public final static String BUILD_SCRIPT_ID = "id";
+	public final static String BUILD_SCRIPT_ID = "id"; //$NON-NLS-1$
 
-	public final static String BUILD_SCRIPT_RESOURCE = "resource";
+	public final static String BUILD_SCRIPT_RESOURCE = "resource"; //$NON-NLS-1$
 
 	private static void addPathGroupArraysToProperties(Map<String, PathGroup[]> namedPGA, Map<String, String> props)
 	{
@@ -91,14 +93,14 @@ public class AntActor extends AbstractActor
 			}
 			String propKey = namedPG.getKey();
 			key_bld.setLength(0);
-			key_bld.append("fs:");
+			key_bld.append("fs:"); //$NON-NLS-1$
 			key_bld.append(propKey);
 			props.put(key_bld.toString(), fs_bld.toString());
 
 			if(singleton)
 			{
 				key_bld.setLength(0);
-				key_bld.append("sp:");
+				key_bld.append("sp:"); //$NON-NLS-1$
 				key_bld.append(propKey);
 				props.put(key_bld.toString(), sp_bld.toString());
 			}
@@ -119,17 +121,18 @@ public class AntActor extends AbstractActor
 		if(buildFile == null)
 		{
 			if(buildFileId == null)
-				throw BuckminsterException.fromMessage("Property not set: %s",
-						AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Property_not_set_0,
+						AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
 
 			buildFileId = ExpandingProperties.expand(ctx.getProperties(), buildFileId, 0);
 			return this.getBuildFileExtension(buildFileId);
 		}
 
 		if(buildFileId != null)
-			throw BuckminsterException.fromMessage("Properties %s and %s are mutually exclusive",
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.AntActor_Properties_0_and_1_are_mutually_exclusive,
 					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID);
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
 
 		buildFile = ExpandingProperties.expand(ctx.getProperties(), buildFile, 0);
 		IPath buildFilePath = new Path(buildFile);
@@ -153,20 +156,21 @@ public class AntActor extends AbstractActor
 		}
 
 		if(resourceElem == null)
-			throw BuckminsterException.fromMessage("No extension found defines %s: %s",
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_No_extension_found_defines_0_1,
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
 
 		// The resource must be loaded by the bundle that contributes it
 		//
 		String contributor = resourceElem.getContributor().getName();
 		Bundle contributorBundle = Platform.getBundle(contributor);
 		if(contributorBundle == null)
-			throw BuckminsterException.fromMessage("Unable to load bundle %s", contributor);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unable_to_load_bundle_0, contributor));
 
 		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
 		if(rsURL == null)
-			throw BuckminsterException.fromMessage("Extension found using %s: %s appoints a non existing resource",
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId);
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.AntActor_Extension_found_using_0_1_appoints_non_existing_resource,
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
 
 		try
 		{
@@ -177,11 +181,12 @@ public class AntActor extends AbstractActor
 			throw BuckminsterException.wrap(e);
 		}
 
-		if(!"file".equalsIgnoreCase(rsURL.getProtocol()))
+		if(!"file".equalsIgnoreCase(rsURL.getProtocol())) //$NON-NLS-1$
 			//
 			// This should never happen. It's a resource in an active plug-in right?
 			//
-			throw BuckminsterException.fromMessage("Unexpected protocol: %s", rsURL.getProtocol());
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unexpected_protocol_0, rsURL
+					.getProtocol()));
 
 		return FileUtils.getFileAsPath(rsURL);
 	}
@@ -221,7 +226,7 @@ public class AntActor extends AbstractActor
 		// there can be no strings that are empty or with embedded/surrounding
 		// ws
 		//
-		return tlist.split("\\s+");
+		return tlist.split("\\s+"); //$NON-NLS-1$
 	}
 
 	protected final String getTargetsString(IActionContext ctx)
@@ -257,7 +262,7 @@ public class AntActor extends AbstractActor
 			Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 			addActorPathGroups(ctx, namedPathGroupArrays);
 			addPathGroupArraysToProperties(namedPathGroupArrays, props);
-			props.put("basedir", ctx.getComponentLocation().toOSString());
+			props.put("basedir", ctx.getComponentLocation().toOSString()); //$NON-NLS-1$
 			MonitorUtils.worked(monitor, 10);
 
 			System.setOut(ctx.getOutputStream());
@@ -266,7 +271,7 @@ public class AntActor extends AbstractActor
 			AntRunner runner = new AntRunner();
 			runner.setBuildFileLocation(buildFile);
 			runner.setExecutionTargets(getTargets(ctx));
-			runner.setBuildLogger("org.eclipse.buckminster.ant.support.AntBuildLogger");
+			runner.setBuildLogger("org.eclipse.buckminster.ant.support.AntBuildLogger"); //$NON-NLS-1$
 			runner.addUserProperties(props);
 			runner.run(MonitorUtils.subMonitor(monitor, 90));
 			return Status.OK_STATUS;

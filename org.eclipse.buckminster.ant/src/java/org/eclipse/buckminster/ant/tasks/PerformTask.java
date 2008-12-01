@@ -41,7 +41,7 @@ public class PerformTask
 	{
 		try
 		{
-			return m_command.run("perform");
+			return m_command.run("perform"); //$NON-NLS-1$
 		}
 		catch(Exception e)
 		{

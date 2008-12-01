@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.ant.AntBuilderConstants;
 import org.eclipse.buckminster.ant.AntRunner;
+import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.build.AbstractBuckminsterBuilder;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -25,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * <p>
@@ -69,7 +71,7 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 
 			IPath baseDir = getBaseDir(args);
 			if(baseDir != null)
-				props.put("basedir", baseDir.toOSString());
+				props.put("basedir", baseDir.toOSString()); //$NON-NLS-1$
 
 			System.setOut(getOutStream());
 			System.setErr(getErrStream());
@@ -77,7 +79,7 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 			AntRunner runner = new AntRunner();
 			runner.setBuildFileLocation(getScriptFile(args).getLocation());
 			runner.setExecutionTargets(targets);
-			runner.setBuildLogger("org.eclipse.buckminster.ant.support.AntBuildLogger");
+			runner.setBuildLogger("org.eclipse.buckminster.ant.support.AntBuildLogger"); //$NON-NLS-1$
 			runner.addUserProperties(props);
 			runner.run(monitor);
 		}
@@ -152,8 +154,8 @@ public class AntBuilder extends AbstractBuckminsterBuilder implements AntBuilder
 				scriptFile = DEFAULT_SCRIPT_FILE;
 			IPath relativeScriptFilePath = new Path(scriptFile);
 			if(relativeScriptFilePath.isAbsolute())
-				throw BuckminsterException.fromMessage("The script file name must be relative to the project root: %s",
-						scriptFile);
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.AntBuilder_the_script_file_name_must_be_relative_to_the_project_root_0, scriptFile));
 			m_scriptFile = getProject().getFile(relativeScriptFilePath);
 			notifyOnChangedResources(new IResource[] { m_scriptFile });
 		}

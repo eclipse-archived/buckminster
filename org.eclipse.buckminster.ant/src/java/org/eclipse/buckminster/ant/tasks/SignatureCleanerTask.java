@@ -14,7 +14,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author thhal
@@ -37,7 +39,7 @@ public class SignatureCleanerTask
 		{
 			int len;
 			File folder = jarFile.getParentFile();
-			File tmpFile1 = File.createTempFile("jarclean", ".tmp", folder);
+			File tmpFile1 = File.createTempFile("jarclean", ".tmp", folder); //$NON-NLS-1$ //$NON-NLS-2$
 			boolean cleaned = false;
 			try
 			{
@@ -52,8 +54,8 @@ public class SignatureCleanerTask
 					while((entry = zipInput.getNextEntry()) != null)
 					{
 						String name = entry.getName();
-						if(name.startsWith("META-INF/") && name.indexOf('/', 9) < 0
-								&& (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF")))
+						if(name.startsWith("META-INF/") && name.indexOf('/', 9) < 0 //$NON-NLS-1$
+								&& (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						{
 							// Skip this entry
 							cleaned = true;
@@ -75,16 +77,18 @@ public class SignatureCleanerTask
 				{
 					// Rename the old file
 					//
-					File tmpFile2 = new File(tmpFile1.getAbsolutePath() + ".delete");
+					File tmpFile2 = new File(tmpFile1.getAbsolutePath() + ".delete"); //$NON-NLS-1$
 					if(!jarFile.renameTo(tmpFile2))
-						throw new IOException("Unable to rename " + jarFile + " to " + tmpFile2);
+						throw new IOException(NLS.bind(Messages.SignatureCleanerTask_Unable_to_rename_jar_0_to_tmp_1,
+								jarFile, tmpFile2));
 
 					if(!tmpFile1.renameTo(jarFile))
 					{
 						// Make an attempt to undo the previous rename.
 						//
 						tmpFile2.renameTo(jarFile);
-						throw new IOException("Unable to rename " + tmpFile1 + " to " + jarFile);
+						throw new IOException(NLS.bind(Messages.SignatureCleanerTask_Unable_to_rename_tmp_1_to_jar_1,
+								tmpFile1, jarFile));
 					}
 					tmpFile1 = tmpFile2; // Delete this one instead in the finally clause
 				}

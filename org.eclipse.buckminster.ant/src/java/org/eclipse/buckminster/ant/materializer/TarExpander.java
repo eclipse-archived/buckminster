@@ -9,6 +9,7 @@ import java.io.OutputStream;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
+import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
 import org.eclipse.buckminster.download.IExpander;
@@ -17,6 +18,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -38,7 +40,8 @@ public class TarExpander extends AbstractExtension implements IExpander
 		if(destinationFolder != null)
 		{
 			if(!(destinationFolder.isDirectory() || destinationFolder.mkdirs()))
-				throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.TarExpander_unable_to_unzip_into_directory_0,
+						destinationFolder));
 
 			MonitorUtils.worked(monitor, 10);
 			ticksLeft -= 10;
@@ -59,7 +62,8 @@ public class TarExpander extends AbstractExtension implements IExpander
 
 					File subDir = new File(destinationFolder, name);
 					if(!(subDir.isDirectory() || subDir.mkdirs()))
-						throw BuckminsterException.fromMessage("Unable to unzip into directory %s", destinationFolder);
+						throw BuckminsterException.fromMessage(NLS.bind(
+								Messages.TarExpander_unable_to_unzip_into_directory_0, destinationFolder));
 
 					if(ticksLeft >= 10)
 					{
@@ -80,8 +84,8 @@ public class TarExpander extends AbstractExtension implements IExpander
 						// folders need to be created
 						File subDir = new File(destinationFolder, name).getParentFile();
 						if(subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
-							throw BuckminsterException.fromMessage("Unable to unzip into directory %s",
-									destinationFolder);
+							throw BuckminsterException.fromMessage(NLS.bind(
+									Messages.TarExpander_unable_to_unzip_into_directory_0, destinationFolder));
 
 						if(m_filter == null || m_filter.accept(new File(entry.getName())))
 							output = new FileOutputStream(new File(destinationFolder, name));

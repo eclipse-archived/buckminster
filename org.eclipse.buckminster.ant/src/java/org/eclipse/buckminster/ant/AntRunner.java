@@ -96,20 +96,20 @@ public class AntRunner
 			Class<?>[] string = new Class<?>[] { String.class };
 			Class<?>[] strings = new Class<?>[] { String[].class };
 			s_internalAntRunnerClass = getInternalAntRunnerClass();
-			s_addBuildLogger = s_internalAntRunnerClass.getMethod("addBuildLogger", string);
-			s_getBuildErrorMessage = s_internalAntRunnerClass.getMethod("getBuildExceptionErrorMessage",
+			s_addBuildLogger = s_internalAntRunnerClass.getMethod("addBuildLogger", string); //$NON-NLS-1$
+			s_getBuildErrorMessage = s_internalAntRunnerClass.getMethod("getBuildExceptionErrorMessage", //$NON-NLS-1$
 					new Class[] { Throwable.class });
-			s_run = s_internalAntRunnerClass.getMethod("run", Trivial.EMPTY_CLASS_ARRAY);
-			s_setBuildFileLocation = s_internalAntRunnerClass.getMethod("setBuildFileLocation", string);
-			s_setAntHome = s_internalAntRunnerClass.getMethod("setAntHome", string);
-			s_addUserProperties = s_internalAntRunnerClass.getMethod("addUserProperties", new Class[] { Map.class });
-			s_addPropertyFiles = s_internalAntRunnerClass.getMethod("addPropertyFiles", strings);
-			s_setArguments = s_internalAntRunnerClass.getMethod("setArguments", strings);
-			s_setProgressMonitor = s_internalAntRunnerClass.getMethod("setProgressMonitor",
+			s_run = s_internalAntRunnerClass.getMethod("run", Trivial.EMPTY_CLASS_ARRAY); //$NON-NLS-1$
+			s_setBuildFileLocation = s_internalAntRunnerClass.getMethod("setBuildFileLocation", string); //$NON-NLS-1$
+			s_setAntHome = s_internalAntRunnerClass.getMethod("setAntHome", string); //$NON-NLS-1$
+			s_addUserProperties = s_internalAntRunnerClass.getMethod("addUserProperties", new Class[] { Map.class }); //$NON-NLS-1$
+			s_addPropertyFiles = s_internalAntRunnerClass.getMethod("addPropertyFiles", strings); //$NON-NLS-1$
+			s_setArguments = s_internalAntRunnerClass.getMethod("setArguments", strings); //$NON-NLS-1$
+			s_setProgressMonitor = s_internalAntRunnerClass.getMethod("setProgressMonitor", //$NON-NLS-1$
 					new Class[] { IProgressMonitor.class });
-			s_setMessageOutputLevel = s_internalAntRunnerClass.getMethod("setMessageOutputLevel",
+			s_setMessageOutputLevel = s_internalAntRunnerClass.getMethod("setMessageOutputLevel", //$NON-NLS-1$
 					new Class[] { int.class });
-			s_setExecutionTargets = s_internalAntRunnerClass.getMethod("setExecutionTargets", strings);
+			s_setExecutionTargets = s_internalAntRunnerClass.getMethod("setExecutionTargets", strings); //$NON-NLS-1$
 		}
 		catch(ClassNotFoundException e)
 		{
@@ -283,7 +283,7 @@ public class AntRunner
 					//
 					// indicate that the default logger is not to be used
 					//
-					m_buildLoggerClassName = "";
+					m_buildLoggerClassName = ""; //$NON-NLS-1$
 
 				s_addBuildLogger.invoke(runner, new Object[] { m_buildLoggerClassName });
 

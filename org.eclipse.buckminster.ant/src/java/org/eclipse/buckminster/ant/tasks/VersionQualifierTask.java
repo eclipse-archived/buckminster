@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -26,6 +27,7 @@ import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -33,19 +35,19 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class VersionQualifierTask
 {
-	public static final String GENERATOR_PREFIX = "generator:";
+	public static final String GENERATOR_PREFIX = "generator:"; //$NON-NLS-1$
 
-	public static final String QUALIFIER_SUFFIX = "qualifier";
+	public static final String QUALIFIER_SUFFIX = "qualifier"; //$NON-NLS-1$
 
-	public static final String PROPERTY_CONTEXT = "context";
+	public static final String PROPERTY_CONTEXT = "context"; //$NON-NLS-1$
 
-	public static final String PROPERTY_NONE = "none";
+	public static final String PROPERTY_NONE = "none"; //$NON-NLS-1$
 
-	private static final String QUALIFIER_REPLACEMENT_PREFIX = "qualifier.replacement.";
+	private static final String QUALIFIER_REPLACEMENT_PREFIX = "qualifier.replacement."; //$NON-NLS-1$
 
 	private static final String MATCH_ALL = QUALIFIER_REPLACEMENT_PREFIX + '*';
 
-	private static final SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+	private static final SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMddHHmm"); //$NON-NLS-1$
 
 	private final Map<String, String> m_properties;
 
@@ -70,7 +72,8 @@ public class VersionQualifierTask
 			}
 			catch(IOException e)
 			{
-				throw BuckminsterException.fromMessage(e, "Unable to read properties from %s", propertiesFile);
+				throw BuckminsterException.fromMessage(e, NLS.bind(
+						Messages.VersionQualifierTask_Unable_to_read_properties_from_0, propertiesFile));
 			}
 			finally
 			{
@@ -109,7 +112,7 @@ public class VersionQualifierTask
 					// If not found, then lookup for the id,0.0.0
 					//
 					bld.setLength(lenWithId);
-					bld.append("0.0.0");
+					bld.append("0.0.0"); //$NON-NLS-1$
 					newQualifier = m_properties.get(bld.toString());
 					if(newQualifier == null)
 						newQualifier = m_properties.get(MATCH_ALL);
@@ -175,7 +178,7 @@ public class VersionQualifierTask
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().warning(e, "Unable to qualify version");
+				CorePlugin.getLogger().warning(e, Messages.VersionQualifierTask_Unable_to_qualify_version);
 			}
 		}
 		else
