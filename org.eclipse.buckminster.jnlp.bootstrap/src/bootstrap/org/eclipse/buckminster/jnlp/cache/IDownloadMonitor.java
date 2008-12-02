@@ -14,18 +14,18 @@ import org.eclipse.buckminster.jnlp.bootstrap.OperationCanceledException;
 
 /**
  * @author Filip Hrbek
- *
- * A monitor similar to JNLP DownloadServiceListener (easy to refactor implementing classes for JNLP technology)
+ * 
+ *         A monitor similar to JNLP DownloadServiceListener (easy to refactor implementing classes for JNLP technology)
  */
 public interface IDownloadMonitor
 {
-	public void progress(URL url, String version, long readSoFar, long total, int overallPercent);
+	public void checkCanceled() throws OperationCanceledException;
 
 	public void downloadFailed(URL url, String version);
-	
-	public void setCanceled(boolean canceled);
-	
+
 	public boolean isCanceled();
-	
-	public void checkCanceled() throws OperationCanceledException;
+
+	public void progress(URL url, String version, long readSoFar, long total, int overallPercent);
+
+	public void setCanceled(boolean canceled);
 }

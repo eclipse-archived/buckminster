@@ -19,11 +19,10 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author Filip Hrbek
- *
- * This class provides an entry point for invocation the product from an applet.
- * In fact, no real JNLP software is used when using this entry.
- * The main advantage of using this approach is avoiding problems with convenient start
- * from a web page, such as java version discovery, initial (ugly) splash screens etc.
+ * 
+ *         This class provides an entry point for invocation the product from an applet. In fact, no real JNLP software
+ *         is used when using this entry. The main advantage of using this approach is avoiding problems with convenient
+ *         start from a web page, such as java version discovery, initial (ugly) splash screens etc.
  */
 public class AppletEntry extends Applet
 {
@@ -35,23 +34,24 @@ public class AppletEntry extends Applet
 		try
 		{
 			String jnlpLink = getParameter("jnlpLink"); //$NON-NLS-1$
-			
-			/* Parse JNLP descriptor which would normally be used for launching the application
-			   with Java Web Start. Extract only the most important information - command line
-			   arguments and use them for launching the application.
-			*/
+
+			/*
+			 * Parse JNLP descriptor which would normally be used for launching the application with Java Web Start.
+			 * Extract only the most important information - command line arguments and use them for launching the
+			 * application.
+			 */
 			JNLPResource resource = new JNLPResource(new URL(jnlpLink));
 			NodeList arguments = resource.getDocument().getElementsByTagName("argument"); //$NON-NLS-1$
-			
+
 			int len = arguments.getLength();
 			List<String> args = new ArrayList<String>();
-			
-			for (int i=0; i < len; i++)
+
+			for(int i = 0; i < len; i++)
 			{
 				Node argument = arguments.item(i);
 				args.add(argument.getTextContent());
 			}
-			
+
 			Main.launch(args.toArray(new String[0]), true);
 		}
 		catch(Exception e)

@@ -16,7 +16,7 @@ import java.net.URL;
 
 /**
  * @author kaja
- *
+ * 
  */
 class ImageLabel extends Label
 {
@@ -29,17 +29,17 @@ class ImageLabel extends Label
 		this.m_image = getImage(imageName);
 	}
 
+	@Override
+	public void paint(Graphics g)
+	{
+		g.drawImage(m_image, 0, 0, this);
+	}
+
 	private Image getImage(String imageName)
 	{
 		Class<?> myClass = this.getClass();
 		String imageResource = "/icons/" + imageName; //$NON-NLS-1$
 		URL imageUrl = myClass.getResource(imageResource);
 		return Toolkit.getDefaultToolkit().createImage(imageUrl);
-	}
-	
-	@Override
-	public void paint(Graphics g)
-	{
-		g.drawImage(m_image, 0, 0, this);
 	}
 }

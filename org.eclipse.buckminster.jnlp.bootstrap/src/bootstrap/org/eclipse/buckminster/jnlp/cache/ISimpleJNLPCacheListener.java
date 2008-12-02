@@ -12,31 +12,31 @@ import java.net.URL;
 
 /**
  * @author Filip Hrbek
- *
- * Listener for SimpleJNLPCache actions
+ * 
+ *         Listener for SimpleJNLPCache actions
  */
 public interface ISimpleJNLPCacheListener
 {
-	/**
-	 * This method is called when the cache is initializing. It typically starts downloading
-	 * the JNLP file and checks if it's up-to-date or not.
-	 * 
-	 * @param jnlp
-	 */
-	public void initializing(URL jnlp);
-
-	/**
-	 * This method is called when the downloaded JNLP files is considered as obsolete and download
-	 * of its resources starts.
-	 * 
-	 * @param jnlp
-	 */
-	public void updateStarted(URL jnlp);
-	
 	/**
 	 * This method is called when the cache check/update is finished.
 	 * 
 	 * @param jnlp
 	 */
 	public void finished(URL jnlp);
+
+	/**
+	 * This method is called when the cache is initializing. It typically starts downloading the JNLP file and checks if
+	 * it's up-to-date or not.
+	 * 
+	 * @param jnlp
+	 */
+	public void initializing(URL jnlp);
+
+	/**
+	 * This method is called when the downloaded JNLP files is considered as obsolete and download of its resources
+	 * starts.
+	 * 
+	 * @param jnlp
+	 */
+	public void updateStarted(URL jnlp);
 }

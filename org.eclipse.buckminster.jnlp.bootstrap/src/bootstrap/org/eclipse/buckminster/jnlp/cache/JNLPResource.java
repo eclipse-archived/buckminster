@@ -25,19 +25,24 @@ import org.w3c.dom.Document;
 /**
  * @author Filip Hrbek
  * 
- * JNLP descriptor parser. No validation is performed since XSD is not available for JNLP files.
+ *         JNLP descriptor parser. No validation is performed since XSD is not available for JNLP files.
  */
 public class JNLPResource
 {
 	private Document m_document;
 
 	private Date m_lastModified;
-	
+
 	private String m_content;
 
 	public JNLPResource(URL jnlp) throws JNLPException
 	{
 		parseJNLP(jnlp);
+	}
+
+	public String getContent()
+	{
+		return m_content;
 	}
 
 	public Document getDocument()
@@ -48,11 +53,6 @@ public class JNLPResource
 	public Date getLastModified()
 	{
 		return m_lastModified;
-	}
-	
-	public String getContent()
-	{
-		return m_content;
 	}
 
 	public void parseJNLP(URL jnlp) throws JNLPException
@@ -72,7 +72,8 @@ public class JNLPResource
 		}
 		catch(Exception e)
 		{
-			throw new JNLPException(Messages.getString("unable_to_read_JNLP_file_colon") + e.getMessage(), Messages.getString("report_problem_to_distro_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
+			throw new JNLPException(
+					Messages.getString("unable_to_read_JNLP_file_colon") + e.getMessage(), Messages.getString("report_problem_to_distro_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
 					BootstrapConstants.ERROR_CODE_JNLP_SAX_EXCEPTION, e);
 		}
 	}

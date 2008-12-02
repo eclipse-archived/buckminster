@@ -14,15 +14,15 @@ import java.net.URLStreamHandlerFactory;
 
 /**
  * @author Filip Hrbek
- *
- * An enhanced URL class loader which publishes the addURL method.
+ * 
+ *         An enhanced URL class loader which publishes the addURL method.
  */
 public class SimpleJNLPCacheClassLoader extends URLClassLoader
 {
 
-	public SimpleJNLPCacheClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory)
+	public SimpleJNLPCacheClassLoader(URL[] urls)
 	{
-		super(urls, parent, factory);
+		super(urls);
 	}
 
 	public SimpleJNLPCacheClassLoader(URL[] urls, ClassLoader parent)
@@ -30,9 +30,9 @@ public class SimpleJNLPCacheClassLoader extends URLClassLoader
 		super(urls, parent);
 	}
 
-	public SimpleJNLPCacheClassLoader(URL[] urls)
+	public SimpleJNLPCacheClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory)
 	{
-		super(urls);
+		super(urls, parent, factory);
 	}
 
 	/**

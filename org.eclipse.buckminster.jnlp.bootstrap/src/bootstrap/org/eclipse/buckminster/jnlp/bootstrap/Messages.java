@@ -9,10 +9,6 @@ public class Messages
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-	private Messages()
-	{
-	}
-
 	public static String getString(String key)
 	{
 		try
@@ -28,7 +24,7 @@ public class Messages
 	public static String getString(String key, Object... args)
 	{
 		String msg = null;
-		
+
 		try
 		{
 			msg = RESOURCE_BUNDLE.getString(key);
@@ -37,7 +33,11 @@ public class Messages
 		{
 			return '!' + key + '!';
 		}
-		
+
 		return String.format(msg, args);
+	}
+
+	private Messages()
+	{
 	}
 }

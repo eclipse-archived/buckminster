@@ -30,7 +30,7 @@ import java.awt.event.WindowEvent;
 
 /**
  * @author kaja
- *
+ * 
  */
 public class ErrorDialog extends JNLPDialog
 {
@@ -43,11 +43,11 @@ public class ErrorDialog extends JNLPDialog
 	private static final int MIN_H_SIZE = 400;
 
 	private static final int MIN_V_SIZE = 200;
-	
+
 	private Button m_okButton;
-	
+
 	private boolean m_focusRepaired = false;
-	
+
 	public ErrorDialog(Image windowIconImage, String title, String problem, String solution, String helpURL)
 	{
 		super(windowIconImage, ERROR_TITLE);
@@ -63,11 +63,11 @@ public class ErrorDialog extends JNLPDialog
 
 		setLayout(new BorderLayout());
 		setBackground(SystemColor.control);
-		
+
 		Panel tp = new Panel(new BorderLayout(0, 0));
 
 		add("Center", tp); //$NON-NLS-1$
-		
+
 		Panel p = new Panel(new FlowLayout(FlowLayout.LEFT, 15, 15));
 		add("West", p); //$NON-NLS-1$
 
@@ -78,30 +78,32 @@ public class ErrorDialog extends JNLPDialog
 		p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
 		tp.add("North", p); //$NON-NLS-1$
 		p.add(new Label(title));
-		
+
 		Panel cp = new Panel(new BorderLayout(0, 5));
 		tp.add("Center", cp); //$NON-NLS-1$
-		
+
 		Panel pp = new Panel(new BorderLayout());
 		cp.add("North", pp); //$NON-NLS-1$
 		pp.add("North", new Label(Messages.getString("problem_with_colon"))); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		p = new Panel(new FlowLayout(FlowLayout.LEFT));
 		pp.add("South", p); //$NON-NLS-1$
 		TextArea ta = new TextArea(problem, 10, 70);
 		ta.setEditable(false);
 		ta.setFocusable(true);
-		
-		ta.addFocusListener(new FocusAdapter(){
+
+		ta.addFocusListener(new FocusAdapter()
+		{
 			@Override
 			public void focusGained(FocusEvent e)
 			{
-				if(! m_focusRepaired) // OK button should be focused first
+				if(!m_focusRepaired) // OK button should be focused first
 				{
 					m_okButton.requestFocus();
 				}
-			}});
-		
+			}
+		});
+
 		ta.addKeyListener(new KeyAdapter()
 		{
 			@Override
@@ -115,7 +117,7 @@ public class ErrorDialog extends JNLPDialog
 		});
 
 		p.add(ta);
-		
+
 		Panel sp = new Panel(new BorderLayout());
 		cp.add("South", sp); //$NON-NLS-1$
 		sp.add("North", new Label(Messages.getString("solution"))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -125,7 +127,7 @@ public class ErrorDialog extends JNLPDialog
 		ta = new TextArea(solution, 3, 70);
 		ta.setEditable(false);
 		ta.setFocusable(true);
-		
+
 		ta.addKeyListener(new KeyAdapter()
 		{
 
@@ -140,13 +142,13 @@ public class ErrorDialog extends JNLPDialog
 		});
 
 		p.add(ta);
-		
+
 		if(helpURL != null)
 		{
 			p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
 			p.add(new Label(Messages.getString("read_more_at_with_colon"))); //$NON-NLS-1$
 			final TextField tf = new TextField(helpURL, 55);
-			
+
 			tf.addKeyListener(new KeyAdapter()
 			{
 
@@ -160,31 +162,34 @@ public class ErrorDialog extends JNLPDialog
 				}
 			});
 
-				
 			tf.setEditable(false);
 			p.add(tf);
 			tp.add("South", p); //$NON-NLS-1$
 		}
-		
+
 		p = new Panel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
 		m_okButton = new Button(Messages.getString("ok")); //$NON-NLS-1$
 		m_okButton.setPreferredSize(new Dimension(73, 20));
 
-		m_okButton.addFocusListener(new FocusAdapter(){
+		m_okButton.addFocusListener(new FocusAdapter()
+		{
 
 			@Override
 			public void focusGained(FocusEvent e)
 			{
 				m_focusRepaired = true;
-			}});
+			}
+		});
 
-		m_okButton.addActionListener(new ActionListener(){
+		m_okButton.addActionListener(new ActionListener()
+		{
 
 			public void actionPerformed(ActionEvent e)
 			{
 				finish();
-			}});
-		
+			}
+		});
+
 		m_okButton.addKeyListener(new KeyAdapter()
 		{
 
@@ -210,4 +215,3 @@ public class ErrorDialog extends JNLPDialog
 		setBounds((screen.width - width) / 2, (screen.height - height) / 2, width, height);
 	}
 }
-

@@ -12,21 +12,21 @@ import java.net.URL;
 
 /**
  * @author Filip Hrbek
- *
- * A trivial implementation of SipleJNLPCacheListener for convenient use.
+ * 
+ *         A trivial implementation of SipleJNLPCacheListener for convenient use.
  */
 public class SimpleJNLPCacheAdapter implements ISimpleJNLPCacheListener
 {
+
+	public void finished(URL jnlp)
+	{
+	}
 
 	public void initializing(URL jnlp)
 	{
 	}
 
 	public void updateStarted(URL jnlp)
-	{
-	}
-
-	public void finished(URL jnlp)
 	{
 	}
 

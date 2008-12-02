@@ -29,7 +29,7 @@ import java.awt.event.WindowEvent;
 
 /**
  * @author kaja
- *
+ * 
  */
 public class ServiceDialog extends JNLPDialog
 {
@@ -40,19 +40,19 @@ public class ServiceDialog extends JNLPDialog
 	private static final String SERVICE_ICON = "warning.png"; //$NON-NLS-1$
 
 	private static final String SERVICE_NOT_AVAILABLE = Messages.getString("uppercase_service_is_not_available_now"); //$NON-NLS-1$
-	
+
 	private static final int MIN_H_SIZE = 400;
 
 	private static final int MIN_V_SIZE = 200;
-	
+
 	private Button m_okButton;
-	
+
 	private boolean m_focusRepaired = false;
-	
+
 	public ServiceDialog(Image windowIconImage, String message, boolean serviceAvailable)
 	{
 		super(windowIconImage, SERVICE_TITLE);
-		
+
 		addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -64,7 +64,7 @@ public class ServiceDialog extends JNLPDialog
 
 		setLayout(new BorderLayout());
 		setBackground(SystemColor.control);
-		
+
 		Panel p = new Panel(new FlowLayout(FlowLayout.LEFT, 15, 15));
 		add("West", p); //$NON-NLS-1$
 
@@ -79,25 +79,27 @@ public class ServiceDialog extends JNLPDialog
 		tp.add("North", p); //$NON-NLS-1$
 		Panel mp = new Panel(new BorderLayout());
 		p.add(mp);
-		
+
 		mp.add("North", new Label(SERVICE_TITLE + ":")); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		p = new Panel(new FlowLayout(FlowLayout.LEFT));
 		mp.add("Center", p); //$NON-NLS-1$
-		
+
 		TextArea ta = new TextArea(message, 5, 70);
 		ta.setEditable(false);
 
-		ta.addFocusListener(new FocusAdapter(){
+		ta.addFocusListener(new FocusAdapter()
+		{
 			@Override
 			public void focusGained(FocusEvent e)
 			{
-				if(! m_focusRepaired) // OK button should be focused first
+				if(!m_focusRepaired) // OK button should be focused first
 				{
 					m_okButton.requestFocus();
 				}
-			}});
-		
+			}
+		});
+
 		ta.addKeyListener(new KeyAdapter()
 		{
 			@Override
@@ -111,31 +113,35 @@ public class ServiceDialog extends JNLPDialog
 		});
 
 		p.add(ta);
-		
-		if(! serviceAvailable)
+
+		if(!serviceAvailable)
 		{
 			tp.add("South", new Label(SERVICE_NOT_AVAILABLE)); //$NON-NLS-1$
 		}
-		
+
 		p = new Panel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
 		m_okButton = new Button(Messages.getString("ok")); //$NON-NLS-1$
 		m_okButton.setPreferredSize(new Dimension(73, 20));
 
-		m_okButton.addFocusListener(new FocusAdapter(){
+		m_okButton.addFocusListener(new FocusAdapter()
+		{
 
 			@Override
 			public void focusGained(FocusEvent e)
 			{
 				m_focusRepaired = true;
-			}});
+			}
+		});
 
-		m_okButton.addActionListener(new ActionListener(){
+		m_okButton.addActionListener(new ActionListener()
+		{
 
 			public void actionPerformed(ActionEvent e)
 			{
 				finish();
-			}});
-		
+			}
+		});
+
 		m_okButton.addKeyListener(new KeyAdapter()
 		{
 
@@ -161,4 +167,3 @@ public class ServiceDialog extends JNLPDialog
 		setBounds((screen.width - width) / 2, (screen.height - height) / 2, width, height);
 	}
 }
-

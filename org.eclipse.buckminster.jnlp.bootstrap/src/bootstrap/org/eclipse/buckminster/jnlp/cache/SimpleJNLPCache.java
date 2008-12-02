@@ -35,21 +35,19 @@ import org.w3c.dom.NodeList;
 /**
  * @author Filip Hrbek
  * 
- * An alternative and simplified implementation of JNLP cache.
- * <br><br>
- * It's main purpose is to parse a JNLP specified by an URL and possibly download its referenced resources.
- * If the JNLP is from the same location and the timestamp is equal to the cached one, no action is performed
- * even if the content of the JNLP file has changed. This enables using random mirrors inside the JNLP file.
- * To force updating resources referred to a JNLP file, the JNLP timestamp must change or the resources must
- * be deleted from cache first.
+ *         An alternative and simplified implementation of JNLP cache. <br>
  * <br>
- * The cache is safe to be used in concurrent environment. If two different processes materialize the same
- * JNLP, no conflict should occur, however the stuff will be cached twice. Following registrations of the JNLP
- * will delete obsolete stuff from the cache.
- * <br>
- * Description:
- * <br>
- * <pre>
+ *         It's main purpose is to parse a JNLP specified by an URL and possibly download its referenced resources. If
+ *         the JNLP is from the same location and the timestamp is equal to the cached one, no action is performed even
+ *         if the content of the JNLP file has changed. This enables using random mirrors inside the JNLP file. To force
+ *         updating resources referred to a JNLP file, the JNLP timestamp must change or the resources must be deleted
+ *         from cache first. <br>
+ *         The cache is safe to be used in concurrent environment. If two different processes materialize the same JNLP,
+ *         no conflict should occur, however the stuff will be cached twice. Following registrations of the JNLP will
+ *         delete obsolete stuff from the cache. <br>
+ *         Description: <br>
+ * 
+ *         <pre>
  * CACHE ROOT
  * |
  * +[MD5 hash for the URL]
@@ -65,18 +63,21 @@ import org.w3c.dom.NodeList;
  * +jnlptimestamp.entrytimestamp.temp
  * </pre>
  * 
- * How registration of a JNLP to cache works:<br>
+ *         How registration of a JNLP to cache works:<br>
  *<br>
- *  1) Obtain connection headers and contents<br>
- *  2) Create MD5 hash for the URL<br>
- *  3) Find all folders in the URL's cache root<br>
- *  4) Select the latest non-temp folder<br>
- *  5) Delete recursively all non-latest folders older than a threshold of 1 day (if an exception is thrown, ignore it)<br>
- *  6) If the latest folder timestamp equals to the last modified timestamp, delegate the contents to the class loader and return "no change"<br>
- *  7) Create new folder jnlptimestamp.entrytimestamp.temp<br>
- *  8) Download all resources referenced by the JNLP<br>
- *  9) If everything was downloaded successfully, remove the ".temp" suffix from the folder, or delete it otherwise (if an exception is thrown, ignore it)<br>
- * 10) Delegate the contents to the class loader and return "updated"<br>
+ *         1) Obtain connection headers and contents<br>
+ *         2) Create MD5 hash for the URL<br>
+ *         3) Find all folders in the URL's cache root<br>
+ *         4) Select the latest non-temp folder<br>
+ *         5) Delete recursively all non-latest folders older than a threshold of 1 day (if an exception is thrown,
+ *         ignore it)<br>
+ *         6) If the latest folder timestamp equals to the last modified timestamp, delegate the contents to the class
+ *         loader and return "no change"<br>
+ *         7) Create new folder jnlptimestamp.entrytimestamp.temp<br>
+ *         8) Download all resources referenced by the JNLP<br>
+ *         9) If everything was downloaded successfully, remove the ".temp" suffix from the folder, or delete it
+ *         otherwise (if an exception is thrown, ignore it)<br>
+ *         10) Delegate the contents to the class loader and return "updated"<br>
  */
 public class SimpleJNLPCache
 {
@@ -86,13 +87,13 @@ public class SimpleJNLPCache
 	private static final long OBSOLETE_THRESHOLD = 86400000;
 
 	private static final String CORRUPTED_DOWNLOAD_FOLDER = "corrupted.download"; //$NON-NLS-1$
-	
+
 	private final SimpleJNLPCacheClassLoader m_classLoader;
 
 	private final File m_location;
-	
+
 	private List<ISimpleJNLPCacheListener> m_listeners;
-	
+
 	private File m_latestFile = null;
 
 	public SimpleJNLPCache(File location)
@@ -102,11 +103,22 @@ public class SimpleJNLPCache
 		m_listeners = new ArrayList<ISimpleJNLPCacheListener>();
 	}
 
-	public boolean registerJNLP(URL jnlp, IDownloadMonitor progress) throws JNLPException, DOMException, OperationCanceledException
+	public void addListener(ISimpleJNLPCacheListener listener)
+	{
+		m_listeners.add(listener);
+	}
+
+	public ClassLoader getClassLoader()
+	{
+		return m_classLoader;
+	}
+
+	public boolean registerJNLP(URL jnlp, IDownloadMonitor progress) throws JNLPException, DOMException,
+			OperationCanceledException
 	{
 		boolean updated = false;
-		
-		for (ISimpleJNLPCacheListener listener : m_listeners)
+
+		for(ISimpleJNLPCacheListener listener : m_listeners)
 			listener.initializing(jnlp);
 
 		JNLPResource resource = new JNLPResource(jnlp);
@@ -115,7 +127,8 @@ public class SimpleJNLPCache
 		jnlpCacheBase.mkdirs();
 
 		if(!jnlpCacheBase.isDirectory())
-			throw new JNLPException(Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
+			throw new JNLPException(
+					Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
 					Messages.getString("check_your_access_permissions"), BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION); //$NON-NLS-1$
 
 		long currentTimestatmp = new Date().getTime();
@@ -162,7 +175,7 @@ public class SimpleJNLPCache
 
 		if(latestTimestamp != resource.getLastModified().getTime())
 		{
-			for (ISimpleJNLPCacheListener listener : m_listeners)
+			for(ISimpleJNLPCacheListener listener : m_listeners)
 				listener.updateStarted(jnlp);
 
 			updated = true;
@@ -177,7 +190,8 @@ public class SimpleJNLPCache
 			try
 			{
 				if(!tempRoot.mkdir() || !jarDir.mkdir() || !resourceDir.mkdir())
-					throw new JNLPException(Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
+					throw new JNLPException(
+							Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
 							Messages.getString("check_your_access_permissions"), BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION); //$NON-NLS-1$
 
 				try
@@ -188,8 +202,9 @@ public class SimpleJNLPCache
 				}
 				catch(Throwable e)
 				{
-					throw new JNLPException(Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-							+ e.getMessage(), Messages.getString("check_your_access_permissions"), //$NON-NLS-1$
+					throw new JNLPException(
+							Messages.getString("unable_to_create_a_cache_entry_for") + jnlp.toString() + ": " //$NON-NLS-1$ //$NON-NLS-2$
+									+ e.getMessage(), Messages.getString("check_your_access_permissions"), //$NON-NLS-1$
 							BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION, e);
 				}
 
@@ -198,7 +213,8 @@ public class SimpleJNLPCache
 				latestFile = new File(jnlpCacheBase, dirname);
 
 				if(!tempRoot.renameTo(latestFile))
-					throw new JNLPException(Messages.getString("unable_to_commit_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
+					throw new JNLPException(
+							Messages.getString("unable_to_commit_a_cache_entry_for") + jnlp.toString(), //$NON-NLS-1$
 							Messages.getString("check_your_access_permissions"), BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION); //$NON-NLS-1$
 
 			}
@@ -230,7 +246,8 @@ public class SimpleJNLPCache
 		}
 		catch(MalformedURLException e)
 		{
-			throw new JNLPException(Messages.getString("unable_to_delegate_a_cache_entry_to_the_class_loader"), Messages.getString("report_to_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
+			throw new JNLPException(
+					Messages.getString("unable_to_delegate_a_cache_entry_to_the_class_loader"), Messages.getString("report_to_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
 					BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION);
 		}
 
@@ -246,11 +263,11 @@ public class SimpleJNLPCache
 			}
 		}
 
-		for (ISimpleJNLPCacheListener listener : m_listeners)
+		for(ISimpleJNLPCacheListener listener : m_listeners)
 			listener.finished(jnlp);
 
 		m_latestFile = latestFile;
-		
+
 		return updated;
 	}
 
@@ -265,21 +282,58 @@ public class SimpleJNLPCache
 			}
 			catch(IOException e)
 			{
-				throw new JNLPException(Messages.getString("can_not_create_a_new_file"), //$NON-NLS-1$
+				throw new JNLPException(
+						Messages.getString("can_not_create_a_new_file"), //$NON-NLS-1$
 						Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 			}
 			m_latestFile = null;
 		}
 	}
-	
-	public void addListener(ISimpleJNLPCacheListener listener)
-	{
-		m_listeners.add(listener);
-	}
 
 	public void removeListener(ISimpleJNLPCacheListener listener)
 	{
 		m_listeners.remove(listener);
+	}
+
+	private void performDownload(File jarDir, String urlString, String fileName, IDownloadMonitor progress)
+			throws JNLPException, OperationCanceledException
+	{
+		URL url = null;
+
+		try
+		{
+			url = new URL(urlString);
+			URLConnection conn = url.openConnection();
+			long len = conn.getContentLength();
+			InputStream input = conn.getInputStream();
+			OutputStream output = new FileOutputStream(new File(jarDir, fileName));
+			int count;
+			long read = 0;
+			byte[] buf = new byte[0x2000];
+
+			while((count = input.read(buf)) >= 0)
+			{
+				progress.checkCanceled();
+
+				output.write(buf, 0, count);
+				read += count;
+				progress.progress(url, null, read, len, 0);
+			}
+
+			input.close();
+			output.close();
+		}
+		catch(OperationCanceledException e)
+		{
+			throw e;
+		}
+		catch(Throwable e)
+		{
+			progress.downloadFailed(url, null);
+			throw new JNLPException(
+					Messages.getString("download_failed_for") + url.toString() + ": " + e.getMessage(), Messages.getString("try_again_later"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION, e);
+		}
 	}
 
 	private void performDownloads(JNLPResource resource, File jarDir, File resourceDir, IDownloadMonitor progress)
@@ -330,50 +384,5 @@ public class SimpleJNLPCache
 			String fileName = String.format("%010d", Integer.valueOf(fileId++)) + ".jar"; //$NON-NLS-1$ //$NON-NLS-2$
 			performDownload(jarDir, jarAttributes.getNamedItem("href").getNodeValue(), fileName, progress); //$NON-NLS-1$
 		}
-	}
-
-	private void performDownload(File jarDir, String urlString, String fileName, IDownloadMonitor progress)
-			throws JNLPException, OperationCanceledException
-	{
-		URL url = null;
-
-		try
-		{
-			url = new URL(urlString);
-			URLConnection conn = url.openConnection();
-			long len = conn.getContentLength();
-			InputStream input = conn.getInputStream();
-			OutputStream output = new FileOutputStream(new File(jarDir, fileName));
-			int count;
-			long read = 0;
-			byte[] buf = new byte[0x2000];
-
-			while((count = input.read(buf)) >= 0)
-			{
-				progress.checkCanceled();
-
-				output.write(buf, 0, count);
-				read += count;
-				progress.progress(url, null, read, len, 0);
-			}
-
-			input.close();
-			output.close();
-		}
-		catch(OperationCanceledException e)
-		{
-			throw e;
-		}
-		catch(Throwable e)
-		{
-			progress.downloadFailed(url, null);
-			throw new JNLPException(Messages.getString("download_failed_for") + url.toString() + ": " + e.getMessage(), Messages.getString("try_again_later"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION, e);
-		}
-	}
-
-	public ClassLoader getClassLoader()
-	{
-		return m_classLoader;
 	}
 }

@@ -17,24 +17,29 @@ import java.util.List;
 /**
  * @author Filip Hrbek
  * 
- * This security manager grants executing potentially dangerous actions to all threads belonging to
- * registered thread groups or their descendants.
+ *         This security manager grants executing potentially dangerous actions to all threads belonging to registered
+ *         thread groups or their descendants.
  * 
- * If a security check is required from a thread which is not considered as trusted, then the security
- * check is delegated to the original security manager which was registered at the time of loading this
- * security manager class.
+ *         If a security check is required from a thread which is not considered as trusted, then the security check is
+ *         delegated to the original security manager which was registered at the time of loading this security manager
+ *         class.
  * 
- * If this security manager is used, no other threads should call System.setSecurityManager() directly,
- * otherwise the behavior of the process is unpredictable.
+ *         If this security manager is used, no other threads should call System.setSecurityManager() directly,
+ *         otherwise the behavior of the process is unpredictable.
  */
 public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 {
 	private static SimpleJNLPCacheSecurityManager s_manager = new SimpleJNLPCacheSecurityManager();
 
+	public static SimpleJNLPCacheSecurityManager getInstance()
+	{
+		return s_manager;
+	}
+
 	private SecurityManager m_origManager;
 
 	private List<ThreadGroup> m_trustedThreadGroups;
-	
+
 	private boolean m_grantGroupAccess;
 
 	private SimpleJNLPCacheSecurityManager()
@@ -44,25 +49,11 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 		m_grantGroupAccess = false;
 	}
 
-	public static SimpleJNLPCacheSecurityManager getInstance()
-	{
-		return s_manager;
-	}
-
 	public void addTrustedThreadGroup(ThreadGroup group)
 	{
 		m_trustedThreadGroups.add(group);
 		if(!s_manager.equals(System.getSecurityManager()))
 			System.setSecurityManager(s_manager);
-	}
-
-	public void removeTrustedThreadGroup(ThreadGroup group)
-	{
-		m_trustedThreadGroups.remove(group);
-
-		if(m_trustedThreadGroups.size() == 0 && s_manager.equals(System.getSecurityManager())
-				&& m_origManager != null && !m_origManager.equals(System.getSecurityManager()))
-			System.setSecurityManager(m_origManager);
 	}
 
 	@Override
@@ -94,17 +85,17 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 	}
 
 	@Override
-	public void checkConnect(String host, int port, Object context)
-	{
-		if(!isTrusted() && m_origManager != null)
-			m_origManager.checkConnect(host, port, context);
-	}
-
-	@Override
 	public void checkConnect(String host, int port)
 	{
 		if(!isTrusted() && m_origManager != null)
 			m_origManager.checkConnect(host, port);
+	}
+
+	@Override
+	public void checkConnect(String host, int port, Object context)
+	{
+		if(!isTrusted() && m_origManager != null)
+			m_origManager.checkConnect(host, port, context);
 	}
 
 	@Override
@@ -156,19 +147,19 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 			m_origManager.checkMemberAccess(clazz, which);
 	}
 
+	@Override
+	public void checkMulticast(InetAddress maddr)
+	{
+		if(!isTrusted() && m_origManager != null)
+			m_origManager.checkMulticast(maddr);
+	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void checkMulticast(InetAddress maddr, byte ttl)
 	{
 		if(!isTrusted() && m_origManager != null)
 			m_origManager.checkMulticast(maddr, ttl);
-	}
-
-	@Override
-	public void checkMulticast(InetAddress maddr)
-	{
-		if(!isTrusted() && m_origManager != null)
-			m_origManager.checkMulticast(maddr);
 	}
 
 	@Override
@@ -186,17 +177,17 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 	}
 
 	@Override
-	public void checkPermission(Permission perm, Object context)
-	{
-		if(!isTrusted() && m_origManager != null)
-			m_origManager.checkPermission(perm, context);
-	}
-
-	@Override
 	public void checkPermission(Permission perm)
 	{
 		if(!isTrusted() && m_origManager != null)
 			m_origManager.checkPermission(perm);
+	}
+
+	@Override
+	public void checkPermission(Permission perm, Object context)
+	{
+		if(!isTrusted() && m_origManager != null)
+			m_origManager.checkPermission(perm, context);
 	}
 
 	@Override
@@ -228,17 +219,17 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 	}
 
 	@Override
-	public void checkRead(String file, Object context)
-	{
-		if(!isTrusted() && m_origManager != null)
-			m_origManager.checkRead(file, context);
-	}
-
-	@Override
 	public void checkRead(String file)
 	{
 		if(!isTrusted() && m_origManager != null)
 			m_origManager.checkRead(file);
+	}
+
+	@Override
+	public void checkRead(String file, Object context)
+	{
+		if(!isTrusted() && m_origManager != null)
+			m_origManager.checkRead(file, context);
 	}
 
 	@Override
@@ -311,6 +302,15 @@ public final class SimpleJNLPCacheSecurityManager extends SecurityManager
 			return m_origManager.getThreadGroup();
 
 		return super.getThreadGroup();
+	}
+
+	public void removeTrustedThreadGroup(ThreadGroup group)
+	{
+		m_trustedThreadGroups.remove(group);
+
+		if(m_trustedThreadGroups.size() == 0 && s_manager.equals(System.getSecurityManager()) && m_origManager != null
+				&& !m_origManager.equals(System.getSecurityManager()))
+			System.setSecurityManager(m_origManager);
 	}
 
 	private boolean isTrusted()

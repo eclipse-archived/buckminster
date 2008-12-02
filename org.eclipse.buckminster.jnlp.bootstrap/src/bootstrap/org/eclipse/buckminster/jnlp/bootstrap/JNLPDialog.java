@@ -13,7 +13,7 @@ import java.awt.Image;
 
 /**
  * @author kaja
- *
+ * 
  */
 public class JNLPDialog extends Frame
 {
@@ -30,13 +30,13 @@ public class JNLPDialog extends Frame
 			setIconImage(windowIconImage);
 		}
 	}
-	
+
 	public void open()
 	{
 		setVisible(true);
-		
+
 		m_sleepingThread = Thread.currentThread();
-				
+
 		try
 		{
 			while(true)
@@ -49,11 +49,11 @@ public class JNLPDialog extends Frame
 			// Dialog was finished
 		}
 	}
-	
+
 	protected void finish()
 	{
 		dispose();
-		
+
 		if(m_sleepingThread != null)
 		{
 			m_sleepingThread.interrupt();

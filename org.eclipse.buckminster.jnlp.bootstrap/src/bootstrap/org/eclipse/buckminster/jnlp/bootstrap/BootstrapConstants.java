@@ -43,7 +43,7 @@ public interface BootstrapConstants
 	public static final String ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION = "MaterializerExecutionException"; //$NON-NLS-1$
 
 	public static final String ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION = "MaterializerInstallException"; //$NON-NLS-1$
-	
+
 	public static final String ERROR_CODE_MISSING_ARGUMENT_EXCEPTION = "MissingArgumentException"; //$NON-NLS-1$
 
 	public static final String ERROR_CODE_MISSING_PROPERTY_EXCEPTION = "MissingPropertyException"; //$NON-NLS-1$

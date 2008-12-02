@@ -39,27 +39,6 @@ public class TailLineBuffer
 	}
 
 	/**
-	 * Write a line to the buffer. The line can actually contain any characters including new lines, however it's
-	 * recommended that the line is really a single line. For a single line, there should be no line terminator at the
-	 * end of the line.
-	 * 
-	 * @param line
-	 */
-	public void writeLine(String line)
-	{
-		if(m_linebuffer.length == 0)
-			return;
-
-		if(m_size < m_linebuffer.length)
-			m_size++;
-
-		m_linebuffer[m_pointer++] = line;
-
-		if(m_pointer >= m_linebuffer.length)
-			m_pointer = 0;
-	}
-
-	/**
 	 * Get list of all lines saved in the buffer.
 	 * 
 	 * @return
@@ -111,5 +90,26 @@ public class TailLineBuffer
 		return lines.length() > 0
 				? lines.toString()
 				: null;
+	}
+
+	/**
+	 * Write a line to the buffer. The line can actually contain any characters including new lines, however it's
+	 * recommended that the line is really a single line. For a single line, there should be no line terminator at the
+	 * end of the line.
+	 * 
+	 * @param line
+	 */
+	public void writeLine(String line)
+	{
+		if(m_linebuffer.length == 0)
+			return;
+
+		if(m_size < m_linebuffer.length)
+			m_size++;
+
+		m_linebuffer[m_pointer++] = line;
+
+		if(m_pointer >= m_linebuffer.length)
+			m_pointer = 0;
 	}
 }

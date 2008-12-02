@@ -15,11 +15,12 @@ import java.io.File;
  */
 public interface IProductInstaller
 {
-	void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException, CorruptedFileException;
-	
 	public String getApplicationFolder();
-	
+
 	public String[] getInstallFolders();
-	
+
 	public boolean isInstalled(File installLocation) throws JNLPException;
+
+	void installProduct(Main main, ProgressFacade monitor) throws JNLPException, OperationCanceledException,
+			CorruptedFileException;
 }

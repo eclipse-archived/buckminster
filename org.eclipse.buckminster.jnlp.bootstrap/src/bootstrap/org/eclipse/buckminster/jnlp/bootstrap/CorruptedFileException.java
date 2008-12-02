@@ -10,7 +10,7 @@ package org.eclipse.buckminster.jnlp.bootstrap;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class CorruptedFileException extends Exception
 {

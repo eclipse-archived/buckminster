@@ -26,30 +26,10 @@ import sun.misc.BASE64Encoder;
 /**
  * @author Filip Hrbek
  * 
- * Useful utilities.
+ *         Useful utilities.
  */
 public class Utils
 {
-	/**
-	 * Copies specified input stream into the output stream and closes the input stream whil the output stream
-	 * remains open.
-	 * 
-	 * @param is
-	 * @param os
-	 * @throws IOException
-	 */
-	public static void streamCopy(InputStream is, OutputStream os) throws IOException
-	{
-		byte[] buffer = new byte[1024];
-		int len;
-		
-		while ((len = is.read(buffer)) != -1)
-		{
-			os.write(buffer, 0, len);
-		}
-		is.close();
-	}
-
 	/**
 	 * Creates a hash code for specified url, suitable for creating a folder in the cache structure.
 	 * 
@@ -73,7 +53,37 @@ public class Utils
 
 		return new BASE64Encoder().encode(md.digest(jnlp.toString().getBytes()));
 	}
-	
+
+	public static void deleteRecursive(File file) throws JNLPException
+	{
+		if(!file.exists())
+			return;
+
+		try
+		{
+			File[] list = file.listFiles();
+			int count = (list == null)
+					? 0
+					: list.length;
+			if(count > 0)
+			{
+				while(--count >= 0)
+					deleteRecursive(list[count]);
+			}
+
+			if(!file.delete() && file.exists())
+				throw new JNLPException(
+						Messages.getString("unable_to_delete") + file.getAbsolutePath(), Messages.getString("check_file_permissions"), //$NON-NLS-1$ //$NON-NLS-2$
+						BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION);
+
+		}
+		catch(SecurityException e)
+		{
+			throw new JNLPException(
+					Messages.getString("unable_to_delete") + file.getAbsolutePath() + ": " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("check_file_permissions"), BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
+		}
+	}
 
 	/**
 	 * Formats a timestamp to a format suitable for easy cache management.
@@ -97,32 +107,23 @@ public class Utils
 		return String.format("%d", timestamp); //$NON-NLS-1$
 	}
 
-	public static void deleteRecursive(File file) throws JNLPException
+	/**
+	 * Copies specified input stream into the output stream and closes the input stream whil the output stream remains
+	 * open.
+	 * 
+	 * @param is
+	 * @param os
+	 * @throws IOException
+	 */
+	public static void streamCopy(InputStream is, OutputStream os) throws IOException
 	{
-		if(!file.exists())
-			return;
+		byte[] buffer = new byte[1024];
+		int len;
 
-		try
+		while((len = is.read(buffer)) != -1)
 		{
-			File[] list = file.listFiles();
-			int count = (list == null)
-					? 0
-					: list.length;
-			if(count > 0)
-			{
-				while(--count >= 0)
-					deleteRecursive(list[count]);
-			}
-
-			if(!file.delete() && file.exists())
-				throw new JNLPException(Messages.getString("unable_to_delete") + file.getAbsolutePath(), Messages.getString("check_file_permissions"), //$NON-NLS-1$ //$NON-NLS-2$
-						BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION);
-		
+			os.write(buffer, 0, len);
 		}
-		catch(SecurityException e)
-		{
-			throw new JNLPException(Messages.getString("unable_to_delete") + file.getAbsolutePath() + ": " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$
-					Messages.getString("check_file_permissions"), BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
-		}
+		is.close();
 	}
 }
