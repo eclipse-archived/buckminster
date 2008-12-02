@@ -21,11 +21,6 @@ public class BodyBuilder implements IBody
 {
 	private ArrayList<OutlineBuilder> m_outlines = new ArrayList<OutlineBuilder>();
 
-	public void clear()
-	{
-		m_outlines.clear();
-	}
-
 	public OutlineBuilder addOutline()
 	{
 		OutlineBuilder outlineBuilder = new OutlineBuilder();
@@ -33,12 +28,17 @@ public class BodyBuilder implements IBody
 		return outlineBuilder;
 	}
 
-	public List<? extends IOutline> getOutlines()
+	public void clear()
+	{
+		m_outlines.clear();
+	}
+
+	public List<OutlineBuilder> getOutlineBuilders()
 	{
 		return m_outlines;
 	}
 
-	public List<OutlineBuilder> getOutlineBuilders()
+	public List<? extends IOutline> getOutlines()
 	{
 		return m_outlines;
 	}

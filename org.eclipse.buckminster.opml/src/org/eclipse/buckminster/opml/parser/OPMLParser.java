@@ -30,6 +30,7 @@ import org.xml.sax.XMLReader;
 
 /**
  * Parser for OPML
+ * 
  * @author Thomas Hallgren
  */
 public class OPMLParser extends TopHandler implements ChildPoppedListener, ErrorHandler
@@ -62,11 +63,10 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 	}
 
 	@Override
-	public void error(SAXParseException e)
-	throws SAXException
-    {
+	public void error(SAXParseException e) throws SAXException
+	{
 		throw e;
-    }
+	}
 
 	public OPML parseInput(String systemId, InputStream input) throws SAXException, IOException
 	{
@@ -78,7 +78,9 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 		XMLReader reader = getXMLReader();
 		try
 		{
-			reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", m_schemaURL.toString()); //$NON-NLS-1$
+			reader
+					.setProperty(
+							"http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", m_schemaURL.toString()); //$NON-NLS-1$
 			reader.parse(source);
 		}
 		finally
@@ -107,9 +109,8 @@ public class OPMLParser extends TopHandler implements ChildPoppedListener, Error
 	}
 
 	@Override
-	public void warning(SAXParseException e)
-	throws SAXException
-    {
+	public void warning(SAXParseException e) throws SAXException
+	{
 		throw e;
-    }
+	}
 }

@@ -20,21 +20,26 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class OPML extends UUIDKeyed implements IOPML
 {
 	public static final String OPML_NAMESPACE = "http://opml.org/spec2"; //$NON-NLS-1$
+
 	public static final String OPML_PREFIX = "opml"; //$NON-NLS-1$
+
 	public static final String OPML_NS_RESOURCE = "/opml-2.0-ns.xsd"; //$NON-NLS-1$
 
 	public static final String ATTR_VERSION = "version"; //$NON-NLS-1$
+
 	public static final String TAG = "opml"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 1;
 
 	private final Body m_body;
+
 	private final Head m_head;
+
 	private final String m_version;
 
 	public OPML(OPMLBuilder builder)

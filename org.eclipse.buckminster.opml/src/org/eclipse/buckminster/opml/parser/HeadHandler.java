@@ -27,16 +27,11 @@ import org.xml.sax.SAXParseException;
 
 /**
  * SAX Parser for the OPML Head element
- *
+ * 
  * @author Thomas Hallgren
  */
 class HeadHandler extends ChildHandler
 {
-	public static final String TAG = Head.TAG;
-
-	private final HeadBuilder m_head;
-	private final StringHandler m_stringHandler = new StringHandler();
-
 	class StringHandler extends StringElementHandler
 	{
 		StringHandler()
@@ -49,8 +44,8 @@ class HeadHandler extends ChildHandler
 		{
 			super.endElement(uri, localName, qName);
 			String name = (localName == null || localName.length() == 0)
-				? qName
-				: localName;
+					? qName
+					: localName;
 
 			if(Head.ELEM_DATE_CREATED.equals(name))
 				m_head.setDateCreated(getDate(name));
@@ -91,7 +86,22 @@ class HeadHandler extends ChildHandler
 			}
 			catch(ParseException e)
 			{
-				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_RFC822_formatted_date, localName), getDocumentLocator());
+				throw new SAXParseException(NLS.bind(
+						Messages.element_0_does_not_represent_a_valid_RFC822_formatted_date, localName),
+						getDocumentLocator());
+			}
+		}
+
+		private int getInt(String localName) throws SAXException
+		{
+			try
+			{
+				return Integer.parseInt(getString());
+			}
+			catch(NumberFormatException e)
+			{
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_integer, localName),
+						getDocumentLocator());
 			}
 		}
 
@@ -111,20 +121,14 @@ class HeadHandler extends ChildHandler
 			}
 			catch(NumberFormatException e)
 			{
-				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_list_of_integers, localName), getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_list_of_integers,
+						localName), getDocumentLocator());
 			}
 		}
 
-		private int getInt(String localName) throws SAXException
+		private String getString()
 		{
-			try
-			{
-				return Integer.parseInt(getString());
-			}
-			catch(NumberFormatException e)
-			{
-				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_integer, localName), getDocumentLocator());
-			}
+			return new String(getBuffer(), 0, getLengthAndReset());
 		}
 
 		private URI getURI(String localName) throws SAXException
@@ -135,15 +139,17 @@ class HeadHandler extends ChildHandler
 			}
 			catch(URISyntaxException e)
 			{
-				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_URI, localName), getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.element_0_does_not_represent_a_valid_URI, localName),
+						getDocumentLocator());
 			}
 		}
-
-		private String getString()
-		{
-			return new String(getBuffer(), 0, getLengthAndReset());
-		}
 	}
+
+	public static final String TAG = Head.TAG;
+
+	private final HeadBuilder m_head;
+
+	private final StringHandler m_stringHandler = new StringHandler();
 
 	HeadHandler(AbstractHandler parent, HeadBuilder head)
 	{
@@ -152,8 +158,7 @@ class HeadHandler extends ChildHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		return m_stringHandler;
 	}

@@ -13,12 +13,5 @@ package org.eclipse.buckminster.opml;
  */
 public enum OutlineType
 {
-	UNKNOWN,
-	ATOM,
-	INCLUDE,
-	LINK,
-	TEXT,
-	RDF,
-	RSS,
-	OPML
+	UNKNOWN, ATOM, INCLUDE, LINK, TEXT, RDF, RSS, OPML
 }

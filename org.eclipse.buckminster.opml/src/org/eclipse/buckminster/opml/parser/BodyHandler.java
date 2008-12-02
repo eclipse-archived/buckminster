@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 
 /**
  * SAX Parser for the OPML Body element
- *
+ * 
  * @author Thomas Hallgren
  */
 class BodyHandler extends ElementHandler
@@ -33,15 +33,7 @@ class BodyHandler extends ElementHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		super.handleAttributes(attrs);
-		m_bodyBuilder.clear();
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
 		if(Outline.TAG.equals(localName))
@@ -50,7 +42,14 @@ class BodyHandler extends ElementHandler
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
-	
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		m_bodyBuilder.clear();
+	}
+
 	protected BodyBuilder getBodyBuilder()
 	{
 		return m_bodyBuilder;

@@ -20,7 +20,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class Outline extends Body implements IOutline
 {
@@ -28,32 +28,57 @@ public class Outline extends Body implements IOutline
 	public static final String TAG = "outline"; //$NON-NLS-1$
 
 	public static final String ATTR_CATEGORY = "category"; //$NON-NLS-1$
+
 	public static final String ATTR_CREATED = "created"; //$NON-NLS-1$
+
 	public static final String ATTR_DESCRIPTION = "description"; //$NON-NLS-1$
+
 	public static final String ATTR_HTML_URL = "htmlUrl"; //$NON-NLS-1$
+
 	public static final String ATTR_IS_BREAKPOINT = "isBreakpoint"; //$NON-NLS-1$
+
 	public static final String ATTR_IS_COMMENT = "isComment"; //$NON-NLS-1$
+
 	public static final String ATTR_LANGUAGE = "language"; //$NON-NLS-1$
+
 	public static final String ATTR_TEXT = "text"; //$NON-NLS-1$
+
 	public static final String ATTR_TITLE = "title"; //$NON-NLS-1$
+
 	public static final String ATTR_TYPE = "type"; //$NON-NLS-1$
+
 	public static final String ATTR_URL = "url"; //$NON-NLS-1$
+
 	public static final String ATTR_VERSION = "version"; //$NON-NLS-1$
+
 	public static final String ATTR_XML_URL = "xmlUrl"; //$NON-NLS-1$
 
 	private final boolean m_breakpoint;
+
 	private final String m_category;
+
 	private final boolean m_comment;
+
 	private final Date m_created;
+
 	private final String m_description;
+
 	private final URI m_htmlUrl;
+
 	private final String m_language;
+
 	private final String m_text;
+
 	private final String m_title;
+
 	private final OutlineType m_type;
+
 	private final String m_typeString;
+
 	private final URI m_url;
+
 	private final String m_version;
+
 	private final URI m_xmlUrl;
 
 	public Outline(OutlineBuilder outline)

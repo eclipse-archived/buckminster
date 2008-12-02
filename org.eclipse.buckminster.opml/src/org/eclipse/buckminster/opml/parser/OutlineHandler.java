@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 
 /**
  * SAX Parser for the OPML Outline element
- *
+ * 
  * @author Thomas Hallgren
  */
 class OutlineHandler extends BodyHandler
@@ -34,18 +34,18 @@ class OutlineHandler extends BodyHandler
 		super.handleAttributes(attrs);
 		OutlineBuilder bld = (OutlineBuilder)getBodyBuilder();
 		bld.clear();
-		bld.setCategory(getOptionalStringValue(attrs, Outline.ATTR_CATEGORY));		
+		bld.setCategory(getOptionalStringValue(attrs, Outline.ATTR_CATEGORY));
 		bld.setCreated(getOptionalDate(attrs, Outline.ATTR_CREATED));
 		bld.setDescription(getOptionalStringValue(attrs, Outline.ATTR_DESCRIPTION));
 		bld.setHtmlUrl(getOptionalURI(attrs, Outline.ATTR_HTML_URL));
 		bld.setBreakpoint(getOptionalBooleanValue(attrs, Outline.ATTR_IS_BREAKPOINT, false));
 		bld.setComment(getOptionalBooleanValue(attrs, Outline.ATTR_IS_COMMENT, false));
-		bld.setLanguage(getOptionalStringValue(attrs, Outline.ATTR_LANGUAGE));		
-		bld.setText(getStringValue(attrs, Outline.ATTR_TEXT));		
-		bld.setTitle(getOptionalStringValue(attrs, Outline.ATTR_TITLE));		
-		bld.setTypeString(getOptionalStringValue(attrs, Outline.ATTR_TYPE));		
-		bld.setUrl(getOptionalURI(attrs, Outline.ATTR_URL));		
-		bld.setVersion(getOptionalStringValue(attrs, Outline.ATTR_VERSION));		
-		bld.setXmlUrl(getOptionalURI(attrs, Outline.ATTR_XML_URL));		
+		bld.setLanguage(getOptionalStringValue(attrs, Outline.ATTR_LANGUAGE));
+		bld.setText(getStringValue(attrs, Outline.ATTR_TEXT));
+		bld.setTitle(getOptionalStringValue(attrs, Outline.ATTR_TITLE));
+		bld.setTypeString(getOptionalStringValue(attrs, Outline.ATTR_TYPE));
+		bld.setUrl(getOptionalURI(attrs, Outline.ATTR_URL));
+		bld.setVersion(getOptionalStringValue(attrs, Outline.ATTR_VERSION));
+		bld.setXmlUrl(getOptionalURI(attrs, Outline.ATTR_XML_URL));
 	}
 }

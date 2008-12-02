@@ -23,7 +23,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Abstract child element handler for elements in the OPML schema
- *
+ * 
  * @author Thomas Hallgren
  */
 abstract class ElementHandler extends ChildHandler
@@ -45,7 +45,8 @@ abstract class ElementHandler extends ChildHandler
 		}
 		catch(ParseException e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.attribute_0_does_not_represent_a_valid_RFC822_formatted_date, attrName), getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.attribute_0_does_not_represent_a_valid_RFC822_formatted_date,
+					attrName), getDocumentLocator());
 		}
 	}
 
@@ -61,7 +62,8 @@ abstract class ElementHandler extends ChildHandler
 		}
 		catch(URISyntaxException e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.attribute_0_does_not_represent_a_valid_URI, attrName), getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.attribute_0_does_not_represent_a_valid_URI, attrName),
+					getDocumentLocator());
 		}
 	}
 }

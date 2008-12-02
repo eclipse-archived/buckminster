@@ -23,40 +23,66 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class Head extends AbstractSaxableElement implements IHead
 {
 	public static final String ELEM_DATE_CREATED = "dateCreated"; //$NON-NLS-1$
+
 	public static final String ELEM_DATE_MODIFIED = "dateModified"; //$NON-NLS-1$
 
 	public static final String ELEM_DOCS = "docs"; //$NON-NLS-1$
-	public static final String ELEM_EXPANSION_STATE = "expansionState";  //$NON-NLS-1$
+
+	public static final String ELEM_EXPANSION_STATE = "expansionState"; //$NON-NLS-1$
+
 	public static final String ELEM_OWNER_EMAIL = "ownerEmail"; //$NON-NLS-1$
+
 	public static final String ELEM_OWNER_ID = "ownerId"; //$NON-NLS-1$
+
 	public static final String ELEM_OWNER_NAME = "ownerName"; //$NON-NLS-1$
+
 	public static final String ELEM_TITLE = "title"; //$NON-NLS-1$
+
 	public static final String ELEM_VERT_SCROLL_STATE = "vertScrollState"; //$NON-NLS-1$
+
 	public static final String ELEM_WINDOW_BOTTOM = "windowBottom"; //$NON-NLS-1$
+
 	public static final String ELEM_WINDOW_LEFT = "windowLeft"; //$NON-NLS-1$
+
 	public static final String ELEM_WINDOW_RIGHT = "windowRight"; //$NON-NLS-1$
+
 	public static final String ELEM_WINDOW_TOP = "windowTop"; //$NON-NLS-1$
+
 	public static final DateFormat RFC_822_4DY_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US); //$NON-NLS-1$
+
 	public static final DateFormat RFC_822_FORMAT = new SimpleDateFormat("EEE, d MMM yy HH:mm:ss Z", Locale.US); //$NON-NLS-1$
+
 	public static final String TAG = "head"; //$NON-NLS-1$
 
 	private final Date m_dateCreated;
+
 	private final Date m_dateModified;
+
 	private final URI m_docs;
+
 	private final int[] m_expansionState;
+
 	private final String m_ownerEmail;
+
 	private final URI m_ownerId;
+
 	private final String m_ownerName;
+
 	private final String m_title;
+
 	private final int m_vertScrollState;
+
 	private final int m_windowBottom;
+
 	private final int m_windowLeft;
+
 	private final int m_windowRight;
+
 	private final int m_windowTop;
 
 	public Head(HeadBuilder head)
@@ -73,7 +99,7 @@ public class Head extends AbstractSaxableElement implements IHead
 		m_windowBottom = head.getWindowBottom();
 		m_windowLeft = head.getWindowLeft();
 		m_windowRight = head.getWindowRight();
-		m_windowTop = head.getWindowTop();		
+		m_windowTop = head.getWindowTop();
 	}
 
 	public Date getDateCreated()
@@ -166,19 +192,22 @@ public class Head extends AbstractSaxableElement implements IHead
 		emitInt(handler, namespace, prefix, ELEM_WINDOW_RIGHT, m_windowRight);
 	}
 
-	private void emitDate(ContentHandler handler, String namespace, String prefix, String elemName, Date date) throws SAXException
+	private void emitDate(ContentHandler handler, String namespace, String prefix, String elemName, Date date)
+			throws SAXException
 	{
 		if(date != null)
 			emitString(handler, namespace, prefix, elemName, RFC_822_4DY_FORMAT.format(date));
 	}
 
-	private void emitInt(ContentHandler handler, String namespace, String prefix, String elemName, int value) throws SAXException
+	private void emitInt(ContentHandler handler, String namespace, String prefix, String elemName, int value)
+			throws SAXException
 	{
 		if(value != 0)
 			emitString(handler, namespace, prefix, elemName, Integer.toString(value));
 	}
 
-	private void emitIntList(ContentHandler handler, String namespace, String prefix, String elemName, int[] value) throws SAXException
+	private void emitIntList(ContentHandler handler, String namespace, String prefix, String elemName, int[] value)
+			throws SAXException
 	{
 		if(value == null)
 			return;
@@ -196,7 +225,8 @@ public class Head extends AbstractSaxableElement implements IHead
 		}
 	}
 
-	private void emitString(ContentHandler handler, String namespace, String prefix, String elemName, Object value) throws SAXException
+	private void emitString(ContentHandler handler, String namespace, String prefix, String elemName, Object value)
+			throws SAXException
 	{
 		if(value == null)
 			return;
