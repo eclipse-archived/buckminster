@@ -17,8 +17,12 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.eclipse.buckminster.jnlp.application"
-            name="Buckminster Java Web Start">
+            application="org.eclipse.buckminster.jnlp.p2.application"
+            name="Buckminster Java Web Start P2 Installer">
+         <property
+               name="appName"
+               value="Buckminster Java Web Start P2 Installer">
+         </property>
       </product>
    </extension>
    <extension

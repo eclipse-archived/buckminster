@@ -8,6 +8,7 @@
         <cs:dependency name="org.eclipse.buckminster.executor.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.bootstrap" componentType="buckminster"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.product" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.maven.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.p4.test" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.pde.test" componentType="osgi.bundle"/>
