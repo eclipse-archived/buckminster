@@ -24,6 +24,7 @@ import java.util.Map;
 public class PythonInputStream extends BufferedInputStream implements PythonStreamConstants
 {
 	private final byte[] m_buf = new byte[32];
+
 	private boolean m_atEnd = false;
 
 	public PythonInputStream(InputStream stream)
@@ -31,12 +32,19 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		super(stream);
 	}
 
+	public boolean isAtEnd()
+	{
+		return m_atEnd;
+	}
+
 	/**
-	 * Read the next object from the stream. Note that <code>null</code> is a valid
-	 * return value that does <b>not</b> imply end of file.
-	 * @return The next object on the stream or the special object {@link #EOF} to
-	 * denote that the end of the input is reached.
-	 * @throws IOException if some other error occurs during reading.
+	 * Read the next object from the stream. Note that <code>null</code> is a valid return value that does <b>not</b>
+	 * imply end of file.
+	 * 
+	 * @return The next object on the stream or the special object {@link #EOF} to denote that the end of the input is
+	 *         reached.
+	 * @throws IOException
+	 *             if some other error occurs during reading.
 	 */
 	@SuppressWarnings("fallthrough")
 	public Object readObject() throws IOException
@@ -70,7 +78,7 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		throw new StreamCorruptedException();
 	}
 
-	public Map<String,String> readStringMap() throws IOException
+	public Map<String, String> readStringMap() throws IOException
 	{
 		if(m_atEnd)
 			return null;
@@ -87,11 +95,6 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		throw new StreamCorruptedException();
 	}
 
-	public boolean isAtEnd()
-	{
-		return m_atEnd;
-	}
-
 	private double readDouble() throws IOException
 	{
 		int len = this.read();
@@ -101,58 +104,32 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		return Double.parseDouble(new String(m_buf, 0, len, "US-ASCII")); //$NON-NLS-1$
 	}
 
-	private String readString() throws IOException
+	private void readFully(byte[] b, int off, int len) throws IOException
 	{
-		int len = this.readInt32();
-		byte[] bytes = new byte[len];
-		this.readFully(bytes, 0, len);
-		return new String(bytes, ENCODING);
+		while(len > 0)
+		{
+			int n = this.read(b, off, len);
+			if(n < 0)
+				throw new EOFException();
+			off += n;
+			len -= n;
+		}
 	}
 
-	private Map<?,?> readMap() throws IOException
+	private int readInt32() throws IOException
 	{
-		Object key = this.readObject();
-		if(m_atEnd)
-			throw new StreamCorruptedException();
-
-		if(key == null)
-			return Collections.emptyMap();
-
-		HashMap<Object,Object> map = new HashMap<Object,Object>();
-		do
-		{
-			map.put(key, this.readObject());
-			if(m_atEnd)
-				throw new StreamCorruptedException();
-			key = this.readObject();
-			if(m_atEnd)
-				throw new StreamCorruptedException();
-		} while(key != null);
-		return map;
+		byte[] bytes = m_buf;
+		this.readFully(bytes, 0, 4);
+		return ((bytes[3] << 24) + ((bytes[2] & 255) << 16) + ((bytes[1] & 255) << 8) + ((bytes[0] & 255) << 0));
 	}
 
-	private Map<String,String> readStrings() throws IOException
+	private long readInt64() throws IOException
 	{
-		Object key = this.readObject();
-		if(m_atEnd)
-			throw new StreamCorruptedException();
-
-		if(key == null)
-			return Collections.emptyMap();
-
-		HashMap<String,String> map = new HashMap<String,String>();
-		do
-		{
-			Object val = this.readObject();
-			if(val == null || m_atEnd)
-				throw new StreamCorruptedException();
-
-			map.put(key.toString(), val.toString());
-			key = this.readObject();
-			if(m_atEnd)
-				throw new StreamCorruptedException();
-		} while(key != null);
-		return map;
+		byte[] bytes = m_buf;
+		this.readFully(bytes, 0, 8);
+		return (((long)bytes[7] << 56) + ((long)(bytes[6] & 255) << 48) + ((long)(bytes[5] & 255) << 40)
+				+ ((long)(bytes[4] & 255) << 32) + ((long)(bytes[3] & 255) << 24) + ((bytes[2] & 255) << 16)
+				+ ((bytes[1] & 255) << 8) + ((bytes[0] & 255) << 0));
 	}
 
 	private List<?> readList() throws IOException
@@ -171,6 +148,60 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		return list;
 	}
 
+	private Map<?, ?> readMap() throws IOException
+	{
+		Object key = this.readObject();
+		if(m_atEnd)
+			throw new StreamCorruptedException();
+
+		if(key == null)
+			return Collections.emptyMap();
+
+		HashMap<Object, Object> map = new HashMap<Object, Object>();
+		do
+		{
+			map.put(key, this.readObject());
+			if(m_atEnd)
+				throw new StreamCorruptedException();
+			key = this.readObject();
+			if(m_atEnd)
+				throw new StreamCorruptedException();
+		} while(key != null);
+		return map;
+	}
+
+	private String readString() throws IOException
+	{
+		int len = this.readInt32();
+		byte[] bytes = new byte[len];
+		this.readFully(bytes, 0, len);
+		return new String(bytes, ENCODING);
+	}
+
+	private Map<String, String> readStrings() throws IOException
+	{
+		Object key = this.readObject();
+		if(m_atEnd)
+			throw new StreamCorruptedException();
+
+		if(key == null)
+			return Collections.emptyMap();
+
+		HashMap<String, String> map = new HashMap<String, String>();
+		do
+		{
+			Object val = this.readObject();
+			if(val == null || m_atEnd)
+				throw new StreamCorruptedException();
+
+			map.put(key.toString(), val.toString());
+			key = this.readObject();
+			if(m_atEnd)
+				throw new StreamCorruptedException();
+		} while(key != null);
+		return map;
+	}
+
 	private Object[] readTuple() throws IOException
 	{
 		int top = this.readInt32();
@@ -183,41 +214,4 @@ public class PythonInputStream extends BufferedInputStream implements PythonStre
 		}
 		return tuple;
 	}
-
-	private int readInt32() throws IOException
-	{
-		byte[] bytes = m_buf;
-		this.readFully(bytes, 0, 4);
-		return (( bytes[3] << 24) +
-				((bytes[2] & 255) << 16) +
-				((bytes[1] & 255) << 8) +
-				((bytes[0] & 255) << 0));
-	}
-
-	private long readInt64() throws IOException
-	{
-		byte[] bytes = m_buf;
-		this.readFully(bytes, 0, 8);
-		return (((long) bytes[7] << 56) +
-				((long)(bytes[6] & 255) << 48) +
-				((long)(bytes[5] & 255) << 40) +
-				((long)(bytes[4] & 255) << 32) +
-				((long)(bytes[3] & 255) << 24) +
-				((bytes[2] & 255) << 16) +
-				((bytes[1] & 255) << 8) +
-				((bytes[0] & 255) << 0));
-	}
-
-	private void readFully(byte[] b, int off, int len) throws IOException
-	{
-		while(len > 0)
-		{
-			int n = this.read(b, off, len);
-			if(n < 0)
-				throw new EOFException();
-			off += n;
-			len -= n;
-		}
-	}
 }
-

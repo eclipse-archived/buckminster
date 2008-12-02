@@ -35,7 +35,7 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 		else if(obj instanceof Integer)
 			this.writeInt(((Integer)obj).intValue());
 		else if(obj instanceof Map)
-			this.writeMap((Map<?,?>)obj);
+			this.writeMap((Map<?, ?>)obj);
 		else if(obj instanceof List)
 			this.writeList((List<?>)obj);
 		else if(obj instanceof Double)
@@ -48,18 +48,6 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 			throw new IOException(NLS.bind(Messages.unable_to_write_object_of_type_0, obj.getClass()));
 	}
 
-	private void writeInt(int v) throws IOException
-	{
-		out.write(TYPE_INT);
-		this.writeInt32(v);
-	}
-
-	private void writeLong(long v) throws IOException
-	{
-		out.write(TYPE_INT64);
-		this.writeInt64(v);
-	}
-
 	private void writeDouble(double v) throws IOException
 	{
 		String dblStr = Double.toString(v);
@@ -68,17 +56,44 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 		out.write(dblStr.getBytes("US-ASCII")); //$NON-NLS-1$
 	}
 
-	private void writeString(String str) throws IOException
+	private void writeInt(int v) throws IOException
 	{
-		byte[] bytes = str.getBytes(ENCODING);
-		out.write(TYPE_STRING);
-		this.writeInt32(bytes.length);
-		out.write(bytes);
+		out.write(TYPE_INT);
+		this.writeInt32(v);
 	}
 
-	private void writeNull() throws IOException
+	private void writeInt32(int v) throws IOException
 	{
-		out.write('0');
+		out.write((v >>> 0) & 0xFF);
+		out.write((v >>> 8) & 0xFF);
+		out.write((v >>> 16) & 0xFF);
+		out.write((v >>> 24) & 0xFF);
+	}
+
+	private void writeInt64(long v) throws IOException
+	{
+		out.write((int)((v >>> 0) & 0xFF));
+		out.write((int)((v >>> 8) & 0xFF));
+		out.write((int)((v >>> 16) & 0xFF));
+		out.write((int)((v >>> 24) & 0xFF));
+		out.write((int)((v >>> 32) & 0xFF));
+		out.write((int)((v >>> 40) & 0xFF));
+		out.write((int)((v >>> 48) & 0xFF));
+		out.write((int)((v >>> 56) & 0xFF));
+	}
+
+	private void writeList(List<?> list) throws IOException
+	{
+		out.write(TYPE_LIST);
+		this.writeInt32(list.size());
+		for(Object val : list)
+			this.writeObject(val);
+	}
+
+	private void writeLong(long v) throws IOException
+	{
+		out.write(TYPE_INT64);
+		this.writeInt64(v);
 	}
 
 	private void writeMap(Map<?, ?> map) throws IOException
@@ -92,6 +107,19 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 		out.write(TYPE_NULL);
 	}
 
+	private void writeNull() throws IOException
+	{
+		out.write('0');
+	}
+
+	private void writeString(String str) throws IOException
+	{
+		byte[] bytes = str.getBytes(ENCODING);
+		out.write(TYPE_STRING);
+		this.writeInt32(bytes.length);
+		out.write(bytes);
+	}
+
 	private void writeTuple(Object[] tuple) throws IOException
 	{
 		out.write(TYPE_TUPLE);
@@ -99,33 +127,4 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 		for(Object val : tuple)
 			this.writeObject(val);
 	}
-
-	private void writeList(List<?> list) throws IOException
-	{
-		out.write(TYPE_LIST);
-		this.writeInt32(list.size());
-		for(Object val : list)
-			this.writeObject(val);
-	}
-
-	private void writeInt32(int v) throws IOException
-	{
-		out.write((v >>>  0) & 0xFF);
-		out.write((v >>>  8) & 0xFF);
-		out.write((v >>> 16) & 0xFF);
-		out.write((v >>> 24) & 0xFF);
-	}
-
-	private void writeInt64(long v) throws IOException
-	{
-		out.write((int)((v >>>  0) & 0xFF));
-		out.write((int)((v >>>  8) & 0xFF));
-		out.write((int)((v >>> 16) & 0xFF));
-		out.write((int)((v >>> 24) & 0xFF));
-		out.write((int)((v >>> 32) & 0xFF));
-		out.write((int)((v >>> 40) & 0xFF));
-		out.write((int)((v >>> 48) & 0xFF));
-		out.write((int)((v >>> 56) & 0xFF));
-	}
 }
-

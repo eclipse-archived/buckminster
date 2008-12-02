@@ -29,7 +29,9 @@ import org.xml.sax.helpers.AttributesImpl;
 public class Client extends NodeWrapper
 {
 	public static final String TAG = "client"; //$NON-NLS-1$
+
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
+
 	public static final String ATTR_LOCAL_ROOT = "localRoot"; //$NON-NLS-1$
 
 	private final Server m_server;
@@ -58,18 +60,9 @@ public class Client extends NodeWrapper
 	}
 
 	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + m_server.hashCode();
-		
-		return hc;
-	}
-
-	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
 		if(!super.equals(o))
@@ -81,8 +74,21 @@ public class Client extends NodeWrapper
 
 		if(m_server != that.m_server)
 			return false;
-		
+
 		return true;
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public DepotMapping getDepotMapping(String name) throws BackingStoreException
+	{
+		Preferences prefs = getPreferences();
+		return prefs.nodeExists(name)
+				? new DepotMapping(this, prefs.node(name))
+				: null;
 	}
 
 	public String[] getDepotMappingNames() throws BackingStoreException
@@ -90,23 +96,17 @@ public class Client extends NodeWrapper
 		return getPreferences().childrenNames();
 	}
 
-	public DepotMapping getDepotMapping(String name) throws BackingStoreException
-	{
-		Preferences prefs = getPreferences();
-		return prefs.nodeExists(name) ? new DepotMapping(this, prefs.node(name)) : null;
-	}
-
 	public DepotMapping[] getDepotMappings() throws BackingStoreException
 	{
 		Preferences prefs = getPreferences();
 		ArrayList<DepotMapping> depotMappings = new ArrayList<DepotMapping>();
-		for (String child : prefs.childrenNames())
+		for(String child : prefs.childrenNames())
 		{
 			try
 			{
 				depotMappings.add(new DepotMapping(this, prefs.node(child)));
 			}
-			catch (IllegalStateException e)
+			catch(IllegalStateException e)
 			{
 				// Someone removed this node during iteration
 				continue;
@@ -115,51 +115,16 @@ public class Client extends NodeWrapper
 		return depotMappings.toArray(new DepotMapping[depotMappings.size()]);
 	}
 
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public final Server getServer()
-	{
-		return m_server;
-	}
-
 	public final String getLocalRoot()
 	{
 		return getPreferences().get(Client.ATTR_LOCAL_ROOT, null);
 	}
 
-	public void setLocalRoot(String localRoot)
-	{
-		putString(Client.ATTR_LOCAL_ROOT, localRoot);
-	}
-
-	public boolean isDefaultClient()
-	{
-		return getName().equals(m_server.getDefaultClientName());
-	}
-
-	@Override
-	public void remove() throws BackingStoreException
-	{
-		if(isDefaultClient())
-			m_server.setOtherDefaultClient(getName());
-		super.remove();
-	}
-
-	/**
-	 * Change so that this client becomes the one and only default client.
-	 * @throws BackingStoreException
-	 */
-	public void setAsDefault()
-	{
-		m_server.setDefaultClient(getName());
-	}
-
 	/**
 	 * Returns the client mapping that matches the given <code>depotPath</code>.
-	 * @param depotPath The depotPath to use for the match, must not be null.
+	 * 
+	 * @param depotPath
+	 *            The depotPath to use for the match, must not be null.
 	 * @return The matching mapping or <code>null</code> if no match was found.
 	 */
 	public IPath getMappingForDepot(IPath depotPath) throws BackingStoreException
@@ -177,6 +142,48 @@ public class Client extends NodeWrapper
 			}
 		}
 		return null;
+	}
+
+	public final Server getServer()
+	{
+		return m_server;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + m_server.hashCode();
+
+		return hc;
+	}
+
+	public boolean isDefaultClient()
+	{
+		return getName().equals(m_server.getDefaultClientName());
+	}
+
+	@Override
+	public void remove() throws BackingStoreException
+	{
+		if(isDefaultClient())
+			m_server.setOtherDefaultClient(getName());
+		super.remove();
+	}
+
+	/**
+	 * Change so that this client becomes the one and only default client.
+	 * 
+	 * @throws BackingStoreException
+	 */
+	public void setAsDefault()
+	{
+		m_server.setDefaultClient(getName());
+	}
+
+	public void setLocalRoot(String localRoot)
+	{
+		putString(Client.ATTR_LOCAL_ROOT, localRoot);
 	}
 
 	@Override

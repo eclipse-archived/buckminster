@@ -44,7 +44,26 @@ import org.eclipse.core.runtime.Path;
  */
 public class P4ReaderType extends CatalogReaderType
 {
+	public static DepotURI getDepotLocation(IResolution resolution, Map<String, String> properties)
+			throws CoreException
+	{
+		return new DepotURI(resolution.getRepository(), getNonDefaultBranchName(resolution), properties);
+	}
+
+	private static String getNonDefaultBranchName(IResolution resolution)
+	{
+		VersionSelector vs = resolution.getVersionMatch().getBranchOrTag();
+		return (vs != null && !vs.isDefault() && vs.getType() == VersionSelector.BRANCH)
+				? vs.getName()
+				: null;
+	}
+
 	private final Map<String, ClientSpec> m_clients = new TimedHashMap<String, ClientSpec>(20000, null);
+
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+	{
+		return null;
+	}
 
 	public synchronized ClientSpec getClient(DepotURI depotLocation) throws CoreException
 	{
@@ -59,16 +78,10 @@ public class P4ReaderType extends CatalogReaderType
 		return clientSpec;
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		return null;
-	}
-
 	@Override
-	public IPath getInstallLocation(Resolution resolution, MaterializationContext context)
-	throws CoreException
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException
 	{
-		Map<String,String> properties = context.getProperties(resolution.getRequest());
+		Map<String, String> properties = context.getProperties(resolution.getRequest());
 		DepotURI depotLocation = getDepotLocation(resolution, properties);
 		String localRoot = depotLocation.getLocalRoot();
 		IPath root = null;
@@ -80,13 +93,6 @@ public class P4ReaderType extends CatalogReaderType
 		return root;
 	}
 
-	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new VersionFinder(provider, ctype, nodeQuery);
-	}
-
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
@@ -94,8 +100,16 @@ public class P4ReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor)
-	throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
+	{
+		MonitorUtils.complete(monitor);
+		return new VersionFinder(provider, ctype, nodeQuery);
+	}
+
+	@Override
+	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context,
+			IProgressMonitor monitor) throws CoreException
 	{
 		List<ClientSpec> modifiedClients = new ArrayList<ClientSpec>();
 		for(Materialization mi : mtr)
@@ -115,20 +129,9 @@ public class P4ReaderType extends CatalogReaderType
 
 	@Override
 	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		if(P4WSADBridge.isPresent())
 			P4WSADBridge.shareProject(project, getDepotLocation(cr, context.getProperties(cr.getRequest())));
-	}
-
-	public static DepotURI getDepotLocation(IResolution resolution, Map<String,String> properties) throws CoreException
-	{
-		return new DepotURI(resolution.getRepository(), getNonDefaultBranchName(resolution), properties);
-	}
-
-	private static String getNonDefaultBranchName(IResolution resolution)
-	{
-		VersionSelector vs = resolution.getVersionMatch().getBranchOrTag();
-		return (vs != null && !vs.isDefault() && vs.getType() == VersionSelector.BRANCH) ? vs.getName() : null;
 	}
 }

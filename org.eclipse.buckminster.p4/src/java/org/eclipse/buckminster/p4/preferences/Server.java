@@ -27,13 +27,21 @@ import org.xml.sax.helpers.AttributesImpl;
 public class Server extends NodeWrapper implements ISaxable
 {
 	public static final String BM_SERVER_NS = XMLConstants.BM_PREFIX + "P4Server-1.0"; //$NON-NLS-1$
+
 	public static final String BM_SERVER_PREFIX = "p4s"; //$NON-NLS-1$
+
 	public static final String BM_SERVER_RESOURCE = "/p4server-1.0.xsd"; //$NON-NLS-1$
+
 	public static final String FILE_EXTENSION = ".p4srv"; //$NON-NLS-1$
+
 	public static final String TAG = "server"; //$NON-NLS-1$
+
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
+
 	public static final String ATTR_PASSWORD = "password"; //$NON-NLS-1$
+
 	public static final String ATTR_USER = "user"; //$NON-NLS-1$
+
 	public static final String ATTR_DEFAULT_CLIENT = "defaultClient"; //$NON-NLS-1$
 
 	Server(Preferences preferences)
@@ -65,22 +73,9 @@ public class Server extends NodeWrapper implements ISaxable
 	public Client getClient(String name) throws BackingStoreException
 	{
 		Preferences prefs = getPreferences();
-		return prefs.nodeExists(name) ? new Client(this, prefs.node(name)) : null;
-	}
-
-	public String getPassword()
-	{
-		return getPreferences().get(ATTR_PASSWORD, null);
-	}
-
-	public String getUser()
-	{
-		return getPreferences().get(ATTR_USER, null);
-	}
-
-	public String getDefaultClientName()
-	{
-		return getPreferences().get(ATTR_DEFAULT_CLIENT, null);
+		return prefs.nodeExists(name)
+				? new Client(this, prefs.node(name))
+				: null;
 	}
 
 	public String[] getClientNames() throws BackingStoreException
@@ -92,13 +87,13 @@ public class Server extends NodeWrapper implements ISaxable
 	{
 		Preferences prefs = getPreferences();
 		ArrayList<Client> clients = new ArrayList<Client>();
-		for (String child : prefs.childrenNames())
+		for(String child : prefs.childrenNames())
 		{
 			try
 			{
 				clients.add(new Client(this, prefs.node(child)));
 			}
-			catch (IllegalStateException e)
+			catch(IllegalStateException e)
 			{
 				// Someone removed this node during iteration
 				continue;
@@ -119,14 +114,24 @@ public class Server extends NodeWrapper implements ISaxable
 		throw new BackingStoreException(Messages.no_default_client_exists);
 	}
 
+	public String getDefaultClientName()
+	{
+		return getPreferences().get(ATTR_DEFAULT_CLIENT, null);
+	}
+
 	public String getDefaultTag()
 	{
 		return TAG;
 	}
 
-	public void setDefaultClient(String clientName)
+	public String getPassword()
 	{
-		putString(ATTR_DEFAULT_CLIENT, clientName);
+		return getPreferences().get(ATTR_PASSWORD, null);
+	}
+
+	public String getUser()
+	{
+		return getPreferences().get(ATTR_USER, null);
 	}
 
 	public boolean isDefaultServer()
@@ -147,10 +152,15 @@ public class Server extends NodeWrapper implements ISaxable
 		P4Preferences.getInstance().setDefaultServer(getName());
 	}
 
+	public void setDefaultClient(String clientName)
+	{
+		putString(ATTR_DEFAULT_CLIENT, clientName);
+	}
+
 	public void setOtherDefaultClient(String clientName) throws BackingStoreException
 	{
 		Preferences prefs = getPreferences();
-		for (String childName : prefs.childrenNames())
+		for(String childName : prefs.childrenNames())
 		{
 			if(!childName.equals(clientName))
 			{
@@ -168,6 +178,15 @@ public class Server extends NodeWrapper implements ISaxable
 	public void setUser(String user)
 	{
 		putString(ATTR_USER, user);
+	}
+
+	public void toSax(ContentHandler receiver) throws SAXException
+	{
+		receiver.startDocument();
+		receiver.startPrefixMapping(BM_SERVER_PREFIX, BM_SERVER_NS);
+		toSax(receiver, BM_SERVER_NS, BM_SERVER_PREFIX, getDefaultTag());
+		receiver.endPrefixMapping(BM_SERVER_PREFIX);
+		receiver.endDocument();
 	}
 
 	@Override
@@ -191,14 +210,5 @@ public class Server extends NodeWrapper implements ISaxable
 		{
 			throw new SAXException(e);
 		}
-	}
-
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
-		receiver.startDocument();
-		receiver.startPrefixMapping(BM_SERVER_PREFIX, BM_SERVER_NS);
-		toSax(receiver, BM_SERVER_NS, BM_SERVER_PREFIX, getDefaultTag());
-		receiver.endPrefixMapping(BM_SERVER_PREFIX);
-		receiver.endDocument();
 	}
 }

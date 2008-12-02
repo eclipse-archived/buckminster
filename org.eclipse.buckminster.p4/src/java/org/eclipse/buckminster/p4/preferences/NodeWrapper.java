@@ -16,32 +16,15 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * @author Thomas Hallgren
  */
 public abstract class NodeWrapper extends AbstractSaxableElement
 {
-	private final Preferences m_nodePrefs;
-
-	NodeWrapper(Preferences nodePrefs)
+	protected static final void addAttribute(AttributesImpl attrs, String name, String value)
 	{
-		m_nodePrefs = nodePrefs;
-	}
-
-	protected final void putString(String name, String value)
-	{
-		if (value == null)
-			m_nodePrefs.remove(name);
-		else
-			m_nodePrefs.put(name, value);
-	}
-
-	public void clear() throws BackingStoreException
-	{
-		m_nodePrefs.clear();
-		for(String child : m_nodePrefs.childrenNames())
-			m_nodePrefs.node(child).removeNode();
+		if(value != null)
+			Utils.addAttribute(attrs, name, value);
 	}
 
 	protected static void deepCopy(Preferences thisPrefs, Preferences copyPrefs) throws BackingStoreException
@@ -61,17 +44,31 @@ public abstract class NodeWrapper extends AbstractSaxableElement
 		}
 	}
 
+	private final Preferences m_nodePrefs;
+
+	NodeWrapper(Preferences nodePrefs)
+	{
+		m_nodePrefs = nodePrefs;
+	}
+
+	public void clear() throws BackingStoreException
+	{
+		m_nodePrefs.clear();
+		for(String child : m_nodePrefs.childrenNames())
+			m_nodePrefs.node(child).removeNode();
+	}
+
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
-		if (!(o instanceof NodeWrapper))
+		if(!(o instanceof NodeWrapper))
 			return false;
 		NodeWrapper that = (NodeWrapper)o;
 
-		if (!this.getName().equals(that.getName()))
+		if(!this.getName().equals(that.getName()))
 			return false;
 
 		return true;
@@ -88,11 +85,6 @@ public abstract class NodeWrapper extends AbstractSaxableElement
 		return this.getName().hashCode();
 	}
 
-	final Preferences getPreferences()
-	{
-		return m_nodePrefs;
-	}
-
 	public void remove() throws BackingStoreException
 	{
 		m_nodePrefs.removeNode();
@@ -103,9 +95,16 @@ public abstract class NodeWrapper extends AbstractSaxableElement
 		m_nodePrefs.flush();
 	}
 
-	protected static final void addAttribute(AttributesImpl attrs, String name, String value)
+	protected final void putString(String name, String value)
 	{
-		if(value != null)
-			Utils.addAttribute(attrs, name, value);
+		if(value == null)
+			m_nodePrefs.remove(name);
+		else
+			m_nodePrefs.put(name, value);
+	}
+
+	final Preferences getPreferences()
+	{
+		return m_nodePrefs;
 	}
 }

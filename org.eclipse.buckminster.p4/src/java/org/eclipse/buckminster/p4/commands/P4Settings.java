@@ -100,8 +100,7 @@ public class P4Settings extends AbstractCommand
 
 		if(option.is(OVERWRITE))
 			m_overwrite = true;
-		else
-		if(option.is(CURRENT))
+		else if(option.is(CURRENT))
 			m_current = true;
 		else
 			throw new UsageException(Messages.unknown_option);
@@ -119,10 +118,10 @@ public class P4Settings extends AbstractCommand
 	{
 		if(m_selectedOption == null)
 			throw new UsageException(Messages.no_action_was_specified);
-		
+
 		if(m_overwrite && !m_selectedOption.is(IMPORT))
 			throw new UsageException(Messages.overwrite_can_only_be_used_with_import);
-		
+
 		if(m_current && !m_selectedOption.is(IMPORT))
 			throw new UsageException(Messages.default_can_only_be_used_with_import);
 
@@ -150,27 +149,33 @@ public class P4Settings extends AbstractCommand
 		P4Preferences.getInstance().save();
 	}
 
-	private void makeServerDefault() throws Exception
+	private void exportServer() throws Exception
 	{
-		this.getServer().setAsDefault();
-		P4Preferences.getInstance().save();
+		OutputStream output = null;
+		try
+		{
+			if(m_file == null)
+				output = System.out;
+			else
+				output = new BufferedOutputStream(new FileOutputStream(m_file));
+			Utils.serialize(this.getServer(), output);
+		}
+		finally
+		{
+			if(output == System.out)
+				output.flush();
+			else
+				IOUtils.close(output);
+		}
 	}
 
-	private void list() throws Exception
+	private Server getServer() throws Exception
 	{
-		PrintStream out = System.out;
 		P4Preferences prefs = P4Preferences.getInstance();
-		Server[] servers = prefs.getServers();
-		if(servers.length == 0)
-		{
-			out.println(Messages.no_p4_servers_have_been_configured);
-			return;
-		}
-		for(Server server : prefs.getServers())
-		{
-			out.print(server.isDefaultServer() ? "* " : "  "); //$NON-NLS-1$ //$NON-NLS-2$
-			out.println(server.getName());
-		}
+		Server server = prefs.getServer(m_serverName);
+		if(server == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.no_such_P4_server_0, m_serverName));
+		return server;
 	}
 
 	private void importServer() throws Exception
@@ -214,32 +219,27 @@ public class P4Settings extends AbstractCommand
 		}
 	}
 
-	private Server getServer() throws Exception 
+	private void list() throws Exception
 	{
+		PrintStream out = System.out;
 		P4Preferences prefs = P4Preferences.getInstance();
-		Server server = prefs.getServer(m_serverName);
-		if(server == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.no_such_P4_server_0, m_serverName));
-		return server;
+		Server[] servers = prefs.getServers();
+		if(servers.length == 0)
+		{
+			out.println(Messages.no_p4_servers_have_been_configured);
+			return;
+		}
+		for(Server server : prefs.getServers())
+		{
+			out.print(server.isDefaultServer()
+					? "* " : "  "); //$NON-NLS-1$ //$NON-NLS-2$
+			out.println(server.getName());
+		}
 	}
 
-	private void exportServer() throws Exception
+	private void makeServerDefault() throws Exception
 	{
-		OutputStream output = null;
-		try
-		{
-			if(m_file == null)
-				output = System.out;
-			else
-				output = new BufferedOutputStream(new FileOutputStream(m_file));
-			Utils.serialize(this.getServer(), output);
-		}
-		finally
-		{
-			if(output == System.out)
-				output.flush();
-			else
-				IOUtils.close(output);
-		}
+		this.getServer().setAsDefault();
+		P4Preferences.getInstance().save();
 	}
 }

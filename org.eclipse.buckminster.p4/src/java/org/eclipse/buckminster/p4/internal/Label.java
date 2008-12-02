@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 
-
 /**
  * @author thhal
  */
@@ -24,6 +23,11 @@ public class Label extends DepotObject
 	public Label(Connection conn, Map<String, String> info)
 	{
 		super(conn, info);
+	}
+
+	public Date getAccess() throws CoreException
+	{
+		return this.getParsedDate("Access"); //$NON-NLS-1$
 	}
 
 	public String getDescription()
@@ -41,14 +45,7 @@ public class Label extends DepotObject
 		return this.get("Owner"); //$NON-NLS-1$
 	}
 
-	public Date getAccess()
-	throws CoreException
-	{
-		return this.getParsedDate("Access"); //$NON-NLS-1$
-	}
-
-	public Date getUpdate()
-	throws CoreException
+	public Date getUpdate() throws CoreException
 	{
 		return this.getParsedDate("Update"); //$NON-NLS-1$
 	}
@@ -69,4 +66,3 @@ public class Label extends DepotObject
 		return this.getLabel();
 	}
 }
-

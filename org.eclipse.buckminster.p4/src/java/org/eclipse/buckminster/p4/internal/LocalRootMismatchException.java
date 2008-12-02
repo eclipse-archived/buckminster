@@ -18,7 +18,10 @@ public class LocalRootMismatchException extends LocalizedException
 
 	public LocalRootMismatchException(String clientName, String p4Port, IPath preferencePath, IPath serverPath)
 	{
-		super(NLS.bind(Messages.the_local_path_declared_in_P4_preferences_for_client_0_and_p4_port_1_is_2_it_should_be_3_according_to_the_client_specification_found_on_the_server,
-				new Object[]{clientName, p4Port, preferencePath.toOSString(), serverPath.toOSString()}));
+		super(
+				NLS
+						.bind(
+								Messages.the_local_path_declared_in_P4_preferences_for_client_0_and_p4_port_1_is_2_it_should_be_3_according_to_the_client_specification_found_on_the_server,
+								new Object[] { clientName, p4Port, preferencePath.toOSString(), serverPath.toOSString() }));
 	}
 }

@@ -18,7 +18,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -27,6 +26,7 @@ public class ServerHandler extends ExtensionAwareHandler
 	final static String TAG = Server.TAG;
 
 	private final ClientHandler m_clientHandler = new ClientHandler(this);
+
 	private Server m_server;
 
 	public ServerHandler(AbstractHandler parent)
@@ -35,8 +35,7 @@ public class ServerHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch = null;
 		if(Client.TAG.equals(localName))
@@ -47,8 +46,7 @@ public class ServerHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		String name = this.getStringValue(attrs, Server.ATTR_NAME);
 		P4Preferences prefs = P4Preferences.getInstance();
@@ -73,10 +71,9 @@ public class ServerHandler extends ExtensionAwareHandler
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator(), e);
 		}
 	}
-	
+
 	Server getServer()
 	{
 		return m_server;
 	}
 }
-

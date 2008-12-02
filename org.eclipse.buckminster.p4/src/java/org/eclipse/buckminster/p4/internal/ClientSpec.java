@@ -43,14 +43,15 @@ public class ClientSpec extends DepotObject
 		mac,
 
 		/**
-		 * Shared mode: Line endings are <code>LF</code> with any <code>CR/LF</code> pairs translated to
-		 * <code>LF</code>-only style before storage or syncing with the depot.<br/> When you sync your client
-		 * workspace, line endings will be <code>LF</code>. If you edit the file on a Windows machine, and your
-		 * editor inserts <code>CR</code>s before each <code>LF</code>, the extra <code>CR</code>s will not
-		 * appear in the archive file.<br/> The most common use of the <code>share</code> option is for users of
-		 * Windows workstations who have UNIX home directories mounted as network drives; if they sync files from UNIX,
-		 * but edit the files on the Windows machine, the <code>share</code> option eliminates any problems caused by
-		 * Windows-based editors' insertion of extra carriage return characters at line endings.
+		 * Shared mode: Line endings are <code>LF</code> with any <code>CR/LF</code> pairs translated to <code>LF</code>
+		 * -only style before storage or syncing with the depot.<br/>
+		 * When you sync your client workspace, line endings will be <code>LF</code>. If you edit the file on a Windows
+		 * machine, and your editor inserts <code>CR</code>s before each <code>LF</code>, the extra <code>CR</code>s
+		 * will not appear in the archive file.<br/>
+		 * The most common use of the <code>share</code> option is for users of Windows workstations who have UNIX home
+		 * directories mounted as network drives; if they sync files from UNIX, but edit the files on the Windows
+		 * machine, the <code>share</code> option eliminates any problems caused by Windows-based editors' insertion of
+		 * extra carriage return characters at line endings.
 		 */
 		share,
 
@@ -89,8 +90,7 @@ public class ClientSpec extends DepotObject
 	 *            The path in the depot in UNC format
 	 * @param localPath
 	 *            The absolute location on disk for the local path.
-	 * @return <code>true</code> if the location was added to the view, <code>false</code> if it was already
-	 *         present.
+	 * @return <code>true</code> if the location was added to the view, <code>false</code> if it was already present.
 	 */
 	public boolean addLocation(IPath depotPath, IPath localPath) throws CoreException
 	{
@@ -102,8 +102,9 @@ public class ClientSpec extends DepotObject
 		for(ViewEntry entry : entries)
 		{
 			if(DepotURI.pathEquals(depotPath, entry.getDepotPath()))
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.depot_path_0_is_already_mapped_to_1_in_client_2,
-						new Object[] {depotPath, entry.getLocalPath(), getClient()}));
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.depot_path_0_is_already_mapped_to_1_in_client_2, new Object[] { depotPath,
+								entry.getLocalPath(), getClient() }));
 
 			newEntries.add(entry);
 		}
@@ -131,7 +132,8 @@ public class ClientSpec extends DepotObject
 		}
 
 		if(clientPath == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.local_path_0_is_not_a_root_or_altroot_of_client_1, localPath, getClient()));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.local_path_0_is_not_a_root_or_altroot_of_client_1,
+					localPath, getClient()));
 
 		newEntries.add(new ViewEntry(depotPath.append("..."), clientPath.append("..."))); //$NON-NLS-1$ //$NON-NLS-2$
 		setView(newEntries.toArray(new ViewEntry[newEntries.size()]));
@@ -463,8 +465,8 @@ public class ClientSpec extends DepotObject
 	}
 
 	/**
-	 * The hostname must be provided exactly as it appears in the output of p4 info when run from that host.<br/>This
-	 * field is meant to prevent accidental misuse of client workspaces on the wrong machine. It doesn't provide
+	 * The hostname must be provided exactly as it appears in the output of p4 info when run from that host.<br/>
+	 * This field is meant to prevent accidental misuse of client workspaces on the wrong machine. It doesn't provide
 	 * security, since the actual value of the host name can be overridden with the -H flag to any p4 command, or with
 	 * the P4HOST environment variable. For a similar mechanism that does provide security, use the IP address
 	 * restriction feature of p4 protect.
@@ -494,9 +496,9 @@ public class ClientSpec extends DepotObject
 
 	/**
 	 * Grant or deny other users permission to edit the client specification (To make a locked client specification
-	 * truly effective, you should also set a the client&apos;s owner&apos;s password with p4 passwd.)<br/> If locked,
-	 * only the owner is able to use, edit, or delete the client spec. Perforce administrators can override the lock by
-	 * using the -f (force) flag with p4 client.
+	 * truly effective, you should also set a the client&apos;s owner&apos;s password with p4 passwd.)<br/>
+	 * If locked, only the owner is able to use, edit, or delete the client spec. Perforce administrators can override
+	 * the lock by using the -f (force) flag with p4 client.
 	 * 
 	 * @param flag
 	 *            <code>true</code> if this option should be set.
@@ -509,8 +511,8 @@ public class ClientSpec extends DepotObject
 	/**
 	 * For files without the +m (modtime) file type modifier
 	 * <ul>
-	 * <li>If modtime is set, the modification date (on the local filesystem) of a newly synced file is the datestamp
-	 * on the file when the file was last modified.</li>
+	 * <li>If modtime is set, the modification date (on the local filesystem) of a newly synced file is the datestamp on
+	 * the file when the file was last modified.</li>
 	 * <li>If nomodtime is set, the modification date is the date and time of sync.</li>
 	 * </ul>
 	 * For files with the +m (modtime) file type modifier, the modification date (on the local filesystem) of a newly

@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-
 /**
  * @author thhal
  */
@@ -28,9 +27,10 @@ public class DepotFile extends DepotObject
 		super(conn, info);
 	}
 
-	public String getHeadAction()
+	public void copyTo(File tempFile) throws CoreException
 	{
-		return this.get("headAction"); //$NON-NLS-1$
+		this.getConnection().exec(
+				"print", new String[] { "-o", tempFile.getAbsolutePath(), this.getDepotPath().toString() }); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public IPath getClientPath()
@@ -43,9 +43,8 @@ public class DepotFile extends DepotObject
 		return new Path(this.get("depotFile")); //$NON-NLS-1$
 	}
 
-	public void copyTo(File tempFile) throws CoreException
+	public String getHeadAction()
 	{
-		this.getConnection().exec("print", new String[] { "-o", tempFile.getAbsolutePath(), this.getDepotPath().toString() }); //$NON-NLS-1$ //$NON-NLS-2$
+		return this.get("headAction"); //$NON-NLS-1$
 	}
 }
-

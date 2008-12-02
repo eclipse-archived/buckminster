@@ -18,7 +18,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -27,6 +26,7 @@ public class ClientHandler extends ExtensionAwareHandler
 	final static String TAG = Client.TAG;
 
 	private final DepotMappingHandler m_depotMappingHandler = new DepotMappingHandler(this);
+
 	private Client m_client;
 
 	public ClientHandler(AbstractHandler parent)
@@ -35,8 +35,7 @@ public class ClientHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch = null;
 		if(DepotMapping.TAG.equals(localName))
@@ -47,8 +46,7 @@ public class ClientHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		String name = this.getStringValue(attrs, Client.ATTR_NAME);
 		try
@@ -67,4 +65,3 @@ public class ClientHandler extends ExtensionAwareHandler
 		return m_client;
 	}
 }
-

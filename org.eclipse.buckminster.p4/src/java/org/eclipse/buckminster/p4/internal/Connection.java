@@ -41,15 +41,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 
-
 /**
  * @author thhal
  */
 public class Connection extends PropertyScope
 {
 	/**
-	 * Maximum number of arguments before the P4Client will switch into using
-	 * <code>-x &lt;argument file&gt;</code> notation.
+	 * Maximum number of arguments before the P4Client will switch into using <code>-x &lt;argument file&gt;</code>
+	 * notation.
 	 */
 	public static final int ARG_FILE_TRESHOLD = 32;
 
@@ -58,27 +57,6 @@ public class Connection extends PropertyScope
 	private static Pattern s_depotPattern = Pattern.compile("^Depot (\\w+) .*"); //$NON-NLS-1$
 
 	private static Pattern s_tzPattern = Pattern.compile("(-?)(\\d{1,2}):?(\\d{2})$"); //$NON-NLS-1$
-
-	private final String m_address;
-
-	private final String m_charset;
-
-	private final Client m_clientPrefs;
-
-	private ConnectionInfo m_info;
-
-	public Connection(DepotURI depotURI)
-	{
-		this(depotURI.getScope(), depotURI.getClient(), depotURI.getAddress());
-	}
-
-	public Connection(Map<String,String> scope, Client clientPrefs, String address)
-	{
-		super(scope);
-		m_charset = null;
-		m_clientPrefs = clientPrefs;
-		m_address = address;
-	}
 
 	private static TimeZone parseTimeZone(String serverDate)
 	{
@@ -112,7 +90,7 @@ public class Connection extends PropertyScope
 				for(String id : ids)
 				{
 					TimeZone candidate = TimeZone.getTimeZone(id);
-					
+
 					// Parse a Date using this candidate as the TimeZone. Then
 					// check if that Date is in Daylight saving time. If it is,
 					// then we need to add the DSTSavings before comparing the
@@ -140,8 +118,29 @@ public class Connection extends PropertyScope
 			}
 		}
 		return okByOffset == null
-			? TimeZone.getDefault()
-			: okByOffset;
+				? TimeZone.getDefault()
+				: okByOffset;
+	}
+
+	private final String m_address;
+
+	private final String m_charset;
+
+	private final Client m_clientPrefs;
+
+	private ConnectionInfo m_info;
+
+	public Connection(DepotURI depotURI)
+	{
+		this(depotURI.getScope(), depotURI.getClient(), depotURI.getAddress());
+	}
+
+	public Connection(Map<String, String> scope, Client clientPrefs, String address)
+	{
+		super(scope);
+		m_charset = null;
+		m_clientPrefs = clientPrefs;
+		m_address = address;
 	}
 
 	public List<Map<String, String>> exec(String cmd) throws CoreException
@@ -154,8 +153,7 @@ public class Connection extends PropertyScope
 		return this.exec(cmd, args, null);
 	}
 
-	public List<Map<String, String>> exec(String cmd, String args[], Map<String,String> cmdInput)
-	throws CoreException
+	public List<Map<String, String>> exec(String cmd, String args[], Map<String, String> cmdInput) throws CoreException
 	{
 		List<String> argv = new ArrayList<String>();
 
@@ -235,12 +233,21 @@ public class Connection extends PropertyScope
 		return this.exec(argv, cmdInput);
 	}
 
+	public String formatDate(Date date) throws CoreException
+	{
+		synchronized(s_dateFormat)
+		{
+			s_dateFormat.setTimeZone(this.getConnectionInfo().getTimeZone());
+			return s_dateFormat.format(date);
+		}
+	}
+
 	public ClientSpec getClientSpec() throws CoreException
 	{
-		List<Map<String,String>> info = this.exec("info"); //$NON-NLS-1$
+		List<Map<String, String>> info = this.exec("info"); //$NON-NLS-1$
 		if(info.size() != 1)
 			throw BuckminsterException.fromMessage(Messages.p4_info_failed);
-		Map<String,String> clientInfo = info.get(0);
+		Map<String, String> clientInfo = info.get(0);
 
 		ClientSpec clientSpec = new ClientSpec(this, this.exec("client", new String[] { "-o" }).get(0)); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -250,13 +257,15 @@ public class Connection extends PropertyScope
 		//
 		IPath clientRoot = clientSpec.getRoot();
 		String localRoot = this.expand(m_clientPrefs.getLocalRoot());
-		IPath expectedRoot = (localRoot == null) ? null : new Path(localRoot);
-		if("*unknown*".equals(clientInfo.get("clientName")))			 //$NON-NLS-1$ //$NON-NLS-2$
+		IPath expectedRoot = (localRoot == null)
+				? null
+				: new Path(localRoot);
+		if("*unknown*".equals(clientInfo.get("clientName"))) //$NON-NLS-1$ //$NON-NLS-2$
 		{
 			// This is a freshly created ClientSpec
 			//
 			clientSpec.setView(new ViewEntry[0]);
-			
+
 			// Compare as files since the Path.equals is case sensitive on all platforms
 			//
 			if(expectedRoot != null && !expectedRoot.toFile().equals(clientRoot.toFile()))
@@ -274,7 +283,7 @@ public class Connection extends PropertyScope
 					{
 						m_clientPrefs.save();
 					}
-					catch (BackingStoreException e)
+					catch(BackingStoreException e)
 					{
 						throw BuckminsterException.wrap(e);
 					}
@@ -287,10 +296,8 @@ public class Connection extends PropertyScope
 					// that doesn't match the root defined in our preferences.
 					// This must be fixed and we cannot be the judge
 					//
-					throw new LocalRootMismatchException(
-						this.expand(m_clientPrefs.getName()),
-						m_address,
-						expectedRoot, clientRoot);
+					throw new LocalRootMismatchException(this.expand(m_clientPrefs.getName()), m_address, expectedRoot,
+							clientRoot);
 				}
 			}
 		}
@@ -374,7 +381,7 @@ public class Connection extends PropertyScope
 		ArrayList<DepotFolder> depots = new ArrayList<DepotFolder>(numDepots);
 		for(int idx = 0; idx < numDepots; ++idx)
 		{
-			Map<String,String> dataMap = depotsData.get(idx);
+			Map<String, String> dataMap = depotsData.get(idx);
 			String name = dataMap.get("name"); //$NON-NLS-1$
 			if(name == null)
 			{
@@ -389,7 +396,7 @@ public class Connection extends PropertyScope
 			if(name != null)
 			{
 				depots.add(new DepotFolder(this,
-					Collections.<String, String>singletonMap("dir", "//" + name), FileSpec.HEAD)); //$NON-NLS-1$ //$NON-NLS-2$
+						Collections.<String, String> singletonMap("dir", "//" + name), FileSpec.HEAD)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		return depots.toArray(new DepotFolder[depots.size()]);
@@ -398,7 +405,9 @@ public class Connection extends PropertyScope
 	public DepotFile getFile(FileSpec path) throws CoreException
 	{
 		List<DepotFile> files = this.getFiles(new FileSpec[] { path }, false);
-		return (files.size() > 0) ? files.get(0) : null;
+		return (files.size() > 0)
+				? files.get(0)
+				: null;
 	}
 
 	public List<DepotFile> getFiles(FileSpec paths[], boolean includeDeleted) throws CoreException
@@ -406,37 +415,12 @@ public class Connection extends PropertyScope
 		int idx = paths.length;
 		if(idx == 0)
 			return Collections.<DepotFile> emptyList();
-		
+
 		String[] pathStrings = new String[idx];
 		while(--idx >= 0)
 			pathStrings[idx] = paths[idx].toString();
 
 		return this.getFiles(this.exec("fstat", pathStrings), includeDeleted); //$NON-NLS-1$
-	}
-
-	/**
-	 * Returns the last change number for the given <code>path</code>. The <code>path</code> must denote a
-	 * folder. The command will append &quot;/...&quot; to the path and, in case
-	 * <code>qualifier</code> is not null or an empty string, also append &quot;@&lt;qualifier&gt;&quot;
-	 * @param path The folder that limits the search for a change number.
-	 * @param qualifier An optional qualifier (typically a label) that limits the search.
-	 * @return The latest change number or -1 if no change could be found.
-	 * @throws CoreException
-	 */
-	public long getLastChangeNumber(IPath path, String qualifier) throws CoreException
-	{
-		String stringPath = path.append("...").toString(); //$NON-NLS-1$
-		if(qualifier != null && qualifier.length() > 0)
-			stringPath += '@' + qualifier;
-
-		List<Map<String, String>> data = this.exec("changes", new String[] { "-m", "1", "-s", "submitted", stringPath }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		if(data.size() == 1)
-		{
-			String change = data.get(0).get("change"); //$NON-NLS-1$
-			if(change != null)
-				return Long.parseLong(change);
-		}
-		return -1;
 	}
 
 	public DepotFolder[] getFolders(IPath path, FileSpec.Specifier revision) throws CoreException
@@ -481,6 +465,35 @@ public class Connection extends PropertyScope
 		return labels;
 	}
 
+	/**
+	 * Returns the last change number for the given <code>path</code>. The <code>path</code> must denote a folder. The
+	 * command will append &quot;/...&quot; to the path and, in case <code>qualifier</code> is not null or an empty
+	 * string, also append &quot;@&lt;qualifier&gt;&quot;
+	 * 
+	 * @param path
+	 *            The folder that limits the search for a change number.
+	 * @param qualifier
+	 *            An optional qualifier (typically a label) that limits the search.
+	 * @return The latest change number or -1 if no change could be found.
+	 * @throws CoreException
+	 */
+	public long getLastChangeNumber(IPath path, String qualifier) throws CoreException
+	{
+		String stringPath = path.append("...").toString(); //$NON-NLS-1$
+		if(qualifier != null && qualifier.length() > 0)
+			stringPath += '@' + qualifier;
+
+		List<Map<String, String>> data = this
+				.exec("changes", new String[] { "-m", "1", "-s", "submitted", stringPath }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		if(data.size() == 1)
+		{
+			String change = data.get(0).get("change"); //$NON-NLS-1$
+			if(change != null)
+				return Long.parseLong(change);
+		}
+		return -1;
+	}
+
 	public Date parseDate(String perforceDate) throws CoreException
 	{
 		synchronized(s_dateFormat)
@@ -494,15 +507,6 @@ public class Connection extends PropertyScope
 			{
 				throw BuckminsterException.wrap(e);
 			}
-		}
-	}
-
-	public String formatDate(Date date) throws CoreException
-	{
-		synchronized(s_dateFormat)
-		{
-			s_dateFormat.setTimeZone(this.getConnectionInfo().getTimeZone());
-			return s_dateFormat.format(date);
 		}
 	}
 
@@ -567,8 +571,7 @@ public class Connection extends PropertyScope
 		return files;
 	}
 
-	private List<Map<String, String>> exec(List<String> cmdLine, Map<String,String> cmdInput)
-	throws CoreException
+	private List<Map<String, String>> exec(List<String> cmdLine, Map<String, String> cmdInput) throws CoreException
 	{
 		final Process process;
 		OutputStream procOut = null;
@@ -606,7 +609,7 @@ public class Connection extends PropertyScope
 					PythonInputStream input = new PythonInputStream(procIn);
 					for(;;)
 					{
-						Map<String,String> result = input.readStringMap();
+						Map<String, String> result = input.readStringMap();
 						if(result == null)
 							break;
 						results.add(result);
@@ -683,11 +686,11 @@ public class Connection extends PropertyScope
 
 			String error = errorBuilder.toString();
 			if(error.length() == 0)
-				throw BuckminsterException.fromMessage(Messages.process_died_with_exit_code_0, Integer.valueOf(exitCode));
+				throw BuckminsterException.fromMessage(Messages.process_died_with_exit_code_0, Integer
+						.valueOf(exitCode));
 
 			throw BuckminsterException.fromMessage(error);
 		}
 		return results;
 	}
 }
-

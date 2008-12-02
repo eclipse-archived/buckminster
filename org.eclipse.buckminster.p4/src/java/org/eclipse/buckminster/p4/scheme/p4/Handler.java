@@ -42,20 +42,12 @@ import org.osgi.service.url.AbstractURLStreamHandlerService;
 /**
  * @author Thomas Hallgren
  */
-public class Handler extends AbstractURLStreamHandlerService 
+public class Handler extends AbstractURLStreamHandlerService
 {
-	public static final String PROTOCOL = "p4"; //$NON-NLS-1$
-
-	@Override
-	public URLConnection openConnection(URL url)
-	throws IOException
-	{
-		return new PerforceConnection(url);
-	}
-
 	class PerforceConnection extends URLConnection
 	{
 		private ICatalogReader m_reader;
+
 		private String m_fileName;
 
 		protected PerforceConnection(URL entryURL)
@@ -64,8 +56,7 @@ public class Handler extends AbstractURLStreamHandlerService
 		}
 
 		@Override
-		public void connect()
-		throws IOException
+		public void connect() throws IOException
 		{
 			if(connected)
 				return;
@@ -81,18 +72,19 @@ public class Handler extends AbstractURLStreamHandlerService
 				if(path.hasTrailingSeparator())
 					throw new MalformedURLException(Messages.the_path_of_a_p4_URL_must_not_have_a_trailing_separator);
 
-				URI parentUri = new URI(uri.getScheme(), uri.getHost(), path.removeLastSegments(1).toPortableString(), uri.getFragment());
+				URI parentUri = new URI(uri.getScheme(), uri.getHost(), path.removeLastSegments(1).toPortableString(),
+						uri.getFragment());
 				m_fileName = path.lastSegment();
 
-				Provider provider = new Provider("p4", new String[] { IComponentType.UNKNOWN }, parentUri.toString(), null); //$NON-NLS-1$
+				Provider provider = new Provider(
+						"p4", new String[] { IComponentType.UNKNOWN }, parentUri.toString(), null); //$NON-NLS-1$
 				IReaderType p4ReaderType = plugin.getReaderType("p4"); //$NON-NLS-1$
 				IProgressMonitor nullMon = new NullProgressMonitor();
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
 				cqBld.setRootRequest(new ComponentRequest(m_fileName, null, null));
-				m_reader = (ICatalogReader)p4ReaderType.getReader(
-					provider, plugin.getComponentType(IComponentType.UNKNOWN),
-					new ResolutionContext(cqBld.createComponentQuery()).getRootNodeQuery(),
-					VersionMatch.DEFAULT, nullMon);
+				m_reader = (ICatalogReader)p4ReaderType.getReader(provider, plugin
+						.getComponentType(IComponentType.UNKNOWN), new ResolutionContext(cqBld.createComponentQuery())
+						.getRootNodeQuery(), VersionMatch.DEFAULT, nullMon);
 			}
 			catch(URISyntaxException e)
 			{
@@ -109,16 +101,15 @@ public class Handler extends AbstractURLStreamHandlerService
 		}
 
 		@Override
-	    public InputStream getInputStream()
-	    throws IOException
+		public InputStream getInputStream() throws IOException
 		{
-	    	this.connect();
+			this.connect();
 			try
 			{
 				return m_reader.readFile(m_fileName, new IStreamConsumer<InputStream>()
 				{
-					public InputStream consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-					throws IOException
+					public InputStream consumeStream(IComponentReader reader, String streamName, InputStream stream,
+							IProgressMonitor monitor) throws IOException
 					{
 						final AccessibleByteArrayOutputStream builder = new AccessibleByteArrayOutputStream();
 						FileUtils.copyFile(stream, builder, monitor);
@@ -133,7 +124,14 @@ public class Handler extends AbstractURLStreamHandlerService
 					throw (IOException)t;
 				throw new IOException(e.getMessage());
 			}
-	    }
+		}
+	}
+
+	public static final String PROTOCOL = "p4"; //$NON-NLS-1$
+
+	@Override
+	public URLConnection openConnection(URL url) throws IOException
+	{
+		return new PerforceConnection(url);
 	}
 }
-

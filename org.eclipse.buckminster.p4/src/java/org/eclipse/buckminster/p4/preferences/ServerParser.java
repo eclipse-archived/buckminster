@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Thomas Hallgren
  */
@@ -31,7 +30,7 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 
 	public static class ReplaceDeniedException extends SAXException
 	{
-		private static final long serialVersionUID = -7137084066639108641L;		
+		private static final long serialVersionUID = -7137084066639108641L;
 	}
 
 	private Server m_server;
@@ -40,14 +39,13 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 
 	public ServerParser(IAskReplaceOK askReplaceOK) throws CoreException
 	{
-		super(null, new String[]
-   		{
-   			Server.BM_SERVER_NS
-   		}, new String[]
-   		{
-   			Server.BM_SERVER_RESOURCE
-   		}, true);
+		super(null, new String[] { Server.BM_SERVER_NS }, new String[] { Server.BM_SERVER_RESOURCE }, true);
 		m_askReplaceOK = askReplaceOK;
+	}
+
+	public void childPopped(ChildHandler child) throws SAXException
+	{
+		m_server = ((ServerHandler)child).getServer();
 	}
 
 	public Server parse(String systemId, InputStream stream) throws CoreException
@@ -56,14 +54,8 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 		return m_server;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_server = ((ServerHandler)child).getServer();
-	}
-
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs)
-	throws SAXException
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
 		if(ServerHandler.TAG.equals(localName))
 		{
@@ -76,6 +68,8 @@ public class ServerParser extends AbstractParser<Server> implements ChildPoppedL
 
 	boolean isReplaceOK(String serverName)
 	{
-		return m_askReplaceOK == null ? true : m_askReplaceOK.isReplaceOK(serverName);
+		return m_askReplaceOK == null
+				? true
+				: m_askReplaceOK.isReplaceOK(serverName);
 	}
 }

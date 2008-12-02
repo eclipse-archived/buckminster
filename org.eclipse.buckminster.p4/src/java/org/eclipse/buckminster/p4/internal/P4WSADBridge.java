@@ -23,17 +23,18 @@ import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
 /**
- * The Buckminster p4 plugin is not dependent on the Perforce P4WSAD plugin but if it
- * exists it will be notified of new p4 projects that Buckminster binds into the
- * workspace through this class. This class will use the OSGi bundle framework
- * and reflective API's to do its job.
- *
+ * The Buckminster p4 plugin is not dependent on the Perforce P4WSAD plugin but if it exists it will be notified of new
+ * p4 projects that Buckminster binds into the workspace through this class. This class will use the OSGi bundle
+ * framework and reflective API's to do its job.
+ * 
  * @author thhal
  */
 public abstract class P4WSADBridge
 {
 	private static boolean s_stateKnown = false;
+
 	private static Constructor<?> s_connectionInfoCtor;
+
 	private static Method s_manageProjectMethod;
 
 	public static synchronized boolean isPresent()
@@ -51,11 +52,11 @@ public abstract class P4WSADBridge
 
 			try
 			{
-				Class<?> perforceProviderPluginClass = bundle.loadClass("com.perforce.team.core.PerforceProviderPlugin"); //$NON-NLS-1$
+				Class<?> perforceProviderPluginClass = bundle
+						.loadClass("com.perforce.team.core.PerforceProviderPlugin"); //$NON-NLS-1$
 				Class<?> connectionInfoClass = bundle.loadClass("com.perforce.p4api.ConnectionParameters"); //$NON-NLS-1$
 				s_connectionInfoCtor = connectionInfoClass.getConstructor(new Class[] { String.class });
-				s_manageProjectMethod = perforceProviderPluginClass.getMethod(
-						"manageProject", //$NON-NLS-1$
+				s_manageProjectMethod = perforceProviderPluginClass.getMethod("manageProject", //$NON-NLS-1$
 						new Class[] { IProject.class, connectionInfoClass });
 				logger.debug(Messages.p4wsad_plugin_is_present);
 			}
@@ -68,8 +69,7 @@ public abstract class P4WSADBridge
 		return s_manageProjectMethod != null;
 	}
 
-	public static void shareProject(IProject project, DepotURI depotURI)
-	throws CoreException
+	public static void shareProject(IProject project, DepotURI depotURI) throws CoreException
 	{
 		if(!isPresent())
 			throw BuckminsterException.fromMessage(Messages.p4wsad_plugin_is_not_present);
@@ -100,8 +100,8 @@ public abstract class P4WSADBridge
 		try
 		{
 			logger.debug(NLS.bind(Messages.sharing_project_0_to_p4, project.getName()));
-			s_manageProjectMethod.invoke(null, new Object[] {
-					project, s_connectionInfoCtor.newInstance(new Object[] { bld.toString() }) });
+			s_manageProjectMethod.invoke(null, new Object[] { project,
+					s_connectionInfoCtor.newInstance(new Object[] { bld.toString() }) });
 		}
 		catch(Exception e)
 		{

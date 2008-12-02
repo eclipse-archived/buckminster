@@ -24,8 +24,11 @@ import org.xml.sax.helpers.AttributesImpl;
 public class DepotMapping extends NodeWrapper
 {
 	public static final String TAG = "depotMapping"; //$NON-NLS-1$
+
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
+
 	public static final String ATTR_DEPOT_PATTERN = "depotPattern"; //$NON-NLS-1$
+
 	public static final String ATTR_LOCAL_REPLACEMENT = "localReplacement"; //$NON-NLS-1$
 
 	private final Client m_client;
@@ -44,18 +47,9 @@ public class DepotMapping extends NodeWrapper
 	}
 
 	@Override
-	public int hashCode()
-	{
-		int hc = super.hashCode();
-		hc = 37 * hc + m_client.hashCode();
-		
-		return hc;
-	}
-
-	@Override
 	public boolean equals(Object o)
 	{
-		if (o == this)
+		if(o == this)
 			return true;
 
 		if(!super.equals(o))
@@ -67,7 +61,7 @@ public class DepotMapping extends NodeWrapper
 
 		if(m_client != that.m_client)
 			return false;
-		
+
 		return true;
 	}
 
@@ -84,7 +78,9 @@ public class DepotMapping extends NodeWrapper
 	public final Pattern getDepotPattern()
 	{
 		String localPathExp = getPreferences().get(DepotMapping.ATTR_DEPOT_PATTERN, null);
-		return (localPathExp == null) ? null : Pattern.compile(localPathExp);
+		return (localPathExp == null)
+				? null
+				: Pattern.compile(localPathExp);
 	}
 
 	public final String getLocalReplacement()
@@ -92,9 +88,20 @@ public class DepotMapping extends NodeWrapper
 		return getPreferences().get(DepotMapping.ATTR_LOCAL_REPLACEMENT, null);
 	}
 
+	@Override
+	public int hashCode()
+	{
+		int hc = super.hashCode();
+		hc = 37 * hc + m_client.hashCode();
+
+		return hc;
+	}
+
 	public void setDepotPattern(Pattern pattern)
 	{
-		putString(DepotMapping.ATTR_DEPOT_PATTERN, pattern == null ? null : pattern.pattern());
+		putString(DepotMapping.ATTR_DEPOT_PATTERN, pattern == null
+				? null
+				: pattern.pattern());
 	}
 
 	public void setLocalReplacement(String replacement)

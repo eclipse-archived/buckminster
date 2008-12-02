@@ -23,10 +23,36 @@ import org.eclipse.core.runtime.Path;
 public class DepotFolder extends DepotObject
 {
 	private final FileSpec.Specifier m_revision;
+
 	DepotFolder(Connection conn, Map<String, String> info, FileSpec.Specifier revision)
 	{
 		super(conn, info);
 		m_revision = revision;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(o == this)
+			return true;
+
+		if(!(o instanceof DepotFolder))
+			return false;
+		DepotFolder that = (DepotFolder)o;
+
+		if(!getDepotPath().equals(that.getDepotPath()))
+			return false;
+
+		if(!getConnection().equals(that.getConnection()))
+			return false;
+
+		return true;
+	}
+
+	public IPath getClientPath() throws CoreException
+	{
+		String path = getConnection().where(getDepotPath().append("..."))[2]; //$NON-NLS-1$
+		return new Path(path.substring(0, path.length() - 4));
 	}
 
 	public IPath getDepotPath()
@@ -57,37 +83,6 @@ public class DepotFolder extends DepotObject
 		return folders;
 	}
 
-	public IPath getClientPath() throws CoreException
-	{
-		String path = getConnection().where(getDepotPath().append("..."))[2]; //$NON-NLS-1$
-		return new Path(path.substring(0, path.length() - 4));
-	}
-
-	@Override
-	public String toString()
-	{
-		return getDepotPath().toString();
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if(o == this)
-			return true;
-
-		if(!(o instanceof DepotFolder))
-			return false;
-		DepotFolder that = (DepotFolder)o;
-
-		if(!getDepotPath().equals(that.getDepotPath()))
-			return false;
-
-		if(!getConnection().equals(that.getConnection()))
-			return false;
-
-		return true;
-	}
-
 	@Override
 	public int hashCode()
 	{
@@ -97,6 +92,12 @@ public class DepotFolder extends DepotObject
 		hc = 37 * hc + getConnection().hashCode();
 
 		return hc;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getDepotPath().toString();
 	}
 
 	private FileSpec getListPath()

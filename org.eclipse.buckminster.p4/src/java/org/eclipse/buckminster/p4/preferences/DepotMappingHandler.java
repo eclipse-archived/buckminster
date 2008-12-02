@@ -34,14 +34,14 @@ public class DepotMappingHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		String name = this.getStringValue(attrs, DepotMapping.ATTR_NAME);
 		try
 		{
 			m_deoptMapping = ((ClientHandler)this.getParentHandler()).getClient().addDepotMapping(name);
-			m_deoptMapping.setDepotPattern(Pattern.compile(this.getStringValue(attrs, DepotMapping.ATTR_DEPOT_PATTERN)));
+			m_deoptMapping
+					.setDepotPattern(Pattern.compile(this.getStringValue(attrs, DepotMapping.ATTR_DEPOT_PATTERN)));
 			m_deoptMapping.setLocalReplacement(this.getStringValue(attrs, DepotMapping.ATTR_LOCAL_REPLACEMENT));
 		}
 		catch(BackingStoreException e)
@@ -55,4 +55,3 @@ public class DepotMappingHandler extends ExtensionAwareHandler
 		return m_deoptMapping;
 	}
 }
-

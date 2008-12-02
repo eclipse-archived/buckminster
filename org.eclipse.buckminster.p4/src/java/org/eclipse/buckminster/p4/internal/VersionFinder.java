@@ -25,19 +25,21 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * This branch locator assumes that all branches are represented as folders
- * below the folder appointed by the component reader.
+ * This branch locator assumes that all branches are represented as folders below the folder appointed by the component
+ * reader.
+ * 
  * @author Thomas Hallgren
  */
 class VersionFinder extends AbstractSCCSVersionFinder
 {
 	private final DepotURI m_depotURI;
+
 	private final Connection m_connection;
 
 	VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
-		Map<String,String> props = query.getProperties();
+		Map<String, String> props = query.getProperties();
 		m_depotURI = new DepotURI(DepotURI.createURI(provider.getURI(props)), null, props);
 		m_connection = new Connection(m_depotURI);
 	}
@@ -47,11 +49,19 @@ class VersionFinder extends AbstractSCCSVersionFinder
 	{
 		String[] branchNameBin = new String[1];
 		FileSpec.Specifier specifier = P4RemoteReader.getSpecifier(versionMatch, m_connection, branchNameBin);
-		Map<String,String> props = getQuery().getProperties();
+		Map<String, String> props = getQuery().getProperties();
 		String uri = getProvider().getURI(props);
 		DepotURI depotURI = new DepotURI(uri, branchNameBin[0], props);
 		DepotFolder[] folders = m_connection.getFolders(depotURI.getDepotPath(), specifier);
 		return folders.length > 0;
+	}
+
+	@Override
+	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
+	{
+		return branches
+				? getBranches(monitor)
+				: getTags(monitor);
 	}
 
 	@Override
@@ -68,12 +78,6 @@ class VersionFinder extends AbstractSCCSVersionFinder
 		return new RevisionEntry(null, null, m_connection.getLastChangeNumber(componentPath, null));
 	}
 
-	@Override
-	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
-	{
-		return branches ? getBranches(monitor) : getTags(monitor);
-	}
-	
 	private List<RevisionEntry> getBranches(IProgressMonitor monitor) throws CoreException
 	{
 		if(!m_depotURI.hasBranchDesignator())

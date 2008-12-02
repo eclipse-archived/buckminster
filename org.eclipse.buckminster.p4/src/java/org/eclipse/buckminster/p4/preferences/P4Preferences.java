@@ -40,17 +40,27 @@ public class P4Preferences
 
 	private static final P4Preferences s_instance = new P4Preferences();
 
-	private final Preferences m_preferences = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE)
-			.node(P4Plugin.PLUGIN_ID);
+	/**
+	 * Configure a default server entry based on either the result of executing <code>p4 set</code> or, if that fails,
+	 * the environment variables: <code>P4USER</code>, <code>P4CLIENT</code>, <code>P4PORT</code>, and
+	 * <code>P4PASSWD</code>.
+	 * 
+	 * @return The configured server entry.
+	 * @throws BuckminsterException
+	 */
+	private static final Pattern rxPattern = Pattern.compile("^(P4[A-Z]+)=(.+?)(?:\\s+\\(set[^\\)]*\\))?+$"); //$NON-NLS-1$
 
 	public static P4Preferences getInstance()
 	{
 		return s_instance;
 	}
 
+	private final Preferences m_preferences = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE)
+			.node(P4Plugin.PLUGIN_ID);
+
 	public Server addServer(String name) throws BackingStoreException
 	{
-		if (m_preferences.nodeExists(name))
+		if(m_preferences.nodeExists(name))
 			throw new BackingStoreException(Messages.name_already_exists);
 		Server server = new Server(m_preferences.node(name));
 		if(m_preferences.childrenNames().length == 1)
@@ -58,81 +68,8 @@ public class P4Preferences
 		return server;
 	}
 
-	public String getDefaultServerName()
-	{
-		return m_preferences.get(ATTR_DEFAULT_SERVER, null);
-	}
-
-	public Server getDefaultServer() throws BackingStoreException
-	{
-		String name = this.getDefaultServerName();
-		return name == null ? null : this.getServer(name);
-	}
-
-	public Server getServer(String name) throws BackingStoreException
-	{
-		return m_preferences.nodeExists(name) ? new Server(m_preferences.node(name)) : null;
-	}
-
-	public String[] getServerNames() throws BackingStoreException
-	{
-		return m_preferences.childrenNames();
-	}
-
-	public Server[] getServers() throws BackingStoreException
-	{
-		ArrayList<Server> servers = new ArrayList<Server>();
-		for (String child : m_preferences.childrenNames())
-		{
-			try
-			{
-				servers.add(new Server(m_preferences.node(child)));
-			}
-			catch (IllegalStateException e)
-			{
-				// Someone removed this node during iteration
-				continue;
-			}
-		}
-		return servers.toArray(new Server[servers.size()]);
-	}
-
-	public void setDefaultServer(String serverName)
-	{
-		if(serverName == null)
-			m_preferences.remove(ATTR_DEFAULT_SERVER);
-		else
-			m_preferences.put(ATTR_DEFAULT_SERVER, serverName);
-	}
-
-	public void setOtherDefaultServer(String serverName) throws BackingStoreException
-	{
-		for (String childName : m_preferences.childrenNames())
-		{
-			if(!childName.equals(serverName))
-			{
-				this.setDefaultServer(childName);
-				break;
-			}
-		}
-	}
-
-	public void save() throws BackingStoreException
-	{
-		m_preferences.flush();
-	}
-
-	/**
-	 * Configure a default server entry based on either the result of executing
-	 * <code>p4 set</code> or, if that fails, the environment variables:
-	 * <code>P4USER</code>, <code>P4CLIENT</code>, <code>P4PORT</code>, and
-	 * <code>P4PASSWD</code>.
-	 * @return The configured server entry.
-	 * @throws BuckminsterException
-	 */
-	private static final Pattern rxPattern = Pattern.compile("^(P4[A-Z]+)=(.+?)(?:\\s+\\(set[^\\)]*\\))?+$"); //$NON-NLS-1$
-	public Server configureDefaultServer(Map<String,String> scope, boolean overwrite)
-	throws BackingStoreException, CoreException
+	public Server configureDefaultServer(Map<String, String> scope, boolean overwrite) throws BackingStoreException,
+			CoreException
 	{
 		BufferedReader reader = null;
 		Map<String, String> p4Properties;
@@ -140,7 +77,7 @@ public class P4Preferences
 		{
 			Process process = Runtime.getRuntime().exec(new String[] { P4Plugin.getDefault().getP4Binary(), "set" }); //$NON-NLS-1$
 			reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			p4Properties = new HashMap<String,String>();
+			p4Properties = new HashMap<String, String>();
 			String line;
 			while((line = reader.readLine()) != null)
 			{
@@ -204,5 +141,73 @@ public class P4Preferences
 
 		this.save();
 		return server;
+	}
+
+	public Server getDefaultServer() throws BackingStoreException
+	{
+		String name = this.getDefaultServerName();
+		return name == null
+				? null
+				: this.getServer(name);
+	}
+
+	public String getDefaultServerName()
+	{
+		return m_preferences.get(ATTR_DEFAULT_SERVER, null);
+	}
+
+	public Server getServer(String name) throws BackingStoreException
+	{
+		return m_preferences.nodeExists(name)
+				? new Server(m_preferences.node(name))
+				: null;
+	}
+
+	public String[] getServerNames() throws BackingStoreException
+	{
+		return m_preferences.childrenNames();
+	}
+
+	public Server[] getServers() throws BackingStoreException
+	{
+		ArrayList<Server> servers = new ArrayList<Server>();
+		for(String child : m_preferences.childrenNames())
+		{
+			try
+			{
+				servers.add(new Server(m_preferences.node(child)));
+			}
+			catch(IllegalStateException e)
+			{
+				// Someone removed this node during iteration
+				continue;
+			}
+		}
+		return servers.toArray(new Server[servers.size()]);
+	}
+
+	public void save() throws BackingStoreException
+	{
+		m_preferences.flush();
+	}
+
+	public void setDefaultServer(String serverName)
+	{
+		if(serverName == null)
+			m_preferences.remove(ATTR_DEFAULT_SERVER);
+		else
+			m_preferences.put(ATTR_DEFAULT_SERVER, serverName);
+	}
+
+	public void setOtherDefaultServer(String serverName) throws BackingStoreException
+	{
+		for(String childName : m_preferences.childrenNames())
+		{
+			if(!childName.equals(serverName))
+			{
+				this.setDefaultServer(childName);
+				break;
+			}
+		}
 	}
 }

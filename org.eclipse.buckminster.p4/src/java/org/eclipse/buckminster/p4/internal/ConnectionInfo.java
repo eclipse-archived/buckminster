@@ -18,6 +18,12 @@ import java.util.TimeZone;
  */
 public class ConnectionInfo
 {
+	private static String asString(String str)
+	{
+		return str == null
+				? "null" : str; //$NON-NLS-1$
+	}
+
 	private final String m_user;
 
 	private final String m_client;
@@ -27,10 +33,11 @@ public class ConnectionInfo
 	private final String m_address;
 
 	private final boolean m_securityEnabled;
-	
+
 	private final TimeZone m_timeZone;
 
-	public ConnectionInfo(String user, String client, String root, String address, TimeZone timeZone, boolean securityEnabled)
+	public ConnectionInfo(String user, String client, String root, String address, TimeZone timeZone,
+			boolean securityEnabled)
 	{
 		m_user = user;
 		m_client = client;
@@ -38,25 +45,6 @@ public class ConnectionInfo
 		m_address = address;
 		m_timeZone = timeZone;
 		m_securityEnabled = securityEnabled;
-	}
-
-	private static String asString(String str)
-	{
-		return str == null ? "null" : str; //$NON-NLS-1$
-	}
-
-	@Override
-	public String toString()
-	{
-		Formatter fmt = new Formatter();
-		fmt.format("user: %s%nclient: %s%nroot: %s%naddress: %s%ntimeZone: %s%nsecurity: %s", //$NON-NLS-1$
-			asString(m_user),
-			asString(m_client),
-			asString(m_clientRoot),
-			asString(m_address),
-			m_timeZone.getDisplayName(true, TimeZone.SHORT),
-			m_securityEnabled ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
-		return fmt.toString();
 	}
 
 	/**
@@ -84,11 +72,11 @@ public class ConnectionInfo
 	}
 
 	/**
-	 * @return Returns the securityEnabled.
+	 * @return Returns the timeZone.
 	 */
-	public final boolean isSecurityEnabled()
+	public final TimeZone getTimeZone()
 	{
-		return m_securityEnabled;
+		return m_timeZone;
 	}
 
 	/**
@@ -100,11 +88,21 @@ public class ConnectionInfo
 	}
 
 	/**
-	 * @return Returns the timeZone.
+	 * @return Returns the securityEnabled.
 	 */
-	public final TimeZone getTimeZone()
+	public final boolean isSecurityEnabled()
 	{
-		return m_timeZone;
+		return m_securityEnabled;
+	}
+
+	@Override
+	public String toString()
+	{
+		Formatter fmt = new Formatter();
+		fmt.format("user: %s%nclient: %s%nroot: %s%naddress: %s%ntimeZone: %s%nsecurity: %s", //$NON-NLS-1$
+				asString(m_user), asString(m_client), asString(m_clientRoot), asString(m_address), m_timeZone
+						.getDisplayName(true, TimeZone.SHORT), m_securityEnabled
+						? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+		return fmt.toString();
 	}
 }
-

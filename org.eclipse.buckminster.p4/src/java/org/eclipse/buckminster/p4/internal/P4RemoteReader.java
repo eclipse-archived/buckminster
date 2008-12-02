@@ -32,17 +32,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-
 /**
  * @author Thomas Hallgren
  */
 public class P4RemoteReader extends AbstractRemoteReader
 {
-	private Connection m_connection;
-	private final DepotURI m_depotURI;
-	private FileSpec.Specifier m_revision;
-
-	public static FileSpec.Specifier getSpecifier(VersionMatch vm, Connection connection, String[] branchName) throws CoreException
+	public static FileSpec.Specifier getSpecifier(VersionMatch vm, Connection connection, String[] branchName)
+			throws CoreException
 	{
 		FileSpec.Specifier rev = FileSpec.HEAD;
 		VersionSelector branchOrTag = vm.getBranchOrTag();
@@ -71,12 +67,18 @@ public class P4RemoteReader extends AbstractRemoteReader
 			else
 				specifierConflict = true;
 		}
-		
+
 		if(specifierConflict)
 			throw new IllegalArgumentException(Messages.tag_timestamp_and_change_number_are_mutually_exclusive);
 
 		return rev;
 	}
+
+	private Connection m_connection;
+
+	private final DepotURI m_depotURI;
+
+	private FileSpec.Specifier m_revision;
 
 	public P4RemoteReader(IReaderType readerType, ProviderMatch providerMatch) throws CoreException
 	{
@@ -84,12 +86,12 @@ public class P4RemoteReader extends AbstractRemoteReader
 
 		VersionMatch vm = providerMatch.getVersionMatch();
 		String[] branchNameBin = new String[1];
-		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), branchNameBin[0], providerMatch.getNodeQuery().getProperties());
+		m_depotURI = new DepotURI(providerMatch.getRepositoryURI(), branchNameBin[0], providerMatch.getNodeQuery()
+				.getProperties());
 		m_revision = getSpecifier(vm, getConnection(), branchNameBin);
 	}
 
-	public void dropClientEntry(IProgressMonitor monitor)
-	throws CoreException
+	public void dropClientEntry(IProgressMonitor monitor) throws CoreException
 	{
 		// Drop this component from the client spec and flush it.
 		//
@@ -113,7 +115,7 @@ public class P4RemoteReader extends AbstractRemoteReader
 			{
 				client.setView(newSpec.toArray(new ViewEntry[newSpec.size()]));
 				client.commitChanges();
-				conn.exec("flush", new String[] { "..." } ); //$NON-NLS-1$ //$NON-NLS-2$
+				conn.exec("flush", new String[] { "..." }); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		finally
@@ -151,7 +153,7 @@ public class P4RemoteReader extends AbstractRemoteReader
 			boolean success = false;
 			try
 			{
-				conn.exec("sync", new String[] { "-f", fileSpec.toString() } ); //$NON-NLS-1$ //$NON-NLS-2$
+				conn.exec("sync", new String[] { "-f", fileSpec.toString() }); //$NON-NLS-1$ //$NON-NLS-2$
 				MonitorUtils.worked(monitor, 100);
 				success = true;
 			}
@@ -213,4 +215,3 @@ public class P4RemoteReader extends AbstractRemoteReader
 		}
 	}
 }
-

@@ -15,20 +15,33 @@ package org.eclipse.buckminster.p4.internal;
  */
 public interface PythonStreamConstants
 {
-	static final String ENCODING = "UTF-8";	// TODO: I guess... //$NON-NLS-1$
-	static final char TYPE_NULL     = '0';
-	static final char TYPE_NONE     = 'N';
-	static final char TYPE_ELLIPSIS = '.';
-	static final char TYPE_INT      = 'i';
-	static final char TYPE_INT64    = 'I';
-	static final char TYPE_FLOAT    = 'f';
-	static final char TYPE_COMPLEX  = 'x';
-	static final char TYPE_LONG     = 'l';
-	static final char TYPE_STRING   = 's';
-	static final char TYPE_TUPLE    = '(';
-	static final char TYPE_LIST     = '[';
-	static final char TYPE_DICT     = '{';
-	static final char TYPE_CODE     = 'c';
-	static final char TYPE_UNKNOWN  = '?';
-}
+	static final String ENCODING = "UTF-8"; // TODO: I guess... //$NON-NLS-1$
 
+	static final char TYPE_NULL = '0';
+
+	static final char TYPE_NONE = 'N';
+
+	static final char TYPE_ELLIPSIS = '.';
+
+	static final char TYPE_INT = 'i';
+
+	static final char TYPE_INT64 = 'I';
+
+	static final char TYPE_FLOAT = 'f';
+
+	static final char TYPE_COMPLEX = 'x';
+
+	static final char TYPE_LONG = 'l';
+
+	static final char TYPE_STRING = 's';
+
+	static final char TYPE_TUPLE = '(';
+
+	static final char TYPE_LIST = '[';
+
+	static final char TYPE_DICT = '{';
+
+	static final char TYPE_CODE = 'c';
+
+	static final char TYPE_UNKNOWN = '?';
+}

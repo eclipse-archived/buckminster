@@ -17,15 +17,34 @@ import java.util.TimeZone;
 
 import org.eclipse.core.runtime.IPath;
 
-
 /**
  * @author thhal
  */
 public class FileSpec
 {
-	public static final Specifier NONE = new Specifier("#none"); //$NON-NLS-1$
-	public static final Specifier HEAD = new Specifier("#head"); //$NON-NLS-1$
-	public static final Specifier HAVE = new Specifier("#have"); //$NON-NLS-1$
+	public static class ChangeNumber extends Specifier
+	{
+		public ChangeNumber(int number)
+		{
+			super("@" + Integer.toString(number)); //$NON-NLS-1$
+		}
+	}
+
+	public static class FileRevision extends Specifier
+	{
+		public FileRevision(int number)
+		{
+			super("#" + Integer.toString(number)); //$NON-NLS-1$
+		}
+	}
+
+	public static class Label extends Specifier
+	{
+		public Label(String label)
+		{
+			super("@" + label); //$NON-NLS-1$
+		}
+	}
 
 	public static class Specifier
 	{
@@ -37,39 +56,31 @@ public class FileSpec
 		}
 
 		@Override
-		public int hashCode()
-		{
-			return m_revision.hashCode();
-		}
-
-		@Override
 		public boolean equals(Object o)
 		{
-			if (o == this)
+			if(o == this)
 				return true;
 
-			if (!(o instanceof Specifier))
+			if(!(o instanceof Specifier))
 				return false;
 			Specifier that = (Specifier)o;
 
-			if (!this.m_revision.equals(that.m_revision))
+			if(!this.m_revision.equals(that.m_revision))
 				return false;
 
 			return true;
 		}
 
 		@Override
+		public int hashCode()
+		{
+			return m_revision.hashCode();
+		}
+
+		@Override
 		public String toString()
 		{
 			return m_revision;
-		}
-	}
-
-	public static class ChangeNumber extends Specifier
-	{
-		public ChangeNumber(int number)
-		{
-			super("@" + Integer.toString(number)); //$NON-NLS-1$
 		}
 	}
 
@@ -94,39 +105,32 @@ public class FileSpec
 		}
 	}
 
-	public static class FileRevision extends Specifier
-	{
-		public FileRevision(int number)
-		{
-			super("#" + Integer.toString(number)); //$NON-NLS-1$
-		}
-	}
+	public static final Specifier NONE = new Specifier("#none"); //$NON-NLS-1$
 
-	public static class Label extends Specifier
-	{
-		public Label(String label)
-		{
-			super("@" + label); //$NON-NLS-1$
-		}
-	}
+	public static final Specifier HEAD = new Specifier("#head"); //$NON-NLS-1$
+
+	public static final Specifier HAVE = new Specifier("#have"); //$NON-NLS-1$
 
 	private final IPath m_path;
+
 	private final Specifier m_revision;
 
 	public FileSpec(IPath path, Specifier revision)
 	{
 		m_path = path;
-		m_revision = (revision == null) ? HEAD : revision;
-	}
-
-	public Specifier getRevision()
-	{
-		return m_revision;
+		m_revision = (revision == null)
+				? HEAD
+				: revision;
 	}
 
 	public IPath getPath()
 	{
 		return m_path;
+	}
+
+	public Specifier getRevision()
+	{
+		return m_revision;
 	}
 
 	@Override
@@ -159,4 +163,3 @@ public class FileSpec
 		return expanded;
 	}
 }
-

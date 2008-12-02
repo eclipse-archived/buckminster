@@ -23,11 +23,25 @@ import org.osgi.service.url.URLStreamHandlerService;
 public class P4Plugin extends LogAwarePlugin
 {
 	public static final String PROP_DEFAULT_SERVER_MAP_PREFIX = "buckminster.p4.server."; //$NON-NLS-1$
+
 	public static final String DEFAULT_SERVER = "default"; //$NON-NLS-1$
 
 	public static final String PLUGIN_ID = Buckminster.NAMESPACE + ".p4"; //$NON-NLS-1$
 
 	private static P4Plugin s_plugin;
+
+	/**
+	 * Returns the shared instance.
+	 */
+	public static P4Plugin getDefault()
+	{
+		return s_plugin;
+	}
+
+	public static Logger getLogger()
+	{
+		return s_plugin.getBundleLogger();
+	}
 
 	/**
 	 * The constructor.
@@ -38,9 +52,12 @@ public class P4Plugin extends LogAwarePlugin
 		s_plugin = this;
 	}
 
-	public static Logger getLogger()
+	/**
+	 * Returns the name of the p4 client binary
+	 */
+	public String getP4Binary()
 	{
-		return s_plugin.getBundleLogger();
+		return "p4"; //$NON-NLS-1$
 	}
 
 	/**
@@ -56,7 +73,6 @@ public class P4Plugin extends LogAwarePlugin
 		context.registerService(serviceClass, new Handler(), properties);
 	}
 
-
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
@@ -66,21 +82,4 @@ public class P4Plugin extends LogAwarePlugin
 		super.stop(context);
 		s_plugin = null;
 	}
-
-	/**
-	 * Returns the name of the p4 client binary
-	 */
-	public String getP4Binary()
-	{
-		return "p4"; //$NON-NLS-1$
-	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static P4Plugin getDefault()
-	{
-		return s_plugin;
-	}
 }
-
