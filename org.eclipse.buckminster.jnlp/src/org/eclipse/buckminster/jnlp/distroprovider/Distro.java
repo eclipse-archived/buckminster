@@ -13,14 +13,14 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class Distro
 {
 	private BillOfMaterials m_bom;
-	
+
 	private MaterializationSpec m_mspec;
-	
+
 	public Distro(BillOfMaterials bom, MaterializationSpec mspec)
 	{
 		m_bom = bom;
@@ -32,18 +32,18 @@ public class Distro
 		return m_bom;
 	}
 
-	public void setBom(BillOfMaterials bom)
-	{
-		m_bom = bom;
-	}
-
 	public MaterializationSpec getMspec()
 	{
 		return m_mspec;
 	}
 
+	public void setBom(BillOfMaterials bom)
+	{
+		m_bom = bom;
+	}
+
 	public void setMspec(MaterializationSpec mspec)
 	{
 		m_mspec = mspec;
-	}	
+	}
 }

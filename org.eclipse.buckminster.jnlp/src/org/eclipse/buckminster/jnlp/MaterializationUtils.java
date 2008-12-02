@@ -34,8 +34,8 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.metadata.IResolution;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
@@ -67,16 +67,6 @@ public class MaterializationUtils
 			m_value = value;
 		}
 
-		public String getKey()
-		{
-			return m_key;
-		}
-
-		public String getValue()
-		{
-			return m_value;
-		}
-
 		public int compareTo(PropertyEntryByLength o)
 		{
 			int result = o.getKey().length() - m_key.length();
@@ -85,6 +75,16 @@ public class MaterializationUtils
 				return result;
 
 			return m_key.compareTo(o.getKey());
+		}
+
+		public String getKey()
+		{
+			return m_key;
+		}
+
+		public String getValue()
+		{
+			return m_value;
 		}
 	}
 
@@ -154,7 +154,7 @@ public class MaterializationUtils
 	 * Checks response of IAuthenticator.register method
 	 * 
 	 * @param result
-	 * 		result of IAuthenticator.register method
+	 *            result of IAuthenticator.register method
 	 * @throws JNLPException
 	 */
 
@@ -182,18 +182,19 @@ public class MaterializationUtils
 	}
 
 	/**
-	 * Gets human readable component type
+	 * Excludes CSSite components
 	 * 
-	 * @param componentType
-	 * 		componentType ID
-	 * @return human readable component type
+	 * @param mspec
+	 * @param depNode
+	 * @throws CoreException
 	 */
-	public static String getHumanReadableComponentType(String componentType)
+	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
 	{
-		String hrType = s_humanReadableComponentTypes.get(componentType);
-		if(hrType == null)
-			hrType = componentType;
-		return hrType;
+		if(hasCSsiteReader(depNode))
+			excludeComponent(mspec, depNode);
+
+		for(BOMNode childDepNode : depNode.getChildren())
+			excludeCSsiteComponents(mspec, childDepNode);
 	}
 
 	/**
@@ -269,6 +270,20 @@ public class MaterializationUtils
 		return new Path(pathToGeneralize);
 	}
 
+	public static File getBackupFolder(File eclipseFolder)
+	{
+		String backupString = eclipseFolder.getPath() + ".backup"; //$NON-NLS-1$
+		File backupFile = new File(backupString);
+
+		int i = 0;
+		while(backupFile.exists())
+		{
+			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++))); //$NON-NLS-1$
+		}
+
+		return backupFile;
+	}
+
 	/**
 	 * Gets default install location
 	 * 
@@ -292,6 +307,21 @@ public class MaterializationUtils
 		return destination;
 	}
 
+	/**
+	 * Gets human readable component type
+	 * 
+	 * @param componentType
+	 *            componentType ID
+	 * @return human readable component type
+	 */
+	public static String getHumanReadableComponentType(String componentType)
+	{
+		String hrType = s_humanReadableComponentTypes.get(componentType);
+		if(hrType == null)
+			hrType = componentType;
+		return hrType;
+	}
+
 	public static Image getImage(String imageName)
 	{
 		Class<?> myClass = MaterializationUtils.class;
@@ -304,15 +334,12 @@ public class MaterializationUtils
 	 * From a given path computes a path that exists in the file system.
 	 * 
 	 * @param enteredPath
-	 * 		entered path
+	 *            entered path
 	 * @return path that exists in the file system
 	 */
 	public static String getKnownPath(String enteredPath)
 	{
 		IPath path = new Path(enteredPath);
-
-		if(path == null)
-			return null;
 
 		File file = null;
 		String pathString = null;
@@ -332,34 +359,27 @@ public class MaterializationUtils
 		return pathString;
 	}
 
-	public static File getBackupFolder(File eclipseFolder)
+	public static void saveBOM(BillOfMaterials bom, File file)
 	{
-		String backupString = eclipseFolder.getPath() + ".backup"; //$NON-NLS-1$
-		File backupFile = new File(backupString);
+		OutputStream os = null;
 
-		int i = 0;
-		while(backupFile.exists())
+		try
 		{
-			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++))); //$NON-NLS-1$
+			os = new FileOutputStream(file);
+			Utils.serialize(bom, os);
 		}
-
-		return backupFile;
-	}
-
-	/**
-	 * Excludes CSSite components
-	 * 
-	 * @param mspec
-	 * @param depNode
-	 * @throws CoreException
-	 */
-	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
-	{
-		if(hasCSsiteReader(depNode))
-			excludeComponent(mspec, depNode);
-
-		for(BOMNode childDepNode : depNode.getChildren())
-			excludeCSsiteComponents(mspec, childDepNode);
+		catch(FileNotFoundException e1)
+		{
+			throw new JNLPException(Messages.file_cannot_be_opened_or_created, ERROR_CODE_FILE_IO_EXCEPTION, e1);
+		}
+		catch(SAXException e1)
+		{
+			throw new JNLPException(Messages.unable_to_read_BOM_specification, ERROR_CODE_ARTIFACT_EXCEPTION, e1);
+		}
+		finally
+		{
+			IOUtils.close(os);
+		}
 	}
 
 	private static void excludeComponent(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
@@ -397,28 +417,5 @@ public class MaterializationUtils
 				return true;
 
 		return false;
-	}
-
-	public static void saveBOM(BillOfMaterials bom, File file)
-	{
-		OutputStream os = null;
-
-		try
-		{
-			os = new FileOutputStream(file);
-			Utils.serialize(bom, os);
-		}
-		catch(FileNotFoundException e1)
-		{
-			throw new JNLPException(Messages.file_cannot_be_opened_or_created, ERROR_CODE_FILE_IO_EXCEPTION, e1);
-		}
-		catch(SAXException e1)
-		{
-			throw new JNLPException(Messages.unable_to_read_BOM_specification, ERROR_CODE_ARTIFACT_EXCEPTION, e1);
-		}
-		finally
-		{
-			IOUtils.close(os);
-		}
 	}
 }

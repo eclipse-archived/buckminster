@@ -26,57 +26,47 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class HelpLinkMessageDialog extends MessageDialog
 {
-	private String m_helpLinkTitle;
-	private String m_helpLinkURL;
-	
-	public HelpLinkMessageDialog(
-			Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex,
+	public static void openInformation(Shell parent, String dialogTitle, Image dialogTitleImage, String dialogMessage,
 			String helpLinkTitle, String helpLinkURL)
 	{
-		super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels, defaultIndex);
+		MessageDialog dialog = new HelpLinkMessageDialog(parent, dialogTitle, dialogTitleImage, dialogMessage,
+				INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0, helpLinkTitle, helpLinkURL);
+		dialog.open();
+		return;
+	}
+
+	private String m_helpLinkTitle;
+
+	private String m_helpLinkURL;
+
+	public HelpLinkMessageDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
+			int dialogImageType, String[] dialogButtonLabels, int defaultIndex, String helpLinkTitle, String helpLinkURL)
+	{
+		super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
+				defaultIndex);
 
 		m_helpLinkTitle = helpLinkTitle;
 		m_helpLinkURL = helpLinkURL;
-		
+
 		if(m_helpLinkTitle == null)
 		{
 			m_helpLinkTitle = m_helpLinkURL;
 		}
 	}
 
-    public static void openInformation(Shell parent, String dialogTitle, Image dialogTitleImage, String dialogMessage, String helpLinkTitle, String helpLinkURL) {
-        MessageDialog dialog = new HelpLinkMessageDialog(parent, dialogTitle, dialogTitleImage, dialogMessage, INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0, helpLinkTitle, helpLinkURL);
-        dialog.open();
-        return;
-    }
+	@Override
+	protected Control createCustomArea(Composite parent)
+	{
 
-    @Override
-	protected Control createDialogArea(Composite parent) {
-        // create message area
-        createMessageArea(parent);
-
-        // allow subclasses to add custom controls
-		new Label(parent, SWT.NULL);
-        Control customArea = createCustomArea(parent);
-        //If it is null create a dummy label for spacing purposes
-        if (customArea == null) {
-			customArea = new Label(parent, SWT.NULL);
+		if(m_helpLinkURL == null)
+		{
+			return null;
 		}
-        return customArea;
-    }
 
-    @Override
-	protected Control createCustomArea(Composite parent) {
-    	
-    	if(m_helpLinkURL == null)
-    	{
-    		return null;
-    	}
-    	
 		Composite linkComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -116,6 +106,23 @@ public class HelpLinkMessageDialog extends MessageDialog
 			}
 		});
 
-    	return null;
-    }   
+		return null;
+	}
+
+	@Override
+	protected Control createDialogArea(Composite parent)
+	{
+		// create message area
+		createMessageArea(parent);
+
+		// allow subclasses to add custom controls
+		new Label(parent, SWT.NULL);
+		Control customArea = createCustomArea(parent);
+		// If it is null create a dummy label for spacing purposes
+		if(customArea == null)
+		{
+			customArea = new Label(parent, SWT.NULL);
+		}
+		return customArea;
+	}
 }

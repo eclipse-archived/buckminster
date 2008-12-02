@@ -23,15 +23,59 @@ import org.eclipse.swt.widgets.Text;
 
 public class UiUtils
 {
-	public static Button createPushButton(Composite parent, String key, SelectionListener listener)
+	public static Combo createGridArrayCombo(Composite parent, int horizontalSpan, int widthHint, String[] values,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
 	{
-		Button button = new Button(parent, SWT.PUSH);
-		if(key != null)
-			button.setText(JFaceResources.getString(key));
-		button.setFont(parent.getFont());
-		if(listener != null)
-			button.addSelectionListener(listener);
-		return button;
+		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
+				style);
+		combo.setItems(values);
+		combo.select(0);
+
+		return combo;
+	}
+
+	public static Combo createGridCombo(Composite parent, int horizontalSpan, int widthHint,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		Combo combo = new Combo(parent, style);
+
+		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+
+		if(horizontalSpan > 0)
+		{
+			data.horizontalSpan = horizontalSpan;
+		}
+
+		if(widthHint > 0)
+		{
+			data.widthHint = widthHint;
+		}
+
+		combo.setLayoutData(data);
+
+		if(selectionListener != null)
+		{
+			combo.addSelectionListener(selectionListener);
+		}
+
+		if(modifyListener != null)
+		{
+			combo.addModifyListener(modifyListener);
+		}
+
+		return combo;
+	}
+
+	public static Combo createGridEnumCombo(Composite parent, int horizontalSpan, int widthHint, Enum<?>[] values,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
+				style);
+		for(Enum<?> value : values)
+			combo.add(value.toString());
+		combo.select(0);
+
+		return combo;
 	}
 
 	public static Label createGridLabel(Composite parent, String string, int horizontalSpan, int widthHint, int style)
@@ -83,62 +127,37 @@ public class UiUtils
 
 		return text;
 	}
-	
-	public static Combo createGridCombo(Composite parent, int horizontalSpan, int widthHint,
-			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+
+	public static Button createPushButton(Composite parent, String key, SelectionListener listener)
 	{
-		Combo combo = new Combo(parent, style);
-
-		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
-
-		if(horizontalSpan > 0)
-		{
-			data.horizontalSpan = horizontalSpan;
-		}
-
-		if(widthHint > 0)
-		{
-			data.widthHint = widthHint;
-		}
-
-		combo.setLayoutData(data);
-
-		if(selectionListener != null)
-		{
-			combo.addSelectionListener(selectionListener);
-		}
-
-		if(modifyListener != null)
-		{
-			combo.addModifyListener(modifyListener);
-		}
-
-		return combo;
+		Button button = new Button(parent, SWT.PUSH);
+		if(key != null)
+			button.setText(JFaceResources.getString(key));
+		button.setFont(parent.getFont());
+		if(listener != null)
+			button.addSelectionListener(listener);
+		return button;
 	}
 
-	public static Combo createGridEnumCombo(Composite parent, int horizontalSpan, int widthHint, Enum<?>[] values,
-			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	public static String getNotNullString(String string)
 	{
-		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
-				style);
-		for(Enum<?> value : values)
-			combo.add(value.toString());
-		combo.select(0);
-
-		return combo;
+		return string == null
+				? "" : string; //$NON-NLS-1$
 	}
 
-	public static Combo createGridArrayCombo(Composite parent, int horizontalSpan, int widthHint, String[] values,
-			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	public static String trimmedValue(String string)
 	{
-		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
-				style);
-		combo.setItems(values);
-		combo.select(0);
+		String value = null;
 
-		return combo;
+		if(string != null)
+		{
+			value = string.trim();
+			if(value.length() == 0)
+				value = null;
+		}
+		return value;
 	}
-	
+
 	public static String trimmedValue(Text text)
 	{
 		String value = null;
@@ -149,23 +168,5 @@ public class UiUtils
 				value = null;
 		}
 		return value;
-	}
-	
-	public static String trimmedValue(String string)
-	{
-		String value = null;
-		
-		if(string != null)
-		{
-			value = string.trim();
-			if(value.length() == 0)
-				value = null;
-		}
-		return value;
-	}
-	
-	public static String getNotNullString(String string)
-	{
-		return string == null ? "" : string; //$NON-NLS-1$
 	}
 }

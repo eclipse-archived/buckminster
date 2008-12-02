@@ -26,18 +26,13 @@ import org.eclipse.swt.widgets.Composite;
 public class SimpleAdvancedPage extends InstallWizardPage
 {
 	private MSpecDetailsPanel m_detailsPanel;
-	
+
 	protected SimpleAdvancedPage()
 	{
-		super(MaterializationConstants.STEP_ADVANCED_SETTINGS, Messages.advanced, Messages.select_components_for_materialization, null);
+		super(MaterializationConstants.STEP_ADVANCED_SETTINGS, Messages.advanced,
+				Messages.select_components_for_materialization, null);
 	}
 
-	@Override
-	protected void beforeDisplaySetup()
-	{
-		m_detailsPanel.update();
-	}
-	
 	public void createControl(Composite parent)
 	{
 		Composite pageComposite = new Composite(parent, SWT.NONE);
@@ -46,25 +41,29 @@ public class SimpleAdvancedPage extends InstallWizardPage
 		pageComposite.setLayout(gridLayout);
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		m_detailsPanel = new MSpecDetailsPanel(
-				getMaterializationSpecBuilder(),
-				MaterializationUtils.getDefaultDestination(getInstallWizard().getArtifactName()),
-				true);
-		
+		m_detailsPanel = new MSpecDetailsPanel(getMaterializationSpecBuilder(), MaterializationUtils
+				.getDefaultDestination(getInstallWizard().getArtifactName()), true);
+
 		m_detailsPanel.createControl(pageComposite);
-		
+
 		setControl(pageComposite);
 	}
-	
-	void initializeMSpecTree(BillOfMaterials bom)
-	{
-		m_detailsPanel.initializeMSpecTree(bom);
-		getInstallWizard().setUnresolvedNodeHandler(m_detailsPanel);
-	}
-	
+
 	@Override
 	public IWizardPage getNextPage()
 	{
 		return null;
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		m_detailsPanel.update();
+	}
+
+	void initializeMSpecTree(BillOfMaterials bom)
+	{
+		m_detailsPanel.initializeMSpecTree(bom);
+		getInstallWizard().setUnresolvedNodeHandler(m_detailsPanel);
 	}
 }

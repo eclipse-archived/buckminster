@@ -37,27 +37,19 @@ public class LoginPage extends InstallWizardPage
 	private String m_lastRegisteredUserName;
 
 	private String m_lastRegisteredPassword;
-	
+
 	private IWizardPage m_nextPage;
-	
+
 	protected LoginPage(String provider)
 	{
-		super(MaterializationConstants.STEP_LOGIN, Messages.login, NLS.bind(Messages.materialization_requires_login_to_0, provider), null); 
+		super(MaterializationConstants.STEP_LOGIN, Messages.login, NLS.bind(
+				Messages.materialization_requires_login_to_0, provider), null);
 	}
 
-	@Override
-	protected void beforeDisplaySetup()
-	{
-		getInstallWizard().setLoginPageRequested(true);
-		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
-		
-		setPageComplete(getCompleteLoginFields());
-	}
-	
 	public void createControl(Composite parent)
-	{		
+	{
 		m_nextPage = getInstallWizard().getSelectDistroPage();
-		
+
 		m_login = new LoginPanel(getInstallWizard().getAuthenticatorLoginKeyUserName());
 
 		setPageComplete(false);
@@ -78,36 +70,28 @@ public class LoginPage extends InstallWizardPage
 				setPageComplete(getCompleteLoginFields());
 			}
 		};
-				
+
 		setControl(m_login.createControl(parent, fieldsListener, fieldsSwitchListener));
 	}
 
-	private boolean getCompleteLoginFields()
+	@Override
+	public IWizardPage getNextPage()
 	{
-		String errorMsg = m_login.checkCompleteLoginFields();
-		
-		setErrorMessage(errorMsg);
-		return errorMsg == null;
+		return m_nextPage;
 	}
 
 	@Override
-    public boolean isPageComplete()
+	public boolean isPageComplete()
 	{
-        if(isCurrentPage())
-        {
-        	return super.isPageComplete();
+		if(isCurrentPage())
+		{
+			return super.isPageComplete();
 		}
 
-        return !getInstallWizard().isLoginRequired() || getInstallWizard().isLoggedIn();
-    }
+		return !getInstallWizard().isLoginRequired() || getInstallWizard().isLoggedIn();
+	}
 
 	@Override
-	public void setPageComplete(boolean complete)
-	{
-		super.setPageComplete(!getInstallWizard().isLoginRequired() || complete);
-	}
-	
-    @Override
 	public boolean performPageCommit()
 	{
 		if(isCurrentPage())
@@ -124,7 +108,8 @@ public class LoginPage extends InstallWizardPage
 
 				if(authenticator == null)
 				{
-					throw new JNLPException(Messages.authenticator_is_not_available, ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
+					throw new JNLPException(Messages.authenticator_is_not_available,
+							ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
 				}
 
 				if(m_login.isCurrentUser())
@@ -138,35 +123,36 @@ public class LoginPage extends InstallWizardPage
 						throw new JNLPException(Messages.cannot_login_try_to_login_using_USERNAME_and_PASSWORD, null);
 				}
 				else
-				{					
+				{
 					userName = m_login.getLogin();
 					password = m_login.getPassword();
-	
+
 					if(!m_login.isAlreadyUser())
 					{
 						int result = authenticator.register(userName, password, m_login.getEmail());
-	
-						if(result == IRemoteDistroProvider.REGISTER_LOGIN_EXISTS &&
-								m_lastRegisteredUserName != null && m_lastRegisteredUserName.equals(userName) &&
-								m_lastRegisteredPassword != null && m_lastRegisteredPassword.equals(password))
-							
-							// OK - user has already registered this login, don't force him to rewrite login & password to "Already User" section
+
+						if(result == IRemoteDistroProvider.REGISTER_LOGIN_EXISTS && m_lastRegisteredUserName != null
+								&& m_lastRegisteredUserName.equals(userName) && m_lastRegisteredPassword != null
+								&& m_lastRegisteredPassword.equals(password))
+
+							// OK - user has already registered this login, don't force him to rewrite login & password
+							// to "Already User" section
 							;
 						else
-						{					
+						{
 							MaterializationUtils.checkRegistrationResponse(result);
-							
+
 							m_lastRegisteredUserName = userName;
 							m_lastRegisteredPassword = password;
 						}
 					}
-	
+
 					if(authenticator.relogin(userName, password) != IRemoteDistroProvider.LOGIN_OK)
 					{
 						throw new JNLPException(Messages.cannot_login_check_username_and_password_and_try_again, null);
 					}
 				}
-				
+
 				if(!authenticator.isLoggedIn())
 				{
 					throw new JNLPException(Messages.problem_with_the_remote_server_try_to_login_later, null);
@@ -177,38 +163,56 @@ public class LoginPage extends InstallWizardPage
 				setErrorMessage(e.getMessage());
 				return false;
 			}
-			
-			if(
-				((userName == null) != (getInstallWizard().getAuthenticatorUserName() == null)) ||
-				userName != null && password != null && !(userName.equals(getInstallWizard().getAuthenticatorUserName()) && password.equals(getInstallWizard().getAuthenticatorPassword())))
+
+			if(((userName == null) != (getInstallWizard().getAuthenticatorUserName() == null))
+					|| userName != null
+					&& password != null
+					&& !(userName.equals(getInstallWizard().getAuthenticatorUserName()) && password
+							.equals(getInstallWizard().getAuthenticatorPassword())))
 			{
 				getInstallWizard().resetMaterializerInitialization();
 			}
-			
+
 			getInstallWizard().setAuthenticatorUserName(userName);
 			getInstallWizard().setAuthenticatorPassword(password);
-			
-			
+
 			if(getInstallWizard().isFolderRestrictionPageNeeded())
 				m_nextPage = getInstallWizard().getFolderRestrictionPage();
 			else
 			{
 				if(!getInstallWizard().isStackInfoRetrieved())
 					getInstallWizard().retrieveStackInfo();
-				
+
 				if(getInstallWizard().getDistro() != null)
 					m_nextPage = getInstallWizard().getDownloadPage();
 				else
 					m_nextPage = getInstallWizard().getSelectDistroPage();
 			}
 		}
-		
+
 		return true;
 	}
-    
+
 	@Override
-	public IWizardPage getNextPage()
+	public void setPageComplete(boolean complete)
 	{
-		return m_nextPage;
+		super.setPageComplete(!getInstallWizard().isLoginRequired() || complete);
+	}
+
+	@Override
+	protected void beforeDisplaySetup()
+	{
+		getInstallWizard().setLoginPageRequested(true);
+		m_login.setCurrentUserVisible(getInstallWizard().getAuthenticatorLoginKey() != null);
+
+		setPageComplete(getCompleteLoginFields());
+	}
+
+	private boolean getCompleteLoginFields()
+	{
+		String errorMsg = m_login.checkCompleteLoginFields();
+
+		setErrorMessage(errorMsg);
+		return errorMsg == null;
 	}
 }

@@ -10,12 +10,12 @@ package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class DistroContent
 {
 	private byte[] m_bomContent;
-	
+
 	private byte[] m_mspecContent;
 
 	public byte[] getBomContent()
@@ -23,14 +23,14 @@ public class DistroContent
 		return m_bomContent;
 	}
 
-	public void setBomContent(byte[] bomContent)
-	{
-		m_bomContent = bomContent;
-	}
-
 	public byte[] getMspecContent()
 	{
 		return m_mspecContent;
+	}
+
+	public void setBomContent(byte[] bomContent)
+	{
+		m_bomContent = bomContent;
 	}
 
 	public void setMspecContent(byte[] mspecContent)

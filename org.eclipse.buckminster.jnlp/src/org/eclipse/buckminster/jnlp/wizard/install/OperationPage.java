@@ -21,15 +21,16 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class OperationPage extends InstallWizardPage
 {
 	private ProgressProvider m_progressProvider;
-	
+
 	protected OperationPage()
 	{
-		super(MaterializationConstants.STEP_OPERATION, Messages.materialization_in_progress, Messages.please_wait_until_materialization_finishes, null);
+		super(MaterializationConstants.STEP_OPERATION, Messages.materialization_in_progress,
+				Messages.please_wait_until_materialization_finishes, null);
 	}
 
 	public void createControl(Composite parent)
@@ -37,21 +38,35 @@ public class OperationPage extends InstallWizardPage
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		m_progressProvider = new MaterializationProgressProvider(pageComposite);
-/*
-		Label imageLabel = new AlwaysEnabledLabel(pageComposite, SWT.NONE);
-		
-		Image image = getInstallWizard().getMaterializationImage();
-		
-		if(image != null)
-		{
-			imageLabel.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, true));
-			imageLabel.setImage(image);
-			imageLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		}
-*/
+		/*
+		 * Label imageLabel = new AlwaysEnabledLabel(pageComposite, SWT.NONE);
+		 * 
+		 * Image image = getInstallWizard().getMaterializationImage();
+		 * 
+		 * if(image != null) { imageLabel.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, true));
+		 * imageLabel.setImage(image); imageLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE)); }
+		 */
 		setControl(pageComposite);
+	}
+
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return getWizard().getPage(MaterializationConstants.STEP_DONE);
+	}
+
+	// Disable previous
+	@Override
+	public IWizardPage getPreviousPage()
+	{
+		return null;
+	}
+
+	public ProgressProvider getProgressProvider()
+	{
+		return m_progressProvider;
 	}
 
 	// Disable finish
@@ -62,26 +77,8 @@ public class OperationPage extends InstallWizardPage
 		{
 			return false;
 		}
-		
-		return true;
-	}
-	
-	// Disable previous
-    @Override
-	public IWizardPage getPreviousPage()
-    {
-    	return null;
-    }
 
-	@Override
-	public IWizardPage getNextPage()
-	{
-		return getWizard().getPage(MaterializationConstants.STEP_DONE);
-	}
-	
-	public ProgressProvider getProgressProvider()
-	{
-		return m_progressProvider;
+		return true;
 	}
 }
 
@@ -93,16 +90,16 @@ class AlwaysEnabledLabel extends Label
 	{
 		super(parent, style);
 	}
-	
-	@Override
-	protected void checkSubclass ()
-	{
-		// do nothing - it should be quite safe to do this subclassing
-	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{
 		// do nothing - don't want to make it gray
+	}
+
+	@Override
+	protected void checkSubclass()
+	{
+		// do nothing - it should be quite safe to do this subclassing
 	}
 }

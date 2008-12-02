@@ -28,28 +28,51 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class HelpLinkErrorDialog extends ErrorDialog
 {
 	private Image m_dialogImage;
+
 	private String m_helpLinkTitle;
+
 	private String m_helpLinkURL;
+
 	private String m_errorCode;
 
 	private static String s_syncString = null;
-	
-	protected HelpLinkErrorDialog(
-			Shell parentShell, Image dialogImage, String dialogTitle, String msg,
-			String helpLinkString, String helpLinkURL, String errorCode,
-			IStatus status, int displayMask)
+
+	public static int openError(Shell parentShell, Image dialogImage, String dialogTitle, String message,
+			IStatus status, String helpLinkTitle, String helpLinkURL, String errorCode, int displayMask)
 	{
-		super(parentShell, dialogTitle, msg, status, displayMask);
-		
-		m_dialogImage = dialogImage;
-		m_helpLinkTitle = helpLinkString;
-		m_helpLinkURL = helpLinkURL;
-		m_errorCode = errorCode;
+		ErrorDialog dialog;
+
+		if(s_syncString != null)
+			System.out.println(s_syncString);
+
+		if(helpLinkURL == null)
+		{
+			dialog = new ErrorDialog(parentShell, dialogTitle, message, status, displayMask);
+		}
+		else
+		{
+			if(helpLinkTitle == null)
+			{
+				helpLinkTitle = helpLinkURL.toString();
+			}
+			dialog = new HelpLinkErrorDialog(parentShell, dialogImage, dialogTitle, message, helpLinkTitle,
+					helpLinkURL, errorCode, status, displayMask);
+		}
+
+		return dialog.open();
+	}
+
+	public static int openError(Shell parent, Image dialogImage, String dialogTitle, String message,
+			String helpLinkTitle, String helpLinkURL, String errorCode, IStatus status)
+	{
+
+		return openError(parent, dialogImage, dialogTitle, message, status, helpLinkTitle, helpLinkURL, errorCode,
+				IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR);
 	}
 
 	public static void setSyncString(String syncString)
@@ -57,46 +80,28 @@ public class HelpLinkErrorDialog extends ErrorDialog
 		s_syncString = syncString;
 	}
 
-	public static int openError(Shell parent, Image dialogImage, String dialogTitle,
-            String message, String helpLinkTitle, String helpLinkURL, String errorCode, IStatus status) {
-		
-		return openError(parent, dialogImage, dialogTitle, message, status, helpLinkTitle, helpLinkURL, errorCode, IStatus.OK
-                | IStatus.INFO | IStatus.WARNING | IStatus.ERROR);
-    }
+	protected HelpLinkErrorDialog(Shell parentShell, Image dialogImage, String dialogTitle, String msg,
+			String helpLinkString, String helpLinkURL, String errorCode, IStatus status, int displayMask)
+	{
+		super(parentShell, dialogTitle, msg, status, displayMask);
 
-    public static int openError(Shell parentShell, Image dialogImage, String dialogTitle,
-            String message, IStatus status, String helpLinkTitle, String helpLinkURL, String errorCode, int displayMask) {
-        ErrorDialog dialog;
-        
-		if (s_syncString != null)
-			System.out.println(s_syncString);
+		m_dialogImage = dialogImage;
+		m_helpLinkTitle = helpLinkString;
+		m_helpLinkURL = helpLinkURL;
+		m_errorCode = errorCode;
+	}
 
-        if(helpLinkURL == null)
-        {
-        	dialog = new ErrorDialog(parentShell, dialogTitle, message, status, displayMask);
-        } else
-        {
-        	if(helpLinkTitle == null)
-        	{
-        		helpLinkTitle = helpLinkURL.toString();
-        	}
-        	dialog = new HelpLinkErrorDialog(parentShell, dialogImage, dialogTitle, message, helpLinkTitle, helpLinkURL, errorCode, status, displayMask);
-        }
-        
-        return dialog.open();
-    }
-    
-    @Override
+	@Override
 	protected void configureShell(Shell shell)
-    {
-        super.configureShell(shell);
-        if(m_dialogImage != null)
-        {
-        	shell.setImage(m_dialogImage);
-        }
-    }   
-    
-    @Override
+	{
+		super.configureShell(shell);
+		if(m_dialogImage != null)
+		{
+			shell.setImage(m_dialogImage);
+		}
+	}
+
+	@Override
 	protected Control createMessageArea(Composite composite)
 	{
 
@@ -151,7 +156,8 @@ public class HelpLinkErrorDialog extends ErrorDialog
 					if(m_errorCode == null)
 					{
 						Program.launch(m_helpLinkURL);
-					} else
+					}
+					else
 					{
 						Program.launch(m_helpLinkURL + "?errorCode=" + m_errorCode); //$NON-NLS-1$
 					}

@@ -49,17 +49,50 @@ import org.eclipse.swt.widgets.TableItem;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class ComponentListPanel
 {
-	private static final String ICON_STATUS_OK = "status.ok.gif"; //$NON-NLS-1$
-	
-	private static final String ICON_STATUS_FAILED = "status.error.gif"; //$NON-NLS-1$
-	
-	private final Image m_iconStatusOK = MaterializationUtils.getImage(ICON_STATUS_OK);
+	class ComponentPath implements Comparable<ComponentPath>
+	{
+		private ComponentIdentifier m_componentIdentifier;
 
-	private final Image m_iconStatusFailed = MaterializationUtils.getImage(ICON_STATUS_FAILED);
+		private boolean m_failed = false;
+
+		private IPath m_path;
+
+		public ComponentPath(ComponentIdentifier componentIdentifier, boolean failed, IPath path)
+		{
+			m_componentIdentifier = componentIdentifier;
+			m_failed = failed;
+			m_path = path;
+		}
+
+		public ComponentPath(ComponentIdentifier componentIdentifier, IPath path)
+		{
+			this(componentIdentifier, false, path);
+		}
+
+		public int compareTo(ComponentPath componentPath)
+		{
+			return m_componentIdentifier.compareTo(componentPath.getComponentIdentifier());
+		}
+
+		public IComponentIdentifier getComponentIdentifier()
+		{
+			return m_componentIdentifier;
+		}
+
+		public IPath getPath()
+		{
+			return m_path;
+		}
+
+		public boolean isFailed()
+		{
+			return m_failed;
+		}
+	}
 
 	class TableContentProvider implements IStructuredContentProvider
 	{
@@ -92,73 +125,43 @@ public class ComponentListPanel
 
 				return m_iconStatusOK;
 			}
-			
+
 			return null;
 		}
 
 		public String getColumnText(Object element, int columnIndex)
 		{
 			ComponentPath componentPath = (ComponentPath)element;
-			
+
 			if(columnIndex == 0)
 				return null;
 			else if(columnIndex == 1)
 				return componentPath.getComponentIdentifier().getName();
 			else
-				return componentPath.getPath() == null ? null : componentPath.getPath().toOSString();
+				return componentPath.getPath() == null
+						? null
+						: componentPath.getPath().toOSString();
 		}
 	}
-	
-	class ComponentPath implements Comparable<ComponentPath>
-	{
-		private ComponentIdentifier m_componentIdentifier;
-		
-		private boolean m_failed = false;
-		
-		private IPath m_path;
 
-		public ComponentPath(ComponentIdentifier componentIdentifier, IPath path)
-		{
-			this(componentIdentifier, false, path);
-		}
+	private static final String ICON_STATUS_OK = "status.ok.gif"; //$NON-NLS-1$
 
-		public ComponentPath(ComponentIdentifier componentIdentifier, boolean failed, IPath path)
-		{
-			m_componentIdentifier = componentIdentifier;
-			m_failed = failed;
-			m_path = path;
-		}
+	private static final String ICON_STATUS_FAILED = "status.error.gif"; //$NON-NLS-1$
 
-		public IComponentIdentifier getComponentIdentifier()
-		{
-			return m_componentIdentifier;
-		}
+	private final Image m_iconStatusOK = MaterializationUtils.getImage(ICON_STATUS_OK);
 
-		public boolean isFailed()
-		{
-			return m_failed;
-		}
-
-		public IPath getPath()
-		{
-			return m_path;
-		}
-
-		public int compareTo(ComponentPath componentPath)
-		{
-			return m_componentIdentifier.compareTo(componentPath.getComponentIdentifier());
-		}		
-	}
+	private final Image m_iconStatusFailed = MaterializationUtils.getImage(ICON_STATUS_FAILED);
 
 	private Set<ComponentPath> m_data = new TreeSet<ComponentPath>();
-	
+
 	private TableViewer m_tableViewer;
-	
+
 	private Menu m_tableMenu;
-	
+
 	public Control createControl(Composite parent)
 	{
-		m_tableViewer = new TableViewer(parent, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		m_tableViewer = new TableViewer(parent, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.FULL_SELECTION);
 		m_tableViewer.setLabelProvider(new TableLabelProvider());
 		m_tableViewer.setContentProvider(new TableContentProvider());
 		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
@@ -178,10 +181,11 @@ public class ComponentListPanel
 
 		table.setHeaderVisible(true);
 
-	    m_tableMenu = new Menu(table);
-	    MenuItem menuItem = new MenuItem(m_tableMenu, SWT.CASCADE);
-	    menuItem.setText(Messages.open_folder);
-	    menuItem.addSelectionListener(new SelectionAdapter(){
+		m_tableMenu = new Menu(table);
+		MenuItem menuItem = new MenuItem(m_tableMenu, SWT.CASCADE);
+		menuItem.setText(Messages.open_folder);
+		menuItem.addSelectionListener(new SelectionAdapter()
+		{
 
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -189,8 +193,8 @@ public class ComponentListPanel
 				openSelectedFolder();
 			}
 		});
-	    table.setMenu(m_tableMenu);
-		
+		table.setMenu(m_tableMenu);
+
 		table.addMouseTrackListener(new MouseTrackAdapter()
 		{
 
@@ -212,43 +216,36 @@ public class ComponentListPanel
 				table.setToolTipText(toolTipText);
 			}
 		});
-		
-		table.addSelectionListener(new SelectionAdapter(){
+
+		table.addSelectionListener(new SelectionAdapter()
+		{
 
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				TableItem item = (TableItem)e.item;
-				
+
 				if(item != null && ((ComponentPath)item.getData()).isFailed())
 					table.setMenu(null);
 				else
 					table.setMenu(m_tableMenu);
 			}
 		});
-		
+
 		return m_tableViewer.getTable();
 	}
-	
-	private void openSelectedFolder()
-	{
-		ComponentPath componentPath = (ComponentPath)((IStructuredSelection)m_tableViewer.getSelection()).getFirstElement();
-		
-		if(componentPath.getPath() != null)
-			Program.launch(componentPath.getPath().toOSString());
-	}
-	
+
 	public void update(MaterializationContext context)
 	{
 		MaterializationStatistics ms = context.getMaterializationStatistics();
-		
+
 		m_data.clear();
-		
+
 		Set<ComponentIdentifier> identifiers = new HashSet<ComponentIdentifier>();
 		identifiers.addAll(ms.getKept());
 		identifiers.addAll(ms.getReplaced());
 		identifiers.addAll(ms.getUpdated());
-		
+
 		for(ComponentIdentifier ci : identifiers)
 		{
 			IPath path = null;
@@ -257,23 +254,32 @@ public class ComponentListPanel
 				path = WorkspaceInfo.getComponentLocation(ci);
 
 				if(path != null && !new File(path.toOSString()).isDirectory())
-					path = path.removeLastSegments(1);			
+					path = path.removeLastSegments(1);
 			}
 			catch(CoreException e)
 			{
 				// path == null
 			}
-			
+
 			if(path != null)
 				m_data.add(new ComponentPath(ci, path.removeTrailingSeparator()));
 		}
-		
+
 		for(ComponentIdentifier ci : ms.getFailed())
 			m_data.add(new ComponentPath(ci, true, null));
-			
+
 		m_tableViewer.setInput(m_data);
 
-		for (int i=0; i < 3; i++)
+		for(int i = 0; i < 3; i++)
 			m_tableViewer.getTable().getColumn(i).pack();
+	}
+
+	private void openSelectedFolder()
+	{
+		ComponentPath componentPath = (ComponentPath)((IStructuredSelection)m_tableViewer.getSelection())
+				.getFirstElement();
+
+		if(componentPath.getPath() != null)
+			Program.launch(componentPath.getPath().toOSString());
 	}
 }

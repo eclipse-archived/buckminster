@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 public class AdvancedWizardDialog extends WizardDialog
 {
 	private static final String HELP_LABEL = Messages.more_info;
-	
+
 	private boolean m_runningOperation = false;
 
 	public AdvancedWizardDialog(AdvancedWizard newWizard, int styleFilter)
@@ -50,18 +50,16 @@ public class AdvancedWizardDialog extends WizardDialog
 		super(parentShell, newWizard);
 	}
 
-    @Override
-	public void showPage(IWizardPage page) {
-        if (page == null)
-            return;
-        
-        ((AdvancedWizardPage)page).beforeDisplaySetup();
-               
-        if(page == getCurrentPage())
-            return;
+	public Button getButtonFromButtonArea(int buttonId)
+	{
+		return getButton(buttonId);
+	}
 
-        super.showPage(page);
-    }
+	@Override
+	public boolean isHelpAvailable()
+	{
+		return true;
+	}
 
 	@Override
 	public int open()
@@ -70,7 +68,127 @@ public class AdvancedWizardDialog extends WizardDialog
 		showPage(getWizard().getStartingPage());
 		return super.open();
 	}
-	
+
+	@Override
+	public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable) throws InvocationTargetException,
+			InterruptedException
+	{
+
+		m_runningOperation = true;
+
+		if(getWizard().needsProgressMonitor())
+		{
+			getProgressMonitor().setCanceled(false);
+			ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
+			progressMonitorPart.setVisible(true);
+		}
+
+		try
+		{
+			ModalContext.run(runnable, fork, getProgressMonitor(), getShell().getDisplay());
+		}
+		finally
+		{
+			m_runningOperation = false;
+
+			if(getWizard().needsProgressMonitor())
+			{
+				ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
+				progressMonitorPart.setVisible(false);
+			}
+		}
+	}
+
+	@Override
+	public void showPage(IWizardPage page)
+	{
+		if(page == null)
+			return;
+
+		((AdvancedWizardPage)page).beforeDisplaySetup();
+
+		if(page == getCurrentPage())
+			return;
+
+		super.showPage(page);
+	}
+
+	@Override
+	public void updateButtons()
+	{
+		super.updateButtons();
+
+		String finishButtonText = ((AdvancedWizardPage)getCurrentPage()).getOverrideFinishButtonText();
+
+		if(finishButtonText != null)
+		{
+			getButton(IDialogConstants.FINISH_ID).setText(finishButtonText);
+		}
+
+		String cancelButtonText = ((AdvancedWizardPage)getCurrentPage()).getOverrideCancelButtonText();
+
+		if(cancelButtonText != null)
+		{
+			getButton(IDialogConstants.CANCEL_ID).setText(cancelButtonText);
+		}
+
+		int defaultButtonId = ((AdvancedWizardPage)getCurrentPage()).getOverrideDefaultButtonId();
+
+		if(defaultButtonId != -1)
+		{
+			getShell().setDefaultButton(getButton(defaultButtonId));
+		}
+	}
+
+	@Override
+	protected void cancelPressed()
+	{
+		if(m_runningOperation)
+		{
+			getProgressMonitor().setCanceled(true);
+		}
+		else
+		{
+			super.cancelPressed();
+		}
+	}
+
+	/**
+	 * Creates a new help control that provides access to context help.
+	 * <p>
+	 * The <code>TrayDialog</code> implementation of this method creates the control, registers it for selection events
+	 * including selection, Note that the parent's layout is assumed to be a <code>GridLayout</code> and the number of
+	 * columns in this layout is incremented. Subclasses may override.
+	 * </p>
+	 * 
+	 * @param parent
+	 *            the parent composite
+	 * @return the help control
+	 */
+	@Override
+	protected Control createHelpControl(Composite parent)
+	{
+		return createHelpLink(parent);
+	}
+
+	@Override
+	protected void finishPressed()
+	{
+		for(IWizardPage page : getWizard().getPages())
+		{
+			AdvancedWizardPage instalPage = (AdvancedWizardPage)page;
+			if(!instalPage.isPageCommitted())
+			{
+				if(!instalPage.commitPage())
+				{
+					return;
+				}
+			}
+		}
+
+		super.finishPressed();
+	}
+
 	@Override
 	protected void nextPressed()
 	{
@@ -82,75 +200,6 @@ public class AdvancedWizardDialog extends WizardDialog
 		}
 
 		super.nextPressed();
-	}
-
-	@Override
-	protected void finishPressed()
-	{
-		for(IWizardPage page : getWizard().getPages())
-		{
-			AdvancedWizardPage instalPage = (AdvancedWizardPage) page;
-			if(!instalPage.isPageCommitted())
-			{
-				if(!instalPage.commitPage())
-				{
-					return;
-				}
-			}
-		}
-		
-		super.finishPressed();
-	}
-
-    @Override
-	public void updateButtons()
-    {
-    	super.updateButtons();
-    	
-    	String finishButtonText = ((AdvancedWizardPage) getCurrentPage()).getOverrideFinishButtonText();
-    	
-    	if(finishButtonText != null)
-    	{
-    		getButton(IDialogConstants.FINISH_ID).setText(finishButtonText);
-    	}
-    	
-    	String cancelButtonText = ((AdvancedWizardPage) getCurrentPage()).getOverrideCancelButtonText();
-    	
-    	if(cancelButtonText != null)
-    	{
-    		getButton(IDialogConstants.CANCEL_ID).setText(cancelButtonText);
-    	}
-    	
-    	int defaultButtonId = ((AdvancedWizardPage) getCurrentPage()).getOverrideDefaultButtonId();
-    	
-    	if(defaultButtonId != -1)
-    	{
-    		getShell().setDefaultButton(getButton(defaultButtonId));
-    	}
-    }
-    
-	@Override
-	public boolean isHelpAvailable()
-	{
-		return true;
-	}
-
-	/**
-	 * Creates a new help control that provides access to context help.
-	 * <p>
-	 * The <code>TrayDialog</code> implementation of this method creates the control, registers it for selection
-	 * events including selection, Note that the parent's layout is assumed to be a <code>GridLayout</code> and
-	 * the number of columns in this layout is incremented. Subclasses may override.
-	 * </p>
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * @return the help control
-	 */
-	@Override
-	protected Control createHelpControl(Composite parent)
-	{
-		return createHelpLink(parent);
 	}
 
 	private Link createHelpLink(Composite parent)
@@ -169,52 +218,5 @@ public class AdvancedWizardDialog extends WizardDialog
 			}
 		});
 		return link;
-	}
-
-	@Override
-	public void run(boolean fork, boolean cancelable,
-			IRunnableWithProgress runnable) throws InvocationTargetException,
-			InterruptedException {
-
-		m_runningOperation = true;
-		
-		if (getWizard().needsProgressMonitor())
-		{
-			getProgressMonitor().setCanceled(false);
-			ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
-			progressMonitorPart.setVisible(true);
-		}
-
-		try
-		{
-			ModalContext.run(runnable, fork, getProgressMonitor(), getShell()
-					.getDisplay());
-		} finally
-		{
-			m_runningOperation = false;
-			
-			if (getWizard().needsProgressMonitor())
-			{
-				ProgressMonitorPart progressMonitorPart = (ProgressMonitorPart)getProgressMonitor();
-				progressMonitorPart.setVisible(false);
-			}
-		}
-	}
-	
-	@Override
-	protected void cancelPressed()
-	{
-		if(m_runningOperation)
-		{
-			getProgressMonitor().setCanceled(true);
-		} else
-		{
-			super.cancelPressed();
-		}
-	}
-	
-	public Button getButtonFromButtonArea(int buttonId)
-	{
-		return getButton(buttonId);
 	}
 }

@@ -20,19 +20,19 @@ public class LoginResponse implements Serializable
 	private static final long serialVersionUID = -978349240463870537L;
 
 	private int m_responseId;
-	
+
 	private String m_loginKey;
-	
+
 	private long m_userId;
-	
+
 	private String m_userName;
-	
+
 	private String m_userRealName;
 
 	public LoginResponse()
 	{
 	}
-	
+
 	public LoginResponse(int responseid)
 	{
 		this(responseid, null, -1, null, null);
@@ -47,24 +47,14 @@ public class LoginResponse implements Serializable
 		m_userRealName = userRealName;
 	}
 
-	public int getResponseId()
-	{
-		return m_responseId;
-	}
-
-	public void setResponseId(int responseid)
-	{
-		m_responseId = responseid;
-	}
-
 	public String getLoginKey()
 	{
 		return m_loginKey;
 	}
 
-	public void setLoginKey(String loginKey)
+	public int getResponseId()
 	{
-		m_loginKey = loginKey;
+		return m_responseId;
 	}
 
 	public long getUserId()
@@ -72,24 +62,34 @@ public class LoginResponse implements Serializable
 		return m_userId;
 	}
 
-	public void setUserId(long userId)
-	{
-		m_userId = userId;
-	}	
-
 	public String getUserName()
 	{
 		return m_userName;
 	}
 
-	public void setUserName(String userName)
-	{
-		m_userName = userName;
-	}
-
 	public String getUserRealName()
 	{
 		return m_userRealName;
+	}
+
+	public void setLoginKey(String loginKey)
+	{
+		m_loginKey = loginKey;
+	}
+
+	public void setResponseId(int responseid)
+	{
+		m_responseId = responseid;
+	}
+
+	public void setUserId(long userId)
+	{
+		m_userId = userId;
+	}
+
+	public void setUserName(String userName)
+	{
+		m_userName = userName;
 	}
 
 	public void setUserRealName(String userRealName)

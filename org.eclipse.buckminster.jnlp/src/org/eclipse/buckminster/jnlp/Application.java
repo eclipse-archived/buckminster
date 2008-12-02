@@ -50,28 +50,24 @@ public class Application implements IApplication
 	 * The wizard dialog width
 	 */
 	private static final int WIZARD_MIN_WIDTH = 550;
+
 	private static final int WIZARD_MAX_WIDTH = 750;
 
 	/**
 	 * The wizard dialog height
 	 */
 	private static final int WIZARD_MIN_HEIGHT = 550;
+
 	private static final int WIZARD_MAX_HEIGHT = 750;
 
 	private static final long DEFAULT_POPUP_DELAY = 500;
-	
+
 	/**
 	 * String for synchronization with the bootstrap
 	 */
 	private String m_syncString = null;
-	
-	private String m_errorURL = ERROR_HELP_URL;
 
-	private void synchronizeWithBootstrap()
-	{
-		if(m_syncString != null)
-			System.out.println(m_syncString);
-	}
+	private String m_errorURL = ERROR_HELP_URL;
 
 	public Object start(IApplicationContext context) throws Exception
 	{
@@ -160,7 +156,8 @@ public class Application implements IApplication
 			if(configUrl == null)
 			{
 				errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
-				throw BuckminsterException.fromMessage(Messages.missing_required_argument_configURL_URL_to_config_properties);
+				throw BuckminsterException
+						.fromMessage(Messages.missing_required_argument_configURL_URL_to_config_properties);
 			}
 
 			Map<String, String> properties = new HashMap<String, String>();
@@ -195,7 +192,7 @@ public class Application implements IApplication
 				//
 				final InstallWizard installWizard = new InstallWizard(properties);
 				m_errorURL = installWizard.getErrorURL();
-				
+
 				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard, ~SWT.APPLICATION_MODAL);
 				dialog.create();
 
@@ -221,15 +218,16 @@ public class Application implements IApplication
 						{
 							JNLPException je = (JNLPException)t;
 
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE, je
-									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, je.getErrorCode(), status);
+							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(),
+									MaterializationConstants.ERROR_WINDOW_TITLE, je.getMessage(),
+									MaterializationConstants.ERROR_HELP_TITLE, m_errorURL, je.getErrorCode(), status);
 						}
 						else
 						{
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
-									Messages.materializator_error, MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
+							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(),
+									MaterializationConstants.ERROR_WINDOW_TITLE, Messages.materializator_error,
+									MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
+									ERROR_CODE_RUNTIME_EXCEPTION, status);
 						}
 
 						// Try to keep running.
@@ -237,9 +235,8 @@ public class Application implements IApplication
 				});
 
 				final Shell shell = dialog.getShell();
-				shell.setSize(
-						Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH),
-						Math.min(Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
+				shell.setSize(Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH), Math.min(Math
+						.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
 
 				// when the shell is not started "ON TOP", it starts blinking
 				shell.addShellListener(new ShellAdapter()
@@ -274,10 +271,10 @@ public class Application implements IApplication
 					}
 
 					synchronizeWithBootstrap();
-					
+
 					long popupDelay = DEFAULT_POPUP_DELAY;
 					String popupDelayString = properties.get(MaterializationConstants.PROP_POPUP_DELAY);
-					
+
 					if(popupDelayString != null)
 					{
 						try
@@ -289,10 +286,10 @@ public class Application implements IApplication
 							popupDelay = DEFAULT_POPUP_DELAY;
 						}
 					}
-					
+
 					// need to wait a while until applet finishes
 					Thread.sleep(popupDelay);
-					
+
 					dialog.open();
 					return OK_EXIT_CODE;
 				}
@@ -344,5 +341,11 @@ public class Application implements IApplication
 
 	public void stop()
 	{
+	}
+
+	private void synchronizeWithBootstrap()
+	{
+		if(m_syncString != null)
+			System.out.println(m_syncString);
 	}
 }

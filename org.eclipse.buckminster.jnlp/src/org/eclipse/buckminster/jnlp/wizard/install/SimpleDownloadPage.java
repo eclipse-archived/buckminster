@@ -28,15 +28,15 @@ import org.eclipse.swt.widgets.Composite;
 public class SimpleDownloadPage extends InstallWizardPage
 {
 	private static final String TOOL_TIP_ADVANCED = Messages.customize_your_materialization;
-	 	 
+
 	private DestinationForm m_destinationForm;
-	
+
 	private Button m_advancedSettingsButton;
-	
+
 	protected SimpleDownloadPage()
 	{
-		super(MaterializationConstants.STEP_DOWNLOAD_LOCATION, Messages.select_a_destination, Messages.select_a_target_location_for_materialization,
-				null);
+		super(MaterializationConstants.STEP_DOWNLOAD_LOCATION, Messages.select_a_destination,
+				Messages.select_a_target_location_for_materialization, null);
 	}
 
 	public void createControl(Composite parent)
@@ -45,15 +45,9 @@ public class SimpleDownloadPage extends InstallWizardPage
 		pageComposite.setLayout(new GridLayout(3, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		m_destinationForm = new DestinationForm(
-				getMaterializationSpecBuilder(),
-				MaterializationUtils.getDefaultDestination(getInstallWizard().getArtifactName()),
-				false,
-				false,
-				false,
-				false,
-				true);
-		
+		m_destinationForm = new DestinationForm(getMaterializationSpecBuilder(), MaterializationUtils
+				.getDefaultDestination(getInstallWizard().getArtifactName()), false, false, false, false, true);
+
 		m_destinationForm.createControl(pageComposite);
 
 		m_advancedSettingsButton = new Button(pageComposite, SWT.CHECK);
@@ -76,17 +70,21 @@ public class SimpleDownloadPage extends InstallWizardPage
 	}
 
 	@Override
-	protected void beforeDisplaySetup()
+	public IWizardPage getNextPage()
 	{
-		m_destinationForm.update();
+		if(m_advancedSettingsButton.getSelection())
+		{
+			return getInstallWizard().getAdvancedPage();
+		}
+		return null;
 	}
-	
+
 	@Override
 	public boolean isPageComplete()
 	{
 		// disable FINISH button on the two first pages
 		IWizardPage currentPage = getContainer().getCurrentPage();
-		
+
 		if(currentPage.equals(getInstallWizard().getStartingPage())
 				|| currentPage.equals(getInstallWizard().getLoginPage())
 				|| currentPage.equals(getInstallWizard().getSelectDistroPage())
@@ -95,14 +93,10 @@ public class SimpleDownloadPage extends InstallWizardPage
 
 		return getInstallWizard().isMaterializerInitialized();
 	}
-	
+
 	@Override
-	public IWizardPage getNextPage()
+	protected void beforeDisplaySetup()
 	{
-		if(m_advancedSettingsButton.getSelection())
-		{
-			return getInstallWizard().getAdvancedPage();
-		}
-		return null;
+		m_destinationForm.update();
 	}
 }

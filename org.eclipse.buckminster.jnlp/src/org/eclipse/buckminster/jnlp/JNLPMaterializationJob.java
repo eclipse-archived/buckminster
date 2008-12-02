@@ -15,15 +15,15 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 public class JNLPMaterializationJob extends MaterializationJob
 {
-	protected JNLPMaterializationJob(MaterializationContext ctx, boolean waitForInstall)
-	{
-		super(ctx, waitForInstall);
-	}
-
 	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
 		JNLPMaterializationJob mbJob = new JNLPMaterializationJob(context, true);
 		mbJob.internalRun(monitor);
+	}
+
+	protected JNLPMaterializationJob(MaterializationContext ctx, boolean waitForInstall)
+	{
+		super(ctx, waitForInstall);
 	}
 
 	@Override
@@ -41,8 +41,9 @@ public class JNLPMaterializationJob extends MaterializationJob
 			@Override
 			public void aboutToRun(IJobChangeEvent event)
 			{
-				if(monitor.isCanceled() ||
-						(!getMaterializationContext().isContinueOnError() && getMaterializationContext().getStatus().getSeverity() == IStatus.ERROR))
+				if(monitor.isCanceled()
+						|| (!getMaterializationContext().isContinueOnError() && getMaterializationContext().getStatus()
+								.getSeverity() == IStatus.ERROR))
 					cancel();
 			}
 
@@ -56,7 +57,7 @@ public class JNLPMaterializationJob extends MaterializationJob
 					{
 						mjob.wakeUp();
 					}
-				}	
+				}
 			}
 		};
 
@@ -72,7 +73,8 @@ public class JNLPMaterializationJob extends MaterializationJob
 			if(idx < maxJobs)
 			{
 				job.schedule();
-			} else
+			}
+			else
 			{
 				job.schedule(10); // really don't want to start it now
 				job.sleep();

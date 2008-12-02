@@ -41,6 +41,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class IDEApplication extends Observable
 {
+	public static enum State
+	{
+		INITIALIZING, STARTED, FAILED;
+	}
+
 	public static final Integer OK_EXIT_CODE = new Integer(0);
 
 	public static final Integer ERROR_EXIT_CODE = new Integer(1);
@@ -59,14 +64,15 @@ public class IDEApplication extends Observable
 
 	private static final int WIZARD_MAX_HEIGHT = 750;
 
+	public static void main(String[] args) throws Exception
+	{
+		IDEApplication app = new IDEApplication();
+		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop"); //$NON-NLS-1$
+	}
+
 	private String m_errorURL = ERROR_HELP_URL;
 
 	String m_errorCode = null;
-
-	public static enum State
-	{
-		INITIALIZING, STARTED, FAILED;
-	}
 
 	private State m_state = State.INITIALIZING;
 
@@ -85,11 +91,13 @@ public class IDEApplication extends Observable
 	public void start(final String configUrl) throws Exception
 	{
 
-		try{
+		try
+		{
 			if(configUrl == null || configUrl.length() < 1)
 			{
 				m_errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
-				throw BuckminsterException.fromMessage(Messages.missing_required_argument_configUrl_URL_to_config_properties);
+				throw BuckminsterException
+						.fromMessage(Messages.missing_required_argument_configUrl_URL_to_config_properties);
 			}
 
 			final Map<String, String> properties = new HashMap<String, String>();
@@ -124,7 +132,7 @@ public class IDEApplication extends Observable
 				//
 				final InstallWizard installWizard = new InstallWizard(properties, true);
 				m_errorURL = installWizard.getErrorURL();
-				
+
 				// The original started with a mask of SWT.APPLICATION_MODAL - and this changed the icon of
 				// Eclipse to the icon of the dialog = a cloud. Looks much better if icon is unchanged.
 				//
@@ -153,15 +161,16 @@ public class IDEApplication extends Observable
 						{
 							JNLPException je = (JNLPException)t;
 
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE, je
-									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, je.getErrorCode(), status);
+							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(),
+									MaterializationConstants.ERROR_WINDOW_TITLE, je.getMessage(),
+									MaterializationConstants.ERROR_HELP_TITLE, m_errorURL, je.getErrorCode(), status);
 						}
 						else
 						{
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
-									Messages.materializator_error, MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
+							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(),
+									MaterializationConstants.ERROR_WINDOW_TITLE, Messages.materializator_error,
+									MaterializationConstants.ERROR_HELP_TITLE, m_errorURL,
+									ERROR_CODE_RUNTIME_EXCEPTION, status);
 						}
 
 						// Try to keep running.
@@ -169,9 +178,8 @@ public class IDEApplication extends Observable
 				});
 
 				final Shell shell = dialog.getShell();
-				shell.setSize(
-						Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH),
-						Math.min(Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
+				shell.setSize(Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH), Math.min(Math
+						.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
 
 				// when the shell is not started "ON TOP", it starts blinking
 				shell.addShellListener(new ShellAdapter()
@@ -223,8 +231,8 @@ public class IDEApplication extends Observable
 			finally
 			{
 			}
-//	}});
-			
+			// }});
+
 		}
 		catch(Throwable e)
 		{
@@ -250,11 +258,5 @@ public class IDEApplication extends Observable
 
 	public void stop()
 	{
-	}
-	
-	public static void main(String[] args) throws Exception
-	{
-		IDEApplication app = new IDEApplication();
-		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop"); //$NON-NLS-1$
 	}
 }

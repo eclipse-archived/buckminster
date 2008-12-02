@@ -48,7 +48,8 @@ public class FeedsPage extends InstallWizardPage
 
 	protected FeedsPage()
 	{
-		super(MaterializationConstants.STEP_FEEDS, "Cloudfeeds", Messages.use_cloudfeeds_to_stay_current_with_this_distro, //$NON-NLS-1$
+		super(MaterializationConstants.STEP_FEEDS,
+				"Cloudfeeds", Messages.use_cloudfeeds_to_stay_current_with_this_distro, //$NON-NLS-1$
 				null);
 		setPreviousPage(this);
 	}
@@ -138,12 +139,16 @@ public class FeedsPage extends InstallWizardPage
 
 		Text updateSite33Text = getSelectableItalicText(sitesComposite);
 		String u = getInstallWizard().getEclipseDistroTools33UpdateSiteURL();
-		updateSite33Text.setText(u == null ? Messages.missing_in_input : u);			
+		updateSite33Text.setText(u == null
+				? Messages.missing_in_input
+				: u);
 		new Label(sitesComposite, SWT.NONE).setText(Messages.for_eclipse_3_3);
 
 		u = getInstallWizard().getEclipseDistroTools34UpdateSiteURL();
 		Text updateSite34Text = getSelectableItalicText(sitesComposite);
-		updateSite34Text.setText(u == null ? Messages.missing_in_input : u);			
+		updateSite34Text.setText(u == null
+				? Messages.missing_in_input
+				: u);
 		new Label(sitesComposite, SWT.NONE).setText(Messages.for_eclipse_3_4);
 
 		new Label(pageComposite, SWT.NONE);
@@ -176,15 +181,23 @@ public class FeedsPage extends InstallWizardPage
 		setControl(pageComposite);
 	}
 
-	private Text getSelectableItalicText(Composite composite)
+	@Override
+	public String getOverrideCancelButtonText()
 	{
-		Text text = new Text(composite, SWT.NO_FOCUS | SWT.READ_ONLY);
-		FontData[] fontDadas = text.getFont().getFontData();
-		if(fontDadas.length > 0)
-			fontDadas[0].setStyle(SWT.ITALIC);
-		text.setFont(new Font(Display.getCurrent(), fontDadas));
+		return Messages.done;
+	}
 
-		return text;
+	@Override
+	public int getOverrideDefaultButtonId()
+	{
+		return IDialogConstants.CANCEL_ID;
+	}
+
+	// Finish is disabled
+	@Override
+	public boolean isPageComplete()
+	{
+		return !getInstallWizard().isMaterializationFinished();
 	}
 
 	@Override
@@ -208,22 +221,14 @@ public class FeedsPage extends InstallWizardPage
 		m_openHTML.setEnabled(m_infoPageURL != null);
 	}
 
-	// Finish is disabled
-	@Override
-	public boolean isPageComplete()
+	private Text getSelectableItalicText(Composite composite)
 	{
-		return !getInstallWizard().isMaterializationFinished();
-	}
+		Text text = new Text(composite, SWT.NO_FOCUS | SWT.READ_ONLY);
+		FontData[] fontDadas = text.getFont().getFontData();
+		if(fontDadas.length > 0)
+			fontDadas[0].setStyle(SWT.ITALIC);
+		text.setFont(new Font(Display.getCurrent(), fontDadas));
 
-	@Override
-	public String getOverrideCancelButtonText()
-	{
-		return Messages.done;
-	}
-
-	@Override
-	public int getOverrideDefaultButtonId()
-	{
-		return IDialogConstants.CANCEL_ID;
+		return text;
 	}
 }

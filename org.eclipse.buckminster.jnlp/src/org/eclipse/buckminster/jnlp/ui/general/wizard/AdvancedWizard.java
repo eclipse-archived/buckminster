@@ -16,59 +16,60 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public abstract class AdvancedWizard extends Wizard
 {
+	public void addAdvancedPage(AdvancedWizardPage page)
+	{
+
+		super.addPage(page);
+	}
+
+	/**
+	 * Use addAdvancedPage(AdvancedWizardPage) instead
+	 */
+	@Override
+	public void addPage(IWizardPage page)
+	{
+		throw new RuntimeException(Messages.unsupported_operation);
+	}
+
 	@Override
 	public void addPages()
 	{
 		addAdvancedPages();
-		
+
 		setWindowTitle(getWindowTitle());
 
 		if(getWindowImage() != null)
 		{
 			getShell().setImage(getWindowImage());
 		}
-				
+
 		if(getWizardImage() != null)
 		{
 			setDefaultPageImageDescriptor(ImageDescriptor.createFromImage(getWizardImage()));
 		}
 	}
-	
-	abstract protected void addAdvancedPages();
-	
-	/**
-	 * Use addAdvancedPage(AdvancedWizardPage) instead
-	 */
-    @Override
-	public void addPage(IWizardPage page)
-    {
-    	throw new RuntimeException(Messages.unsupported_operation);
-    }
-
-	public void addAdvancedPage(AdvancedWizardPage page) {
-    	
-    	super.addPage(page);
-    }
 
 	public String getHelpURL()
 	{
 		return null;
 	}
-	
+
 	public String getMoreInfoURL()
 	{
 		return null;
 	}
 
+	abstract protected void addAdvancedPages();
+
 	protected Image getWindowImage()
 	{
 		return null;
 	}
-	
+
 	protected Image getWizardImage()
 	{
 		return null;

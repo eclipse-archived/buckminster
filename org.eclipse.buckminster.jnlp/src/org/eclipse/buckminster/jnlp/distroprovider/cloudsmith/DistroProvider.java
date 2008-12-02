@@ -106,6 +106,120 @@ public class DistroProvider implements IRemoteDistroProvider
 
 	private HttpClient m_httpClient;
 
+	public int checkFolderReadAccess(final String folderPath) throws Exception
+	{
+		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
+		{
+
+			@Override
+			public Integer process() throws Exception
+			{
+				return Integer.valueOf(m_remoteAccountService.checkFolderReadAccess(folderPath));
+			}
+		};
+
+		return method.run().intValue();
+	}
+
+	public IRemoteDistroProvider createDuplicate(boolean login) throws Exception
+	{
+		DistroProvider authenticator = new DistroProvider();
+		authenticator.initialize(m_serviceURL);
+
+		if(m_currentStatus == AuthenticationStatus.AFTER_LOGIN && login)
+		{
+			if(m_lastLoginKey != null)
+				authenticator.login(m_lastLoginKey);
+			else
+				authenticator.login(m_lastLoginUserName, m_lastLoginPassword);
+		}
+
+		return authenticator;
+	}
+
+	public String getCurrenlyLoggedUserName()
+	{
+		return m_lastLoginResponse == null
+				? null
+				: m_lastLoginResponse.getUserName();
+	}
+
+	public Distro getDistro(final boolean draft, final Long cspecId, final Long distroId) throws Exception
+	{
+		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
+		{
+
+			@Override
+			public Distro process() throws Exception
+			{
+				DistroContent distroContent = m_remoteDistroService.getDistro(draft, cspecId, distroId);
+
+				if(distroContent == null || distroContent.getBomContent() == null
+						|| distroContent.getMspecContent() == null)
+					return null;
+
+				IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory()
+						.getBillOfMaterialsParser(true);
+				BillOfMaterials bom = bomParser
+						.parse(
+								"byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getBomContent()))); //$NON-NLS-1$
+
+				IParser<MaterializationSpec> mspecParser = CorePlugin.getDefault().getParserFactory()
+						.getMaterializationSpecParser(true);
+				MaterializationSpec mspec = mspecParser
+						.parse(
+								"byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent()))); //$NON-NLS-1$
+
+				return new Distro(bom, mspec);
+
+			}
+		};
+
+		return method.run();
+	}
+
+	public List<DistroVariant> getDistroVariants(final boolean draft, final Long stackId) throws Exception
+	{
+		MethodWrapper<List<DistroVariant>> method = new MethodWrapper<List<DistroVariant>>()
+		{
+
+			@Override
+			public List<DistroVariant> process() throws Exception
+			{
+				Map<String, String> properties = new HashMap<String, String>();
+
+				properties.put(DistroVariant.TARGET_ARCH, TargetPlatform.getInstance().getArch());
+				properties.put(DistroVariant.TARGET_OS, TargetPlatform.getInstance().getOS());
+				properties.put(DistroVariant.TARGET_WS, TargetPlatform.getInstance().getWS());
+				properties.put(DistroVariant.TARGET_NL, TargetPlatform.getInstance().getNL());
+
+				return m_remoteDistroService.getDistroVariants(draft, stackId, properties);
+			}
+		};
+
+		return method.run();
+	}
+
+	public HttpClient getHttpClient()
+	{
+		return m_httpClient;
+	}
+
+	public String getLoginKey() throws Exception
+	{
+		MethodWrapper<String> method = new MethodWrapper<String>()
+		{
+
+			@Override
+			public String process() throws Exception
+			{
+				return m_remoteAccountService.getLoginKey();
+			}
+		};
+
+		return method.run();
+	}
+
 	public void initialize(String serviceURL) throws Exception
 	{
 		if(serviceURL == null)
@@ -127,8 +241,9 @@ public class DistroProvider implements IRemoteDistroProvider
 			method = new GetMethod(serviceURL + ACCOUNTSERVICE_BRIDGE_URL_SUFFIX);
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
-				throw new IOException(
-						NLS.bind(Messages.setup_did_not_succeed_make_sure_the_AccountServiceServlet_servlet_is_running_on_0, serviceURL));
+				throw new IOException(NLS.bind(
+						Messages.setup_did_not_succeed_make_sure_the_AccountServiceServlet_servlet_is_running_on_0,
+						serviceURL));
 		}
 		finally
 		{
@@ -156,8 +271,9 @@ public class DistroProvider implements IRemoteDistroProvider
 			method = new GetMethod(serviceURL + DISTROSERVICE_BRIDGE_URL_SUFFIX);
 			int status = m_httpClient.executeMethod(method);
 			if(status != HttpStatus.SC_OK)
-				throw new IOException(
-						NLS.bind(Messages.setup_did_not_succeed_make_sure_the_DistroServiceServlet_servlet_is_running_on_0, serviceURL));
+				throw new IOException(NLS.bind(
+						Messages.setup_did_not_succeed_make_sure_the_DistroServiceServlet_servlet_is_running_on_0,
+						serviceURL));
 		}
 		finally
 		{
@@ -172,27 +288,6 @@ public class DistroProvider implements IRemoteDistroProvider
 
 		jsonClient = new Client(session);
 		m_remoteDistroService = (IDistroService)jsonClient.openProxy("distroService", IDistroService.class); //$NON-NLS-1$
-	}
-
-	public IRemoteDistroProvider createDuplicate(boolean login) throws Exception
-	{
-		DistroProvider authenticator = new DistroProvider();
-		authenticator.initialize(m_serviceURL);
-
-		if(m_currentStatus == AuthenticationStatus.AFTER_LOGIN && login)
-		{
-			if(m_lastLoginKey != null)
-				authenticator.login(m_lastLoginKey);
-			else
-				authenticator.login(m_lastLoginUserName, m_lastLoginPassword);
-		}
-
-		return authenticator;
-	}
-
-	public HttpClient getHttpClient()
-	{
-		return m_httpClient;
 	}
 
 	public boolean isLoggedIn() throws Exception
@@ -210,48 +305,20 @@ public class DistroProvider implements IRemoteDistroProvider
 		return method.run().booleanValue();
 	}
 
-	public int login(final String userName, final String password) throws Exception
+	public void keepAlive() throws Exception
 	{
-		MethodWrapper<LoginResponse> method = new MethodWrapper<LoginResponse>()
+		MethodWrapper<Boolean> method = new MethodWrapper<Boolean>()
 		{
 
 			@Override
-			public LoginResponse process() throws Exception
+			public Boolean process() throws Exception
 			{
-				return m_remoteAccountService.login(userName, CryptoUtils.encrypt(password, ENCRYPT_ALGORITHM));
+				m_remoteAccountService.keepAlive();
+				return Boolean.valueOf(true);
 			}
 		};
 
-		m_lastLoginResponse = method.run();
-		int result = m_lastLoginResponse.getResponseId();
-
-		if(result == LOGIN_OK)
-		{
-			m_currentStatus = AuthenticationStatus.AFTER_LOGIN;
-			m_lastLoginUserName = userName;
-			m_lastLoginPassword = password;
-			m_lastLoginKey = null;
-		}
-		else
-		{
-			m_lastLoginResponse = null;
-		}
-
-		return result;
-	}
-
-	public int relogin(final String userName, final String password) throws Exception
-	{
-		if(isLoggedIn())
-		{
-			if(userName != null && userName.equals(m_lastLoginUserName) && password != null
-					&& password.equals(m_lastLoginPassword))
-				return IRemoteDistroProvider.LOGIN_OK;
-
-			logout();
-		}
-
-		return login(userName, password);
+		method.run();
 	}
 
 	public int login(final String loginKey) throws Exception
@@ -284,6 +351,73 @@ public class DistroProvider implements IRemoteDistroProvider
 		return result;
 	}
 
+	public int login(final String userName, final String password) throws Exception
+	{
+		MethodWrapper<LoginResponse> method = new MethodWrapper<LoginResponse>()
+		{
+
+			@Override
+			public LoginResponse process() throws Exception
+			{
+				return m_remoteAccountService.login(userName, CryptoUtils.encrypt(password, ENCRYPT_ALGORITHM));
+			}
+		};
+
+		m_lastLoginResponse = method.run();
+		int result = m_lastLoginResponse.getResponseId();
+
+		if(result == LOGIN_OK)
+		{
+			m_currentStatus = AuthenticationStatus.AFTER_LOGIN;
+			m_lastLoginUserName = userName;
+			m_lastLoginPassword = password;
+			m_lastLoginKey = null;
+		}
+		else
+		{
+			m_lastLoginResponse = null;
+		}
+
+		return result;
+	}
+
+	public int logout() throws Exception
+	{
+		int result;
+
+		try
+		{
+			result = logoutWithoutRefreshingConnection();
+		}
+		finally
+		{
+			initialize(m_serviceURL);
+		}
+
+		return result;
+	}
+
+	public int register(final String userName, final String password, final String email) throws Exception
+	{
+		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
+		{
+
+			@Override
+			public Integer process() throws Exception
+			{
+				return Integer.valueOf(m_remoteAccountService.register(userName, CryptoUtils.encrypt(password,
+						ENCRYPT_ALGORITHM), email));
+			}
+		};
+
+		return method.run().intValue();
+	}
+
+	public void releaseConnection() throws Exception
+	{
+		logoutWithoutRefreshingConnection();
+	}
+
 	public int relogin(final String loginKey) throws Exception
 	{
 		if(isLoggedIn())
@@ -297,42 +431,18 @@ public class DistroProvider implements IRemoteDistroProvider
 		return login(loginKey);
 	}
 
-	public String getCurrenlyLoggedUserName()
+	public int relogin(final String userName, final String password) throws Exception
 	{
-		return m_lastLoginResponse == null
-				? null
-				: m_lastLoginResponse.getUserName();
-	}
-
-	public String getLoginKey() throws Exception
-	{
-		MethodWrapper<String> method = new MethodWrapper<String>()
+		if(isLoggedIn())
 		{
+			if(userName != null && userName.equals(m_lastLoginUserName) && password != null
+					&& password.equals(m_lastLoginPassword))
+				return IRemoteDistroProvider.LOGIN_OK;
 
-			@Override
-			public String process() throws Exception
-			{
-				return m_remoteAccountService.getLoginKey();
-			}
-		};
+			logout();
+		}
 
-		return method.run();
-	}
-
-	public void keepAlive() throws Exception
-	{
-		MethodWrapper<Boolean> method = new MethodWrapper<Boolean>()
-		{
-
-			@Override
-			public Boolean process() throws Exception
-			{
-				m_remoteAccountService.keepAlive();
-				return Boolean.valueOf(true);
-			}
-		};
-
-		method.run();
+		return login(userName, password);
 	}
 
 	private int logoutWithoutRefreshingConnection() throws Exception
@@ -362,58 +472,6 @@ public class DistroProvider implements IRemoteDistroProvider
 		return result;
 	}
 
-	public int logout() throws Exception
-	{
-		int result;
-
-		try
-		{
-			result = logoutWithoutRefreshingConnection();
-		}
-		finally
-		{
-			initialize(m_serviceURL);
-		}
-
-		return result;
-	}
-
-	public void releaseConnection() throws Exception
-	{
-		logoutWithoutRefreshingConnection();
-	}
-
-	public int register(final String userName, final String password, final String email) throws Exception
-	{
-		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
-		{
-
-			@Override
-			public Integer process() throws Exception
-			{
-				return Integer.valueOf(m_remoteAccountService.register(userName, CryptoUtils.encrypt(password,
-						ENCRYPT_ALGORITHM), email));
-			}
-		};
-
-		return method.run().intValue();
-	}
-
-	public int checkFolderReadAccess(final String folderPath) throws Exception
-	{
-		MethodWrapper<Integer> method = new MethodWrapper<Integer>()
-		{
-
-			@Override
-			public Integer process() throws Exception
-			{
-				return Integer.valueOf(m_remoteAccountService.checkFolderReadAccess(folderPath));
-			}
-		};
-
-		return method.run().intValue();
-	}
-
 	// refreshes connection after session timeout
 	private void refresh() throws Exception
 	{
@@ -429,54 +487,5 @@ public class DistroProvider implements IRemoteDistroProvider
 			login(m_lastLoginKey);
 		else
 			login(m_lastLoginUserName, m_lastLoginPassword);
-	}
-
-	public List<DistroVariant> getDistroVariants(final boolean draft, final Long stackId) throws Exception
-	{
-		MethodWrapper<List<DistroVariant>> method = new MethodWrapper<List<DistroVariant>>()
-		{
-
-			@Override
-			public List<DistroVariant> process() throws Exception
-			{
-				Map<String, String> properties = new HashMap<String, String>();
-				
-				properties.put(DistroVariant.TARGET_ARCH, TargetPlatform.getInstance().getArch());
-				properties.put(DistroVariant.TARGET_OS, TargetPlatform.getInstance().getOS());
-				properties.put(DistroVariant.TARGET_WS, TargetPlatform.getInstance().getWS());
-				properties.put(DistroVariant.TARGET_NL, TargetPlatform.getInstance().getNL());
-
-				return m_remoteDistroService.getDistroVariants(draft, stackId, properties);
-			}
-		};
-
-		return method.run();
-	}
-
-	public Distro getDistro(final boolean draft, final Long cspecId, final Long distroId) throws Exception
-	{
-		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
-		{
-
-			@Override
-			public Distro process() throws Exception
-			{
-				DistroContent distroContent = m_remoteDistroService.getDistro(draft, cspecId, distroId);
-				
-				if(distroContent == null || distroContent.getBomContent() == null || distroContent.getMspecContent() == null)
-					return null;
-				
-				IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-				BillOfMaterials bom = bomParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getBomContent()))); //$NON-NLS-1$
-				
-				IParser<MaterializationSpec> mspecParser = CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
-				MaterializationSpec mspec = mspecParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent()))); //$NON-NLS-1$
-				
-				return new Distro(bom, mspec);
-
-			}
-		};
-
-		return method.run();
 	}
 }

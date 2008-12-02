@@ -52,7 +52,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private static final String SRC_HTML_IMG_FOLDER = "html" + IPath.SEPARATOR + "img"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	private static final String IMG_FOLDER = "img"; //$NON-NLS-1$
-	
+
 	private static final String HTML_TEMPLATE = "componentinfo.page.template.html"; //$NON-NLS-1$
 
 	private static final String HTML_ENCODING = "UTF-8"; //$NON-NLS-1$
@@ -72,7 +72,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private static final String IMG_RSS = "rsslink.gif"; //$NON-NLS-1$
 
 	private static final String PROP_PROVIDER_LOGO_URL = "providerLogo"; //$NON-NLS-1$
-	
+
 	private static final String PROP_ARTIFACT_NAME = "artifactName"; //$NON-NLS-1$
 
 	private static final String PROP_CSPEC_NAME = "cspecName"; //$NON-NLS-1$
@@ -106,7 +106,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private static final String ATTR_HREF = "href"; //$NON-NLS-1$
 
 	private static final String ATTR_VALUE = "value"; //$NON-NLS-1$
-	
+
 	private static final String ATTR_SRC = "src"; //$NON-NLS-1$
 
 	private static final String ATTR_CLASS = "class"; //$NON-NLS-1$
@@ -114,11 +114,11 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private static final String ATTR_ALT = "alt"; //$NON-NLS-1$
 
 	private static final String ATTR_TITLE = "title"; //$NON-NLS-1$
-	
+
 	private static final String CELL_1 = "Cell-1"; //$NON-NLS-1$
-	
+
 	private static final String CELL_N = "Cell-n"; //$NON-NLS-1$
-	
+
 	private static final String NBSP_VALUE = "\u00A0"; //$NON-NLS-1$
 
 	private static final String CLASS_BLUE_LINK = "BlueLink"; //$NON-NLS-1$
@@ -193,17 +193,17 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 		FileUtils.copyFile(new ByteArrayInputStream(stream.toByteArray()), htmlDestDir, htmlFileName, m_nullMonitor);
 
 		if(!new File(imgDestDir, IMG_FOOTER).exists())
-			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_FOOTER), imgDestDir,
-					IMG_FOOTER, m_nullMonitor);
+			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_FOOTER),
+					imgDestDir, IMG_FOOTER, m_nullMonitor);
 		if(!new File(imgDestDir, IMG_FAVICON).exists())
-			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_FAVICON), imgDestDir,
-					IMG_FAVICON, m_nullMonitor);
+			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_FAVICON),
+					imgDestDir, IMG_FAVICON, m_nullMonitor);
 		if(!new File(imgDestDir, IMG_RSS).exists())
-			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_RSS), imgDestDir,
-					IMG_RSS, m_nullMonitor);
+			FileUtils.copyFile(getResource(IPath.SEPARATOR + SRC_HTML_IMG_FOLDER + IPath.SEPARATOR + IMG_RSS),
+					imgDestDir, IMG_RSS, m_nullMonitor);
 		if(!new File(imgDestDir, IMG_LOGO).exists())
-			FileUtils.copyFile(new URL(m_properties.get(PROP_PROVIDER_LOGO_URL)).openStream(), imgDestDir,
-					IMG_LOGO, m_nullMonitor);
+			FileUtils.copyFile(new URL(m_properties.get(PROP_PROVIDER_LOGO_URL)).openStream(), imgDestDir, IMG_LOGO,
+					m_nullMonitor);
 
 		return htmlURL;
 	}
@@ -211,22 +211,24 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	private Element addOutline(IOutline outline)
 	{
 		Element tr = null;
-		
+
 		if(outline.getType() == OutlineType.RSS || outline.getType() == OutlineType.ATOM)
 		{
 			tr = m_xml.createElement(TAG_TR);
-			
+
 			Element td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
 			td.setAttribute(ATTR_CLASS, CELL_1);
 			td.setTextContent(outline.getText());
-			
+
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
 			td.setAttribute(ATTR_CLASS, CELL_N);
 			String string = UiUtils.trimmedValue(outline.getDescription());
-			td.setTextContent(string == null ? NBSP_VALUE : string);
-			
+			td.setTextContent(string == null
+					? NBSP_VALUE
+					: string);
+
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
 			td.setAttribute(ATTR_CLASS, CELL_N);
@@ -239,7 +241,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 			a.appendChild(rssImg);
 			rssImg.setAttribute(ATTR_ALT, "rss icon"); //$NON-NLS-1$
 			rssImg.setAttribute(ATTR_SRC, IMG_FOLDER + IPath.SEPARATOR + IMG_RSS);
-			
+
 			td = m_xml.createElement(TAG_TD);
 			tr.appendChild(td);
 			td.setAttribute(ATTR_CLASS, CELL_N);

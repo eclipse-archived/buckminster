@@ -55,7 +55,8 @@ public class DonePage extends InstallWizardPage
 
 	protected DonePage()
 	{
-		super(MaterializationConstants.STEP_DONE, Messages.view_results, Messages.materialization_of_distro_completed, null);
+		super(MaterializationConstants.STEP_DONE, Messages.view_results, Messages.materialization_of_distro_completed,
+				null);
 		setPreviousPage(this);
 	}
 
@@ -121,7 +122,7 @@ public class DonePage extends InstallWizardPage
 		layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
 		exclamationComposite.setLayout(layout);
-		
+
 		label = new Label(exclamationComposite, SWT.NONE);
 		label.setImage(MaterializationUtils.getImage(ICON_EXCLAMATION));
 		layoutData = new GridData();
@@ -135,9 +136,10 @@ public class DonePage extends InstallWizardPage
 		layoutData.horizontalSpan = 2;
 		layoutData.heightHint = 5;
 		space.setLayoutData(layoutData);
-		
+
 		Link learnMore = new Link(pageComposite, SWT.NONE);
-		learnMore.setText(NLS.bind(Messages.click_link_here_to_learn_more_about_0, getInstallWizard().getServiceProvider())); 
+		learnMore.setText(NLS.bind(Messages.click_link_here_to_learn_more_about_0, getInstallWizard()
+				.getServiceProvider()));
 		layoutData = new GridData();
 		layoutData.horizontalSpan = 2;
 		learnMore.setLayoutData(layoutData);
@@ -174,22 +176,38 @@ public class DonePage extends InstallWizardPage
 		setControl(pageComposite);
 	}
 
+	@Override
+	public IWizardPage getNextPage()
+	{
+		return getInstallWizard().getBOM().getResolution().getOPML() == null
+				? null
+				: getInstallWizard().getInfoPage();
+	}
+
+	@Override
+	public String getOverrideCancelButtonText()
+	{
+		return Messages.done;
+	}
+
+	@Override
+	public int getOverrideDefaultButtonId()
+	{
+		return IDialogConstants.CANCEL_ID;
+	}
+
+	// Previous is disabled
+	@Override
+	public IWizardPage getPreviousPage()
+	{
+		return null;
+	}
+
 	public void update(MaterializationContext context)
 	{
 		MaterializationStatistics ms = context.getMaterializationStatistics();
 		showFailed(ms.getFailed().size());
 		m_componentListPanel.update(context);
-	}
-
-	private void showFailed(int failed)
-	{
-		if(failed > 0)
-			if(failed > 1)
-				setErrorMessage(NLS.bind(Messages.materialization_of_0_components_was_cancelled_check_the_list_below, Integer.valueOf(failed)));
-			else
-				setErrorMessage(Messages.materialization_of_1_component_was_cancelled_check_the_list_below);
-		else
-			setErrorMessage(null);
 	}
 
 	@Override
@@ -212,38 +230,22 @@ public class DonePage extends InstallWizardPage
 		layoutData = (GridData)m_heading4.getLayoutData();
 		layoutData.widthHint = m_heading4.getShell().getSize().x - 35 - 2 * HORIZONTAL_INDENT - 11;
 
-		m_heading5
-				.setText(Messages.make_sure_to_note_this_location_before_exiting_the_wizard);
+		m_heading5.setText(Messages.make_sure_to_note_this_location_before_exiting_the_wizard);
 		layoutData = (GridData)m_heading5.getLayoutData();
 		layoutData.widthHint = m_heading5.getShell().getSize().x - 50 - 2 * HORIZONTAL_INDENT - 11;
 
 		m_heading1.getParent().layout();
 	}
 
-	// Previous is disabled
-	@Override
-	public IWizardPage getPreviousPage()
+	private void showFailed(int failed)
 	{
-		return null;
-	}
-
-	@Override
-	public IWizardPage getNextPage()
-	{
-		return getInstallWizard().getBOM().getResolution().getOPML() == null
-				? null
-				: getInstallWizard().getInfoPage();
-	}
-
-	@Override
-	public String getOverrideCancelButtonText()
-	{
-		return Messages.done;
-	}
-
-	@Override
-	public int getOverrideDefaultButtonId()
-	{
-		return IDialogConstants.CANCEL_ID;
+		if(failed > 0)
+			if(failed > 1)
+				setErrorMessage(NLS.bind(Messages.materialization_of_0_components_was_cancelled_check_the_list_below,
+						Integer.valueOf(failed)));
+			else
+				setErrorMessage(Messages.materialization_of_1_component_was_cancelled_check_the_list_below);
+		else
+			setErrorMessage(null);
 	}
 }

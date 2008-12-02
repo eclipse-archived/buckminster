@@ -135,12 +135,50 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	static private final String ATTRIBUTE_URL = "url"; //$NON-NLS-1$
 
-	static private final String UNIVERSAL_ERROR_MESSAGE =
-		Messages.materialization_failures_typically_occur_because_a_distros_publisher_failed_to_keep_it_current_or_because_you_experienced_a_network_interruption_while_downloading;
+	static private final String UNIVERSAL_ERROR_MESSAGE = Messages.materialization_failures_typically_occur_because_a_distros_publisher_failed_to_keep_it_current_or_because_you_experienced_a_network_interruption_while_downloading;
 
 	private static MultiStatus createMultiStatusFromStatus(IStatus status)
 	{
 		return new MultiStatus(status.getPlugin(), status.getCode(), status.getMessage(), status.getException());
+	}
+
+	private static Map<String, String> getDefaultLocalProperties()
+	{
+		Map<String, String> defaultLocalProperties = new HashMap<String, String>();
+		defaultLocalProperties.put(LOCALPROP_ENABLE_TP_WIZARD, VALUE_TRUE);
+		return defaultLocalProperties;
+	}
+
+	private static IPath getLocalPropertiesLocation()
+	{
+		return ResourcesPlugin.getWorkspace().getRoot().getLocation().append(META_AREA).append(
+				MATERIALIZATOR_PROPERTIES);
+	}
+
+	private static BMProperties readLocalProperties()
+	{
+		BMProperties localProperties = null;
+		InputStream in = null;
+		try
+		{
+			in = new FileInputStream(getLocalPropertiesLocation().toFile());
+			localProperties = new BMProperties(in);
+		}
+		catch(FileNotFoundException e)
+		{
+			localProperties = new BMProperties(getDefaultLocalProperties());
+		}
+		catch(IOException e)
+		{
+			localProperties = new BMProperties(getDefaultLocalProperties());
+			e.printStackTrace();
+		}
+		finally
+		{
+			IOUtils.close(in);
+		}
+
+		return localProperties;
 	}
 
 	private Image m_brandingImage;
@@ -159,13 +197,13 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_artifactDocumentation;
 
+	// private Image m_materializationImage; // unused
+
 	private String m_windowTitle;
 
 	private Image m_windowImage;
 
 	private Image m_wizardImage;
-
-	// private Image m_materializationImage; // unused
 
 	private String m_helpURL;
 
@@ -194,11 +232,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_loginKeyUserName;
 
 	private boolean m_draft;
-	
+
 	private Long m_distroId;
 
 	private Distro m_distro;
-	
+
 	private Map<Long, Distro> m_retrievedDistroCache = new HashMap<Long, Distro>();
 
 	private Long m_cspecId;
@@ -258,7 +296,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private boolean m_materializationFinished = false;
 
 	private boolean m_problemInProperties = false;
-	
+
 	private List<DistroVariant> m_distroVariants;
 
 	public InstallWizard(Map<String, String> properties)
@@ -331,9 +369,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 	}
 
-	public IRemoteDistroProvider getDistroProvider()
+	public void enableWizardNextTime(boolean enable)
 	{
-		return m_distroProvider;
+		getLocalProperties().put(LOCALPROP_ENABLE_TP_WIZARD, enable
+				? VALUE_TRUE
+				: VALUE_FALSE);
 	}
 
 	public String getAuthenticatorCurrentUserName()
@@ -364,6 +404,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_authenticatorUserName;
 	}
 
+	public BillOfMaterials getBOM()
+	{
+		return m_cachedBOM;
+	}
+
 	public String getComponentInfoPageURL()
 	{
 		return m_infoPageURL;
@@ -374,9 +419,49 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_infoProvider;
 	}
 
+	public String getCSpecName()
+	{
+		return m_cspecName;
+	}
+
+	public String getCSpecType()
+	{
+		return m_cspecType;
+	}
+
+	public String getCSpecVersionString()
+	{
+		return m_cspecVersionString;
+	}
+
+	public String getCSpecVersionType()
+	{
+		return m_cspecVersionType;
+	}
+
+	public IRemoteDistroProvider getDistroProvider()
+	{
+		return m_distroProvider;
+	}
+
+	public String getEclipseDistroTools33UpdateSiteURL()
+	{
+		return m_eclipseDistroTools33UpdateSiteURL;
+	}
+
+	public String getEclipseDistroTools34UpdateSiteURL()
+	{
+		return m_eclipseDistroTools34UpdateSiteURL;
+	}
+
 	public String getErrorURL()
 	{
 		return m_errorURL;
+	}
+
+	public String getFolderPath()
+	{
+		return m_folderPath;
 	}
 
 	@Override
@@ -385,10 +470,25 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_helpURL;
 	}
 
+	public BMProperties getLocalProperties()
+	{
+		return m_localProperties;
+	}
+
+	public MaterializationSpecBuilder getMaterializationSpecBuilder()
+	{
+		return m_builder;
+	}
+
 	@Override
 	public String getMoreInfoURL()
 	{
 		return m_moreInfoURL;
+	}
+
+	public String getServiceProvider()
+	{
+		return m_serviceProvider;
 	}
 
 	@Override
@@ -401,6 +501,17 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public String getWindowTitle()
 	{
 		return m_windowTitle;
+	}
+
+	@Override
+	public Image getWizardImage()
+	{
+		return m_wizardImage;
+	}
+
+	public boolean isStartedFromIDE()
+	{
+		return m_startedFromIDE;
 	}
 
 	@Override
@@ -454,8 +565,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			MessageBox messageBox = new MessageBox(getContainer().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 			messageBox.setMessage(Messages.some_distro_dependencies_cannot_be_resolved
-					+ Messages.you_may_decide_to_exclude_the_unresolved_artifacts + "\n" //$NON-NLS-1$
-					+ Messages.however_excluding_an_artifact_may_result_in_a_configuration_that_will_no_longer_build + "\n\n" //$NON-NLS-1$
+					+ Messages.you_may_decide_to_exclude_the_unresolved_artifacts
+					+ "\n" //$NON-NLS-1$
+					+ Messages.however_excluding_an_artifact_may_result_in_a_configuration_that_will_no_longer_build
+					+ "\n\n" //$NON-NLS-1$
 					+ Messages.do_you_want_to_exclude_the_unresolved_artifacts);
 			messageBox.setText(Messages.warning);
 			if(messageBox.open() == SWT.YES)
@@ -497,7 +610,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				Job.getJobManager().setProgressProvider(null);
 				((MaterializationProgressProvider)m_operationPage.getProgressProvider()).setEnabled(false);
 			}
-			
+
 			m_materializationFinished = true;
 
 			if(getComponentInfoProvider() != null)
@@ -557,11 +670,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_loginKeyUserName = null;
 	}
 
-	public void setDistroProvider(IRemoteDistroProvider distroProvider)
-	{
-		m_distroProvider = distroProvider;
-	}
-
 	public void setAuthenticatorPassword(String password)
 	{
 		m_authenticatorPassword = password;
@@ -570,6 +678,11 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	public void setAuthenticatorUserName(String userName)
 	{
 		m_authenticatorUserName = userName;
+	}
+
+	public void setDistroProvider(IRemoteDistroProvider distroProvider)
+	{
+		m_distroProvider = distroProvider;
 	}
 
 	@Override
@@ -585,8 +698,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			addAdvancedPage(m_loginPage);
 
 			m_selectDistroPage = new SelectDistroPage();
-			addAdvancedPage(m_selectDistroPage);			
-			
+			addAdvancedPage(m_selectDistroPage);
+
 			m_downloadPage = new SimpleDownloadPage();
 			addAdvancedPage(m_downloadPage);
 
@@ -607,15 +720,40 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		}
 	}
 
-	public boolean isStartedFromIDE()
+	protected void saveLocalProperties()
 	{
-		return m_startedFromIDE;
+		OutputStream out = null;
+		try
+		{
+			File propFile = getLocalPropertiesLocation().toFile();
+			if(!propFile.exists())
+				propFile.createNewFile();
+			out = new FileOutputStream(propFile);
+			m_localProperties.store(out, null);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			IOUtils.close(out);
+		}
 	}
 
-	@Override
-	public Image getWizardImage()
+	int checkFolderReadAccess() throws Exception
 	{
-		return m_wizardImage;
+		if(m_loginRequired && (m_distroProvider == null || m_folderPath == null))
+			return IRemoteDistroProvider.FOLDER_ACCESS_FORBIDDEN;
+
+		// if authenticator is null - get smacked later (can only end up here without an
+		// authenticator if loginRequired is false anyway).
+		return m_distroProvider.checkFolderReadAccess(m_folderPath);
+	}
+
+	IWizardPage getAdvancedPage()
+	{
+		return m_advancedPage;
 	}
 
 	String getArtifactDescription()
@@ -638,11 +776,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_artifactVersion;
 	}
 
-	public BillOfMaterials getBOM()
-	{
-		return m_cachedBOM;
-	}
-
 	Image getBrandingImage()
 	{
 		return m_brandingImage;
@@ -653,41 +786,96 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_brandingString;
 	}
 
-	public String getCSpecName()
+	Distro getDistro()
 	{
-		return m_cspecName;
+		return m_distro;
 	}
 
-	public String getCSpecType()
+	Long getDistroId()
 	{
-		return m_cspecType;
+		return m_distroId;
 	}
 
-	public String getCSpecVersionString()
+	List<DistroVariant> getDistroVariants()
 	{
-		return m_cspecVersionString;
+		return m_distroVariants;
 	}
 
-	public String getCSpecVersionType()
+	IWizardPage getDownloadPage()
 	{
-		return m_cspecVersionType;
+		return m_downloadPage;
 	}
 
-	public String getEclipseDistroTools34UpdateSiteURL()
+	IWizardPage getFolderRestrictionPage()
 	{
-		return m_eclipseDistroTools34UpdateSiteURL;
+		return m_folderRestrictionPage;
 	}
 
-	public String getEclipseDistroTools33UpdateSiteURL()
+	IWizardPage getInfoPage()
 	{
-		return m_eclipseDistroTools33UpdateSiteURL;
+		return m_infoPage;
+	}
+
+	String getLearnMoreCloudfeedsURL()
+	{
+		return m_learnMoreCloudfeedsURL;
+	}
+
+	String getLearnMoreCloudreaderURL()
+	{
+		return m_learnMoreCloudreaderURL;
+	}
+
+	List<LearnMoreItem> getLearnMores()
+	{
+		return m_learnMores;
+	}
+
+	String getLearnMoreURL()
+	{
+		return m_learnMoreURL;
 	}
 
 	IWizardPage getLoginPage()
 	{
 		return m_loginPage;
 	}
-	
+
+	String[] getMaterializers()
+	{
+		return MATERIALIZERS;
+	}
+
+	Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
+	IWizardPage getSelectDistroPage()
+	{
+		return m_selectDistroPage;
+	}
+
+	String getServiceProviderHomePageURL()
+	{
+		return m_homePageURL;
+	}
+
+	void initMSpecTree()
+	{
+		m_advancedPage.initializeMSpecTree(getBOM());
+	}
+
+	boolean isDistroRetrieved()
+	{
+		return m_distro != null;
+	}
+
+	boolean isDraft()
+	{
+		return m_draft;
+	}
+
 	boolean isFolderRestrictionPageNeeded()
 	{
 		try
@@ -707,288 +895,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		{
 			// no information - try to get the artifact
 		}
-		
+
 		return false;
-	}
-	
-	IWizardPage getFolderRestrictionPage()
-	{
-		return m_folderRestrictionPage;
-	}
-	
-	IWizardPage getSelectDistroPage()
-	{
-		return m_selectDistroPage;
-	}
-	
-	IWizardPage getDownloadPage()
-	{
-		return m_downloadPage;
-	}
-	
-	IWizardPage getAdvancedPage()
-	{
-		return m_advancedPage;
-	}
-
-	IWizardPage getInfoPage()
-	{
-		return m_infoPage;
-	}
-
-	List<LearnMoreItem> getLearnMores()
-	{
-		return m_learnMores;
-	}
-
-	String getLearnMoreURL()
-	{
-		return m_learnMoreURL;
-	}
-
-	String getLearnMoreCloudfeedsURL()
-	{
-		return m_learnMoreCloudfeedsURL;
-	}
-
-	String getLearnMoreCloudreaderURL()
-	{
-		return m_learnMoreCloudreaderURL;
-	}
-
-	// // Seems to be never used
-	// Image getMaterializationImage()
-	// {
-	// return m_materializationImage;
-	// }
-	boolean isMaterializationFinished()
-	{
-		return m_materializationFinished;
-	}
-
-	public MaterializationSpecBuilder getMaterializationSpecBuilder()
-	{
-		return m_builder;
-	}
-
-	boolean isDraft()
-	{
-		return m_draft;
-	}
-	
-	Long getDistroId()
-	{
-		return m_distroId;
-	}
-	
-	Distro getDistro()
-	{
-		return m_distro;
-	}
-	
-	void setDistro(Distro distro)
-	{
-		m_distro = distro;
-	}
-	
-	List<DistroVariant> getDistroVariants()
-	{
-		return m_distroVariants;
-	}
-	
-	String[] getMaterializers()
-	{
-		return MATERIALIZERS;
-	}
-
-	Map<String, String> getProperties()
-	{
-		return m_properties;
-	}
-
-	public String getServiceProvider()
-	{
-		return m_serviceProvider;
-	}
-
-	String getServiceProviderHomePageURL()
-	{
-		return m_homePageURL;
-	}
-
-	public String getFolderPath()
-	{
-		return m_folderPath;
-	}
-
-	int checkFolderReadAccess() throws Exception
-	{
-		if(m_loginRequired && (m_distroProvider == null || m_folderPath == null))
-			return IRemoteDistroProvider.FOLDER_ACCESS_FORBIDDEN;
-
-		// if authenticator is null - get smacked later (can only end up here without an
-		// authenticator if loginRequired is false anyway).
-		return m_distroProvider.checkFolderReadAccess(m_folderPath);
-	}
-	
-	void retrieveStackInfo()
-	{
-		m_distroVariants = null;
-		DistroVariant distroVariant = null;
-		m_distro = null;
-		
-		if(m_distroId == null)
-		{
-			retrieveDistroVariants();
-			
-			if(m_distroVariants.size() == 1)
-			{
-				distroVariant = m_distroVariants.get(0);
-				
-				if(distroVariant.isBroken() || !distroVariant.isCompatible())
-					distroVariant = null;
-			}
-		}
-		
-		if(m_distroId != null || distroVariant != null)
-		{
-			Long distroId = m_distroId != null ? m_distroId : distroVariant.getDistroId(); 
-			retrieveDistro(distroId);
-		}
-	}
-	
-	void retrieveDistroVariants()
-	{
-		m_distroVariants = null;
-		try
-		{
-			getContainer().run(true, false, new IRunnableWithProgress()
-			{
-
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-				{
-					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-					monitor.subTask(Messages.retrieving_stack_variations);
-					
-					try
-					{
-						m_distroVariants = m_distroProvider.getDistroVariants(m_draft, m_cspecId);
-					}
-					catch(Exception e)
-					{
-						throw new InvocationTargetException(e);
-					}
-					
-					monitor.done();
-				}
-			});
-		}
-		catch(Exception e)
-		{
-			Throwable originalException = e;
-			
-			if(e instanceof InvocationTargetException && e.getCause() != null)
-				originalException = e.getCause();
-				
-			throw new JNLPException(Messages.cannot_read_stack_variations, ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
-		}
-	}
-	
-	void retrieveDistro(final Long distroId)
-	{
-		m_distro = null;
-		m_cachedBOM = null;
-		m_cachedBOMURL = null;
-
-		if(distroId == null)
-			return;
-
-		m_distro = m_retrievedDistroCache.get(distroId);
-
-		if(m_distro == null)
-		{
-			try
-			{
-				getContainer().run(true, false, new IRunnableWithProgress()
-				{
-
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-					{
-						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-						monitor.subTask(Messages.retrieving_distro_specification);
-						
-						try
-						{
-							m_distro = m_distroProvider.getDistro(m_draft, m_cspecId, distroId);
-						}
-						catch(Exception e)
-						{
-							throw new InvocationTargetException(e);
-						}
-						m_retrievedDistroCache.put(distroId, m_distro);
-						
-						m_builder.initFrom(m_distro.getMspec());
-						
-						// extra properties
-						m_builder.getProperties().put("distro.name", m_artifactName); //$NON-NLS-1$
-						
-						IPath location = m_builder.getInstallLocation() == null ?
-											Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName)) :
-											MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
-						m_builder.setInstallLocation(location);
-						
-						m_cachedBOM = m_distro.getBom();
-						saveBOMLocally();
-												
-						initMSpecTree();
-						
-						monitor.done();
-					}
-				});
-			}
-			catch(Exception e)
-			{
-				if(e instanceof JNLPException)
-					throw (JNLPException)e;
-				
-				Throwable originalException = e;
-				
-				if(e instanceof InvocationTargetException && e.getCause() != null)
-					originalException = e.getCause();
-
-				throw new JNLPException(Messages.cannot_read_distro_specification, ERROR_CODE_REMOTE_IO_EXCEPTION, originalException);
-			}
-		}
-	}
-	
-	private void saveBOMLocally()
-	{
-		File cachedBOMFile;
-		try
-		{
-			cachedBOMFile = File.createTempFile("jnlp", ".bom"); //$NON-NLS-1$ //$NON-NLS-2$
-			cachedBOMFile.deleteOnExit();
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException(Messages.cannot_create_a_temp_file, ERROR_CODE_FILE_IO_EXCEPTION, e);
-		}
-
-		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
-
-		try
-		{
-			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw new JNLPException(Messages.cannot_create_URL_link_to_a_temp_file, ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
-		}
-	}
-	
-	void initMSpecTree()
-	{
-		m_advancedPage.initializeMSpecTree(getBOM());
 	}
 
 	boolean isLoggedIn()
@@ -1017,14 +925,14 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_loginRequired;
 	}
 
-	boolean isStackInfoRetrieved()
+	// // Seems to be never used
+	// Image getMaterializationImage()
+	// {
+	// return m_materializationImage;
+	// }
+	boolean isMaterializationFinished()
 	{
-		return m_distroVariants != null;
-	}
-
-	boolean isDistroRetrieved()
-	{
-		return m_distro != null;
+		return m_materializationFinished;
 	}
 
 	boolean isMaterializerInitialized()
@@ -1037,10 +945,154 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_problemInProperties;
 	}
 
+	boolean isStackInfoRetrieved()
+	{
+		return m_distroVariants != null;
+	}
+
 	void resetMaterializerInitialization()
 	{
 		m_distroVariants = null;
 		m_cachedBOMURL = null;
+	}
+
+	void retrieveDistro(final Long distroId)
+	{
+		m_distro = null;
+		m_cachedBOM = null;
+		m_cachedBOMURL = null;
+
+		if(distroId == null)
+			return;
+
+		m_distro = m_retrievedDistroCache.get(distroId);
+
+		if(m_distro == null)
+		{
+			try
+			{
+				getContainer().run(true, false, new IRunnableWithProgress()
+				{
+
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+					{
+						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+						monitor.subTask(Messages.retrieving_distro_specification);
+
+						try
+						{
+							m_distro = m_distroProvider.getDistro(m_draft, m_cspecId, distroId);
+						}
+						catch(Exception e)
+						{
+							throw new InvocationTargetException(e);
+						}
+						m_retrievedDistroCache.put(distroId, m_distro);
+
+						m_builder.initFrom(m_distro.getMspec());
+
+						// extra properties
+						m_builder.getProperties().put("distro.name", m_artifactName); //$NON-NLS-1$
+
+						IPath location = m_builder.getInstallLocation() == null
+								? Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName))
+								: MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
+						m_builder.setInstallLocation(location);
+
+						m_cachedBOM = m_distro.getBom();
+						saveBOMLocally();
+
+						initMSpecTree();
+
+						monitor.done();
+					}
+				});
+			}
+			catch(Exception e)
+			{
+				if(e instanceof JNLPException)
+					throw (JNLPException)e;
+
+				Throwable originalException = e;
+
+				if(e instanceof InvocationTargetException && e.getCause() != null)
+					originalException = e.getCause();
+
+				throw new JNLPException(Messages.cannot_read_distro_specification, ERROR_CODE_REMOTE_IO_EXCEPTION,
+						originalException);
+			}
+		}
+	}
+
+	void retrieveDistroVariants()
+	{
+		m_distroVariants = null;
+		try
+		{
+			getContainer().run(true, false, new IRunnableWithProgress()
+			{
+
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+				{
+					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+					monitor.subTask(Messages.retrieving_stack_variations);
+
+					try
+					{
+						m_distroVariants = m_distroProvider.getDistroVariants(m_draft, m_cspecId);
+					}
+					catch(Exception e)
+					{
+						throw new InvocationTargetException(e);
+					}
+
+					monitor.done();
+				}
+			});
+		}
+		catch(Exception e)
+		{
+			Throwable originalException = e;
+
+			if(e instanceof InvocationTargetException && e.getCause() != null)
+				originalException = e.getCause();
+
+			throw new JNLPException(Messages.cannot_read_stack_variations, ERROR_CODE_REMOTE_IO_EXCEPTION,
+					originalException);
+		}
+	}
+
+	void retrieveStackInfo()
+	{
+		m_distroVariants = null;
+		DistroVariant distroVariant = null;
+		m_distro = null;
+
+		if(m_distroId == null)
+		{
+			retrieveDistroVariants();
+
+			if(m_distroVariants.size() == 1)
+			{
+				distroVariant = m_distroVariants.get(0);
+
+				if(distroVariant.isBroken() || !distroVariant.isCompatible())
+					distroVariant = null;
+			}
+		}
+
+		if(m_distroId != null || distroVariant != null)
+		{
+			Long distroId = m_distroId != null
+					? m_distroId
+					: distroVariant.getDistroId();
+			retrieveDistro(distroId);
+		}
+	}
+
+	void setDistro(Distro distro)
+	{
+		m_distro = distro;
 	}
 
 	void setLoginPageRequested(boolean loginPageRequested)
@@ -1051,69 +1103,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	void setUnresolvedNodeHandler(IUnresolvedNodeHandler unresolvedNodeHandler)
 	{
 		m_unresolvedNodeHandler = unresolvedNodeHandler;
-	}
-
-	public BMProperties getLocalProperties()
-	{
-		return m_localProperties;
-	}
-
-	public void enableWizardNextTime(boolean enable)
-	{
-		getLocalProperties().put(LOCALPROP_ENABLE_TP_WIZARD, enable
-				? VALUE_TRUE
-				: VALUE_FALSE);
-	}
-
-	private IRemoteDistroProvider createDistroProvider()
-	{
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = er.getConfigurationElementsFor(AUTHENTICATION_EXTPOINT);
-		IRemoteDistroProvider authenticator = null;
-
-		try
-		{
-			if(elems.length != 1)
-			{
-				throw new JNLPException(Messages.distro_provider_is_not_available, ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
-			}
-
-			try
-			{
-				authenticator = (IRemoteDistroProvider)elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
-				authenticator.initialize(m_basePathURL);
-
-				if(m_loginKey != null)
-				{
-					int result = authenticator.login(m_loginKey);
-
-					if(result == IRemoteDistroProvider.LOGIN_UNKNOW_KEY)
-						m_loginKey = null;
-
-					if(result == IRemoteDistroProvider.LOGIN_OK)
-						m_loginKeyUserName = authenticator.getCurrenlyLoggedUserName();
-					else
-						m_loginKeyUserName = null;
-				}
-			}
-			catch(Throwable e)
-			{
-				throw new JNLPException(Messages.cannot_connect_to_the_remote_server, ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
-			}
-		}
-		catch(JNLPException e)
-		{
-			m_problemInProperties = true;
-
-			IStatus status = BuckminsterException.wrap(e.getCause() != null
-					? e.getCause()
-					: e).getStatus();
-			CorePlugin.logWarningsAndErrors(status);
-			HelpLinkErrorDialog.openError(null, null, ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE, m_errorURL,
-					e.getErrorCode(), status);
-		}
-
-		return authenticator;
 	}
 
 	private IComponentInfoProvider createComponentInfoProvider()
@@ -1151,6 +1140,59 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return infoProvider;
 	}
 
+	private IRemoteDistroProvider createDistroProvider()
+	{
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = er.getConfigurationElementsFor(AUTHENTICATION_EXTPOINT);
+		IRemoteDistroProvider authenticator = null;
+
+		try
+		{
+			if(elems.length != 1)
+			{
+				throw new JNLPException(Messages.distro_provider_is_not_available,
+						ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION);
+			}
+
+			try
+			{
+				authenticator = (IRemoteDistroProvider)elems[0].createExecutableExtension(ATTRIBUTE_CLASS);
+				authenticator.initialize(m_basePathURL);
+
+				if(m_loginKey != null)
+				{
+					int result = authenticator.login(m_loginKey);
+
+					if(result == IRemoteDistroProvider.LOGIN_UNKNOW_KEY)
+						m_loginKey = null;
+
+					if(result == IRemoteDistroProvider.LOGIN_OK)
+						m_loginKeyUserName = authenticator.getCurrenlyLoggedUserName();
+					else
+						m_loginKeyUserName = null;
+				}
+			}
+			catch(Throwable e)
+			{
+				throw new JNLPException(Messages.cannot_connect_to_the_remote_server,
+						ERROR_CODE_AUTHENTICATOR_EXCEPTION, e);
+			}
+		}
+		catch(JNLPException e)
+		{
+			m_problemInProperties = true;
+
+			IStatus status = BuckminsterException.wrap(e.getCause() != null
+					? e.getCause()
+					: e).getStatus();
+			CorePlugin.logWarningsAndErrors(status);
+			HelpLinkErrorDialog.openError(null, null, ERROR_WINDOW_TITLE, e.getMessage(), ERROR_HELP_TITLE, m_errorURL,
+					e.getErrorCode(), status);
+		}
+
+		return authenticator;
+	}
+
 	private List<LearnMoreItem> createLearnMores()
 	{
 		List<LearnMoreItem> learnMores = new ArrayList<LearnMoreItem>();
@@ -1163,7 +1205,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		if(m_homePageURL != null)
 		{
-			learnMores.add(new LearnMoreItem(NLS.bind(Messages.search_your_components_at_0, m_serviceProvider), m_homePageURL));
+			learnMores.add(new LearnMoreItem(NLS.bind(Messages.search_your_components_at_0, m_serviceProvider),
+					m_homePageURL));
 		}
 
 		// Learn more items from extension
@@ -1183,7 +1226,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	 * function creates a new image that is 64 pixels high - adds to the original image transparent stripe
 	 * 
 	 * @param origImage
-	 * 		original image
+	 *            original image
 	 * @return new image
 	 */
 	private Image getNormalizedWizardImage(Image origImage)
@@ -1422,7 +1465,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
 		m_draft = VALUE_TRUE.equalsIgnoreCase(tmp);
-		
+
 		tmp = properties.get(PROP_DISTRO_ID);
 		if(tmp != null && tmp.length() > 0)
 		{
@@ -1435,7 +1478,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				m_distroId = null;
 			}
 		}
-		
+
 		tmp = properties.get(PROP_CSPEC_ID);
 		if(tmp == null)
 		{
@@ -1443,7 +1486,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
-		
+
 		try
 		{
 			m_cspecId = new Long(tmp);
@@ -1528,71 +1571,37 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_loginKey = properties.get(PROP_LOGIN_KEY);
 	}
 
+	private void saveBOMLocally()
+	{
+		File cachedBOMFile;
+		try
+		{
+			cachedBOMFile = File.createTempFile("jnlp", ".bom"); //$NON-NLS-1$ //$NON-NLS-2$
+			cachedBOMFile.deleteOnExit();
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException(Messages.cannot_create_a_temp_file, ERROR_CODE_FILE_IO_EXCEPTION, e);
+		}
+
+		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
+
+		try
+		{
+			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw new JNLPException(Messages.cannot_create_URL_link_to_a_temp_file,
+					ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+		}
+	}
+
 	private void showOriginalPage(IWizardPage originalPage)
 	{
 		WizardPage originalPreviousPage = (WizardPage)originalPage.getPreviousPage();
 		getContainer().showPage(originalPage);
 		originalPage.setPreviousPage(originalPreviousPage);
-	}
-
-	private static BMProperties readLocalProperties()
-	{
-		BMProperties localProperties = null;
-		InputStream in = null;
-		try
-		{
-			in = new FileInputStream(getLocalPropertiesLocation().toFile());
-			localProperties = new BMProperties(in);
-		}
-		catch(FileNotFoundException e)
-		{
-			localProperties = new BMProperties(getDefaultLocalProperties());
-		}
-		catch(IOException e)
-		{
-			localProperties = new BMProperties(getDefaultLocalProperties());
-			e.printStackTrace();
-		}
-		finally
-		{
-			IOUtils.close(in);
-		}
-
-		return localProperties;
-	}
-
-	private static Map<String, String> getDefaultLocalProperties()
-	{
-		Map<String, String> defaultLocalProperties = new HashMap<String, String>();
-		defaultLocalProperties.put(LOCALPROP_ENABLE_TP_WIZARD, VALUE_TRUE);
-		return defaultLocalProperties;
-	}
-
-	protected void saveLocalProperties()
-	{
-		OutputStream out = null;
-		try
-		{
-			File propFile = getLocalPropertiesLocation().toFile();
-			if(!propFile.exists())
-				propFile.createNewFile();
-			out = new FileOutputStream(propFile);
-			m_localProperties.store(out, null);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			IOUtils.close(out);
-		}
-	}
-
-	private static IPath getLocalPropertiesLocation()
-	{
-		return ResourcesPlugin.getWorkspace().getRoot().getLocation().append(META_AREA).append(
-				MATERIALIZATOR_PROPERTIES);
 	}
 }
 

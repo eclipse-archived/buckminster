@@ -15,11 +15,11 @@ import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public interface IDistroService
 {
-	List<DistroVariant> getDistroVariants(boolean draft, Long stackId, Map<String, String> platformProperties);
-	
 	DistroContent getDistro(boolean draft, Long cspecId, Long distroId);
+
+	List<DistroVariant> getDistroVariants(boolean draft, Long stackId, Map<String, String> platformProperties);
 }

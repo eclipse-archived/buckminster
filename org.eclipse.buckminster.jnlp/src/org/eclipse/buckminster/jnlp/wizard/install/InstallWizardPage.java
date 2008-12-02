@@ -27,13 +27,13 @@ abstract class InstallWizardPage extends AdvancedWizardPage
 		super(pageName, title, message, titleImage);
 	}
 
-	MaterializationSpecBuilder getMaterializationSpecBuilder()
-	{
-		return getInstallWizard().getMaterializationSpecBuilder();
-	}
-	
 	InstallWizard getInstallWizard()
 	{
 		return (InstallWizard)getAdvancedWizard();
+	}
+
+	MaterializationSpecBuilder getMaterializationSpecBuilder()
+	{
+		return getInstallWizard().getMaterializationSpecBuilder();
 	}
 }

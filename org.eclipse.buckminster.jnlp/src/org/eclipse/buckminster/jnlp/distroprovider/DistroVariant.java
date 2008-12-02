@@ -29,8 +29,8 @@ public class DistroVariant
 
 	public static final String RELEASE = "org.eclipse.release"; //$NON-NLS-1$
 
-	public static final String[] SUPPORTED_PROPERTIES = {TARGET_OS, TARGET_WS, TARGET_ARCH, TARGET_NL, RELEASE};
-	
+	public static final String[] SUPPORTED_PROPERTIES = { TARGET_OS, TARGET_WS, TARGET_ARCH, TARGET_NL, RELEASE };
+
 	private Long m_distroId;
 
 	private boolean m_broken;
@@ -78,32 +78,32 @@ public class DistroVariant
 	public String getPlatformString()
 	{
 		List<String> platform = new ArrayList<String>();
-		
+
 		platform.add(m_arch);
 		platform.add(m_os);
 		platform.add(m_ws);
 		platform.add(m_release);
 		platform.add(m_nl);
-		
+
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
-		
-		for(String item: platform)
+
+		for(String item : platform)
 		{
 			if(item == null)
 				continue;
-			
+
 			if(first)
 				first = false;
 			else
 				sb.append(',');
-			
+
 			sb.append(item);
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	public String getRelease()
 	{
 		return m_release;
@@ -148,7 +148,7 @@ public class DistroVariant
 	{
 		return m_arch == null && m_os == null && m_ws == null && m_nl == null && m_release == null;
 	}
-	
+
 	public boolean isWSCompatible()
 	{
 		return m_wsCompatible;

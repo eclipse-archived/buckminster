@@ -26,12 +26,12 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class LoginPanel
 {
 	private Button m_currentUserButton;
-	
+
 	private Label m_currentUserLabelSeparator;
 
 	private Button m_userButton;
@@ -63,88 +63,94 @@ public class LoginPanel
 	private Text m_emailText;
 
 	private String m_loginKeyUserName;
-	
+
 	private String m_initUserName;
-	
+
 	private String m_initPassword;
-	
+
 	public LoginPanel(String loginKeyUserName)
 	{
 		this(loginKeyUserName, null, null);
 	}
-	
+
 	public LoginPanel(String loginKeyUserName, String initUserName, String initPassword)
 	{
 		m_loginKeyUserName = loginKeyUserName;
-		m_initUserName = initUserName == null ? "" : initUserName; //$NON-NLS-1$
-		m_initPassword = initPassword == null ? "" : initPassword; //$NON-NLS-1$
-	}
-	
-	public boolean isCurrentUser()
-	{
-		if(m_currentUserButton.getSelection())
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isAlreadyUser()
-	{
-		if(m_userButton.getSelection())
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isNewUser()
-	{
-		if(m_registerButton.getSelection())
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public String getLogin()
-	{
-		if(m_userButton.getSelection())
-		{
-			return m_login1Text.getText();
-		}
-		return m_login2Text.getText();
+		m_initUserName = initUserName == null
+				? "" : initUserName; //$NON-NLS-1$
+		m_initPassword = initPassword == null
+				? "" : initPassword; //$NON-NLS-1$
 	}
 
-	public String getPassword()
+	public String checkCompleteLoginFields()
 	{
-		if(m_userButton.getSelection())
-		{
-			return m_password1Text.getText();
-		}
-		return m_password2Text.getText();
-	}
-
-	public String getEmail()
-	{
-		if(m_userButton.getSelection())
-		{
+		if(isCurrentUser())
 			return null;
+
+		if(isAlreadyUser())
+		{
+			if(m_login1Text.getText().length() == 0)
+			{
+				return Messages.login_cannot_be_empty;
+			}
+			if(m_login1Text.getText().length() < 3)
+			{
+				return Messages.login_is_too_short_length_must_be_between_3_and_25;
+			}
+			if(m_password1Text.getText().length() == 0)
+			{
+				return Messages.password_cannot_be_empty;
+			}
+			if(m_password1Text.getText().length() < 4)
+			{
+				return Messages.password_is_too_short_length_must_be_between_4_and_25;
+			}
 		}
-		return m_emailText.getText();
+		else
+		{
+			if(m_login2Text.getText().length() == 0)
+			{
+				return Messages.login_cannot_be_empty;
+			}
+			if(m_login2Text.getText().length() < 3)
+			{
+				return Messages.login_is_too_short_length_must_be_between_3_and_25;
+			}
+			if(m_password2Text.getText().length() == 0)
+			{
+				return Messages.password_cannot_be_empty;
+			}
+			if(m_password2Text.getText().length() < 4)
+			{
+				return Messages.password_is_too_short_length_must_be_between_4_and_25;
+			}
+			if(m_retypePasswordText.getText().length() == 0)
+			{
+				return Messages.retype_password_cannot_be_empty;
+			}
+			if(!m_password2Text.getText().equals(m_retypePasswordText.getText()))
+			{
+				return Messages.passwords_are_different;
+			}
+			if(m_emailText.getText().length() == 0)
+			{
+				return Messages.email_cannot_be_empty;
+			}
+		}
+
+		return null;
 	}
 
-	public Control createControl(
-			Composite parent,
-			ModifyListener fieldsListener,
-			SelectionListener fieldsSwitchListener)
+	public Control createControl(Composite parent, ModifyListener fieldsListener, SelectionListener fieldsSwitchListener)
 	{
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
 		pageComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		m_currentUserButton = new Button(pageComposite, SWT.RADIO);
-		m_currentUserButton.setText(m_loginKeyUserName == null ? Messages.current_user : NLS.bind(Messages.current_user_user_in_brackets, m_loginKeyUserName)); 
+		m_currentUserButton.setText(m_loginKeyUserName == null
+				? Messages.current_user
+				: NLS.bind(Messages.current_user_user_in_brackets, m_loginKeyUserName));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_currentUserButton.setLayoutData(gridData);
@@ -170,7 +176,7 @@ public class LoginPanel
 		gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		m_userButton.setLayoutData(gridData);
-		
+
 		m_userButton.addSelectionListener(fieldsSwitchListener);
 		m_userButton.addSelectionListener(new SelectionAdapter()
 		{
@@ -210,7 +216,7 @@ public class LoginPanel
 		gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		m_registerButton.setLayoutData(gridData);
-		
+
 		m_registerButton.addSelectionListener(fieldsSwitchListener);
 		m_registerButton.addSelectionListener(new SelectionAdapter()
 		{
@@ -267,19 +273,73 @@ public class LoginPanel
 		m_password2Text.addModifyListener(fieldsListener);
 		m_retypePasswordText.addModifyListener(fieldsListener);
 		m_emailText.addModifyListener(fieldsListener);
-		
+
 		initRadio();
-		
+
 		return pageComposite;
+	}
+
+	public String getEmail()
+	{
+		if(m_userButton.getSelection())
+		{
+			return null;
+		}
+		return m_emailText.getText();
+	}
+
+	public String getLogin()
+	{
+		if(m_userButton.getSelection())
+		{
+			return m_login1Text.getText();
+		}
+		return m_login2Text.getText();
+	}
+
+	public String getPassword()
+	{
+		if(m_userButton.getSelection())
+		{
+			return m_password1Text.getText();
+		}
+		return m_password2Text.getText();
+	}
+
+	public boolean isAlreadyUser()
+	{
+		if(m_userButton.getSelection())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isCurrentUser()
+	{
+		if(m_currentUserButton.getSelection())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isNewUser()
+	{
+		if(m_registerButton.getSelection())
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public void setCurrentUserVisible(boolean visible)
 	{
 		if(m_currentUserButton.getVisible() == visible)
 			return;
-		
+
 		m_currentUserButton.setVisible(visible);
-		
+
 		// moves invisible m_currentUserButton to the bottom, visible button is displayed at the top
 		if(visible)
 			m_currentUserButton.moveAbove(null);
@@ -288,21 +348,10 @@ public class LoginPanel
 
 		m_currentUserLabelSeparator.moveBelow(m_currentUserButton);
 		m_currentUserButton.getParent().layout(true);
-		
+
 		initRadio();
 	}
-	
-	private void initRadio()
-	{
-		boolean currentVisible = m_currentUserButton.getVisible();
-		
-		m_currentUserButton.setSelection(currentVisible);
-		m_userButton.setSelection(!currentVisible);
-		m_registerButton.setSelection(false);
-		enableLogin1Fields(!currentVisible);
-		enableLogin2Fields(false);
-	}
-	
+
 	private void enableLogin1Fields(boolean enabled)
 	{
 		m_login1Label.setEnabled(enabled);
@@ -323,62 +372,14 @@ public class LoginPanel
 		m_emailText.setEnabled(enabled);
 	}
 
-	public String checkCompleteLoginFields()
+	private void initRadio()
 	{
-		if(isCurrentUser())
-			return null;
-		
-		if(isAlreadyUser())
-		{
-			if(m_login1Text.getText().length() == 0)
-			{
-				return Messages.login_cannot_be_empty;
-			}
-			if(m_login1Text.getText().length() < 3)
-			{
-				return Messages.login_is_too_short_length_must_be_between_3_and_25;
-			}
-			if(m_password1Text.getText().length() == 0)
-			{
-				return Messages.password_cannot_be_empty;
-			}
-			if(m_password1Text.getText().length() < 4)
-			{
-				return Messages.password_is_too_short_length_must_be_between_4_and_25;
-			}
-		}
-		else
-		{
-			if(m_login2Text.getText().length() == 0)
-			{
-				return Messages.login_cannot_be_empty;
-			}
-			if(m_login2Text.getText().length() < 3)
-			{
-				return Messages.login_is_too_short_length_must_be_between_3_and_25;
-			}
-			if(m_password2Text.getText().length() == 0)
-			{
-				return Messages.password_cannot_be_empty;
-			}
-			if(m_password2Text.getText().length() < 4)
-			{
-				return Messages.password_is_too_short_length_must_be_between_4_and_25;
-			}
-			if(m_retypePasswordText.getText().length() == 0)
-			{
-				return Messages.retype_password_cannot_be_empty;
-			}
-			if(!m_password2Text.getText().equals(m_retypePasswordText.getText()))
-			{
-				return Messages.passwords_are_different;
-			}
-			if(m_emailText.getText().length() == 0)
-			{
-				return Messages.email_cannot_be_empty;
-			}
-		}
-		
-		return null;
+		boolean currentVisible = m_currentUserButton.getVisible();
+
+		m_currentUserButton.setSelection(currentVisible);
+		m_userButton.setSelection(!currentVisible);
+		m_registerButton.setSelection(false);
+		enableLogin1Fields(!currentVisible);
+		enableLogin2Fields(false);
 	}
 }

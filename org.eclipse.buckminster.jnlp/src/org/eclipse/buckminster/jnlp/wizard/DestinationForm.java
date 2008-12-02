@@ -43,7 +43,8 @@ public class DestinationForm
 	private final static String[] DESTINATION_TYPES = { IMaterializer.FILE_SYSTEM, IMaterializer.WORKSPACE,
 			IMaterializer.TARGET_PLATFORM };
 
-	private final static String[] DESTINATION_TYPES_TO_SHOW = { Messages.filesystem, Messages.workspace, Messages.eclipse_installation };
+	private final static String[] DESTINATION_TYPES_TO_SHOW = { Messages.filesystem, Messages.workspace,
+			Messages.eclipse_installation };
 
 	private static final String TOOL_TIP_TYPE = Messages.destination_type_for_materialization_filesystem_workspace_eclipse_installation;
 
@@ -288,24 +289,26 @@ public class DestinationForm
 		}
 	}
 
-	private void setEnabledConflictResolution()
-	{
-		if(m_conflictCombo != null && m_destTypeCombo != null)
-			if(IMaterializer.TARGET_PLATFORM.equals(m_destTypeCombo.getData(String.valueOf(m_destTypeCombo
-					.getSelectionIndex()))))
-			{
-				m_conflictCombo.setEnabled(false);
-				m_conflictCombo.select(m_conflictResolutions.indexOf(ConflictResolution.KEEP));
-			}
-			else
-			{
-				m_conflictCombo.setEnabled(true);
-			}
-	}
-
 	public void setBuilder(MaterializationDirectiveBuilder builder)
 	{
 		m_builder = builder;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		if(m_destTypeCombo != null)
+			m_destTypeCombo.setEnabled(enabled);
+
+		m_locationText.setEnabled(enabled);
+
+		if(m_browseButton != null)
+			m_browseButton.setEnabled(enabled);
+
+		if(m_conflictCombo != null)
+			m_conflictCombo.setEnabled(enabled);
+
+		if(enabled)
+			setEnabledConflictResolution();
 	}
 
 	public void update()
@@ -318,7 +321,7 @@ public class DestinationForm
 
 			if(defaultIdx < 0)
 				defaultIdx = m_defaultDestinationType;
-			
+
 			m_destTypeCombo.select(defaultIdx);
 			m_builder.setMaterializerID(m_destinationTypes.get(defaultIdx));
 		}
@@ -339,7 +342,7 @@ public class DestinationForm
 		if(m_conflictCombo != null)
 		{
 			// we don't support ConflictResolution.UPDATE
-			
+
 			m_conflictCombo.select(m_builder.getConflictResolution() == null
 					? m_defaultConflictResolution
 					: m_conflictResolutions.indexOf(m_builder.getConflictResolution() == ConflictResolution.UPDATE
@@ -350,20 +353,18 @@ public class DestinationForm
 		setEnabledConflictResolution();
 	}
 
-	public void setEnabled(boolean enabled)
+	private void setEnabledConflictResolution()
 	{
-		if(m_destTypeCombo != null)
-			m_destTypeCombo.setEnabled(enabled);
-
-		m_locationText.setEnabled(enabled);
-
-		if(m_browseButton != null)
-			m_browseButton.setEnabled(enabled);
-
-		if(m_conflictCombo != null)
-			m_conflictCombo.setEnabled(enabled);
-
-		if(enabled)
-			setEnabledConflictResolution();
+		if(m_conflictCombo != null && m_destTypeCombo != null)
+			if(IMaterializer.TARGET_PLATFORM.equals(m_destTypeCombo.getData(String.valueOf(m_destTypeCombo
+					.getSelectionIndex()))))
+			{
+				m_conflictCombo.setEnabled(false);
+				m_conflictCombo.select(m_conflictResolutions.indexOf(ConflictResolution.KEEP));
+			}
+			else
+			{
+				m_conflictCombo.setEnabled(true);
+			}
 	}
 }

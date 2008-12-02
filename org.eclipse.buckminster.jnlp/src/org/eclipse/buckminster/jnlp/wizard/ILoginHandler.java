@@ -17,23 +17,23 @@ import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
  */
 public interface ILoginHandler
 {
+	String getAuthenticatorCurrentUserName();
+
 	String getAuthenticatorLoginKey();
-	
-	void removeAuthenticatorLoginKey();
 
 	String getAuthenticatorLoginKeyUserName();
-	
-	String getAuthenticatorCurrentUserName();
-	
-	String getAuthenticatorUserName();
 
-	void setAuthenticatorUserName(String userName);
-	
 	String getAuthenticatorPassword();
 
-	void setAuthenticatorPassword(String password);
-	
+	String getAuthenticatorUserName();
+
 	IRemoteDistroProvider getDistroProvider();
-	
+
+	void removeAuthenticatorLoginKey();
+
+	void setAuthenticatorPassword(String password);
+
+	void setAuthenticatorUserName(String userName);
+
 	void setDistroProvider(IRemoteDistroProvider authenticator);
 }

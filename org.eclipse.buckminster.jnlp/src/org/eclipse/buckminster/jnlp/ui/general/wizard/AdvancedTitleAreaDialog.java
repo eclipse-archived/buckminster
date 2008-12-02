@@ -20,24 +20,24 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public abstract class AdvancedTitleAreaDialog extends TitleAreaDialog
 {
 	private final Image m_windowImage;
-	
+
 	private final String m_windowTitle;
-	
+
 	private final Image m_wizardImage;
 
 	private final String m_wizardTitle;
-	
+
 	private final String m_wizardMessage;
-	
+
 	private final String m_helpURL;
 
-	public AdvancedTitleAreaDialog(
-			Shell parentShell, Image windowImage, String windowTitle, Image wizardImage, String wizardTitle, String wizardMessage, String helpURL)
+	public AdvancedTitleAreaDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage,
+			String wizardTitle, String wizardMessage, String helpURL)
 	{
 		super(parentShell);
 		m_windowImage = windowImage;
@@ -47,40 +47,31 @@ public abstract class AdvancedTitleAreaDialog extends TitleAreaDialog
 		m_wizardMessage = wizardMessage;
 		m_helpURL = helpURL;
 	}
-	
+
 	@Override
 	public boolean isHelpAvailable()
-    {
-    	return m_helpURL != null;	    	
-    }
-	
-    @Override
-	protected Control createHelpControl(Composite parent)
 	{
-		Control helpControl = super.createHelpControl(parent);
-		helpControl.addHelpListener(new HelpListener(){
-
-			public void helpRequested(HelpEvent e)
-			{
-				if(m_helpURL != null)
-				{
-					Program.launch(m_helpURL);
-				}
-			}});
-		
-		return helpControl;
+		return m_helpURL != null;
 	}
-	
+
 	@Override
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
 		newShell.setText(m_windowTitle);
-		
+
 		if(m_windowImage != null)
 		{
 			newShell.setImage(m_windowImage);
 		}
+	}
+
+	@Override
+	protected void createButtonsForButtonBar(Composite parent)
+	{
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		enableDisableOkButton();
 	}
 
 	@Override
@@ -92,20 +83,31 @@ public abstract class AdvancedTitleAreaDialog extends TitleAreaDialog
 		{
 			setTitleImage(m_wizardImage);
 		}
-		
+
 		setTitle(m_wizardTitle);
 		setMessage(m_wizardMessage);
 
 		return contents;
 	}
-	
+
 	@Override
-	protected void createButtonsForButtonBar(Composite parent)
+	protected Control createHelpControl(Composite parent)
 	{
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-		enableDisableOkButton();
+		Control helpControl = super.createHelpControl(parent);
+		helpControl.addHelpListener(new HelpListener()
+		{
+
+			public void helpRequested(HelpEvent e)
+			{
+				if(m_helpURL != null)
+				{
+					Program.launch(m_helpURL);
+				}
+			}
+		});
+
+		return helpControl;
 	}
-	
+
 	protected abstract void enableDisableOkButton();
 }

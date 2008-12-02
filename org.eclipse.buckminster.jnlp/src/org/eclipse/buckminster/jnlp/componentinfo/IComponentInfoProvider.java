@@ -22,10 +22,13 @@ public interface IComponentInfoProvider
 	/**
 	 * Provides URL string to component info HTML page
 	 * 
-	 * @param properties	materialization properties
-	 * @param opml			OPML
-	 * @param destination 	destination folder
-	 * @return				URL string to component info HTML page
+	 * @param properties
+	 *            materialization properties
+	 * @param opml
+	 *            OPML
+	 * @param destination
+	 *            destination folder
+	 * @return URL string to component info HTML page
 	 */
-	String prepareHTML(Map<String,String> properties, IOPML opml, String destination) throws Exception;
+	String prepareHTML(Map<String, String> properties, IOPML opml, String destination) throws Exception;
 }

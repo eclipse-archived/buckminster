@@ -16,12 +16,12 @@ package org.eclipse.buckminster.jnlp.wizard;
 public interface IUnresolvedNodeHandler
 {
 	/**
-	 * Tests if there are any unresolved nodes
-	 */
-	boolean isUnresolvedNodeIncluded();
-	
-	/**
 	 * Excludes unresolved nodes
 	 */
 	void excludeUnresolvedNodes();
+
+	/**
+	 * Tests if there are any unresolved nodes
+	 */
+	boolean isUnresolvedNodeIncluded();
 }

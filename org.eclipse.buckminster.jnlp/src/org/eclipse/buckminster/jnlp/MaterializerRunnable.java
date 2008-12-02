@@ -29,12 +29,17 @@ import org.xml.sax.SAXException;
 public class MaterializerRunnable implements IRunnableWithProgress
 {
 	private final MaterializationSpec m_mspec;
-	
+
 	private MaterializationContext m_context;
-	
+
 	public MaterializerRunnable(MaterializationSpec mspec)
 	{
 		m_mspec = mspec;
+	}
+
+	public MaterializationContext getContext()
+	{
+		return m_context;
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
@@ -57,11 +62,6 @@ public class MaterializerRunnable implements IRunnableWithProgress
 		}
 	}
 
-	public MaterializationContext getContext()
-	{
-		return m_context;
-	}
-	
 	private MaterializationContext createContext() throws CoreException, IOException, SAXException
 	{
 		URL url = m_mspec.getResolvedURL();
@@ -69,7 +69,8 @@ public class MaterializerRunnable implements IRunnableWithProgress
 		try
 		{
 			input = new BufferedInputStream(url.openStream());
-			IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
+			IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(
+					true);
 			BillOfMaterials bom = bomParser.parse(url.toString(), input);
 			return new MaterializationContext(bom, m_mspec);
 		}
