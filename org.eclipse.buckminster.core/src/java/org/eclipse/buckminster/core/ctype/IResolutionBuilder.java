@@ -29,15 +29,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IResolutionBuilder>
 {
-	public static final String DEFAULT = "default";
+	public static final String DEFAULT = "default"; //$NON-NLS-1$
 
-	public static final String CSPEC2CSPEC = "cspec2cspec";
+	public static final String CSPEC2CSPEC = "cspec2cspec"; //$NON-NLS-1$
 
-	public static final String PLUGIN2CSPEC = "plugin2cspec";
+	public static final String PLUGIN2CSPEC = "plugin2cspec"; //$NON-NLS-1$
 
-	public static final String FEATURE2CSPEC = "feature2cspec";
+	public static final String FEATURE2CSPEC = "feature2cspec"; //$NON-NLS-1$
 
-	public static final String CQUERY2BOM = "cquery2BOM";
+	public static final String CQUERY2BOM = "cquery2BOM"; //$NON-NLS-1$
 
 	/**
 	 * The builder obtains whatever input it has and creates a resolved node. The builder may close the reader when it

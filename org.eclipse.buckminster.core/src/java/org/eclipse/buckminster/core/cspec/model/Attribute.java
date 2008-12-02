@@ -32,9 +32,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Attribute extends NamedElement implements Cloneable, IAttribute
 {
-	public static final String TAG = "define";
+	public static final String TAG = "define"; //$NON-NLS-1$
 
-	public static final String ATTR_FILTER = "filter";
+	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
 	private final Documentation m_documentation;
 

@@ -33,7 +33,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 	public ShortDurationURLCache()
 	{
 		// FIXME: Should be preferences
-		super(300000, "url", "cache", null);
+		super(300000, "url", "cache", null); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public ShortDurationURLCache(long keepAlive, String prefix, String suffix, File tempDir)
@@ -44,7 +44,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 	public InputStream openURL(final URL url, final IConnectContext cctx, IProgressMonitor monitor) throws IOException,
 			CoreException
 	{
-		if("file".equalsIgnoreCase(url.getProtocol()))
+		if("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
 			return url.openStream();
 
 		return this.open(new Materializer()
@@ -63,7 +63,7 @@ public class ShortDurationURLCache extends ShortDurationFileCache
 				boolean success = false;
 				try
 				{
-					tempFile = File.createTempFile("bmurl", ".cache");
+					tempFile = File.createTempFile("bmurl", ".cache"); //$NON-NLS-1$ //$NON-NLS-2$
 					OutputStream output = new FileOutputStream(tempFile);
 					try
 					{

@@ -16,18 +16,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author Thomas Hallgren
  */
 public abstract class DateAndTimeUtils
 {
-	public static final String ISO_8601Pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	public static final String ISO_8601Pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"; //$NON-NLS-1$
 
 	public static final DateFormat ISO_8601Format;
 
 	public static final TimeZone UTC;
 
-	public static final String[] commonFormats = new String[] { "yyyyMMddHHmm", "yyyyMMdd-HHmm", "yyyyMMdd" };
+	public static final String[] commonFormats = new String[] { "yyyyMMddHHmm", "yyyyMMdd-HHmm", "yyyyMMdd" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	public static final DateFormat[] commonFormatters;
 
@@ -48,7 +51,7 @@ public abstract class DateAndTimeUtils
 		}
 
 		ISO_8601Format = new SimpleDateFormat(ISO_8601Pattern);
-		UTC = TimeZone.getTimeZone("UTC");
+		UTC = TimeZone.getTimeZone("UTC"); //$NON-NLS-1$
 		ISO_8601Format.setCalendar(Calendar.getInstance(UTC));
 	}
 
@@ -85,7 +88,7 @@ public abstract class DateAndTimeUtils
 			{
 			}
 		}
-		throw new ParseException("Unable to parse " + timestampStr + " as a timestamp", 0);
+		throw new ParseException(NLS.bind(Messages.DateAndTimeUtils_Unable_to_parse_0_as_timestamp, timestampStr), 0);
 	}
 
 	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
@@ -98,7 +101,7 @@ public abstract class DateAndTimeUtils
 		}
 		long tm = dt.getTime();
 		if(tm > now + SANITY_THRESHOLD || tm < now - SANITY_THRESHOLD)
-			throw new ParseException("Bogus", 0);
+			throw new ParseException(Messages.DateAndTimeUtils_Bogus, 0);
 		return dt;
 	}
 

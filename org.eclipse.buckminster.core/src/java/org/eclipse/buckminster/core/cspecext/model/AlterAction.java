@@ -27,17 +27,17 @@ import org.eclipse.core.runtime.IPath;
  */
 public class AlterAction extends AlterAttribute<Action>
 {
-	public static final String ELEM_ALTER_PREREQUISITES = "alterPrerequisites";
+	public static final String ELEM_ALTER_PREREQUISITES = "alterPrerequisites"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_ACTOR_PROPERTIES = "alterActorProperties";
+	public static final String ELEM_ALTER_ACTOR_PROPERTIES = "alterActorProperties"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_PROPERTIES = "alterProperties";
+	public static final String ELEM_ALTER_PROPERTIES = "alterProperties"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_PRODUCTS = "alterProducts";
+	public static final String ELEM_ALTER_PRODUCTS = "alterProducts"; //$NON-NLS-1$
 
-	public static final String ELEM_REMOVE_PRODUCT_PATH = "removeProductPath";
+	public static final String ELEM_REMOVE_PRODUCT_PATH = "removeProductPath"; //$NON-NLS-1$
 
-	public static final String ELEM_REMOVE_ATTRIBUTE = "removeAttribute";
+	public static final String ELEM_REMOVE_ATTRIBUTE = "removeAttribute"; //$NON-NLS-1$
 
 	private final Map<String, String> m_alteredActorProperties;
 
@@ -70,7 +70,7 @@ public class AlterAction extends AlterAttribute<Action>
 
 	protected void alterActorProperties(ActionBuilder original) throws CoreException
 	{
-		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original //$NON-NLS-1$
 				.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
 				m_removedActorProperties);
 	}
@@ -105,7 +105,7 @@ public class AlterAction extends AlterAttribute<Action>
 
 	protected void alterProperties(ActionBuilder original) throws CoreException
 	{
-		performPropertyAlterations(original.getCSpecName(), original.getName(), "property", original.getProperties(),
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "property", original.getProperties(), //$NON-NLS-1$
 				m_alteredProperties, this.getBase().getProperties(), m_removedProperties);
 	}
 }

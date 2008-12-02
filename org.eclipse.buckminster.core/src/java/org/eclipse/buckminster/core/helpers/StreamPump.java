@@ -31,7 +31,7 @@ public class StreamPump extends Thread
 
 	public StreamPump(InputStream is, OutputStream os, boolean flush)
 	{
-		super("StreamPump");
+		super("StreamPump"); //$NON-NLS-1$
 		m_is = is;
 		m_os = os;
 		m_flush = flush;

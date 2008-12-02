@@ -177,10 +177,10 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
 			throws CoreException
 	{
-		String tmp = config.getAttribute("weight");
+		String tmp = config.getAttribute("weight"); //$NON-NLS-1$
 		if(tmp != null)
 			m_weight = Integer.parseInt(tmp);
-		m_nature = config.getAttribute("nature");
+		m_nature = config.getAttribute("nature"); //$NON-NLS-1$
 		super.setInitializationData(config, propertyName, data);
 	}
 }

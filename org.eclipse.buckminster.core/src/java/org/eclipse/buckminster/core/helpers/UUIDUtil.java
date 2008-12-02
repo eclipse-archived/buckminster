@@ -11,6 +11,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
+
 /**
  * @author Thomas Hallgren
  * 
@@ -54,11 +56,11 @@ public class UUIDUtil
 		MessageDigest md;
 		try
 		{
-			md = MessageDigest.getInstance("MD5");
+			md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
 		}
 		catch(NoSuchAlgorithmException nsae)
 		{
-			throw new InternalError("MD5 not supported");
+			throw new InternalError(Messages.UUIDUtil_MD5_not_supported);
 		}
 		md.update(name, offset, len);
 		byte[] md5Bytes = md.digest();

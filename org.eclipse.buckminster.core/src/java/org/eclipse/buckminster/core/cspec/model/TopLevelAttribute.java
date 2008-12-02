@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -31,6 +32,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -42,19 +44,19 @@ import org.xml.sax.SAXException;
  */
 public abstract class TopLevelAttribute extends Attribute implements Cloneable
 {
-	public final static String PROPERTY_PREFIX = "buckminster.";
+	public final static String PROPERTY_PREFIX = "buckminster."; //$NON-NLS-1$
 
-	public final static String INSTALLER_HINT_PREFIX = PROPERTY_PREFIX + "install.";
+	public final static String INSTALLER_HINT_PREFIX = PROPERTY_PREFIX + "install."; //$NON-NLS-1$
 
-	public static final String ELEM_INSTALLER_HINTS = "installerHints";
+	public static final String ELEM_INSTALLER_HINTS = "installerHints"; //$NON-NLS-1$
 
-	public static final String PUBLIC_TAG = "public";
+	public static final String PUBLIC_TAG = "public"; //$NON-NLS-1$
 
-	public static final String PRIVATE_TAG = "private";
+	public static final String PRIVATE_TAG = "private"; //$NON-NLS-1$
 
-	public static final String DEFINITION_TAG = "definitions";
+	public static final String DEFINITION_TAG = "definitions"; //$NON-NLS-1$
 
-	public static final String DEFINE_TAG = "define";
+	public static final String DEFINE_TAG = "define"; //$NON-NLS-1$
 
 	private final Map<String, String> m_installerHints;
 
@@ -100,7 +102,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		}
 		String uniqueFolder = bld.toString();
 
-		IPath buckminsterTempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster")
+		IPath buckminsterTempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster") //$NON-NLS-1$ //$NON-NLS-2$
 				.append(uniqueFolder);
 
 		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
@@ -112,10 +114,10 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			actionOutput = Path.fromOSString(outputRoot).append(uniqueFolder).toPortableString();
 		}
 		else
-			actionOutput = buckminsterTempRoot.append("build").toPortableString();
+			actionOutput = buckminsterTempRoot.append("build").toPortableString(); //$NON-NLS-1$
 
 		properties.put(KeyConstants.ACTION_OUTPUT, actionOutput);
-		properties.put(KeyConstants.ACTION_TEMP, buckminsterTempRoot.append("temp").toPortableString());
+		properties.put(KeyConstants.ACTION_TEMP, buckminsterTempRoot.append("temp").toPortableString()); //$NON-NLS-1$
 		properties.put(KeyConstants.ACTION_HOME, cspec.getComponentLocation().toOSString());
 		properties.putAll(cspec.getComponentIdentifier().getProperties());
 	}
@@ -162,7 +164,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 				int slashIdx = key.lastIndexOf('/');
 				if(slashIdx > 0)
 				{
-					String[] triplet = TextUtils.split(key.substring(slashIdx + 1), ".");
+					String[] triplet = TextUtils.split(key.substring(slashIdx + 1), "."); //$NON-NLS-1$
 					if(triplet.length == 3)
 					{
 						Filter filter = FilterUtils.createFilter(triplet[0], triplet[1], triplet[2], null);
@@ -318,7 +320,8 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			}
 		}
 		if(uniquePath == null)
-			throw BuckminsterException.fromMessage("Unable to determine a unique product path for %s", this);
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.TopLevelAttribute_Unable_to_determine_a_unique_product_path_for_0, this));
 		return uniquePath;
 	}
 

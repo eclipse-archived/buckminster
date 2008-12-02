@@ -19,9 +19,9 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 public class Prerequisites extends Group
 {
 	@SuppressWarnings("hiding")
-	public static final String TAG = "prerequisites";
+	public static final String TAG = "prerequisites"; //$NON-NLS-1$
 
-	public static final String ATTR_ALIAS = "alias";
+	public static final String ATTR_ALIAS = "alias"; //$NON-NLS-1$
 
 	private final Action m_owner;
 
@@ -46,6 +46,6 @@ public class Prerequisites extends Group
 	@Override
 	public String getQualifiedName()
 	{
-		return getCSpec().getName() + '#' + m_owner.getName() + "_pqs";
+		return getCSpec().getName() + '#' + m_owner.getName() + "_pqs"; //$NON-NLS-1$
 	}
 }

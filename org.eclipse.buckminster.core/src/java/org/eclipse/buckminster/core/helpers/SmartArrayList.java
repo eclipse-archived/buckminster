@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author Filip Hrbek
  * 
@@ -70,11 +73,11 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 */
 	public static SmartArrayList<String> fromSeparatedStrings(String values, char delimiter) throws Exception
 	{
-		final String bareStringPattern = "(?:[^\\\\\"" + delimiter + "]|\\\\.)+";
-		final String doubleQuotedStringPattern = "\"(?:[^\"\\\\]|\\\\.)*\"";
-		final Pattern tokenPattern = Pattern.compile("^\\s*((?:" + bareStringPattern + "|" + doubleQuotedStringPattern
-				+ ")*)(?:\\s*" + delimiter + "(.*))?$");
-		final Pattern elementPattern = Pattern.compile("(" + bareStringPattern + "|" + doubleQuotedStringPattern + ")");
+		final String bareStringPattern = "(?:[^\\\\\"" + delimiter + "]|\\\\.)+"; //$NON-NLS-1$ //$NON-NLS-2$
+		final String doubleQuotedStringPattern = "\"(?:[^\"\\\\]|\\\\.)*\""; //$NON-NLS-1$
+		final Pattern tokenPattern = Pattern.compile("^\\s*((?:" + bareStringPattern + "|" + doubleQuotedStringPattern //$NON-NLS-1$ //$NON-NLS-2$
+				+ ")*)(?:\\s*" + delimiter + "(.*))?$"); //$NON-NLS-1$ //$NON-NLS-2$
+		final Pattern elementPattern = Pattern.compile("(" + bareStringPattern + "|" + doubleQuotedStringPattern + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		Matcher tokenMatcher = tokenPattern.matcher(values);
 		SmartArrayList<String> result = new SmartArrayList<String>();
@@ -90,11 +93,11 @@ public class SmartArrayList<E> extends ArrayList<E>
 			while(elementMatcher.find())
 			{
 				String aux = elementMatcher.group(1);
-				if(aux.startsWith("\""))
+				if(aux.startsWith("\"")) //$NON-NLS-1$
 				{
-					if(!aux.endsWith("\""))
+					if(!aux.endsWith("\"")) //$NON-NLS-1$
 					{
-						throw new Exception("Unbalanced double quotes: " + values);
+						throw new Exception(NLS.bind(Messages.SmartArrayList_Unbalanced_double_quotes_0, values));
 					}
 					aux = aux.substring(1, aux.length() - 1);
 				}
@@ -112,7 +115,7 @@ public class SmartArrayList<E> extends ArrayList<E>
 
 		if(!firstMatch)
 		{
-			throw new Exception("Bad value list: " + values);
+			throw new Exception(NLS.bind(Messages.SmartArrayList_Bad_value_list_0, values));
 		}
 
 		return result;
@@ -265,7 +268,7 @@ public class SmartArrayList<E> extends ArrayList<E>
 	@Override
 	public String toString()
 	{
-		return toString(", ");
+		return toString(", "); //$NON-NLS-1$
 	}
 
 	/**
@@ -285,7 +288,7 @@ public class SmartArrayList<E> extends ArrayList<E>
 		{
 			result.append((i > 0
 					? delimiter
-					: "") + arr[i]);
+					: "") + arr[i]); //$NON-NLS-1$
 		}
 
 		return result.toString();

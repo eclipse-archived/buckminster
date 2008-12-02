@@ -47,7 +47,7 @@ public class StringUtil
 				if(lastWasBlankChar)
 				{
 					lastWasBlankChar = false;
-					sb.append("&nbsp;");
+					sb.append("&nbsp;"); //$NON-NLS-1$
 				}
 				else
 				{
@@ -61,15 +61,15 @@ public class StringUtil
 				//
 				// HTML Special Chars
 				if(c == '"')
-					sb.append("&quot;");
+					sb.append("&quot;"); //$NON-NLS-1$
 				else if(c == '&')
-					sb.append("&amp;");
+					sb.append("&amp;"); //$NON-NLS-1$
 				else if(c == '<')
-					sb.append("&lt;");
+					sb.append("&lt;"); //$NON-NLS-1$
 				else if(c == '>')
-					sb.append("&gt;");
+					sb.append("&gt;"); //$NON-NLS-1$
 				else if(c == '\n')
-					sb.append("<BR>");
+					sb.append("<BR>"); //$NON-NLS-1$
 				else if(c == '\r')
 				{
 					// ignore this character
@@ -83,7 +83,7 @@ public class StringUtil
 					else
 					{
 						// Not 7 Bit use the unicode system
-						sb.append("&#");
+						sb.append("&#"); //$NON-NLS-1$
 						sb.append(new Integer(ci).toString());
 						sb.append(';');
 					}
@@ -122,10 +122,10 @@ public class StringUtil
 
 		if(escapeBackslashes)
 		{
-			return string.replaceAll("'", "''").replaceAll("\\\\", "\\\\\\\\");
+			return string.replaceAll("'", "''").replaceAll("\\\\", "\\\\\\\\"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 
-		return string.replaceAll("'", "''");
+		return string.replaceAll("'", "''"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -180,9 +180,9 @@ public class StringUtil
 	public static String quoteSQL(String string)
 	{
 		if(string == null)
-			return "NULL";
+			return "NULL"; //$NON-NLS-1$
 
-		return "'" + escapeSQL(string, false) + "'";
+		return "'" + escapeSQL(string, false) + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -198,9 +198,9 @@ public class StringUtil
 	public static String quoteSQL(String string, boolean escapeBackslashes)
 	{
 		if(string == null)
-			return "NULL";
+			return "NULL"; //$NON-NLS-1$
 
-		return "'" + escapeSQL(string, escapeBackslashes) + "'";
+		return "'" + escapeSQL(string, escapeBackslashes) + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -238,8 +238,8 @@ public class StringUtil
 
 		for(Object key : properties.keySet())
 		{
-			propList.add(String.format("%s=\"%s\"", key, properties.getProperty((String)key).replaceAll("[\"\\\\]",
-					"\\\\1")));
+			propList.add(String.format("%s=\"%s\"", key, properties.getProperty((String)key).replaceAll("[\"\\\\]", //$NON-NLS-1$ //$NON-NLS-2$
+					"\\\\1"))); //$NON-NLS-1$
 		}
 
 		return propList.toString();
@@ -254,7 +254,7 @@ public class StringUtil
 	 */
 	public static String stripBackslashes(String str)
 	{
-		return str.replaceAll("\\\\(.)", "$1");
+		return str.replaceAll("\\\\(.)", "$1"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

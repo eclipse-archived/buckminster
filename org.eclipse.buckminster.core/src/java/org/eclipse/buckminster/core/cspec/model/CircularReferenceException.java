@@ -9,7 +9,9 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -24,7 +26,7 @@ public class CircularReferenceException extends LocalizedException
 		for(String attributeName : attributeNames)
 		{
 			bld.append(attributeName);
-			bld.append(" -> ");
+			bld.append(" -> "); //$NON-NLS-1$
 		}
 		bld.append(recursionStart);
 		return bld.toString();
@@ -32,7 +34,10 @@ public class CircularReferenceException extends LocalizedException
 
 	public CircularReferenceException(String componentName, List<String> attributeNames, String recursionStart)
 	{
-		super("Component %s has an internal circular attribute reference. Attribute chain is %s", componentName,
-				buildChain(attributeNames, recursionStart));
+		super(
+				NLS
+						.bind(
+								Messages.CircularReferenceException_Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1,
+								componentName, buildChain(attributeNames, recursionStart)));
 	}
 }

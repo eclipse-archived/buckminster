@@ -25,6 +25,6 @@ public class FormatHandler extends ValueFilterHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		this.setValueHolder(new Format(this.getStringValue(attrs, "format")));
+		this.setValueHolder(new Format(this.getStringValue(attrs, "format"))); //$NON-NLS-1$
 	}
 }

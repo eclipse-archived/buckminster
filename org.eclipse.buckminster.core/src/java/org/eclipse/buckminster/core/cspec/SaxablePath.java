@@ -20,9 +20,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class SaxablePath extends Path implements ISaxableElement
 {
-	public static final String ATTR_PATH = "path";
+	public static final String ATTR_PATH = "path"; //$NON-NLS-1$
 
-	public static final String TAG = "path";
+	public static final String TAG = "path"; //$NON-NLS-1$
 
 	public static SaxablePath coerce(IPath path)
 	{

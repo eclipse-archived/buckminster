@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.cspec;
 import java.io.File;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -31,7 +32,7 @@ public class PathGroup
 	public PathGroup(IPath base, IPath[] paths)
 	{
 		if(base == null)
-			throw new IllegalArgumentException("base cannot be null");
+			throw new IllegalArgumentException(Messages.PathGroup_base_cannot_be_null);
 		m_base = base;
 		m_paths = paths;
 	}
@@ -87,10 +88,10 @@ public class PathGroup
 	public void copyTo(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		if(!destination.isAbsolute())
-			throw new IllegalArgumentException("destination must be absolute");
+			throw new IllegalArgumentException(Messages.PathGroup_destination_must_be_absolute);
 
 		if(!m_base.isAbsolute())
-			throw new IllegalArgumentException("source must be absolute");
+			throw new IllegalArgumentException(Messages.PathGroup_source_must_be_absolute);
 
 		File destDir = destination.toFile().getAbsoluteFile();
 		File baseDir = m_base.toFile().getAbsoluteFile();

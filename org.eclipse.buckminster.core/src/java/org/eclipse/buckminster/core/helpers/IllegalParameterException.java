@@ -7,6 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.helpers;
 
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author Thomas Hallgren
  */
@@ -16,6 +19,7 @@ public class IllegalParameterException extends LocalizedException
 
 	public IllegalParameterException(String extensionPointId, String id, String parameterName)
 	{
-		super("Parameter %s is illegal for id %s (extension point %s)", parameterName, id, extensionPointId);
+		super(NLS.bind(Messages.IllegalParameterException_Parameter_0_is_illegal_for_id_1_extension_point_2,
+				new Object[] { parameterName, id, extensionPointId }));
 	}
 }

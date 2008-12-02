@@ -9,7 +9,9 @@
 package org.eclipse.buckminster.core.ctype;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -20,7 +22,10 @@ public class MissingComponentTypeException extends LocalizedException
 
 	public MissingComponentTypeException(String componentTypeId)
 	{
-		super("No component type with id %s has been registered with extension-point %s", componentTypeId,
-				CorePlugin.COMPONENT_TYPE_POINT);
+		super(
+				NLS
+						.bind(
+								Messages.MissingComponentTypeException_No_component_type_with_id_0_has_been_registered_with_extension_point_1,
+								componentTypeId, CorePlugin.COMPONENT_TYPE_POINT));
 	}
 }

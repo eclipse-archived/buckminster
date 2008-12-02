@@ -99,7 +99,7 @@ public class FilterUtils
 		}
 	}
 
-	public static final String MATCH_ALL = "*";
+	public static final String MATCH_ALL = "*"; //$NON-NLS-1$
 
 	/**
 	 * <p>
@@ -184,7 +184,7 @@ public class FilterUtils
 		{
 			String expr = bld.substring(bldStart);
 			bld.setLength(bldStart);
-			bld.append("(|");
+			bld.append("(|"); //$NON-NLS-1$
 			bld.append(expr);
 			bld.append(')');
 		}
@@ -215,7 +215,7 @@ public class FilterUtils
 			if(cnt > 1)
 			{
 				StringBuilder and = new StringBuilder(bld.length() + 3);
-				and.append("(&");
+				and.append("(&"); //$NON-NLS-1$
 				and.append(bld);
 				and.append(')');
 				bld = and;
@@ -276,7 +276,7 @@ public class FilterUtils
 		StringBuilder bld = new StringBuilder();
 		boolean lastWasFilterStart = false;
 		boolean lastWasEscape = false;
-		StringTokenizer tokens = new StringTokenizer(filter, "\\&|!~<>=(). \t\r\f\n", true);
+		StringTokenizer tokens = new StringTokenizer(filter, "\\&|!~<>=(). \t\r\f\n", true); //$NON-NLS-1$
 		while(tokens.hasMoreTokens())
 		{
 			String token = tokens.nextToken();

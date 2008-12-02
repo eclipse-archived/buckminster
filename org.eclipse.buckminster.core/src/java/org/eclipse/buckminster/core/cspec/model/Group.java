@@ -33,7 +33,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Group extends TopLevelAttribute implements IGroup
 {
-	public static final String ATTR_REBASE = "rebase";
+	public static final String ATTR_REBASE = "rebase"; //$NON-NLS-1$
 
 	private static void addPathGroup(HashMap<IPath, ArrayList<IPath>> bld, IPath newBase, IPath currentBase, IPath path)
 	{

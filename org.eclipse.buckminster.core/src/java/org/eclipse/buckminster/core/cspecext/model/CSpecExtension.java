@@ -32,15 +32,15 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class CSpecExtension
 {
-	public static final String TAG = "cspecExtension";
+	public static final String TAG = "cspecExtension"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_ACTIONS = "alterActions";
+	public static final String ELEM_ALTER_ACTIONS = "alterActions"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_ARTIFACTS = "alterArtifacts";
+	public static final String ELEM_ALTER_ARTIFACTS = "alterArtifacts"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_DEPENDENCIES = "alterDependencies";
+	public static final String ELEM_ALTER_DEPENDENCIES = "alterDependencies"; //$NON-NLS-1$
 
-	public static final String ELEM_ALTER_GROUPS = "alterGroups";
+	public static final String ELEM_ALTER_GROUPS = "alterGroups"; //$NON-NLS-1$
 
 	public static <T> T overrideCheckNull(T a, T b)
 	{
@@ -48,7 +48,7 @@ public class CSpecExtension
 			return b;
 		if(b == null)
 			return a;
-		if(b.toString().equalsIgnoreCase("null"))
+		if(b.toString().equalsIgnoreCase("null")) //$NON-NLS-1$
 			return null;
 		return b;
 	}

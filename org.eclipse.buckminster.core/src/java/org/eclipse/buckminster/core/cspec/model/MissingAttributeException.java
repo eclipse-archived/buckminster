@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -23,8 +25,10 @@ public class MissingAttributeException extends LocalizedException
 
 	public MissingAttributeException(String name, String target, boolean withVisibility)
 	{
-		super("CSpec %s has no %s action, group, or local artifact named %s", name, withVisibility
-				? "public "
-				: "", target);
+
+		super(NLS.bind(Messages.MissingAttributeException_CSpec_0_has_no_1_action_group_or_local_artifact_named_2,
+				new Object[] { name, withVisibility
+						? "public " //$NON-NLS-1$
+						: "", target })); //$NON-NLS-1$
 	}
 }

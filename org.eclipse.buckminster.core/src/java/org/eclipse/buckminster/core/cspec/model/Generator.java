@@ -16,13 +16,13 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Generator extends NamedElement implements IGenerator
 {
-	public static final String ATTR_ATTRIBUTE = "attribute";
+	public static final String ATTR_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT = "component";
+	public static final String ATTR_COMPONENT = "component"; //$NON-NLS-1$
 
-	public static final String ATTR_GENERATES = "generates";
+	public static final String ATTR_GENERATES = "generates"; //$NON-NLS-1$
 
-	public static final String TAG = "generator";
+	public static final String TAG = "generator"; //$NON-NLS-1$
 
 	private final CSpec m_cspec;
 

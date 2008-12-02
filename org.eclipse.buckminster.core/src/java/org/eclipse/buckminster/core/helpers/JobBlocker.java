@@ -11,9 +11,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Block job execution based on the name or class of the job.
@@ -54,11 +56,11 @@ public class JobBlocker extends JobChangeAdapter
 		Job job = event.getJob();
 		String jobName = job.getName();
 		String className = job.getClass().getName();
-		trace("JOB: AboutToRun: %s", jobName);
+		trace(NLS.bind(Messages.JobBlocker_JOB_AboutToRun_0, jobName));
 		if(m_blockByName.contains(jobName) || m_blockByClass.contains(className))
 		{
 			job.cancel();
-			trace("blocked(%s[%s])", className, jobName);
+			trace(NLS.bind(Messages.JobBlocker_blocked_0_1, className, jobName));
 			return;
 		}
 	}

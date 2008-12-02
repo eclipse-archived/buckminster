@@ -8,8 +8,10 @@
 
 package org.eclipse.buckminster.core.ctype;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -20,8 +22,10 @@ public class MissingCSpecSourceException extends LocalizedException
 
 	public MissingCSpecSourceException(ProviderMatch providerMatch)
 	{
-		super("Provider %s(%s): Missing CSpec source required by component type %s", providerMatch.getProvider()
-				.getReaderTypeId(), providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
-				providerMatch.getComponentType().getId());
+		super(NLS.bind(
+				Messages.MissingCSpecSourceException_Provider_0_1_Missing_CSpec_source_required_by_component_type_2,
+				new Object[] { providerMatch.getProvider().getReaderTypeId(),
+						providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
+						providerMatch.getComponentType().getId() }));
 	}
 }

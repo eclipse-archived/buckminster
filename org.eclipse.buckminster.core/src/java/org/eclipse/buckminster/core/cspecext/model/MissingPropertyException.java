@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,6 +20,7 @@ public class MissingPropertyException extends LocalizedException
 
 	public MissingPropertyException(String name, String attribute, String propertyCategory, String propertyName)
 	{
-		super("CSpec %s, attribute %s has no %s named %s", name, attribute, propertyCategory, propertyName);
+		super(NLS.bind(Messages.MissingPropertyException_CSpec_0_attribute_1_has_no_2_named_3, new Object[] { name,
+				attribute, propertyCategory, propertyName }));
 	}
 }

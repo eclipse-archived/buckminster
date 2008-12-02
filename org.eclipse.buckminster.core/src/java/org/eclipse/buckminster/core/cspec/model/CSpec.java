@@ -26,6 +26,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -72,27 +73,27 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 {
-	public static final String ATTR_FILTER = "filter";
+	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
-	public static final String ATTR_PROJECT_INFO = "projectInfo";
+	public static final String ATTR_PROJECT_INFO = "projectInfo"; //$NON-NLS-1$
 
-	public static final String ATTR_SHORT_DESC = "shortDesc";
+	public static final String ATTR_SHORT_DESC = "shortDesc"; //$NON-NLS-1$
 
-	public static final String ELEM_ACTIONS = "actions";
+	public static final String ELEM_ACTIONS = "actions"; //$NON-NLS-1$
 
-	public static final String ELEM_ARTIFACTS = "artifacts";
+	public static final String ELEM_ARTIFACTS = "artifacts"; //$NON-NLS-1$
 
-	public static final String ELEM_DEPENDENCIES = "dependencies";
+	public static final String ELEM_DEPENDENCIES = "dependencies"; //$NON-NLS-1$
 
-	public static final String ELEM_GENERATORS = "generators";
+	public static final String ELEM_GENERATORS = "generators"; //$NON-NLS-1$
 
-	public static final String ELEM_DEPENDENCY = "dependency";
+	public static final String ELEM_DEPENDENCY = "dependency"; //$NON-NLS-1$
 
-	public static final String ELEM_GROUPS = "groups";
+	public static final String ELEM_GROUPS = "groups"; //$NON-NLS-1$
 
-	public static final String SELF_ARTIFACT = "buckminster.component.self";
+	public static final String SELF_ARTIFACT = "buckminster.component.self"; //$NON-NLS-1$
 
-	public static final String TAG = "cspec";
+	public static final String TAG = "cspec"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 4;
 
@@ -128,25 +129,25 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		String projectInfo = null;
 		if(parentInfo != null)
 		{
-			int pathIdx = parentInfo.indexOf("path: ");
+			int pathIdx = parentInfo.indexOf("path: "); //$NON-NLS-1$
 			if(pathIdx >= 0)
-				path = String.format("%s -> %s", parentInfo.substring(pathIdx), ci);
+				path = String.format("%s -> %s", parentInfo.substring(pathIdx), ci); //$NON-NLS-1$
 
-			if(projectInfoURL == null && parentInfo.startsWith("project: "))
+			if(projectInfoURL == null && parentInfo.startsWith("project: ")) //$NON-NLS-1$
 				projectInfo = parentInfo.substring(0, pathIdx - 2);
 		}
 
 		if(projectInfoURL != null)
-			projectInfo = String.format("project: %s", projectInfoURL);
+			projectInfo = String.format("project: %s", projectInfoURL); //$NON-NLS-1$
 
 		if(path == null)
-			path = String.format("path: %s", ci.toString());
+			path = String.format("path: %s", ci.toString()); //$NON-NLS-1$
 
 		String tagInfo;
 		if(projectInfo == null)
 			tagInfo = path;
 		else
-			tagInfo = String.format("%s, %s", projectInfo, path);
+			tagInfo = String.format("%s, %s", projectInfo, path); //$NON-NLS-1$
 		return tagInfo;
 	}
 
@@ -857,8 +858,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 	public void remove(StorageManager sm) throws CoreException
 	{
 		UUID thisId = getId();
-		if(!sm.getResolutions().getReferencingKeys(thisId, "cspecId").isEmpty())
-			throw new ReferentialIntegrityException(this, "remove", "Referenced from Resolution");
+		if(!sm.getResolutions().getReferencingKeys(thisId, "cspecId").isEmpty()) //$NON-NLS-1$
+			throw new ReferentialIntegrityException(this, "remove", Messages.CSpec_Referenced_from_Resolution); //$NON-NLS-1$
 
 		sm.getCSpecs().removeElement(thisId);
 	}

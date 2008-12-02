@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 public class PropertyElementHandler extends PropertyHandler implements ChildPoppedListener
 {
-	static final String TAG = "propertyElement";
+	static final String TAG = "propertyElement"; //$NON-NLS-1$
 
 	private ConstantHandler m_constantHandler;
 

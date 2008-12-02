@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
@@ -92,7 +93,7 @@ class CacheEntry
 	public synchronized InputStream open() throws FileNotFoundException
 	{
 		if(m_removePending)
-			throw new FileNotFoundException("File is closed");
+			throw new FileNotFoundException(Messages.ShortDurationFileCache_File_is_closed);
 
 		if(m_tempFile.isTemporary())
 		{

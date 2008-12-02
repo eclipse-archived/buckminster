@@ -12,6 +12,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * Cryptology utils
  * 
@@ -20,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class CryptoUtils
 {
-	private static String ENCODING_UTF8 = "UTF-8";
+	private static String ENCODING_UTF8 = "UTF-8"; //$NON-NLS-1$
 
 	/**
 	 * Encrypts an input byte array using a given algorithm
@@ -31,7 +34,7 @@ public class CryptoUtils
 	 */
 	public static String encrypt(byte[] bytes, String algorithmName)
 	{
-		String md5val = "";
+		String md5val = ""; //$NON-NLS-1$
 		MessageDigest algorithm = null;
 
 		try
@@ -40,7 +43,8 @@ public class CryptoUtils
 		}
 		catch(NoSuchAlgorithmException nsae)
 		{
-			throw new IllegalArgumentException("Unknown encrypt algorithm: " + algorithmName);
+			throw new IllegalArgumentException(NLS
+					.bind(Messages.CryptoUtils_Unknown_encrypt_algorithm_0, algorithmName));
 		}
 
 		algorithm.reset();
@@ -89,7 +93,8 @@ public class CryptoUtils
 		}
 		catch(UnsupportedEncodingException e)
 		{
-			throw new RuntimeException("Internal error: " + ENCODING_UTF8 + " is not supported encoding", e);
+			throw new RuntimeException(NLS.bind(Messages.CryptoUtils_Internal_error_0_is_not_supported_encoding,
+					ENCODING_UTF8), e);
 		}
 	}
 

@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.common.parser;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.Replace;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -85,12 +86,12 @@ public class ReplaceHandler extends ValueFilterHandler
 		if(pattern != null)
 		{
 			if(replacement == null)
-				throw new SAXParseException("pattern but no replacement", this.getDocumentLocator());
+				throw new SAXParseException(Messages.ReplaceHandler_pattern_but_no_replacement, this.getDocumentLocator());
 			boolean quotePattern = getOptionalBooleanValue(attrs, Replace.ATTR_QUOTE_PATTERN, false);
 			rp.addMatch(new Replace.Match(pattern, replacement, quotePattern));
 		}
 		else if(replacement != null)
-			throw new SAXParseException("replacement but no pattern", this.getDocumentLocator());
+			throw new SAXParseException(Messages.ReplaceHandler_replacement_but_no_pattern, this.getDocumentLocator());
 
 		this.setValueHolder(rp);
 	}

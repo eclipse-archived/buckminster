@@ -7,8 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,6 +21,7 @@ public class ComponentRequestConflictException extends LocalizedException
 
 	public ComponentRequestConflictException(IComponentRequest rq1, IComponentRequest rq2)
 	{
-		super("Component request %s is inconflict with request %s", rq1, rq2);
+		super(NLS.bind(Messages.ComponentRequestConflictException_Component_request_0_is_in_conflict_with_request_1,
+				rq1, rq2));
 	}
 }

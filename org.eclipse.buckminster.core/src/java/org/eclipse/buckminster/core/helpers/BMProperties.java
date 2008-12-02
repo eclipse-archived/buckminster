@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.IProperties;
 
 public class BMProperties implements IProperties
@@ -120,10 +121,10 @@ public class BMProperties implements IProperties
 	public static void store(Map<String, String> props, OutputStream out, String comments) throws IOException
 	{
 		BufferedWriter awriter;
-		awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1"));
+		awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1")); //$NON-NLS-1$
 		if(comments != null)
-			writeln(awriter, "#" + comments);
-		writeln(awriter, "#" + new Date().toString());
+			writeln(awriter, "#" + comments); //$NON-NLS-1$
+		writeln(awriter, "#" + new Date().toString()); //$NON-NLS-1$
 		synchronized(props)
 		{
 			for(Entry<String, String> e : props.entrySet())
@@ -134,7 +135,7 @@ public class BMProperties implements IProperties
 				/*
 				 * No need to escape embedded and trailing spaces for value, hence pass false to flag.
 				 */
-				writeln(awriter, key + "=" + saveConvert(e.getValue(), false));
+				writeln(awriter, key + "=" + saveConvert(e.getValue(), false)); //$NON-NLS-1$
 			}
 		}
 		awriter.flush();
@@ -292,7 +293,7 @@ public class BMProperties implements IProperties
 		if(m_map instanceof IProperties)
 			return ((IProperties)m_map).put(key, value, mutable);
 		if(!mutable)
-			throw new UnsupportedOperationException("put immutable");
+			throw new UnsupportedOperationException(Messages.BMProperties_put_immutable);
 		return m_map.put(key, value);
 	}
 
@@ -311,7 +312,7 @@ public class BMProperties implements IProperties
 		if(m_map instanceof IProperties)
 			((IProperties)m_map).setMutable(key, flag);
 		else if(!flag)
-			throw new UnsupportedOperationException("setMutable");
+			throw new UnsupportedOperationException(Messages.BMProperties_setMutable);
 	}
 
 	public int size()

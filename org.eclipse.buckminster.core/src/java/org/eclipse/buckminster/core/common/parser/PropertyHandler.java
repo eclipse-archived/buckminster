@@ -43,7 +43,7 @@ public abstract class PropertyHandler extends ExtensionAwareHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_key = this.getStringValue(attrs, "key");
-		m_mutable = getOptionalBooleanValue(attrs, "mutable", false);
+		m_key = this.getStringValue(attrs, "key"); //$NON-NLS-1$
+		m_mutable = getOptionalBooleanValue(attrs, "mutable", false); //$NON-NLS-1$
 	}
 }

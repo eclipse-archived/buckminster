@@ -45,21 +45,21 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Action extends TopLevelAttribute implements IAction
 {
-	public static final String ATTR_ACTOR = "actor";
+	public static final String ATTR_ACTOR = "actor"; //$NON-NLS-1$
 
-	public static final String ATTR_ALWAYS = "always";
+	public static final String ATTR_ALWAYS = "always"; //$NON-NLS-1$
 
-	public static final String ATTR_ASSIGN_CONSOLE_SUPPORT = "assignConsoleSupport";
+	public static final String ATTR_ASSIGN_CONSOLE_SUPPORT = "assignConsoleSupport"; //$NON-NLS-1$
 
-	public static final String ATTR_PRODUCT_FILE_COUNT = "fileCount";
+	public static final String ATTR_PRODUCT_FILE_COUNT = "fileCount"; //$NON-NLS-1$
 
-	public static final String ATTR_UP_TO_DATE_POLICY = "upToDatePolicy";
+	public static final String ATTR_UP_TO_DATE_POLICY = "upToDatePolicy"; //$NON-NLS-1$
 
-	public static final String ELEM_ACTOR_PROPERTIES = "actorProperties";
+	public static final String ELEM_ACTOR_PROPERTIES = "actorProperties"; //$NON-NLS-1$
 
-	public static final String ELEM_PROPERTIES = "properties";
+	public static final String ELEM_PROPERTIES = "properties"; //$NON-NLS-1$
 
-	public static final String ELEM_PRODUCTS = "products";
+	public static final String ELEM_PRODUCTS = "products"; //$NON-NLS-1$
 
 	public static final boolean ALWAYS_DEFAULT = false;
 
@@ -87,7 +87,7 @@ public class Action extends TopLevelAttribute implements IAction
 
 	private Prerequisites m_prerequisites;
 
-	public static final String BINDING_NAME = "binding.name";
+	public static final String BINDING_NAME = "binding.name"; //$NON-NLS-1$
 
 	public Action(ActionBuilder builder)
 	{
@@ -372,10 +372,10 @@ public class Action extends TopLevelAttribute implements IAction
 	public boolean isUpToDate(IModelCache ctx) throws CoreException
 	{
 		Logger logger = CorePlugin.getLogger();
-		String failLeadIn = "";
+		String failLeadIn = ""; //$NON-NLS-1$
 		boolean isDebug = logger.isDebugEnabled();
 		if(isDebug)
-			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this,
+			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this, //$NON-NLS-1$
 					m_upToDatePolicy);
 
 		if(m_upToDatePolicy == UpToDatePolicy.ACTOR)
@@ -384,7 +384,7 @@ public class Action extends TopLevelAttribute implements IAction
 				return true;
 
 			if(isDebug)
-				logger.debug("%sActor decision", failLeadIn);
+				logger.debug("%sActor decision", failLeadIn); //$NON-NLS-1$
 			return false;
 		}
 
@@ -402,7 +402,7 @@ public class Action extends TopLevelAttribute implements IAction
 				// Not enough files
 				//
 				if(isDebug)
-					logger.debug("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()),
+					logger.debug("%sFile count(%d) < expected(%d)", failLeadIn, Integer.valueOf(productFiles.size()), //$NON-NLS-1$
 							Integer.valueOf(expectedFileCount));
 				return false;
 			}
@@ -418,7 +418,7 @@ public class Action extends TopLevelAttribute implements IAction
 					// Oops, missing product
 					//
 					if(isDebug)
-						logger.debug(String.format("%sNo product is matching requirement %s", failLeadIn, entry
+						logger.debug(String.format("%sNo product is matching requirement %s", failLeadIn, entry //$NON-NLS-1$
 								.getKey()));
 					return false;
 				}
@@ -431,13 +431,13 @@ public class Action extends TopLevelAttribute implements IAction
 					//
 					if(isDebug)
 						logger.debug(String.format(
-								"%sThe product for %s of age %s is older then its matching requirement with age %s",
+								"%sThe product for %s of age %s is older then its matching requirement with age %s", //$NON-NLS-1$
 								failLeadIn, entry.getKey(), new Date(productTs), new Date(prereqTs)));
 					return false;
 				}
 			}
 			if(isDebug)
-				logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this,
+				logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this, //$NON-NLS-1$
 						m_upToDatePolicy));
 			return true;
 		}
@@ -467,13 +467,13 @@ public class Action extends TopLevelAttribute implements IAction
 				switch(m_upToDatePolicy)
 				{
 				case DEFAULT:
-					logger.debug(String.format("%sProduct has folders", failLeadIn));
+					logger.debug(String.format("%sProduct has folders", failLeadIn)); //$NON-NLS-1$
 					break;
 				case NOT_EMPTY:
-					logger.debug(String.format("%sProduct is empty", failLeadIn));
+					logger.debug(String.format("%sProduct is empty", failLeadIn)); //$NON-NLS-1$
 					break;
 				default:
-					logger.debug(String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer
+					logger.debug(String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer //$NON-NLS-1$
 							.valueOf(fileCountBin[0]), Integer.valueOf(expectedFileCount)));
 					break;
 				}
@@ -486,12 +486,12 @@ public class Action extends TopLevelAttribute implements IAction
 		if(oldest >= prereqAge)
 		{
 			if(isDebug)
-				logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this,
+				logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this, //$NON-NLS-1$
 						m_upToDatePolicy));
 			return true;
 		}
 		if(isDebug)
-			logger.debug(String.format("%s: Product of age %s is older then prerequisite of age %s", failLeadIn,
+			logger.debug(String.format("%s: Product of age %s is older then prerequisite of age %s", failLeadIn, //$NON-NLS-1$
 					new Date(oldest), new Date(prereqAge)));
 		return false;
 	}

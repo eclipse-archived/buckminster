@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,6 +20,7 @@ public class MissingDependencyException extends LocalizedException
 
 	public MissingDependencyException(String componentName, String dependencyName)
 	{
-		super("Component %s has no declared dependency to component %s", componentName, dependencyName);
+		super(NLS.bind(Messages.MissingDependencyException_Component_0_has_no_declared_dependency_to_component_1,
+				componentName, dependencyName));
 	}
 }

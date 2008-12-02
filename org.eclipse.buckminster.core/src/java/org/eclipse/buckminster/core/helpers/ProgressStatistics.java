@@ -27,11 +27,11 @@ public class ProgressStatistics
 		public String convert(long amount)
 		{
 			if(amount < 1024)
-				return String.format(Locale.US, "%dB", Long.valueOf(amount));
+				return String.format(Locale.US, "%dB", Long.valueOf(amount)); //$NON-NLS-1$
 			else if(amount < 1024 * 1024)
-				return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024));
+				return String.format(Locale.US, "%.2fkB", Double.valueOf(((double)amount) / 1024)); //$NON-NLS-1$
 			else
-				return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024)));
+				return String.format(Locale.US, "%.2fMB", Double.valueOf(((double)amount) / (1024 * 1024))); //$NON-NLS-1$
 		}
 
 	}
@@ -41,7 +41,7 @@ public class ProgressStatistics
 
 		public String convert(long amount)
 		{
-			return "" + amount;
+			return "" + amount; //$NON-NLS-1$
 		}
 
 	}
@@ -186,8 +186,8 @@ public class ProgressStatistics
 	public String report()
 	{
 		return m_converter.convert(m_current) + (m_total != -1
-				? " of " + m_converter.convert(m_total)
-				: "") + " at " + m_converter.convert(getRecentSpeed()) + "/s";
+				? " of " + m_converter.convert(m_total) //$NON-NLS-1$
+				: "") + " at " + m_converter.convert(getRecentSpeed()) + "/s"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	public void setConverter(AmountConverter converter)

@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
@@ -41,6 +42,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -110,9 +112,9 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		int idx = elems.length;
 		ArrayList<String> names = new ArrayList<String>(idx + 1);
 		if(includeEmptyEntry)
-			names.add("");
+			names.add(""); //$NON-NLS-1$
 		while(--idx >= 0)
-			names.add(elems[idx].getAttribute("id"));
+			names.add(elems[idx].getAttribute("id")); //$NON-NLS-1$
 		Collections.sort(names);
 		return names.toArray(new String[names.size()]);
 	}
@@ -181,8 +183,9 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		String repTo = getNameSubstitution();
 
 		if(repFrom == null || repTo == null)
-			throw BuckminsterException.fromMessage("Component type %s defines desiredNamePattern but no substitution",
-					getId());
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.AbstractComponentType_Component_type_0_defines_desiredNamePattern_but_no_substitution,
+					getId()));
 
 		Matcher matcher = repFrom.matcher(componentName);
 		if(matcher.matches())
@@ -269,19 +272,19 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 	@Override
 	public void setExtensionParameter(String key, String value) throws CoreException
 	{
-		if("relativeLocation".equals(key))
+		if("relativeLocation".equals(key)) //$NON-NLS-1$
 			m_relativeLocation = value == null
 					? null
 					: Path.fromPortableString(value);
-		else if("desiredNamePattern".equals(key))
+		else if("desiredNamePattern".equals(key)) //$NON-NLS-1$
 			m_desiredNamePattern = value == null
 					? null
 					: Pattern.compile(value);
-		else if("substituteNamePattern".equals(key))
+		else if("substituteNamePattern".equals(key)) //$NON-NLS-1$
 			m_substituteNamePattern = value == null
 					? null
 					: Pattern.compile(value);
-		else if("nameSubstitution".equals(key))
+		else if("nameSubstitution".equals(key)) //$NON-NLS-1$
 			m_nameSubstitution = value;
 		else
 			super.setExtensionParameter(key, value);
@@ -293,24 +296,24 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 	{
 		super.setInitializationData(config, propertyName, data);
 
-		String tmp = config.getAttribute("relativeLocation");
+		String tmp = config.getAttribute("relativeLocation"); //$NON-NLS-1$
 		m_relativeLocation = tmp == null
 				? null
 				: Path.fromPortableString(tmp);
-		tmp = config.getAttribute("desiredNamePattern");
+		tmp = config.getAttribute("desiredNamePattern"); //$NON-NLS-1$
 		m_desiredNamePattern = tmp == null
 				? null
 				: Pattern.compile(tmp);
-		tmp = config.getAttribute("substituteNamePattern");
+		tmp = config.getAttribute("substituteNamePattern"); //$NON-NLS-1$
 		m_substituteNamePattern = tmp == null
 				? null
 				: Pattern.compile(tmp);
-		m_nameSubstitution = config.getAttribute("nameSubstitution");
+		m_nameSubstitution = config.getAttribute("nameSubstitution"); //$NON-NLS-1$
 
 		ArrayList<IMetaFile> metaFiles = null;
-		for(IConfigurationElement metaFile : config.getChildren("metaFile"))
+		for(IConfigurationElement metaFile : config.getChildren("metaFile")) //$NON-NLS-1$
 		{
-			tmp = metaFile.getAttribute("path");
+			tmp = metaFile.getAttribute("path"); //$NON-NLS-1$
 			if(tmp != null)
 			{
 				tmp = tmp.trim();
@@ -321,9 +324,9 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 				continue;
 
 			IPath path = Path.fromPortableString(tmp);
-			boolean optional = "true".equalsIgnoreCase(metaFile.getAttribute("optional"));
+			boolean optional = "true".equalsIgnoreCase(metaFile.getAttribute("optional")); //$NON-NLS-1$ //$NON-NLS-2$
 			List<IPath> aliasesBld = null;
-			for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
+			for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ",")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				alias = alias.trim();
 				if(alias.length() > 0)

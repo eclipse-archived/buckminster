@@ -35,13 +35,13 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ComponentRequest extends ComponentName implements IComponentRequest
 {
 	@SuppressWarnings("hiding")
-	public static final String TAG = "component";
+	public static final String TAG = "component"; //$NON-NLS-1$
 
-	static public final String ATTR_VERSION_DESIGNATOR = "versionDesignator";
+	static public final String ATTR_VERSION_DESIGNATOR = "versionDesignator"; //$NON-NLS-1$
 
-	static public final String ATTR_VERSION_TYPE = "versionType";
+	static public final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
-	public static final String ATTR_FILTER = "filter";
+	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
 	private final IVersionDesignator m_versionDesignator;
 

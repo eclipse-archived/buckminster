@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 
 public class PropertyConstantHandler extends PropertyHandler
 {
-	static final String TAG = "property";
+	static final String TAG = "property"; //$NON-NLS-1$
 
 	private String m_value;
 
@@ -46,7 +46,7 @@ public class PropertyConstantHandler extends PropertyHandler
 		// Used to be 'getStringValue(...)', but that throws an exception
 		// if the value is empty string or just whitespace...
 		//
-		String qname = "value";
+		String qname = "value"; //$NON-NLS-1$
 		m_value = attrs.getValue(qname);
 		if(m_value == null)
 			// considering the xsd, this should never happen...

@@ -26,9 +26,9 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 {
 	private final IVersion m_version;
 
-	public static final String ATTR_VERSION_TYPE = "versionType";
+	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION = "version";
+	public static final String ATTR_VERSION = "version"; //$NON-NLS-1$
 
 	public static ComponentIdentifier parse(String componentIdentifierStr) throws CoreException
 	{

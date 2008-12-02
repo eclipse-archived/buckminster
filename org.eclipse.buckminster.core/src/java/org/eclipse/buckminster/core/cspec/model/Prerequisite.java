@@ -24,19 +24,19 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Prerequisite extends NamedElement implements IPrerequisite
 {
-	public static final String ATTR_ALIAS = "alias";
+	public static final String ATTR_ALIAS = "alias"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT = "component";
+	public static final String ATTR_COMPONENT = "component"; //$NON-NLS-1$
 
-	public static final String ATTR_CONTRIBUTOR = "contributor";
+	public static final String ATTR_CONTRIBUTOR = "contributor"; //$NON-NLS-1$
 
-	public static final String ATTR_EXCLUDE_PATTERN = "excludePattern";
+	public static final String ATTR_EXCLUDE_PATTERN = "excludePattern"; //$NON-NLS-1$
 
-	public static final String ATTR_INCLUDE_PATTERN = "includePattern";
+	public static final String ATTR_INCLUDE_PATTERN = "includePattern"; //$NON-NLS-1$
 
-	public static final String ATTR_OPTIONAL = "optional";
+	public static final String ATTR_OPTIONAL = "optional"; //$NON-NLS-1$
 
-	public static final String TAG = "attribute";
+	public static final String TAG = "attribute"; //$NON-NLS-1$
 
 	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern)
 	{
@@ -103,13 +103,13 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		if(m_alias != null)
 			Utils.addAttribute(attrs, ATTR_ALIAS, m_alias);
 		if(!m_contributor)
-			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false");
+			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false"); //$NON-NLS-1$
 		if(m_excludePattern != null)
 			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
 		if(m_includePattern != null)
 			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
 		if(m_optional)
-			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true");
+			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true"); //$NON-NLS-1$
 		if(m_componentName != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
 	}

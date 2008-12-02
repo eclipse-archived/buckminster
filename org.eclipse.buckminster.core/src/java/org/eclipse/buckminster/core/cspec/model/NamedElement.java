@@ -16,7 +16,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public abstract class NamedElement extends AbstractSaxableElement
 {
-	public static final String ATTR_NAME = "name";
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
 	private final String m_name;
 
@@ -51,7 +51,7 @@ public abstract class NamedElement extends AbstractSaxableElement
 	public String toString()
 	{
 		return m_name == null
-				? "null"
+				? "null" //$NON-NLS-1$
 				: m_name;
 	}
 }

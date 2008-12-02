@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,6 +20,8 @@ public class DependencyAlreadyDefinedException extends LocalizedException
 
 	public DependencyAlreadyDefinedException(String componentName, String dependencyName)
 	{
-		super("Dependency %s is defined more then once in component %s", dependencyName, componentName);
+		super(NLS.bind(
+				Messages.DependencyAlreadyDefinedException_Dependency_0_is_defined_more_then_once_in_component_1,
+				dependencyName, componentName));
 	}
 }

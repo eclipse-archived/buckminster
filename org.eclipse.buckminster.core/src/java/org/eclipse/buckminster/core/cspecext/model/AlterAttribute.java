@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public abstract class AlterAttribute<T extends TopLevelAttribute>
 {
-	public static final String ELEM_ALTER_INSTALLER_HINTS = "alterInstallerHints";
+	public static final String ELEM_ALTER_INSTALLER_HINTS = "alterInstallerHints"; //$NON-NLS-1$
 
 	static void alterPaths(String compName, String attrName, Set<IPath> original, Set<IPath> added, Set<IPath> removed)
 			throws CoreException
@@ -114,7 +114,7 @@ public abstract class AlterAttribute<T extends TopLevelAttribute>
 	{
 		// Assert that all hints to remove really exists
 		//
-		performPropertyAlterations(original.getCSpecName(), original.getName(), "installer hint", original
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "installer hint", original //$NON-NLS-1$
 				.getInstallerHints(), m_alteredHints, m_base.getInstallerHints(), m_removedHints);
 	}
 

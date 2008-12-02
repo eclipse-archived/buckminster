@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 public class MissingPrerequisiteException extends LocalizedException
 {
@@ -15,6 +17,7 @@ public class MissingPrerequisiteException extends LocalizedException
 
 	public MissingPrerequisiteException(String name, String attribute, String prereqName)
 	{
-		super("CSpec %s, attribute %s does not define prerequisite %s", name, attribute, prereqName);
+		super(NLS.bind(Messages.MissingPrerequisiteException_CSpec_0_attribute_1_does_not_define_prerequisite_2,
+				new Object[] { name, attribute, prereqName }));
 	}
 }

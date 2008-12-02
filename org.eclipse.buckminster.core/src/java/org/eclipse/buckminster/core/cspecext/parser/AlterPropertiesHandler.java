@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
  */
 abstract class AlterPropertiesHandler extends PropertyManagerHandler
 {
-	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", "key");
+	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", "key"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	AlterPropertiesHandler(AbstractHandler parent, String tag)
 	{

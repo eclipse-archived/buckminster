@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,6 +20,10 @@ public class GeneratorAlreadyDefinedException extends LocalizedException
 
 	public GeneratorAlreadyDefinedException(String componentName, String generates)
 	{
-		super("A generator that generates %s is defined more then once in component %s", generates, componentName);
+		super(
+				NLS
+						.bind(
+								Messages.GeneratorAlreadyDefinedException_A_generator_that_generates_0_is_defined_more_then_once_in_component_1,
+								generates, componentName));
 	}
 }

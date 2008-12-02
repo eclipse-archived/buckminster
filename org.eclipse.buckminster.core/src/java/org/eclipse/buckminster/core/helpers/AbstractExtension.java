@@ -56,7 +56,7 @@ public abstract class AbstractExtension implements IBuckminsterExtension, IExecu
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
 			throws CoreException
 	{
-		m_id = config.getAttribute("id");
+		m_id = config.getAttribute("id"); //$NON-NLS-1$
 		Map<String, String> initParams = getInitializationParameters(data);
 		if(initParams != null)
 		{

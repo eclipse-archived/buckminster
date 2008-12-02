@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.ctype;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,7 +20,10 @@ public class ComponentTypeMismatchException extends LocalizedException
 
 	public ComponentTypeMismatchException(String componentName, String expectedType, String actualType)
 	{
-		super("Component type mismatch exception for component %s. Expected type was %s but actual type is %s",
-				componentName, expectedType, actualType);
+		super(
+				NLS
+						.bind(
+								Messages.ComponentTypeMismatchException_Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2,
+								new Object[] { componentName, expectedType, actualType }));
 	}
 }

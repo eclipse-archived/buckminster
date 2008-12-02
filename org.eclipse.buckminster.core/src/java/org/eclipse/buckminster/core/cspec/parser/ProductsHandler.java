@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
@@ -23,6 +24,7 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -138,7 +140,8 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw new SAXParseException('\'' + tmp + "' is not a valid UpToDatePolicy", getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.ProductsHandler__0_is_not_a_valid_UpToDatePolicy, tmp),
+						getDocumentLocator());
 			}
 		}
 	}

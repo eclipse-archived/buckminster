@@ -9,7 +9,9 @@
 package org.eclipse.buckminster.core.ctype;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -20,7 +22,10 @@ public class MissingBuilderException extends LocalizedException
 
 	public MissingBuilderException(String builderId)
 	{
-		super("No Component Specification (cspec) builder with id %s has been registered with extension-point %s",
-				builderId, CorePlugin.CSPEC_BUILDER_POINT);
+		super(
+				NLS
+						.bind(
+								Messages.MissingBuilderException_No_Component_Specification_cspec_builder_with_id_0_has_been_registered_with_extension_point_1,
+								builderId, CorePlugin.CSPEC_BUILDER_POINT));
 	}
 }

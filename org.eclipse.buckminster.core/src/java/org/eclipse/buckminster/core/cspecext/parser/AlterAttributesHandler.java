@@ -24,7 +24,7 @@ abstract class AlterAttributesHandler extends AlterHandler
 
 	private final AlterAttributeHandler m_privateHandler;
 
-	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME);
+	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
 
 	AlterAttributesHandler(AbstractHandler parent)
 	{

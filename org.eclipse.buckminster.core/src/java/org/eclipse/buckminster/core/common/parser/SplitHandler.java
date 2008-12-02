@@ -33,11 +33,11 @@ public class SplitHandler extends ValueFilterHandler
 	{
 		String pattern = this.getStringValue(attrs, AbstractSplit.ATTR_PATTERN);
 		String style = getOptionalStringValue(attrs, AbstractSplit.ATTR_STYLE);
-		if("groups".equals(style))
+		if("groups".equals(style)) //$NON-NLS-1$
 			this.setValueHolder(new GroupSplit(pattern));
 		else
 		{
-			if(style == null || "quoted".equals(style))
+			if(style == null || "quoted".equals(style)) //$NON-NLS-1$
 				pattern = Pattern.quote(pattern);
 			this.setValueHolder(new Split(pattern, getOptionalIntValue(attrs, Split.ATTR_LIMIT, 0)));
 		}

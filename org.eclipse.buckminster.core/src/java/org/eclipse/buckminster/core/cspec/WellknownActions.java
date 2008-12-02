@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.cspec;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
@@ -23,7 +25,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "buckminster.clean";
+				return "buckminster.clean"; //$NON-NLS-1$
 			}
 		},
 
@@ -36,7 +38,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "buckminster.prebind";
+				return "buckminster.prebind"; //$NON-NLS-1$
 			}
 		},
 
@@ -50,7 +52,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "buckminster.bind.entrypoint";
+				return "buckminster.bind.entrypoint"; //$NON-NLS-1$
 			}
 		}
 	}
@@ -68,7 +70,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "eclipse.clean";
+				return "eclipse.clean"; //$NON-NLS-1$
 			}
 		},
 		AUTO // not used as an actual action
@@ -82,7 +84,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "eclipse.auto";
+				return "eclipse.auto"; //$NON-NLS-1$
 			}
 		},
 		INCREMENTAL // not used as an actual action
@@ -96,7 +98,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "eclipse.incremental";
+				return "eclipse.incremental"; //$NON-NLS-1$
 			}
 		},
 		FULL // not used as an actual action
@@ -110,7 +112,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "eclipse.full";
+				return "eclipse.full"; //$NON-NLS-1$
 			}
 		},
 		BUILD
@@ -124,7 +126,7 @@ public abstract class WellknownActions
 			@Override
 			public String toString()
 			{
-				return "eclipse.build";
+				return "eclipse.build"; //$NON-NLS-1$
 			}
 		};
 
@@ -133,7 +135,7 @@ public abstract class WellknownActions
 			for(ECLIPSE e : ECLIPSE.values())
 				if(name.equals(e.toString()))
 					return e.kind();
-			throw new InternalError("Unexpected name: " + name);
+			throw new InternalError(NLS.bind(Messages.WellknownActions_Unexpected_name_0, name));
 		}
 
 		public abstract int kind();

@@ -28,7 +28,7 @@ import org.eclipse.buckminster.runtime.Trivial;
  */
 public class TextUtils
 {
-	public static String EMPTY_STRING = "";
+	public static String EMPTY_STRING = ""; //$NON-NLS-1$
 
 	/**
 	 * Builds a <code>delim</code> separated list of <code>strings</code>. It is assumed that none of the supplied
@@ -168,13 +168,13 @@ public class TextUtils
 
 		// split on a solitary '&'
 		//
-		String[] pairs = query.split("(?<!&)&(?!&)");
+		String[] pairs = query.split("(?<!&)&(?!&)"); //$NON-NLS-1$
 		int idx = pairs.length;
 		if(idx == 0)
 			return Trivial.EMPTY_STRING_ARRAY;
 
 		while(--idx >= 0)
-			pairs[idx] = pairs[idx].replace("&&", "&");
+			pairs[idx] = pairs[idx].replace("&&", "&"); //$NON-NLS-1$ //$NON-NLS-2$
 		return pairs;
 	}
 
@@ -193,7 +193,7 @@ public class TextUtils
 
 			// ensure that any 'delimiter' is doubled
 			//
-			query.append(pair.replace("&", "&&"));
+			query.append(pair.replace("&", "&&")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		return query.toString();
@@ -295,7 +295,7 @@ public class TextUtils
 	public static String notNullString(Object txt)
 	{
 		return txt == null
-				? ""
+				? "" //$NON-NLS-1$
 				: txt.toString();
 	}
 
@@ -315,7 +315,7 @@ public class TextUtils
 			// now split the pair on the first '=' only
 			// (one '=' is required to be there, even if the value is blank)
 			//
-			String[] kv = pairs[top].split("=", 2);
+			String[] kv = pairs[top].split("=", 2); //$NON-NLS-1$
 			p.put(kv[0], kv[1]);
 		}
 		return p;

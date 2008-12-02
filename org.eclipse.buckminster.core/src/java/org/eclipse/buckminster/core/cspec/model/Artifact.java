@@ -33,11 +33,11 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Artifact extends TopLevelAttribute implements IArtifact
 {
-	public static final String ATTR_PATH = "path";
+	public static final String ATTR_PATH = "path"; //$NON-NLS-1$
 
-	public static final String ATTR_TYPE = "type";
+	public static final String ATTR_TYPE = "type"; //$NON-NLS-1$
 
-	public static final String ATTR_BASE = "base";
+	public static final String ATTR_BASE = "base"; //$NON-NLS-1$
 
 	private final IPath m_base;
 

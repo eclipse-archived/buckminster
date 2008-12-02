@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class AlterGroup extends AlterAttribute<Group>
 {
-	public static final String ELEM_ALTER_ATTRIBUTE = "alterAttribute";
+	public static final String ELEM_ALTER_ATTRIBUTE = "alterAttribute"; //$NON-NLS-1$
 
-	public static final String ELEM_REMOVE = "remove";
+	public static final String ELEM_REMOVE = "remove"; //$NON-NLS-1$
 
 	private final Map<String, Prerequisite> m_alteredPrerequisites;
 

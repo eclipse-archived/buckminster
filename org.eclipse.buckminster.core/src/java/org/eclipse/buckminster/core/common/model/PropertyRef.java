@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -52,7 +53,8 @@ public class PropertyRef extends ValueHolder
 			return ((ExpandingProperties)properties).getExpandedProperty(expandedKey, recursionGuard + 1);
 		final String replacementValue = properties.get(expandedKey);
 		if(replacementValue == null)
-			CorePlugin.getLogger().warning("The property ${" + m_key + "} has not been set and will default to null");
+			CorePlugin.getLogger().warning(
+					NLS.bind(Messages.PropertyRef_The_property_0_has_not_been_set_and_will_default_to_null, m_key));
 		return ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1);
 	}
 

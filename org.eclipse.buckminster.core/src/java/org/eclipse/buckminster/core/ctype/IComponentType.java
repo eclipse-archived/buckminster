@@ -33,31 +33,31 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IComponentType extends IBuckminsterExtension
 {
-	public static final String OSGI_BUNDLE = "osgi.bundle";
+	public static final String OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
-	public static final String ECLIPSE_FEATURE = "eclipse.feature";
+	public static final String ECLIPSE_FEATURE = "eclipse.feature"; //$NON-NLS-1$
 
 	// Some well known component types included in the core distro
 	//
-	public static final String ECLIPSE_INSTALLED = "eclipse.installed";
+	public static final String ECLIPSE_INSTALLED = "eclipse.installed"; //$NON-NLS-1$
 
-	public static final String ECLIPSE_PROJECT = "eclipse.project";
+	public static final String ECLIPSE_PROJECT = "eclipse.project"; //$NON-NLS-1$
 
-	public static final String BUCKMINSTER = "buckminster";
+	public static final String BUCKMINSTER = "buckminster"; //$NON-NLS-1$
 
-	public static final String UNKNOWN = "unknown";
+	public static final String UNKNOWN = "unknown"; //$NON-NLS-1$
 
-	public static final String ECLIPSE_SITE_FEATURE = "site.feature";
+	public static final String ECLIPSE_SITE_FEATURE = "site.feature"; //$NON-NLS-1$
 
-	public static final String PREF_METADATA_FOLDER = CorePlugin.getID() + ".metadata.folder";
+	public static final String PREF_METADATA_FOLDER = CorePlugin.getID() + ".metadata.folder"; //$NON-NLS-1$
 
-	public static final String PREF_CSPEC_FILE = CorePlugin.getID() + ".cspec.file";
+	public static final String PREF_CSPEC_FILE = CorePlugin.getID() + ".cspec.file"; //$NON-NLS-1$
 
-	public static final String PREF_CSPEX_FILE = CorePlugin.getID() + ".cspex.file";
+	public static final String PREF_CSPEX_FILE = CorePlugin.getID() + ".cspex.file"; //$NON-NLS-1$
 
-	public static final String PREF_CQUERY_FILE = CorePlugin.getID() + ".cquery.file";
+	public static final String PREF_CQUERY_FILE = CorePlugin.getID() + ".cquery.file"; //$NON-NLS-1$
 
-	public static final String PREF_OPML_FILE = CorePlugin.getID() + ".opml.file";
+	public static final String PREF_OPML_FILE = CorePlugin.getID() + ".opml.file"; //$NON-NLS-1$
 
 	/**
 	 * Extracts the component version from artifacts found inside of the component. Component types where this is not

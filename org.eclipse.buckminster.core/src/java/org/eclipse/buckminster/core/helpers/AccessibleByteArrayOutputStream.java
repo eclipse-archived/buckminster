@@ -14,6 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author Thomas Hallgren
  */
@@ -66,7 +69,8 @@ public class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
 	{
 		super.write(b, off, len);
 		if(m_maxSize > 0 && count >= m_maxSize)
-			throw new IllegalStateException("Max size " + m_maxSize + " exceeded");
+			throw new IllegalStateException(NLS.bind(Messages.AccessibleByteArrayOutputStream_Max_size_0_exceeded,
+					m_maxSize));
 	}
 
 	@Override
@@ -74,6 +78,7 @@ public class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
 	{
 		super.write(b);
 		if(m_maxSize > 0 && count >= m_maxSize)
-			throw new IllegalStateException("Max size " + m_maxSize + " exceeded");
+			throw new IllegalStateException(NLS.bind(Messages.AccessibleByteArrayOutputStream_Max_size_0_exceeded,
+					m_maxSize));
 	}
 }

@@ -9,7 +9,9 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -25,7 +27,7 @@ public class CircularDependencyException extends LocalizedException
 		int top = componentNames.size();
 		for(int idx = 1; idx < top; ++idx)
 		{
-			bld.append(" -> ");
+			bld.append(" -> "); //$NON-NLS-1$
 			bld.append(componentNames.get(idx));
 		}
 		return bld.toString();
@@ -33,6 +35,7 @@ public class CircularDependencyException extends LocalizedException
 
 	public CircularDependencyException(List<String> componentNames)
 	{
-		super("Circular component dependency detected. Chain is %s", buildChain(componentNames));
+		super(NLS.bind(Messages.CircularDependencyException_Circular_component_dependency_detected_Chain_is_0,
+				buildChain(componentNames)));
 	}
 }

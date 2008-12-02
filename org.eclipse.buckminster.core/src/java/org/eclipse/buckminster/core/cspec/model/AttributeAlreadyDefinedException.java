@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,6 +20,7 @@ public class AttributeAlreadyDefinedException extends LocalizedException
 
 	public AttributeAlreadyDefinedException(String componentName, String attributeName)
 	{
-		super("Attribute %s is defined more then once in component %s", attributeName, componentName);
+		super(NLS.bind(Messages.AttributeAlreadyDefinedException_Attribute_0_is_defined_more_then_once_in_component_1,
+				attributeName, componentName));
 	}
 }

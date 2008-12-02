@@ -175,14 +175,14 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 	public String put(String key, String value, boolean mutable)
 	{
 		if(!mutable)
-			throw new UnsupportedOperationException("put immutable");
+			throw new UnsupportedOperationException("put immutable"); //$NON-NLS-1$
 		return this.put(key, value);
 	}
 
 	public void setMutable(String key, boolean mutable) throws UnsupportedOperationException
 	{
 		if(!mutable)
-			throw new UnsupportedOperationException("setMutable");
+			throw new UnsupportedOperationException("setMutable"); //$NON-NLS-1$
 	}
 
 	@Override

@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 public class PropertyAlreadyDefinedException extends LocalizedException
 {
@@ -15,6 +17,7 @@ public class PropertyAlreadyDefinedException extends LocalizedException
 
 	public PropertyAlreadyDefinedException(String name, String attribute, String propertyCategory, String propertyName)
 	{
-		super("CSpec %s, attribute %s already has a %s named %s", name, attribute, propertyCategory, propertyName);
+		super(NLS.bind(Messages.PropertyAlreadyDefinedException_CSpec_0_attribute_1_already_has_a_2_named_3,
+				new Object[] { name, attribute, propertyCategory, propertyName }));
 	}
 }

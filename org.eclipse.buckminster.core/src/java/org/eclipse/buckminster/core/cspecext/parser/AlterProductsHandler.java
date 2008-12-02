@@ -43,9 +43,9 @@ class AlterProductsHandler extends AlterHandler
 
 	public static final String TAG = AlterAction.ELEM_ALTER_PRODUCTS;
 
-	private final RemoveHandler m_removeProductPathHandler = new RemoveHandler(this, "removeProductPath", "path");
+	private final RemoveHandler m_removeProductPathHandler = new RemoveHandler(this, "removeProductPath", "path"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	private final RemoveHandler m_removeAttributeHandler = new RemoveHandler(this, "removeAttribute", "name");
+	private final RemoveHandler m_removeAttributeHandler = new RemoveHandler(this, "removeAttribute", "name"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	private final AlterArtifactHandler m_publicAlterArtifactHandler = new AlterActionArtifactHandler(this, true);
 

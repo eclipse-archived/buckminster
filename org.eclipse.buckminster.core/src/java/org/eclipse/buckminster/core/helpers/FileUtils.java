@@ -34,6 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -53,6 +54,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
 /**
@@ -66,8 +68,8 @@ public abstract class FileUtils
 
 		public CopyOntoSelfException(File source, File destination)
 		{
-			super("Cannot copy %s to %s since the destination is equal to, or contained in, the source", source,
-					destination);
+			super(NLS.bind(Messages.FileUtils_Cannot_copy_0_to_1_since_destination_equal_or_contained_in_source,
+					source, destination));
 		}
 	}
 
@@ -82,7 +84,7 @@ public abstract class FileUtils
 
 		public DeleteException(File file, Throwable e)
 		{
-			super(e, "Unable to delete: %s", file);
+			super(e, NLS.bind(Messages.FileUtils_Unable_to_delete_0, file));
 		}
 	}
 
@@ -92,7 +94,7 @@ public abstract class FileUtils
 
 		public DestinationNotEmptyException(File destination)
 		{
-			super("Unable to use %s as a destination for copy since it is not empty", destination);
+			super(NLS.bind(Messages.FileUtils_Unable_to_use_0_destination_for_copy_not_empty, destination));
 		}
 	}
 
@@ -107,15 +109,15 @@ public abstract class FileUtils
 
 		public MkdirException(File directory, Throwable e)
 		{
-			super(e, "Unable to create directory %s", directory);
+			super(e, NLS.bind(Messages.FileUtils_Unable_to_create_directory_0, directory));
 		}
 	}
 
-	public static final String FILE_SEP = System.getProperty("file.separator");
+	public static final String FILE_SEP = System.getProperty("file.separator"); //$NON-NLS-1$
 
-	public static final String PATH_SEP = System.getProperty("path.separator");
+	public static final String PATH_SEP = System.getProperty("path.separator"); //$NON-NLS-1$
 
-	public static final boolean CASE_INSENSITIVE_FS = (new File("a").equals(new File("A")));
+	public static final boolean CASE_INSENSITIVE_FS = (new File("a").equals(new File("A"))); //$NON-NLS-1$ //$NON-NLS-2$
 
 	private static final Pattern[] s_defaultExcludes;
 
@@ -129,19 +131,19 @@ public abstract class FileUtils
 
 		// Standard Apache ANT defaultexcludes
 		//
-		addPattern(bld, ".*/[^/]*~$");
-		addPattern(bld, ".*/#[^/]*#$");
-		addPattern(bld, ".*/\\.#[^/]*$");
-		addPattern(bld, ".*/%_[^/]*$");
-		addPattern(bld, ".*/CVS$");
-		addPattern(bld, ".*/CVS/.*");
-		addPattern(bld, ".*/\\.cvsignore$");
-		addPattern(bld, ".*/SCCS$");
-		addPattern(bld, ".*/SCCS/.*");
-		addPattern(bld, ".*/vssver\\.scc$");
-		addPattern(bld, ".*/\\.svn$");
-		addPattern(bld, ".*/\\.svn/.*");
-		addPattern(bld, ".*/\\.DS_Store$");
+		addPattern(bld, ".*/[^/]*~$"); //$NON-NLS-1$
+		addPattern(bld, ".*/#[^/]*#$"); //$NON-NLS-1$
+		addPattern(bld, ".*/\\.#[^/]*$"); //$NON-NLS-1$
+		addPattern(bld, ".*/%_[^/]*$"); //$NON-NLS-1$
+		addPattern(bld, ".*/CVS$"); //$NON-NLS-1$
+		addPattern(bld, ".*/CVS/.*"); //$NON-NLS-1$
+		addPattern(bld, ".*/\\.cvsignore$"); //$NON-NLS-1$
+		addPattern(bld, ".*/SCCS$"); //$NON-NLS-1$
+		addPattern(bld, ".*/SCCS/.*"); //$NON-NLS-1$
+		addPattern(bld, ".*/vssver\\.scc$"); //$NON-NLS-1$
+		addPattern(bld, ".*/\\.svn$"); //$NON-NLS-1$
+		addPattern(bld, ".*/\\.svn/.*"); //$NON-NLS-1$
+		addPattern(bld, ".*/\\.DS_Store$"); //$NON-NLS-1$
 		s_defaultExcludes = bld.toArray(new Pattern[bld.size()]);
 	}
 
@@ -469,7 +471,7 @@ public abstract class FileUtils
 						catch(Exception e)
 						{
 							// We're shutting down so this is ignored
-							System.err.println("Failed to remove directory " + folder + " :" + e.toString());
+							System.err.println("Failed to remove directory " + folder + " :" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 					}
 				}
@@ -739,7 +741,7 @@ public abstract class FileUtils
 			return null;
 
 		String proto = url.getProtocol();
-		if(proto == null || "file".equalsIgnoreCase(proto))
+		if(proto == null || "file".equalsIgnoreCase(proto)) //$NON-NLS-1$
 		{
 			try
 			{
@@ -897,13 +899,14 @@ public abstract class FileUtils
 		synchronized(THREADLOCK)
 		{
 			if(directory == null || directory.exists() && !directory.isDirectory())
-				throw BuckminsterException.fromMessage("Unable to create directory %s: Not a directory",
-						directory != null
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.FileUtils_Unable_to_create_directory_0_Not_a_directory, directory != null
 								? directory
-								: "(null)");
+								: "(null)")); //$NON-NLS-1$
 
 			if(!directory.exists() && !directory.mkdirs())
-				throw BuckminsterException.fromMessage("Unable to create directory %s", directory);
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.FileUtils_Unable_to_create_directory_0,
+						directory));
 		}
 	}
 

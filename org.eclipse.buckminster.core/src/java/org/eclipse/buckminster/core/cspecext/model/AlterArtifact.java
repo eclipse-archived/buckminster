@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class AlterArtifact extends AlterAttribute<Artifact>
 {
-	public static final String ELEM_REMOVE_PATH = "removePath";
+	public static final String ELEM_REMOVE_PATH = "removePath"; //$NON-NLS-1$
 
 	private final Set<IPath> m_removedPaths;
 

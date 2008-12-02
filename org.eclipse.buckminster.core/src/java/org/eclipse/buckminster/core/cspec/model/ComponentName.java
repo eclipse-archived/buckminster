@@ -26,9 +26,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ComponentName extends NamedElement implements Comparable<IComponentName>, IComponentName
 {
-	public static final String TAG = "componentName";
+	public static final String TAG = "componentName"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT_TYPE = "componentType";
+	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
 
 	private final String m_componentType;
 

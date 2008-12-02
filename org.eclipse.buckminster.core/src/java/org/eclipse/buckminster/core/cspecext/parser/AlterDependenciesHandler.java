@@ -24,7 +24,7 @@ class AlterDependenciesHandler extends AlterHandler
 
 	private final AlterDependencyHandler m_alterDependencyHandler = new AlterDependencyHandler(this);
 
-	private final RemoveHandler m_removeDependencyHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME);
+	private final RemoveHandler m_removeDependencyHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
 
 	AlterDependenciesHandler(AbstractHandler parent)
 	{
