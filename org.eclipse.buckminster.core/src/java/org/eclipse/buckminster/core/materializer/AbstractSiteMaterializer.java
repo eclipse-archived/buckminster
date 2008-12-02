@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -154,9 +155,9 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			catch(CoreException e)
 			{
 				throw BuckminsterException
-						.fromMessage("Unable to install plugins and features that do not stem from an update site since PDE is missing");
+						.fromMessage(Messages.AbstractSiteMaterializer_Unable_to_install_plugins_from_update_site_PDE_missing);
 			}
-			File tempSite = FileUtils.createTempFolder("bmsite", "tmp");
+			File tempSite = FileUtils.createTempFolder("bmsite", "tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite,
 					features, plugins));
 		}
@@ -265,7 +266,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					try
 					{
 						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
-								"Start mirroring"));
+								Messages.AbstractSiteMaterializer_Start_mirroring));
 						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
 								monitor, 5));
 						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils
@@ -289,7 +290,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					finally
 					{
 						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
-								"End mirroring"));
+								Messages.AbstractSiteMaterializer_End_mirroring));
 						Platform.removeLogListener(listener);
 					}
 				}

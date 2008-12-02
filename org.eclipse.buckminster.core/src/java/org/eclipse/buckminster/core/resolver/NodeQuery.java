@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -34,6 +35,7 @@ import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * The <code>NodeQuery</code> combines the {@link IComponentQuery} with one specific {@link IComponentRequest} during
@@ -314,7 +316,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			}
 			catch(CoreException e)
 			{
-				throw new IllegalStateException("Unable to obtain component type", e);
+				throw new IllegalStateException(Messages.NodeQuery_Unable_to_obtain_component_type, e);
 			}
 		}
 		return m_componentType;
@@ -387,7 +389,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	{
 		if(m_context instanceof ResolutionContext)
 			return (ResolutionContext)m_context;
-		throw new IllegalStateException("ResolutionContext requested during Materialization");
+		throw new IllegalStateException(Messages.NodeQuery_ResolutionContext_requested_during_Materialization);
 	}
 
 	public int[] getResolutionPrio()
@@ -434,7 +436,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		{
 			try
 			{
-				ctype = CorePlugin.getDefault().getComponentType("maven");
+				ctype = CorePlugin.getDefault().getComponentType("maven"); //$NON-NLS-1$
 			}
 			catch(CoreException e)
 			{
@@ -472,7 +474,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			{
 				logDecision(branchOrTag == null || branchOrTag.getType() == VersionSelector.BRANCH
 						? ResolverDecisionType.BRANCH_REJECTED
-						: ResolverDecisionType.TAG_REJECTED, branchOrTag, String.format("not in path '%s'",
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(Messages.NodeQuery_not_in_path_0,
 						VersionSelector.toString(branchTagPath)));
 				return false;
 			}
@@ -481,8 +483,8 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		IVersionDesignator designator = getVersionDesignator();
 		if(designator != null && !designator.designates(version))
 		{
-			logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("Not designated by %s",
-					designator));
+			logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
+					Messages.NodeQuery_Not_designated_by_0, designator));
 			return false;
 		}
 		return true;

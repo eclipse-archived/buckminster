@@ -30,15 +30,15 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	public static final int SEQUENCE_NUMBER = 1;
 
 	@SuppressWarnings("hiding")
-	public static final String TAG = "workspaceBinding";
+	public static final String TAG = "workspaceBinding"; //$NON-NLS-1$
 
-	public static final String ATTR_WS_RELATIVE_PATH = "workspaceRelativePath";
+	public static final String ATTR_WS_RELATIVE_PATH = "workspaceRelativePath"; //$NON-NLS-1$
 
-	public static final String ATTR_WS_LOCATION = "workspaceLocation";
+	public static final String ATTR_WS_LOCATION = "workspaceLocation"; //$NON-NLS-1$
 
-	public static final String ATTR_TIMESTAMP = "timestamp";
+	public static final String ATTR_TIMESTAMP = "timestamp"; //$NON-NLS-1$
 
-	public static final String ATTR_RESOLUTION_ID = "resolutionId";
+	public static final String ATTR_RESOLUTION_ID = "resolutionId"; //$NON-NLS-1$
 
 	private final long m_timestamp;
 

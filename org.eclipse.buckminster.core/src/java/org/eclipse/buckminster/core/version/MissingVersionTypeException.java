@@ -8,7 +8,9 @@
 package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,7 +21,10 @@ public class MissingVersionTypeException extends LocalizedException
 
 	public MissingVersionTypeException(String versionTypeId)
 	{
-		super("No version type with id %s has been registered with extension-point %s", versionTypeId,
-				CorePlugin.VERSION_TYPES_POINT);
+		super(
+				NLS
+						.bind(
+								Messages.MissingVersionTypeException_No_version_type_with_id_0_has_been_registered_with_extension_point_1,
+								versionTypeId, CorePlugin.VERSION_TYPES_POINT));
 	}
 }

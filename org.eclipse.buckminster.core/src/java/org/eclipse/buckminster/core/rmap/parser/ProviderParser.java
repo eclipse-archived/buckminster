@@ -54,7 +54,7 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 	{
 		if(ProviderHandler.TAG.equals(localName))
 		{
-			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
+			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type"); //$NON-NLS-1$
 			ProviderHandler rmh = createContentHandler(this, ProviderHandler.class, uri, type);
 			pushHandler(rmh, attrs);
 		}

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Status;
  */
 public class NullActor extends AbstractActor
 {
-	public static final String ID = "null";
+	public static final String ID = "null"; //$NON-NLS-1$
 
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException

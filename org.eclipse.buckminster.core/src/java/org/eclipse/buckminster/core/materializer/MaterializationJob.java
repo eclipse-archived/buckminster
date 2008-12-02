@@ -19,6 +19,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -45,7 +46,7 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class MaterializationJob extends Job
 {
-	public static final String MAX_PARALLEL_JOBS = "maxParallelMaterializationJobs";
+	public static final String MAX_PARALLEL_JOBS = "maxParallelMaterializationJobs"; //$NON-NLS-1$
 
 	public static final int MAX_PARALLEL_JOBS_DEFAULT = 4;
 
@@ -128,7 +129,7 @@ public class MaterializationJob extends Job
 
 	public MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
 	{
-		super("Materializing");
+		super(Messages.MaterializationJob_Materializing);
 		m_context = ctx;
 		m_waitForInstall = waitForInstall;
 

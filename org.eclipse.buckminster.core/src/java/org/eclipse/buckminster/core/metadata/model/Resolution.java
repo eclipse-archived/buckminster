@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -50,39 +51,39 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 {
-	public static final String ATTR_ATTRIBUTES = "attributes";
+	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT_TYPE = "componentType";
+	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
 
-	public static final String ATTR_CONTENT_TYPE = "contentType";
+	public static final String ATTR_CONTENT_TYPE = "contentType"; //$NON-NLS-1$
 
-	public static final String ATTR_CSPEC_ID = "cspecId";
+	public static final String ATTR_CSPEC_ID = "cspecId"; //$NON-NLS-1$
 
-	public static final String ATTR_LAST_MODIFIED = "lastModified";
+	public static final String ATTR_LAST_MODIFIED = "lastModified"; //$NON-NLS-1$
 
-	public static final String ATTR_MATERIALIZABLE = "materializable";
+	public static final String ATTR_MATERIALIZABLE = "materializable"; //$NON-NLS-1$
 
-	public static final String ATTR_OPML_ID = "opmlId";
+	public static final String ATTR_OPML_ID = "opmlId"; //$NON-NLS-1$
 
-	public static final String ATTR_PERSISTENT_ID = "persistentId";
+	public static final String ATTR_PERSISTENT_ID = "persistentId"; //$NON-NLS-1$
 
-	public static final String ATTR_PROVIDER_ID = "providerId";
+	public static final String ATTR_PROVIDER_ID = "providerId"; //$NON-NLS-1$
 
-	public static final String ATTR_QUERY_ID = "queryId";
+	public static final String ATTR_QUERY_ID = "queryId"; //$NON-NLS-1$
 
-	public static final String ATTR_REMOTE_NAME = "remoteName";
+	public static final String ATTR_REMOTE_NAME = "remoteName"; //$NON-NLS-1$
 
-	public static final String ATTR_REPOSITORY = "repository";
+	public static final String ATTR_REPOSITORY = "repository"; //$NON-NLS-1$
 
-	public static final String ATTR_SIZE = "size";
+	public static final String ATTR_SIZE = "size"; //$NON-NLS-1$
 
-	public static final String ATTR_UNPACK = "unpack";
+	public static final String ATTR_UNPACK = "unpack"; //$NON-NLS-1$
 
-	public static final String ELEM_REQUEST = "request";
+	public static final String ELEM_REQUEST = "request"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 2;
 
-	public static final String TAG = "resolution";
+	public static final String TAG = "resolution"; //$NON-NLS-1$
 
 	private final List<String> m_attributes;
 
@@ -199,12 +200,12 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		if(m_opml != null)
 			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
 
-		String tmp = TextUtils.concat(m_attributes, ",");
+		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
 		if(tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable
-				? "true"
-				: "false");
+				? "true" //$NON-NLS-1$
+				: "false"); //$NON-NLS-1$
 		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_provider.getId().toString());
 		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
 
@@ -221,7 +222,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		if(m_size != -1L)
 			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
 		if(m_unpack)
-			Utils.addAttribute(attrs, ATTR_UNPACK, "true");
+			Utils.addAttribute(attrs, ATTR_UNPACK, "true"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -611,9 +612,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append("Name: ");
+		result.append(Messages.Resolution_Name);
 		result.append(m_request.getName());
-		result.append(", ");
+		result.append(", "); //$NON-NLS-1$
 		m_versionMatch.toString(result);
 		return result.toString();
 	}

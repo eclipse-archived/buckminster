@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.core.reader;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,6 +29,6 @@ public class LocalReader extends URLCatalogReader
 	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		throw new UnsupportedOperationException("local reader cannot materialize");
+		throw new UnsupportedOperationException(Messages.LocalReader_local_reader_cannot_materialize);
 	}
 }

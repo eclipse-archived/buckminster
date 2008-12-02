@@ -22,15 +22,15 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class BidirectionalTransformer extends AbstractSaxableElement
 {
-	public static final String TAG = "transform";
+	public static final String TAG = "transform"; //$NON-NLS-1$
 
-	public static final String ATTR_TO_PATTERN = "toPattern";
+	public static final String ATTR_TO_PATTERN = "toPattern"; //$NON-NLS-1$
 
-	public static final String ATTR_TO_REPLACEMENT = "toReplacement";
+	public static final String ATTR_TO_REPLACEMENT = "toReplacement"; //$NON-NLS-1$
 
-	public static final String ATTR_FROM_PATTERN = "fromPattern";
+	public static final String ATTR_FROM_PATTERN = "fromPattern"; //$NON-NLS-1$
 
-	public static final String ATTR_FROM_REPLACEMENT = "fromReplacement";
+	public static final String ATTR_FROM_REPLACEMENT = "fromReplacement"; //$NON-NLS-1$
 
 	private static String replace(String source, Pattern pattern, String replacement)
 	{

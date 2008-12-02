@@ -8,9 +8,11 @@
 
 package org.eclipse.buckminster.core.materializer;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -21,7 +23,6 @@ public class FileFolderMismatchException extends LocalizedException
 
 	public FileFolderMismatchException(IComponentIdentifier ci, IPath path)
 	{
-		super("Unable to reuse location %s for component %s. A file was expected but a folder was found or vice versa",
-				path, ci);
+		super(NLS.bind(Messages.FileFolderMismatchException_Unable_to_reuse_location_0_for_component_1, path, ci));
 	}
 }

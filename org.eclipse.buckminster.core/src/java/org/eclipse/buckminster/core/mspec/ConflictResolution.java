@@ -18,22 +18,22 @@ public enum ConflictResolution
 	/**
 	 * Fail with an exception.
 	 */
-	FAIL("Fail"),
+	FAIL("Fail"), //$NON-NLS-1$
 
 	/**
 	 * Simply clear the location prior to materializing.
 	 */
-	REPLACE("Replace"),
+	REPLACE("Replace"), //$NON-NLS-1$
 
 	/**
 	 * Update with new content. Some materializers may consider this equal to <code>REPLACE</code>.
 	 */
-	UPDATE("Update"),
+	UPDATE("Update"), //$NON-NLS-1$
 
 	/**
 	 * Reuse (trust) the content at the location and don't perform a new materialization.
 	 */
-	KEEP("Keep");
+	KEEP("Keep"); //$NON-NLS-1$
 
 	public static ConflictResolution getDefault()
 	{

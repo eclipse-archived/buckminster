@@ -33,7 +33,7 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 {
 	public static final int SEQUENCE_NUMBER = 3;
 
-	public static final String TAG = "depnode";
+	public static final String TAG = "depnode"; //$NON-NLS-1$
 
 	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
 			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException;

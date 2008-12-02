@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -59,6 +60,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
 public class MetadataSynchronizer implements IResourceChangeListener
@@ -67,7 +69,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	{
 		public MetadataRefreshJob()
 		{
-			super("Metadata refresh");
+			super(Messages.MetadataSynchronizer_Metadata_refresh);
 			setPriority(SHORT);
 			setSystem(true);
 		}
@@ -129,7 +131,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					while(s_default != null && (project = getNextProjectNeedingUpdate()) != null)
 					{
 						didSomething = true;
-						monitor.subTask("Refreshing " + project.getName());
+						monitor.subTask(NLS.bind(Messages.MetadataSynchronizer_Refreshing_0, project.getName()));
 						try
 						{
 							refreshProject(project, MonitorUtils.subMonitor(monitor, 70));
@@ -137,8 +139,10 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						catch(Exception e)
 						{
 							if(s_default != null && project.isAccessible())
-								CorePlugin.getLogger().error(e, "Project refresh on %s failed: %s", project.getName(),
-										e.getMessage());
+								CorePlugin.getLogger().error(
+										e,
+										NLS.bind(Messages.MetadataSynchronizer_Project_refresh_on_0_failed_1, project
+												.getName(), e.getMessage()));
 						}
 					}
 				}
@@ -236,7 +240,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	{
 		public WorkspaceCatchUpJob()
 		{
-			super("Buckminster workspace catch up");
+			super(Messages.MetadataSynchronizer_Buckminster_workspace_catch_up);
 
 			// We need very high prio on this since we wait
 			// for it to complete during plug-in activation
@@ -247,7 +251,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		@Override
 		protected IStatus run(IProgressMonitor monitor)
 		{
-			monitor.beginTask("Refreshing project meta-data", 1000);
+			monitor.beginTask(Messages.MetadataSynchronizer_Refreshing_project_meta_data, 1000);
 			try
 			{
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -270,14 +274,18 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						}
 						catch(Throwable e)
 						{
-							CorePlugin.getLogger().warning(e, "Problem during meta-data refresh: %s", e.getMessage());
+							CorePlugin.getLogger().warning(
+									e,
+									NLS.bind(Messages.MetadataSynchronizer_Problem_during_meta_data_refresh_0, e
+											.getMessage()));
 						}
 					}
 				}
 			}
 			catch(Throwable e)
 			{
-				CorePlugin.getLogger().warning(e, "Problem during meta-data refresh: %s", e.getMessage());
+				CorePlugin.getLogger().warning(e,
+						NLS.bind(Messages.MetadataSynchronizer_Problem_during_meta_data_refresh_0, e.getMessage()));
 			}
 			finally
 			{
@@ -370,16 +378,16 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 		for(IConfigurationElement elem : elems)
 		{
-			for(IConfigurationElement metaFile : elem.getChildren("metaFile"))
+			for(IConfigurationElement metaFile : elem.getChildren("metaFile")) //$NON-NLS-1$
 			{
-				String metaPath = metaFile.getAttribute("path");
+				String metaPath = metaFile.getAttribute("path"); //$NON-NLS-1$
 				if(metaPath == null)
 					continue;
 				metaPath = metaPath.trim();
 				if(metaPath.length() > 0)
 					s_default.registerCSpecSource(metaPath);
 
-				for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ","))
+				for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ",")) //$NON-NLS-1$ //$NON-NLS-2$
 				{
 					alias = alias.trim();
 					if(alias.length() > 0)
@@ -458,7 +466,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				IProject refdProj = (IProject)resource;
 				if(!refdProj.isOpen())
 				{
-					logger.warning("Project %s references a closed project: %s", project.getName(), cref.getName());
+					logger.warning(NLS.bind(Messages.MetadataSynchronizer_Project_0_references_closed_project_1,
+							project.getName(), cref.getName()));
 				}
 				else if(!oldSet.contains(refdProj.getName()))
 				{
@@ -484,9 +493,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(logger.isDebugEnabled())
 			{
 				StringBuilder bld = new StringBuilder();
-				bld.append("Project ");
-				bld.append(project.getName());
-				bld.append(" now has dynamic dependencies to");
+				bld.append(NLS.bind(Messages.MetadataSynchronizer_Project_0_now_has_dynamic_dependencies_to, project
+						.getName()));
 				for(IProject ref : refs)
 				{
 					bld.append(' ');
@@ -595,7 +603,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				bld.append('.');
 				break;
 			case '*':
-				bld.append(".*");
+				bld.append(".*"); //$NON-NLS-1$
 				break;
 			default:
 				bld.append(c);

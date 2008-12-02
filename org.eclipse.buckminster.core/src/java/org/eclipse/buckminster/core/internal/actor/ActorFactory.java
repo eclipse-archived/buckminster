@@ -26,15 +26,15 @@ import org.eclipse.core.runtime.Platform;
  */
 public class ActorFactory
 {
-	public static final String ACTOR_ID_ATTR = "ID";
+	public static final String ACTOR_ID_ATTR = "ID"; //$NON-NLS-1$
 
-	public static final String ACTOR_CLASS_ATTR = "class";
+	public static final String ACTOR_CLASS_ATTR = "class"; //$NON-NLS-1$
 
-	public static final String ACTOR_NAME_ATTR = "name";
+	public static final String ACTOR_NAME_ATTR = "name"; //$NON-NLS-1$
 
-	public static final String INTERNAL_ACTION_ATTR = "action";
+	public static final String INTERNAL_ACTION_ATTR = "action"; //$NON-NLS-1$
 
-	public static final String INTERNAL_ACTOR_ATTR = "actor";
+	public static final String INTERNAL_ACTOR_ATTR = "actor"; //$NON-NLS-1$
 
 	private static ActorFactory s_instance = null;
 

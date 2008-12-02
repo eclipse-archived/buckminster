@@ -7,8 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,6 +21,7 @@ public class ReferentialIntegrityException extends LocalizedException
 
 	public ReferentialIntegrityException(IUUIDPersisted instance, String operation, String reason)
 	{
-		super("Unable to %s the %s with id %s: %s", operation, instance.getClass().getName(), instance.getId(), reason);
+		super(NLS.bind(Messages.ReferentialIntegrityException_Unable_to_0_the_1_with_id_2_3, new Object[] { operation,
+				instance.getClass().getName(), instance.getId(), reason }));
 	}
 }

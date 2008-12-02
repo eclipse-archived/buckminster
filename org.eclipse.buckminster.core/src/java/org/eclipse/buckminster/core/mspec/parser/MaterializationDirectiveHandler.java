@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.mspec.parser;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -18,6 +19,7 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationDirective;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -96,8 +98,9 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw new SAXParseException("Invalid value for attribute \""
-						+ MaterializationDirective.ATTR_CONFLICT_RESOLUTION + '"', this.getDocumentLocator());
+				throw new SAXParseException(NLS.bind(
+						Messages.MaterializationDirectiveHandler_Invalid_value_for_attribute_0,
+						MaterializationDirective.ATTR_CONFLICT_RESOLUTION), this.getDocumentLocator());
 			}
 		}
 	}

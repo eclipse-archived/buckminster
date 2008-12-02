@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
@@ -135,7 +136,7 @@ public class SiteReader implements IStreamConsumer<SaxableSite>
 		monitor.beginTask(null, 1);
 		try
 		{
-			monitor.subTask("Loading site definition");
+			monitor.subTask(Messages.SiteReader_Loading_site_definition);
 			SaxableSite site = parseSite(stream, URLUtils.normalizeToURL(streamName));
 			MonitorUtils.worked(monitor, 1);
 			return site;

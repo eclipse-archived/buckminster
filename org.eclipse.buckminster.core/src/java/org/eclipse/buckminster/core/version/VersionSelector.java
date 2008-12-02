@@ -8,7 +8,9 @@
 
 package org.eclipse.buckminster.core.version;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.osgi.util.NLS;
 
 class Branch extends VersionSelector
 {
@@ -38,7 +40,7 @@ class Branch extends VersionSelector
 	@Override
 	public void viewNameToString(StringBuilder bld)
 	{
-		bld.append("Branch: ");
+		bld.append(Messages.VersionSelector_Branch);
 		bld.append(getName());
 	}
 }
@@ -74,7 +76,7 @@ class Tag extends VersionSelector
 	@Override
 	public void viewNameToString(StringBuilder bld)
 	{
-		bld.append("Tag: ");
+		bld.append(Messages.VersionSelector_Tag);
 		bld.append(getName());
 	}
 }
@@ -90,7 +92,7 @@ public abstract class VersionSelector
 	/**
 	 * The name of the main (also know as default) branch.
 	 */
-	public static final String DEFAULT_BRANCH = "main";
+	public static final String DEFAULT_BRANCH = "main"; //$NON-NLS-1$
 
 	public static final int BRANCH = 0;
 
@@ -121,7 +123,7 @@ public abstract class VersionSelector
 	 */
 	public static VersionSelector[] fromPath(String string)
 	{
-		String[] strings = TextUtils.split(string, ",");
+		String[] strings = TextUtils.split(string, ","); //$NON-NLS-1$
 		int idx = strings.length;
 		if(idx == 0)
 			return EMPTY_PATH;
@@ -157,17 +159,18 @@ public abstract class VersionSelector
 				char c = string.charAt(idx);
 				if(c == '/')
 					throw new IllegalArgumentException(
-							"The '/' character is only legal at first position of a branch/tag qualifier");
+							Messages.VersionSelector_The_slash_character_only_legal_at_first_position_of_branch_tag_qualifier);
 
 				if(c == ',' || Character.isWhitespace(c) || Character.isISOControl(c))
-					throw new IllegalArgumentException("The '" + c + "' character is illegal in a branch/tag qualifier");
+					throw new IllegalArgumentException(NLS.bind(
+							Messages.VersionSelector_The_0_character_is_illegal_in_branch_tag_qualifier, c));
 			}
 			if(top > 0)
 				return isTag
 						? new Tag(string)
 						: new Branch(string);
 		}
-		throw new IllegalArgumentException("A branch/tag qualifier cannot be empty");
+		throw new IllegalArgumentException(Messages.VersionSelector_A_branch_tag_qualifier_cannot_be_empty);
 	}
 
 	/**

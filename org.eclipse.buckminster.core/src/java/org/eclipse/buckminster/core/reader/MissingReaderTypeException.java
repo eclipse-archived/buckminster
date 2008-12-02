@@ -8,7 +8,9 @@
 package org.eclipse.buckminster.core.reader;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,7 +21,10 @@ public class MissingReaderTypeException extends LocalizedException
 
 	public MissingReaderTypeException(String remoteReaderId)
 	{
-		super("No reader type with id %s has been registered with extension-point %s", remoteReaderId,
-				CorePlugin.READER_TYPE_POINT);
+		super(
+				NLS
+						.bind(
+								Messages.MissingReaderTypeException_No_reader_type_with_id_0_has_been_registered_with_extension_point_1,
+								remoteReaderId, CorePlugin.READER_TYPE_POINT));
 	}
 }

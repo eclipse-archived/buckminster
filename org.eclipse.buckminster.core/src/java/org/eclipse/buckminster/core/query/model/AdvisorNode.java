@@ -33,49 +33,49 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IAdvisorNode
 {
-	public static final String ATTR_ATTRIBUTES = "attributes";
+	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT_TYPE = "componentType";
+	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
 
-	public static final String ATTR_MUTABLE_LEVEL = "mutableLevel";
+	public static final String ATTR_MUTABLE_LEVEL = "mutableLevel"; //$NON-NLS-1$
 
-	public static final String ATTR_NAME_PATTERN = "namePattern";
+	public static final String ATTR_NAME_PATTERN = "namePattern"; //$NON-NLS-1$
 
-	public static final String ATTR_OVERLAY_FOLDER = "overlayFolder";
+	public static final String ATTR_OVERLAY_FOLDER = "overlayFolder"; //$NON-NLS-1$
 
-	public static final String ATTR_PRUNE = "prune";
+	public static final String ATTR_PRUNE = "prune"; //$NON-NLS-1$
 
-	public static final String ATTR_SKIP_COMPONENT = "skipComponent";
+	public static final String ATTR_SKIP_COMPONENT = "skipComponent"; //$NON-NLS-1$
 
-	public static final String ATTR_SOURCE_LEVEL = "sourceLevel";
+	public static final String ATTR_SOURCE_LEVEL = "sourceLevel"; //$NON-NLS-1$
 
-	public static final String ATTR_USE_TARGET_PLATFORM = "useTargetPlatform";
+	public static final String ATTR_USE_TARGET_PLATFORM = "useTargetPlatform"; //$NON-NLS-1$
 
-	public static final String ATTR_USE_MATERIALIZATION = "useMaterialization";
+	public static final String ATTR_USE_MATERIALIZATION = "useMaterialization"; //$NON-NLS-1$
 
-	public static final String ATTR_USE_WORKSPACE = "useWorkspace";
+	public static final String ATTR_USE_WORKSPACE = "useWorkspace"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION_OVERRIDE = "versionOverride";
+	public static final String ATTR_VERSION_OVERRIDE = "versionOverride"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION_OVERRIDE_TYPE = "versionOverrideType";
+	public static final String ATTR_VERSION_OVERRIDE_TYPE = "versionOverrideType"; //$NON-NLS-1$
 
-	public static final String ATTR_ALLOW_CIRCULAR_DEPENDENCY = "allowCircularDependency";
+	public static final String ATTR_ALLOW_CIRCULAR_DEPENDENCY = "allowCircularDependency"; //$NON-NLS-1$
 
-	public static final String ATTR_WHEN_NOT_EMPTY = "whenNotEmpty";
+	public static final String ATTR_WHEN_NOT_EMPTY = "whenNotEmpty"; //$NON-NLS-1$
 
-	public static final String ATTR_USE_REMOTE_RESOLUTION = "useRemoteResolution";
+	public static final String ATTR_USE_REMOTE_RESOLUTION = "useRemoteResolution"; //$NON-NLS-1$
 
-	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery";
+	public static final String ATTR_SYSTEM_DISCOVERY = "systemDiscovery"; //$NON-NLS-1$
 
-	public static final String ATTR_BRANCH_TAG_PATH = "branchTagPath";
+	public static final String ATTR_BRANCH_TAG_PATH = "branchTagPath"; //$NON-NLS-1$
 
-	public static final String ATTR_REVISION = "revision";
+	public static final String ATTR_REVISION = "revision"; //$NON-NLS-1$
 
-	public static final String ATTR_TIMESTAMP = "timestamp";
+	public static final String ATTR_TIMESTAMP = "timestamp"; //$NON-NLS-1$
 
-	public static final String ATTR_RESOLUTION_PRIO = "resolutionPrio";
+	public static final String ATTR_RESOLUTION_PRIO = "resolutionPrio"; //$NON-NLS-1$
 
-	public static final String TAG = "advisorNode";
+	public static final String TAG = "advisorNode"; //$NON-NLS-1$
 
 	private final boolean m_allowCircularDependency;
 
@@ -157,30 +157,30 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		if(m_sourceLevel != SourceLevel.INDIFFERENT)
 			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, m_sourceLevel.name());
 		if(m_skipComponent)
-			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true");
+			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true"); //$NON-NLS-1$
 		if(m_allowCircularDependency)
-			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true");
+			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true"); //$NON-NLS-1$
 		if(!m_systemDiscovery)
-			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false");
+			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false"); //$NON-NLS-1$
 		if(!m_useMaterialization)
-			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false");
+			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false"); //$NON-NLS-1$
 		if(!m_useRemoteResolution)
-			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false");
+			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false"); //$NON-NLS-1$
 		if(!m_useTargetPlatform)
-			Utils.addAttribute(attrs, ATTR_USE_TARGET_PLATFORM, "false");
+			Utils.addAttribute(attrs, ATTR_USE_TARGET_PLATFORM, "false"); //$NON-NLS-1$
 		if(!m_useWorkspace)
-			Utils.addAttribute(attrs, ATTR_USE_WORKSPACE, "false");
+			Utils.addAttribute(attrs, ATTR_USE_WORKSPACE, "false"); //$NON-NLS-1$
 
 		if(m_versionOverride != null)
 		{
 			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, m_versionOverride.toString());
 			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE_TYPE, m_versionOverride.getVersion().getType().getId());
 		}
-		String tmp = TextUtils.concat(m_attributes, ",");
+		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
 		if(tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		if(m_prune)
-			Utils.addAttribute(attrs, ATTR_PRUNE, "true");
+			Utils.addAttribute(attrs, ATTR_PRUNE, "true"); //$NON-NLS-1$
 
 		tmp = VersionSelector.toString(m_branchTagPath);
 		if(tmp != null)

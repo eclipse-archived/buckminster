@@ -69,7 +69,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 	/**
 	 * Pattern that scans for href's that are relative and don't start with ?
 	 */
-	private static final Pattern s_htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>",
+	private static final Pattern s_htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>", //$NON-NLS-1$
 			Pattern.CASE_INSENSITIVE);
 
 	/**
@@ -77,13 +77,13 @@ public class URLCatalogReaderType extends CatalogReaderType
 	 * might contain a link, i.e. xxx -> yyy.
 	 */
 	private static final Pattern s_ftpPattern = Pattern.compile(
-			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))",
+			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))", //$NON-NLS-1$
 			Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Check if pattern matches an index.html or other index.xxx. We transform such URL's to denote folders instead.
 	 */
-	private static final Pattern s_indexPath = Pattern.compile("^(.*/)?index\\.[a-z][a-z0-9]+$");
+	private static final Pattern s_indexPath = Pattern.compile("^(.*/)?index\\.[a-z][a-z0-9]+$"); //$NON-NLS-1$
 
 	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
 
@@ -104,7 +104,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 				return;
 		}
 
-		if(link.equals("../"))
+		if(link.equals("../")) //$NON-NLS-1$
 			return;
 
 		links.add(new URL(parent, link));
@@ -112,11 +112,11 @@ public class URLCatalogReaderType extends CatalogReaderType
 
 	private static void collectLinks(Element element, URL parent, ArrayList<URL> links)
 	{
-		if(element.getNodeName().equals("a"))
+		if(element.getNodeName().equals("a")) //$NON-NLS-1$
 		{
 			try
 			{
-				addLink(links, parent, element.getAttribute("href"));
+				addLink(links, parent, element.getAttribute("href")); //$NON-NLS-1$
 			}
 			catch(MalformedURLException e)
 			{
@@ -260,7 +260,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		}
 
 		String proto = url.getProtocol();
-		if(proto.equalsIgnoreCase("ftp") || proto.equalsIgnoreCase("sftp"))
+		if(proto.equalsIgnoreCase("ftp") || proto.equalsIgnoreCase("sftp")) //$NON-NLS-1$ //$NON-NLS-2$
 		{
 			final ArrayList<URL> result = new ArrayList<URL>();
 			Scanner scanner = null;

@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.version;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -18,6 +19,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -98,9 +100,9 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			// Version converter not for the desired type so we will not find anything
 			//
 			if(branches)
-				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "tags", "branches");
+				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "tags", "branches"); //$NON-NLS-1$ //$NON-NLS-2$
 			else
-				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "branches", "tags");
+				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "branches", "tags"); //$NON-NLS-1$ //$NON-NLS-2$
 			MonitorUtils.complete(monitor);
 			return null;
 		}
@@ -118,7 +120,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			//
 			if(revision != -1 && entry.getRevision() > revision)
 			{
-				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high");
+				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high"); //$NON-NLS-1$
 				continue;
 			}
 
@@ -129,7 +131,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				Date entryTs = entry.getTimestamp();
 				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
 				{
-					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young");
+					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young"); //$NON-NLS-1$
 					continue;
 				}
 			}
@@ -144,8 +146,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				//
 				logDecision(branches
 						? ResolverDecisionType.BRANCH_REJECTED
-						: ResolverDecisionType.TAG_REJECTED, branchOrTag, String.format("not in path '%s'",
-						VersionSelector.toString(branchTagPath)));
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(
+						Messages.AbstractSCCSVersionFinder_not_in_path_0, VersionSelector.toString(branchTagPath)));
 				continue;
 			}
 
@@ -160,7 +162,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 					//
 					logDecision(branches
 							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "versionSelector cannot make sense of it");
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
+							Messages.AbstractSCCSVersionFinder_versionSelector_cannot_make_sense_of_it);
 					MonitorUtils.worked(monitor, 10);
 					continue;
 				}
@@ -173,7 +176,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				{
 					logDecision(branches
 							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "no component was found");
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
+							Messages.AbstractSCCSVersionFinder_no_component_was_found);
 					continue;
 				}
 				logDecision(branches
@@ -201,8 +205,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			{
 				// Discriminated by our designator
 				//
-				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s",
-						versionDesignator));
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
+						Messages.AbstractSCCSVersionFinder_not_designated_by_0, versionDesignator));
 				continue;
 			}
 
@@ -218,7 +222,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				{
 					logDecision(branches
 							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag, "no component was found");
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
+							Messages.AbstractSCCSVersionFinder_no_component_was_found);
 					continue;
 				}
 			}
@@ -226,7 +231,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			if(best == null || query.compare(match, best) > 0)
 			{
 				if(best != null)
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(
+							Messages.AbstractSCCSVersionFinder__0_is_a_better_match, match));
 
 				best = match;
 				if(vConverter == null)
@@ -266,7 +272,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			long revision = query.getRevision();
 			if(revision != -1 && entry.getRevision() > revision)
 			{
-				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high");
+				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()),
+						Messages.AbstractSCCSVersionFinder_too_high);
 				return null;
 			}
 
@@ -278,7 +285,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				Date entryTs = entry.getTimestamp();
 				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
 				{
-					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young");
+					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs,
+							Messages.AbstractSCCSVersionFinder_too_young);
 					return null;
 				}
 			}
@@ -301,8 +309,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			{
 				// Discriminated by our designator
 				//
-				logDecision(ResolverDecisionType.VERSION_REJECTED, version, String.format("not designated by %s",
-						versionDesignator));
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
+						Messages.AbstractSCCSVersionFinder_not_designated_by_0, versionDesignator));
 				return null;
 			}
 			return new VersionMatch(version, null, -1, null, null);
@@ -398,7 +406,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 					best = match;
 				else if(match != null && query.compare(match, best) > 0)
 				{
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(
+							Messages.AbstractSCCSVersionFinder__0_is_a_better_match, match));
 					best = match;
 				}
 			}
@@ -410,7 +419,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 					best = match;
 				else if(match != null && query.compare(match, best) > 0)
 				{
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, String.format("%s is a better match", match));
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(
+							Messages.AbstractSCCSVersionFinder__0_is_a_better_match, match));
 					best = match;
 				}
 			}

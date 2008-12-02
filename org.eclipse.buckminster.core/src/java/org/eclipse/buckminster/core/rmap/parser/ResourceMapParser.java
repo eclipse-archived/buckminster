@@ -63,9 +63,9 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
-		if("rmap".equals(localName))
+		if("rmap".equals(localName)) //$NON-NLS-1$
 		{
-			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
+			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type"); //$NON-NLS-1$
 			ResourceMapHandler rmh = this.createContentHandler(this, ResourceMapHandler.class, uri, type);
 			rmh.setContextURL(m_contextURL);
 			this.pushHandler(rmh, attrs);

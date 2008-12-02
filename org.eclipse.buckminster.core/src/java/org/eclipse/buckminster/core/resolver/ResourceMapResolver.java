@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -374,8 +375,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	private void waitForCompletion(IProgressMonitor monitor) throws CoreException
 	{
 		JobBlocker jobBlocker = new JobBlocker();
-		jobBlocker.addNameBlock("Building workspace");
-		jobBlocker.addNameBlock("Periodic workspace save.");
+		jobBlocker.addNameBlock(Messages.ResourceMapResolver_Building_workspace);
+		jobBlocker.addNameBlock(Messages.ResourceMapResolver_Periodic_workspace_save);
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		try
 		{

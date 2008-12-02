@@ -31,9 +31,9 @@ import org.eclipse.core.runtime.IPath;
  */
 public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
-	public static String FORMAT_PROPERTY = "generator.lastRevision.format";
+	public static String FORMAT_PROPERTY = "generator.lastRevision.format"; //$NON-NLS-1$
 
-	public static String DEFAULT_FORMAT = "r{0,number,##################}";
+	public static String DEFAULT_FORMAT = "r{0,number,##################}"; //$NON-NLS-1$
 
 	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
 			List<ComponentIdentifier> dependencies) throws CoreException

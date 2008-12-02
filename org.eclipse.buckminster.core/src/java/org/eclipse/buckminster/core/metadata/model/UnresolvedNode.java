@@ -28,10 +28,10 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class UnresolvedNode extends BOMNode
 {
-	public static final String ELEM_ATTRIBUTE = "attribute";
+	public static final String ELEM_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
 	@SuppressWarnings("hiding")
-	public static final String TAG = "unresolvedNode";
+	public static final String TAG = "unresolvedNode"; //$NON-NLS-1$
 
 	private final QualifiedDependency m_dependency;
 
@@ -106,6 +106,6 @@ public class UnresolvedNode extends BOMNode
 	@Override
 	public String getViewName() throws CoreException
 	{
-		return getRequest().getViewName() + ":unresolved";
+		return getRequest().getViewName() + ":unresolved"; //$NON-NLS-1$
 	}
 }

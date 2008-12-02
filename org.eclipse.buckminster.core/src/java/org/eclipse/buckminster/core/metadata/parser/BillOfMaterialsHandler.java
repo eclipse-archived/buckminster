@@ -13,15 +13,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.buckminster.sax.UUIDKeyed;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -82,7 +84,8 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException("wrapper " + queryId + " does not wrap a query", getDocumentLocator());
+			throw new SAXParseException(NLS
+					.bind(Messages.BillOfMaterialsHandler_wrapper_0_does_not_wrap_query, queryId), getDocumentLocator());
 		}
 	}
 
@@ -100,7 +103,8 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 				if(parent instanceof ChildHandler)
 					parent = ((ChildHandler)parent).getParentHandler();
 			}
-			throw new SAXParseException("id " + id + " appoints a non existing wrapper", getDocumentLocator());
+			throw new SAXParseException(NLS
+					.bind(Messages.BillOfMaterialsHandler_id_0_appoints_non_existing_wrapper, id), getDocumentLocator());
 		}
 		return wrapper.getWrapped();
 	}

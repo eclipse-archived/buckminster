@@ -7,8 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,7 +21,10 @@ public class MissingMaterializerException extends LocalizedException
 
 	public MissingMaterializerException(String materializerId)
 	{
-		super("No materializer with id %s has been registered with extension-point %s", materializerId,
-				IMaterializer.MATERIALIZERS_POINT);
+		super(
+				NLS
+						.bind(
+								Messages.MissingMaterializerException_No_materializer_with_id_0_has_been_registered_with_extension_point_1,
+								materializerId, IMaterializer.MATERIALIZERS_POINT));
 	}
 }

@@ -1,6 +1,8 @@
 package org.eclipse.buckminster.core.parser;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
@@ -24,8 +26,9 @@ public class NamespaceDeprecationFilter extends XMLFilterImpl
 	{
 		if(m_oldNamespace.equals(namespace))
 		{
-			CorePlugin.getLogger().warning("XML namespace %s is deprecated. Use %s instead: %s", m_oldNamespace,
-					m_newNamespace, m_systemID);
+			CorePlugin.getLogger().warning(
+					NLS.bind(Messages.NamespaceDeprecationFilter_XML_namespace_0_deprecated_Use_1_instead_2,
+							new Object[] { m_oldNamespace, m_newNamespace, m_systemID }));
 			namespace = m_newNamespace;
 		}
 		super.startPrefixMapping(prefix, namespace);

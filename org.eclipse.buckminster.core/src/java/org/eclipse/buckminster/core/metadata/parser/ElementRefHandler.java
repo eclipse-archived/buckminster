@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
  */
 public class ElementRefHandler extends ExtensionAwareHandler
 {
-	public static final String ATTR_REFID = "refId";
+	public static final String ATTR_REFID = "refId"; //$NON-NLS-1$
 
 	private final String m_tag;
 

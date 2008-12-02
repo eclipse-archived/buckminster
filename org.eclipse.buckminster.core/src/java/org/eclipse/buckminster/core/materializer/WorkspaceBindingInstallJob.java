@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.util.Arrays;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -62,7 +63,7 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 
 	private WorkspaceBindingInstallJob()
 	{
-		super("workspace binding installer");
+		super(Messages.WorkspaceBindingInstallJob_workspace_binding_installer);
 		setPriority(Job.BUILD);
 		setSystem(true);
 		setUser(false);

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -46,17 +47,17 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class BillOfMaterials extends BOMNode
 {
-	public static final String ATTR_QUERY_ID = "componentQueryId";
+	public static final String ATTR_QUERY_ID = "componentQueryId"; //$NON-NLS-1$
 
-	public static final String ATTR_TIMESTAMP = "timestamp";
+	public static final String ATTR_TIMESTAMP = "timestamp"; //$NON-NLS-1$
 
-	public static final String ATTR_TOP_NODE_ID = "topNodeId";
+	public static final String ATTR_TOP_NODE_ID = "topNodeId"; //$NON-NLS-1$
 
 	@SuppressWarnings("hiding")
 	public static final int SEQUENCE_NUMBER = 3;
 
 	@SuppressWarnings("hiding")
-	public static final String TAG = "billOfMaterials";
+	public static final String TAG = "billOfMaterials"; //$NON-NLS-1$
 
 	private static void addIfNotAdded(UUIDKeyed object, Set<UUID> unique, List<IDWrapper> wrappers)
 	{
@@ -137,9 +138,9 @@ public class BillOfMaterials extends BOMNode
 	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query, Date timestamp) throws CoreException
 	{
 		if(topNode == null)
-			throw new IllegalArgumentException("Top node cannot be null");
+			throw new IllegalArgumentException(Messages.BillOfMaterials_Top_node_cannot_be_null);
 		if(query == null)
-			throw new IllegalArgumentException("Component query cannot be null");
+			throw new IllegalArgumentException(Messages.BillOfMaterials_Component_query_cannot_be_null);
 		if(topNode instanceof BillOfMaterials)
 		{
 			BillOfMaterials bom = (BillOfMaterials)topNode;

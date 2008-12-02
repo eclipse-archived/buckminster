@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
@@ -178,7 +179,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	public void scheduleRemoval(IPath path)
 	{
 		if(!path.isAbsolute())
-			throw new IllegalArgumentException("Only absolute paths can be scheduled for removal");
+			throw new IllegalArgumentException(Messages.GlobalContext_Only_absolute_paths_can_be_scheduled_for_removal);
 
 		int idx = m_scheduledRemovals.size();
 		while(--idx >= 0)

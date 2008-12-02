@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.runtime.CoreException;
@@ -41,7 +42,7 @@ public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePrefere
 	public static final EclipsePreferencesReader INSTANCE = new EclipsePreferencesReader();
 
 	public static final String BUCKMINSTER_PROJECT_PREFS_PATH = EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME + '/'
-			+ CorePlugin.getID() + ".prefs";
+			+ CorePlugin.getID() + ".prefs"; //$NON-NLS-1$
 
 	public IEclipsePreferences consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
 			IProgressMonitor monitor) throws CoreException, IOException
@@ -50,7 +51,7 @@ public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePrefere
 		try
 		{
 			monitor.beginTask(null, 1);
-			monitor.subTask("Loading preferences");
+			monitor.subTask(Messages.EclipsePreferencesReader_Loading_preferences);
 			return ECRemotePrefs.loadFromStream(stream);
 		}
 		finally

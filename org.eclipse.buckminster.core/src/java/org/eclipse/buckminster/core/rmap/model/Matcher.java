@@ -24,7 +24,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public abstract class Matcher extends AbstractSaxableElement
 {
-	public static final String ATTR_PATTERN = "pattern";
+	public static final String ATTR_PATTERN = "pattern"; //$NON-NLS-1$
 
 	private final ResourceMap m_owner;
 

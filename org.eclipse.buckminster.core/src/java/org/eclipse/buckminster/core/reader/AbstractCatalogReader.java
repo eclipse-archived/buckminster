@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -42,6 +43,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -114,8 +116,9 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 				File addOnFile = new File(addOnFolder, fileName);
 				if(addOnFile.exists())
 				{
-					logger.debug("Provider %s(%s): getContents will use overlay %s for file = %s", getReaderType()
-							.getId(), ri.getRepositoryURI(), addOnFile, fileName);
+					logger.debug(NLS.bind(
+							Messages.AbstractCatalogReader_Provider_0_1_getContents_will_use_overlay_2_for_file_3,
+							new Object[] { getReaderType().getId(), ri.getRepositoryURI(), addOnFile, fileName }));
 					MonitorUtils.worked(monitor, 90);
 					return new FileHandle(fileName, addOnFile, false);
 				}
@@ -155,16 +158,17 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			}
 
 			String fos = fileOverlay.toString();
-			if(fos.endsWith(".zip") || fos.endsWith(".jar"))
+			if(fos.endsWith(".zip") || fos.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
-				File dest = FileUtils.createTempFolder("bmovl", ".tmp");
+				File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 				FileUtils.unzip(URLUtils.normalizeToURL(fos), getConnectContext(), null, dest,
 						ConflictResolution.REPLACE, monitor);
 				return dest;
 			}
 
 			if(!fileOverlay.isDirectory())
-				throw new IllegalOverlayException("Only folders, zip, and jar archives allowed");
+				throw new IllegalOverlayException(
+						Messages.AbstractCatalogReader_Only_folders_zip_and_jar_archives_allowed);
 
 			// Monitor was not used for anything so make it complete
 			//
@@ -258,8 +262,9 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			IProgressMonitor monitor) throws CoreException
 	{
 		ProviderMatch pm = this.getProviderMatch();
-		CorePlugin.getLogger().debug("Provider %s(%s): materializing to %s", getReaderType().getId(),
-				pm.getRepositoryURI(), location);
+		CorePlugin.getLogger().debug(
+				NLS.bind(Messages.AbstractCatalogReader_Provider_0_1_materializing_to_2, new Object[] {
+						getReaderType().getId(), pm.getRepositoryURI(), location }));
 
 		monitor.beginTask(null, 100);
 		try
@@ -276,10 +281,11 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	private File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException
 	{
 		String path = url.getPath();
-		if(!(path.endsWith(".zip") || path.endsWith(".jar")))
-			throw new IllegalOverlayException("Only zip and jar archives allowed for remote overlays");
+		if(!(path.endsWith(".zip") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalOverlayException(
+					Messages.AbstractCatalogReader_Only_zip_and_jar_archives_allowed_for_remote_overlays);
 
-		File dest = FileUtils.createTempFolder("bmovl", ".tmp");
+		File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 		FileUtils.unzip(url, getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
 		return dest;
 	}

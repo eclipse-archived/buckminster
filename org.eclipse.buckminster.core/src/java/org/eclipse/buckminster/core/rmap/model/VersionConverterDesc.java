@@ -22,11 +22,11 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class VersionConverterDesc extends AbstractSaxableElement
 {
-	public static final String TAG = "versionConverter";
+	public static final String TAG = "versionConverter"; //$NON-NLS-1$
 
-	public static final String ATTR_TYPE = "type";
+	public static final String ATTR_TYPE = "type"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION_TYPE = "versionType";
+	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
 	private final String m_type;
 

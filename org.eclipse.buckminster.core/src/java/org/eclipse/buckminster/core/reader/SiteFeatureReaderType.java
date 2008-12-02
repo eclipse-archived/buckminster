@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -27,6 +28,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -49,7 +51,8 @@ public class SiteFeatureReaderType extends CatalogReaderType
 	{
 		String[] ctypeIDs = provider.getComponentTypeIDs();
 		if(!(ctypeIDs.length == 1 && IComponentType.ECLIPSE_SITE_FEATURE.equals(ctypeIDs[0])))
-			throw BuckminsterException.fromMessage("Site reader can only be used with site.feature component type");
+			throw BuckminsterException
+					.fromMessage(Messages.SiteFeatureReaderType_Site_reader_can_only_be_used_with_site_feature);
 	}
 
 	public static synchronized ISite getSite(String siteURLStr, IProgressMonitor monitor) throws CoreException
@@ -58,8 +61,8 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		try
 		{
 			siteURL = URLUtils.normalizeToURL(siteURLStr);
-			if(siteURL.getPath().endsWith("/"))
-				siteURL = URLUtils.appendPath(siteURL, Path.fromPortableString("site.xml"));
+			if(siteURL.getPath().endsWith("/")) //$NON-NLS-1$
+				siteURL = URLUtils.appendPath(siteURL, Path.fromPortableString("site.xml")); //$NON-NLS-1$
 			return SiteManager.getSite(siteURL, monitor);
 		}
 		catch(MalformedURLException e)
@@ -68,8 +71,8 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		}
 		catch(CoreException e)
 		{
-			CoreException ew = new CoreException(BuckminsterException.createStatus(e, "Unable to obtain site from: %s",
-					siteURLStr));
+			CoreException ew = new CoreException(BuckminsterException.createStatus(e, NLS.bind(
+					Messages.SiteFeatureReaderType_Unable_to_obtain_site_from_0, siteURLStr)));
 			ew.initCause(e);
 			throw ew;
 		}

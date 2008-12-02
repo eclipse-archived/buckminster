@@ -26,16 +26,16 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class GeneratorNode extends BOMNode
 {
-	public static final String ATTR_ATTRIBUTE = "attribute";
+	public static final String ATTR_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT = "component";
+	public static final String ATTR_COMPONENT = "component"; //$NON-NLS-1$
 
-	public static final String ATTR_GENERATES = "generates";
+	public static final String ATTR_GENERATES = "generates"; //$NON-NLS-1$
 
-	public static final String ATTR_DECLARING_CSPEC_ID = "declaringCSpecId";
+	public static final String ATTR_DECLARING_CSPEC_ID = "declaringCSpecId"; //$NON-NLS-1$
 
 	@SuppressWarnings("hiding")
-	public static final String TAG = "generatorNode";
+	public static final String TAG = "generatorNode"; //$NON-NLS-1$
 
 	private final String m_attribute;
 
@@ -126,7 +126,7 @@ public class GeneratorNode extends BOMNode
 	@Override
 	public String getViewName() throws CoreException
 	{
-		return getRequest().getViewName() + ":generated";
+		return getRequest().getViewName() + ":generated"; //$NON-NLS-1$
 	}
 
 	@Override

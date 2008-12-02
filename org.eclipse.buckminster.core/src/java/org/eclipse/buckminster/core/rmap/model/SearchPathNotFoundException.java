@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.rmap.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,6 +20,6 @@ public class SearchPathNotFoundException extends LocalizedException
 
 	public SearchPathNotFoundException(String name)
 	{
-		super("Unable to find a searchPath for %s", name);
+		super(NLS.bind(Messages.SearchPathNotFoundException_Unable_to_find_a_searchPath_for_0, name));
 	}
 }

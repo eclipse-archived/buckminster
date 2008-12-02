@@ -8,6 +8,9 @@
 
 package org.eclipse.buckminster.core.resolver;
 
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /**
  * @author Thomas Hallgren
  */
@@ -18,7 +21,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Branch %s rejected: %s";
+			return Messages.ResolverDecisionType_Branch_0_rejected_1;
 		}
 	},
 
@@ -27,7 +30,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Wrong component type: %s";
+			return Messages.ResolverDecisionType_Wrong_component_type_0;
 		}
 	},
 
@@ -36,7 +39,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Resolution attempt ended with exception: %s";
+			return Messages.ResolverDecisionType_Resolution_attempt_ended_with_exception_0;
 		}
 	},
 
@@ -45,7 +48,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Filter %s does not match the current property set";
+			return Messages.ResolverDecisionType_Filter_0_does_not_match_the_current_property_set;
 		}
 	},
 
@@ -54,7 +57,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Found match %s";
+			return Messages.ResolverDecisionType_Found_match_0;
 		}
 	},
 
@@ -63,7 +66,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Match %s was rejected: %s";
+			return Messages.ResolverDecisionType_Match_0_was_rejected_1;
 		}
 	},
 
@@ -72,7 +75,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Trunk/Head rejected: %s";
+			return Messages.ResolverDecisionType_Trunk_Head_rejected_0;
 		}
 	},
 
@@ -81,7 +84,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "No branches were found";
+			return Messages.ResolverDecisionType_No_branches_were_found;
 		}
 	},
 
@@ -90,7 +93,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "No tags were found";
+			return Messages.ResolverDecisionType_No_tags_were_found;
 		}
 	},
 
@@ -99,7 +102,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "No provider was found that could resolve the request";
+			return Messages.ResolverDecisionType_No_provider_was_found_that_could_resolve_the_request;
 		}
 	},
 
@@ -108,7 +111,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Redirecting to resource map %s";
+			return Messages.ResolverDecisionType_Redirecting_to_resource_map_0;
 		}
 	},
 
@@ -117,7 +120,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Rejecting provider %s(%s): %s";
+			return Messages.ResolverDecisionType_Rejecting_provider_0_1_2;
 		}
 	},
 
@@ -126,7 +129,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Revision %s rejected: %s";
+			return Messages.ResolverDecisionType_Revision_0_rejected_1;
 		}
 	},
 
@@ -135,7 +138,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "No searchPath was found with a matching pattern";
+			return Messages.ResolverDecisionType_No_searchPath_was_found_with_a_matching_pattern;
 		}
 	},
 
@@ -144,7 +147,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "trunk/head will be searched";
+			return Messages.ResolverDecisionType_trunk_head_will_be_searched;
 		}
 	},
 
@@ -153,7 +156,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "branches will be searched";
+			return Messages.ResolverDecisionType_branches_will_be_searched;
 		}
 	},
 
@@ -162,7 +165,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "tags will be searched";
+			return Messages.ResolverDecisionType_tags_will_be_searched;
 		}
 	},
 
@@ -171,7 +174,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Space %s rejected: %s";
+			return Messages.ResolverDecisionType_Space_0_rejected_1;
 		}
 	},
 
@@ -180,7 +183,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Tag %s rejected: %s";
+			return Messages.ResolverDecisionType_Tag_0_rejected_1;
 		}
 	},
 
@@ -189,7 +192,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Timestamp %s rejected: %s";
+			return Messages.ResolverDecisionType_Timestamp_0_rejected_1;
 		}
 	},
 
@@ -198,7 +201,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Trying provider %s(%s)";
+			return Messages.ResolverDecisionType_Trying_provider_0_1;
 		}
 	},
 
@@ -207,7 +210,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Using provider %s(%s)";
+			return Messages.ResolverDecisionType_Using_provider_0_1;
 		}
 	},
 
@@ -216,7 +219,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Using resolver %s";
+			return Messages.ResolverDecisionType_Using_resolver_0;
 		}
 	},
 
@@ -225,7 +228,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Using resource map %s";
+			return Messages.ResolverDecisionType_Using_resource_map_0;
 		}
 	},
 
@@ -234,7 +237,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Using search path %s";
+			return Messages.ResolverDecisionType_Using_search_path_0;
 		}
 	},
 
@@ -243,7 +246,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "VersionSelector for %s discriminates all %s";
+			return Messages.ResolverDecisionType_VersionSelector_for_0_discriminates_all_1;
 		}
 	},
 
@@ -252,7 +255,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Version %s rejected: %s";
+			return Messages.ResolverDecisionType_Version_0_rejected_1;
 		}
 	},
 
@@ -261,7 +264,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Using version converter %s. trunk/head will not be considered";
+			return Messages.ResolverDecisionType_Using_version_converter_0_trunk_head_not_considered;
 		}
 	},
 
@@ -270,7 +273,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Version %s was converted from branch %s";
+			return Messages.ResolverDecisionType_Version_0_was_converted_from_branch_1;
 		}
 	},
 
@@ -279,12 +282,12 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return "Version %s was converted from tag %s";
+			return Messages.ResolverDecisionType_Version_0_was_converted_from_tag_1;
 		}
 	};
 
 	public final String getMessage(Object... args)
 	{
-		return String.format(toString(), args);
+		return NLS.bind(toString(), args);
 	}
 }

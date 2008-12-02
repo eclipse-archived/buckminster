@@ -28,17 +28,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IMaterializer
 {
-	static final String MATERIALIZERS_POINT = CorePlugin.CORE_NAMESPACE + ".materializers";
+	static final String MATERIALIZERS_POINT = CorePlugin.CORE_NAMESPACE + ".materializers"; //$NON-NLS-1$
 
-	static final String FILE_SYSTEM = "filesystem";
+	static final String FILE_SYSTEM = "filesystem"; //$NON-NLS-1$
 
-	static final String WORKSPACE = "workspace";
+	static final String WORKSPACE = "workspace"; //$NON-NLS-1$
 
-	static final String TARGET_PLATFORM = "targetPlatform";
+	static final String TARGET_PLATFORM = "targetPlatform"; //$NON-NLS-1$
 
-	static final String SITE_MIRROR = "site.mirror";
+	static final String SITE_MIRROR = "site.mirror"; //$NON-NLS-1$
 
-	static final Object MATERIALIZER_PROPERTY = "buckminster.materializer.name";
+	static final Object MATERIALIZER_PROPERTY = "buckminster.materializer.name"; //$NON-NLS-1$
 
 	/**
 	 * Returns true if this materializer can work in parallel with other materializers of the same type.

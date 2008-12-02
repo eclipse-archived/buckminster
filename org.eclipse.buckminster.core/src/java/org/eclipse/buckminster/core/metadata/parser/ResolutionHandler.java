@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
@@ -35,6 +36,7 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -89,11 +91,11 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 	private String m_fixedVersionSelector;
 
-	private static final Pattern s_versionExp = Pattern.compile("^\\s*(.*?)([@/#][^@/#]*?)?(?:\\|(.+))?\\s*$");
+	private static final Pattern s_versionExp = Pattern.compile("^\\s*(.*?)([@/#][^@/#]*?)?(?:\\|(.+))?\\s*$"); //$NON-NLS-1$
 
-	private static final Pattern s_numberExp = Pattern.compile("^#(\\d+)$");
+	private static final Pattern s_numberExp = Pattern.compile("^#(\\d+)$"); //$NON-NLS-1$
 
-	private static final Pattern s_tagExp = Pattern.compile("^/(.*)$");
+	private static final Pattern s_tagExp = Pattern.compile("^/(.*)$"); //$NON-NLS-1$
 
 	public ResolutionHandler(AbstractHandler parent)
 	{
@@ -124,14 +126,14 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	public Resolution getResolution() throws SAXException
 	{
 		if(m_request == null)
-			throw new SAXParseException("Missing required element <" + XMLConstants.BM_METADATA_PREFIX + '.'
-					+ Resolution.ELEM_REQUEST + '>', this.getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.ResolutionHandler_Missing_required_element_0,
+					XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST), this.getDocumentLocator());
 
 		if(m_versionMatch == null)
 		{
 			if(m_version == null && m_fixedVersionSelector == null)
-				throw new SAXParseException("Missing required element <" + XMLConstants.BM_METADATA_PREFIX + '.'
-						+ VersionMatch.TAG + '>', this.getDocumentLocator());
+				throw new SAXParseException(NLS.bind(Messages.ResolutionHandler_Missing_required_element_0,
+						XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG), this.getDocumentLocator());
 
 			m_versionMatch = legacyVersionMatch();
 		}
@@ -196,7 +198,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		String attributes = getOptionalStringValue(attrs, Resolution.ATTR_ATTRIBUTES);
 		if(attributes != null)
 		{
-			for(String attr : attributes.split(","))
+			for(String attr : attributes.split(",")) //$NON-NLS-1$
 			{
 				if(!m_attributes.contains(attr))
 					m_attributes.add(attr);
@@ -207,7 +209,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		//
 		m_version = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION);
 		m_versionType = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION_TYPE);
-		m_fixedVersionSelector = getOptionalStringValue(attrs, "fixedVersionSelector");
+		m_fixedVersionSelector = getOptionalStringValue(attrs, "fixedVersionSelector"); //$NON-NLS-1$
 	}
 
 	private String legacyComponentType() throws SAXException
@@ -286,7 +288,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			if(m.matches())
 			{
 				String tag = m.group(1);
-				if(tag != null && !"LATEST".equals(tag)) // The LATEST comparison is for backward compatibility
+				if(tag != null && !"LATEST".equals(tag)) // The LATEST comparison is for backward compatibility //$NON-NLS-1$
 					btag = VersionSelector.tag(tag);
 				return new VersionMatch(version, btag, -1, null, artifactType);
 			}
@@ -304,8 +306,8 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			if(m.matches())
 				return new VersionMatch(version, btag, Long.parseLong(m.group(1)), null, artifactType);
 		}
-		throw new SAXParseException(
-				"Unable to parse legacy version selector string \"" + m_fixedVersionSelector + "\"",
+		throw new SAXParseException(NLS.bind(
+				Messages.ResolutionHandler_Unable_to_parse_legacy_version_selector_string_0, m_fixedVersionSelector),
 				getDocumentLocator());
 	}
 }

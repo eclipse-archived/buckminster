@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.reader;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -50,7 +51,7 @@ public class LocalReaderType extends URLCatalogReaderType
 		{
 			File file = FileUtils.getFile(URLUtils.normalizeToURL(rc.getRepository()));
 			if(file == null)
-				throw new IllegalArgumentException("Resolution not created using LocalReader");
+				throw new IllegalArgumentException(Messages.LocalReaderType_Resolution_not_created_using_LocalReader);
 			IPath path = Path.fromOSString(file.toString());
 			if(path.toFile().isDirectory())
 				path = path.addTrailingSeparator();

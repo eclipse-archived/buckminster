@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -35,12 +36,12 @@ import org.eclipse.core.runtime.IPath;
  */
 public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
-	public static final String FORMAT_PROPERTY = "generator.lastModified.format";
+	public static final String FORMAT_PROPERTY = "generator.lastModified.format"; //$NON-NLS-1$
 
-	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm";
+	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm"; //$NON-NLS-1$
 
-	public static final String[] commonFormats = new String[] { DEFAULT_FORMAT, "'v'yyyyMMdd-HHmm", "'v'yyyyMMdd",
-			"'I'yyyyMMddHHmm", "'I'yyyyMMdd-HHmm", "'I'yyyyMMdd" };
+	public static final String[] commonFormats = new String[] { DEFAULT_FORMAT, "'v'yyyyMMdd-HHmm", "'v'yyyyMMdd", //$NON-NLS-1$ //$NON-NLS-2$
+			"'I'yyyyMMddHHmm", "'I'yyyyMMdd-HHmm", "'I'yyyyMMdd" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	public static final DateFormat[] commonFormatters;
 
@@ -68,7 +69,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		Date dt = mf.parse(str);
 		long tm = dt.getTime();
 		if(tm > now || tm < sanePast)
-			throw new ParseException("Bogus", 0);
+			throw new ParseException("Bogus", 0); //$NON-NLS-1$
 		return dt;
 	}
 

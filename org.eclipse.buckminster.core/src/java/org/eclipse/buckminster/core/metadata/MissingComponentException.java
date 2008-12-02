@@ -8,7 +8,9 @@
 
 package org.eclipse.buckminster.core.metadata;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,6 +21,6 @@ public class MissingComponentException extends LocalizedException
 
 	public MissingComponentException(String componentName)
 	{
-		super("No component named %s is known to Buckminster", componentName);
+		super(NLS.bind(Messages.MissingComponentException_No_component_0_known_to_Buckminster, componentName));
 	}
 }

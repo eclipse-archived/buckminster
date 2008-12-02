@@ -13,6 +13,7 @@ package org.eclipse.buckminster.core.reader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProjectDescription;
@@ -54,7 +55,7 @@ public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
 		try
 		{
 			monitor.beginTask(null, 1);
-			monitor.subTask("Loading project description");
+			monitor.subTask(Messages.ProjectDescReader_Loading_project_description);
 			IWorkspace ws = ResourcesPlugin.getWorkspace();
 			synchronized(ws)
 			{

@@ -68,7 +68,7 @@ public class URLReaderType extends AbstractReaderType
 	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
 			throws CoreException
 	{
-		return fetchFactoryLocator.get("src");
+		return fetchFactoryLocator.get("src"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class URLReaderType extends AbstractReaderType
 
 		URI uri = getURI(resolution.getRepository());
 		Map<String, String> params = TextUtils.queryAsParameters(uri.getQuery());
-		String pathStr = params.get("file");
+		String pathStr = params.get("file"); //$NON-NLS-1$
 		if(pathStr == null)
 			pathStr = uri.getPath();
 

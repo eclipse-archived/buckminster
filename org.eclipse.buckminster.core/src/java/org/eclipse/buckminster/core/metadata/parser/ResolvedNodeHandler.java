@@ -10,12 +10,14 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -68,8 +70,8 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException("wrapper " + m_resolutionId + " does not wrap a resolution",
-					getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.ResolvedNodeHandler_wrapper_0_does_not_wrap_resolution,
+					m_resolutionId), getDocumentLocator());
 		}
 	}
 

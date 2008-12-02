@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
@@ -62,7 +64,8 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			}
 		}
 		if(installSite == null)
-			throw BuckminsterException.fromMessage("Could not find a site to install to");
+			throw BuckminsterException
+					.fromMessage(Messages.TargetPlatformMaterializer_Could_not_find_a_site_to_install_to);
 		return installSite.getSite();
 	}
 
@@ -90,7 +93,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 
 				FileUtils.prepareDestination(folder, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 5));
 				String destStr = destination.toPortableString();
-				if(!destStr.startsWith("/"))
+				if(!destStr.startsWith("/")) //$NON-NLS-1$
 					//
 					// An absolute path can start with C:/. Here it must be /C:/
 					//
@@ -100,7 +103,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 				// spaces. If we create a correctly escaped one by passing it through a
 				// URI, the SiteManager will puke.
 				//
-				URL url = new URL("file", null, destStr);
+				URL url = new URL("file", null, destStr); //$NON-NLS-1$
 				return SiteManager.getSite(url, false, MonitorUtils.subMonitor(monitor, 95));
 			}
 		}
@@ -111,8 +114,9 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			if(children.length == 1)
 			{
 				s = children[0];
-				if(s.getException() instanceof FileNotFoundException && s.getMessage().startsWith("Unable to access"))
-					e = BuckminsterException.fromMessage("No target platform found at: %s", destination);
+				if(s.getException() instanceof FileNotFoundException && s.getMessage().startsWith("Unable to access")) //$NON-NLS-1$
+					e = BuckminsterException.fromMessage(NLS.bind(
+							Messages.TargetPlatformMaterializer_No_target_platform_found_at_0, destination));
 			}
 			throw e;
 		}
@@ -129,7 +133,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 	@Override
 	public String getMaterializerRootDir()
 	{
-		return "downloads";
+		return "downloads"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -140,7 +144,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		try
 		{
 			URL url = destinationSite.getURL();
-			if("file".equals(url.getProtocol()))
+			if("file".equals(url.getProtocol())) //$NON-NLS-1$
 			{
 				try
 				{

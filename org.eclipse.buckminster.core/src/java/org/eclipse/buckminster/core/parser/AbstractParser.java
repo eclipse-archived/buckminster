@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -36,6 +37,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -47,7 +49,7 @@ import org.xml.sax.XMLReader;
  */
 public abstract class AbstractParser<T> extends TopHandler implements ErrorHandler, IParser<T>
 {
-	private static Pattern s_saxParseCleaner = Pattern.compile("^cvc-[^:]+:(.*)$");
+	private static Pattern s_saxParseCleaner = Pattern.compile("^cvc-[^:]+:(.*)$"); //$NON-NLS-1$
 
 	private static IFile[] s_noFiles = new IFile[0];
 
@@ -83,7 +85,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 
 	private static IFile[] getFilesForSystemId(String systemId)
 	{
-		if(systemId == null || systemId.contains(".metadata"))
+		if(systemId == null || systemId.contains(".metadata")) //$NON-NLS-1$
 			return s_noFiles;
 
 		try
@@ -144,7 +146,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		int top = namespaces.length;
 
 		if(top != schemaLocations.length)
-			throw new IllegalArgumentException("the namespace and schemaLocation arrays must be equal in length");
+			throw new IllegalArgumentException(
+					Messages.AbstractParser_the_namespace_and_schemaLocation_arrays_must_be_equal_in_length);
 		m_namespaceLocations = new ArrayList<String>();
 		for(int idx = 0; idx < top; ++idx)
 		{
@@ -152,7 +155,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			String schemaFile = schemaLocations[idx];
 			URL schemaURL = getClass().getResource(schemaFile);
 			if(schemaURL == null)
-				throw BuckminsterException.fromMessage("Unable to find XMLSchema for namespace %s", namespace);
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.AbstractParser_Unable_to_find_XMLSchema_for_namespace_0, namespace));
 			addNamespaceLocation(namespace, schemaURL);
 		}
 
@@ -185,7 +189,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 					String prefix = xsiType.substring(0, colonIndex);
 					ns = getPrefixMapping(prefix);
 					if(ns == null)
-						throw new SAXParseException("Unknown namespace prefix: " + prefix, getDocumentLocator());
+						throw new SAXParseException(NLS
+								.bind(Messages.AbstractParser_Unknown_namespace_prefix_0, prefix), getDocumentLocator());
 					xsiType = xsiType.substring(colonIndex + 1);
 				}
 				else
@@ -209,8 +214,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 		catch(Exception e)
 		{
-			throw new SAXParseException("Unable to create extension handler " + namespace + ':' + xsiType,
-					getDocumentLocator(), e);
+			throw new SAXParseException(NLS.bind(Messages.AbstractParser_Unable_to_create_extension_handler_0_1,
+					namespace, xsiType), getDocumentLocator(), e);
 		}
 	}
 
@@ -225,8 +230,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		XMLReader reader = getXMLReader();
 		if(m_validating)
 		{
-			reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+			reader.setFeature("http://apache.org/xml/features/validation/schema", true); //$NON-NLS-1$
+			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); //$NON-NLS-1$
 		}
 
 		int len = 0;
@@ -243,7 +248,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 				bld.append(' ');
 			bld.append(m_namespaceLocations.get(idx));
 		}
-		reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", bld.toString());
+		reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", bld.toString()); //$NON-NLS-1$
 	}
 
 	protected void parseInput(String systemId, InputStream input) throws CoreException

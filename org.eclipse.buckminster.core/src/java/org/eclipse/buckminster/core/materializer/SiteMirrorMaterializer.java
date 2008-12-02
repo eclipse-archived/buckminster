@@ -26,7 +26,7 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
 @SuppressWarnings("restriction")
 public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 {
-	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url";
+	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url"; //$NON-NLS-1$
 
 	@Override
 	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor)
@@ -50,7 +50,7 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 	@Override
 	public String getMaterializerRootDir()
 	{
-		return "siteMirrors";
+		return "siteMirrors"; //$NON-NLS-1$
 	}
 
 	@Override

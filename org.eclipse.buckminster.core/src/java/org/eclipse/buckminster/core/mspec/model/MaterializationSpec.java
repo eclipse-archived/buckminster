@@ -48,13 +48,13 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class MaterializationSpec extends MaterializationDirective implements ISaxable, IMaterializationSpec
 {
-	public static final String TAG = "mspec";
+	public static final String TAG = "mspec"; //$NON-NLS-1$
 
-	public static final String ATTR_NAME = "name";
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
-	public static final String ATTR_SHORT_DESC = "shortDesc";
+	public static final String ATTR_SHORT_DESC = "shortDesc"; //$NON-NLS-1$
 
-	public static final String ATTR_URL = "url";
+	public static final String ATTR_URL = "url"; //$NON-NLS-1$
 
 	public static MaterializationSpec fromStream(String systemId, InputStream stream) throws CoreException
 	{

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.parser.CSpecParser;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
@@ -133,7 +134,7 @@ public class ParserFactory implements IParserFactory
 		}
 	}
 
-	public static final String PARSER_EXTENSIONS_POINT = CorePlugin.CORE_NAMESPACE + ".parserExtensions";
+	public static final String PARSER_EXTENSIONS_POINT = CorePlugin.CORE_NAMESPACE + ".parserExtensions"; //$NON-NLS-1$
 
 	private static final ParserFactory s_instance = new ParserFactory();
 
@@ -202,7 +203,7 @@ public class ParserFactory implements IParserFactory
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().warning(e, "Unable to load parser extensions");
+				CorePlugin.getLogger().warning(e, Messages.ParserFactory_Unable_to_load_parser_extensions);
 				m_parserExtensions = Collections.emptyMap();
 			}
 		}
@@ -262,14 +263,14 @@ public class ParserFactory implements IParserFactory
 		for(IConfigurationElement namespace : exReg.getConfigurationElementsFor(PARSER_EXTENSIONS_POINT))
 		{
 			Bundle bundle = Platform.getBundle(namespace.getNamespaceIdentifier());
-			URL resource = bundle.getResource(namespace.getAttribute("resource"));
-			ParserExtension pe = new ParserExtension(namespace.getAttribute("namespace"), resource);
-			for(IConfigurationElement handler : namespace.getChildren("handler"))
+			URL resource = bundle.getResource(namespace.getAttribute("resource")); //$NON-NLS-1$
+			ParserExtension pe = new ParserExtension(namespace.getAttribute("namespace"), resource); //$NON-NLS-1$
+			for(IConfigurationElement handler : namespace.getChildren("handler")) //$NON-NLS-1$
 			{
 				try
 				{
-					pe.addHandler(handler.getAttribute("type"), ((Class<?>)bundle.loadClass(handler
-							.getAttribute("class"))).asSubclass(ChildHandler.class));
+					pe.addHandler(handler.getAttribute("type"), ((Class<?>)bundle.loadClass(handler //$NON-NLS-1$
+							.getAttribute("class"))).asSubclass(ChildHandler.class)); //$NON-NLS-1$
 				}
 				catch(ClassNotFoundException e)
 				{
@@ -277,7 +278,7 @@ public class ParserFactory implements IParserFactory
 				}
 			}
 
-			for(String parserId : namespace.getAttribute("parserIds").split(","))
+			for(String parserId : namespace.getAttribute("parserIds").split(",")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				List<ParserExtension> peList = peMap.get(parserId);
 				if(peList == null)

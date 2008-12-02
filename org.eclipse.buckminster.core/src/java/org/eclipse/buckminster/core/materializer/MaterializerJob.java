@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.IJobInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -18,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -33,7 +35,7 @@ public class MaterializerJob extends Job implements IJobInfo
 	public MaterializerJob(String id, IMaterializer materializer, List<Resolution> resolutions,
 			MaterializationContext context)
 	{
-		super(id + " materializer");
+		super(id + " materializer"); //$NON-NLS-1$
 		if(resolutions.size() < 1)
 			throw new IllegalArgumentException();
 
@@ -57,7 +59,8 @@ public class MaterializerJob extends Job implements IJobInfo
 	public String getOperationName()
 	{
 		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
-		return "Materialization of " + lastResolution.getComponentIdentifier().toString();
+		return NLS.bind(Messages.MaterializerJob_Materialization_of_0, lastResolution.getComponentIdentifier()
+				.toString());
 	}
 
 	@Override

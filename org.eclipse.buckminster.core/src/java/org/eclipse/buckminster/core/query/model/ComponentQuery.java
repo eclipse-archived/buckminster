@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
@@ -50,6 +51,7 @@ import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -59,17 +61,17 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, IComponentQuery
 {
-	public static final String ATTR_PROPERTIES = "properties";
+	public static final String ATTR_PROPERTIES = "properties"; //$NON-NLS-1$
 
-	public static final String ATTR_RESOURCE_MAP = "resourceMap";
+	public static final String ATTR_RESOURCE_MAP = "resourceMap"; //$NON-NLS-1$
 
-	public static final String ATTR_SHORT_DESC = "shortDesc";
+	public static final String ATTR_SHORT_DESC = "shortDesc"; //$NON-NLS-1$
 
-	public static final String ELEM_ROOT_REQUEST = "rootRequest";
+	public static final String ELEM_ROOT_REQUEST = "rootRequest"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 4;
 
-	public static final String TAG = "componentQuery";
+	public static final String TAG = "componentQuery"; //$NON-NLS-1$
 
 	public static ComponentQuery fromStream(URL url, IConnectContext cctx, InputStream stream, boolean validating)
 			throws CoreException
@@ -270,7 +272,8 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			{
 				// We allow missing properties but we log it nevertheless
 				//
-				CorePlugin.getLogger().info("Unable to read property file '%s' : %s", propsURL, e.toString());
+				CorePlugin.getLogger().info(
+						NLS.bind(Messages.ComponentQuery_Unable_to_read_property_file_0_1, propsURL, e.toString()));
 			}
 			finally
 			{
@@ -429,7 +432,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 
 	public String getTagInfo()
 	{
-		return "Query for " + m_rootRequest;
+		return NLS.bind(Messages.ComponentQuery_Query_for_0, m_rootRequest);
 	}
 
 	public Date getTimestamp(ComponentName cName)

@@ -167,7 +167,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		decisions.add(decision);
 		Logger logger = CorePlugin.getLogger();
 		if(logger.isDebugEnabled())
-			logger.debug("%s: %s", request, decision.toString());
+			logger.debug("%s: %s", request, decision.toString()); //$NON-NLS-1$
 		return decision;
 	}
 

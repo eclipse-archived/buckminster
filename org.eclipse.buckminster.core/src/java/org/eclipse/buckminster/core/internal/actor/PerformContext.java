@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
@@ -39,9 +40,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
  */
 public class PerformContext implements IActionContext
 {
-	final static String PRODUCT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "product.";
+	final static String PRODUCT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "product."; //$NON-NLS-1$
 
-	final static String REQUIREMENT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "requirement.";
+	final static String REQUIREMENT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "requirement."; //$NON-NLS-1$
 
 	private static PathGroup[] normalizePathGroups(PathGroup[] pathGroups) throws CoreException
 	{
@@ -80,7 +81,7 @@ public class PerformContext implements IActionContext
 		while(--topDown >= 0)
 		{
 			IPath path = paths.get(topDown);
-			if(path.segmentCount() == 1 && ".".equals(path.lastSegment()))
+			if(path.segmentCount() == 1 && ".".equals(path.lastSegment())) //$NON-NLS-1$
 			{
 				paths.clear();
 				return;
@@ -110,7 +111,7 @@ public class PerformContext implements IActionContext
 			if(file.exists())
 				existentBases.add(pathGroup);
 			else
-				CorePlugin.getLogger().debug("Base: %s: No such file or directory", file);
+				CorePlugin.getLogger().debug("Base: %s: No such file or directory", file); //$NON-NLS-1$
 		}
 		return existentBases.toArray(new PathGroup[existentBases.size()]);
 	}
@@ -152,7 +153,7 @@ public class PerformContext implements IActionContext
 		{
 			prereqRebase = PerformManager.expandPath(properties, prereqRebase);
 			if(prereqRebase.isAbsolute())
-				throw BuckminsterException.fromMessage("Action prerequisite base can not be absolute");
+				throw BuckminsterException.fromMessage(Messages.PerformContext_Action_prerequisite_base_can_not_be_absolute);
 			prereqRebase = cspec.getComponentLocation().append(prereqRebase);
 		}
 

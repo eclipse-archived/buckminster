@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.internal.version;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
@@ -371,11 +372,11 @@ public abstract class VersionDesignator implements IVersionDesignator
 			throws VersionSyntaxException
 	{
 		if(versionString == null)
-			throw new IllegalArgumentException("Version string cannot be null");
+			throw new IllegalArgumentException(Messages.VersionDesignator_Version_string_cannot_be_null);
 
 		int top = versionString.length();
 		if(top == 0)
-			throw new IllegalArgumentException("Version string cannot be empty");
+			throw new IllegalArgumentException(Messages.VersionDesignator_Version_string_cannot_be_empty);
 
 		int idx = 0;
 		while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
@@ -408,7 +409,7 @@ public abstract class VersionDesignator implements IVersionDesignator
 					result = new PerfectMatch(fromVersion);
 					break;
 				}
-				throw new VersionSyntaxException("expected ','", versionString, idx);
+				throw new VersionSyntaxException(Messages.VersionDesignator_expected_comma, versionString, idx);
 			}
 			++idx;
 			while(idx < top && Character.isWhitespace(versionString.charAt(idx)))
@@ -431,13 +432,13 @@ public abstract class VersionDesignator implements IVersionDesignator
 			case ')':
 				int compare = fromVersion.compareTo(toVersion);
 				if(compare > 0 || (compare == 0 && !(fromInclusive && toInclusive)))
-					throw new VersionSyntaxException("Negative version range", versionString, 0);
+					throw new VersionSyntaxException(Messages.VersionDesignator_Negative_version_range, versionString, 0);
 				result = (compare == 0)
 						? new PerfectMatch(fromVersion)
 						: new Range(fromVersion, fromInclusive, toVersion, toInclusive);
 				break;
 			default:
-				throw new VersionSyntaxException("expected ']' or ')'", versionString, idx);
+				throw new VersionSyntaxException(Messages.VersionDesignator_expected_squared_or_round_brackets, versionString, idx);
 			}
 			break;
 		default:

@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.materializer;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -70,7 +71,7 @@ public class InstallerJob extends WorkspaceJob
 
 	public InstallerJob(MaterializationContext ctx) throws CoreException
 	{
-		super("Installing");
+		super(Messages.InstallerJob_Installing);
 		m_context = ctx;
 
 		// Report using the standard job reporter.

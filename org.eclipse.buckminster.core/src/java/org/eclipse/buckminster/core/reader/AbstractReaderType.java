@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
@@ -41,6 +42,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 
 /**
@@ -82,8 +84,8 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
 		for(IConfigurationElement elem : exReg.getConfigurationElementsFor(CorePlugin.READER_TYPE_POINT))
 		{
-			if(providerId.equals(elem.getAttribute("teamRepositoryId")))
-				return CorePlugin.getDefault().getReaderType(elem.getAttribute("id"));
+			if(providerId.equals(elem.getAttribute("teamRepositoryId"))) //$NON-NLS-1$
+				return CorePlugin.getDefault().getReaderType(elem.getAttribute("id")); //$NON-NLS-1$
 		}
 		return null;
 	}
@@ -95,7 +97,8 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
 			throws CoreException
 	{
-		throw new UnsupportedOperationException("ReaderType " + getId() + " cannot handle fetchFactory data");
+		throw new UnsupportedOperationException(NLS.bind(
+				Messages.AbstractReaderType_ReaderType_0_cannot_handle_fetchFactory_data, getId()));
 	}
 
 	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException

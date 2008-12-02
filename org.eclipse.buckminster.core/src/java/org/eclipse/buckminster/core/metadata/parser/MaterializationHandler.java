@@ -53,7 +53,7 @@ public class MaterializationHandler extends ExtensionAwareHandler
 		{
 			// Backward compatibility. Look for resolutionId
 			//
-			UUID resolutionId = UUID.fromString(getStringValue(attrs, "resolutionId"));
+			UUID resolutionId = UUID.fromString(getStringValue(attrs, "resolutionId")); //$NON-NLS-1$
 			try
 			{
 				Resolution res = StorageManager.getDefault().getResolutions().getElement(resolutionId);

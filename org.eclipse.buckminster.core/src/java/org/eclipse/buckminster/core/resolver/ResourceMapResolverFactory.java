@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.IllegalParameterException;
 import org.eclipse.buckminster.core.prefedit.IPreferenceDescriptor;
@@ -40,17 +41,17 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	private static final IEclipsePreferences s_defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
 
-	public static final String RESOURCE_MAP_URL_PARAM = "resourceMapURL";
+	public static final String RESOURCE_MAP_URL_PARAM = "resourceMapURL"; //$NON-NLS-1$
 
-	public static final String OVERRIDE_QUERY_URL_PARAM = "overrideQueryURL";
+	public static final String OVERRIDE_QUERY_URL_PARAM = "overrideQueryURL"; //$NON-NLS-1$
 
 	public static final boolean OVERRIDE_QUERY_URL_DEFAULT = false;
 
-	public static final String LOCAL_RESOLVE_PARAM = "localResolve";
+	public static final String LOCAL_RESOLVE_PARAM = "localResolve"; //$NON-NLS-1$
 
 	public static final boolean LOCAL_RESOLVE_DEFAULT = true;
 
-	public static final String RESOLVER_THREADS_MAX_PARAM = "resolverThreadsMax";
+	public static final String RESOLVER_THREADS_MAX_PARAM = "resolverThreadsMax"; //$NON-NLS-1$
 
 	public static final int RESOLVER_THREADS_MAX_DEFAULT = 4;
 
@@ -112,12 +113,12 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	public IPreferenceDescriptor[] getPreferenceDescriptors()
 	{
 		PreferenceDescriptor[] pds = new PreferenceDescriptor[4];
-		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, "Resource map URL");
+		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, Messages.ResourceMapResolverFactory_Resource_map_URL);
 		pds[1] = new PreferenceDescriptor(OVERRIDE_QUERY_URL_PARAM, PreferenceType.Boolean,
-				"Override URL in Component Query");
-		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean, "Perform local resolution");
+				Messages.ResourceMapResolverFactory_Override_URL_in_Component_Query);
+		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean, Messages.ResourceMapResolverFactory_Perform_local_resolution);
 		pds[3] = new PreferenceDescriptor(RESOLVER_THREADS_MAX_PARAM, PreferenceType.Integer,
-				"Maximum number of resolver threads");
+				Messages.ResourceMapResolverFactory_Maximum_number_of_resolver_threads);
 		pds[3].setTextWidth(2);
 		pds[3].setIntegerRange(1, 12);
 		return pds;

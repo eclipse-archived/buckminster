@@ -24,9 +24,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWrapper>
 {
-	public static final String TAG = "idwrapper";
+	public static final String TAG = "idwrapper"; //$NON-NLS-1$
 
-	public static final String ATTR_ID = "id";
+	public static final String ATTR_ID = "id"; //$NON-NLS-1$
 
 	private final UUID m_id;
 

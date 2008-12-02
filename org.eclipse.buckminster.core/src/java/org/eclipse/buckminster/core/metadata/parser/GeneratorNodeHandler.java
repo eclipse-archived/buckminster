@@ -9,10 +9,12 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -50,7 +52,8 @@ class GeneratorNodeHandler extends BomNodeHandler
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException("wrapper " + cspecId + " does not wrap a cspec", getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.GeneratorNodeHandler_wrapper_0_does_not_wrap_cspec, cspecId),
+					getDocumentLocator());
 		}
 	}
 }

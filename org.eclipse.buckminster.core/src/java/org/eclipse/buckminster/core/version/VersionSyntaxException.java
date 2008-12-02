@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 public class VersionSyntaxException extends LocalizedException
 {
@@ -15,6 +17,7 @@ public class VersionSyntaxException extends LocalizedException
 
 	public VersionSyntaxException(String reason, String versionString, int errorPos)
 	{
-		super("Syntax error in version string %s at position %d: %s", versionString, Integer.valueOf(errorPos), reason);
+		super(NLS.bind(Messages.VersionSyntaxException_Syntax_error_in_version_string_0_at_position_1_2, new Object[] {
+				versionString, Integer.valueOf(errorPos), reason }));
 	}
 }

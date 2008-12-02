@@ -29,7 +29,7 @@ public class OSGiVersionType extends TripletVersionType
 	// valid separator between the last digit and the qualifier is the dot.
 	//
 	private static final Pattern s_OSGiVersionPattern = Pattern
-			.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.([^\\(\\)\\[\\],]+))?)?)?([\\)\\],]|$)");
+			.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.([^\\(\\)\\[\\],]+))?)?)?([\\)\\],]|$)"); //$NON-NLS-1$
 
 	@Override
 	public IVersion coerce(Object object)

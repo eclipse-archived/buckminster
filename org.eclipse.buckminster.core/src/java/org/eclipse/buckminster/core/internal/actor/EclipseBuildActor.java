@@ -7,8 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.internal.actor;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author ken1
@@ -16,9 +18,9 @@ import org.eclipse.buckminster.core.cspec.WellknownActions;
  */
 public class EclipseBuildActor extends AbstractBuildIntegrationActor
 {
-	public static final String ID = "eclipse.build";
+	public static final String ID = "eclipse.build"; //$NON-NLS-1$
 
-	public static final String KIND_PROPERTY = "kind";
+	public static final String KIND_PROPERTY = "kind"; //$NON-NLS-1$
 
 	@Override
 	protected String getNameForKind(IActionContext ctx)
@@ -32,6 +34,6 @@ public class EclipseBuildActor extends AbstractBuildIntegrationActor
 			if(kindAsString.equals(e.toString()))
 				return kindAsString;
 
-		throw new IllegalArgumentException("Invalid kind: " + kindAsString);
+		throw new IllegalArgumentException(NLS.bind(Messages.EclipseBuildActor_Invalid_kind_0, kindAsString));
 	}
 }

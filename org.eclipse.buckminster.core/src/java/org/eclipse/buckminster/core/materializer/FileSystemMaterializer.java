@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
@@ -39,6 +40,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Materializes each component to the local filesystem.
@@ -55,7 +57,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 	@Override
 	public String getMaterializerRootDir()
 	{
-		return "downloads";
+		return "downloads"; //$NON-NLS-1$
 	}
 
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
@@ -87,8 +89,8 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			if(workspaceRoot == null)
 				workspaceRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 
-			IPath userTemp = Path.fromOSString(System.getProperty("java.io.tmpdir"));
-			IPath userHome = Path.fromOSString(System.getProperty("user.home"));
+			IPath userTemp = Path.fromOSString(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
+			IPath userHome = Path.fromOSString(System.getProperty("user.home")); //$NON-NLS-1$
 
 			IProgressMonitor prepMon = MonitorUtils.subMonitor(monitor, 100);
 			prepMon.beginTask(null, resolutions.size() * 10);
@@ -141,8 +143,9 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							// just did.
 							//
 							statistics.addKept(ci);
-							logger.info("Skipping materialization of %s. Instead reusing what's already at %s", ci,
-									artifactLocation);
+							logger.info(NLS.bind(
+									Messages.FileSystemMaterializer_Skipping_materialization_of_0_Instead_reusing_1,
+									ci, artifactLocation));
 
 							mat.store(sm);
 							adjustedMinfos.add(mat);
@@ -185,7 +188,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							//
 							if(file.list().length == 0)
 							{
-								File mtFile = new File(file, ".mtlock");
+								File mtFile = new File(file, ".mtlock"); //$NON-NLS-1$
 								try
 								{
 									mtFile.createNewFile();
@@ -250,7 +253,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				//
 				IReaderType readerType = plugin.getReaderType(entry.getKey());
 
-				matMon.subTask("Preparing type " + readerType.getId());
+				matMon.subTask(NLS.bind(Messages.FileSystemMaterializer_Preparing_type_0, readerType.getId()));
 				readerType.prepareMaterialization(rg, context, MonitorUtils.subMonitor(matMon, 8));
 				for(Materialization mi : rg)
 				{
@@ -283,7 +286,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						IOUtils.close(reader);
 						IPath location = mi.getComponentLocation();
 						if(location.hasTrailingSeparator())
-							location.append(".mtlock").toFile().delete();
+							location.append(".mtlock").toFile().delete(); //$NON-NLS-1$
 
 						if(success)
 						{

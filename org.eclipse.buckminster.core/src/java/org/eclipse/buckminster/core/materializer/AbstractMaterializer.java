@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -58,9 +59,9 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		int idx = elems.length;
 		ArrayList<String> names = new ArrayList<String>(idx + 1);
 		if(includeEmptyEntry)
-			names.add("");
+			names.add(""); //$NON-NLS-1$
 		while(--idx >= 0)
-			names.add(elems[idx].getAttribute("id"));
+			names.add(elems[idx].getAttribute("id")); //$NON-NLS-1$
 		Collections.sort(names);
 		return names.toArray(new String[names.size()]);
 	}
@@ -154,10 +155,10 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		if(Platform.OS_WIN32.equals(Platform.getOS()))
 		{
 			File userDir = null;
-			String appDataEnv = System.getenv("APPDATA");
+			String appDataEnv = System.getenv("APPDATA"); //$NON-NLS-1$
 			if(appDataEnv != null)
 			{
-				userDir = new File(appDataEnv + "\\buckminster");
+				userDir = new File(appDataEnv + "\\buckminster"); //$NON-NLS-1$
 				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
 			}
 		}
@@ -169,13 +170,13 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			if(userDir != null)
 			{
 				if(Platform.OS_WIN32.equals(Platform.getOS()))
-					userDir = new File(userDir, "Application Data\\buckminster");
+					userDir = new File(userDir, "Application Data\\buckminster"); //$NON-NLS-1$
 				else
-					userDir = new File(userDir, "buckminster");
+					userDir = new File(userDir, "buckminster"); //$NON-NLS-1$
 				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
 			}
 		}
-		throw BuckminsterException.fromMessage("Unable to determine users home directory");
+		throw BuckminsterException.fromMessage(Messages.AbstractMaterializer_Unable_to_determine_users_home_directory);
 	}
 
 	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException

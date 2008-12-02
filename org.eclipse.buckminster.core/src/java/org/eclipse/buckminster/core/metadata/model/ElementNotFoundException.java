@@ -9,8 +9,10 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.buckminster.core.metadata.ISaxableStorage;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -21,6 +23,7 @@ public class ElementNotFoundException extends LocalizedException
 
 	public ElementNotFoundException(ISaxableStorage<?> storage, UUID uuid)
 	{
-		super("No element with id %s was found in storage %s", uuid, storage.getName());
+		super(NLS.bind(Messages.ElementNotFoundException_No_element_with_id_0_was_found_in_storage_1, uuid, storage
+				.getName()));
 	}
 }

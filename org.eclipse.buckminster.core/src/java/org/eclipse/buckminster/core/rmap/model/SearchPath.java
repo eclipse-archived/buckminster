@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
@@ -25,6 +26,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -34,9 +36,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class SearchPath extends AbstractSaxableElement
 {
-	public static final String TAG = "searchPath";
+	public static final String TAG = "searchPath"; //$NON-NLS-1$
 
-	public static final String ATTR_NAME = "name";
+	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
 	private final String m_name;
 
@@ -98,7 +100,7 @@ public class SearchPath extends AbstractSaxableElement
 		if(provCnt == 0)
 			throw new CoreException(problemCollector);
 
-		monitor.beginTask("Matching providers", provCnt * 1000);
+		monitor.beginTask("Matching providers", provCnt * 1000); //$NON-NLS-1$
 		try
 		{
 			ProviderMatch bestMatch = null;
@@ -138,7 +140,7 @@ public class SearchPath extends AbstractSaxableElement
 					{
 						Provider rejected = bestMatch.getOriginalProvider();
 						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), rejected
-								.getURI(), String.format("%s(%s) is producing a better match", provider
+								.getURI(), NLS.bind(Messages.SearchPath__0_1_is_producing_a_better_match, provider
 								.getReaderTypeId(), provider.getURI()));
 					}
 					bestMatch = match;
@@ -147,8 +149,8 @@ public class SearchPath extends AbstractSaxableElement
 
 				Provider best = bestMatch.getOriginalProvider();
 				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), provider
-						.getURI(), String.format("%s(%s) is producing a better match", best.getReaderTypeId(), best
-						.getURI()));
+						.getURI(), NLS.bind(Messages.SearchPath__0_1_is_producing_a_better_match, best
+						.getReaderTypeId(), best.getURI()));
 			}
 			if(bestMatch == null)
 			{

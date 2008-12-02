@@ -51,10 +51,10 @@ public abstract class AbstractBuildIntegrationActor extends AbstractActor
 				{
 				case IMarker.SEVERITY_ERROR:
 					throw new CoreException(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, problem
-							.getAttribute(IMarker.MESSAGE, ""), null));
+							.getAttribute(IMarker.MESSAGE, ""), null)); //$NON-NLS-1$
 				case IMarker.SEVERITY_WARNING:
 					return new Status(IStatus.WARNING, CorePlugin.getID(), IStatus.OK, problem.getAttribute(
-							IMarker.MESSAGE, ""), null);
+							IMarker.MESSAGE, ""), null); //$NON-NLS-1$
 				}
 			}
 			return Status.OK_STATUS;

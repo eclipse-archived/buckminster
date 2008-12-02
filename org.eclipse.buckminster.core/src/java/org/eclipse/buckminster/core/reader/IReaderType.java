@@ -39,19 +39,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IReaderType extends IBuckminsterExtension
 {
-	public static final String ECLIPSE_PLATFORM = "eclipse.platform";
+	public static final String ECLIPSE_PLATFORM = "eclipse.platform"; //$NON-NLS-1$
 
-	public static final String ECLIPSE_IMPORT = "eclipse.import";
+	public static final String ECLIPSE_IMPORT = "eclipse.import"; //$NON-NLS-1$
 
-	public static final String ECLIPSE_SITE_FEATURE = "site.feature";
+	public static final String ECLIPSE_SITE_FEATURE = "site.feature"; //$NON-NLS-1$
 
-	public static final String LOCAL = "local";
+	public static final String LOCAL = "local"; //$NON-NLS-1$
 
-	public static final String URL = "url";
+	public static final String URL = "url"; //$NON-NLS-1$
 
-	public static final String URL_ZIPPED = "url.zipped";
+	public static final String URL_ZIPPED = "url.zipped"; //$NON-NLS-1$
 
-	public static final String URL_CATALOG = "url.catalog";
+	public static final String URL_CATALOG = "url.catalog"; //$NON-NLS-1$
 
 	/**
 	 * Some reader types have characteristics that makes it convenient to create a default materialization node. A

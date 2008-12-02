@@ -20,9 +20,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Locator extends Matcher
 {
-	public static final String TAG = "locator";
+	public static final String TAG = "locator"; //$NON-NLS-1$
 
-	public static final String ATTR_SEARCH_PATH_REF = "searchPathRef";
+	public static final String ATTR_SEARCH_PATH_REF = "searchPathRef"; //$NON-NLS-1$
 
 	private final String m_searchPath;
 

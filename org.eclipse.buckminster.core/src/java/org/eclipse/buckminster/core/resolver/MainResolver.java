@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.util.List;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
@@ -152,12 +153,12 @@ public class MainResolver implements IResolver
 						throw new CoreException(status);
 
 					StringBuilder bld = new StringBuilder();
-					bld.append("Unable to resolve: ");
+					bld.append(Messages.MainResolver_Unable_to_resolve);
 
 					for(int idx = 0; idx < top; ++idx)
 					{
 						if(idx > 0)
-							bld.append(", ");
+							bld.append(", "); //$NON-NLS-1$
 						unresolvedList.get(idx).toString(bld);
 					}
 					throw BuckminsterException.fromMessage(bld.toString());

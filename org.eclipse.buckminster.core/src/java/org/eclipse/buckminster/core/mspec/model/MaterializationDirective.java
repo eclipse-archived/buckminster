@@ -28,15 +28,15 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public abstract class MaterializationDirective extends AbstractSaxableElement implements IMaterializationDirective
 {
-	public static final String ATTR_INSTALL_LOCATION = "installLocation";
+	public static final String ATTR_INSTALL_LOCATION = "installLocation"; //$NON-NLS-1$
 
-	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation";
+	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation"; //$NON-NLS-1$
 
-	public static final String ATTR_MATERIALIZER = "materializer";
+	public static final String ATTR_MATERIALIZER = "materializer"; //$NON-NLS-1$
 
-	public static final String ATTR_CONFLICT_RESOLUTION = "conflictResolution";
+	public static final String ATTR_CONFLICT_RESOLUTION = "conflictResolution"; //$NON-NLS-1$
 
-	public static final String ATTR_MAX_PARALLEL_JOBS = "maxParallelJobs";
+	public static final String ATTR_MAX_PARALLEL_JOBS = "maxParallelJobs"; //$NON-NLS-1$
 
 	private final int m_maxParallelJobs;
 

@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -84,15 +85,15 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public static final Provider INSTALLED_FEATURE_PROVIDER;
 	static
 	{
-		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType,
+		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType, //$NON-NLS-1$
 				new BidirectionalTransformer[0]);
 		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
-				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${"
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null);
+				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${" //$NON-NLS-1$
+						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null); //$NON-NLS-1$
 
 		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
-				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${"
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null);
+				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${" //$NON-NLS-1$
+						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, false, false, null, null); //$NON-NLS-1$
 	}
 
 	public static Resolution fromPath(IPath productPath, String name) throws CoreException
@@ -126,7 +127,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			if(nameIndex > 0)
 			{
 				String parameterized = repoStr.substring(0, nameIndex);
-				parameterized += "{0}";
+				parameterized += "{0}"; //$NON-NLS-1$
 				nameIndex += name.length();
 				if(repoStr.length() > nameIndex)
 					parameterized += repoStr.substring(nameIndex, repoStr.length());
@@ -492,7 +493,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			else
 				return null;
 
-			MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
+			MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null); //$NON-NLS-1$
 			ProviderMatch match = provider.findMatch(query, problemCollector, new NullProgressMonitor());
 			if(match == null)
 				return null;

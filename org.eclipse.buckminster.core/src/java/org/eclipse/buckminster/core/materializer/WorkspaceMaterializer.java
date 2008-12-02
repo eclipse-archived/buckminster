@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -46,6 +47,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 public class WorkspaceMaterializer extends FileSystemMaterializer
 {
@@ -180,7 +182,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		IWorkspaceRoot wsRoot = workspace.getRoot();
 
 		monitor.beginTask(null, 200);
-		monitor.subTask("Binding " + locationPath);
+		monitor.subTask(NLS.bind(Messages.WorkspaceMaterializer_Binding_0, locationPath));
 		try
 		{
 			String projName = wsRelativePath.segment(0);
@@ -207,9 +209,11 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				if(relSegs == 1)
 					useLink = true;
 				else
-					throw BuckminsterException.fromMessage(
-							"Unable to determine project root when binding %s to <workspace>/%s", locationPath,
-							wsRelativePath);
+					throw BuckminsterException
+							.fromMessage(NLS
+									.bind(
+											Messages.WorkspaceMaterializer_Unable_to_determine_project_root_when_binding_0_to_workspace_1,
+											locationPath, wsRelativePath));
 			}
 
 			IProject projectForBinding = wsRoot.getProject(projName);
@@ -242,9 +246,10 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					{
 						if(!(folder.isLinked() && FileUtils.pathEquals(folder.getRawLocation(), locationPath)))
 							throw BuckminsterException
-									.fromMessage(
-											"Unable to create a folder link from <workspace>/%s to %s, the link origin '%s' is already in use",
-											wsRelativePath, locationPath, projRelativePath);
+									.fromMessage(NLS
+											.bind(
+													Messages.WorkspaceMaterializer_Unable_to_create_folder_link_from_workspace_0_to_1_2_already_in_use,
+													new Object[] { wsRelativePath, locationPath, projRelativePath }));
 
 						MonitorUtils.worked(monitor, 50);
 					}
@@ -258,9 +263,10 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					{
 						if(!(ifile.isLinked() && FileUtils.pathEquals(ifile.getRawLocation(), locationPath)))
 							throw BuckminsterException
-									.fromMessage(
-											"Unable to create a file link from <workspace>/%s to %s, the link origin: %s is already in use",
-											wsRelativePath, locationPath, projRelativePath);
+									.fromMessage(NLS
+											.bind(
+													Messages.WorkspaceMaterializer_Unable_to_create_file_link_from_workspace_0_to_1_link_origin_2_already_in_use,
+													new Object[] { wsRelativePath, locationPath, projRelativePath }));
 						MonitorUtils.worked(monitor, 50);
 					}
 					else
@@ -275,8 +281,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			projectForBinding.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
 			IResource resource = projectForBinding.findMember(projRelativePath);
 			if(resource == null)
-				throw BuckminsterException.fromMessage("Unable to obtain resource %s from <workspace>/%s",
-						wsRelativePath, projRelativePath);
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.WorkspaceMaterializer_Unable_to_obtain_resource_0_from_workspace_1, wsRelativePath,
+						projRelativePath));
 
 			WorkspaceInfo.setComponentIdentifier(projectForBinding.findMember(projRelativePath), mat
 					.getComponentIdentifier());
@@ -308,11 +315,11 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		// Find the .project file and load the description
 		//
 		monitor.beginTask(null, 150);
-		monitor.subTask("Binding " + suggestedProjectName);
+		monitor.subTask(NLS.bind(Messages.WorkspaceMaterializer_Binding_0, suggestedProjectName));
 		IProjectDescription description;
 		try
 		{
-			description = workspace.loadProjectDescription(locationPath.append(".project"));
+			description = workspace.loadProjectDescription(locationPath.append(".project")); //$NON-NLS-1$
 		}
 		catch(CoreException e)
 		{
@@ -441,7 +448,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		try
 		{
 			StorageManager sm = StorageManager.getDefault();
-			monitor.subTask("Binding " + wb.getWorkspaceRelativePath());
+			monitor.subTask(NLS.bind(Messages.WorkspaceMaterializer_Binding_0, wb.getWorkspaceRelativePath()));
 
 			Materialization mat = wb.getMaterialization();
 			mat.store(sm);

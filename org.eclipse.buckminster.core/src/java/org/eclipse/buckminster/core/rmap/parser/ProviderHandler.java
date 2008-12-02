@@ -213,26 +213,26 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 			//
 			// Limit component types using managed categories
 			//
-			tmp = getOptionalStringValue(attrs, "componentType");
+			tmp = getOptionalStringValue(attrs, "componentType"); //$NON-NLS-1$
 			if(tmp == null)
 				throw new MissingRequiredAttributeException(getTAG(), Provider.ATTR_COMPONENT_TYPES,
 						getDocumentLocator());
-			logAttributeDeprecation(getTAG(), "componentType", Provider.ATTR_COMPONENT_TYPES);
+			logAttributeDeprecation(getTAG(), "componentType", Provider.ATTR_COMPONENT_TYPES); //$NON-NLS-1$
 
 			boolean canManageBundle = true;
 			boolean canManageFeature = true;
-			String[] managedCategories = TextUtils.split(getOptionalStringValue(attrs, "managedCategories"), ",");
+			String[] managedCategories = TextUtils.split(getOptionalStringValue(attrs, "managedCategories"), ","); //$NON-NLS-1$ //$NON-NLS-2$
 			if(managedCategories.length > 0)
 			{
-				logAttributeDeprecation(getTAG(), "managedCategories", Provider.ATTR_COMPONENT_TYPES);
+				logAttributeDeprecation(getTAG(), "managedCategories", Provider.ATTR_COMPONENT_TYPES); //$NON-NLS-1$
 
 				canManageBundle = false;
 				canManageFeature = false;
 				for(String category : managedCategories)
 				{
-					if("plugin".equals(category))
+					if("plugin".equals(category)) //$NON-NLS-1$
 						canManageBundle = true;
-					else if("feature".equals(category))
+					else if("feature".equals(category)) //$NON-NLS-1$
 						canManageFeature = true;
 				}
 			}
@@ -261,20 +261,20 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 			tmp = IComponentType.OSGI_BUNDLE + ',' + IComponentType.ECLIPSE_FEATURE + ',' + IComponentType.BUCKMINSTER;
 
 		if(m_componentTypes == null)
-			m_componentTypes = TextUtils.split(tmp, ",");
+			m_componentTypes = TextUtils.split(tmp, ","); //$NON-NLS-1$
 
 		m_mutable = getOptionalBooleanValue(attrs, Provider.ATTR_MUTABLE, true);
 		m_source = getOptionalBooleanValue(attrs, Provider.ATTR_SOURCE, true);
 
-		tmp = getOptionalStringValue(attrs, "space");
+		tmp = getOptionalStringValue(attrs, "space"); //$NON-NLS-1$
 		if(tmp != null)
-			tmp = "(buckminster.spacepath=" + tmp + ')';
+			tmp = "(buckminster.spacepath=" + tmp + ')'; //$NON-NLS-1$
 
 		String resFilter = getOptionalStringValue(attrs, Provider.ATTR_RESOLUTION_FILTER);
 		if(resFilter == null)
 			resFilter = tmp;
 		else if(tmp != null)
-			resFilter = "(&" + resFilter + tmp + ')';
+			resFilter = "(&" + resFilter + tmp + ')'; //$NON-NLS-1$
 
 		if(resFilter != null)
 		{

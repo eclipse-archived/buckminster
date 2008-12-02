@@ -23,27 +23,27 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class MaterializationNode extends MaterializationDirective implements IMaterializationNode
 {
-	public static final String TAG = "mspecNode";
+	public static final String TAG = "mspecNode"; //$NON-NLS-1$
 
-	public static final String ATTR_NAME_PATTERN = "namePattern";
+	public static final String ATTR_NAME_PATTERN = "namePattern"; //$NON-NLS-1$
 
-	public static final String ATTR_LEAF_ARTIFACT = "leafArtifact";
+	public static final String ATTR_LEAF_ARTIFACT = "leafArtifact"; //$NON-NLS-1$
 
-	public static final String ATTR_COMPONENT_TYPE = "componentType";
+	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
 
-	public static final String ATTR_EXCLUDE = "exclude";
+	public static final String ATTR_EXCLUDE = "exclude"; //$NON-NLS-1$
 
-	public static final String ATTR_RESOURCE_PATH = "resourcePath";
+	public static final String ATTR_RESOURCE_PATH = "resourcePath"; //$NON-NLS-1$
 
-	public static final String ATTR_BINDING_NAME_PATTERN = "bindingNamePattern";
+	public static final String ATTR_BINDING_NAME_PATTERN = "bindingNamePattern"; //$NON-NLS-1$
 
-	public static final String ATTR_BINDING_NAME_REPLACEMENT = "bindingNameReplacement";
+	public static final String ATTR_BINDING_NAME_REPLACEMENT = "bindingNameReplacement"; //$NON-NLS-1$
 
-	public static final String ELEM_UNPACK = "unpack";
+	public static final String ELEM_UNPACK = "unpack"; //$NON-NLS-1$
 
-	public static final String ATTR_SUFFIX = "suffix";
+	public static final String ATTR_SUFFIX = "suffix"; //$NON-NLS-1$
 
-	public static final String ATTR_EXPAND = "expand";
+	public static final String ATTR_EXPAND = "expand"; //$NON-NLS-1$
 
 	private final Pattern m_namePattern;
 
@@ -92,7 +92,7 @@ public class MaterializationNode extends MaterializationDirective implements IMa
 		if(m_resourcePath != null)
 			Utils.addAttribute(attrs, ATTR_RESOURCE_PATH, m_resourcePath.toPortableString());
 		if(m_exclude)
-			Utils.addAttribute(attrs, ATTR_EXCLUDE, "true");
+			Utils.addAttribute(attrs, ATTR_EXCLUDE, "true"); //$NON-NLS-1$
 		if(m_bindingNamePattern != null)
 			Utils.addAttribute(attrs, ATTR_BINDING_NAME_PATTERN, m_bindingNamePattern.toString());
 		if(m_bindingNameReplacement != null)
@@ -107,7 +107,7 @@ public class MaterializationNode extends MaterializationDirective implements IMa
 		{
 			AttributesImpl attrs = new AttributesImpl();
 			if(!m_expand)
-				Utils.addAttribute(attrs, ATTR_EXPAND, "false");
+				Utils.addAttribute(attrs, ATTR_EXPAND, "false"); //$NON-NLS-1$
 			if(m_suffix != null)
 				Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
 			String qName = Utils.makeQualifiedName(prefix, ELEM_UNPACK);

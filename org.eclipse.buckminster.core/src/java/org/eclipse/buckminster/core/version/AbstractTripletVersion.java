@@ -11,12 +11,14 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.Messages;
+
 /**
  * @author Thomas Hallgren
  */
 public abstract class AbstractTripletVersion extends AbstractVersion
 {
-	private static final Pattern s_numPattern = Pattern.compile("^([A-Za-z_-]*)(\\d+)(.*)$");
+	private static final Pattern s_numPattern = Pattern.compile("^([A-Za-z_-]*)(\\d+)(.*)$"); //$NON-NLS-1$
 
 	private static final Comparator<String> s_defaultComparator = new Comparator<String>()
 	{
@@ -130,7 +132,7 @@ public abstract class AbstractTripletVersion extends AbstractVersion
 	public int compareTo(IVersion o)
 	{
 		if(!(o instanceof AbstractTripletVersion))
-			throw new IllegalArgumentException("Not a Triplet");
+			throw new IllegalArgumentException(Messages.AbstractTripletVersion_Not_a_Triplet);
 
 		AbstractTripletVersion ov = (AbstractTripletVersion)o;
 		if(m_major > ov.m_major)

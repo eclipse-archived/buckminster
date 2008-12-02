@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.reader;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -40,6 +41,6 @@ public class SiteFeatureReader extends AbstractRemoteReader
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		throw new UnsupportedOperationException("A SiteFeatureReader is not capable of materializing");
+		throw new UnsupportedOperationException(Messages.SiteFeatureReader_A_SiteFeatureReader_is_not_capable_of_materializing);
 	}
 }

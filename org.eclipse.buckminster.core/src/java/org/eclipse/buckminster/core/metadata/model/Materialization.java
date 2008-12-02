@@ -29,9 +29,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Materialization extends UUIDKeyed implements IUUIDPersisted
 {
-	public static final String TAG = "materialization";
+	public static final String TAG = "materialization"; //$NON-NLS-1$
 
-	public static final String ATTR_LOCATION = "location";
+	public static final String ATTR_LOCATION = "location"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 3;
 

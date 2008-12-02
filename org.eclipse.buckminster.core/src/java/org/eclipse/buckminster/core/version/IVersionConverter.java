@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IVersionConverter extends IBuckminsterExtension
 {
-	static final String TAG = "tag";
+	static final String TAG = "tag"; //$NON-NLS-1$
 
-	static final String BRANCH = "branch";
+	static final String BRANCH = "branch"; //$NON-NLS-1$
 
 	/**
 	 * Converts the <code>version</code> into a <code>BranchOrTag</code> that can be understood by a source code control

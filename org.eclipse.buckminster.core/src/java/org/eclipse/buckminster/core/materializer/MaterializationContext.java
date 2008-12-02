@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
@@ -31,6 +32,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -176,7 +178,7 @@ public class MaterializationContext extends RMContext
 				nameBld.append('_');
 				version.toString(nameBld);
 			}
-			nameBld.append(".dat");
+			nameBld.append(".dat"); //$NON-NLS-1$
 			leaf = Path.fromPortableString(nameBld.toString());
 			if(leaf.segmentCount() > 1)
 				leaf = leaf.removeFirstSegments(leaf.segmentCount() - 1);
@@ -265,7 +267,8 @@ public class MaterializationContext extends RMContext
 			IReaderType rd = resolution.getProvider().getReaderType();
 			IPath leaf = rd.getLeafArtifact(resolution, this);
 			if(leaf == null || leaf.segmentCount() == 0)
-				throw BuckminsterException.fromMessage("Unable to determine suffix for unpack of %s", cName);
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.MaterializationContext_Unable_to_determine_suffix_for_unpack_of_0, cName));
 			name = leaf.segment(0);
 		}
 		return name;
@@ -298,9 +301,10 @@ public class MaterializationContext extends RMContext
 				// is illegal.
 				//
 				throw BuckminsterException
-						.fromMessage(
-								"WorkspaceLocation %s in node matching %s cannot be relative unless a main workspace location is present",
-								nodeLocation, ci);
+						.fromMessage(NLS
+								.bind(
+										Messages.MaterializationContext_WorkspaceLocation_0_in_node_matching_1_cannot_be_relative_unless,
+										nodeLocation, ci));
 
 			// Default to location of current workspace
 			//

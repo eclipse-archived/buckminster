@@ -56,7 +56,7 @@ public abstract class AbstractReader implements IComponentReader
 
 	protected File createTempFile() throws IOException
 	{
-		return File.createTempFile(this.getReaderType().getId() + '-', ".tmp");
+		return File.createTempFile(this.getReaderType().getId() + '-', ".tmp"); //$NON-NLS-1$
 	}
 
 	public IComponentType getComponentType()

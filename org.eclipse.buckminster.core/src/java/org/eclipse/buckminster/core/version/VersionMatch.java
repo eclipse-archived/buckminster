@@ -25,19 +25,19 @@ public class VersionMatch extends AbstractSaxableElement
 {
 	public static final VersionMatch DEFAULT = new VersionMatch(null, null, -1L, null, null);
 
-	public static final String TAG = "versionMatch";
+	public static final String TAG = "versionMatch"; //$NON-NLS-1$
 
-	public static final String ATTR_ARTIFACT_INFO = "artifactInfo";
+	public static final String ATTR_ARTIFACT_INFO = "artifactInfo"; //$NON-NLS-1$
 
-	public static final String ATTR_BRANCH_OR_TAG = "branchOrTag";
+	public static final String ATTR_BRANCH_OR_TAG = "branchOrTag"; //$NON-NLS-1$
 
-	public static final String ATTR_REVISION = "revision";
+	public static final String ATTR_REVISION = "revision"; //$NON-NLS-1$
 
-	public static final String ATTR_TIMESTAMP = "timestamp";
+	public static final String ATTR_TIMESTAMP = "timestamp"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION = "version";
+	public static final String ATTR_VERSION = "version"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION_TYPE = "versionType";
+	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
 	private final String m_artifactInfo;
 

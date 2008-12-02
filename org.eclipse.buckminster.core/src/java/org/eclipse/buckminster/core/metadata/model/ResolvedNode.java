@@ -35,12 +35,12 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ResolvedNode extends BOMNode
 {
-	public static final String ATTR_RESOLUTION_ID = "resolutionId";
+	public static final String ATTR_RESOLUTION_ID = "resolutionId"; //$NON-NLS-1$
 
-	public static final String CHILD_TAG = "child";
+	public static final String CHILD_TAG = "child"; //$NON-NLS-1$
 
 	@SuppressWarnings("hiding")
-	public static final String TAG = "resolvedNode";
+	public static final String TAG = "resolvedNode"; //$NON-NLS-1$
 
 	private final List<BOMNode> m_children;
 

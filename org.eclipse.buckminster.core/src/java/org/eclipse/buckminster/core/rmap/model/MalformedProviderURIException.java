@@ -8,8 +8,10 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -20,6 +22,7 @@ public class MalformedProviderURIException extends LocalizedException
 
 	public MalformedProviderURIException(IReaderType readerType, String uri)
 	{
-		super("A reader of type %s cannot use the uri %s", readerType.getId(), uri);
+		super(NLS.bind(Messages.MalformedProviderURIException_A_reader_of_type_0_cannot_use_the_uri_1, readerType
+				.getId(), uri));
 	}
 }

@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializerEndPoint;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * A reader that reads one singleton file denoted by its URL.
@@ -99,7 +101,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		IConnectContext cctx = getConnectContext();
 
 		monitor.beginTask(null, 1000);
-		monitor.subTask("Copying from " + url);
+		monitor.subTask(NLS.bind(Messages.URLFileReader_Copying_from_0, url));
 
 		InputStream in = null;
 		try

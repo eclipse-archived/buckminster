@@ -26,9 +26,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Redirect extends Matcher
 {
-	public static final String TAG = "redirect";
+	public static final String TAG = "redirect"; //$NON-NLS-1$
 
-	public static final String ATTR_HREF = "href";
+	public static final String ATTR_HREF = "href"; //$NON-NLS-1$
 
 	private final String m_url;
 

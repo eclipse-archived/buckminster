@@ -7,8 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,6 +21,6 @@ public class UnresolvedNodeException extends LocalizedException
 
 	public UnresolvedNodeException(IComponentRequest request)
 	{
-		super("Attempt to use an unresolved node. Request is %s", request);
+		super(NLS.bind(Messages.UnresolvedNodeException_Attempt_to_use_an_unresolved_node_Request_is_0, request));
 	}
 }

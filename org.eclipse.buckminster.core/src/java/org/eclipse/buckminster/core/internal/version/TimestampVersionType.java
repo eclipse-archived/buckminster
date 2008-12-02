@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
 
@@ -23,13 +24,13 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
  */
 public class TimestampVersionType extends AbstractVersionType
 {
-	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss");
+	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss"); //$NON-NLS-1$
 
-	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd");
+	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd"); //$NON-NLS-1$
 
 	static
 	{
-		TimeZone utc = TimeZone.getTimeZone("UTC");
+		TimeZone utc = TimeZone.getTimeZone("UTC"); //$NON-NLS-1$
 		s_timestampFormat.setTimeZone(utc);
 		s_dateFormat.setTimeZone(utc);
 	}
@@ -41,7 +42,7 @@ public class TimestampVersionType extends AbstractVersionType
 		{
 			string = s_timestampFormat.format(ts);
 		}
-		if(string.endsWith(".000000"))
+		if(string.endsWith(".000000")) //$NON-NLS-1$
 			string = string.substring(0, string.length() - 7);
 		return string;
 	}
@@ -77,7 +78,7 @@ public class TimestampVersionType extends AbstractVersionType
 				ts = s_dateFormat.parse(versionString, pp);
 			}
 			if(pp.getErrorIndex() >= 0)
-				throw new VersionSyntaxException("Not a valid Timestamp version", versionString, pp.getErrorIndex());
+				throw new VersionSyntaxException(Messages.TimestampVersionType_Not_a_valid_Timestamp_version, versionString, pp.getErrorIndex());
 		}
 		endPosRet[0] = pp.getIndex();
 		return new TimestampVersion(this, ts);

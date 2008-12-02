@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -151,7 +152,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		{
 			String name = rootFile.getName();
 			if(rootFile.isDirectory())
-				name += "/";
+				name += "/"; //$NON-NLS-1$
 			files.add(name);
 		}
 	}
@@ -161,7 +162,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
 		if(source == null)
-			throw new UnsupportedOperationException("Only file protocol is supported at this time");
+			throw new UnsupportedOperationException(Messages.URLCatalogReader_Only_file_protocol_is_supported_at_this_time);
 
 		File destDir = destination.toFile();
 		boolean success = false;

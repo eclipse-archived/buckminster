@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.internal.actor;
 
 import java.io.PrintStream;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -17,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author kolwing
@@ -24,9 +26,9 @@ import org.eclipse.core.runtime.Status;
  */
 public class SimulationActor extends AbstractActor
 {
-	public static final String ID = "simulation";
+	public static final String ID = "simulation"; //$NON-NLS-1$
 
-	public static final String TICKS_PROPERTY = "ticks";
+	public static final String TICKS_PROPERTY = "ticks"; //$NON-NLS-1$
 
 	public static final int TICKS_MIN = 0;
 
@@ -63,13 +65,14 @@ public class SimulationActor extends AbstractActor
 			monitor.beginTask(null, ticks);
 
 			PrintStream ps = ctx.getOutputStream();
-			ps.print("Simulation (" + ctx.getAction().getName() + "): working for " + ticks + " ticks...");
+			ps.print(NLS.bind(Messages.SimulationActor_Simulation_0_working_for_1_ticks, ctx.getAction().getName(),
+					ticks));
 			for(int i = 0; i < ticks; i++)
 			{
 				Thread.sleep(1);
 				MonitorUtils.worked(monitor, 1);
 			}
-			ps.println("finished working");
+			ps.println(Messages.SimulationActor_finished_working);
 
 			return Status.OK_STATUS;
 		}

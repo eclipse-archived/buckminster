@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IBuckminsterPreferenceConstants;
 import org.eclipse.buckminster.runtime.Logger;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * The maintainer of all component query resolver factories and their sort order
@@ -29,9 +31,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
  */
 public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 {
-	public static final String QUERY_RESOLVERS_POINT = CorePlugin.CORE_NAMESPACE + ".queryResolvers";
+	public static final String QUERY_RESOLVERS_POINT = CorePlugin.CORE_NAMESPACE + ".queryResolvers"; //$NON-NLS-1$
 
-	static final String FACTORY_ELEM = "factory";
+	static final String FACTORY_ELEM = "factory"; //$NON-NLS-1$
 
 	private static final ResolverFactoryMaintainer s_instance;
 
@@ -58,7 +60,9 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 			}
 			catch(CoreException e)
 			{
-				logger.error(e, "Unable to instantiate Query Resolver Factory %s", elem.getAttribute("id"));
+				logger.error(e, NLS.bind(
+						Messages.ResolverFactoryMaintainer_Unable_to_instantiate_Query_Resolver_Factory_0, elem
+								.getAttribute("id"))); //$NON-NLS-1$
 			}
 		}
 		return factories.toArray(new IResolverFactory[factories.size()]);
@@ -76,7 +80,7 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		int idx = elems.length;
 		String[] factoryIDs = new String[idx];
 		while(--idx >= 0)
-			factoryIDs[idx] = elems[idx].getAttribute("id");
+			factoryIDs[idx] = elems[idx].getAttribute("id"); //$NON-NLS-1$
 		return factoryIDs;
 	}
 

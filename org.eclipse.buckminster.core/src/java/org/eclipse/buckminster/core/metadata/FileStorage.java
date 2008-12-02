@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.ElementNotFoundException;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -40,6 +41,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -62,7 +64,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 			RandomAccessFile lockFile = null;
 			try
 			{
-				lockFile = new RandomAccessFile(file, "rws");
+				lockFile = new RandomAccessFile(file, "rws"); //$NON-NLS-1$
 				m_lock = lockFile.getChannel().lock(0, Long.MAX_VALUE, !exclusive);
 				m_lockFile = lockFile;
 			}
@@ -116,7 +118,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 
 	private final HashMap<UUID, TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();
 
-	private static final String SEQUENCE_FILE = ".sqfile";
+	private static final String SEQUENCE_FILE = ".sqfile"; //$NON-NLS-1$
 
 	private final Class<T> m_class;
 
@@ -339,8 +341,8 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 				}
 				catch(CoreException e)
 				{
-					CorePlugin.getLogger().warning(BuckminsterException.unwind(e), "Unable to read %s",
-							m_class.getName());
+					CorePlugin.getLogger().warning(BuckminsterException.unwind(e),
+							NLS.bind(Messages.FileStorage_Unable_to_read_0, m_class.getName()));
 					if(badKeys == null)
 						badKeys = new HashSet<UUID>();
 					badKeys.add(key);
@@ -390,7 +392,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 					&& method.getParameterTypes().length == 0)
 			{
 				String name = method.getName().toLowerCase();
-				if(name.length() > 3 && name.startsWith("get"))
+				if(name.length() > 3 && name.startsWith("get")) //$NON-NLS-1$
 				{
 					name = name.substring(3);
 					if(name.equals(key))
@@ -401,7 +403,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 				}
 			}
 		}
-		throw BuckminsterException.fromMessage("No such foreign key: %s", keyName);
+		throw BuckminsterException.fromMessage(NLS.bind(Messages.FileStorage_No_such_foreign_key_0, keyName));
 	}
 
 	public synchronized UUID[] getKeys()
@@ -521,7 +523,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 		// different XML versions.
 		//
 		CorePlugin.getLogger()
-				.debug("Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id);
+				.debug("Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id); //$NON-NLS-1$
 
 		if(m_timestamps.containsKey(id))
 			return;

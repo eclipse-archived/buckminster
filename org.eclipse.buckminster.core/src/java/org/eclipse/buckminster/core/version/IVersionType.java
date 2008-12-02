@@ -13,13 +13,13 @@ import org.eclipse.buckminster.core.IBuckminsterExtension;
 
 public interface IVersionType extends IBuckminsterExtension
 {
-	public static final String OSGI = "OSGi";
+	public static final String OSGI = "OSGi"; //$NON-NLS-1$
 
-	public static final String STRING = "String";
+	public static final String STRING = "String"; //$NON-NLS-1$
 
-	public static final String TIMESTAMP = "Timestamp";
+	public static final String TIMESTAMP = "Timestamp"; //$NON-NLS-1$
 
-	public static final String TRIPLET = "Triplet";
+	public static final String TRIPLET = "Triplet"; //$NON-NLS-1$
 
 	/**
 	 * Coerce the object argument into a version of this type if possible.

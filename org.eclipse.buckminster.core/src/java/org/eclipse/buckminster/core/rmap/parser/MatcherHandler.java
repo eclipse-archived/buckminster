@@ -80,6 +80,6 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_pattern = getStringValue(attrs, "pattern");
+		m_pattern = getStringValue(attrs, "pattern"); //$NON-NLS-1$
 	}
 }

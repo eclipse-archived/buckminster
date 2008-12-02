@@ -13,10 +13,12 @@ package org.eclipse.buckminster.core.internal.version;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.TripletVersion;
 import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -24,7 +26,7 @@ import org.eclipse.buckminster.core.version.VersionSyntaxException;
 public class TripletVersionType extends AbstractVersionType
 {
 	private static final Pattern s_TripletVersionPattern = Pattern
-			.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+))?)?(?:[-.]?([^\\(\\)\\[\\],]+))?([\\)\\],]|$)");
+			.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+))?)?(?:[-.]?([^\\(\\)\\[\\],]+))?([\\)\\],]|$)"); //$NON-NLS-1$
 
 	private static boolean hasGroup(String stringForm, int group)
 	{
@@ -76,7 +78,8 @@ public class TripletVersionType extends AbstractVersionType
 			{
 			}
 		}
-		throw new VersionSyntaxException("Not a valid " + this.getId() + " version", versionString, startPos);
+		throw new VersionSyntaxException(NLS.bind(Messages.TripletVersionType_Not_a_valid_0_version, this.getId()),
+				versionString, startPos);
 	}
 
 	Pattern getVersionPattern()

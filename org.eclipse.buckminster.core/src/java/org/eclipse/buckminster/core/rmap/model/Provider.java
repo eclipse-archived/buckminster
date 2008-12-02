@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
@@ -44,6 +45,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -54,27 +56,27 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Provider extends UUIDKeyed implements IUUIDPersisted
 {
-	public static final String ATTR_COMPONENT_TYPES = "componentTypes";
+	public static final String ATTR_COMPONENT_TYPES = "componentTypes"; //$NON-NLS-1$
 
-	public static final String ATTR_ALGORITHM = "algorithm";
+	public static final String ATTR_ALGORITHM = "algorithm"; //$NON-NLS-1$
 
-	public static final String ATTR_MUTABLE = "mutable";
+	public static final String ATTR_MUTABLE = "mutable"; //$NON-NLS-1$
 
-	public static final String ATTR_READER_TYPE = "readerType";
+	public static final String ATTR_READER_TYPE = "readerType"; //$NON-NLS-1$
 
-	public static final String ATTR_RESOLUTION_FILTER = "resolutionFilter";
+	public static final String ATTR_RESOLUTION_FILTER = "resolutionFilter"; //$NON-NLS-1$
 
-	public static final String ATTR_SOURCE = "source";
+	public static final String ATTR_SOURCE = "source"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION_CONVERTER = "versionConverter";
+	public static final String ATTR_VERSION_CONVERTER = "versionConverter"; //$NON-NLS-1$
 
-	public static final String TAG = "provider";
+	public static final String TAG = "provider"; //$NON-NLS-1$
 
-	public static final String TAG_URI = "uri";
+	public static final String TAG_URI = "uri"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 2;
 
-	public static final String TAG_DIGEST = "digest";
+	public static final String TAG_DIGEST = "digest"; //$NON-NLS-1$
 
 	private final Documentation m_documentation;
 
@@ -160,7 +162,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	{
 		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
 		if(m_componentTypeIDs.length > 0)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ","));
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ",")); //$NON-NLS-1$
 		if(m_resolutionFilter != null)
 			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());
 		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
@@ -169,7 +171,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
 	{
-		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI); //$NON-NLS-1$
 	}
 
 	@Override
@@ -203,7 +205,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		if(score == ProviderScore.REJECTED)
 		{
 			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
-					getURI(), "Score is below threshold");
+					getURI(), Messages.Provider_Score_is_below_threshold);
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
 		}
@@ -246,8 +248,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 					if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 					{
 						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
-								readerType, getURI(), String.format("Components of type %s are not supported",
-										componentTypeID));
+								readerType, getURI(), String.format(NLS.bind(
+										Messages.Provider_Components_of_type_0_are_not_supported, componentTypeID)));
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
 								.toString(), null));
 					}
@@ -286,7 +288,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			if(candidate == null)
 			{
 				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
-						getURI(), "No component match was found");
+						getURI(), Messages.Provider_No_component_match_was_found);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(),
 						problem == null
 								? null
@@ -446,8 +448,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	public void remove(StorageManager sm) throws CoreException
 	{
 		UUID thisId = getId();
-		if(!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty())
-			throw new ReferentialIntegrityException(this, "remove", "Referenced from Resolution");
+		if(!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty()) //$NON-NLS-1$
+			throw new ReferentialIntegrityException(this, "remove", Messages.Provider_Referenced_from_Resolution); //$NON-NLS-1$
 
 		sm.getProviders().removeElement(thisId);
 	}

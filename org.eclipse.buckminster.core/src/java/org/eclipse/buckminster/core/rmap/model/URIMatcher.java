@@ -57,33 +57,33 @@ import org.xml.sax.helpers.AttributesImpl;
 public class URIMatcher extends RxAssembly
 {
 	@SuppressWarnings("hiding")
-	public static final String TAG = "matcher";
+	public static final String TAG = "matcher"; //$NON-NLS-1$
 
-	public static final String ATTR_BASE = "base";
+	public static final String ATTR_BASE = "base"; //$NON-NLS-1$
 
-	public static final String ATTR_VERSION_TYPE = "versionType";
+	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
-	public static final String COMPONENT_NAME_PARAM = TaggedRxPattern.TAGGED_PREFIX + "name";
+	public static final String COMPONENT_NAME_PARAM = TaggedRxPattern.TAGGED_PREFIX + "name"; //$NON-NLS-1$
 
-	public static final String COMPONENT_VERSION_PARAM = TaggedRxPattern.TAGGED_PREFIX + "version";
+	public static final String COMPONENT_VERSION_PARAM = TaggedRxPattern.TAGGED_PREFIX + "version"; //$NON-NLS-1$
 
-	public static final String BRANCH_PARAM = TaggedRxPattern.TAGGED_PREFIX + "branch";
+	public static final String BRANCH_PARAM = TaggedRxPattern.TAGGED_PREFIX + "branch"; //$NON-NLS-1$
 
-	public static final String TAG_PARAM = TaggedRxPattern.TAGGED_PREFIX + "tag";
+	public static final String TAG_PARAM = TaggedRxPattern.TAGGED_PREFIX + "tag"; //$NON-NLS-1$
 
-	public static final String REVISION_PARAM = TaggedRxPattern.TAGGED_PREFIX + "revision";
+	public static final String REVISION_PARAM = TaggedRxPattern.TAGGED_PREFIX + "revision"; //$NON-NLS-1$
 
-	public static final String TIMESTAMP_PARAM = TaggedRxPattern.TAGGED_PREFIX + "timestamp";
+	public static final String TIMESTAMP_PARAM = TaggedRxPattern.TAGGED_PREFIX + "timestamp"; //$NON-NLS-1$
 
-	public static final String OS_PARAM = TaggedRxPattern.TAGGED_PREFIX + "os";
+	public static final String OS_PARAM = TaggedRxPattern.TAGGED_PREFIX + "os"; //$NON-NLS-1$
 
-	public static final String WS_PARAM = TaggedRxPattern.TAGGED_PREFIX + "ws";
+	public static final String WS_PARAM = TaggedRxPattern.TAGGED_PREFIX + "ws"; //$NON-NLS-1$
 
-	public static final String ARCH_PARAM = TaggedRxPattern.TAGGED_PREFIX + "arch";
+	public static final String ARCH_PARAM = TaggedRxPattern.TAGGED_PREFIX + "arch"; //$NON-NLS-1$
 
-	public static final String NL_PARAM = TaggedRxPattern.TAGGED_PREFIX + "nl";
+	public static final String NL_PARAM = TaggedRxPattern.TAGGED_PREFIX + "nl"; //$NON-NLS-1$
 
-	public static final String ARTIFACT_INFO_PREFIX = "URIMetaData:";
+	public static final String ARTIFACT_INFO_PREFIX = "URIMetaData:"; //$NON-NLS-1$
 
 	private static Filter getFilter(Map<String, String> matchMap)
 	{
@@ -195,7 +195,7 @@ public class URIMatcher extends RxAssembly
 			String matchedName = matchMap.get(COMPONENT_NAME_PARAM);
 			if(!cq.getName().equals(matchedName))
 			{
-				logger.debug("URI name %s does not match %s", matchedName, cq.getName());
+				logger.debug("URI name %s does not match %s", matchedName, cq.getName()); //$NON-NLS-1$
 				continue;
 			}
 
@@ -209,7 +209,7 @@ public class URIMatcher extends RxAssembly
 					IVersionDesignator vd = cq.getVersionDesignator();
 					if(!(vd == null || vd.designates(version)))
 					{
-						logger.debug("URI version %s is not designated by %s", version, vd);
+						logger.debug("URI version %s is not designated by %s", version, vd); //$NON-NLS-1$
 						continue;
 					}
 				}
@@ -223,7 +223,7 @@ public class URIMatcher extends RxAssembly
 			Filter filter = getFilter(matchMap);
 			if(!FilterUtils.isMatch(filter, query.getProperties()))
 			{
-				logger.debug("URI filter %s does not match current environment", filter);
+				logger.debug("URI filter %s does not match current environment", filter); //$NON-NLS-1$
 				continue;
 			}
 

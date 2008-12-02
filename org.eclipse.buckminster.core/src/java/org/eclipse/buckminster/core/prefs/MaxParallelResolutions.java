@@ -9,8 +9,10 @@
 package org.eclipse.buckminster.core.prefs;
 
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -40,9 +42,8 @@ public class MaxParallelResolutions extends BasicPreferenceHandler
 		catch(NumberFormatException e)
 		{
 		}
-		throw new IllegalArgumentException(String.format(
-				"%s is an illegal value for maxParallelResolutions. It must be an integer value between 1 and 20",
-				prefValue));
+		throw new IllegalArgumentException(String.format(NLS.bind(
+				Messages.MaxParallelResolutions__0_illegal_value_for_maxParallelResolutions, prefValue)));
 
 	}
 

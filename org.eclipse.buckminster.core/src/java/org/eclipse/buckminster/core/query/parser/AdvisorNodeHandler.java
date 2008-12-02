@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
@@ -171,7 +172,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_ATTRIBUTES);
 		if(tmp != null)
 		{
-			StringTokenizer tokens = new StringTokenizer(tmp, ",");
+			StringTokenizer tokens = new StringTokenizer(tmp, ","); //$NON-NLS-1$
 			while(tokens.hasMoreElements())
 				m_builder.addAttribute(tokens.nextToken());
 		}
@@ -184,7 +185,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 			try
 			{
 				int idx = 0;
-				StringTokenizer tokens = new StringTokenizer(tmp, ",");
+				StringTokenizer tokens = new StringTokenizer(tmp, ","); //$NON-NLS-1$
 				while(tokens.hasMoreElements())
 				{
 					if(idx == max)
@@ -195,7 +196,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 					prios[idx++] = Integer.parseInt(tokens.nextToken());
 				}
 				if(idx != max)
-					throw new SAXParseException("Incorrect number of resolution priorites", this.getDocumentLocator());
+					throw new SAXParseException(Messages.AdvisorNodeHandler_Incorrect_number_of_resolution_priorites, this.getDocumentLocator());
 			}
 			catch(NumberFormatException e)
 			{
@@ -212,24 +213,24 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_USE_TARGET_PLATFORM);
 		if(tmp == null)
 			// Get deprecated alternative
-			tmp = getOptionalStringValue(attrs, "useInstalled");
-		m_builder.setUseTargetPlatform(tmp == null || "true".equalsIgnoreCase(tmp));
+			tmp = getOptionalStringValue(attrs, "useInstalled"); //$NON-NLS-1$
+		m_builder.setUseTargetPlatform(tmp == null || "true".equalsIgnoreCase(tmp)); //$NON-NLS-1$
 
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_USE_WORKSPACE);
 		if(tmp == null)
 			// Get deprecated alternative
-			tmp = getOptionalStringValue(attrs, "useProject");
-		m_builder.setUseWorkspace(tmp == null || "true".equalsIgnoreCase(tmp));
+			tmp = getOptionalStringValue(attrs, "useProject"); //$NON-NLS-1$
+		m_builder.setUseWorkspace(tmp == null || "true".equalsIgnoreCase(tmp)); //$NON-NLS-1$
 
 		m_builder.setUseMaterialization(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_MATERIALIZATION, true));
 		m_builder.setUseRemoteResolution(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_USE_REMOTE_RESOLUTION, true));
 		m_builder.setSystemDiscovery(getOptionalBooleanValue(attrs, AdvisorNode.ATTR_SYSTEM_DISCOVERY, true));
 
-		String spacePath = getOptionalStringValue(attrs, "spacePath");
+		String spacePath = getOptionalStringValue(attrs, "spacePath"); //$NON-NLS-1$
 		if(spacePath != null)
 		{
-			logAttributeDeprecation(TAG, "spacePath", "property buckminster.spacePath=");
-			getProperties().put("buckminster.spacepath", spacePath);
+			logAttributeDeprecation(TAG, "spacePath", "property buckminster.spacePath="); //$NON-NLS-1$ //$NON-NLS-2$
+			getProperties().put("buckminster.spacepath", spacePath); //$NON-NLS-1$
 		}
 	}
 }

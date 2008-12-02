@@ -7,7 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.rmap.model;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -18,7 +20,8 @@ public class TransformerMismatchException extends LocalizedException
 
 	public TransformerMismatchException(BidirectionalTransformer invalid)
 	{
-		super("The substitution %s -> %s is not reversed by %s -> %s", invalid.getFromPattern().toString(), invalid
-				.getFromReplacement(), invalid.getToPattern().toString(), invalid.getToReplacement());
+		super(NLS.bind(Messages.TransformerMismatchException_The_substitution_0_1_is_not_reversed_by_2_3, new Object[] {
+				invalid.getFromPattern().toString(), invalid.getFromReplacement(), invalid.getToPattern().toString(),
+				invalid.getToReplacement() }));
 	}
 }

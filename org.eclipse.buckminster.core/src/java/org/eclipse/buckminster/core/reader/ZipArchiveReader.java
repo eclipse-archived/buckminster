@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -73,12 +74,12 @@ public class ZipArchiveReader extends AbstractCatalogReader
 			while((ze = zi.getNextEntry()) != null)
 			{
 				String name = ze.getName();
-				if(name.endsWith("/"))
+				if(name.endsWith("/")) //$NON-NLS-1$
 					name = name.substring(name.length() - 1);
 				if(name.indexOf('/', 1) < 0)
 				{
 					if(ze.isDirectory())
-						name = name + "/";
+						name = name + "/"; //$NON-NLS-1$
 					files.add(name);
 				}
 			}
@@ -94,7 +95,7 @@ public class ZipArchiveReader extends AbstractCatalogReader
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		throw new UnsupportedOperationException("ZipArchiveReader cannot materialize");
+		throw new UnsupportedOperationException(Messages.ZipArchiveReader_ZipArchiveReader_cannot_materialize);
 	}
 
 	@Override

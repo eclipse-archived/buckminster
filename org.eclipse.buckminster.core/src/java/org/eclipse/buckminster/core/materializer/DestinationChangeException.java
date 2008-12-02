@@ -7,8 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.materializer;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -20,7 +22,7 @@ public class DestinationChangeException extends LocalizedException
 
 	public DestinationChangeException(IPath fixedDest, IPath wantedDest)
 	{
-		super("An attempt was made to change the fixed materialization location %s to %s",
-				fixedDest.toPortableString(), wantedDest.toPortableString());
+		super(NLS.bind(Messages.DestinationChangeException_attempt_to_change_fixed_materialization_location_0_to_1,
+				fixedDest.toPortableString(), wantedDest.toPortableString()));
 	}
 }

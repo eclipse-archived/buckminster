@@ -8,7 +8,9 @@
 
 package org.eclipse.buckminster.core.resolver;
 
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -19,6 +21,8 @@ public class NoSuitableProviderException extends LocalizedException
 
 	public NoSuitableProviderException(String searchPathName, String componentName)
 	{
-		super("No suitable provider for component %s was found in searchPath %s", componentName, searchPathName);
+		super(NLS.bind(
+				Messages.NoSuitableProviderException_No_suitable_provider_for_component_0_was_found_in_searchPath_1,
+				componentName, searchPathName));
 	}
 }

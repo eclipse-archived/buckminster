@@ -14,6 +14,7 @@ import java.util.Stack;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -39,6 +40,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IIncludedFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
@@ -78,8 +80,11 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof SiteFeatureReader))
-			throw BuckminsterException.fromMessage("%s resolution builder can only work with a site.feature reader",
-					getId());
+			throw BuckminsterException
+					.fromMessage(NLS
+							.bind(
+									Messages.SiteFeatureResolutionBuilder__0_resolution_builder_can_only_work_with_a_site_feature_reader,
+									getId()));
 
 		monitor.beginTask(null, 100);
 		try

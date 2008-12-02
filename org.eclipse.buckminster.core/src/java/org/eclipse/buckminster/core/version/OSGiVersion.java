@@ -12,6 +12,8 @@ package org.eclipse.buckminster.core.version;
 
 import java.util.Comparator;
 
+import org.eclipse.buckminster.core.Messages;
+
 /**
  * @author Thomas Hallgren
  */
@@ -36,9 +38,9 @@ public class OSGiVersion extends AbstractTripletVersion
 
 			// We consider an unresolved qualifier to be higher then anything else
 			//
-			if(o1.equals("qualifier"))
+			if(o1.equals("qualifier")) //$NON-NLS-1$
 				return 1;
-			if(o2.equals("qualifier"))
+			if(o2.equals("qualifier")) //$NON-NLS-1$
 				return -1;
 
 			return o1.compareTo(o2);

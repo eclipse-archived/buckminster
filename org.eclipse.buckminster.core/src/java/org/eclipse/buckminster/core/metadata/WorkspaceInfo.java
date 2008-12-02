@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -49,6 +50,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -60,7 +62,7 @@ public class WorkspaceInfo
 	 * This property will be set on IResource elements that represent component roots such as projects or resources that
 	 * is inner bindings in projects.
 	 */
-	public static final QualifiedName PPKEY_COMPONENT_ID = new QualifiedName(CorePlugin.CORE_NAMESPACE, "componentID");
+	public static final QualifiedName PPKEY_COMPONENT_ID = new QualifiedName(CorePlugin.CORE_NAMESPACE, "componentID"); //$NON-NLS-1$
 
 	/**
 	 * Qualified name of the project persistent property where the a boolean value that indicates if the CSpec has been
@@ -69,7 +71,7 @@ public class WorkspaceInfo
 	 * is inner bindings in projects.
 	 */
 	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE,
-			"generatedCSpec");
+			"generatedCSpec"); //$NON-NLS-1$
 
 	private static boolean s_hasBeenActivated;
 
@@ -136,8 +138,9 @@ public class WorkspaceInfo
 
 	public static void forceRefreshOnAll(IProgressMonitor monitor)
 	{
-		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, "Problems during metadata refresh", null);
-		monitor.beginTask("Refreshing meta-data", 1000);
+		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK,
+				Messages.WorkspaceInfo_Problems_during_metadata_refresh, null);
+		monitor.beginTask(Messages.WorkspaceInfo_Refreshing_meta_data, 1000);
 		s_hasBeenActivated = true;
 		try
 		{
@@ -288,9 +291,13 @@ public class WorkspaceInfo
 					duplicates = new ArrayList<TimestampedKey>();
 				duplicates.add(prevTsKey);
 
-				CorePlugin.getLogger().debug(
-						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn,
-						currVersion, location, prevVersion, prevLocation);
+				CorePlugin
+						.getLogger()
+						.debug(
+								NLS
+										.bind(
+												Messages.WorkspaceInfo_Found_two_entries_for_component_0_Version_1_located_at_2_and_version_3_at_4,
+												new Object[] { cn, currVersion, location, prevVersion, prevLocation }));
 				continue;
 			}
 
@@ -767,7 +774,7 @@ public class WorkspaceInfo
 		// do something using an existing materialization or something external.
 		//
 		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$"));
+		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$")); //$NON-NLS-1$ //$NON-NLS-2$
 		nodeBld.setComponentTypeID(request.getComponentTypeID());
 		nodeBld.setUseTargetPlatform(true);
 		nodeBld.setUseWorkspace(useWorkspace);
@@ -778,7 +785,7 @@ public class WorkspaceInfo
 		// do something external.
 		//
 		nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile(".*"));
+		nodeBld.setNamePattern(Pattern.compile(".*")); //$NON-NLS-1$
 		nodeBld.setUseTargetPlatform(true);
 		nodeBld.setUseWorkspace(useWorkspace);
 		nodeBld.setUseMaterialization(useWorkspace);

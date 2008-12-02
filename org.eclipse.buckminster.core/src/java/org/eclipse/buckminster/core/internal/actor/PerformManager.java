@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActor;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
@@ -210,7 +211,7 @@ public class PerformManager implements IPerformManager
 
 	private static void refreshParents(IContainer container, IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask("", IProgressMonitor.UNKNOWN);
+		monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 		try
 		{
 			if(container != null)
@@ -249,16 +250,16 @@ public class PerformManager implements IPerformManager
 		if(logger.isDebugEnabled())
 		{
 			StringBuilder bld = new StringBuilder(40 + actionList.size() * 40);
-			bld.append("Actions to perform (in order)");
+			bld.append(Messages.PerformManager_Actions_to_perform_in_order);
 			for(Action action : actionList)
 			{
-				bld.append("\n  ");
+				bld.append("\n  "); //$NON-NLS-1$
 				action.toString(bld);
 			}
 			logger.debug(bld.toString());
 		}
 
-		MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null);
+		MultiStatus retStatus = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null); //$NON-NLS-1$
 		for(Action action : actionList)
 		{
 			// Check that the action hasn't been executed already. This may happen when actions

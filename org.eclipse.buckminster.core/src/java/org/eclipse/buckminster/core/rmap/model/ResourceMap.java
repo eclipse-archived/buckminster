@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
@@ -53,6 +54,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -62,7 +64,7 @@ import org.xml.sax.SAXException;
  */
 public class ResourceMap extends AbstractSaxableElement implements ISaxable
 {
-	public static final String TAG = "rmap";
+	public static final String TAG = "rmap"; //$NON-NLS-1$
 
 	public static ResourceMap fromURL(URL url, IConnectContext cctx) throws CoreException
 	{
@@ -106,7 +108,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
 	{
-		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI); //$NON-NLS-1$
 		prefixMappings.put(XMLConstants.BM_RMAP_PREFIX, XMLConstants.BM_RMAP_NS);
 		for(SearchPath searchPath : m_searchPaths.values())
 			searchPath.addPrefixMappings(prefixMappings);
@@ -196,14 +198,14 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 			}
 		}
 		query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object)null);
-		throw new SearchPathNotFoundException("component " + componentName);
+		throw new SearchPathNotFoundException("component " + componentName); //$NON-NLS-1$
 	}
 
 	public SearchPath getSearchPathByReference(String searchPathRef) throws SearchPathNotFoundException
 	{
 		SearchPath sp = m_searchPaths.get(searchPathRef);
 		if(sp == null)
-			throw new SearchPathNotFoundException("reference " + searchPathRef);
+			throw new SearchPathNotFoundException("reference " + searchPathRef); //$NON-NLS-1$
 		return sp;
 	}
 
@@ -222,9 +224,9 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		monitor.beginTask(null, 2000);
 		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
 		SearchPath searchPath = getSearchPath(query);
-		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, String.format(
-				"No suitable provider for component %s was found in searchPath %s", query.getComponentRequest(),
-				searchPath.getName()), null);
+		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
+				Messages.ResourceMap_No_suitable_provider_for_component_0_was_found_in_searchPath_1, query
+						.getComponentRequest(), searchPath.getName()), null);
 
 		try
 		{
@@ -271,7 +273,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 						if(!versionDesignator.designates(version))
 						{
 							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED,
-									version, String.format("not designated by %s", versionDesignator));
+									version, NLS.bind(Messages.ResourceMap_not_designated_by_0, versionDesignator));
 							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
 									.toString(), null));
