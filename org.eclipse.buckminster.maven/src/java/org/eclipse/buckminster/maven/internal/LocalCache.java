@@ -40,6 +40,14 @@ public class LocalCache
 {
 	public static final int MAX_FAILURES = 2;
 
+	private static final String SHA1_SUFFIX = ".sha1"; //$NON-NLS-1$
+
+	private static final int SHA1_LEN = 20;
+
+	private static final String MD5_SUFFIX = ".md5"; //$NON-NLS-1$
+
+	private static final int MD5_LEN = 16;
+
 	private static int hexDigit(byte c)
 	{
 		int v = 0;
@@ -50,6 +58,57 @@ public class LocalCache
 		else if(c >= 'A' && c <= 'F')
 			v = (c - 'A') + 10;
 		return v;
+	}
+
+	private static byte[] readHex(String name, InputStream stream, int size) throws CoreException, IOException
+	{
+		byte[] buffer = new byte[size * 2];
+		int bytesRead;
+		int remain = buffer.length;
+		int totRead = 0;
+		while(remain > 0 && (bytesRead = stream.read(buffer, totRead, remain)) > 0)
+		{
+			totRead += bytesRead;
+			remain -= bytesRead;
+		}
+
+		if(totRead != buffer.length)
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.unable_to_read_the_0_character_hexadecimal_form_of_the_digest_for_1,
+					Integer.valueOf(size), name));
+
+		byte[] result = new byte[size];
+		for(int idx = 0; idx < size; ++idx)
+		{
+			int cidx = idx << 1;
+			int b = (hexDigit(buffer[cidx]) << 4) | hexDigit(buffer[cidx + 1]);
+			result[idx] = (byte)(b & 0xff);
+		}
+		return result;
+	}
+
+	private static byte[] readRemoteDigest(StringBuilder urlBld, IConnectContext cctx, String suffix, int nBytes)
+			throws CoreException
+	{
+		int len = urlBld.length();
+		urlBld.append(suffix);
+		String urlStr = urlBld.toString();
+		urlBld.setLength(len);
+
+		InputStream input = null;
+		try
+		{
+			input = DownloadManager.read(new URL(urlStr), cctx);
+			return readHex(urlStr, input, nBytes);
+		}
+		catch(IOException e)
+		{
+			return null;
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
 	}
 
 	private static void writeHex(byte[] bytes, OutputStream stream) throws IOException
@@ -68,36 +127,16 @@ public class LocalCache
 		}
 	}
 
-	private static byte[] readHex(String name, InputStream stream, int size) throws CoreException, IOException
-	{
-		byte[] buffer = new byte[size * 2];
-		int bytesRead;
-		int remain = buffer.length;
-		int totRead = 0;
-		while(remain > 0 && (bytesRead = stream.read(buffer, totRead, remain)) > 0)
-		{
-			totRead += bytesRead;
-			remain -= bytesRead;
-		}
-
-		if(totRead != buffer.length)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_read_the_0_character_hexadecimal_form_of_the_digest_for_1, Integer.valueOf(size), name));
-
-		byte[] result = new byte[size];
-		for(int idx = 0; idx < size; ++idx)
-		{
-			int cidx = idx << 1;
-			int b = (hexDigit(buffer[cidx]) << 4) | hexDigit(buffer[cidx + 1]);
-			result[idx] = (byte)(b & 0xff);
-		}
-		return result;
-	}
-
 	private final IPath m_localCacheRoot;
 
 	public LocalCache(IPath localCacheRoot)
 	{
 		m_localCacheRoot = localCacheRoot;
+	}
+
+	public IPath getRootPath()
+	{
+		return m_localCacheRoot;
 	}
 
 	public InputStream openFile(URL repository, IConnectContext cctx, IPath path, IProgressMonitor monitor)
@@ -135,39 +174,8 @@ public class LocalCache
 		}
 	}
 
-	private static byte[] readRemoteDigest(StringBuilder urlBld, IConnectContext cctx, String suffix, int nBytes)
-			throws CoreException
-	{
-		int len = urlBld.length();
-		urlBld.append(suffix);
-		String urlStr = urlBld.toString();
-		urlBld.setLength(len);
-
-		InputStream input = null;
-		try
-		{
-			input = DownloadManager.read(new URL(urlStr), cctx);
-			return readHex(urlStr, input, nBytes);
-		}
-		catch(IOException e)
-		{
-			return null;
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-	}
-
-	private static final String SHA1_SUFFIX = ".sha1"; //$NON-NLS-1$
-
-	private static final int SHA1_LEN = 20;
-
-	private static final String MD5_SUFFIX = ".md5"; //$NON-NLS-1$
-
-	private static final int MD5_LEN = 16;
-
-	private synchronized File obtainLocalFile(URL repository, IConnectContext cctx, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException, CoreException
+	private synchronized File obtainLocalFile(URL repository, IConnectContext cctx, IPath path, int failureCounter,
+			IProgressMonitor monitor) throws IOException, CoreException
 	{
 		IPath fullPath = m_localCacheRoot.append(path);
 		File file = fullPath.toFile();
@@ -294,7 +302,8 @@ public class LocalCache
 				// due to replace of the actual jar
 				//
 				MavenPlugin.getLogger().warning(
-					NLS.bind(Messages.digest_for_0_still_doesnt_match_after_1_download_attempts_corrupt_repo, remoteURL, new Integer(MAX_FAILURES)));
+						NLS.bind(Messages.digest_for_0_still_doesnt_match_after_1_download_attempts_corrupt_repo,
+								remoteURL, new Integer(MAX_FAILURES)));
 
 			try
 			{
@@ -313,10 +322,5 @@ public class LocalCache
 		localDigestFile.delete();
 		file.delete();
 		throw new IOException(NLS.bind(Messages.digest_mismatch_after_download_for_0, remoteURL));
-	}
-
-	public IPath getRootPath()
-	{
-		return m_localCacheRoot;
 	}
 }

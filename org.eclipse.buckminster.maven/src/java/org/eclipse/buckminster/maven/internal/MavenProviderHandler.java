@@ -20,38 +20,17 @@ import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 public class MavenProviderHandler extends ProviderHandler
 {
 	private final MappingsHandler m_mappingsHandler = new MappingsHandler(this);
 
-	private Map<String,MapEntry> m_mappings;
+	private Map<String, MapEntry> m_mappings;
+
 	private List<BidirectionalTransformer> m_rules;
 
 	public MavenProviderHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		super.handleAttributes(attrs);
-		m_mappings = null;
-		m_rules = null;
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs)
-	throws SAXException
-	{
-		ChildHandler ch;
-		if(MavenProvider.ELEM_MAPPINGS.equals(localName))
-			ch = m_mappingsHandler;
-		else
-			ch = super.createHandler(uri, localName, attrs);
-		return ch;
 	}
 
 	@Override
@@ -67,19 +46,28 @@ public class MavenProviderHandler extends ProviderHandler
 	}
 
 	@Override
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
+	{
+		ChildHandler ch;
+		if(MavenProvider.ELEM_MAPPINGS.equals(localName))
+			ch = m_mappingsHandler;
+		else
+			ch = super.createHandler(uri, localName, attrs);
+		return ch;
+	}
+
+	@Override
 	public Provider getProvider()
 	{
-		return new MavenProvider(
-				getSearchPath(),
-				getReaderType(),
-				getComponentTypes(),
-				getVersionConverter(),
-				getUriFormat(),
-				getResolutionFilter(),
-				isMutable(),
-				isSource(),
-				getDocumentation(),
-				m_mappings,
-				m_rules);
+		return new MavenProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(),
+				getUriFormat(), getResolutionFilter(), isMutable(), isSource(), getDocumentation(), m_mappings, m_rules);
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		m_mappings = null;
+		m_rules = null;
 	}
 }

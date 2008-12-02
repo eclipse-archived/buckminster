@@ -76,6 +76,22 @@ public class MavenReaderType extends URLCatalogReaderType
 		}
 	}
 
+	static URL createURL(URI repoURI, String path) throws CoreException
+	{
+		try
+		{
+			return new URI(repoURI.getScheme(), repoURI.getAuthority(), path, null, null).toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(URISyntaxException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
 	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws CoreException
 	{
 		String name = request.getName();
@@ -92,8 +108,7 @@ public class MavenReaderType extends URLCatalogReaderType
 	}
 
 	@Override
-	public IPath getInstallLocation(Resolution resolution, MaterializationContext context)
-			throws CoreException
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException
 	{
 		MapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
 		VersionMatch vs = resolution.getVersionMatch();
@@ -141,8 +156,7 @@ public class MavenReaderType extends URLCatalogReaderType
 		appendFolder(pbld, "jars"); //$NON-NLS-1$
 	}
 
-	void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension)
-			throws CoreException
+	void appendFileName(StringBuilder bld, String artifactID, VersionMatch vm, String extension) throws CoreException
 	{
 		String artifactInfo = vm.getArtifactInfo();
 		if(extension == null && artifactInfo != null)
@@ -190,22 +204,6 @@ public class MavenReaderType extends URLCatalogReaderType
 	{
 		appendFolder(pbld, mapEntry.getGroupId());
 		appendFolder(pbld, "poms"); //$NON-NLS-1$
-	}
-
-	static URL createURL(URI repoURI, String path) throws CoreException
-	{
-		try
-		{
-			return new URI(repoURI.getScheme(), repoURI.getAuthority(), path, null, null).toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(URISyntaxException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
 	}
 
 	IPath getArtifactPath(MapEntry mapEntry, VersionMatch vs) throws CoreException

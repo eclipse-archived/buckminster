@@ -60,11 +60,12 @@ public class MavenComponentType extends AbstractComponentType
 	private static final MavenCSpecBuilder s_builder = new MavenCSpecBuilder();
 
 	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US); //$NON-NLS-1$
+
 	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss", Locale.US); //$NON-NLS-1$
 
 	private static final Pattern s_timestampPattern = Pattern.compile(//
 			"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
-			"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
+					"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
 
 	public static IVersion createVersion(String versionStr) throws CoreException
 	{
@@ -86,8 +87,8 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	static void addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec,
-			GroupBuilder archives, ExpandingProperties properties) throws CoreException
+	static void addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec, GroupBuilder archives,
+			ExpandingProperties properties) throws CoreException
 	{
 		Element project = pomDoc.getDocumentElement();
 		Node parentNode = null;
@@ -162,8 +163,8 @@ public class MavenComponentType extends AbstractComponentType
 		try
 		{
 			return (time != null)
-				? s_timestampFormat.parse(date + '.' + time)
-				: s_dateFormat.parse(date);
+					? s_timestampFormat.parse(date + '.' + time)
+					: s_dateFormat.parse(date);
 		}
 		catch(ParseException e)
 		{
@@ -183,7 +184,9 @@ public class MavenComponentType extends AbstractComponentType
 			{
 				versionStr = versionStr.substring(1, versionStr.length() - 2);
 				IVersion version = createVersion(versionStr);
-				return (version == null) ? null : VersionFactory.createGTEqualDesignator(version);
+				return (version == null)
+						? null
+						: VersionFactory.createGTEqualDesignator(version);
 			}
 			return VersionFactory.createDesignator(VersionFactory.TripletType, versionStr);
 		}
@@ -299,7 +302,8 @@ public class MavenComponentType extends AbstractComponentType
 		{
 			// Unresolved property. We can't use this so skip it.
 			//
-			MavenPlugin.getLogger().warning(NLS.bind(Messages.unable_to_resolve_component_name_0_skipping_dependency, componentName));
+			MavenPlugin.getLogger().warning(
+					NLS.bind(Messages.unable_to_resolve_component_name_0_skipping_dependency, componentName));
 			return;
 		}
 
@@ -379,7 +383,8 @@ public class MavenComponentType extends AbstractComponentType
 		parentPath = mrt.getPomPath(entry, vm);
 
 		MavenPlugin.getLogger().debug(
-				NLS.bind(Messages.getting_POM_information_for_parent_0_to_1_at_path_2, new Object[]{groupId, artifactId, parentPath}));
+				NLS.bind(Messages.getting_POM_information_for_parent_0_to_1_at_path_2, new Object[] { groupId,
+						artifactId, parentPath }));
 		Document parentDoc = reader.getPOMDocument(entry, vm, parentPath, new NullProgressMonitor());
 		if(parentDoc == null)
 			return;
@@ -431,7 +436,8 @@ public class MavenComponentType extends AbstractComponentType
 			// We cannot apply advanced semantics here so we just
 			// strip the SNAPSHOT part and hope for the best.
 			//
-			return VersionFactory.createRangeDesignator(low, designator.includesLowerBound(), high, designator.includesUpperBound());
+			return VersionFactory.createRangeDesignator(low, designator.includesLowerBound(), high, designator
+					.includesUpperBound());
 
 		StringBuilder bld = new StringBuilder();
 		TripletVersion lowTriplet = (TripletVersion)low;

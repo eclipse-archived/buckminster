@@ -46,30 +46,35 @@ public class MavenProvider extends Provider
 	public static final String ELEM_RULE = "rule"; //$NON-NLS-1$
 
 	/**
-	 * Apply default rules. I.e.<ul>
-	 * <li>If the component name contains a dot, then separate the group and
-	 * artifact using the last dot.</li>
-	 * <li>If no dot is found, then use the same name for the group and
-	 * artifact</li>
+	 * Apply default rules. I.e.
+	 * <ul>
+	 * <li>If the component name contains a dot, then separate the group and artifact using the last dot.</li>
+	 * <li>If no dot is found, then use the same name for the group and artifact</li>
 	 * </ul>
-	 * @param name the name of the component
+	 * 
+	 * @param name
+	 *            the name of the component
 	 * @return an entry with a Maven groupId and artifactId
 	 */
 	public static MapEntry getDefaultGroupAndArtifact(String name)
 	{
 		int dotIdx = name.lastIndexOf('/');
 		return (dotIdx > 0)
-			? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null)
-			: new MapEntry(name, name, name, null);
+				? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null)
+				: new MapEntry(name, name, name, null);
 	}
 
 	/**
-	 * Apply default rules. I.e.<ul>
+	 * Apply default rules. I.e.
+	 * <ul>
 	 * <li>If the <code>groupId</code> and <code>artifactId</code> are equal, use the <code>artifactId</code></li>
 	 * <li>If the <code>groupId</code> and <code>artifactId</code> are different, use <code>groupId.artifactId</code></li>
 	 * </ul>
-	 * @param groupId the Maven group id
-	 * @param artifactId the Maven artifact id
+	 * 
+	 * @param groupId
+	 *            the Maven group id
+	 * @param artifactId
+	 *            the Maven artifact id
 	 * @return The default component name.
 	 */
 	public static String getDefaultName(String groupId, String artifactId)
@@ -93,11 +98,12 @@ public class MavenProvider extends Provider
 	private final List<BidirectionalTransformer> m_rules;
 
 	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-		VersionConverterDesc versionConverterDesc, Format uri, Filter resolutionFilter, boolean mutable, boolean source,
-		Documentation documentation, Map<String, MapEntry> mappings, List<BidirectionalTransformer> rules)
+			VersionConverterDesc versionConverterDesc, Format uri, Filter resolutionFilter, boolean mutable,
+			boolean source, Documentation documentation, Map<String, MapEntry> mappings,
+			List<BidirectionalTransformer> rules)
 	{
-		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter, mutable, source,
-			null, documentation);
+		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter,
+				mutable, source, null, documentation);
 		if(mappings == null)
 			mappings = Collections.emptyMap();
 		if(rules == null)
@@ -124,7 +130,7 @@ public class MavenProvider extends Provider
 	{
 		super.addAttributes(attrs);
 		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", //$NON-NLS-1$ //$NON-NLS-2$
-			"CDATA", BM_MAVEN_PROVIDER_PREFIX + ":MavenProvider"); //$NON-NLS-1$ //$NON-NLS-2$
+				"CDATA", BM_MAVEN_PROVIDER_PREFIX + ":MavenProvider"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
@@ -149,7 +155,7 @@ public class MavenProvider extends Provider
 		{
 			if(me.isMatchFor(groupId, artifactId))
 				return me.getName();
-			
+
 			List<GroupAndArtifact> aliases = me.getAliases();
 			int idx = aliases.size();
 			while(--idx >= 0)
@@ -192,7 +198,8 @@ public class MavenProvider extends Provider
 
 		int slashPos = transformed.indexOf('/');
 		if(slashPos < 0)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
 
 		return new MapEntry(name, transformed.substring(0, slashPos), transformed.substring(slashPos + 1), null);
 	}

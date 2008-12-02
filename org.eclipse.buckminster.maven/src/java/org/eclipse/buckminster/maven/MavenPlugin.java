@@ -34,6 +34,11 @@ public class MavenPlugin extends LogAwarePlugin
 
 	private static MavenPlugin s_plugin;
 
+	public static IVersion createVersion(String versionStr) throws CoreException
+	{
+		return MavenComponentType.createVersion(versionStr);
+	}
+
 	public static MavenPlugin getDefault()
 	{
 		return s_plugin;
@@ -44,19 +49,11 @@ public class MavenPlugin extends LogAwarePlugin
 		return s_plugin.getBundleLogger();
 	}
 
-	public MavenPlugin()
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx,
+			IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		s_plugin = this;
-	}
-
-	public static IVersion createVersion(String versionStr) throws CoreException
-	{
-		return MavenComponentType.createVersion(versionStr);
-	}
-
-	public static List<String> getVersions(Document doc)
-	{
-		return Maven2VersionFinder.getVersions(doc);
+		return Maven2VersionFinder.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder
+				.getDefaultLocalRepoPath()), cctx, monitor);
 	}
 
 	public static String getSnapshotVersion(Document doc, String version) throws CoreException
@@ -64,9 +61,14 @@ public class MavenPlugin extends LogAwarePlugin
 		return Maven2VersionFinder.getSnapshotVersion(doc, version);
 	}
 
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	public static List<String> getVersions(Document doc)
 	{
-		return Maven2VersionFinder.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder.getDefaultLocalRepoPath()), cctx, monitor);
+		return Maven2VersionFinder.getVersions(doc);
+	}
+
+	public MavenPlugin()
+	{
+		s_plugin = this;
 	}
 
 	@Override

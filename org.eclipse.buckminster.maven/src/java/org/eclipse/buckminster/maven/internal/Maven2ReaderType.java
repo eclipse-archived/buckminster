@@ -21,20 +21,36 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
 public class Maven2ReaderType extends MavenReaderType
 {
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor) throws CoreException
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new Maven2VersionFinder(this, provider, ctype, nodeQuery);
 	}
 
 	@Override
-	void appendFileName(StringBuilder pbld, String artifactID, VersionMatch vm, String extension)
-			throws CoreException
+	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vm) throws CoreException
+	{
+		String artifactPath = vm.getArtifactInfo();
+		appendEntryFolder(pbld, mapEntry);
+		pbld.append(artifactPath, 0, artifactPath.lastIndexOf('/') + 1);
+	}
+
+	void appendEntryFolder(StringBuilder pbld, MapEntry mapEntry) throws CoreException
+	{
+		StringTokenizer tokens = new StringTokenizer(mapEntry.getGroupId(), "."); //$NON-NLS-1$
+		while(tokens.hasMoreTokens())
+			appendFolder(pbld, tokens.nextToken());
+		appendFolder(pbld, mapEntry.getArtifactId());
+	}
+
+	@Override
+	void appendFileName(StringBuilder pbld, String artifactID, VersionMatch vm, String extension) throws CoreException
 	{
 		if(extension == null)
 		{
@@ -51,32 +67,16 @@ public class Maven2ReaderType extends MavenReaderType
 	}
 
 	@Override
-	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vm) throws CoreException
-	{
-		String artifactPath = vm.getArtifactInfo();
-		appendEntryFolder(pbld, mapEntry);
-		pbld.append(artifactPath, 0, artifactPath.lastIndexOf('/') + 1);
-	}
-
-	@Override
-	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
-	{
-		appendArtifactFolder(pbld, mapEntry, vs);
-	}
-
-	@Override
 	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		appendEntryFolder(pbld, mapEntry);
 		pbld.append(vs.getArtifactInfo());
 	}
 
-	void appendEntryFolder(StringBuilder pbld, MapEntry mapEntry) throws CoreException
+	@Override
+	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
-		StringTokenizer tokens = new StringTokenizer(mapEntry.getGroupId(), "."); //$NON-NLS-1$
-		while(tokens.hasMoreTokens())
-			appendFolder(pbld, tokens.nextToken());
-		appendFolder(pbld, mapEntry.getArtifactId());
+		appendArtifactFolder(pbld, mapEntry, vs);
 	}
 
 	@Override

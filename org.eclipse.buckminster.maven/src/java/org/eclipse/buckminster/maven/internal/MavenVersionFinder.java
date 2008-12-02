@@ -35,8 +35,8 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * The URL used by the MavenReader denotes the group directory within one specific repository. The format must be <br/>
- * <code>[&lt;schema&gt;][//&lt;authority&gt;]&lt;path to group&gt;#&lt;artifact&gt;</code><br/> The ability to
- * search trhough multiple repositories is obtained by using the <code>SearchPath</code> or the
+ * <code>[&lt;schema&gt;][//&lt;authority&gt;]&lt;path to group&gt;#&lt;artifact&gt;</code><br/>
+ * The ability to search trhough multiple repositories is obtained by using the <code>SearchPath</code> or the
  * <code>ResourceMap</code>. The
  * 
  * @author Thomas Hallgren
@@ -62,28 +62,18 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		m_mapEntry = MavenReaderType.getGroupAndArtifact(provider, query.getComponentRequest());
 	}
 
-	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
-	{
-		VersionMatch best = null;
-		for(VersionMatch candidate : getComponentVersions(monitor))
-			best = getBestVersion(candidate, best);
-		return best;
-	}
-
 	@Override
 	public void close()
 	{
 		m_fileList = null;
 	}
 
-	private URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
-		StringBuilder pbld = new StringBuilder();
-		m_readerType.appendFolder(pbld, m_uri.getPath());
-		m_readerType.appendFolder(pbld, m_mapEntry.getGroupId());
-		m_readerType.appendFolder(pbld, "jars"); //$NON-NLS-1$
-		URL jarsURL = MavenReaderType.createURL(m_uri, pbld.toString());
-		return URLCatalogReaderType.list(jarsURL, getConnectContext(), monitor);
+		VersionMatch best = null;
+		for(VersionMatch candidate : getComponentVersions(monitor))
+			best = getBestVersion(candidate, best);
+		return best;
 	}
 
 	VersionMatch getBestVersion(VersionMatch a, VersionMatch b)
@@ -215,8 +205,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 				continue;
 
 			String versionStr = fileName.substring(artifactLen, fileName.length() - extension.length());
-			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, fileName + '/'
-					+ versionStr);
+			VersionMatch versionMatch = MavenComponentType.createVersionMatch(versionStr, fileName + '/' + versionStr);
 			if(versionMatch != null && query.isMatch(versionMatch))
 				versions.add(versionMatch);
 		}
@@ -236,6 +225,16 @@ public class MavenVersionFinder extends AbstractVersionFinder
 	URI getURI()
 	{
 		return m_uri;
+	}
+
+	private URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	{
+		StringBuilder pbld = new StringBuilder();
+		m_readerType.appendFolder(pbld, m_uri.getPath());
+		m_readerType.appendFolder(pbld, m_mapEntry.getGroupId());
+		m_readerType.appendFolder(pbld, "jars"); //$NON-NLS-1$
+		URL jarsURL = MavenReaderType.createURL(m_uri, pbld.toString());
+		return URLCatalogReaderType.list(jarsURL, getConnectContext(), monitor);
 	}
 
 	private URL[] getFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException

@@ -9,6 +9,7 @@
  *******************************************************************************/
 
 package org.eclipse.buckminster.maven.internal;
+
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
@@ -20,6 +21,7 @@ import org.xml.sax.SAXException;
 class GroupAndArtifactHandler extends ExtensionAwareHandler
 {
 	private String m_group;
+
 	private String m_artifact;
 
 	public GroupAndArtifactHandler(AbstractHandler parent)
@@ -28,8 +30,7 @@ class GroupAndArtifactHandler extends ExtensionAwareHandler
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
+	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_group = this.getStringValue(attrs, GroupAndArtifact.ATTR_GROUP_ID);
 		m_artifact = this.getStringValue(attrs, GroupAndArtifact.ATTR_ARTIFACT_ID);
@@ -40,13 +41,13 @@ class GroupAndArtifactHandler extends ExtensionAwareHandler
 		return new GroupAndArtifact(m_group, m_artifact);
 	}
 
-	String getGroup()
-	{
-		return m_group;
-	}
-
 	String getArtifact()
 	{
 		return m_artifact;
+	}
+
+	String getGroup()
+	{
+		return m_group;
 	}
 }

@@ -47,6 +47,117 @@ import org.xml.sax.SAXParseException;
  */
 public class Maven2VersionFinder extends MavenVersionFinder
 {
+	public static IPath getDefaultLocalRepoPath()
+	{
+		return new Path(System.getProperty("user.home")).append(".m2").append("repository"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
+
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,
+			IProgressMonitor monitor) throws CoreException, FileNotFoundException
+	{
+		try
+		{
+			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
+			try
+			{
+				DownloadManager.readInto(url, cctx, buffer, monitor);
+				return docBld.parse(buffer.getInputStream());
+			}
+			catch(SAXParseException e)
+			{
+				String msg = e.getMessage();
+				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
+					throw e;
+
+				InputSource input = new InputSource(buffer.getInputStream());
+				input.setEncoding("ISO-8859-1"); //$NON-NLS-1$
+				docBld.reset();
+				return docBld.parse(input);
+			}
+		}
+		catch(CoreException e)
+		{
+			docBld.reset();
+			throw e;
+		}
+		catch(FileNotFoundException e)
+		{
+			docBld.reset();
+			throw e;
+		}
+		catch(Exception e)
+		{
+			docBld.reset();
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public static String getSnapshotVersion(Document doc, String version)
+	{
+		String v = null;
+		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
+		if(versioningElement != null)
+		{
+			Element snapshotElement = getElement(versioningElement, "snapshot"); //$NON-NLS-1$
+			if(snapshotElement != null)
+			{
+				Element buildNum = getElement(snapshotElement, "buildNumber"); //$NON-NLS-1$
+				if(buildNum != null)
+				{
+					Element ts = getElement(snapshotElement, "timestamp"); //$NON-NLS-1$
+					if(ts != null)
+						v = version.substring(0, version.length() - 8) + ts.getTextContent() + '-'
+								+ buildNum.getTextContent();
+				}
+			}
+		}
+		return v;
+	}
+
+	public static List<String> getVersions(Document doc)
+	{
+		List<String> versionList = null;
+
+		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
+		if(versioningElement != null)
+		{
+			Element versionsElement = getElement(versioningElement, "versions"); //$NON-NLS-1$
+			if(versionsElement != null)
+			{
+				NodeList versions = versionsElement.getElementsByTagName("version"); //$NON-NLS-1$
+				int top = versions.getLength();
+				for(int i = 0; i < top; i++)
+				{
+					if(versionList == null)
+						versionList = new ArrayList<String>();
+					versionList.add(versions.item(i).getTextContent());
+				}
+			}
+		}
+		return versionList == null
+				? Collections.<String> emptyList()
+				: versionList;
+	}
+
+	private static Element getElement(Document doc, String elementName)
+	{
+		return getElement(doc.getElementsByTagName(elementName));
+	}
+
+	private static Element getElement(Element elem, String elementName)
+	{
+		return elem == null
+				? null
+				: getElement(elem.getElementsByTagName(elementName));
+	}
+
+	private static Element getElement(NodeList nodeList)
+	{
+		return (nodeList != null && nodeList.getLength() > 0)
+				? (Element)nodeList.item(0)
+				: null;
+	}
+
 	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
 			throws CoreException
 	{
@@ -156,117 +267,6 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		finally
 		{
 			monitor.done();
-		}
-	}
-
-	public static List<String> getVersions(Document doc)
-	{
-		List<String> versionList = null;
-
-		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
-		if(versioningElement != null)
-		{
-			Element versionsElement = getElement(versioningElement, "versions"); //$NON-NLS-1$
-			if(versionsElement != null)
-			{
-				NodeList versions = versionsElement.getElementsByTagName("version"); //$NON-NLS-1$
-				int top = versions.getLength();
-				for(int i = 0; i < top; i++)
-				{
-					if(versionList == null)
-						versionList = new ArrayList<String>();
-					versionList.add(versions.item(i).getTextContent());
-				}
-			}
-		}
-		return versionList == null
-				? Collections.<String> emptyList()
-				: versionList;
-	}
-
-	public static IPath getDefaultLocalRepoPath()
-	{
-		return new Path(System.getProperty("user.home")).append(".m2").append("repository"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-
-	public static String getSnapshotVersion(Document doc, String version)
-	{
-		String v = null;
-		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
-		if(versioningElement != null)
-		{
-			Element snapshotElement = getElement(versioningElement, "snapshot"); //$NON-NLS-1$
-			if(snapshotElement != null)
-			{
-				Element buildNum = getElement(snapshotElement, "buildNumber"); //$NON-NLS-1$
-				if(buildNum != null)
-				{
-					Element ts = getElement(snapshotElement, "timestamp"); //$NON-NLS-1$
-					if(ts != null)
-						v = version.substring(0, version.length() - 8) + ts.getTextContent() + '-'
-								+ buildNum.getTextContent();
-				}
-			}
-		}
-		return v;
-	}
-
-	private static Element getElement(Document doc, String elementName)
-	{
-		return getElement(doc.getElementsByTagName(elementName));
-	}
-
-	private static Element getElement(Element elem, String elementName)
-	{
-		return elem == null
-				? null
-				: getElement(elem.getElementsByTagName(elementName));
-	}
-
-	private static Element getElement(NodeList nodeList)
-	{
-		return (nodeList != null && nodeList.getLength() > 0)
-				? (Element)nodeList.item(0)
-				: null;
-	}
-
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
-		try
-		{
-			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
-			try
-			{
-				DownloadManager.readInto(url, cctx, buffer, monitor);
-				return docBld.parse(buffer.getInputStream());
-			}
-			catch(SAXParseException e)
-			{
-				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
-					throw e;
-
-				InputSource input = new InputSource(buffer.getInputStream());
-				input.setEncoding("ISO-8859-1"); //$NON-NLS-1$
-				docBld.reset();
-				return docBld.parse(input);
-			}
-		}
-		catch(CoreException e)
-		{
-			docBld.reset();
-			throw e;
-		}
-		catch(FileNotFoundException e)
-		{
-			docBld.reset();
-			throw e;
-		}
-		catch(Exception e)
-		{
-			docBld.reset();
-			throw BuckminsterException.wrap(e);
 		}
 	}
 }

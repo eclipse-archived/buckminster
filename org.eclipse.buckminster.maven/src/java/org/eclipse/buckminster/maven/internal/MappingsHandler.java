@@ -25,17 +25,36 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 class MappingsHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
 	private BidirectionalTransformerHandler m_transformerHandler;
+
 	private MapEntryHandler m_mapEntryHandler;
-	private TreeMap<String,MapEntry> m_entries;
+
+	private TreeMap<String, MapEntry> m_entries;
+
 	private List<BidirectionalTransformer> m_rules;
 
 	public MappingsHandler(AbstractHandler parent)
 	{
 		super(parent);
+	}
+
+	public void childPopped(ChildHandler child)
+	{
+		if(child instanceof MapEntryHandler)
+		{
+			if(m_entries == null)
+				m_entries = new TreeMap<String, MapEntry>();
+			MapEntry entry = (MapEntry)((MapEntryHandler)child).createEntry();
+			m_entries.put(entry.getName(), entry);
+		}
+		else if(child instanceof BidirectionalTransformerHandler)
+		{
+			if(m_rules == null)
+				m_rules = new ArrayList<BidirectionalTransformer>();
+			m_rules.add(((BidirectionalTransformerHandler)child).getTransformer());
+		}
 	}
 
 	@Override
@@ -59,34 +78,21 @@ class MappingsHandler extends ExtensionAwareHandler implements ChildPoppedListen
 		return ch;
 	}
 
-	public void childPopped(ChildHandler child)
+	public Map<String, MapEntry> getEntriesAndClear()
 	{
-		if(child instanceof MapEntryHandler)
-		{
-			if(m_entries == null)
-				m_entries = new TreeMap<String,MapEntry>();
-			MapEntry entry = (MapEntry)((MapEntryHandler)child).createEntry();
-			m_entries.put(entry.getName(), entry);
-		}
-		else if(child instanceof BidirectionalTransformerHandler)
-		{
-			if(m_rules == null)
-				m_rules = new ArrayList<BidirectionalTransformer>();
-			m_rules.add(((BidirectionalTransformerHandler)child).getTransformer());
-		}
-	}
-
-	public Map<String,MapEntry> getEntriesAndClear()
-	{
-		Map<String,MapEntry> entries = m_entries;
+		Map<String, MapEntry> entries = m_entries;
 		m_entries = null;
-		return (entries == null) ? Collections.<String,MapEntry>emptyMap() : entries;
+		return (entries == null)
+				? Collections.<String, MapEntry> emptyMap()
+				: entries;
 	}
 
 	public List<BidirectionalTransformer> getRuleAndClear()
 	{
 		List<BidirectionalTransformer> rules = m_rules;
 		m_rules = null;
-		return (rules == null) ? Collections.<BidirectionalTransformer>emptyList() : rules;
+		return (rules == null)
+				? Collections.<BidirectionalTransformer> emptyList()
+				: rules;
 	}
 }

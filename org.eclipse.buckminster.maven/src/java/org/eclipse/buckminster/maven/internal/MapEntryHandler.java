@@ -9,6 +9,7 @@
  *******************************************************************************/
 
 package org.eclipse.buckminster.maven.internal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,9 @@ import org.xml.sax.SAXException;
 class MapEntryHandler extends GroupAndArtifactHandler implements ChildPoppedListener
 {
 	private GroupAndArtifactHandler m_aliasHandler;
+
 	private List<GroupAndArtifact> m_aliases;
+
 	private String m_name;
 
 	public MapEntryHandler(AbstractHandler parent)
@@ -54,6 +57,14 @@ class MapEntryHandler extends GroupAndArtifactHandler implements ChildPoppedList
 		return ch;
 	}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		m_name = getStringValue(attrs, MapEntry.ATTR_NAME);
+		if(m_aliases != null)
+			m_aliases.clear();
+	}
 
 	@Override
 	GroupAndArtifact createEntry()
@@ -64,15 +75,5 @@ class MapEntryHandler extends GroupAndArtifactHandler implements ChildPoppedList
 	String getName()
 	{
 		return m_name;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs)
-	throws SAXException
-	{
-		super.handleAttributes(attrs);
-		m_name = getStringValue(attrs, MapEntry.ATTR_NAME);
-		if(m_aliases != null)
-			m_aliases.clear();
 	}
 }

@@ -45,7 +45,7 @@ import org.xml.sax.SAXParseException;
 class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<Document>
 {
 	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-	throws CoreException
+			throws CoreException
 	{
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
@@ -111,8 +111,8 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		}
 	}
 
-	public Document consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-	throws CoreException, IOException
+	public Document consumeStream(IComponentReader reader, String streamName, InputStream stream,
+			IProgressMonitor monitor) throws CoreException, IOException
 	{
 		monitor.beginTask(streamName, 1);
 		try
@@ -130,7 +130,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 				String msg = e.getMessage();
 				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
-				
+
 				InputSource input = new InputSource(buffer.getInputStream());
 				input.setEncoding("ISO-8859-1"); //$NON-NLS-1$
 				docBld.reset();
