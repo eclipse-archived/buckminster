@@ -29,14 +29,6 @@ public class P4PreferencePage extends PreferencePage implements IWorkbenchPrefer
 		this.noDefaultAndApplyButton();
 	}
 
-	@Override
-	protected Control createContents(Composite parent)
-	{
-		m_rootPane = new RootPane(this, parent);
-		m_rootPane.init();
-		return m_rootPane;
-	}
-
 	public void init(IWorkbench workbench)
 	{
 	}
@@ -45,5 +37,13 @@ public class P4PreferencePage extends PreferencePage implements IWorkbenchPrefer
 	public boolean performOk()
 	{
 		return m_rootPane.performOk();
+	}
+
+	@Override
+	protected Control createContents(Composite parent)
+	{
+		m_rootPane = new RootPane(this, parent);
+		m_rootPane.init();
+		return m_rootPane;
 	}
 }

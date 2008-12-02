@@ -43,6 +43,20 @@ abstract class NodeListPrefPane extends Composite
 {
 	private static final Pattern s_namePattern = Pattern.compile("^(?:(?:\\$\\{[\\w\\.-]+\\})|[\\w\\.:-])+$"); //$NON-NLS-1$
 
+	protected static void displayException(Shell parentShell, Exception e)
+	{
+		ErrorDialog.openError(parentShell, Messages.error_reading_preferences, null, BuckminsterException.wrap(e)
+				.getStatus());
+	}
+
+	protected static void setTooltipText(Text text, String value)
+	{
+		if(value != null && value.contains("${")) //$NON-NLS-1$
+			text.setToolTipText(ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), value, 0));
+		else
+			text.setToolTipText(null);
+	}
+
 	private final PreferencePage m_prefPage;
 
 	protected static ModifyListener s_tooltipRefresh = new ModifyListener()
@@ -53,6 +67,14 @@ abstract class NodeListPrefPane extends Composite
 			setTooltipText(source, source.getText());
 		}
 	};
+
+	private List m_list;
+
+	private Button m_newButton;
+
+	private Button m_renameButton;
+
+	private Button m_removeButton;
 
 	public NodeListPrefPane(PreferencePage prefPage, Composite parent, int colSpan)
 	{
@@ -68,13 +90,17 @@ abstract class NodeListPrefPane extends Composite
 		this.setLayoutData(gd);
 	}
 
-	private List m_list;
+	public void setErrorMessage(String message)
+	{
+		m_prefPage.setErrorMessage(message);
+	}
 
-	private Button m_newButton;
-
-	private Button m_renameButton;
-
-	private Button m_removeButton;
+	protected void addAndSelect(String item)
+	{
+		m_list.add(item);
+		m_list.setSelection(m_list.getItemCount() - 1);
+		selectionChanged();
+	}
 
 	protected Composite createListContents(String listLabel)
 	{
@@ -155,81 +181,27 @@ abstract class NodeListPrefPane extends Composite
 		return buttonBox;
 	}
 
-	protected void addAndSelect(String item)
-	{
-		m_list.add(item);
-		m_list.setSelection(m_list.getItemCount() - 1);
-		selectionChanged();
-	}
-
-	protected void updateAndSelect()
-	{
-		int idx = m_list.getSelectionIndex();
-		this.updateList();
-		m_list.setSelection(idx);
-		selectionChanged();
-	}
-
-	public void setErrorMessage(String message)
-	{
-		m_prefPage.setErrorMessage(message);
-	}
-
-	protected abstract boolean isNewEnabled();
-
-	protected abstract void newNode();
-
-	protected abstract void renameNode();
-
 	protected abstract void editNode(String item);
 
-	protected abstract void removeNode(String item);
-
 	protected abstract String[] getListContents();
-
-	protected final String getSelectedItem()
-	{
-		int index = m_list.getSelectionIndex();
-		int size = m_list.getSelectionCount();
-		return (index >= 0 && size == 1) ? m_list.getItem(index) : null;
-	}
 
 	protected final PreferencePage getPreferencePage()
 	{
 		return m_prefPage;
 	}
 
-	protected void updateList()
-	{
-		m_list.setItems(this.getListContents());
-	}
-
-	/**
-	 * Notifies that the list selection has changed.
-	 */
-	protected void selectionChanged()
+	protected final String getSelectedItem()
 	{
 		int index = m_list.getSelectionIndex();
 		int size = m_list.getSelectionCount();
-
-		m_newButton.setEnabled(this.isNewEnabled());
-		m_removeButton.setEnabled(index >= 0);
-		m_renameButton.setEnabled(index >= 0);
-		this.editNode((index >= 0 && size == 1) ? m_list.getItem(index) : null);
+		return (index >= 0 && size == 1)
+				? m_list.getItem(index)
+				: null;
 	}
 
-	protected static void displayException(Shell parentShell, Exception e)
-	{
-		ErrorDialog.openError(parentShell, Messages.error_reading_preferences, null, BuckminsterException.wrap(e).getStatus());
-	}
+	protected abstract boolean isNewEnabled();
 
-	protected static void setTooltipText(Text text, String value)
-	{
-		if(value != null && value.contains("${")) //$NON-NLS-1$
-			text.setToolTipText(ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), value, 0));
-		else
-			text.setToolTipText(null);
-	}
+	protected abstract void newNode();
 
 	protected String queryNodeName(String title, String label, String initial)
 	{
@@ -243,6 +215,41 @@ abstract class NodeListPrefPane extends Composite
 			}
 		});
 
-		return (nameDialog.open() == Window.OK) ? nameDialog.getValue() : null;
+		return (nameDialog.open() == Window.OK)
+				? nameDialog.getValue()
+				: null;
+	}
+
+	protected abstract void removeNode(String item);
+
+	protected abstract void renameNode();
+
+	/**
+	 * Notifies that the list selection has changed.
+	 */
+	protected void selectionChanged()
+	{
+		int index = m_list.getSelectionIndex();
+		int size = m_list.getSelectionCount();
+
+		m_newButton.setEnabled(this.isNewEnabled());
+		m_removeButton.setEnabled(index >= 0);
+		m_renameButton.setEnabled(index >= 0);
+		this.editNode((index >= 0 && size == 1)
+				? m_list.getItem(index)
+				: null);
+	}
+
+	protected void updateAndSelect()
+	{
+		int idx = m_list.getSelectionIndex();
+		this.updateList();
+		m_list.setSelection(idx);
+		selectionChanged();
+	}
+
+	protected void updateList()
+	{
+		m_list.setItems(this.getListContents());
 	}
 }

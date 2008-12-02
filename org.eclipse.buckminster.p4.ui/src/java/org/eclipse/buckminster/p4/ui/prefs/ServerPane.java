@@ -41,21 +41,229 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author Thomas Hallgren
  */
 public class ServerPane extends NodeListPrefPane
-{	
+{
 	private Text m_serverName;
+
 	private Text m_user;
+
 	private Text m_password;
+
 	private Text m_passwordCheck;
+
 	private Button m_defaultServer;
+
 	private Button m_export;
+
 	private ClientPane m_clientPane;
+
+	private Server m_server;
 
 	public ServerPane(PreferencePage prefPage, Composite parent)
 	{
 		super(prefPage, parent, 2);
 	}
 
-	private Server m_server;
+	public void init(Composite buttonBox)
+	{
+		m_export = UiUtils.createPushButton(buttonBox, Messages.export_with_dots, new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				exportServer();
+			}
+		});
+		m_export.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		Composite serverFields = new Composite(this, SWT.NONE);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 2;
+		serverFields.setLayoutData(gd);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		serverFields.setLayout(layout);
+		m_serverName = UiUtils.createLabeledText(serverFields, Messages.P4_port_with_colon, SWT.READ_ONLY,
+				s_tooltipRefresh);
+		m_user = UiUtils.createLabeledText(serverFields, Messages.user, SWT.NONE, s_tooltipRefresh);
+		m_password = UiUtils.createLabeledText(serverFields, Messages.password, SWT.PASSWORD, null);
+		m_passwordCheck = UiUtils.createLabeledText(serverFields, Messages.retype_password, SWT.PASSWORD, null);
+
+		m_defaultServer = new Button(serverFields, SWT.CHECK);
+		m_defaultServer.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1));
+		m_defaultServer.setText(Messages.this_is_the_default_server);
+		m_defaultServer.setEnabled(false);
+		this.createListContents(Messages.P4_clients);
+
+		m_clientPane = new ClientPane(this.getPreferencePage(), this);
+		m_clientPane.init();
+	}
+
+	protected void clearServer()
+	{
+		m_server = null;
+		m_serverName.setText(""); //$NON-NLS-1$
+		m_user.setText(""); //$NON-NLS-1$
+		m_password.setText(""); //$NON-NLS-1$
+		m_passwordCheck.setText(""); //$NON-NLS-1$
+		m_defaultServer.setSelection(false);
+		m_clientPane.clearClient();
+		this.updateList();
+	}
+
+	@Override
+	protected void editNode(String node)
+	{
+		if(!this.assignServerValues())
+			return;
+
+		this.setErrorMessage(null);
+		this.getPreferencePage().setValid(true);
+		if(node == null)
+			m_clientPane.setClient(null);
+		else
+		{
+			try
+			{
+				m_clientPane.setClient(m_server.getClient(node));
+			}
+			catch(BackingStoreException e)
+			{
+				displayException(this.getShell(), e);
+			}
+		}
+	}
+
+	@Override
+	protected String[] getListContents()
+	{
+		if(m_server != null)
+		{
+			try
+			{
+				return m_server.getClientNames();
+			}
+			catch(BackingStoreException e)
+			{
+				displayException(this.getShell(), e);
+			}
+		}
+		return Trivial.EMPTY_STRING_ARRAY;
+	}
+
+	@Override
+	protected boolean isNewEnabled()
+	{
+		return m_server != null;
+	}
+
+	@Override
+	protected void newNode()
+	{
+		if(!this.assignServerValues())
+			return;
+
+		String clientName = this.queryNodeName(Messages.add_P4_client, Messages.client_name, null);
+		if(clientName == null)
+			return;
+
+		try
+		{
+			m_server.addClient(clientName);
+			this.addAndSelect(clientName);
+		}
+		catch(BackingStoreException e)
+		{
+			displayException(this.getShell(), e);
+			return;
+		}
+	}
+
+	@Override
+	protected void removeNode(String item)
+	{
+		try
+		{
+			Client client = m_server.getClient(item);
+			if(client != null)
+			{
+				m_clientPane.clearClient();
+				client.remove();
+			}
+		}
+		catch(BackingStoreException e)
+		{
+			displayException(this.getShell(), e);
+		}
+	}
+
+	@Override
+	protected void renameNode()
+	{
+		if(!this.assignServerValues())
+			return;
+
+		Client client = m_clientPane.getClient();
+		String oldName = client.getName();
+		String newName = this.queryNodeName(Messages.rename_P4_client, Messages.client_name, oldName);
+		if(newName == null || newName.equals(oldName))
+			return;
+
+		try
+		{
+			m_clientPane.assignRenamedClient(client.createCopy(newName));
+			client.remove();
+			this.updateAndSelect();
+		}
+		catch(BackingStoreException e)
+		{
+			displayException(this.getShell(), e);
+			return;
+		}
+	}
+
+	@Override
+	protected void selectionChanged()
+	{
+		super.selectionChanged();
+		m_clientPane.selectionChanged();
+	}
+
+	void assignRenamedServer(Server server)
+	{
+		m_server = server;
+		if(server != null)
+			m_serverName.setText(server.getName());
+		m_clientPane.assignRenamedClient(null);
+	}
+
+	void exportServer()
+	{
+		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
+		dlg.setFilterExtensions(new String[] { '*' + Server.FILE_EXTENSION });
+		final String location = dlg.open();
+		if(location == null)
+			return;
+
+		SaveRunnable sb = new SaveRunnable(m_server, new Path(location));
+		try
+		{
+			sb.run(new NullProgressMonitor());
+		}
+		catch(Exception e)
+		{
+			CoreException t = BuckminsterException.wrap(e);
+			String msg = NLS.bind(Messages.unable_to_save_file_0, location);
+			P4Plugin.getLogger().error(t, msg);
+			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
+		}
+	}
+
+	Server getServer()
+	{
+		return m_server;
+	}
 
 	boolean performOk()
 	{
@@ -67,19 +275,6 @@ public class ServerPane extends NodeListPrefPane
 				return false;
 
 		return true;
-	}
-
-	Server getServer()
-	{
-		return m_server;
-	}
-
-	void assignRenamedServer(Server server)
-	{
-		m_server = server;
-		if(server != null)
-			m_serverName.setText(server.getName());
-		m_clientPane.assignRenamedClient(null);
 	}
 
 	boolean setServer(Server server)
@@ -135,193 +330,4 @@ public class ServerPane extends NodeListPrefPane
 			m_server.setAsDefault();
 		return true;
 	}
-
-	@Override
-	protected boolean isNewEnabled()
-	{
-		return m_server != null;
-	}
-
-	protected void clearServer()
-	{
-		m_server = null;
-		m_serverName.setText(""); //$NON-NLS-1$
-		m_user.setText(""); //$NON-NLS-1$
-		m_password.setText(""); //$NON-NLS-1$
-		m_passwordCheck.setText(""); //$NON-NLS-1$
-		m_defaultServer.setSelection(false);
-		m_clientPane.clearClient();
-		this.updateList();
-	}
-
-	@Override
-	protected void newNode()
-	{
-		if(!this.assignServerValues())
-			return;
-
-		String clientName = this.queryNodeName(Messages.add_P4_client, Messages.client_name, null);
-		if(clientName == null)
-			return;
-
-		try
-		{
-			m_server.addClient(clientName);
-			this.addAndSelect(clientName);
-		}
-		catch(BackingStoreException e)
-		{
-			displayException(this.getShell(), e);
-			return;
-		}
-	}
-
-	@Override
-	protected void renameNode()
-	{
-		if(!this.assignServerValues())
-			return;
-
-		Client client = m_clientPane.getClient();
-		String oldName = client.getName();
-		String newName = this.queryNodeName(Messages.rename_P4_client, Messages.client_name, oldName);
-		if(newName == null || newName.equals(oldName))
-			return;
-
-		try
-		{
-			m_clientPane.assignRenamedClient(client.createCopy(newName));
-			client.remove();
-			this.updateAndSelect();
-		}
-		catch(BackingStoreException e)
-		{
-			displayException(this.getShell(), e);
-			return;
-		}
-	}
-
-	@Override
-	protected void editNode(String node)
-	{
-		if(!this.assignServerValues())
-			return;
-
-		this.setErrorMessage(null);
-		this.getPreferencePage().setValid(true);
-		if(node == null)
-			m_clientPane.setClient(null);
-		else
-		{
-			try
-			{
-				m_clientPane.setClient(m_server.getClient(node));
-			}
-			catch(BackingStoreException e)
-			{
-				displayException(this.getShell(), e);
-			}
-		}
-	}
-
-	@Override
-	protected void removeNode(String item)
-	{
-		try
-		{
-			Client client = m_server.getClient(item);
-			if(client != null)
-			{
-				m_clientPane.clearClient();
-				client.remove();
-			}
-		}
-		catch(BackingStoreException e)
-		{
-			displayException(this.getShell(), e);
-		}
-	}
-
-	@Override
-	protected String[] getListContents()
-	{
-		if(m_server != null)
-		{
-			try
-			{
-				return m_server.getClientNames();
-			}
-			catch(BackingStoreException e)
-			{
-				displayException(this.getShell(), e);
-			}
-		}
-		return Trivial.EMPTY_STRING_ARRAY;
-	}
-
-	@Override
-	protected void selectionChanged()
-	{
-		super.selectionChanged();
-		m_clientPane.selectionChanged();
-	}
-
-	public void init(Composite buttonBox)
-	{
-		m_export = UiUtils.createPushButton(buttonBox, Messages.export_with_dots, new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				exportServer();
-			}
-		});
-		m_export.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-		Composite serverFields = new Composite(this, SWT.NONE);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 2;
-		serverFields.setLayoutData(gd);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		serverFields.setLayout(layout);
-		m_serverName = UiUtils.createLabeledText(serverFields, Messages.P4_port_with_colon, SWT.READ_ONLY, s_tooltipRefresh);
-		m_user = UiUtils.createLabeledText(serverFields, Messages.user, SWT.NONE, s_tooltipRefresh);
-		m_password = UiUtils.createLabeledText(serverFields, Messages.password, SWT.PASSWORD, null);
-		m_passwordCheck = UiUtils.createLabeledText(serverFields, Messages.retype_password, SWT.PASSWORD, null);
-
-		m_defaultServer = new Button(serverFields, SWT.CHECK);	 
-		m_defaultServer.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1));
-		m_defaultServer.setText(Messages.this_is_the_default_server);
-		m_defaultServer.setEnabled(false);
-		this.createListContents(Messages.P4_clients);
-
-		m_clientPane = new ClientPane(this.getPreferencePage(), this);
-		m_clientPane.init();
-	}
-
-	void exportServer()
-	{
-		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { '*' + Server.FILE_EXTENSION });
-		final String location = dlg.open();
-		if(location == null)
-			return;
-		
-		SaveRunnable sb = new SaveRunnable(m_server, new Path(location));
-		try
-		{
-			sb.run(new NullProgressMonitor());
-		}
-		catch(Exception e)
-		{
-			CoreException t = BuckminsterException.wrap(e);
-			String msg = NLS.bind(Messages.unable_to_save_file_0, location);
-			P4Plugin.getLogger().error(t, msg);
-			ErrorDialog.openError(getShell(), null, msg, t.getStatus());
-		}
-	}
 }
-

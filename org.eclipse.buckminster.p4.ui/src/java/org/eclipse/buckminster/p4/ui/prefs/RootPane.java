@@ -65,34 +65,44 @@ public class RootPane extends NodeListPrefPane
 		this.selectionChanged();
 	}
 
-	boolean performOk()
+	@Override
+	protected void editNode(String node)
 	{
-		if(m_serverPane.performOk())
+		setErrorMessage(null);
+		if(node == null)
+			m_serverPane.setServer(null);
+		else
 		{
 			try
 			{
-				P4Preferences.getInstance().save();
-				return true;
+				m_serverPane.setServer(P4Preferences.getInstance().getServer(node));
 			}
 			catch(BackingStoreException e)
 			{
 				displayException(this.getShell(), e);
 			}
 		}
-		return false;
+	}
+
+	@Override
+	protected String[] getListContents()
+	{
+		P4Preferences prefs = P4Preferences.getInstance();
+		try
+		{
+			return prefs.getServerNames();
+		}
+		catch(BackingStoreException e)
+		{
+			displayException(this.getShell(), e);
+			return Trivial.EMPTY_STRING_ARRAY;
+		}
 	}
 
 	@Override
 	protected boolean isNewEnabled()
 	{
 		return true;
-	}
-
-	@Override
-	protected void selectionChanged()
-	{
-		super.selectionChanged();
-		m_serverPane.selectionChanged();
 	}
 
 	@Override
@@ -111,6 +121,24 @@ public class RootPane extends NodeListPrefPane
 		{
 			displayException(this.getShell(), e);
 			return;
+		}
+	}
+
+	@Override
+	protected void removeNode(String serverName)
+	{
+		try
+		{
+			Server server = P4Preferences.getInstance().getServer(serverName);
+			if(server != null)
+			{
+				m_serverPane.clearServer();
+				server.remove();
+			}
+		}
+		catch(BackingStoreException e)
+		{
+			displayException(this.getShell(), e);
 		}
 	}
 
@@ -137,55 +165,27 @@ public class RootPane extends NodeListPrefPane
 	}
 
 	@Override
-	protected void editNode(String node)
+	protected void selectionChanged()
 	{
-		setErrorMessage(null);
-		if(node == null)
-			m_serverPane.setServer(null);
-		else
+		super.selectionChanged();
+		m_serverPane.selectionChanged();
+	}
+
+	boolean performOk()
+	{
+		if(m_serverPane.performOk())
 		{
 			try
 			{
-				m_serverPane.setServer(P4Preferences.getInstance().getServer(node));
+				P4Preferences.getInstance().save();
+				return true;
 			}
 			catch(BackingStoreException e)
 			{
 				displayException(this.getShell(), e);
 			}
 		}
-	}
-
-	@Override
-	protected void removeNode(String serverName)
-	{
-		try
-		{
-			Server server = P4Preferences.getInstance().getServer(serverName);
-			if(server != null)
-			{
-				m_serverPane.clearServer();
-				server.remove();
-			}
-		}
-		catch(BackingStoreException e)
-		{
-			displayException(this.getShell(), e);
-		}
-	}
-
-	@Override
-	protected String[] getListContents()
-	{
-		P4Preferences prefs = P4Preferences.getInstance();
-		try
-		{
-			return prefs.getServerNames();
-		}
-		catch(BackingStoreException e)
-		{
-			displayException(this.getShell(), e);
-			return Trivial.EMPTY_STRING_ARRAY;
-		}
+		return false;
 	}
 
 	private void importServer()

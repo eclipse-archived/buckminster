@@ -22,6 +22,44 @@ public class P4UiPlugin extends AbstractUIPlugin
 {
 	private static P4UiPlugin s_plugin;
 
+	/**
+	 * Returns the shared instance.
+	 */
+	public static P4UiPlugin getDefault()
+	{
+		return s_plugin;
+	}
+
+	/**
+	 * Returns an image descriptor for the image file at the given plug-in relative path.
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the image descriptor
+	 */
+	public static ImageDescriptor getImageDescriptor(String path)
+	{
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.buckminster.p4.ui", path); //$NON-NLS-1$
+	}
+
+	/**
+	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
+	 */
+	public static String getResourceString(String key)
+	{
+		ResourceBundle bundle = P4UiPlugin.getDefault().getResourceBundle();
+		try
+		{
+			return (bundle != null)
+					? bundle.getString(key)
+					: key;
+		}
+		catch(MissingResourceException e)
+		{
+			return key;
+		}
+	}
+
 	private ResourceBundle m_resourceBundle;
 
 	/**
@@ -31,6 +69,23 @@ public class P4UiPlugin extends AbstractUIPlugin
 	{
 		super();
 		s_plugin = this;
+	}
+
+	/**
+	 * Returns the plugin's resource bundle,
+	 */
+	public ResourceBundle getResourceBundle()
+	{
+		try
+		{
+			if(m_resourceBundle == null)
+				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.p4.ui.P4UiPluginResources"); //$NON-NLS-1$
+		}
+		catch(MissingResourceException x)
+		{
+			m_resourceBundle = null;
+		}
+		return m_resourceBundle;
 	}
 
 	/**
@@ -52,60 +107,4 @@ public class P4UiPlugin extends AbstractUIPlugin
 		s_plugin = null;
 		m_resourceBundle = null;
 	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static P4UiPlugin getDefault()
-	{
-		return s_plugin;
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 */
-	public static String getResourceString(String key)
-	{
-		ResourceBundle bundle = P4UiPlugin.getDefault().getResourceBundle();
-		try
-		{
-			return (bundle != null) ? bundle.getString(key) : key;
-		}
-		catch (MissingResourceException e)
-		{
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle()
-	{
-		try
-		{
-			if (m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.p4.ui.P4UiPluginResources"); //$NON-NLS-1$
-		}
-		catch (MissingResourceException x)
-		{
-			m_resourceBundle = null;
-		}
-		return m_resourceBundle;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path.
-	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path)
-	{
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.buckminster.p4.ui", path); //$NON-NLS-1$
-	}
 }
-
