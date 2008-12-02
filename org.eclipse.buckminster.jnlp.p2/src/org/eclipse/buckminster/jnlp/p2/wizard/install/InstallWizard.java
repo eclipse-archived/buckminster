@@ -94,6 +94,7 @@ import org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys;
 import org.eclipse.buckminster.jnlp.p2.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.jnlp.p2.wizard.ILoginHandler;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -146,10 +147,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_brandingString;
 
-	private BillOfMaterials m_cachedBOM;
-
-	private URL m_cachedBOMURL;
-
 	private String m_artifactName;
 
 	private String m_artifactVersion;
@@ -199,6 +196,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private Distro m_distro;
 	
 	private Properties m_distroP2Properties;
+	
+	private OPML m_opml;
 
 	private Map<Long, Distro> m_retrievedDistroCache = new HashMap<Long, Distro>();
 
@@ -474,7 +473,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				try
 				{
 					m_infoPageURL = getComponentInfoProvider().prepareHTML(getProperties(),
-							getBOM().getResolution().getOPML(), MaterializationUtils.getDefaultDestination(null));
+							getOPML(), MaterializationUtils.getDefaultDestination(null));
 				}
 				catch(Exception e)
 				{
@@ -614,11 +613,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	String getArtifactVersion()
 	{
 		return m_artifactVersion;
-	}
-
-	public BillOfMaterials getBOM()
-	{
-		return m_cachedBOM;
 	}
 
 	Image getBrandingImage()
@@ -779,6 +773,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_distroP2Properties = properties;
 	}
 
+	OPML getOPML()
+	{
+		return m_opml;
+	}
+	
+	void setOPML(OPML opml)
+	{
+		m_opml = opml;
+	}
+	
 	String[] getMaterializers()
 	{
 		return MATERIALIZERS;
@@ -883,8 +887,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	void retrieveDistro(final Long distroId)
 	{
 		m_distro = null;
-		m_cachedBOM = null;
-		m_cachedBOMURL = null;
 
 		if(distroId == null)
 			return;
@@ -906,6 +908,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						try
 						{
 							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, distroId);
+							
+							// TODO read OPML
+							m_opml = null;
 						}
 						catch(Exception e)
 						{
@@ -932,9 +937,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 								: MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
 						m_builder.setInstallLocation(location);
 
-						m_cachedBOM = m_distro.getBom();
-						saveBOMLocally();
-
 						monitor.done();
 					}
 				});
@@ -952,31 +954,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 				throw new JNLPException("Cannot read distro specification", ERROR_CODE_REMOTE_IO_EXCEPTION,
 						originalException);
 			}
-		}
-	}
-
-	private void saveBOMLocally()
-	{
-		File cachedBOMFile;
-		try
-		{
-			cachedBOMFile = File.createTempFile("jnlp", ".bom");
-			cachedBOMFile.deleteOnExit();
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException("Cannot create a temp file", ERROR_CODE_FILE_IO_EXCEPTION, e);
-		}
-
-		MaterializationUtils.saveBOM(m_cachedBOM, cachedBOMFile);
-
-		try
-		{
-			m_cachedBOMURL = cachedBOMFile.toURI().toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw new JNLPException("Cannot create URL link to a temp file", ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 		}
 	}
 
@@ -1018,7 +995,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	boolean isMaterializerInitialized()
 	{
-		return m_cachedBOMURL != null;
+		return m_distroP2Properties != null;
 	}
 
 	boolean isProblemInProperties()
@@ -1029,7 +1006,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	void resetMaterializerInitialization()
 	{
 		m_distroVariants = null;
-		m_cachedBOMURL = null;
+		m_distroP2Properties = null;
 	}
 
 	void setLoginPageRequested(boolean loginPageRequested)

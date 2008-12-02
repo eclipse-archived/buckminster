@@ -228,7 +228,7 @@ public class DonePage extends InstallWizardPage
 	@Override
 	public IWizardPage getNextPage()
 	{
-		return getInstallWizard().getBOM().getResolution().getOPML() == null
+		return getInstallWizard().getOPML() == null
 				? null
 				: getInstallWizard().getInfoPage();
 	}
