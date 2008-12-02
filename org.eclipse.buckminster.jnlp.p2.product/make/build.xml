@@ -1,0 +1,24 @@
+<project>
+	<target name="patch.eclipse.inf">
+		<buckminster.valuefileset id="requirement.fileset" value="${fs:requirement}"/>
+		<copy todir="${sp:action.output}" overwrite="true">
+			<fileset refid="requirement.fileset"/>
+		</copy>
+		<pathconvert property="org.eclipse.core.resources">
+			<regexpmapper from="^.*[\\/]org\.eclipse\.core\.resources_[^\\/]+\.jar$" to="\0"/>
+			<path>
+				<fileset dir="${sp:action.output}"/>
+			</path>
+		</pathconvert>
+		<property name="unzipped.dir" location="${buckminster.temp}/org.eclipse.core.resources"/>
+		<delete dir="${unzipped.dir}"/>
+		<mkdir dir="${unzipped.dir}"/>
+		<unzip src="${org.eclipse.core.resources}" dest="${unzipped.dir}"/>
+		<echo
+			message="jarprocessor.exclude.children.pack=true&#10;"
+			append="true"
+			file="${unzipped.dir}/META-INF/eclipse.inf"/>
+		<delete file="${org.eclipse.core.resources}"/>
+		<zip basedir="${unzipped.dir}" destfile="${org.eclipse.core.resources}"/>
+	</target>
+</project>
