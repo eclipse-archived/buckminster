@@ -14,7 +14,7 @@ public class SiteTest extends TestCase
 	public void testSite() throws Exception
 	{
 		IProgressMonitor nullMon = new NullProgressMonitor();
-		ISite site = SiteManager.getSite(new URL("file:/c:/Buckminster/packaging/buckminster"), true, nullMon);
+		ISite site = SiteManager.getSite(new URL("file:/c:/Buckminster/packaging/buckminster"), true, nullMon); //$NON-NLS-1$
 		System.out.println(site.getClass());
 	}
 }

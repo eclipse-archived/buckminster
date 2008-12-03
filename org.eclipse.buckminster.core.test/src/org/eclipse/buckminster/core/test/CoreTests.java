@@ -26,7 +26,7 @@ public class CoreTests
 {
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite("Test for org.eclipse.buckminster.core");
+		TestSuite suite = new TestSuite("Test for org.eclipse.buckminster.core"); //$NON-NLS-1$
 		System.out.println(CorePlugin.getDefault().getStateLocation().toOSString());
 		suite.addTestSuite(PropertyFormatTestCase.class);
 		suite.addTestSuite(CSpecBuilderTestCase.class);

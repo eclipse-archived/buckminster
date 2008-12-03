@@ -24,11 +24,11 @@ public class CSpecParserTest extends AbstractTestCase
 	public void testParser() throws Exception
 	{
 		IParser<CSpec> parser = this.getPlugin().getParserFactory().getCSpecParser(true);
-		InputStream input = getClass().getResourceAsStream("test.cspec");
-		CSpec cspec = parser.parse("test.cspec", input);
+		InputStream input = getClass().getResourceAsStream("test.cspec"); //$NON-NLS-1$
+		CSpec cspec = parser.parse("test.cspec", input); //$NON-NLS-1$
 		input.close();
 		Documentation doc = cspec.getDocumentation();
-		System.out.println("Documentation = '" + doc + '\'');
+		System.out.println("Documentation = '" + doc + '\''); //$NON-NLS-1$
 		Utils.serialize(doc, System.out);
 		Utils.serialize(cspec, System.out);
 	}

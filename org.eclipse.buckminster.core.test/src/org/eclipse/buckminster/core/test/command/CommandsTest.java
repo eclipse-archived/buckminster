@@ -26,16 +26,16 @@ public class CommandsTest extends AbstractTestCase
 	public void testMultipleCommands() throws Exception
 	{
 		Headless headless = new Headless();
-		File commandFile = File.createTempFile("testMultipleCommands", ".bcmd");
-		File bomFile = File.createTempFile("testMultipleCommands", ".bom");
+		File commandFile = File.createTempFile("testMultipleCommands", ".bcmd"); //$NON-NLS-1$ //$NON-NLS-2$
+		File bomFile = File.createTempFile("testMultipleCommands", ".bom"); //$NON-NLS-1$ //$NON-NLS-2$
 		try
 		{
 			PrintStream cmdOut = new PrintStream(commandFile);
-			cmdOut.println("resolve --noimport --bomfile '" + escapeBS(bomFile)
-					+ "' http://www.eclipse.org/buckminster/samples/queries/demo.cquery");
-			cmdOut.println("import '" + escapeBS(bomFile) + "'");
+			cmdOut.println("resolve --noimport --bomfile '" + escapeBS(bomFile) //$NON-NLS-1$
+					+ "' http://www.eclipse.org/buckminster/samples/queries/demo.cquery"); //$NON-NLS-1$
+			cmdOut.println("import '" + escapeBS(bomFile) + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 			cmdOut.close();
-			assertEquals(((Integer)headless.run(new String[] { "--scriptfile", commandFile.toString() })).intValue(), 0);
+			assertEquals(((Integer)headless.run(new String[] { "--scriptfile", commandFile.toString() })).intValue(), 0); //$NON-NLS-1$
 		}
 		finally
 		{

@@ -52,8 +52,8 @@ public class SimpleLoaderTestCase extends TestCase
 	public void setUp() throws Exception
 	{
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null));
-		queryBld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap").toString());
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null)); //$NON-NLS-1$
+		queryBld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap").toString()); //$NON-NLS-1$
 		m_query = queryBld.createComponentQuery();
 	}
 

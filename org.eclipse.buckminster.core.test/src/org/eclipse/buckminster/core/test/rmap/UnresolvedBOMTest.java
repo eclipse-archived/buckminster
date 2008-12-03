@@ -32,38 +32,38 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		URL rmapURL = getClass().getResource(rmap);
 		ResourceMapResolverFactory f = new ResourceMapResolverFactory();
 		f.setExtensionParameter(ResourceMapResolverFactory.RESOURCE_MAP_URL_PARAM, rmapURL.toString());
-		f.setExtensionParameter(ResourceMapResolverFactory.OVERRIDE_QUERY_URL_PARAM, "true");
+		f.setExtensionParameter(ResourceMapResolverFactory.OVERRIDE_QUERY_URL_PARAM, "true"); //$NON-NLS-1$
 		return f;
 	}
 
 	public void testBug170839() throws Exception
 	{
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null)); //$NON-NLS-1$
 		ComponentQuery query = queryBld.createComponentQuery();
 
 		ResolutionContext context = new ResolutionContext(query);
-		IResolver resolver1 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context);
+		IResolver resolver1 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context); //$NON-NLS-1$
 		resolver1.getContext().setContinueOnError(true);
-		IResolver resolver2 = createRMAPResolverFactory("rmap_d.rmap").createResolver(context);
+		IResolver resolver2 = createRMAPResolverFactory("rmap_d.rmap").createResolver(context); //$NON-NLS-1$
 		resolver2.getContext().setContinueOnError(true);
 
 		IProgressMonitor nullMon = new NullProgressMonitor();
 		BillOfMaterials bom1 = resolver1.resolve(query.getRootRequest(), nullMon);
 		BillOfMaterials bom2 = resolver2.resolveRemaining(bom1, nullMon);
-		assertEquals("bom1 is not equal to bom2", bom1, bom2);
+		assertEquals("bom1 is not equal to bom2", bom1, bom2); //$NON-NLS-1$
 	}
 
 	public void testReResolve() throws Exception
 	{
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null)); //$NON-NLS-1$
 		ComponentQuery query = queryBld.createComponentQuery();
 
 		ResolutionContext context = new ResolutionContext(query);
-		IResolver resolver1 = createRMAPResolverFactory("rmap_c.rmap").createResolver(context);
+		IResolver resolver1 = createRMAPResolverFactory("rmap_c.rmap").createResolver(context); //$NON-NLS-1$
 		resolver1.getContext().setContinueOnError(true);
-		IResolver resolver2 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context);
+		IResolver resolver2 = createRMAPResolverFactory("rmap_abd.rmap").createResolver(context); //$NON-NLS-1$
 		resolver2.getContext().setContinueOnError(true);
 
 		IProgressMonitor nullMon = new NullProgressMonitor();
@@ -73,7 +73,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 		Utils.serialize(bom2, System.out);
 		BillOfMaterials bom3 = resolver1.resolveRemaining(bom2, nullMon);
 		Utils.serialize(bom3, System.out);
-		assertTrue("bom3 is not fully resolved", bom3.isFullyResolved());
+		assertTrue("bom3 is not fully resolved", bom3.isFullyResolved()); //$NON-NLS-1$
 	}
 
 	/**
@@ -84,27 +84,27 @@ public class UnresolvedBOMTest extends AbstractTestCase
 	public void testReResolve2() throws Exception
 	{
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null));
+		queryBld.setRootRequest(new ComponentRequest("buckminster.test.simple_d", null, null)); //$NON-NLS-1$
 		ComponentQuery query = queryBld.createComponentQuery();
 
 		// Fake extension point registration
 		//
 		ResolverFactoryMaintainer.getInstance().setResolverFactories(
-				new IResolverFactory[] { createRMAPResolverFactory("rmap_c.rmap"),
-						createRMAPResolverFactory("rmap_abd.rmap") });
+				new IResolverFactory[] { createRMAPResolverFactory("rmap_c.rmap"), //$NON-NLS-1$
+						createRMAPResolverFactory("rmap_abd.rmap") }); //$NON-NLS-1$
 
 		// Resolve using the MainResolver
 		//
 		IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
-		assertTrue("bom is not fully resolved", bom.isFullyResolved());
+		assertTrue("bom is not fully resolved", bom.isFullyResolved()); //$NON-NLS-1$
 	}
 
 	public void testUnresolvedBOM() throws Exception
 	{
 		// Get the ComponentQuery
 		//
-		URL queryURL = new URL("http://www.eclipse.org/buckminster/samples/queries/actor_a.cquery");
+		URL queryURL = new URL("http://www.eclipse.org/buckminster/samples/queries/actor_a.cquery"); //$NON-NLS-1$
 		InputStream input = queryURL.openStream();
 		ComponentQuery query = ComponentQuery.fromStream(queryURL, null, input, true);
 		input.close();
@@ -125,7 +125,7 @@ public class UnresolvedBOMTest extends AbstractTestCase
 
 		final BillOfMaterials[] bucket = new BillOfMaterials[] { unresolved };
 
-		Job resolveJob = new Job("Resolving")
+		Job resolveJob = new Job("Resolving") //$NON-NLS-1$
 		{
 			@Override
 			public boolean belongsTo(Object family)
@@ -158,6 +158,6 @@ public class UnresolvedBOMTest extends AbstractTestCase
 
 		// Are we resolved now?
 		//
-		assertTrue("bom is not fully resolved", bucket[0].isFullyResolved());
+		assertTrue("bom is not fully resolved", bucket[0].isFullyResolved()); //$NON-NLS-1$
 	}
 }

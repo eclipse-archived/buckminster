@@ -52,28 +52,28 @@ public class MSpecTestCase extends TestCase
 	public void testSerialize() throws Exception
 	{
 		MaterializationSpecBuilder builder = new MaterializationSpecBuilder();
-		builder.setName("Buckys download spec");
-		builder.setURL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery");
-		builder.setShortDesc("Buckminster materialization spec");
-		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home")
-				+ System.getProperty("file.separator") + "bucky"));
-		builder.setMaterializerID("workspace");
+		builder.setName("Buckys download spec"); //$NON-NLS-1$
+		builder.setURL("http://www.eclipse.org/buckminster/samples/queries/build_a.cquery"); //$NON-NLS-1$
+		builder.setShortDesc("Buckminster materialization spec"); //$NON-NLS-1$
+		builder.setInstallLocation(Path.fromOSString(System.getProperty("user.home") //$NON-NLS-1$
+				+ System.getProperty("file.separator") + "bucky")); //$NON-NLS-1$ //$NON-NLS-2$
+		builder.setMaterializerID("workspace"); //$NON-NLS-1$
 
 		MaterializationNodeBuilder node = builder.addNodeBuilder();
-		node.setNamePattern(Pattern.compile(".*"));
-		node.setComponentTypeID("plugin");
+		node.setNamePattern(Pattern.compile(".*")); //$NON-NLS-1$
+		node.setComponentTypeID("plugin"); //$NON-NLS-1$
 		node.setConflictResolution(ConflictResolution.KEEP);
-		node.setInstallLocation(Path.fromPortableString("plugins"));
+		node.setInstallLocation(Path.fromPortableString("plugins")); //$NON-NLS-1$
 
 		node = builder.addNodeBuilder();
-		node.setNamePattern(Pattern.compile(".*"));
-		node.setComponentTypeID("feature");
+		node.setNamePattern(Pattern.compile(".*")); //$NON-NLS-1$
+		node.setComponentTypeID("feature"); //$NON-NLS-1$
 		node.setConflictResolution(ConflictResolution.REPLACE);
-		node.setInstallLocation(Path.fromPortableString("features"));
+		node.setInstallLocation(Path.fromPortableString("features")); //$NON-NLS-1$
 
 		node = builder.addNodeBuilder();
-		node.setNamePattern(Pattern.compile("i.don.not.want.this.one"));
-		node.setComponentTypeID("plugin");
+		node.setNamePattern(Pattern.compile("i.don.not.want.this.one")); //$NON-NLS-1$
+		node.setComponentTypeID("plugin"); //$NON-NLS-1$
 		node.setExclude(true);
 
 		MaterializationSpec spec = new MaterializationSpec(builder);
@@ -82,13 +82,13 @@ public class MSpecTestCase extends TestCase
 		Utils.serialize(spec, byteOut);
 
 		byte[] image = byteOut.toByteArray();
-		System.out.println(new String(image, "UTF8"));
+		System.out.println(new String(image, "UTF8")); //$NON-NLS-1$
 
 		IParserFactory pf = CorePlugin.getDefault().getParserFactory();
 		ByteArrayInputStream byteIn = new ByteArrayInputStream(image);
 		IParser<MaterializationSpec> parser = pf.getMaterializationSpecParser(true);
 
-		MaterializationSpec spec2 = parser.parse("byte image", byteIn);
+		MaterializationSpec spec2 = parser.parse("byte image", byteIn); //$NON-NLS-1$
 
 		byteOut = new ByteArrayOutputStream();
 		Utils.serialize(spec2, byteOut);

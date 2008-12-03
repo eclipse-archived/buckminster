@@ -50,7 +50,7 @@ public abstract class AbstractTestCase extends TestCase
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(getRMAP().toString());
 		AdvisorNodeBuilder node = queryBld.addAdvisorNode();
-		node.setNamePattern(Pattern.compile("(subclipse)|(subversive)|(slf4j)|(buckminster)"));
+		node.setNamePattern(Pattern.compile("(subclipse)|(subversive)|(slf4j)|(buckminster)")); //$NON-NLS-1$
 		node.setUseTargetPlatform(false);
 		ComponentQuery query = queryBld.createComponentQuery();
 		return new MainResolver(new ResolutionContext(query));
@@ -60,7 +60,7 @@ public abstract class AbstractTestCase extends TestCase
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
 		if(plugin == null)
-			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
+			throw new Exception("This test must be run as a \"JUnit Plug-in Test\""); //$NON-NLS-1$
 		return plugin;
 	}
 
@@ -68,7 +68,7 @@ public abstract class AbstractTestCase extends TestCase
 	{
 		try
 		{
-			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap");
+			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap"); //$NON-NLS-1$
 		}
 		catch(MalformedURLException e)
 		{

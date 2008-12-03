@@ -27,7 +27,7 @@ public class BillOfMaterialsTest extends AbstractMnBTestCase
 		System.out.write(image);
 
 		ByteArrayInputStream in = new ByteArrayInputStream(image);
-		BillOfMaterials parsed = parser.parse("byte image", in);
+		BillOfMaterials parsed = parser.parse("byte image", in); //$NON-NLS-1$
 
 		assertEquals(parsed, bom);
 		Utils.serialize(parsed, System.out);

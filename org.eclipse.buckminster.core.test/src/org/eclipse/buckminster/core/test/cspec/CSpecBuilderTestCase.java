@@ -38,44 +38,44 @@ public class CSpecBuilderTestCase extends TestCase
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
 		if(plugin == null)
-			throw new Exception("This test must be run as a \"JUnit Plug-in Test\"");
+			throw new Exception("This test must be run as a \"JUnit Plug-in Test\""); //$NON-NLS-1$
 
 		CSpecBuilder cspecBld = new CSpecBuilder();
-		cspecBld.setName("my.test.project");
-		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3"));
-		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)",
+		cspecBld.setName("my.test.project"); //$NON-NLS-1$
+		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3")); //$NON-NLS-1$
+		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", //$NON-NLS-1$ //$NON-NLS-2$
 				IVersionType.OSGI, null);
 		cspecBld.addDependency(c1);
-		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null, null, null));
-		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0",
+		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null, null, null)); //$NON-NLS-1$
+		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", //$NON-NLS-1$ //$NON-NLS-2$
 				IVersionType.OSGI, null));
-		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", IVersionType.OSGI, null));
+		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", IVersionType.OSGI, null)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		CSpec c = cspecBld.createCSpec();
 
-		ComponentRequest request = new ComponentRequest("test", null, null);
-		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0");
+		ComponentRequest request = new ComponentRequest("test", null, null); //$NON-NLS-1$
+		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0"); //$NON-NLS-1$
 		VersionMatch fixed = new VersionMatch(vs, null, -1, new Date(), null);
-		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER },
-				"svn://foo.bar.com/foobar", null);
+		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, //$NON-NLS-1$
+				"svn://foo.bar.com/foobar", null); //$NON-NLS-1$
 		Resolution resolution = new Resolution(c, null, IComponentType.BUCKMINSTER, fixed, provider, true, request,
 				Collections.<String> emptyList(), null, provider.getURI(Collections.<String, String> emptyMap()), null,
 				null, 0L, -1L, false);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 		Utils.serialize(resolution, ostream);
-		String content = new String(ostream.toByteArray(), "UTF-8");
+		String content = new String(ostream.toByteArray(), "UTF-8"); //$NON-NLS-1$
 		System.out.println(content);
 
 		IParserFactory parserFactory = CorePlugin.getDefault().getParserFactory();
 		IParser<Resolution> parser = parserFactory.getResolutionParser();
-		ByteArrayInputStream ba = new ByteArrayInputStream(content.getBytes("UTF-8"));
+		ByteArrayInputStream ba = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
 		Resolution res2 = parser.parse(null, ba);
 		assertEquals(resolution, res2);
 
 		ostream = new ByteArrayOutputStream();
 		Utils.serialize(res2, ostream);
-		String content2 = new String(ostream.toByteArray(), "UTF-8");
+		String content2 = new String(ostream.toByteArray(), "UTF-8"); //$NON-NLS-1$
 		assertEquals(content, content2);
 	}
 }

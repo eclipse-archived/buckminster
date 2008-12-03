@@ -75,9 +75,9 @@ public class PropertyFormatTestCase extends TestCase
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 		{
-			if("testElement".equals(localName))
+			if("testElement".equals(localName)) //$NON-NLS-1$
 			{
-				PropertyManagerHandler pmh = new PropertyManagerHandler(this, "root")
+				PropertyManagerHandler pmh = new PropertyManagerHandler(this, "root") //$NON-NLS-1$
 				{
 					@Override
 					public ExpandingProperties getProperties()
@@ -94,36 +94,36 @@ public class PropertyFormatTestCase extends TestCase
 
 	static void log(String message, Object... args)
 	{
-		System.out.format(message + "%n", args);
+		System.out.format(message + "%n", args); //$NON-NLS-1$
 	}
 
 	public void testCircularExpansionTrap()
 	{
 		IProperties props = new ExpandingProperties();
-		props.put("some.text", "text is ${some.text.again}!");
-		props.put("some.other.text", "Hello ${some.text}!");
-		props.put("some.text.again", "Ouch! ${some.other.text}");
+		props.put("some.text", "text is ${some.text.again}!"); //$NON-NLS-1$ //$NON-NLS-2$
+		props.put("some.other.text", "Hello ${some.text}!"); //$NON-NLS-1$ //$NON-NLS-2$
+		props.put("some.text.again", "Ouch! ${some.other.text}"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		try
 		{
-			log(props.get("some.text.again"));
+			log(props.get("some.text.again")); //$NON-NLS-1$
 			assertFalse(true);
 		}
 		catch(CircularExpansionException e)
 		{
-			log("OK: \"%s\" resulted in a CircularExpansionException", e.getMessage());
+			log("OK: \"%s\" resulted in a CircularExpansionException", e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
 	public void testExpandingProperties()
 	{
 		IProperties props = new ExpandingProperties(BMProperties.getSystemProperties());
-		props.put("salut", "Hello ${user.name}!");
-		props.put("salut.home", "${salut} Your \\${user.home} is ${user.home}");
+		props.put("salut", "Hello ${user.name}!"); //$NON-NLS-1$ //$NON-NLS-2$
+		props.put("salut.home", "${salut} Your \\${user.home} is ${user.home}"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		String result = props.get("salut.home");
-		String expected = "Hello " + System.getProperty("user.name") + "! Your ${user.home} is "
-				+ System.getProperty("user.home");
+		String result = props.get("salut.home"); //$NON-NLS-1$
+		String expected = "Hello " + System.getProperty("user.name") + "! Your ${user.home} is " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ System.getProperty("user.home"); //$NON-NLS-1$
 
 		log(result);
 		assertEquals(expected, result);
@@ -131,19 +131,19 @@ public class PropertyFormatTestCase extends TestCase
 
 	public void testExpressions()
 	{
-		ValueHolder cvsRoot = new Constant(":pserver:${user.name}@buckminster.tigris.org:/cvs");
-		String fmtString = "First \"{0}\", second \"{1}\", third \"{2}\", and fourth \"{3}\"";
+		ValueHolder cvsRoot = new Constant(":pserver:${user.name}@buckminster.tigris.org:/cvs"); //$NON-NLS-1$
+		String fmtString = "First \"{0}\", second \"{1}\", third \"{2}\", and fourth \"{3}\""; //$NON-NLS-1$
 
 		Format fmt = new Format(fmtString);
-		Split split = new Split(":|@", 0);
+		Split split = new Split(":|@", 0); //$NON-NLS-1$
 		Replace rpl = new Replace();
-		rpl.addMatch(new Replace.Match("^:(.*)$", "$1", false));
+		rpl.addMatch(new Replace.Match("^:(.*)$", "$1", false)); //$NON-NLS-1$ //$NON-NLS-2$
 		rpl.addValueHolder(cvsRoot);
 		split.addValueHolder(rpl);
 		fmt.addValueHolder(split);
 
-		String expected = new MessageFormat(fmtString).format(new String[] { "pserver",
-				System.getProperty("user.name"), "buckminster.tigris.org", "/cvs" });
+		String expected = new MessageFormat(fmtString).format(new String[] { "pserver", //$NON-NLS-1$
+				System.getProperty("user.name"), "buckminster.tigris.org", "/cvs" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		IProperties props = BMProperties.getSystemProperties();
 		String result = fmt.getValue(props);
@@ -154,41 +154,41 @@ public class PropertyFormatTestCase extends TestCase
 	public void testPropertyParser() throws Exception
 	{
 		IProperties props = new ExpandingProperties(BMProperties.getSystemProperties());
-		props.put("buckminster.component.target", "ant-optional");
-		props.put("buckminster.component.name", "org.apache.tools.ant");
-		props.put("buckminster.component.version", "1.7.0beta1");
+		props.put("buckminster.component.target", "ant-optional"); //$NON-NLS-1$ //$NON-NLS-2$
+		props.put("buckminster.component.name", "org.apache.tools.ant"); //$NON-NLS-1$ //$NON-NLS-2$
+		props.put("buckminster.component.version", "1.7.0beta1"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		DummyParser parser = new DummyParser(props);
-		parser.parse(this.getClass().getResource("valuetest.xml"));
+		parser.parse(this.getClass().getResource("valuetest.xml")); //$NON-NLS-1$
 
-		String result = props.get("maven.url");
-		String verboseResult = props.get("verbose.maven.url");
+		String result = props.get("maven.url"); //$NON-NLS-1$
+		String verboseResult = props.get("verbose.maven.url"); //$NON-NLS-1$
 
 		log(result);
 		log(verboseResult);
 
-		assertEquals("http://www.ibiblio.org/maven/ant/jars/ant-optional-1.7.0.jar", result);
-		assertEquals("The created URL is \"" + result + '"', verboseResult);
+		assertEquals("http://www.ibiblio.org/maven/ant/jars/ant-optional-1.7.0.jar", result); //$NON-NLS-1$
+		assertEquals("The created URL is \"" + result + '"', verboseResult); //$NON-NLS-1$
 	}
 
 	public void testSystemProperties()
 	{
-		Format fmt = new Format("You are {0}, the parent of your home is {1} and you run Java version {2}");
-		fmt.addValueHolder(new PropertyRef("user.name"));
+		Format fmt = new Format("You are {0}, the parent of your home is {1} and you run Java version {2}"); //$NON-NLS-1$
+		fmt.addValueHolder(new PropertyRef("user.name")); //$NON-NLS-1$
 		Replace rpl1 = new Replace();
-		rpl1.addMatch(new Replace.Match(Pattern.quote("\\"), "/", false));
-		rpl1.addValueHolder(new PropertyRef("user.home"));
+		rpl1.addMatch(new Replace.Match(Pattern.quote("\\"), "/", false)); //$NON-NLS-1$ //$NON-NLS-2$
+		rpl1.addValueHolder(new PropertyRef("user.home")); //$NON-NLS-1$
 		Replace rpl2 = new Replace();
-		rpl2.addMatch(new Replace.Match("^(.*)/[^/]+$", "$1", false));
+		rpl2.addMatch(new Replace.Match("^(.*)/[^/]+$", "$1", false)); //$NON-NLS-1$ //$NON-NLS-2$
 		rpl2.addValueHolder(rpl1);
 		fmt.addValueHolder(rpl2);
-		fmt.addValueHolder(new PropertyRef("java.version"));
+		fmt.addValueHolder(new PropertyRef("java.version")); //$NON-NLS-1$
 
 		IProperties props = BMProperties.getSystemProperties();
 		String result = fmt.getValue(props);
-		String expected = "You are " + props.get("user.name") + ", the parent of your home is "
-				+ (new File(props.get("user.home"))).getParent().replace('\\', '/') + " and you run Java version "
-				+ props.get("java.version");
+		String expected = "You are " + props.get("user.name") + ", the parent of your home is " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ (new File(props.get("user.home"))).getParent().replace('\\', '/') + " and you run Java version " //$NON-NLS-1$ //$NON-NLS-2$
+				+ props.get("java.version"); //$NON-NLS-1$
 
 		log(result);
 		assertEquals(expected, result);

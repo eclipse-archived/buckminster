@@ -32,7 +32,7 @@ public abstract class AbstractMnBTestCase extends AbstractTestCase
 
 	public String getComponentName()
 	{
-		return "buckminster.test.simple_d";
+		return "buckminster.test.simple_d"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public abstract class AbstractMnBTestCase extends AbstractTestCase
 		IProgressMonitor nullMon = new NullProgressMonitor();
 		ComponentQueryBuilder bld = new ComponentQueryBuilder();
 		bld.setRootRequest(new ComponentRequest(componentName, null, null));
-		bld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap").toString());
+		bld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap").toString()); //$NON-NLS-1$
 		m_query = bld.createComponentQuery();
 		IResolver resolver = new MainResolver(new ResolutionContext(m_query));
 		m_bom = resolver.resolve(nullMon);
