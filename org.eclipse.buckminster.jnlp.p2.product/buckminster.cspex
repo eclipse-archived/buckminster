@@ -14,7 +14,7 @@
                 <property key="targets" value="create.eclipse.jnlp.product"/>
             </actorProperties>
             <properties>
-                <property key="buckminster.eclipse.productFile" value="buckminster.jnlp.product"/>
+                <property key="buckminster.eclipse.productFile" value="buckminster.jnlp.p2.product"/>
                 <property key="buckminster.eclipse.deleteuilauncher" value="false"/>
             </properties>
 			<prerequisites alias="action.requirements">
