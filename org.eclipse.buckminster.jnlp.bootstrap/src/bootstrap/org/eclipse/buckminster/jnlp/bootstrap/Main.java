@@ -8,7 +8,22 @@
 
 package org.eclipse.buckminster.jnlp.bootstrap;
 
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.*;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_CORRUPTED_FILE_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_RESOURCE_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_SITE_ROOT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_HELP_URL;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -43,9 +58,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheSecurityManager;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCache;
 import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheAdapter;
+import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheSecurityManager;
 import org.eclipse.buckminster.jnlp.cache.Utils;
 import org.w3c.dom.DOMException;
 
@@ -490,8 +505,9 @@ public class Main
 			allArgs.add("-data"); //$NON-NLS-1$
 			allArgs.add(wsDir);
 		}
-		allArgs.add("-application"); //$NON-NLS-1$
-		allArgs.add("org.eclipse.buckminster.jnlp.application"); //$NON-NLS-1$
+		// application is set in config.ini
+		// allArgs.add("-application"); //$NON-NLS-1$
+		// allArgs.add("org.eclipse.buckminster.jnlp.application"); //$NON-NLS-1$
 		for(String arg : args)
 			allArgs.add(arg);
 
