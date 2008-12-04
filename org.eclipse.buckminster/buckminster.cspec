@@ -65,6 +65,7 @@
             <cs:prerequisites>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.product"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.jnlp.product"/>
+	            <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.jnlp.p2.product"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.update"/>
             </cs:prerequisites>
         </cs:public>
@@ -190,7 +191,7 @@
                 <cs:path path="jnlp-package.zip"/>
             </cs:products>
         </cs:public>
-        <cs:private name="build.jnlp" actor="ant">
+        <cs:private name="build.jnlp.buckminster" actor="ant" filter="(!(buckminster.jnlp.p2=true))">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/headless.ant"/>
                 <cs:property key="targets" value="build.product"/>
@@ -204,13 +205,28 @@
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp/" fileCount="1" upToDatePolicy="COUNT"/>
         </cs:private>
+	    <cs:private name="build.jnlp.p2" actor="ant" filter="(buckminster.jnlp.p2=true)">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/headless.ant"/>
+                <cs:property key="targets" value="build.product"/>
+            </cs:actorProperties>
+            <cs:properties>
+                <cs:property key="product.name" value="buckminster.installer"/>
+            </cs:properties>
+            <cs:prerequisites>
+                <cs:attribute name="jnlp.p2.installer" alias="product" component="org.eclipse.buckminster.jnlp.p2.product"/>
+                <cs:attribute name="manifest" alias="product.feature.xml" component="org.eclipse.buckminster.jnlp.p2.product"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp/" fileCount="1" upToDatePolicy="COUNT"/>
+        </cs:private> 
         <cs:private name="normalize.jnlp" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
                 <cs:property key="targets" value="normalize.jars"/>
             </cs:actorProperties>
             <cs:prerequisites>
-                <cs:attribute name="build.jnlp" alias="requirement"/>
+                <cs:attribute name="build.jnlp.buckminster" alias="requirement"/>
+	            <!-- <cs:attribute name="build.jnlp.p2" alias="requirement"/> -->
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.n/" upToDatePolicy="MAPPER"/>
         </cs:private>
