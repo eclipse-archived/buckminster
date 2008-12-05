@@ -226,7 +226,7 @@
             </cs:actorProperties>
             <cs:prerequisites>
                 <cs:attribute name="build.jnlp.buckminster" alias="requirement"/>
-	            <!-- <cs:attribute name="build.jnlp.p2" alias="requirement"/> -->
+	            <cs:attribute name="build.jnlp.p2" alias="requirement"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.n/" upToDatePolicy="MAPPER"/>
         </cs:private>
