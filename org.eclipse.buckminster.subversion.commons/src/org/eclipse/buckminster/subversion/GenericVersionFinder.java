@@ -15,11 +15,10 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.team.svn.core.connector.SVNEntry;
 
-public abstract class GenericVersionFinder<SVN_ENTRY_TYPE> extends AbstractSCCSVersionFinder
+public abstract class GenericVersionFinder<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> extends AbstractSCCSVersionFinder
 {
-	private final ISubversionSession<SVN_ENTRY_TYPE> m_session;
+	private final ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> m_session;
 
 	private final ISvnEntryHelper<SVN_ENTRY_TYPE> m_helper;
 
@@ -47,7 +46,7 @@ public abstract class GenericVersionFinder<SVN_ENTRY_TYPE> extends AbstractSCCSV
 		final long revision = versionMatch.getRevision();
 		final Date timestamp = versionMatch.getTimestamp();
 		final RMContext context = query.getContext();
-		final ISubversionSession<SVN_ENTRY_TYPE> checkerSession = getSession(uri, branchOrTag, revision, timestamp,
+		final ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> checkerSession = getSession(uri, branchOrTag, revision, timestamp,
 				context);
 		try
 		{
@@ -74,7 +73,7 @@ public abstract class GenericVersionFinder<SVN_ENTRY_TYPE> extends AbstractSCCSV
 	 * @return
 	 * @throws CoreException
 	 */
-	protected abstract ISubversionSession<SVN_ENTRY_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag,
+	protected abstract ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag,
 			long revision, Date timestamp, RMContext context) throws CoreException;
 
 	@Override
@@ -110,10 +109,9 @@ public abstract class GenericVersionFinder<SVN_ENTRY_TYPE> extends AbstractSCCSV
 	@Override
 	final protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
-		SVNEntry entry = m_session.getRootEntry(monitor);
+		SVN_ENTRY_TYPE entry = m_session.getRootEntry(monitor);
 		return entry == null
 				? null
-				: new RevisionEntry(null, null, entry.revision);
+				: new RevisionEntry(null, null, m_session.getSvnEntryHelper().getEntryRevisionNumber(entry));
 	}
-
 }

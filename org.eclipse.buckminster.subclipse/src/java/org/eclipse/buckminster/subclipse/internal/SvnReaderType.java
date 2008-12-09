@@ -40,7 +40,7 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnReaderType extends GenericReaderType<ISVNDirEntry>
+public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision>
 {
 
 	private abstract class SafeExecute<RETURN_TYPE extends Object>
@@ -56,6 +56,8 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry>
 		{
 			failValue = val;
 		}
+
+		abstract protected RETURN_TYPE compute(ISVNInfo info);
 
 		public RETURN_TYPE execute(File workingCopy, IProgressMonitor monitor) throws CoreException
 		{
@@ -77,8 +79,12 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry>
 				monitor.done();
 			}
 		}
+	}
 
-		abstract protected RETURN_TYPE compute(ISVNInfo info);
+	private ISVNInfo getInfoFromWorkingCopy(File workingCopy) throws SVNClientException, SVNException
+	{
+		return SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
+				.getInfoFromWorkingCopy(workingCopy);
 	}
 
 	@Override
@@ -131,6 +137,13 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry>
 	}
 
 	@Override
+	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI,
+			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException
+	{
+		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
 			IProgressMonitor monitor) throws CoreException
 	{
@@ -139,21 +152,9 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry>
 	}
 
 	@Override
-	protected ISubversionSession<ISVNDirEntry> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException
-	{
-		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
-	}
-
-	@Override
-	protected void updateRepositoryMap(IProject project, ISubversionSession<ISVNDirEntry> session) throws TeamException
+	protected void updateRepositoryMap(IProject project, ISubversionSession<ISVNDirEntry, SVNRevision> session)
+			throws TeamException
 	{
 		RepositoryProvider.map(project, SVNProviderPlugin.PROVIDER_ID);
-	}
-
-	private ISVNInfo getInfoFromWorkingCopy(File workingCopy) throws SVNClientException, SVNException
-	{
-		return SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
-				.getInfoFromWorkingCopy(workingCopy);
 	}
 }

@@ -28,14 +28,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.svn.core.connector.SVNRevision;
-import org.eclipse.team.svn.core.connector.SVNEntry.Kind;
 
-public abstract class GenericRemoteReader<SVNENTRY extends Object> extends AbstractRemoteReader
+public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRemoteReader
 {
-	protected final ISubversionSession<SVNENTRY> m_session;
-
-	protected final ISvnEntryHelper<SVNENTRY> m_helper;
+	protected final ISubversionSession<SVNENTRY, REVISION> m_session;
 
 	private final SVNENTRY[] m_topEntries;
 
@@ -47,7 +43,6 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 		VersionSelector branchOrTag = vm.getBranchOrTag();
 		m_session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), provider
 				.getNodeQuery().getContext());
-		m_helper = m_session.getSvnEntryHelper();
 		m_topEntries = getTopEntries(monitor);
 		if(m_topEntries.length == 0)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, m_session));
@@ -78,7 +73,7 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 		boolean found = false;
 		for(SVNENTRY dirEntry : m_topEntries)
 		{
-			if(topEntry.equals(m_helper.getEntryPath(dirEntry)))
+			if(topEntry.equals(m_session.getSvnEntryHelper().getEntryPath(dirEntry)))
 			{
 				found = true;
 				break;
@@ -97,7 +92,7 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 			logger.debug("Reading remote file %s", key); //$NON-NLS-1$
 			destFile = createTempFile();
 			output = new FileOutputStream(destFile);
-			final SVNRevision revision = m_session.getRevision();
+			final REVISION revision = m_session.getRevision();
 			fetchRemoteFile(url, revision, output, MonitorUtils.subMonitor(monitor, 10));
 			IOUtils.close(output);
 			if(destFile.length() == 0)
@@ -141,9 +136,10 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 			throws CoreException, IOException
 	{
 		ArrayList<String> names = null;
+		ISvnEntryHelper<SVNENTRY> helper = m_session.getSvnEntryHelper();
 		for(SVNENTRY dirEntry : m_topEntries)
 		{
-			final String fileName = m_helper.getEntryPath(dirEntry);
+			final String fileName = helper.getEntryPath(dirEntry);
 			if(pattern.matcher(fileName).matches())
 			{
 				if(names == null)
@@ -168,19 +164,20 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 	@Override
 	final protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
 	{
+		ISvnEntryHelper<SVNENTRY> helper = m_session.getSvnEntryHelper();
 		for(SVNENTRY dirEntry : m_topEntries)
 		{
-			String fileName = m_helper.getEntryPath(dirEntry);
-			if(m_helper.getEntryKind(dirEntry) == Kind.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
+			String fileName = helper.getEntryPath(dirEntry);
+			if(helper.getEntryKind(dirEntry) == ISvnEntryHelper.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
 				fileName = fileName + '/'; //$NON-NLS-1$
 			files.add(fileName);
 		}
 	}
 
-	abstract protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor)
+	abstract protected boolean remoteFileExists(URI url, REVISION revision, IProgressMonitor monitor)
 			throws CoreException;
 
-	abstract protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output,
+	abstract protected void fetchRemoteFile(URI url, REVISION revision, OutputStream output,
 			IProgressMonitor subMonitor) throws Exception;
 
 	abstract protected String storeInCache(String fileName) throws CoreException;
@@ -196,7 +193,7 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 	 * @return
 	 * @throws CoreException
 	 */
-	protected abstract ISubversionSession<SVNENTRY> getSession(String repositoryURI, VersionSelector branchOrTag,
+	protected abstract ISubversionSession<SVNENTRY,REVISION> getSession(String repositoryURI, VersionSelector branchOrTag,
 			long revision, Date timestamp, RMContext context) throws CoreException;
 
 }

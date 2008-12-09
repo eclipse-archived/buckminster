@@ -60,7 +60,7 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry>
+public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRevision>
 {
 
 	/**
@@ -76,14 +76,14 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry>
 	}
 
 	@Override
-	protected void fetchRemoteFile(URI url, org.eclipse.team.svn.core.connector.SVNRevision revision,
-			OutputStream output, IProgressMonitor monitor) throws Exception
+	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor monitor)
+			throws Exception
 	{
 		int ticksLeft = 3;
 		InputStream input = null;
 		byte[] buf = new byte[0x1000];
 		final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
-		input = clientAdapter.getContent(TypeTranslator.from(url), TypeTranslator.from(revision));
+		input = clientAdapter.getContent(TypeTranslator.from(url), revision);
 		int bytesRead = input.read(buf);
 
 		while(bytesRead > 0)
@@ -106,8 +106,8 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry>
 	}
 
 	@Override
-	protected ISubversionSession<ISVNDirEntry> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException
+	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI,
+			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException
 	{
 		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
@@ -138,7 +138,7 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry>
 				try
 				{
 					SVNUrl svnURL = TypeTranslator.from(getSession().getSVNUrl(null));
-					SVNRevision svnRev = getSession().getInnerRevision();
+					SVNRevision svnRev = getSession().getRevision();
 					CorePlugin.getLogger().debug("Checking out %s using revision %s", svnURL, svnRev); //$NON-NLS-1$
 					getSession().getClientAdapter().checkout(svnURL, destDir, svnRev, true);
 					resultSlot[0] = Boolean.TRUE;
@@ -195,13 +195,12 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry>
 	}
 
 	@Override
-	protected boolean remoteFileExists(URI url, org.eclipse.team.svn.core.connector.SVNRevision revision,
-			IProgressMonitor monitor) throws CoreException
+	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException
 	{
 		try
 		{
 			final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
-			return clientAdapter.getDirEntry(TypeTranslator.from(url), TypeTranslator.from(revision)) != null;
+			return clientAdapter.getDirEntry(TypeTranslator.from(url), revision) != null;
 		}
 		catch(Exception e)
 		{

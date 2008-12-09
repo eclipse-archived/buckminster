@@ -34,6 +34,7 @@ import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.SVNChangeStatus;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
+import org.eclipse.team.svn.core.connector.SVNRevision;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
 import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
@@ -45,7 +46,7 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SubversiveReaderType extends GenericReaderType<SVNEntry>
+public class SubversiveReaderType extends GenericReaderType<SVNEntry, SVNRevision>
 {
 	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor)
 	{
@@ -112,6 +113,13 @@ public class SubversiveReaderType extends GenericReaderType<SVNEntry>
 	}
 
 	@Override
+	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag,
+			long revision, Date timestamp, RMContext context) throws CoreException
+	{
+		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
 			IProgressMonitor monitor) throws CoreException
 	{
@@ -120,14 +128,8 @@ public class SubversiveReaderType extends GenericReaderType<SVNEntry>
 	}
 
 	@Override
-	protected ISubversionSession<SVNEntry> getSession(String repositoryURI, VersionSelector branchOrTag, long revision,
-			Date timestamp, RMContext context) throws CoreException
-	{
-		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
-	}
-
-	@Override
-	protected void updateRepositoryMap(IProject project, ISubversionSession<SVNEntry> session) throws Exception
+	protected void updateRepositoryMap(IProject project, ISubversionSession<SVNEntry, SVNRevision> session)
+			throws Exception
 	{
 		IRepositoryLocation location = ((SubversiveSession)session).getRepositoryLocation();
 		IRepositoryContainer resource = null;

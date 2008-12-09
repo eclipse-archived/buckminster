@@ -7,10 +7,8 @@ import java.util.Date;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.team.svn.core.connector.SVNEntry;
-import org.eclipse.team.svn.core.connector.SVNRevision;
 
-public interface ISubversionSession<SVN_ENTRY_TYPE> extends Closeable
+public interface ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> extends Closeable
 {
 	public void close();
 
@@ -18,9 +16,9 @@ public interface ISubversionSession<SVN_ENTRY_TYPE> extends Closeable
 
 	public Date getLastTimestamp() throws CoreException;
 
-	public SVNRevision getRevision();
+	public SVN_REVISION_TYPE getRevision();
 
-	public SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException;
+	public SVN_ENTRY_TYPE getRootEntry(IProgressMonitor monitor) throws CoreException;
 
 	public URI getSVNRootUrl(boolean branches) throws CoreException;
 

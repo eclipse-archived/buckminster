@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -38,7 +37,6 @@ import org.eclipse.buckminster.subversion.SvnExceptionHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.tigris.subversion.clientadapter.Activator;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNClientManager;
@@ -81,7 +79,7 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEntry>
+public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEntry, SVNRevision>
 {
 
 	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword
@@ -304,18 +302,6 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		return s_emptyFolder;
 	}
 
-	SVNRevision getInnerRevision() throws CoreException
-	{
-		try
-		{
-			return TypeTranslator.from(getRevision());
-		}
-		catch(ParseException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
 	@Override
 	public ISVNRepositoryLocation[] getKnownRepositories() throws CoreException
 	{
@@ -362,7 +348,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		try
 		{
 			SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, getInnerRevision());
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, getRevision());
 			if(root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedRevision().getNumber();
@@ -390,7 +376,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		try
 		{
 			SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, getInnerRevision());
+			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, getRevision());
 			if(root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedDate();
@@ -405,9 +391,9 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 	{
 		SVNRevision.Number repoRev = null;
 
-		if(getInnerRevision() instanceof SVNRevision.Number)
+		if(getRevision() instanceof SVNRevision.Number)
 		{
-			repoRev = (SVNRevision.Number)getInnerRevision();
+			repoRev = (SVNRevision.Number)getRevision();
 			MonitorUtils.complete(monitor);
 		}
 		else
@@ -451,7 +437,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		return repoRev;
 	}
 
-	public SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException
+	public ISVNDirEntry getRootEntry(IProgressMonitor monitor) throws CoreException
 	{
 		// Synchronizing on an interned string should make it impossible for two
 		// sessions to request the same entry from the remote server
@@ -476,12 +462,12 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 			}
 			for(ISVNDirEntry dirEntry : dirEntries)
 				if(dirEntry.getPath().equals(lastEntry))
-					return TypeTranslator.from(dirEntry);
+					return dirEntry;
 
 			// Parent was not accessible. Perhaps we have no permissions.
 		}
 
-		SVNRevision revision = getInnerRevision();
+		SVNRevision revision = getRevision();
 		String key = GenericCache.cacheKey(TypeTranslator.from(url), getRevision()).intern();
 		synchronized(key)
 		{
@@ -489,7 +475,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 			// valid null entries
 			//
 			if(getCache().dirContainsKey(key))
-				return TypeTranslator.from(getCache().getDir(key));
+				return getCache().getDir(key);
 
 			Logger logger = CorePlugin.getLogger();
 			monitor.beginTask(null, 1);
@@ -498,7 +484,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 				logger.debug("Obtaining remote folder %s[%s]", url, revision); //$NON-NLS-1$
 				ISVNDirEntry entry = getClientAdapter().getDirEntry(url, revision);
 				getCache().putDir(key, entry);
-				return TypeTranslator.from(entry);
+				return entry;
 			}
 			catch(SVNClientException e)
 			{
@@ -525,6 +511,22 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper()
 	{
 		return HELPER;
+	}
+
+	@Override
+	public SVNRevision getSVNRevision(long revision, Date timestamp)
+	{
+		if(revision == -1)
+		{
+			if(timestamp == null)
+				return SVNRevision.HEAD;
+
+			return new SVNRevision.DateSpec(timestamp);
+		}
+		if(timestamp != null)
+			throw new IllegalArgumentException(
+					org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
+		return new SVNRevision.Number(revision);
 	}
 
 	@Override
@@ -561,7 +563,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		monitor.beginTask(null, 1);
 		try
 		{
-			return m_clientAdapter.getList(TypeTranslator.from(url), getInnerRevision(), false);
+			return m_clientAdapter.getList(TypeTranslator.from(url), getRevision(), false);
 		}
 		catch(SVNClientException e)
 		{

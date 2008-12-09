@@ -26,23 +26,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.svn.core.connector.SVNRevision;
 
-public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE> implements ISubversionSession<SVN_ENTRY_TYPE>
+public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REVISION_TYPE> implements ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE>
 {
-	public static SVNRevision getSVNRevision(long revision, Date timestamp)
-	{
-		if(revision == -1)
-		{
-			if(timestamp == null)
-				return SVNRevision.HEAD;
-
-			return SVNRevision.fromDate(timestamp.getTime());
-		}
-		if(timestamp != null)
-			throw new IllegalArgumentException(Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
-		return SVNRevision.fromNumber(revision);
-	}
+	public abstract SVN_REVISION_TYPE getSVNRevision(long revision, Date timestamp);
 
 	protected final VersionSelector m_branchOrTag;
 
@@ -62,7 +49,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE> impleme
 
 	protected final String m_password;
 
-	private final SVNRevision m_revision;
+	private final SVN_REVISION_TYPE m_revision;
 
 	protected final IPath m_subModule;
 
@@ -646,7 +633,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE> impleme
 		}
 	}
 
-	final public SVNRevision getRevision()
+	final public SVN_REVISION_TYPE getRevision()
 	{
 		return m_revision;
 	}

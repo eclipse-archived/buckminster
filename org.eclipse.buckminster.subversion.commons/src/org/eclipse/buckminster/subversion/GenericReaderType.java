@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderType
+public abstract class GenericReaderType<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> extends CatalogReaderType
 {
 
 	final public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
@@ -23,13 +23,13 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderTyp
 		return null;
 	}
 
-	private ISubversionSession<SVN_ENTRY_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag)
+	private ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag)
 			throws CoreException
 	{
 		return getSession(repositoryURI, branchOrTag, -1, null, new RMContext(null));
 	}
 
-	abstract protected ISubversionSession<SVN_ENTRY_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag,
+	abstract protected ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag,
 			long revision, Date timestamp, RMContext context) throws CoreException;
 
 	@Override
@@ -37,7 +37,7 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderTyp
 			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1);
-		final ISubversionSession<SVN_ENTRY_TYPE> session = getSession(repositoryLocation, versionSelector);
+		final ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> session = getSession(repositoryLocation, versionSelector);
 		try
 		{
 			return session.getLastTimestamp();
@@ -55,7 +55,7 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderTyp
 			IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1);
-		final ISubversionSession<SVN_ENTRY_TYPE> session = getSession(repositoryLocation, versionSelector);
+		final ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> session = getSession(repositoryLocation, versionSelector);
 		try
 		{
 			return session.getLastChangeNumber();
@@ -73,7 +73,7 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderTyp
 			throws CoreException
 	{
 		VersionMatch vm = cr.getVersionMatch();
-		ISubversionSession<SVN_ENTRY_TYPE> session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm
+		ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm
 				.getRevision(), vm.getTimestamp(), context);
 		session.createCommonRoots(context);
 		session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm
@@ -93,6 +93,6 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderTyp
 		MonitorUtils.complete(monitor);
 	}
 
-	abstract protected void updateRepositoryMap(IProject project, ISubversionSession<SVN_ENTRY_TYPE> session)
+	abstract protected void updateRepositoryMap(IProject project, ISubversionSession<SVN_ENTRY_TYPE,SVN_REVISION_TYPE> session)
 			throws Exception;
 }

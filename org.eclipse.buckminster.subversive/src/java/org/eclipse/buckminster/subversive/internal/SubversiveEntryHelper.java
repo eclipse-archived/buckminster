@@ -8,7 +8,6 @@ public class SubversiveEntryHelper implements ISvnEntryHelper<SVNEntry>
 
 	public int getEntryKind(SVNEntry entry)
 	{
-
 		return entry.nodeKind;
 	}
 

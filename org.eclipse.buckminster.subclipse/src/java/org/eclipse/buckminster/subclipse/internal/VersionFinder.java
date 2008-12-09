@@ -20,8 +20,9 @@ import org.eclipse.buckminster.subversion.GenericVersionFinder;
 import org.eclipse.buckminster.subversion.ISubversionSession;
 import org.eclipse.core.runtime.CoreException;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
+import org.tigris.subversion.svnclientadapter.SVNRevision;
 
-public class VersionFinder extends GenericVersionFinder<ISVNDirEntry>
+public class VersionFinder extends GenericVersionFinder<ISVNDirEntry, SVNRevision>
 {
 
 	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
@@ -30,8 +31,8 @@ public class VersionFinder extends GenericVersionFinder<ISVNDirEntry>
 	}
 
 	@Override
-	protected ISubversionSession<ISVNDirEntry> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException
+	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI,
+			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException
 	{
 		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
 	}

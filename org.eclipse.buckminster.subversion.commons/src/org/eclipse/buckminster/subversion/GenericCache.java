@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.team.svn.core.connector.SVNRevision;
-
 public class GenericCache
 {
 
@@ -20,7 +18,7 @@ public class GenericCache
 	 *            The revision to append
 	 * @return A string representation denoting an explicit revision of the URL
 	 */
-	public static String cacheKey(URI url, SVNRevision revision)
+	public static String cacheKey(URI url, Object revision)
 	{
 		StringBuilder bld = new StringBuilder();
 		String protocol = url.getScheme();
