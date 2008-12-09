@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.subversive.headless.feature"
       label="Buckminster - Subversive based SVN support for headless operation"
       version="1.0.0.qualifier"
-      provider-name="Cloudsmith Inc."
+      provider-name="Eclipse Buckminster Project"
       plugin="org.eclipse.buckminster.subversive">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -137,6 +137,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.polarion.eclipse.team.svn.connector.svnkit15"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.subversion.commons"
          download-size="0"
          install-size="0"
          version="0.0.0"

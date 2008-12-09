@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.subclipse.feature"
       label="Buckminster - Subclipse support"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org"
+      provider-name="Eclipse Buckminster Project"
       plugin="org.eclipse.buckminster.subclipse">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -127,6 +127,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.eclipse.buckminster.subclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.subversion.commons"
          download-size="0"
          install-size="0"
          version="0.0.0"
