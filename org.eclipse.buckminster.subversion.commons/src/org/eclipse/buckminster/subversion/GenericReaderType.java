@@ -73,9 +73,11 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE> extends CatalogReaderTyp
 			throws CoreException
 	{
 		VersionMatch vm = cr.getVersionMatch();
-		final ISubversionSession<SVN_ENTRY_TYPE> session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm
+		ISubversionSession<SVN_ENTRY_TYPE> session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm
 				.getRevision(), vm.getTimestamp(), context);
 		session.createCommonRoots(context);
+		session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm
+				.getRevision(), vm.getTimestamp(), context);
 		try
 		{
 			updateRepositoryMap(project, session);
