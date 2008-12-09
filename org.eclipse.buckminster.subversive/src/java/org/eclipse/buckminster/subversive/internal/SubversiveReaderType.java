@@ -9,22 +9,20 @@
 package org.eclipse.buckminster.subversive.internal;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.subversion.GenericReaderType;
+import org.eclipse.buckminster.subversion.ISubversionSession;
 import org.eclipse.buckminster.subversive.Messages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -34,6 +32,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.team.svn.core.SVNTeamProjectMapper;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.SVNChangeStatus;
+import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
@@ -44,8 +43,9 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
  * @author Thomas Hallgren
+ * @author Guillaume Chatelet
  */
-public class SubversiveReaderType extends CatalogReaderType
+public class SubversiveReaderType extends GenericReaderType<SVNEntry>
 {
 	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor)
 	{
@@ -78,11 +78,6 @@ public class SubversiveReaderType extends CatalogReaderType
 		}
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		return null;
-	}
-
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
@@ -93,50 +88,12 @@ public class SubversiveReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
-		monitor.beginTask(null, 1);
-		SubversiveSession session = new SubversiveSession(repositoryLocation, versionSelector, -1L, null,
-				new RMContext(null));
-		try
-		{
-			return session.getLastTimestamp();
-		}
-		finally
-		{
-			session.close();
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
-	}
-
-	@Override
 	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
 		SVNChangeStatus localInfo = getLocalInfo(workingCopy, monitor);
 		return localInfo == null
 				? -1
 				: localInfo.lastChangedRevision;
-	}
-
-	@Override
-	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
-		monitor.beginTask(null, 1);
-		SubversiveSession session = new SubversiveSession(repositoryLocation, versionSelector, -1L, null,
-				new RMContext(null));
-		try
-		{
-			return session.getLastChangeNumber();
-		}
-		finally
-		{
-			session.close();
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
 	}
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
@@ -162,40 +119,24 @@ public class SubversiveReaderType extends CatalogReaderType
 		return new SubversiveVersionFinder(provider, ctype, nodeQuery);
 	}
 
-	/**
-	 * Map the given project to the Subversion location of this remote file reader
-	 * 
-	 * @param project
-	 *            The project that should be mapped to the Subversion location. This project should be a real, existing
-	 *            project.
-	 */
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-			throws CoreException
+	protected ISubversionSession<SVNEntry> getSession(String repositoryURI, VersionSelector branchOrTag, long revision,
+			Date timestamp, RMContext context) throws CoreException
 	{
-		SubversiveSession.createCommonRoots(context);
-		VersionMatch vm = cr.getVersionMatch();
-		SubversiveSession session = new SubversiveSession(cr.getRepository(), vm.getBranchOrTag(), vm.getRevision(), vm
-				.getTimestamp(), context);
-		try
+		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
+	protected void updateRepositoryMap(IProject project, ISubversionSession<SVNEntry> session) throws Exception
+	{
+		IRepositoryLocation location = ((SubversiveSession)session).getRepositoryLocation();
+		IRepositoryContainer resource = null;
+		resource = location.asRepositoryContainer(session.getSVNUrl().toString(), true);
+		if(resource != null)
 		{
-			IRepositoryLocation location = session.getRepositoryLocation();
-			IRepositoryContainer resource = null;
-			resource = location.asRepositoryContainer(session.getSVNUrl(null).toString(), true);
-			if(resource != null)
-			{
-				SVNTeamProjectMapper.map(project, resource);
-			}
-			else
-				throw BuckminsterException.fromMessage(Messages.could_not_create_repository_resource);
+			SVNTeamProjectMapper.map(project, resource);
 		}
-		catch(Exception ex)
-		{
-			throw BuckminsterException.wrap(ex);
-		}
-		finally
-		{
-			session.close();
-		}
+		else
+			throw BuckminsterException.fromMessage(Messages.could_not_create_repository_resource);
 	}
 }

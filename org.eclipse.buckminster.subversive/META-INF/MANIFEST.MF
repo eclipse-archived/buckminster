@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.team.svn.core;bundle-version="0.7.0.v20071221",
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.buckminster.runtime,
- org.eclipse.ecf;bundle-version="2.0.0"
+ org.eclipse.ecf;bundle-version="2.0.0",
+ org.eclipse.buckminster.subversion.commons;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

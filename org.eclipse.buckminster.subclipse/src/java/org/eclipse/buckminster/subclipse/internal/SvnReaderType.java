@@ -10,13 +10,10 @@
 package org.eclipse.buckminster.subclipse.internal;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -25,109 +22,94 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.subversion.GenericReaderType;
+import org.eclipse.buckminster.subversion.ISubversionSession;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.core.TeamException;
+import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
+import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.ISVNInfo;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 
 /**
  * @author Thomas Hallgren
+ * @author Guillaume Chatelet
  */
-public class SvnReaderType extends CatalogReaderType
+public class SvnReaderType extends GenericReaderType<ISVNDirEntry>
 {
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
+
+	private abstract class SafeExecute<RETURN_TYPE extends Object>
 	{
-		return null;
+		final protected RETURN_TYPE failValue;
+
+		public SafeExecute()
+		{
+			failValue = null;
+		}
+
+		public SafeExecute(RETURN_TYPE val)
+		{
+			failValue = val;
+		}
+
+		public RETURN_TYPE execute(File workingCopy, IProgressMonitor monitor) throws CoreException
+		{
+			monitor.beginTask(null, 1);
+			try
+			{
+				final ISVNInfo info = getInfoFromWorkingCopy(workingCopy);
+				if(info == null)
+					return failValue;
+				return compute(info);
+			}
+			catch(SVNClientException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				MonitorUtils.worked(monitor, 1);
+				monitor.done();
+			}
+		}
+
+		abstract protected RETURN_TYPE compute(ISVNInfo info);
 	}
 
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask(null, 1);
-		try
+		return new SafeExecute<Date>()
 		{
-			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
-					.getInfoFromWorkingCopy(workingCopy);
-			if(info != null)
+			@Override
+			protected Date compute(ISVNInfo info)
+			{
 				return info.getLastChangedDate();
-			return null;
-		}
-		catch(SVNClientException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
+			}
+
+		}.execute(workingCopy, monitor);
 	}
 
-	@Override
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
-		monitor.beginTask(null, 1);
-		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
-		try
-		{
-			return session.getLastTimestamp();
-		}
-		finally
-		{
-			session.close();
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
-	}
-
+	@SuppressWarnings("boxing")
 	@Override
 	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask(null, 1);
-		try
+		return new SafeExecute<Long>(new Long(-1))
 		{
-			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
-					.getInfoFromWorkingCopy(workingCopy);
-			if(info != null)
+			@Override
+			protected Long compute(ISVNInfo info)
 			{
-				SVNRevision.Number lastRev = info.getLastChangedRevision();
+				final SVNRevision.Number lastRev = info.getLastChangedRevision();
 				if(lastRev != null)
-					return lastRev.getNumber();
+					return new Long(lastRev.getNumber());
+				return failValue;
 			}
-			return -1;
-		}
-		catch(SVNClientException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
-	}
-
-	@Override
-	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
-		monitor.beginTask(null, 1);
-		SvnSession session = new SvnSession(repositoryLocation, versionSelector, -1L, null, new RMContext(null));
-		try
-		{
-			return session.getLastChangeNumber();
-		}
-		finally
-		{
-			session.close();
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
+		}.execute(workingCopy, monitor);
 	}
 
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
@@ -138,24 +120,14 @@ public class SvnReaderType extends CatalogReaderType
 	@Override
 	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
 	{
-		monitor.beginTask(null, 1);
-		try
+		return new SafeExecute<String>()
 		{
-			ISVNInfo info = SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
-					.getInfoFromWorkingCopy(workingCopy);
-			return (info == null)
-					? null
-					: info.getUrl().toString();
-		}
-		catch(SVNClientException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			MonitorUtils.worked(monitor, 1);
-			monitor.done();
-		}
+			@Override
+			protected String compute(ISVNInfo info)
+			{
+				return info.getUrl().toString();
+			}
+		}.execute(workingCopy, monitor);
 	}
 
 	@Override
@@ -167,11 +139,21 @@ public class SvnReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-			throws CoreException
+	protected ISubversionSession<ISVNDirEntry> getSession(String repositoryURI, VersionSelector branchOrTag,
+			long revision, Date timestamp, RMContext context) throws CoreException
 	{
-		SvnSession.createCommonRoots(context);
+		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
+	protected void updateRepositoryMap(IProject project, ISubversionSession<ISVNDirEntry> session) throws TeamException
+	{
 		RepositoryProvider.map(project, SVNProviderPlugin.PROVIDER_ID);
-		MonitorUtils.complete(monitor);
+	}
+
+	private ISVNInfo getInfoFromWorkingCopy(File workingCopy) throws SVNClientException, SVNException
+	{
+		return SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
+				.getInfoFromWorkingCopy(workingCopy);
 	}
 }

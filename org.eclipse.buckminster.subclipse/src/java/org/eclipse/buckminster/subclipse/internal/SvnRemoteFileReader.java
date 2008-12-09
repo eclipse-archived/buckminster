@@ -11,39 +11,31 @@
 package org.eclipse.buckminster.subclipse.internal;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.net.URI;
+import java.util.Date;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.helpers.FileHandle;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.subclipse.Messages;
+import org.eclipse.buckminster.subversion.GenericCache;
+import org.eclipse.buckminster.subversion.GenericRemoteReader;
+import org.eclipse.buckminster.subversion.ISubversionSession;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
-import org.tigris.subversion.svnclientadapter.SVNClientException;
-import org.tigris.subversion.svnclientadapter.SVNNodeKind;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
@@ -67,12 +59,10 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
  * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
+ * @author Guillaume Chatelet
  */
-public class SvnRemoteFileReader extends AbstractRemoteReader
+public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry>
 {
-	private final SvnSession m_session;
-
-	private final ISVNDirEntry[] m_topEntries;
 
 	/**
 	 * @param readerType
@@ -83,20 +73,7 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor)
 			throws CoreException
 	{
-		super(readerType, rInfo);
-		VersionMatch vm = rInfo.getVersionMatch();
-		VersionSelector branchOrTag = vm.getBranchOrTag();
-		m_session = new SvnSession(rInfo.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), rInfo
-				.getNodeQuery().getContext());
-		m_topEntries = m_session.listFolder(m_session.getSVNUrl(null), monitor);
-		if(m_topEntries.length == 0)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_0, m_session));
-	}
-
-	@Override
-	public void close()
-	{
-		m_session.close();
+		super(readerType, rInfo, monitor);
 	}
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
@@ -117,10 +94,10 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 			{
 				try
 				{
-					SVNUrl svnURL = m_session.getSVNUrl(null);
-					SVNRevision svnRev = m_session.getRevision();
+					SVNUrl svnURL = TypeTranslator.from(getSession().getSVNUrl(null));
+					SVNRevision svnRev = getSession().getInnerRevision();
 					CorePlugin.getLogger().debug(NLS.bind(Messages.checking_out_0_using_revision_1, svnURL, svnRev));
-					m_session.getClientAdapter().checkout(svnURL, destDir, svnRev, true);
+					getSession().getClientAdapter().checkout(svnURL, destDir, svnRev, true);
 					resultSlot[0] = Boolean.TRUE;
 				}
 				catch(Throwable e)
@@ -175,155 +152,68 @@ public class SvnRemoteFileReader extends AbstractRemoteReader
 	}
 
 	@Override
-	public String toString()
+	protected void fetchRemoteFile(URI url, org.eclipse.team.svn.core.connector.SVNRevision revision,
+			OutputStream output, IProgressMonitor monitor) throws Exception
 	{
-		return m_session.toString();
+		int ticksLeft = 3;
+		InputStream input = null;
+		byte[] buf = new byte[0x1000];
+		final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
+		input = clientAdapter.getContent(TypeTranslator.from(url), TypeTranslator.from(revision));
+		int bytesRead = input.read(buf);
+
+		while(bytesRead > 0)
+		{
+			output.write(buf, 0, bytesRead);
+			bytesRead = input.read(buf);
+			if(ticksLeft > 0)
+			{
+				MonitorUtils.worked(monitor, 1);
+				--ticksLeft;
+			}
+			else
+				MonitorUtils.testCancelStatus(monitor);
+		}
 	}
 
 	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
+	protected ISubversionSession<ISVNDirEntry> getSession(String repositoryURI, VersionSelector branchOrTag,
+			long revision, Date timestamp, RMContext context) throws CoreException
 	{
-		Logger logger = CorePlugin.getLogger();
-		IPath path = Path.fromPortableString(fileName);
-		String topEntry = path.segment(0);
+		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
 
-		boolean found = false;
-		for(ISVNDirEntry dirEntry : m_topEntries)
-		{
-			if(dirEntry.getPath().equals(topEntry))
-			{
-				found = true;
-				break;
-			}
-		}
+	@Override
+	protected ISVNDirEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException
+	{
+		final URI url = getSession().getSVNUrl(null);
+		return getSession().innerListFolder(url, monitor);
+	}
 
-		SVNUrl url = m_session.getSVNUrl(fileName);
-		SVNRevision revision = m_session.getRevision();
-		String key = SvnSession.cacheKey(url, revision);
-		if(!found)
-			throw new FileNotFoundException(key);
-
-		ISVNClientAdapter clientAdapter = m_session.getClientAdapter();
-		File destFile = null;
-		OutputStream output = null;
-		InputStream input = null;
-
-		int ticksLeft = 3;
-		monitor.beginTask(fileName, ticksLeft);
-
+	@Override
+	protected boolean remoteFileExists(URI url, org.eclipse.team.svn.core.connector.SVNRevision revision,
+			IProgressMonitor monitor) throws CoreException
+	{
 		try
 		{
-			byte[] buf = new byte[0x1000];
-
-			logger.debug(NLS.bind(Messages.reading_remote_file_0, key));
-			input = clientAdapter.getContent(url, revision);
-			int bytesRead = input.read(buf);
-
-			if(bytesRead == 0)
-			{
-				// Suspect file not found
-				//
-				if(clientAdapter.getDirEntry(url, revision) == null)
-				{
-					logger.debug(NLS.bind(Messages.remote_file_not_found, key));
-					throw new FileNotFoundException(url.toString());
-				}
-			}
-
-			destFile = this.createTempFile();
-			output = new FileOutputStream(destFile);
-			while(bytesRead > 0)
-			{
-				output.write(buf, 0, bytesRead);
-				bytesRead = input.read(buf);
-				if(ticksLeft > 0)
-				{
-					MonitorUtils.worked(monitor, 1);
-					--ticksLeft;
-				}
-				else
-					MonitorUtils.testCancelStatus(monitor);
-			}
-			FileHandle fh = new FileHandle(fileName, destFile, true);
-			destFile = null;
-			return fh;
+			final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
+			return clientAdapter.getDirEntry(TypeTranslator.from(url), TypeTranslator.from(revision)) != null;
 		}
-		catch(SVNClientException e)
+		catch(Exception e)
 		{
-			// Unwind until we get a message and create an IOException.
-			//
-			Throwable p = e;
-			Throwable t;
-			String msg = e.getMessage();
-			while(msg == null && (t = p.getCause()) != null)
-				p = t;
-			if(msg == null)
-				msg = e.toString();
-			else
-			{
-				String lcMsg = msg.toLowerCase();
-				if(lcMsg.contains(Messages.file_not_found) || lcMsg.contains(Messages.path_not_found)
-						|| lcMsg.contains(Messages.unable_to_find_repository_location))
-				{
-					if(logger.isDebugEnabled())
-						logger.debug(NLS.bind(Messages.remote_file_not_found, key));
-					throw new FileNotFoundException(key);
-				}
-			}
-			IOException ioe = new IOException(msg);
-			ioe.initCause(p);
-			throw ioe;
-		}
-		finally
-		{
-			IOUtils.close(input);
-			IOUtils.close(output);
-			if(destFile != null)
-				destFile.delete();
-			if(ticksLeft > 0)
-				MonitorUtils.worked(monitor, ticksLeft);
-			monitor.done();
+			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-			throws CoreException, IOException
+	protected String storeInCache(String fileName) throws CoreException
 	{
-		ArrayList<String> names = null;
-		for(ISVNDirEntry dirEntry : m_topEntries)
-		{
-			String fileName = dirEntry.getPath();
-			if(pattern.matcher(fileName).matches())
-			{
-				if(names == null)
-					names = new ArrayList<String>();
-				names.add(fileName);
-			}
-		}
-		if(names == null)
-			return;
-
-		if(names.size() == 1)
-			files.add(innerGetContents(names.get(0), monitor));
-		else
-		{
-			monitor.beginTask(null, names.size() * 100);
-			for(String name : names)
-				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
-			monitor.done();
-		}
+		final SvnSession session = getSession();
+		return GenericCache.cacheKey(session.getSVNUrl(fileName), session.getRevision());
 	}
 
-	@Override
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	private SvnSession getSession()
 	{
-		for(ISVNDirEntry dirEntry : m_topEntries)
-		{
-			String fileName = dirEntry.getPath();
-			if(dirEntry.getNodeKind() == SVNNodeKind.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
-				fileName = fileName + "/"; //$NON-NLS-1$
-			files.add(fileName);
-		}
+		return (SvnSession)m_session;
 	}
 }

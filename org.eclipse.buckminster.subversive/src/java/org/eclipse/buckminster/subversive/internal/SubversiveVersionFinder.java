@@ -9,80 +9,30 @@
  *******************************************************************************/
 package org.eclipse.buckminster.subversive.internal;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Date;
 
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
-import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.subversion.GenericVersionFinder;
+import org.eclipse.buckminster.subversion.ISubversionSession;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 
-public class SubversiveVersionFinder extends AbstractSCCSVersionFinder
+public class SubversiveVersionFinder extends GenericVersionFinder<SVNEntry>
 {
-	private final SubversiveSession m_session;
 
 	public SubversiveVersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
-		m_session = new SubversiveSession(provider.getURI(query.getProperties()), null, query.getRevision(), query
-				.getTimestamp(), query.getContext());
 	}
 
 	@Override
-	public void close()
+	protected ISubversionSession<SVNEntry> getSession(String repositoryURI, VersionSelector branchOrTag, long revision,
+			Date timestamp, RMContext context) throws CoreException
 	{
-		m_session.close();
-	}
-
-	@Override
-	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
-	{
-		NodeQuery query = getQuery();
-		String uri = getProvider().getURI(query.getProperties());
-		SubversiveSession checkerSession = new SubversiveSession(uri, versionMatch.getBranchOrTag(), versionMatch
-				.getRevision(), versionMatch.getTimestamp(), query.getContext());
-		try
-		{
-			// We list the folder rather then just obtaining the entry since the listing
-			// is cached. It is very likely that we save a call later.
-			//
-			return checkerSession.listFolder(checkerSession.getSVNUrl(null), monitor).length > 0;
-		}
-		finally
-		{
-			checkerSession.close();
-		}
-	}
-
-	@Override
-	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
-	{
-		if(!m_session.hasTrunkStructure())
-			return Collections.emptyList();
-
-		URI url = m_session.getSVNRootUrl(branches);
-		SVNEntry[] list = m_session.listFolder(url, monitor);
-		if(list.length == 0)
-			return Collections.emptyList();
-
-		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(list.length);
-		for(SVNEntry e : list)
-			entries.add(new RevisionEntry(e.path, null, e.revision));
-		return entries;
-	}
-
-	@Override
-	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
-	{
-		SVNEntry entry = m_session.getRootEntry(monitor);
-		return entry == null
-				? null
-				: new RevisionEntry(null, null, entry.revision);
+		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 }
