@@ -8,6 +8,8 @@
 package org.eclipse.buckminster.pde.prefs;
 
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.materializer.TargetPlatformMaterializer;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -34,6 +36,7 @@ public class TargetPlatformHandler extends BasicPreferenceHandler
 	@Override
 	public void set(String targetPlatform)
 	{
+		// tell pde
 		PDECore pdePlugin = PDECore.getDefault();
 		Preferences preferences = pdePlugin.getPluginPreferences();
 		IPath newPath = new Path(targetPlatform);
@@ -45,6 +48,12 @@ public class TargetPlatformHandler extends BasicPreferenceHandler
 		preferences.setValue(ICoreConstants.TARGET_MODE, mode);
 		preferences.setValue(ICoreConstants.PLATFORM_PATH, targetPlatform);
 		pdePlugin.savePluginPreferences();
+
+		// tell buckminster core materializer too
+		CorePlugin corePlugin = CorePlugin.getDefault();
+		Preferences pluginPreferences = corePlugin.getPluginPreferences();
+		pluginPreferences.setValue(TargetPlatformMaterializer.TARGET_PLATFORM_PATH, targetPlatform);
+		corePlugin.savePluginPreferences();
 	}
 
 	@Override
