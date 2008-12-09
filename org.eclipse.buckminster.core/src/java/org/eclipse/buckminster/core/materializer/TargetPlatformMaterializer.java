@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.IFeature;
@@ -38,6 +40,8 @@ import org.eclipse.update.core.SiteManager;
  */
 public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 {
+	public static final String TARGET_PLATFORM_PATH = "targetPlatformPathForMaterialization"; //$NON-NLS-1$
+
 	private static IPath getDefaultInstallRoot() throws CoreException
 	{
 		try
@@ -72,6 +76,13 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 	@Override
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
 	{
+		CorePlugin corePlugin = CorePlugin.getDefault();
+		Preferences preferences = corePlugin.getPluginPreferences();
+		String path = preferences.getString(TARGET_PLATFORM_PATH);
+		if(!"".equals(path))
+		{
+			return Path.fromOSString(path);
+		}
 		return getDefaultInstallRoot();
 	}
 
