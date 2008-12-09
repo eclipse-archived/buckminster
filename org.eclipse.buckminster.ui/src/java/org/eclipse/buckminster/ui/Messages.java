@@ -162,8 +162,6 @@ public class Messages extends NLS
 
 	public static String could_not_create_file;
 
-	public static String cquery_context_url_set_to_0;
-
 	public static String create_new_repository_identity;
 
 	public static String creating_0;

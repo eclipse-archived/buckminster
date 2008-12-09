@@ -67,26 +67,6 @@ public class MavenComponentType extends AbstractComponentType
 			"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
 					"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
 
-	public static IVersion createVersion(String versionStr) throws CoreException
-	{
-		versionStr = TextUtils.notEmptyTrimmedString(versionStr);
-		if(versionStr == null)
-			return null;
-
-		Matcher m = s_timestampPattern.matcher(versionStr);
-		if(m.matches())
-			return VersionFactory.TimestampType.coerce(createTimestamp(m.group(1), m.group(2)));
-
-		try
-		{
-			return VersionFactory.TripletType.fromString(versionStr);
-		}
-		catch(VersionSyntaxException e)
-		{
-			return VersionFactory.StringType.fromString(versionStr);
-		}
-	}
-
 	static void addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec, GroupBuilder archives,
 			ExpandingProperties properties) throws CoreException
 	{
@@ -155,85 +135,6 @@ public class MavenComponentType extends AbstractComponentType
 				if(dep.getNodeType() == Node.ELEMENT_NODE && "dependency".equals(dep.getNodeName())) //$NON-NLS-1$
 					addDependency(query, provider, cspec, archives, properties, dep);
 			}
-		}
-	}
-
-	static Date createTimestamp(String date, String time) throws CoreException
-	{
-		try
-		{
-			return (time != null)
-					? s_timestampFormat.parse(date + '.' + time)
-					: s_dateFormat.parse(date);
-		}
-		catch(ParseException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
-	{
-		if(versionStr == null || versionStr.length() == 0)
-			return null;
-
-		char leadIn = versionStr.charAt(0);
-		if(leadIn == '[' || leadIn == '(')
-		{
-			if(leadIn == '[' && versionStr.endsWith(",)")) //$NON-NLS-1$
-			{
-				versionStr = versionStr.substring(1, versionStr.length() - 2);
-				IVersion version = createVersion(versionStr);
-				return (version == null)
-						? null
-						: VersionFactory.createGTEqualDesignator(version);
-			}
-			return VersionFactory.createDesignator(VersionFactory.TripletType, versionStr);
-		}
-
-		IVersion version = createVersion(versionStr);
-		if(version == null)
-			return null;
-
-		return VersionFactory.createExplicitDesignator(version);
-	}
-
-	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
-	{
-		IVersion version = createVersion(versionStr);
-		if(version == null)
-			//
-			// No version at all. Treat as if it was an unversioned SNAPSHOT
-			//
-			return VersionMatch.DEFAULT;
-		return new VersionMatch(version, null, -1, null, typeInfo);
-	}
-
-	static boolean isSnapshotVersion(IVersion version)
-	{
-		return version != null && version.toString().endsWith("SNAPSHOT"); //$NON-NLS-1$
-	}
-
-	static IVersion stripFromSnapshot(IVersion version)
-	{
-		if(version == null)
-			return null;
-
-		String vstr = version.toString();
-		if(vstr.endsWith("SNAPSHOT")) //$NON-NLS-1$
-		{
-			int stripLen = 8;
-			if(vstr.charAt(vstr.length() - (stripLen + 1)) == '-')
-				stripLen++;
-			vstr = vstr.substring(0, vstr.length() - stripLen);
-		}
-		try
-		{
-			return version.getType().fromString(vstr);
-		}
-		catch(VersionSyntaxException e)
-		{
-			return version;
 		}
 	}
 
@@ -332,6 +233,82 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
+	static Date createTimestamp(String date, String time) throws CoreException
+	{
+		try
+		{
+			return (time != null)
+					? s_timestampFormat.parse(date + '.' + time)
+					: s_dateFormat.parse(date);
+		}
+		catch(ParseException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public static IVersion createVersion(String versionStr) throws CoreException
+	{
+		versionStr = TextUtils.notEmptyTrimmedString(versionStr);
+		if(versionStr == null)
+			return null;
+
+		Matcher m = s_timestampPattern.matcher(versionStr);
+		if(m.matches())
+			return VersionFactory.TimestampType.coerce(createTimestamp(m.group(1), m.group(2)));
+
+		try
+		{
+			return VersionFactory.TripletType.fromString(versionStr);
+		}
+		catch(VersionSyntaxException e)
+		{
+			return VersionFactory.StringType.fromString(versionStr);
+		}
+	}
+
+	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
+	{
+		if(versionStr == null || versionStr.length() == 0)
+			return null;
+
+		char leadIn = versionStr.charAt(0);
+		if(leadIn == '[' || leadIn == '(')
+		{
+			if(leadIn == '[' && versionStr.endsWith(",)")) //$NON-NLS-1$
+			{
+				versionStr = versionStr.substring(1, versionStr.length() - 2);
+				IVersion version = createVersion(versionStr);
+				return (version == null)
+						? null
+						: VersionFactory.createGTEqualDesignator(version);
+			}
+			return VersionFactory.createDesignator(VersionFactory.TripletType, versionStr);
+		}
+
+		IVersion version = createVersion(versionStr);
+		if(version == null)
+			return null;
+
+		return VersionFactory.createExplicitDesignator(version);
+	}
+
+	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
+	{
+		IVersion version = createVersion(versionStr);
+		if(version == null)
+			//
+			// No version at all. Treat as if it was an unversioned SNAPSHOT
+			//
+			return VersionMatch.DEFAULT;
+		return new VersionMatch(version, null, -1, null, typeInfo);
+	}
+
+	static boolean isSnapshotVersion(IVersion version)
+	{
+		return version != null && version.toString().endsWith("SNAPSHOT"); //$NON-NLS-1$
+	}
+
 	private static void processParentNode(MavenReader reader, CSpecBuilder cspec, GroupBuilder archives,
 			ExpandingProperties properties, Node parent) throws CoreException
 	{
@@ -383,8 +360,7 @@ public class MavenComponentType extends AbstractComponentType
 		parentPath = mrt.getPomPath(entry, vm);
 
 		MavenPlugin.getLogger().debug(
-				NLS.bind(Messages.getting_POM_information_for_parent_0_to_1_at_path_2, new Object[] { groupId,
-						artifactId, parentPath }));
+				"Getting POM information for parent: %s - %s at path %s", groupId, artifactId, parentPath); //$NON-NLS-1$
 		Document parentDoc = reader.getPOMDocument(entry, vm, parentPath, new NullProgressMonitor());
 		if(parentDoc == null)
 			return;
@@ -404,6 +380,29 @@ public class MavenComponentType extends AbstractComponentType
 				properties.put(nodeName, ExpandingProperties.expand(properties, nodeValue, 0), true);
 			else
 				properties.remove(nodeName);
+		}
+	}
+
+	static IVersion stripFromSnapshot(IVersion version)
+	{
+		if(version == null)
+			return null;
+
+		String vstr = version.toString();
+		if(vstr.endsWith("SNAPSHOT")) //$NON-NLS-1$
+		{
+			int stripLen = 8;
+			if(vstr.charAt(vstr.length() - (stripLen + 1)) == '-')
+				stripLen++;
+			vstr = vstr.substring(0, vstr.length() - stripLen);
+		}
+		try
+		{
+			return version.getType().fromString(vstr);
+		}
+		catch(VersionSyntaxException e)
+		{
+			return version;
 		}
 	}
 

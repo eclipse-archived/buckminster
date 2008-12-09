@@ -38,7 +38,6 @@ import org.eclipse.buckminster.subversion.SvnExceptionHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.tigris.subversion.clientadapter.Activator;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
@@ -245,6 +244,79 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 	}
 
 	@Override
+	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException
+	{
+		SVNRepositories repos = getRepositories();
+		for(RepositoryAccess root : sourceRoots)
+		{
+			Properties configuration = new Properties();
+			configuration.setProperty("url", root.getSvnURL().toString()); //$NON-NLS-1$
+			String user = root.getUser();
+			if(user != null)
+				configuration.setProperty("user", user); //$NON-NLS-1$
+			String password = root.getPassword();
+			if(password != null)
+				configuration.setProperty("password", password); //$NON-NLS-1$
+
+			try
+			{
+				final ISVNRepositoryLocation repoLocation = repos.createRepository(configuration);
+				repos.addOrUpdateRepository(repoLocation);
+			}
+			catch(SVNException e)
+			{
+				// Repository already exists
+			}
+		}
+	}
+
+	private SvnCache getCache()
+	{
+		return ((SvnCache)m_cache);
+	}
+
+	@Override
+	protected ISubversionCache<ISVNDirEntry> getCache(Map<UUID, Object> userCache)
+	{
+		assert (m_cache == null);
+		final SvnCache cache = new SvnCache();
+		cache.initialize(userCache);
+		return cache;
+	}
+
+	ISVNClientAdapter getClientAdapter() throws CoreException
+	{
+		if(m_clientAdapter == null)
+		{
+			final SVNClientManager clientManager = getPlugin().getSVNClientManager();
+			m_clientAdapter = Activator.getDefault().getClientAdapter(clientManager.getSvnClientInterface());
+			if(m_clientAdapter == null)
+				m_clientAdapter = Activator.getDefault().getAnyClientAdapter();
+			if(m_clientAdapter == null)
+				throw BuckminsterException.fromMessage(Messages.unable_to_load_default_svn_client);
+		}
+		return m_clientAdapter;
+	}
+
+	@Override
+	protected ISVNDirEntry[] getEmptyEntryList()
+	{
+		return s_emptyFolder;
+	}
+
+	SVNRevision getInnerRevision() throws CoreException
+	{
+		try
+		{
+			return TypeTranslator.from(getRevision());
+		}
+		catch(ParseException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	@Override
 	public ISVNRepositoryLocation[] getKnownRepositories() throws CoreException
 	{
 		SVNRepositories repos = getRepositories();
@@ -423,7 +495,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 			monitor.beginTask(null, 1);
 			try
 			{
-				logger.debug(NLS.bind(Messages.obtaining_remote_folder_0_1, url, revision));
+				logger.debug("Obtaining remote folder %s[%s]", url, revision); //$NON-NLS-1$
 				ISVNDirEntry entry = getClientAdapter().getDirEntry(url, revision);
 				getCache().putDir(key, entry);
 				return TypeTranslator.from(entry);
@@ -435,7 +507,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 						org.eclipse.buckminster.subversion.Messages.exception_part_not_found);
 				if(hasParts)
 				{
-					logger.debug(NLS.bind(Messages.remote_folder_does_not_exist_0_1, url, revision));
+					logger.debug("Remote folder does not exist %s[%s]", url, revision); //$NON-NLS-1$
 					getCache().putDir(key, null);
 					return null;
 				}
@@ -444,70 +516,15 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
-	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper()
-	{
-		return HELPER;
-	}
-
-	@Override
-	public String toString()
-	{
-		try
-		{
-			return getSVNUrl(null).toString();
-		}
-		catch(CoreException e)
-		{
-			return super.toString();
-		}
-	}
-
-	@Override
-	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException
-	{
-		SVNRepositories repos = getRepositories();
-		for(RepositoryAccess root : sourceRoots)
-		{
-			Properties configuration = new Properties();
-			configuration.setProperty("url", root.getSvnURL().toString()); //$NON-NLS-1$
-			String user = root.getUser();
-			if(user != null)
-				configuration.setProperty("user", user); //$NON-NLS-1$
-			String password = root.getPassword();
-			if(password != null)
-				configuration.setProperty("password", password); //$NON-NLS-1$
-
-			try
-			{
-				final ISVNRepositoryLocation repoLocation = repos.createRepository(configuration);
-				repos.addOrUpdateRepository(repoLocation);
-			}
-			catch(SVNException e)
-			{
-				// Repository already exists
-			}
-		}
-	}
-
-	@Override
-	protected ISubversionCache<ISVNDirEntry> getCache(Map<UUID, Object> userCache)
-	{
-		assert (m_cache == null);
-		final SvnCache cache = new SvnCache();
-		cache.initialize(userCache);
-		return cache;
-	}
-
-	@Override
-	protected ISVNDirEntry[] getEmptyEntryList()
-	{
-		return s_emptyFolder;
-	}
-
 	@Override
 	protected String getRootUrl(ISVNRepositoryLocation location)
 	{
 		return location.getRepositoryRoot().toString();
+	}
+
+	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper()
+	{
+		return HELPER;
 	}
 
 	@Override
@@ -556,34 +573,16 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
-	ISVNClientAdapter getClientAdapter() throws CoreException
-	{
-		if(m_clientAdapter == null)
-		{
-			final SVNClientManager clientManager = getPlugin().getSVNClientManager();
-			m_clientAdapter = Activator.getDefault().getClientAdapter(clientManager.getSvnClientInterface());
-			if(m_clientAdapter == null)
-				m_clientAdapter = Activator.getDefault().getAnyClientAdapter();
-			if(m_clientAdapter == null)
-				throw BuckminsterException.fromMessage(Messages.unable_to_load_default_svn_client);
-		}
-		return m_clientAdapter;
-	}
-
-	SVNRevision getInnerRevision() throws CoreException
+	@Override
+	public String toString()
 	{
 		try
 		{
-			return TypeTranslator.from(getRevision());
+			return getSVNUrl(null).toString();
 		}
-		catch(ParseException e)
+		catch(CoreException e)
 		{
-			throw BuckminsterException.wrap(e);
+			return super.toString();
 		}
-	}
-
-	private SvnCache getCache()
-	{
-		return ((SvnCache)m_cache);
 	}
 }

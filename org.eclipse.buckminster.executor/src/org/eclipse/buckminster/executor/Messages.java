@@ -20,8 +20,6 @@ public class Messages extends NLS
 
 	public static String program_0_exit_code_1;
 
-	public static String setting_environment_variables_0;
-
 	public static String shell_interpreter_for_0_not_supported;
 
 	public static String using_system_environment_0;

@@ -26,10 +26,6 @@ public class Messages extends NLS
 
 	public static String AbstractCatalogReader_Only_zip_and_jar_archives_allowed_for_remote_overlays;
 
-	public static String AbstractCatalogReader_Provider_0_1_getContents_will_use_overlay_2_for_file_3;
-
-	public static String AbstractCatalogReader_Provider_0_1_materializing_to_2;
-
 	public static String AbstractComponentType_Component_type_0_defines_desiredNamePattern_but_no_substitution;
 
 	public static String AbstractMaterializer_Unable_to_determine_users_home_directory;
@@ -571,8 +567,6 @@ public class Messages extends NLS
 	public static String WorkspaceCommand_Error_while_refreshing_workspace_0;
 
 	public static String WorkspaceCommand_Error_while_saving_workspace_0;
-
-	public static String WorkspaceInfo_Found_two_entries_for_component_0_Version_1_located_at_2_and_version_3_at_4;
 
 	public static String WorkspaceInfo_Problems_during_metadata_refresh;
 

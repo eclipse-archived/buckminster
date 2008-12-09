@@ -20,8 +20,6 @@ public class Messages extends NLS
 
 	public static String generating_cspec_from_maven_artifact;
 
-	public static String getting_POM_information_for_parent_0_to_1_at_path_2;
-
 	public static String only_0_is_a_triplet;
 
 	public static String the_result_of_applying_a_match_rule_had_no_separator_slash_0;

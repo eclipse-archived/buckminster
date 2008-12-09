@@ -554,46 +554,6 @@ public class BuckminsterView extends ViewPart
 		m_bmImage = UiPlugin.getImageDescriptor("images/buckminster_logo.png").createImage(); //$NON-NLS-1$
 	}
 
-	@Override
-	public void createPartControl(Composite parent)
-	{
-		Composite topComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		topComposite.setLayout(layout);
-		topComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		createActions();
-		createMenu();
-		createToolbar();
-
-		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
-		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		CTabItem navigatorTab = new CTabItem(m_tabFolder, SWT.NONE);
-		navigatorTab.setText(Messages.navigator);
-		navigatorTab.setControl(getNavigatorTabControl(m_tabFolder));
-
-		CTabItem repositoryTab = new CTabItem(m_tabFolder, SWT.NONE);
-		repositoryTab.setText(Messages.repository);
-		repositoryTab.setControl(getRepositoryTabControl(m_tabFolder));
-
-		m_tabFolder.setSelection(navigatorTab);
-
-		Label imageLabel = new Label(topComposite, SWT.NONE);
-		imageLabel.setAlignment(SWT.CENTER);
-		imageLabel.setImage(m_bmImage);
-		imageLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BOTTOM, false, false));
-
-		createContextMenu();
-	}
-
-	@Override
-	public void setFocus()
-	{
-		m_tabFolder.setFocus();
-	}
-
 	private void changeInfo()
 	{
 		IResource resource = getResourceSelection();
@@ -838,6 +798,40 @@ public class BuckminsterView extends ViewPart
 		});
 	}
 
+	@Override
+	public void createPartControl(Composite parent)
+	{
+		Composite topComposite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginHeight = layout.marginWidth = 0;
+		topComposite.setLayout(layout);
+		topComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		createActions();
+		createMenu();
+		createToolbar();
+
+		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
+		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		CTabItem navigatorTab = new CTabItem(m_tabFolder, SWT.NONE);
+		navigatorTab.setText(Messages.navigator);
+		navigatorTab.setControl(getNavigatorTabControl(m_tabFolder));
+
+		CTabItem repositoryTab = new CTabItem(m_tabFolder, SWT.NONE);
+		repositoryTab.setText(Messages.repository);
+		repositoryTab.setControl(getRepositoryTabControl(m_tabFolder));
+
+		m_tabFolder.setSelection(navigatorTab);
+
+		Label imageLabel = new Label(topComposite, SWT.NONE);
+		imageLabel.setAlignment(SWT.CENTER);
+		imageLabel.setImage(m_bmImage);
+		imageLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BOTTOM, false, false));
+
+		createContextMenu();
+	}
+
 	private void createToolbar()
 	{
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
@@ -918,7 +912,7 @@ public class BuckminsterView extends ViewPart
 		Composite tabComposite = getTabComposite(parent);
 
 		Link newAccountLink = new Link(tabComposite, SWT.NONE);
-		newAccountLink.setText("<A>" + Messages.create_new_repository_identity + "</A");
+		newAccountLink.setText("<A>" + Messages.create_new_repository_identity + "</A>"); //$NON-NLS-1$ //$NON-NLS-2$
 		newAccountLink.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -1045,5 +1039,11 @@ public class BuckminsterView extends ViewPart
 				m_treeViewer.refresh();
 			}
 		});
+	}
+
+	@Override
+	public void setFocus()
+	{
+		m_tabFolder.setFocus();
 	}
 }

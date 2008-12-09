@@ -73,7 +73,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -323,252 +322,6 @@ public class QueryEditor extends EditorPart
 
 	private boolean m_suppressModifyListener = false;
 
-	public String commitChanges(IComponentRequest[] requestRet)
-	{
-		String name = UiUtils.trimmedValue(m_componentName);
-		if(name == null)
-			return Messages.the_component_must_have_a_name;
-
-		String category = null;
-		int idx = m_componentType.getSelectionIndex();
-		if(idx >= 0)
-		{
-			category = m_componentType.getItem(idx);
-			if(category.length() == 0)
-				category = null;
-		}
-		requestRet[0] = new ComponentRequest(name, category, m_versionDesignator.getVersionDesignator());
-		return null;
-	}
-
-	@Override
-	public void createPartControl(Composite parent)
-	{
-		Composite topComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(1, true);
-		layout.marginHeight = layout.marginWidth = 0;
-		topComposite.setLayout(layout);
-
-		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
-		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		final CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
-		mainTab.setText(Messages.main);
-		mainTab.setControl(getMainTabControl(m_tabFolder));
-
-		final CTabItem advisorTab = new CTabItem(m_tabFolder, SWT.NONE);
-		advisorTab.setText(Messages.advisor_nodes);
-		advisorTab.setControl(getAdvisorTabControl(m_tabFolder));
-
-		CTabItem propertiesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		propertiesTab.setText(Messages.properties);
-		propertiesTab.setControl(getPropertiesTabControl(m_tabFolder));
-
-		CTabItem documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
-		documentationTab.setText(Messages.documentation);
-		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
-
-		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_xmlTab.setText(Messages.xml_content);
-		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
-
-		m_tabFolder.addSelectionListener(new SelectionAdapter()
-		{
-			private final IActivator NODE_TAB_ACTIVATOR = new IActivator()
-			{
-				public void activate()
-				{
-					m_tabFolder.setSelection(advisorTab);
-				}
-			};
-
-			private CTabItem m_lastTab = mainTab;
-
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				// save row
-				if(m_lastTab != e.item)
-				{
-					if(m_lastTab == advisorTab)
-						if(!saveLastNode(NODE_TAB_ACTIVATOR))
-							return;
-				}
-
-				if(m_xmlTab == e.item)
-				{
-					if(!commitChangesToQuery())
-						MessageDialog.openWarning(getSite().getShell(), null,
-								Messages.xml_content_was_not_updated_due_to_errors);
-					else
-						m_xml.setText(getCQueryXML());
-				}
-				m_lastTab = (CTabItem)e.item;
-			}
-		});
-
-		createActionButtons(topComposite);
-	}
-
-	public void doExternalSaveAs()
-	{
-		if(!commitChangesToQuery())
-			return;
-		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
-		dlg.setFilterExtensions(new String[] { "*.cquery" }); //$NON-NLS-1$
-		final String location = dlg.open();
-		if(location == null)
-			return;
-		saveToPath(new Path(location));
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor)
-	{
-		if(!commitChangesToQuery())
-			return;
-
-		IEditorInput input = getEditorInput();
-		if(input == null)
-			return;
-
-		IPath path = (input instanceof ILocationProvider)
-				? ((ILocationProvider)input).getPath(input)
-				: ((IPathEditorInput)input).getPath();
-
-		saveToPath(path);
-	}
-
-	@Override
-	public void doSaveAs()
-	{
-		if(!commitChangesToQuery())
-			return;
-
-		IEditorInput input = getEditorInput();
-		if(input == null)
-			return;
-
-		SaveAsDialog dialog = new SaveAsDialog(getSite().getShell());
-		IFile original = (input instanceof IFileEditorInput)
-				? ((IFileEditorInput)input).getFile()
-				: null;
-		if(original != null)
-			dialog.setOriginalFile(original);
-
-		if(dialog.open() == Window.CANCEL)
-			return;
-
-		IPath filePath = dialog.getResult();
-		if(filePath == null)
-			return;
-
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IFile file = workspace.getRoot().getFile(filePath);
-		saveToPath(file.getLocation());
-	}
-
-	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException
-	{
-		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput))
-			throw new PartInitException(Messages.invalid_input);
-
-		setSite(site);
-
-		if(input instanceof IURIEditorInput)
-		{
-			try
-			{
-				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CQUERY);
-			}
-			catch(Exception e)
-			{
-				throw new PartInitException(Messages.unable_to_open_editor, e);
-			}
-		}
-
-		InputStream stream = null;
-		try
-		{
-			IPath path = (input instanceof ILocationProvider)
-					? ((ILocationProvider)input).getPath(input)
-					: ((IPathEditorInput)input).getPath();
-
-			File file = path.toFile();
-			m_componentQuery = new ComponentQueryBuilder();
-			if(file.length() == 0)
-			{
-				String defaultName = file.getName();
-				if(defaultName.startsWith(BlankQueryAction.TEMP_FILE_PREFIX))
-					defaultName = ""; //$NON-NLS-1$
-				else
-				{
-					int lastDot = defaultName.lastIndexOf('.');
-					if(lastDot > 0)
-						defaultName = defaultName.substring(0, lastDot);
-				}
-				m_componentQuery.setRootRequest(new ComponentRequest(defaultName, null, null));
-			}
-			else
-			{
-				stream = new FileInputStream(file);
-				URL contextURL;
-				try
-				{
-					// The context URL is normally passed on as the tooltip text
-					//
-					contextURL = URLUtils.normalizeToURL(input.getToolTipText());
-				}
-				catch(MalformedURLException e)
-				{
-					contextURL = file.toURI().toURL();
-				}
-				m_componentQuery.initFrom(ComponentQuery.fromStream(contextURL, null, stream, true));
-				CorePlugin.getLogger().debug(
-						NLS.bind(Messages.cquery_context_url_set_to_0, m_componentQuery.getContextURL()));
-			}
-			m_needsRefresh = true;
-			if(m_componentName != null)
-			{
-				refreshQuery();
-			}
-			setInputWithNotify(input);
-			setPartName(input.getName());
-		}
-		catch(Exception e)
-		{
-			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
-		}
-		finally
-		{
-			IOUtils.close(stream);
-		}
-
-		m_compoundModifyListener = new CompoundModifyListener();
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-		return m_hasChanges;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed()
-	{
-		return true;
-	}
-
-	@Override
-	public void setFocus()
-	{
-		m_tabFolder.setFocus();
-
-		if(m_needsRefresh)
-			refreshQuery();
-	}
-
 	private AdvisorNodeBuilder addEmptyNode()
 	{
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
@@ -589,6 +342,24 @@ public class QueryEditor extends EditorPart
 		}
 
 		nodeSelectionEvent();
+	}
+
+	public String commitChanges(IComponentRequest[] requestRet)
+	{
+		String name = UiUtils.trimmedValue(m_componentName);
+		if(name == null)
+			return Messages.the_component_must_have_a_name;
+
+		String category = null;
+		int idx = m_componentType.getSelectionIndex();
+		if(idx >= 0)
+		{
+			category = m_componentType.getItem(idx);
+			if(category.length() == 0)
+				category = null;
+		}
+		requestRet[0] = new ComponentRequest(name, category, m_versionDesignator.getVersionDesignator());
+		return null;
 	}
 
 	private boolean commitChangesToQuery()
@@ -1053,6 +824,133 @@ public class QueryEditor extends EditorPart
 		item.setText(Messages.documentation);
 	}
 
+	@Override
+	public void createPartControl(Composite parent)
+	{
+		Composite topComposite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(1, true);
+		layout.marginHeight = layout.marginWidth = 0;
+		topComposite.setLayout(layout);
+
+		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
+		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		final CTabItem mainTab = new CTabItem(m_tabFolder, SWT.NONE);
+		mainTab.setText(Messages.main);
+		mainTab.setControl(getMainTabControl(m_tabFolder));
+
+		final CTabItem advisorTab = new CTabItem(m_tabFolder, SWT.NONE);
+		advisorTab.setText(Messages.advisor_nodes);
+		advisorTab.setControl(getAdvisorTabControl(m_tabFolder));
+
+		CTabItem propertiesTab = new CTabItem(m_tabFolder, SWT.NONE);
+		propertiesTab.setText(Messages.properties);
+		propertiesTab.setControl(getPropertiesTabControl(m_tabFolder));
+
+		CTabItem documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
+		documentationTab.setText(Messages.documentation);
+		documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
+
+		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
+		m_xmlTab.setText(Messages.xml_content);
+		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
+
+		m_tabFolder.addSelectionListener(new SelectionAdapter()
+		{
+			private final IActivator NODE_TAB_ACTIVATOR = new IActivator()
+			{
+				public void activate()
+				{
+					m_tabFolder.setSelection(advisorTab);
+				}
+			};
+
+			private CTabItem m_lastTab = mainTab;
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				// save row
+				if(m_lastTab != e.item)
+				{
+					if(m_lastTab == advisorTab)
+						if(!saveLastNode(NODE_TAB_ACTIVATOR))
+							return;
+				}
+
+				if(m_xmlTab == e.item)
+				{
+					if(!commitChangesToQuery())
+						MessageDialog.openWarning(getSite().getShell(), null,
+								Messages.xml_content_was_not_updated_due_to_errors);
+					else
+						m_xml.setText(getCQueryXML());
+				}
+				m_lastTab = (CTabItem)e.item;
+			}
+		});
+
+		createActionButtons(topComposite);
+	}
+
+	public void doExternalSaveAs()
+	{
+		if(!commitChangesToQuery())
+			return;
+		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
+		dlg.setFilterExtensions(new String[] { "*.cquery" }); //$NON-NLS-1$
+		final String location = dlg.open();
+		if(location == null)
+			return;
+		saveToPath(new Path(location));
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor)
+	{
+		if(!commitChangesToQuery())
+			return;
+
+		IEditorInput input = getEditorInput();
+		if(input == null)
+			return;
+
+		IPath path = (input instanceof ILocationProvider)
+				? ((ILocationProvider)input).getPath(input)
+				: ((IPathEditorInput)input).getPath();
+
+		saveToPath(path);
+	}
+
+	@Override
+	public void doSaveAs()
+	{
+		if(!commitChangesToQuery())
+			return;
+
+		IEditorInput input = getEditorInput();
+		if(input == null)
+			return;
+
+		SaveAsDialog dialog = new SaveAsDialog(getSite().getShell());
+		IFile original = (input instanceof IFileEditorInput)
+				? ((IFileEditorInput)input).getFile()
+				: null;
+		if(original != null)
+			dialog.setOriginalFile(original);
+
+		if(dialog.open() == Window.CANCEL)
+			return;
+
+		IPath filePath = dialog.getResult();
+		if(filePath == null)
+			return;
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IFile file = workspace.getRoot().getFile(filePath);
+		saveToPath(file.getLocation());
+	}
+
 	private void enableDisableButtonGroup()
 	{
 		Table table = m_nodeTable.getTable();
@@ -1397,11 +1295,102 @@ public class QueryEditor extends EditorPart
 		return tabComposite;
 	}
 
+	@Override
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException
+	{
+		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput))
+			throw new PartInitException(Messages.invalid_input);
+
+		setSite(site);
+
+		if(input instanceof IURIEditorInput)
+		{
+			try
+			{
+				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CQUERY);
+			}
+			catch(Exception e)
+			{
+				throw new PartInitException(Messages.unable_to_open_editor, e);
+			}
+		}
+
+		InputStream stream = null;
+		try
+		{
+			IPath path = (input instanceof ILocationProvider)
+					? ((ILocationProvider)input).getPath(input)
+					: ((IPathEditorInput)input).getPath();
+
+			File file = path.toFile();
+			m_componentQuery = new ComponentQueryBuilder();
+			if(file.length() == 0)
+			{
+				String defaultName = file.getName();
+				if(defaultName.startsWith(BlankQueryAction.TEMP_FILE_PREFIX))
+					defaultName = ""; //$NON-NLS-1$
+				else
+				{
+					int lastDot = defaultName.lastIndexOf('.');
+					if(lastDot > 0)
+						defaultName = defaultName.substring(0, lastDot);
+				}
+				m_componentQuery.setRootRequest(new ComponentRequest(defaultName, null, null));
+			}
+			else
+			{
+				stream = new FileInputStream(file);
+				URL contextURL;
+				try
+				{
+					// The context URL is normally passed on as the tooltip text
+					//
+					contextURL = URLUtils.normalizeToURL(input.getToolTipText());
+				}
+				catch(MalformedURLException e)
+				{
+					contextURL = file.toURI().toURL();
+				}
+				m_componentQuery.initFrom(ComponentQuery.fromStream(contextURL, null, stream, true));
+				CorePlugin.getLogger().debug("CQUERY Context URL set to %s", m_componentQuery.getContextURL()); //$NON-NLS-1$
+			}
+			m_needsRefresh = true;
+			if(m_componentName != null)
+			{
+				refreshQuery();
+			}
+			setInputWithNotify(input);
+			setPartName(input.getName());
+		}
+		catch(Exception e)
+		{
+			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
+		}
+		finally
+		{
+			IOUtils.close(stream);
+		}
+
+		m_compoundModifyListener = new CompoundModifyListener();
+	}
+
 	private void initStackControl()
 	{
 		m_nodeTree.setSelection(m_nodeTree.getItem(0));
 		m_nodesStackLayout.topControl = m_nodesHash.get(m_nodeTree.getItem(0).getText());
 		m_nodesStackComposite.layout();
+	}
+
+	@Override
+	public boolean isDirty()
+	{
+		return m_hasChanges;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed()
+	{
+		return true;
 	}
 
 	private void loadComponent(boolean materialize)
@@ -1804,6 +1793,15 @@ public class QueryEditor extends EditorPart
 		m_hasChanges = flag;
 		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
+	}
+
+	@Override
+	public void setFocus()
+	{
+		m_tabFolder.setFocus();
+
+		if(m_needsRefresh)
+			refreshQuery();
 	}
 
 	private void swapAndReselect(int idxOffset, int selectionOffset)

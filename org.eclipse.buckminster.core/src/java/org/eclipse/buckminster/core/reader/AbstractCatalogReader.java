@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -116,9 +115,9 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 				File addOnFile = new File(addOnFolder, fileName);
 				if(addOnFile.exists())
 				{
-					logger.debug(NLS.bind(
-							Messages.AbstractCatalogReader_Provider_0_1_getContents_will_use_overlay_2_for_file_3,
-							new Object[] { getReaderType().getId(), ri.getRepositoryURI(), addOnFile, fileName }));
+					logger
+							.debug(
+									"Provider %s(%s): getContents will use overlay %s for file = %s", getReaderType().getId(), ri.getRepositoryURI(), addOnFile, fileName); //$NON-NLS-1$
 					MonitorUtils.worked(monitor, 90);
 					return new FileHandle(fileName, addOnFile, false);
 				}
@@ -263,8 +262,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	{
 		ProviderMatch pm = this.getProviderMatch();
 		CorePlugin.getLogger().debug(
-				NLS.bind(Messages.AbstractCatalogReader_Provider_0_1_materializing_to_2, new Object[] {
-						getReaderType().getId(), pm.getRepositoryURI(), location }));
+				"Provider %s(%s): materializing to %s", getReaderType().getId(), pm.getRepositoryURI(), location); //$NON-NLS-1$
 
 		monitor.beginTask(null, 100);
 		try

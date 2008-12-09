@@ -115,24 +115,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private static final UUID CACHE_KEY_PLUGIN_ENTRIES_CACHE = UUID.randomUUID();
 
-	public static File getTempSite(Map<UUID, Object> ucache) throws CoreException
-	{
-		Map<String, File> siteCache = getSiteCache(ucache);
-		synchronized(siteCache)
-		{
-			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite"; //$NON-NLS-1$
-			File tempSite = siteCache.get(key);
-			if(tempSite != null)
-				return tempSite;
-
-			tempSite = FileUtils.createTempFolder("bmsite", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-			new File(tempSite, PLUGINS_FOLDER).mkdir();
-			new File(tempSite, FEATURES_FOLDER).mkdir();
-			siteCache.put(key, tempSite);
-			return tempSite;
-		}
-	}
-
 	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, IVersion version,
 			String subDir) throws MalformedURLException, CoreException
 	{
@@ -239,6 +221,24 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
+	public static File getTempSite(Map<UUID, Object> ucache) throws CoreException
+	{
+		Map<String, File> siteCache = getSiteCache(ucache);
+		synchronized(siteCache)
+		{
+			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite"; //$NON-NLS-1$
+			File tempSite = siteCache.get(key);
+			if(tempSite != null)
+				return tempSite;
+
+			tempSite = FileUtils.createTempFolder("bmsite", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+			new File(tempSite, PLUGINS_FOLDER).mkdir();
+			new File(tempSite, FEATURES_FOLDER).mkdir();
+			siteCache.put(key, tempSite);
+			return tempSite;
+		}
+	}
+
 	private final Map<IProject, IClasspathEntry[]> m_classpaths = new HashMap<IProject, IClasspathEntry[]>();
 
 	private final HashMap<File, IFeatureModel[]> m_featureCache = new HashMap<File, IFeatureModel[]>();
@@ -255,9 +255,52 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		m_connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
 	}
 
+	private void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries,
+			HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
+	{
+		for(IPluginEntry entry : feature.getRawPluginEntries())
+			entries.put(entry.getVersionedIdentifier(), entry);
+
+		IIncludedFeatureReference[] includedFeatures = feature.getIncludedFeatureReferences();
+		if(includedFeatures.length == 0)
+		{
+			MonitorUtils.complete(monitor);
+			return;
+		}
+
+		monitor.beginTask(null, includedFeatures.length * 100);
+		for(IIncludedFeatureReference ref : includedFeatures)
+		{
+			VersionedIdentifier vid = ref.getVersionedIdentifier();
+			if(seenFeatures.contains(vid))
+				MonitorUtils.worked(monitor, 100);
+			else
+			{
+				seenFeatures.add(vid);
+				IFeature includedFeature = obtainFeature(ref, MonitorUtils.subMonitor(monitor, 50));
+				if(feature != null)
+					addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils
+							.subMonitor(monitor, 50));
+			}
+		}
+		monitor.done();
+	}
+
 	public synchronized void addProjectClasspath(IProject project, IClasspathEntry[] classPath)
 	{
 		m_classpaths.put(project, classPath);
+	}
+
+	private CoreException createException(ArrayList<IStatus> resultStatus)
+	{
+		int errCount = resultStatus.size();
+		if(errCount == 1)
+			return new CoreException(resultStatus.get(0));
+
+		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
+		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
+				Messages.problems_loading_feature, null);
+		return new CoreException(multiStatus);
 	}
 
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
@@ -286,6 +329,84 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
+	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	{
+		IFeatureModel model = null;
+		EclipseImportBase localBase = localizeContents(rInfo, false, MonitorUtils.subMonitor(monitor, 90));
+		String version = rInfo.getVersionMatch().getVersion().toString();
+		for(IFeatureModel candidate : localBase.getFeatureModels(this, monitor))
+		{
+			if(version.equals(candidate.getFeature().getVersion()))
+			{
+				model = candidate;
+				break;
+			}
+		}
+		return model;
+	}
+
+	List<IFeatureModel> getFeatureModels(File location, String featureName, IProgressMonitor monitor)
+			throws CoreException
+	{
+		ArrayList<IFeatureModel> candidates = new ArrayList<IFeatureModel>();
+		for(IFeatureModel model : getSiteFeatures(location, monitor))
+		{
+			if(model.getFeature().getId().equals(featureName))
+				candidates.add(model);
+		}
+		return candidates;
+	}
+
+	List<ISiteFeatureReference> getFeatureReferences(URL location, String componentName, IProgressMonitor monitor)
+			throws CoreException
+	{
+		ArrayList<ISiteFeatureReference> result = new ArrayList<ISiteFeatureReference>();
+		for(ISiteFeatureReference ref : getSiteFeatureReferences(location, monitor))
+		{
+			if(ref.getVersionedIdentifier().getIdentifier().equals(componentName))
+				result.add(ref);
+		}
+		return result;
+	}
+
+	private IFeatureModel[] getPlatformFeatures()
+	{
+		return PDECore.getDefault().getFeatureModelManager().getModels();
+	}
+
+	private IPluginModelBase[] getPlatformPlugins()
+	{
+		return PDECore.getDefault().getModelManager().getExternalModels();
+	}
+
+	List<IPluginEntry> getPluginEntries(URL location, IConnectContext cctx, NodeQuery query, String componentName,
+			IProgressMonitor monitor) throws CoreException
+	{
+		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
+		for(IPluginEntry entry : getSitePluginEntries(location, cctx, query, monitor))
+		{
+			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
+				result.add(entry);
+		}
+		return result;
+	}
+
+	IPluginModelBase getPluginModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	{
+		IPluginModelBase model = null;
+		EclipseImportBase localBase = localizeContents(rInfo, true, MonitorUtils.subMonitor(monitor, 90));
+		String version = rInfo.getVersionMatch().getVersion().toString();
+		for(IPluginModelBase candidate : localBase.getPluginModels(this, MonitorUtils.subMonitor(monitor, 10)))
+		{
+			if(version.equals(candidate.getBundleDescription().getVersion().toString()))
+			{
+				model = candidate;
+				break;
+			}
+		}
+		return model;
+	}
+
 	@SuppressWarnings("deprecation")
 	public synchronized IPluginModelBase getPluginModelBase(URL location, IConnectContext cctx, String id,
 			String version, ProviderMatch templateInfo) throws CoreException
@@ -305,10 +426,96 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return null;
 	}
 
+	List<IPluginModelBase> getPluginModels(File location, String pluginName, IProgressMonitor monitor)
+			throws CoreException
+	{
+		ArrayList<IPluginModelBase> candidates = new ArrayList<IPluginModelBase>();
+		for(IPluginModelBase model : getSitePlugins(location, monitor))
+		{
+			if(model.getPluginBase().getId().equals(pluginName))
+				candidates.add(model);
+		}
+		return candidates;
+	}
+
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
 	{
 		MonitorUtils.complete(monitor);
 		return new EclipseImportReader(this, providerMatch);
+	}
+
+	private ISiteFeatureReference[] getSiteFeatureReferences(URL location, IProgressMonitor monitor)
+			throws CoreException
+	{
+		ISite site;
+		synchronized(SiteManager.class)
+		{
+			site = SiteManager.getSite(location, true, monitor);
+			if(site == null)
+				throw new OperationCanceledException();
+
+			return site.getFeatureReferences();
+		}
+	}
+
+	private synchronized IFeatureModel[] getSiteFeatures(File location, IProgressMonitor monitor) throws CoreException
+	{
+		if(location == null)
+			return getPlatformFeatures();
+
+		IFeatureModel[] result = m_featureCache.get(location);
+		if(result != null)
+			return result;
+
+		location = new File(location, FEATURES_FOLDER);
+		File[] dirs = location.listFiles();
+		if(dirs == null || dirs.length == 0)
+			return new IFeatureModel[0];
+
+		monitor.beginTask(null, dirs.length);
+		monitor.subTask(NLS.bind(Messages.building_feature_list_for_site_0, location));
+		ArrayList<IFeatureModel> models = new ArrayList<IFeatureModel>(dirs.length);
+		ArrayList<IStatus> resultStatus = null;
+		for(File dir : dirs)
+		{
+			File manifest = new File(dir, FEATURE_FILE);
+			InputStream manifestInput = null;
+			try
+			{
+				manifestInput = new FileInputStream(manifest);
+
+				ExternalFeatureModel model = new ExternalFeatureModel();
+				model.setInstallLocation(dir.getAbsolutePath());
+				model.load(manifestInput, false);
+				if(!model.isValid())
+					throw new CoreException(new Status(IStatus.WARNING, PDEPlugin.getPluginId(), IStatus.OK, NLS.bind(
+							Messages.import_location_0_contains_invalid_feature, dir), null));
+
+				models.add(model);
+			}
+			catch(FileNotFoundException e)
+			{
+				// This is expected. No feature.xml means not a feature.
+			}
+			catch(CoreException e)
+			{
+				if(resultStatus == null)
+					resultStatus = new ArrayList<IStatus>();
+				resultStatus.add(e.getStatus());
+			}
+			finally
+			{
+				IOUtils.close(manifestInput);
+				MonitorUtils.worked(monitor, 1);
+			}
+		}
+
+		if(resultStatus != null)
+			throw createException(resultStatus);
+
+		result = models.toArray(new IFeatureModel[models.size()]);
+		m_featureCache.put(location, result);
+		return result;
 	}
 
 	public IPluginEntry[] getSitePluginEntries(URL location, IConnectContext cctx, NodeQuery query,
@@ -380,6 +587,55 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
+	private synchronized IPluginModelBase[] getSitePlugins(File location, IProgressMonitor monitor)
+			throws CoreException
+	{
+		if(location == null)
+			return getPlatformPlugins();
+
+		monitor.beginTask(null, 2);
+		monitor.subTask(NLS.bind(Messages.building_plugin_list_for_site_0, location));
+		try
+		{
+			File pluginsRoot = new File(location, PLUGINS_FOLDER);
+			if(!pluginsRoot.isDirectory())
+				return new IPluginModelBase[0];
+
+			File[] files = pluginsRoot.listFiles();
+			int idx = files.length;
+
+			IPluginModelBase[] plugins = m_pluginCache.get(location);
+			if(plugins != null && plugins.length == idx)
+				return plugins;
+
+			URL[] pluginURLs = new URL[idx];
+			while(--idx >= 0)
+				pluginURLs[idx] = files[idx].toURI().toURL();
+
+			MonitorUtils.worked(monitor, 1);
+			PDEState state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
+			// was (for M5): plugins = state.getModels();
+			IPluginModelBase[] workspace = state.getWorkspaceModels();
+			IPluginModelBase[] target = state.getTargetModels();
+			IPluginModelBase[] all = new IPluginModelBase[workspace.length + target.length];
+			if(workspace.length > 0)
+				System.arraycopy(workspace, 0, all, 0, workspace.length);
+			if(target.length > 0)
+				System.arraycopy(target, 0, all, workspace.length, target.length);
+			plugins = all;
+			m_pluginCache.put(location, plugins);
+			return plugins;
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
 	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
 			IProgressMonitor monitor) throws CoreException
@@ -388,99 +644,18 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return new EclipseImportFinder(this, provider, ctype, nodeQuery);
 	}
 
-	@Override
-	public synchronized void postMaterialization(MaterializationContext context, IProgressMonitor monitor)
+	private IPluginModelBase localize(String pluginID, String versionStr, ProviderMatch templateInfo)
 			throws CoreException
 	{
-		// Create needed classpath entries in each project
-		//
-		PluginImportOperation.setClasspaths(monitor, m_classpaths);
+		IVersion version = VersionFactory.OSGiType.fromString(versionStr);
+		NodeQuery tplNq = templateInfo.getNodeQuery();
+		Provider provider = templateInfo.getProvider();
+		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), -1, null, null);
 
-		// Clear cached entries
-		//
-		m_pluginCache.clear();
-		m_featureCache.clear();
-		m_classpaths.clear();
-	}
-
-	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
-	{
-		IFeatureModel model = null;
-		EclipseImportBase localBase = localizeContents(rInfo, false, MonitorUtils.subMonitor(monitor, 90));
-		String version = rInfo.getVersionMatch().getVersion().toString();
-		for(IFeatureModel candidate : localBase.getFeatureModels(this, monitor))
-		{
-			if(version.equals(candidate.getFeature().getVersion()))
-			{
-				model = candidate;
-				break;
-			}
-		}
-		return model;
-	}
-
-	List<IFeatureModel> getFeatureModels(File location, String featureName, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ArrayList<IFeatureModel> candidates = new ArrayList<IFeatureModel>();
-		for(IFeatureModel model : getSiteFeatures(location, monitor))
-		{
-			if(model.getFeature().getId().equals(featureName))
-				candidates.add(model);
-		}
-		return candidates;
-	}
-
-	List<ISiteFeatureReference> getFeatureReferences(URL location, String componentName, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ArrayList<ISiteFeatureReference> result = new ArrayList<ISiteFeatureReference>();
-		for(ISiteFeatureReference ref : getSiteFeatureReferences(location, monitor))
-		{
-			if(ref.getVersionedIdentifier().getIdentifier().equals(componentName))
-				result.add(ref);
-		}
-		return result;
-	}
-
-	List<IPluginEntry> getPluginEntries(URL location, IConnectContext cctx, NodeQuery query, String componentName,
-			IProgressMonitor monitor) throws CoreException
-	{
-		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
-		for(IPluginEntry entry : getSitePluginEntries(location, cctx, query, monitor))
-		{
-			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
-				result.add(entry);
-		}
-		return result;
-	}
-
-	IPluginModelBase getPluginModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
-	{
-		IPluginModelBase model = null;
-		EclipseImportBase localBase = localizeContents(rInfo, true, MonitorUtils.subMonitor(monitor, 90));
-		String version = rInfo.getVersionMatch().getVersion().toString();
-		for(IPluginModelBase candidate : localBase.getPluginModels(this, MonitorUtils.subMonitor(monitor, 10)))
-		{
-			if(version.equals(candidate.getBundleDescription().getVersion().toString()))
-			{
-				model = candidate;
-				break;
-			}
-		}
-		return model;
-	}
-
-	List<IPluginModelBase> getPluginModels(File location, String pluginName, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ArrayList<IPluginModelBase> candidates = new ArrayList<IPluginModelBase>();
-		for(IPluginModelBase model : getSitePlugins(location, monitor))
-		{
-			if(model.getPluginBase().getId().equals(pluginName))
-				candidates.add(model);
-		}
-		return candidates;
+		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID, IComponentType.OSGI_BUNDLE,
+				VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
+		ProviderMatch pm = new ProviderMatch(provider, templateInfo.getComponentType(), vm, ProviderScore.GOOD, nq);
+		return getPluginModel(pm, new NullProgressMonitor());
 	}
 
 	EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
@@ -614,196 +789,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	private void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries,
-			HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
-	{
-		for(IPluginEntry entry : feature.getRawPluginEntries())
-			entries.put(entry.getVersionedIdentifier(), entry);
-
-		IIncludedFeatureReference[] includedFeatures = feature.getIncludedFeatureReferences();
-		if(includedFeatures.length == 0)
-		{
-			MonitorUtils.complete(monitor);
-			return;
-		}
-
-		monitor.beginTask(null, includedFeatures.length * 100);
-		for(IIncludedFeatureReference ref : includedFeatures)
-		{
-			VersionedIdentifier vid = ref.getVersionedIdentifier();
-			if(seenFeatures.contains(vid))
-				MonitorUtils.worked(monitor, 100);
-			else
-			{
-				seenFeatures.add(vid);
-				IFeature includedFeature = obtainFeature(ref, MonitorUtils.subMonitor(monitor, 50));
-				if(feature != null)
-					addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils
-							.subMonitor(monitor, 50));
-			}
-		}
-		monitor.done();
-	}
-
-	private CoreException createException(ArrayList<IStatus> resultStatus)
-	{
-		int errCount = resultStatus.size();
-		if(errCount == 1)
-			return new CoreException(resultStatus.get(0));
-
-		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
-		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
-				Messages.problems_loading_feature, null);
-		return new CoreException(multiStatus);
-	}
-
-	private IFeatureModel[] getPlatformFeatures()
-	{
-		return PDECore.getDefault().getFeatureModelManager().getModels();
-	}
-
-	private IPluginModelBase[] getPlatformPlugins()
-	{
-		return PDECore.getDefault().getModelManager().getExternalModels();
-	}
-
-	private ISiteFeatureReference[] getSiteFeatureReferences(URL location, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ISite site;
-		synchronized(SiteManager.class)
-		{
-			site = SiteManager.getSite(location, true, monitor);
-			if(site == null)
-				throw new OperationCanceledException();
-
-			return site.getFeatureReferences();
-		}
-	}
-
-	private synchronized IFeatureModel[] getSiteFeatures(File location, IProgressMonitor monitor) throws CoreException
-	{
-		if(location == null)
-			return getPlatformFeatures();
-
-		IFeatureModel[] result = m_featureCache.get(location);
-		if(result != null)
-			return result;
-
-		location = new File(location, FEATURES_FOLDER);
-		File[] dirs = location.listFiles();
-		if(dirs == null || dirs.length == 0)
-			return new IFeatureModel[0];
-
-		monitor.beginTask(null, dirs.length);
-		monitor.subTask(NLS.bind(Messages.building_feature_list_for_site_0, location));
-		ArrayList<IFeatureModel> models = new ArrayList<IFeatureModel>(dirs.length);
-		ArrayList<IStatus> resultStatus = null;
-		for(File dir : dirs)
-		{
-			File manifest = new File(dir, FEATURE_FILE);
-			InputStream manifestInput = null;
-			try
-			{
-				manifestInput = new FileInputStream(manifest);
-
-				ExternalFeatureModel model = new ExternalFeatureModel();
-				model.setInstallLocation(dir.getAbsolutePath());
-				model.load(manifestInput, false);
-				if(!model.isValid())
-					throw new CoreException(new Status(IStatus.WARNING, PDEPlugin.getPluginId(), IStatus.OK, NLS.bind(
-							Messages.import_location_0_contains_invalid_feature, dir), null));
-
-				models.add(model);
-			}
-			catch(FileNotFoundException e)
-			{
-				// This is expected. No feature.xml means not a feature.
-			}
-			catch(CoreException e)
-			{
-				if(resultStatus == null)
-					resultStatus = new ArrayList<IStatus>();
-				resultStatus.add(e.getStatus());
-			}
-			finally
-			{
-				IOUtils.close(manifestInput);
-				MonitorUtils.worked(monitor, 1);
-			}
-		}
-
-		if(resultStatus != null)
-			throw createException(resultStatus);
-
-		result = models.toArray(new IFeatureModel[models.size()]);
-		m_featureCache.put(location, result);
-		return result;
-	}
-
-	private synchronized IPluginModelBase[] getSitePlugins(File location, IProgressMonitor monitor)
-			throws CoreException
-	{
-		if(location == null)
-			return getPlatformPlugins();
-
-		monitor.beginTask(null, 2);
-		monitor.subTask(NLS.bind(Messages.building_plugin_list_for_site_0, location));
-		try
-		{
-			File pluginsRoot = new File(location, PLUGINS_FOLDER);
-			if(!pluginsRoot.isDirectory())
-				return new IPluginModelBase[0];
-
-			File[] files = pluginsRoot.listFiles();
-			int idx = files.length;
-
-			IPluginModelBase[] plugins = m_pluginCache.get(location);
-			if(plugins != null && plugins.length == idx)
-				return plugins;
-
-			URL[] pluginURLs = new URL[idx];
-			while(--idx >= 0)
-				pluginURLs[idx] = files[idx].toURI().toURL();
-
-			MonitorUtils.worked(monitor, 1);
-			PDEState state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
-			// was (for M5): plugins = state.getModels();
-			IPluginModelBase[] workspace = state.getWorkspaceModels();
-			IPluginModelBase[] target = state.getTargetModels();
-			IPluginModelBase[] all = new IPluginModelBase[workspace.length + target.length];
-			if(workspace.length > 0)
-				System.arraycopy(workspace, 0, all, 0, workspace.length);
-			if(target.length > 0)
-				System.arraycopy(target, 0, all, workspace.length, target.length);
-			plugins = all;
-			m_pluginCache.put(location, plugins);
-			return plugins;
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
-	private IPluginModelBase localize(String pluginID, String versionStr, ProviderMatch templateInfo)
-			throws CoreException
-	{
-		IVersion version = VersionFactory.OSGiType.fromString(versionStr);
-		NodeQuery tplNq = templateInfo.getNodeQuery();
-		Provider provider = templateInfo.getProvider();
-		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), -1, null, null);
-
-		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID, IComponentType.OSGI_BUNDLE,
-				VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
-		ProviderMatch pm = new ProviderMatch(provider, templateInfo.getComponentType(), vm, ProviderScore.GOOD, nq);
-		return getPluginModel(pm, new NullProgressMonitor());
-	}
-
 	private IFeature obtainFeature(IFeatureReference ref, IProgressMonitor monitor)
 	{
 		Exception e;
@@ -812,7 +797,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		{
 			try
 			{
-				logger.debug(NLS.bind(Messages.downloading_0, ref.getURL()));
+				logger.debug("Downloading %s", ref.getURL()); //$NON-NLS-1$
 				return ref.getFeature(monitor);
 			}
 			catch(FeatureDownloadException ex)
@@ -848,5 +833,20 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 		logger.warning(e, e.getMessage());
 		return null;
+	}
+
+	@Override
+	public synchronized void postMaterialization(MaterializationContext context, IProgressMonitor monitor)
+			throws CoreException
+	{
+		// Create needed classpath entries in each project
+		//
+		PluginImportOperation.setClasspaths(monitor, m_classpaths);
+
+		// Clear cached entries
+		//
+		m_pluginCache.clear();
+		m_featureCache.clear();
+		m_classpaths.clear();
 	}
 }

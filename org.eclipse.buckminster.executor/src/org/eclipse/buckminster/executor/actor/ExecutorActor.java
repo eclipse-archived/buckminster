@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.helpers.PropertyExpander;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.executor.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,6 +50,27 @@ public class ExecutorActor extends AbstractActor
 			EXECUTOR_SHELL_ACTION, EXECUTOR_NEW_ENVIRONMENT_ACTION, EXECUTOR_FAIL_ON_ERROR };
 
 	private static final String PLUGIN_ID = "org.eclipse.buckminster.executor"; //$NON-NLS-1$
+
+	/**
+	 * returns the list of indexes where you can find the character c in string
+	 * 
+	 * @param string
+	 * @param c
+	 * @return
+	 */
+	@SuppressWarnings("boxing")
+	private static List<Integer> indexesOf(String string, char c)
+	{
+		final List<Integer> list = new ArrayList<Integer>();
+		int fromIndex = 0;
+		int index;
+		while((index = string.indexOf(c, fromIndex)) != -1)
+		{
+			list.add(index);
+			fromIndex = index + 1;
+		}
+		return list;
+	}
 
 	/**
 	 * Splits the environment variables but protects quoted parts
@@ -89,25 +111,60 @@ public class ExecutorActor extends AbstractActor
 		return result.toArray(new String[result.size()]);
 	}
 
-	/**
-	 * returns the list of indexes where you can find the character c in string
-	 * 
-	 * @param string
-	 * @param c
-	 * @return
-	 */
-	@SuppressWarnings("boxing")
-	private static List<Integer> indexesOf(String string, char c)
+	private void checkProperties() throws CoreException
 	{
-		final List<Integer> list = new ArrayList<Integer>();
-		int fromIndex = 0;
-		int index;
-		while((index = string.indexOf(c, fromIndex)) != -1)
+		final HashSet<String> validSet = new HashSet<String>(Arrays.asList(validProperties));
+		final Map<String, String> actorProperties = getActiveContext().getAction().getActorProperties();
+		final Set<String> keySet = actorProperties.keySet();
+		for(String property : keySet)
 		{
-			list.add(index);
-			fromIndex = index + 1;
+			if(validSet.contains(property) == false)
+			{
+				final StringBuffer buffer = new StringBuffer();
+				for(String validProperty : validSet)
+					buffer.append(validProperty).append(' ');
+				throw new IllegalStateException(NLS.bind(Messages.actorProperty_0_invalid_valid_are_1, property, buffer
+						.toString()));
+			}
 		}
-		return list;
+	}
+
+	/**
+	 * @return "exec" actorProperty or null if not set
+	 */
+	private String getExecCommand()
+	{
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_ACTION));
+	}
+
+	private File getExecutionDir(IActionContext ctx) throws CoreException
+	{
+		final String executionDir = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_DIR_ACTION));
+		final String componentLocation = ctx.getComponentLocation().toOSString();
+		if(executionDir == null)
+			return new File(componentLocation);
+
+		final File executionDirFile = new File(executionDir);
+		if(executionDirFile.isAbsolute())
+			return executionDirFile;
+
+		return new File(componentLocation + executionDir);
+	}
+
+	private boolean getFailStatus()
+	{
+		final String failOnErrorValue = this.getActorProperty(EXECUTOR_FAIL_ON_ERROR);
+		if(failOnErrorValue == null)
+			return true;
+		return Boolean.parseBoolean(TextUtils.notEmptyTrimmedString(failOnErrorValue));
+	}
+
+	/**
+	 * @return "shell" actorProperty or null if not set
+	 */
+	private String getShellCommand()
+	{
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_SHELL_ACTION));
 	}
 
 	@Override
@@ -172,62 +229,6 @@ public class ExecutorActor extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private void checkProperties() throws CoreException
-	{
-		final HashSet<String> validSet = new HashSet<String>(Arrays.asList(validProperties));
-		final Map<String, String> actorProperties = getActiveContext().getAction().getActorProperties();
-		final Set<String> keySet = actorProperties.keySet();
-		for(String property : keySet)
-		{
-			if(validSet.contains(property) == false)
-			{
-				final StringBuffer buffer = new StringBuffer();
-				for(String validProperty : validSet)
-					buffer.append(validProperty).append(' ');
-				throw new IllegalStateException(NLS.bind(Messages.actorProperty_0_invalid_valid_are_1, property, buffer
-						.toString()));
-			}
-		}
-	}
-
-	/**
-	 * @return "exec" actorProperty or null if not set
-	 */
-	private String getExecCommand()
-	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_ACTION));
-	}
-
-	private File getExecutionDir(IActionContext ctx) throws CoreException
-	{
-		final String executionDir = TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_EXEC_DIR_ACTION));
-		final String componentLocation = ctx.getComponentLocation().toOSString();
-		if(executionDir == null)
-			return new File(componentLocation);
-
-		final File executionDirFile = new File(executionDir);
-		if(executionDirFile.isAbsolute())
-			return executionDirFile;
-
-		return new File(componentLocation + executionDir);
-	}
-
-	private boolean getFailStatus()
-	{
-		final String failOnErrorValue = this.getActorProperty(EXECUTOR_FAIL_ON_ERROR);
-		if(failOnErrorValue == null)
-			return true;
-		return Boolean.parseBoolean(TextUtils.notEmptyTrimmedString(failOnErrorValue));
-	}
-
-	/**
-	 * @return "shell" actorProperty or null if not set
-	 */
-	private String getShellCommand()
-	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(EXECUTOR_SHELL_ACTION));
-	}
-
 	private String prepareCommandLine() throws CoreException
 	{
 		// verifying command relevance
@@ -277,12 +278,12 @@ public class ExecutorActor extends AbstractActor
 			for(String env : split)
 				envSet.add(expander.expand(env));
 		}
-		if(envSet.isEmpty() == false)
+
+		Logger logger = CorePlugin.getLogger();
+		if(logger.isDebugEnabled() && envSet.isEmpty() == false)
 		{
-			final StringBuffer buffer = new StringBuffer();
 			for(String string : envSet)
-				buffer.append(string).append('\n');
-			CorePlugin.getLogger().debug(ENV + NLS.bind(Messages.setting_environment_variables_0, buffer.toString()));
+				logger.debug("%sSetting environment variable %s%n", ENV, string); //$NON-NLS-1$
 		}
 		return envSet.toArray(new String[envSet.size()]);
 	}

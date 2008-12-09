@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -294,10 +293,7 @@ public class WorkspaceInfo
 				CorePlugin
 						.getLogger()
 						.debug(
-								NLS
-										.bind(
-												Messages.WorkspaceInfo_Found_two_entries_for_component_0_Version_1_located_at_2_and_version_3_at_4,
-												new Object[] { cn, currVersion, location, prevVersion, prevLocation }));
+								"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
 				continue;
 			}
 

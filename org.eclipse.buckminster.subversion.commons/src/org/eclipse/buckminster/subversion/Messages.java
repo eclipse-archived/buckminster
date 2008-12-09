@@ -20,10 +20,6 @@ public class Messages extends NLS
 
 	public static String listing_remote_folder_0;
 
-	public static String reading_remote_file_0;
-
-	public static String remote_file_not_found_0;
-
 	public static String remote_folder_does_not_exist_0;
 
 	public static String remote_folder_had_no_entries_0;

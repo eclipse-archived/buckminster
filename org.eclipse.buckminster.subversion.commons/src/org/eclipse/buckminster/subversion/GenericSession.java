@@ -708,11 +708,11 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE> impleme
 
 			try
 			{
-				logger.debug(Messages.listing_remote_folder_0, key);
+				logger.debug("Listing remote folder %s", key); //$NON-NLS-1$
 				list = innerListFolder(url, monitor);
 				if(list == null || list.length == 0)
 				{
-					logger.debug(Messages.remote_folder_had_no_entries_0, key);
+					logger.debug("Remote folder had no entries %s", key); //$NON-NLS-1$
 					list = getEmptyEntryList();
 				}
 				m_cache.put(key, list);

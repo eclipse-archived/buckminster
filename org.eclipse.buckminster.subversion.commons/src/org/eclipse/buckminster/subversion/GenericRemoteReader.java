@@ -94,7 +94,7 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 		File destFile = null;
 		try
 		{
-			logger.debug(NLS.bind(Messages.reading_remote_file_0, key));
+			logger.debug("Reading remote file %s", key); //$NON-NLS-1$
 			destFile = createTempFile();
 			output = new FileOutputStream(destFile);
 			final SVNRevision revision = m_session.getRevision();
@@ -105,7 +105,7 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 				// Suspect file not found
 				if(!remoteFileExists(url, revision, monitor))
 				{
-					logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
+					logger.debug("Remote file not found: %s", key); //$NON-NLS-1$
 					throw new FileNotFoundException(url.toString());
 				}
 			}
@@ -120,8 +120,7 @@ public abstract class GenericRemoteReader<SVNENTRY extends Object> extends Abstr
 					Messages.exception_part_path_not_found, Messages.exception_part_unable_to_find_repository_location);
 			if(hasParts)
 			{
-				if(logger.isDebugEnabled())
-					logger.debug(NLS.bind(Messages.remote_file_not_found_0, key));
+				logger.debug("Remote file not found: %s", key); //$NON-NLS-1$
 				throw new FileNotFoundException(key);
 			}
 			IOException ioe = new IOException(rootCause.getMessage());
