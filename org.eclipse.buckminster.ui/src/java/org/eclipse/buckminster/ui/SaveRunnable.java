@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.ui.editor;
+package org.eclipse.buckminster.ui;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
+import org.eclipse.buckminster.ui.editor.ExternalFileEditorInput;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -36,7 +36,7 @@ import org.eclipse.ui.part.FileEditorInput;
  * A runnable capable of saving a query to a certain location. The location must be relative to the root of the local
  * file-system. Once saved, the resulting {@link org.eclipse.ui.IEditorInput IEditorInput} can be obtained through a
  * call to {@link #getSavedInput()}. That editor input will either be an
- * {@link org.eclipse.buckminster.ui.ExternalFileEditorInput ExternalFileEditorInput} or a
+ * {@link org.eclipse.buckminster.ui.editor.ExternalFileEditorInput ExternalFileEditorInput} or a
  * {@link org.eclipse.ui.IFileEditorInput IFileEditorInput} depending on if the location could be mapped to a file in an
  * existing project or not.
  * 

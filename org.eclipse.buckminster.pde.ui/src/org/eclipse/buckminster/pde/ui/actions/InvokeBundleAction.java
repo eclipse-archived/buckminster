@@ -1,6 +1,6 @@
 package org.eclipse.buckminster.pde.ui.actions;
 
-import org.eclipse.buckminster.ui.actions.InvokeAction;
+import org.eclipse.buckminster.ui.InvokeAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 

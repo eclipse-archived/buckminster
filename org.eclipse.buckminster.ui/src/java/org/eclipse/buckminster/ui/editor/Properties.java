@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.dialogs.Property;
 import org.eclipse.buckminster.ui.dialogs.PropertyDialog;
+import org.eclipse.buckminster.ui.internal.DynamicTableLayout;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;

@@ -8,10 +8,8 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.ui;
+package org.eclipse.buckminster.ui.editor;
 
-import org.eclipse.buckminster.ui.editor.VersionDesignatorEvent;
-import org.eclipse.buckminster.ui.editor.VersionDesignatorListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;

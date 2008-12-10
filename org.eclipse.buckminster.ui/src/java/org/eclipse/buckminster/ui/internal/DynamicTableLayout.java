@@ -8,10 +8,11 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.ui;
+package org.eclipse.buckminster.ui.internal;
 
 import java.util.ArrayList;
 
+import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;

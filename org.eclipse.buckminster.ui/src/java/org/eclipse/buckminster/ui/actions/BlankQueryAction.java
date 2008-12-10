@@ -12,9 +12,9 @@ package org.eclipse.buckminster.ui.actions;
 
 import java.io.File;
 
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.editor.ExternalFileEditorInput;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorDescriptor;

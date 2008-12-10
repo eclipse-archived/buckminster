@@ -8,9 +8,9 @@
 
 package org.eclipse.buckminster.ui.general.editor.simple;
 
-import org.eclipse.buckminster.ui.DynamicTableLayout;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.internal.DynamicTableLayout;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;

@@ -6,8 +6,20 @@ Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.core.CorePlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
-Export-Package: .,
- org.eclipse.buckminster.core,
+Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="1.0.0",
+ org.eclipse.buckminster.download;bundle-version="1.1.0",
+ org.eclipse.buckminster.runtime;bundle-version="1.1.0",
+ org.eclipse.buckminster.opml;bundle-version="1.0.0",
+ org.eclipse.buckminster.sax;bundle-version="1.0.0",
+ org.eclipse.update.core;bundle-version="3.2.100",
+ org.eclipse.team.core;bundle-version="3.3.0",
+ org.eclipse.core.resources;bundle-version="3.3.0",
+ org.eclipse.core.variables;bundle-version="3.2.0",
+ org.eclipse.core.runtime;bundle-version="3.3.100",
+ org.eclipse.ecf;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.eclipse.buckminster.core,
  org.eclipse.buckminster.core.actor,
  org.eclipse.buckminster.core.build,
  org.eclipse.buckminster.core.commands,
@@ -16,7 +28,6 @@ Export-Package: .,
  org.eclipse.buckminster.core.cspec,
  org.eclipse.buckminster.core.cspec.builder,
  org.eclipse.buckminster.core.cspec.model,
- org.eclipse.buckminster.core.cspec.parser,
  org.eclipse.buckminster.core.ctype,
  org.eclipse.buckminster.core.helpers,
  org.eclipse.buckminster.core.materializer,
@@ -37,16 +48,3 @@ Export-Package: .,
  org.eclipse.buckminster.core.rmap.parser,
  org.eclipse.buckminster.core.site,
  org.eclipse.buckminster.core.version
-Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="1.0.0",
- org.eclipse.buckminster.download;bundle-version="1.1.0",
- org.eclipse.buckminster.runtime;bundle-version="1.1.0",
- org.eclipse.buckminster.opml;bundle-version="1.0.0",
- org.eclipse.buckminster.sax;bundle-version="1.0.0",
- org.eclipse.update.core;bundle-version="3.2.100",
- org.eclipse.team.core;bundle-version="3.3.0",
- org.eclipse.core.resources;bundle-version="3.3.0",
- org.eclipse.core.variables;bundle-version="3.2.0",
- org.eclipse.core.runtime;bundle-version="3.3.100",
- org.eclipse.ecf;bundle-version="2.0.0"
-Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.ui.actions;
+package org.eclipse.buckminster.ui;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,9 +24,6 @@ import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.ui.Messages;
-import org.eclipse.buckminster.ui.UiPlugin;
-import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

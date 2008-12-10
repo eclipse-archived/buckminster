@@ -16,7 +16,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.ui.ChangeAdapter;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.simple.Widgetin;

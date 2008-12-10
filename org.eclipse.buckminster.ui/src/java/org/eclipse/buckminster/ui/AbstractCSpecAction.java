@@ -5,10 +5,9 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.ui.actions;
+package org.eclipse.buckminster.ui;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;

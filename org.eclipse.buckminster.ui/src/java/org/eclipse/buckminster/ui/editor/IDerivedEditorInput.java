@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.ui;
+package org.eclipse.buckminster.ui.editor;
 
 import org.eclipse.ui.IEditorInput;
 

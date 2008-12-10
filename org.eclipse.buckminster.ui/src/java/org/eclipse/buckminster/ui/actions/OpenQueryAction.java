@@ -15,10 +15,10 @@ import java.net.URL;
 
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
+import org.eclipse.buckminster.ui.editor.ExternalFileEditorInput;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IInputValidator;

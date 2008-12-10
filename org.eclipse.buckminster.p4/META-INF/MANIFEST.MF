@@ -6,10 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.p4.P4Plugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
-Export-Package: org.eclipse.buckminster.p4,
- org.eclipse.buckminster.p4.internal;x-friends:="org.eclipse.buckminster.tests",
- org.eclipse.buckminster.p4.preferences,
- org.eclipse.buckminster.p4.scheme.p4
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.0.0",
  org.eclipse.buckminster.cmdline;bundle-version="1.0.0",
  org.eclipse.buckminster.runtime;bundle-version="1.0.0",
@@ -19,3 +15,5 @@ Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.0.0",
  org.eclipse.ecf;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.eclipse.buckminster.p4,
+ org.eclipse.buckminster.p4.preferences

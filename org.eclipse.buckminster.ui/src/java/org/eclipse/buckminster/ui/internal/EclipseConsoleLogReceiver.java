@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.ui;
+package org.eclipse.buckminster.ui.internal;
 
 import java.io.OutputStream;
 

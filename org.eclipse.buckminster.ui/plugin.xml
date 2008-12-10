@@ -27,13 +27,13 @@
 				<separator name="cspec" />
 			</menu>
 			<action
-				class="org.eclipse.buckminster.ui.actions.ViewCSpecAction"
+				class="org.eclipse.buckminster.ui.ViewCSpecAction"
 				id="org.eclipse.buckminster.ui.viewCSpec" enablesFor="1"
 				label="%ViewCSpec"
 				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec">
 			</action>
 			<action
-				class="org.eclipse.buckminster.ui.actions.InvokeAction"
+				class="org.eclipse.buckminster.ui.InvokeAction"
 				enablesFor="1" id="org.eclipse.buckminster.ui.invokeAction"
 				label="%InvokeAction"
 				menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec" />
@@ -64,7 +64,7 @@
 	</extension>
 	<extension point="org.eclipse.buckminster.runtime.logReceivers">
 		<logreceiver
-			class="org.eclipse.buckminster.ui.EclipseConsoleLogReceiver" />
+			class="org.eclipse.buckminster.ui.internal.EclipseConsoleLogReceiver" />
 	</extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor
@@ -240,7 +240,7 @@
              id="org.eclipse.buckminster.ui.cspecObjectContribution"
              objectClass="org.eclipse.buckminster.core.cspec.model.CSpec">
           <action
-                class="org.eclipse.buckminster.ui.actions.ViewCSpecAction"
+                class="org.eclipse.buckminster.ui.ViewCSpecAction"
                 enablesFor="+"
                 id="org.eclipse.buckminster.ui.openCSpecAction"
                 label="Open"

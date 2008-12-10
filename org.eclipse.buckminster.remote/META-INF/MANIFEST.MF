@@ -12,10 +12,6 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.apache.commons.logging,
  org.slf4j.extendable
 Bundle-Vendor: Eclipse.org
-Export-Package: org.eclipse.buckminster.remote,
- org.eclipse.buckminster.remote.resolver,
- org.eclipse.buckminster.remote.resolver.jsonrpc,
- org.eclipse.buckminster.remote.resolver.service
 Bundle-ClassPath: .,
  lib/jabsorb-1.2.2.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

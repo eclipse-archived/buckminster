@@ -8,7 +8,7 @@
 package org.eclipse.buckminster.ui.prefs;
 
 import org.eclipse.buckminster.runtime.Logger;
-import org.eclipse.buckminster.ui.LabeledCombo;
+import org.eclipse.buckminster.ui.internal.LabeledCombo;
 
 public enum LogLevel
 {

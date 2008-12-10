@@ -8,11 +8,9 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.ui.actions;
+package org.eclipse.buckminster.ui;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.ui.Messages;
-import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.internal.CSpecEditorInput;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;

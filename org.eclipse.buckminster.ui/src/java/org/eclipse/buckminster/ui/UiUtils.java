@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.ui;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.ui.internal.LabeledCombo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.JFaceResources;

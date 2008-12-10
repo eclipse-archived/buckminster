@@ -18,8 +18,6 @@ import java.util.Comparator;
 
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.ui.DerivedExternalFileEditorInput;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

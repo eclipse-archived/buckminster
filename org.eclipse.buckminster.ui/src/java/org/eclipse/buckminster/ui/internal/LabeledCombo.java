@@ -7,7 +7,7 @@
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
-package org.eclipse.buckminster.ui;
+package org.eclipse.buckminster.ui.internal;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;

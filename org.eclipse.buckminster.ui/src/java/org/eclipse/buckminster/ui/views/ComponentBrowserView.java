@@ -17,7 +17,7 @@ import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
 import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
-import org.eclipse.buckminster.ui.actions.ViewCSpecAction;
+import org.eclipse.buckminster.ui.ViewCSpecAction;
 import org.eclipse.buckminster.ui.providers.BuckminsterLabelProvider;
 import org.eclipse.buckminster.ui.providers.ResolutionsTreeContentProvider;
 import org.eclipse.core.runtime.IAdaptable;
