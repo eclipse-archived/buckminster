@@ -238,46 +238,6 @@ public class CreateProductBase
 		m_copyJavaLauncher = copyJavaLauncher;
 	}
 
-	public String execute() throws Exception
-	{
-		m_hints = null;
-
-		File outputDir = m_outputDir.toFile();
-		if(!outputDir.isDirectory())
-			throw BuckminsterException.fromMessage(NLS.bind(Messages._0_is_not_directory, outputDir));
-
-		if(m_copyJavaLauncher)
-			copyJavaLauncherToRoot();
-
-		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
-		//
-		IProgressMonitor monitor = new NullProgressMonitor();
-		createConfigIniFile(new File(outputDir, "configuration"), monitor); //$NON-NLS-1$
-		createEclipseProductFile(outputDir, monitor);
-		createLauncherIniFile(outputDir, monitor);
-		return createLauncher();
-	}
-
-	public Map<String, String> getHints()
-	{
-		if(m_hints == null || m_hints.size() == 0)
-			return Collections.emptyMap();
-
-		Map<String, String> hints = new HashMap<String, String>();
-		StringBuilder bld = new StringBuilder(100);
-		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
-		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
-		for(Map.Entry<String, String> hint : m_hints.entrySet())
-		{
-			bld.setLength(pfLen);
-			bld.append(hint.getKey());
-			bld.append('.');
-			bld.append(m_product.getName());
-			hints.put(bld.toString(), hint.getValue());
-		}
-		return hints;
-	}
-
 	private void addChmodHint(String perm, String filesAndFolders)
 	{
 		if(m_hints == null)
@@ -565,6 +525,26 @@ public class CreateProductBase
 		}
 	}
 
+	public String execute() throws Exception
+	{
+		m_hints = null;
+
+		File outputDir = m_outputDir.toFile();
+		if(!outputDir.isDirectory())
+			throw BuckminsterException.fromMessage(NLS.bind(Messages._0_is_not_directory, outputDir));
+
+		if(m_copyJavaLauncher)
+			copyJavaLauncherToRoot();
+
+		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
+		//
+		IProgressMonitor monitor = new NullProgressMonitor();
+		createConfigIniFile(new File(outputDir, "configuration"), monitor); //$NON-NLS-1$
+		createEclipseProductFile(outputDir, monitor);
+		createLauncherIniFile(outputDir, monitor);
+		return createLauncher();
+	}
+
 	private String getBrandingPlugin()
 	{
 		String id = m_product.getId();
@@ -588,6 +568,26 @@ public class CreateProductBase
 			}
 		}
 		return null;
+	}
+
+	public Map<String, String> getHints()
+	{
+		if(m_hints == null || m_hints.size() == 0)
+			return Collections.emptyMap();
+
+		Map<String, String> hints = new HashMap<String, String>();
+		StringBuilder bld = new StringBuilder(100);
+		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
+		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
+		for(Map.Entry<String, String> hint : m_hints.entrySet())
+		{
+			bld.setLength(pfLen);
+			bld.append(hint.getKey());
+			bld.append('.');
+			bld.append(m_product.getName());
+			hints.put(bld.toString(), hint.getValue());
+		}
+		return hints;
 	}
 
 	private String getLauncherName()
@@ -791,17 +791,28 @@ public class CreateProductBase
 		List<BundleDescription> pluginModels = getPluginModels();
 
 		// We include only bundles that are actually in this product configuration
-		// and we skip fragments all fragments.
+		// and we skip fragments if dynamic discovery is in effect.
 		//
 		boolean first = true;
 		int top = pluginModels.size();
 		Set<String> includedBundles = new HashSet<String>(top);
 		Set<String> processedBundles = new HashSet<String>(top);
+		boolean dynamicDiscovery = false;
+		for(int idx = 0; idx < top; ++idx)
+		{
+			String id = pluginModels.get(idx).getSymbolicName();
+			if("org.eclipse.update.configurator".equals(id))
+			{
+				dynamicDiscovery = true;
+				break;
+			}
+		}
+
 		for(int idx = 0; idx < top; ++idx)
 		{
 			BundleDescription bundle = pluginModels.get(idx);
 			String id = bundle.getSymbolicName();
-			if(bundle.getHost() == null)
+			if(bundle.getHost() == null || !dynamicDiscovery)
 				includedBundles.add(id);
 			else
 				processedBundles.add(id);
