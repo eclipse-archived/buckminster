@@ -48,8 +48,6 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, m_session));
 	}
 
-	abstract protected SVNENTRY[] getTopEntries(IProgressMonitor monitor) throws CoreException;
-
 	@Override
 	final public void close()
 	{
@@ -61,6 +59,25 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 	{
 		return m_session.toString();
 	}
+
+	abstract protected void fetchRemoteFile(URI url, REVISION revision, OutputStream output, IProgressMonitor subMonitor)
+			throws Exception;
+
+	/**
+	 * Implemented by subclasses. Used to retrieve a particular a concrete session instance.
+	 * 
+	 * @param repositoryURI
+	 * @param branchOrTag
+	 * @param revision
+	 * @param timestamp
+	 * @param context
+	 * @return
+	 * @throws CoreException
+	 */
+	protected abstract ISubversionSession<SVNENTRY, REVISION> getSession(String repositoryURI,
+			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException;
+
+	abstract protected SVNENTRY[] getTopEntries(IProgressMonitor monitor) throws CoreException;
 
 	@Override
 	final protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException,
@@ -111,9 +128,7 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 		catch(Exception e)
 		{
 			final Throwable rootCause = SvnExceptionHandler.getRootCause(e);
-			final boolean hasParts = SvnExceptionHandler.hasParts(rootCause, Messages.exception_part_file_not_found,
-					Messages.exception_part_path_not_found, Messages.exception_part_unable_to_find_repository_location);
-			if(hasParts)
+			if(SvnExceptionHandler.hasSvnException(rootCause))
 			{
 				logger.debug("Remote file not found: %s", key); //$NON-NLS-1$
 				throw new FileNotFoundException(key);
@@ -177,23 +192,6 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 	abstract protected boolean remoteFileExists(URI url, REVISION revision, IProgressMonitor monitor)
 			throws CoreException;
 
-	abstract protected void fetchRemoteFile(URI url, REVISION revision, OutputStream output,
-			IProgressMonitor subMonitor) throws Exception;
-
 	abstract protected String storeInCache(String fileName) throws CoreException;
-
-	/**
-	 * Implemented by subclasses. Used to retrieve a particular a concrete session instance.
-	 * 
-	 * @param repositoryURI
-	 * @param branchOrTag
-	 * @param revision
-	 * @param timestamp
-	 * @param context
-	 * @return
-	 * @throws CoreException
-	 */
-	protected abstract ISubversionSession<SVNENTRY,REVISION> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException;
 
 }

@@ -8,16 +8,6 @@ public class Messages extends NLS
 
 	public static String branch_or_tag_0_not_found;
 
-	public static String exception_part_non_existent;
-
-	public static String exception_part_not_found;
-
-	public static String exception_part_file_not_found;
-
-	public static String exception_part_path_not_found;
-
-	public static String exception_part_unable_to_find_repository_location;
-
 	public static String listing_remote_folder_0;
 
 	public static String remote_folder_does_not_exist_0;

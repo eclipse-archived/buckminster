@@ -242,67 +242,6 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 	}
 
 	@Override
-	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException
-	{
-		SVNRepositories repos = getRepositories();
-		for(RepositoryAccess root : sourceRoots)
-		{
-			Properties configuration = new Properties();
-			configuration.setProperty("url", root.getSvnURL().toString()); //$NON-NLS-1$
-			String user = root.getUser();
-			if(user != null)
-				configuration.setProperty("user", user); //$NON-NLS-1$
-			String password = root.getPassword();
-			if(password != null)
-				configuration.setProperty("password", password); //$NON-NLS-1$
-
-			try
-			{
-				final ISVNRepositoryLocation repoLocation = repos.createRepository(configuration);
-				repos.addOrUpdateRepository(repoLocation);
-			}
-			catch(SVNException e)
-			{
-				// Repository already exists
-			}
-		}
-	}
-
-	private SvnCache getCache()
-	{
-		return ((SvnCache)m_cache);
-	}
-
-	@Override
-	protected ISubversionCache<ISVNDirEntry> getCache(Map<UUID, Object> userCache)
-	{
-		assert (m_cache == null);
-		final SvnCache cache = new SvnCache();
-		cache.initialize(userCache);
-		return cache;
-	}
-
-	ISVNClientAdapter getClientAdapter() throws CoreException
-	{
-		if(m_clientAdapter == null)
-		{
-			final SVNClientManager clientManager = getPlugin().getSVNClientManager();
-			m_clientAdapter = Activator.getDefault().getClientAdapter(clientManager.getSvnClientInterface());
-			if(m_clientAdapter == null)
-				m_clientAdapter = Activator.getDefault().getAnyClientAdapter();
-			if(m_clientAdapter == null)
-				throw BuckminsterException.fromMessage(Messages.unable_to_load_default_svn_client);
-		}
-		return m_clientAdapter;
-	}
-
-	@Override
-	protected ISVNDirEntry[] getEmptyEntryList()
-	{
-		return s_emptyFolder;
-	}
-
-	@Override
 	public ISVNRepositoryLocation[] getKnownRepositories() throws CoreException
 	{
 		SVNRepositories repos = getRepositories();
@@ -488,10 +427,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 			}
 			catch(SVNClientException e)
 			{
-				final boolean hasParts = SvnExceptionHandler.hasParts(e,
-						org.eclipse.buckminster.subversion.Messages.exception_part_non_existent,
-						org.eclipse.buckminster.subversion.Messages.exception_part_not_found);
-				if(hasParts)
+				if(SvnExceptionHandler.hasSvnException(e))
 				{
 					logger.debug("Remote folder does not exist %s[%s]", url, revision); //$NON-NLS-1$
 					getCache().putDir(key, null);
@@ -500,12 +436,6 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 				throw BuckminsterException.wrap(e);
 			}
 		}
-	}
-
-	@Override
-	protected String getRootUrl(ISVNRepositoryLocation location)
-	{
-		return location.getRepositoryRoot().toString();
 	}
 
 	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper()
@@ -527,6 +457,67 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 			throw new IllegalArgumentException(
 					org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
 		return new SVNRevision.Number(revision);
+	}
+
+	@Override
+	public String toString()
+	{
+		try
+		{
+			return getSVNUrl(null).toString();
+		}
+		catch(CoreException e)
+		{
+			return super.toString();
+		}
+	}
+
+	@Override
+	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException
+	{
+		SVNRepositories repos = getRepositories();
+		for(RepositoryAccess root : sourceRoots)
+		{
+			Properties configuration = new Properties();
+			configuration.setProperty("url", root.getSvnURL().toString()); //$NON-NLS-1$
+			String user = root.getUser();
+			if(user != null)
+				configuration.setProperty("user", user); //$NON-NLS-1$
+			String password = root.getPassword();
+			if(password != null)
+				configuration.setProperty("password", password); //$NON-NLS-1$
+
+			try
+			{
+				final ISVNRepositoryLocation repoLocation = repos.createRepository(configuration);
+				repos.addOrUpdateRepository(repoLocation);
+			}
+			catch(SVNException e)
+			{
+				// Repository already exists
+			}
+		}
+	}
+
+	@Override
+	protected ISubversionCache<ISVNDirEntry> getCache(Map<UUID, Object> userCache)
+	{
+		assert (m_cache == null);
+		final SvnCache cache = new SvnCache();
+		cache.initialize(userCache);
+		return cache;
+	}
+
+	@Override
+	protected ISVNDirEntry[] getEmptyEntryList()
+	{
+		return s_emptyFolder;
+	}
+
+	@Override
+	protected String getRootUrl(ISVNRepositoryLocation location)
+	{
+		return location.getRepositoryRoot().toString();
 	}
 
 	@Override
@@ -575,16 +566,22 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
-	@Override
-	public String toString()
+	ISVNClientAdapter getClientAdapter() throws CoreException
 	{
-		try
+		if(m_clientAdapter == null)
 		{
-			return getSVNUrl(null).toString();
+			final SVNClientManager clientManager = getPlugin().getSVNClientManager();
+			m_clientAdapter = Activator.getDefault().getClientAdapter(clientManager.getSvnClientInterface());
+			if(m_clientAdapter == null)
+				m_clientAdapter = Activator.getDefault().getAnyClientAdapter();
+			if(m_clientAdapter == null)
+				throw BuckminsterException.fromMessage(Messages.unable_to_load_default_svn_client);
 		}
-		catch(CoreException e)
-		{
-			return super.toString();
-		}
+		return m_clientAdapter;
+	}
+
+	private SvnCache getCache()
+	{
+		return ((SvnCache)m_cache);
 	}
 }

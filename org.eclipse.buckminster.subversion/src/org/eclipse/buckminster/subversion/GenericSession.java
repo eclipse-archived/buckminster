@@ -27,9 +27,155 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 
-public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REVISION_TYPE> implements ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE>
+public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REVISION_TYPE> implements
+		ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE>
 {
-	public abstract SVN_REVISION_TYPE getSVNRevision(long revision, Date timestamp);
+	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source)
+			throws CoreException
+	{
+		Collection<RepositoryAccess> commonRoots = null;
+		for(RepositoryAccess repoAccess : source)
+		{
+			URI url = repoAccess.getSvnURL();
+			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
+			for(RepositoryAccess repoAccessCmp : source)
+			{
+				if(repoAccess == repoAccessCmp)
+					continue;
+
+				URI cmp = repoAccessCmp.getSvnURL();
+				if(!(Trivial.equalsAllowNull(url.getHost(), cmp.getHost())
+						&& Trivial.equalsAllowNull(url.getScheme(), cmp.getScheme()) && url.getPort() == cmp.getPort()))
+					continue;
+
+				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
+				int maxSegs = urlSegs.length;
+				if(maxSegs > cmpSegs.length)
+					maxSegs = cmpSegs.length;
+
+				int idx;
+				for(idx = 0; idx < maxSegs; ++idx)
+					if(!urlSegs[idx].equals(cmpSegs[idx]))
+						break;
+
+				if(idx < 1)
+					continue;
+
+				String user = repoAccess.getUser();
+				String cmpUser = repoAccessCmp.getUser();
+				if(user == null)
+					user = cmpUser;
+				else
+				{
+					if(!(cmpUser == null || user.equals(cmpUser)))
+						continue;
+				}
+
+				String password = repoAccess.getPassword();
+				String cmpPassword = repoAccessCmp.getPassword();
+				if(password == null)
+					password = cmpPassword;
+				else
+				{
+					if(!(cmpPassword == null || password.equals(cmpPassword)))
+						continue;
+				}
+
+				StringBuilder bld = new StringBuilder();
+				bld.append(url.getScheme());
+				bld.append("://"); //$NON-NLS-1$
+				if(url.getHost() != null)
+				{
+					bld.append(url.getHost());
+					if(url.getPort() != -1)
+					{
+						bld.append(":"); //$NON-NLS-1$
+						bld.append(url.getPort());
+					}
+				}
+				for(int pdx = 0; pdx < idx; ++pdx)
+				{
+					String seg = urlSegs[pdx];
+					bld.append('/');
+					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						//
+						// Assume that common root is above this folder
+						//
+						break;
+
+					bld.append(seg);
+				}
+				try
+				{
+					if(commonRoots == null)
+						commonRoots = new HashSet<RepositoryAccess>();
+					commonRoots.add(new RepositoryAccess(new URI(bld.toString()), user, password));
+				}
+				catch(URISyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+		}
+
+		if(commonRoots == null)
+			//
+			// No common roots found
+			//
+			return source;
+
+		// Add all SVNUrl's for which we don't have a common root
+		//
+		Set<RepositoryAccess> rogueRoots = null;
+		for(RepositoryAccess repoAccess : source)
+		{
+			boolean found = false;
+			URI url = repoAccess.getSvnURL();
+			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
+			for(RepositoryAccess repoAccessCmp : commonRoots)
+			{
+				URI cmp = repoAccessCmp.getSvnURL();
+				if(!(Trivial.equalsAllowNull(url.getHost(), cmp.getHost())
+						&& Trivial.equalsAllowNull(url.getScheme(), cmp.getScheme()) && url.getPort() == cmp.getPort()))
+					continue;
+
+				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
+				int maxSegs = cmpSegs.length;
+				if(maxSegs > urlSegs.length)
+					continue;
+
+				int idx;
+				for(idx = 0; idx < maxSegs; ++idx)
+					if(!urlSegs[idx].equals(cmpSegs[idx]))
+						break;
+
+				if(idx < maxSegs)
+					continue;
+
+				String user = repoAccess.getUser();
+				String cmpUser = repoAccessCmp.getUser();
+				if(!(user == null || cmpUser == null || user.equals(cmpUser)))
+					continue;
+
+				String password = repoAccess.getPassword();
+				String cmpPassword = repoAccessCmp.getPassword();
+				if(!(password == null || cmpPassword == null || password.equals(cmpPassword)))
+					continue;
+
+				found = true;
+				break;
+			}
+			if(found)
+				continue;
+
+			if(rogueRoots == null)
+				rogueRoots = new HashSet<RepositoryAccess>();
+			rogueRoots.add(repoAccess);
+		}
+		if(rogueRoots != null)
+			commonRoots.addAll(rogueRoots);
+		return commonRoots;
+	}
 
 	protected final VersionSelector m_branchOrTag;
 
@@ -275,31 +421,6 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		}
 	}
 
-	abstract protected void initializeSvn(RMContext context, URI ourRoot, REPO_LOCATION_TYPE bestMatch)
-			throws CoreException;
-
-	abstract protected ISubversionCache<SVN_ENTRY_TYPE> getCache(Map<UUID, Object> userCache);
-
-	abstract protected REPO_LOCATION_TYPE[] getKnownRepositories() throws CoreException;
-
-	abstract protected String getUnknownRootPrefix();
-
-	abstract protected String getRootUrl(REPO_LOCATION_TYPE location);
-
-	final protected void clearUnknownRoots(Map<String, String> properties)
-	{
-		synchronized(properties)
-		{
-			final Iterator<String> keys = properties.keySet().iterator();
-			while(keys.hasNext())
-			{
-				String key = keys.next();
-				if(key.startsWith(getUnknownRootPrefix()))
-					keys.remove();
-			}
-		}
-	}
-
 	final public void createCommonRoots(RMContext context) throws CoreException
 	{
 		final List<RepositoryAccess> unknownRoots = getUnknownRoots(context.getBindingProperties());
@@ -332,231 +453,57 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		clearUnknownRoots(context.getBindingProperties());
 	}
 
-	abstract protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException;
-
-	private static Collection<RepositoryAccess> getCommonRootsStep(Collection<RepositoryAccess> source)
-			throws CoreException
-	{
-		Collection<RepositoryAccess> commonRoots = null;
-		for(RepositoryAccess repoAccess : source)
-		{
-			URI url = repoAccess.getSvnURL();
-			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
-			for(RepositoryAccess repoAccessCmp : source)
-			{
-				if(repoAccess == repoAccessCmp)
-					continue;
-
-				URI cmp = repoAccessCmp.getSvnURL();
-				if(!(Trivial.equalsAllowNull(url.getHost(), cmp.getHost())
-						&& Trivial.equalsAllowNull(url.getScheme(), cmp.getScheme()) && url.getPort() == cmp.getPort()))
-					continue;
-
-				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
-				int maxSegs = urlSegs.length;
-				if(maxSegs > cmpSegs.length)
-					maxSegs = cmpSegs.length;
-
-				int idx;
-				for(idx = 0; idx < maxSegs; ++idx)
-					if(!urlSegs[idx].equals(cmpSegs[idx]))
-						break;
-
-				if(idx < 1)
-					continue;
-
-				String user = repoAccess.getUser();
-				String cmpUser = repoAccessCmp.getUser();
-				if(user == null)
-					user = cmpUser;
-				else
-				{
-					if(!(cmpUser == null || user.equals(cmpUser)))
-						continue;
-				}
-
-				String password = repoAccess.getPassword();
-				String cmpPassword = repoAccessCmp.getPassword();
-				if(password == null)
-					password = cmpPassword;
-				else
-				{
-					if(!(cmpPassword == null || password.equals(cmpPassword)))
-						continue;
-				}
-
-				StringBuilder bld = new StringBuilder();
-				bld.append(url.getScheme());
-				bld.append("://"); //$NON-NLS-1$
-				if(url.getHost() != null)
-				{
-					bld.append(url.getHost());
-					if(url.getPort() != -1)
-					{
-						bld.append(":"); //$NON-NLS-1$
-						bld.append(url.getPort());
-					}
-				}
-				for(int pdx = 0; pdx < idx; ++pdx)
-				{
-					String seg = urlSegs[pdx];
-					bld.append('/');
-					if(idx > 0 && seg.equals("trunk") || seg.equals("tags") || seg.equals("branches")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						//
-						// Assume that common root is above this folder
-						//
-						break;
-
-					bld.append(seg);
-				}
-				try
-				{
-					if(commonRoots == null)
-						commonRoots = new HashSet<RepositoryAccess>();
-					commonRoots.add(new RepositoryAccess(new URI(bld.toString()), user, password));
-				}
-				catch(URISyntaxException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			}
-		}
-
-		if(commonRoots == null)
-			//
-			// No common roots found
-			//
-			return source;
-
-		// Add all SVNUrl's for which we don't have a common root
-		//
-		Set<RepositoryAccess> rogueRoots = null;
-		for(RepositoryAccess repoAccess : source)
-		{
-			boolean found = false;
-			URI url = repoAccess.getSvnURL();
-			String[] urlSegs = Path.fromPortableString(url.getPath()).segments();
-			for(RepositoryAccess repoAccessCmp : commonRoots)
-			{
-				URI cmp = repoAccessCmp.getSvnURL();
-				if(!(Trivial.equalsAllowNull(url.getHost(), cmp.getHost())
-						&& Trivial.equalsAllowNull(url.getScheme(), cmp.getScheme()) && url.getPort() == cmp.getPort()))
-					continue;
-
-				String[] cmpSegs = Path.fromPortableString(cmp.getPath()).segments();
-				int maxSegs = cmpSegs.length;
-				if(maxSegs > urlSegs.length)
-					continue;
-
-				int idx;
-				for(idx = 0; idx < maxSegs; ++idx)
-					if(!urlSegs[idx].equals(cmpSegs[idx]))
-						break;
-
-				if(idx < maxSegs)
-					continue;
-
-				String user = repoAccess.getUser();
-				String cmpUser = repoAccessCmp.getUser();
-				if(!(user == null || cmpUser == null || user.equals(cmpUser)))
-					continue;
-
-				String password = repoAccess.getPassword();
-				String cmpPassword = repoAccessCmp.getPassword();
-				if(!(password == null || cmpPassword == null || password.equals(cmpPassword)))
-					continue;
-
-				found = true;
-				break;
-			}
-			if(found)
-				continue;
-
-			if(rogueRoots == null)
-				rogueRoots = new HashSet<RepositoryAccess>();
-			rogueRoots.add(repoAccess);
-		}
-		if(rogueRoots != null)
-			commonRoots.addAll(rogueRoots);
-		return commonRoots;
-	}
-
-	final protected void addUnknownRoot(Map<String, String> properties, RepositoryAccess ra)
-	{
-		synchronized(properties)
-		{
-			final String unknownRootPrefix = getUnknownRootPrefix();
-			int maxNum = -1;
-			final String raStr = ra.toString();
-			for(Map.Entry<String, String> entries : properties.entrySet())
-			{
-				String key = entries.getKey();
-				if(key.startsWith(unknownRootPrefix))
-				{
-					int lastDot = key.lastIndexOf('.');
-					if(lastDot < 0)
-						continue;
-
-					try
-					{
-						int keyNum = Integer.parseInt(key.substring(lastDot + 1));
-						if(maxNum < keyNum)
-							maxNum = keyNum;
-					}
-					catch(NumberFormatException e)
-					{
-						continue;
-					}
-					if(entries.getValue().equals(raStr))
-						//
-						// Entry is already present. Don't recreate
-						//
-						return;
-				}
-			}
-			properties.put(unknownRootPrefix + (maxNum + 1), raStr);
-		}
-	}
-
-	final protected List<RepositoryAccess> getUnknownRoots(Map<String, String> properties)
-	{
-		synchronized(properties)
-		{
-			List<RepositoryAccess> unknownRoots = null;
-			for(Map.Entry<String, String> entries : properties.entrySet())
-			{
-				String key = entries.getKey();
-				if(key.startsWith(getUnknownRootPrefix()))
-				{
-					RepositoryAccess ra;
-					try
-					{
-						ra = new RepositoryAccess(entries.getValue());
-					}
-					catch(URISyntaxException e)
-					{
-						// Bogus entry
-						continue;
-					}
-					if(unknownRoots == null)
-						unknownRoots = new ArrayList<RepositoryAccess>();
-					unknownRoots.add(ra);
-				}
-			}
-			if(unknownRoots == null)
-				unknownRoots = Collections.emptyList();
-			return unknownRoots;
-		}
-	}
-
-	final public boolean hasTrunkStructure()
-	{
-		return m_trunkStructure;
-	}
-
 	final public REPO_LOCATION_TYPE getRepositoryLocation()
 	{
 		return m_repositoryLocation;
+	}
+
+	final public SVN_REVISION_TYPE getRevision()
+	{
+		return m_revision;
+	}
+
+	public abstract SVN_REVISION_TYPE getSVNRevision(long revision, Date timestamp);
+
+	/**
+	 * Returns the directory where it's expected to find a list of branches or tags.
+	 * 
+	 * @param branches
+	 *            true if branches, false if tags.
+	 * @return The SVNUrl appointing the branches or tags directory.
+	 * @throws MalformedURLException
+	 */
+	final public URI getSVNRootUrl(boolean branches) throws CoreException
+	{
+		StringBuilder bld = new StringBuilder();
+		bld.append(m_urlLeadIn);
+
+		if(branches)
+		{
+			bld.append("/branches"); //$NON-NLS-1$
+			if(m_moduleBeforeBranch && m_module != null)
+			{
+				bld.append('/');
+				bld.append(m_module);
+			}
+		}
+		else
+		{
+			bld.append("/tags"); //$NON-NLS-1$
+			if(m_moduleBeforeTag && m_module != null)
+			{
+				bld.append('/');
+				bld.append(m_module);
+			}
+		}
+		try
+		{
+			return new URI(bld.toString());
+		}
+		catch(URISyntaxException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	final public URI getSVNUrl() throws CoreException
@@ -633,50 +580,9 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		}
 	}
 
-	final public SVN_REVISION_TYPE getRevision()
+	final public boolean hasTrunkStructure()
 	{
-		return m_revision;
-	}
-
-	/**
-	 * Returns the directory where it's expected to find a list of branches or tags.
-	 * 
-	 * @param branches
-	 *            true if branches, false if tags.
-	 * @return The SVNUrl appointing the branches or tags directory.
-	 * @throws MalformedURLException
-	 */
-	final public URI getSVNRootUrl(boolean branches) throws CoreException
-	{
-		StringBuilder bld = new StringBuilder();
-		bld.append(m_urlLeadIn);
-
-		if(branches)
-		{
-			bld.append("/branches"); //$NON-NLS-1$
-			if(m_moduleBeforeBranch && m_module != null)
-			{
-				bld.append('/');
-				bld.append(m_module);
-			}
-		}
-		else
-		{
-			bld.append("/tags"); //$NON-NLS-1$
-			if(m_moduleBeforeTag && m_module != null)
-			{
-				bld.append('/');
-				bld.append(m_module);
-			}
-		}
-		try
-		{
-			return new URI(bld.toString());
-		}
-		catch(URISyntaxException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		return m_trunkStructure;
 	}
 
 	final public SVN_ENTRY_TYPE[] listFolder(URI url, IProgressMonitor monitor) throws CoreException
@@ -707,9 +613,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 			}
 			catch(Exception e)
 			{
-				final boolean hasParts = SvnExceptionHandler.hasParts(e, Messages.exception_part_non_existent,
-						Messages.exception_part_not_found);
-				if(hasParts)
+				if(SvnExceptionHandler.hasSvnException(e))
 				{
 					logger.debug(Messages.remote_folder_does_not_exist_0, key);
 					return getEmptyEntryList();
@@ -723,7 +627,102 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		}
 	}
 
-	abstract protected SVN_ENTRY_TYPE[] innerListFolder(URI url, IProgressMonitor monitor) throws Exception;
+	final protected void addUnknownRoot(Map<String, String> properties, RepositoryAccess ra)
+	{
+		synchronized(properties)
+		{
+			final String unknownRootPrefix = getUnknownRootPrefix();
+			int maxNum = -1;
+			final String raStr = ra.toString();
+			for(Map.Entry<String, String> entries : properties.entrySet())
+			{
+				String key = entries.getKey();
+				if(key.startsWith(unknownRootPrefix))
+				{
+					int lastDot = key.lastIndexOf('.');
+					if(lastDot < 0)
+						continue;
+
+					try
+					{
+						int keyNum = Integer.parseInt(key.substring(lastDot + 1));
+						if(maxNum < keyNum)
+							maxNum = keyNum;
+					}
+					catch(NumberFormatException e)
+					{
+						continue;
+					}
+					if(entries.getValue().equals(raStr))
+						//
+						// Entry is already present. Don't recreate
+						//
+						return;
+				}
+			}
+			properties.put(unknownRootPrefix + (maxNum + 1), raStr);
+		}
+	}
+
+	final protected void clearUnknownRoots(Map<String, String> properties)
+	{
+		synchronized(properties)
+		{
+			final Iterator<String> keys = properties.keySet().iterator();
+			while(keys.hasNext())
+			{
+				String key = keys.next();
+				if(key.startsWith(getUnknownRootPrefix()))
+					keys.remove();
+			}
+		}
+	}
+
+	abstract protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException;
+
+	abstract protected ISubversionCache<SVN_ENTRY_TYPE> getCache(Map<UUID, Object> userCache);
 
 	abstract protected SVN_ENTRY_TYPE[] getEmptyEntryList();
+
+	abstract protected REPO_LOCATION_TYPE[] getKnownRepositories() throws CoreException;
+
+	abstract protected String getRootUrl(REPO_LOCATION_TYPE location);
+
+	abstract protected String getUnknownRootPrefix();
+
+	final protected List<RepositoryAccess> getUnknownRoots(Map<String, String> properties)
+	{
+		synchronized(properties)
+		{
+			List<RepositoryAccess> unknownRoots = null;
+			for(Map.Entry<String, String> entries : properties.entrySet())
+			{
+				String key = entries.getKey();
+				if(key.startsWith(getUnknownRootPrefix()))
+				{
+					RepositoryAccess ra;
+					try
+					{
+						ra = new RepositoryAccess(entries.getValue());
+					}
+					catch(URISyntaxException e)
+					{
+						// Bogus entry
+						continue;
+					}
+					if(unknownRoots == null)
+						unknownRoots = new ArrayList<RepositoryAccess>();
+					unknownRoots.add(ra);
+				}
+			}
+			if(unknownRoots == null)
+				unknownRoots = Collections.emptyList();
+			return unknownRoots;
+		}
+	}
+
+	abstract protected void initializeSvn(RMContext context, URI ourRoot, REPO_LOCATION_TYPE bestMatch)
+			throws CoreException;
+
+	abstract protected SVN_ENTRY_TYPE[] innerListFolder(URI url, IProgressMonitor monitor) throws Exception;
 }
