@@ -94,45 +94,6 @@ public class URLCatalogReaderType extends CatalogReaderType
 		s_documentBuilderFactory.setNamespaceAware(false);
 	}
 
-	private static void addLink(List<URL> links, URL parent, String link) throws MalformedURLException
-	{
-		Matcher m = s_indexPath.matcher(link.toString());
-		if(m.matches())
-		{
-			link = m.group(1);
-			if(link == null)
-				return;
-		}
-
-		if(link.equals("../")) //$NON-NLS-1$
-			return;
-
-		links.add(new URL(parent, link));
-	}
-
-	private static void collectLinks(Element element, URL parent, ArrayList<URL> links)
-	{
-		if(element.getNodeName().equals("a")) //$NON-NLS-1$
-		{
-			try
-			{
-				addLink(links, parent, element.getAttribute("href")); //$NON-NLS-1$
-			}
-			catch(MalformedURLException e)
-			{
-				// Invalid href. Just skip it.
-			}
-		}
-		else
-		{
-			for(Node child = element.getFirstChild(); child != null; child = child.getNextSibling())
-			{
-				if(child.getNodeType() == Node.ELEMENT_NODE)
-					collectLinks((Element)child, parent, links);
-			}
-		}
-	}
-
 	public static URL[] extractHTMLLinks(URL urlToHTML, IConnectContext cctx, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -209,22 +170,6 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return s_currentProviderMatch.get();
 	}
 
-	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
-	{
-		String urlString = url.toString();
-		ComponentRequest rq = new ComponentRequest(urlString, null, null, null);
-		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(rq);
-		queryBld.setPlatformAgnostic(true);
-		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
-		NodeQuery nq = new NodeQuery(context, rq, null);
-
-		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString, null);
-		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
-		return pm.getReader(monitor);
-	}
-
 	public static IComponentReader getReader(URL catalog, IProgressMonitor monitor) throws CoreException
 	{
 		return getDirectReader(catalog, URL_CATALOG, monitor);
@@ -298,6 +243,61 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return extractHTMLLinks(url, cctx, monitor);
 	}
 
+	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
+	{
+		String urlString = url.toString();
+		ComponentRequest rq = new ComponentRequest(urlString, null, null, null);
+		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+		queryBld.setRootRequest(rq);
+		queryBld.setPlatformAgnostic(true);
+		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
+		NodeQuery nq = new NodeQuery(context, rq, null);
+
+		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
+		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString, null);
+		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
+		return pm.getReader(monitor);
+	}
+
+	private static void addLink(List<URL> links, URL parent, String link) throws MalformedURLException
+	{
+		Matcher m = s_indexPath.matcher(link.toString());
+		if(m.matches())
+		{
+			link = m.group(1);
+			if(link == null)
+				return;
+		}
+
+		if(link.equals("../")) //$NON-NLS-1$
+			return;
+
+		links.add(new URL(parent, link));
+	}
+
+	private static void collectLinks(Element element, URL parent, ArrayList<URL> links)
+	{
+		if(element.getNodeName().equals("a")) //$NON-NLS-1$
+		{
+			try
+			{
+				addLink(links, parent, element.getAttribute("href")); //$NON-NLS-1$
+			}
+			catch(MalformedURLException e)
+			{
+				// Invalid href. Just skip it.
+			}
+		}
+		else
+		{
+			for(Node child = element.getFirstChild(); child != null; child = child.getNextSibling())
+			{
+				if(child.getNodeType() == Node.ELEMENT_NODE)
+					collectLinks((Element)child, parent, links);
+			}
+		}
+	}
+
 	@Override
 	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
 	{
@@ -340,7 +340,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return getURI(repositoryLocation).getPath();
 	}
 
-	public URI getURI(Provider provider, Map<String, String> properties) throws CoreException
+	public URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException
 	{
 		return getURI(provider.getURI(properties));
 	}

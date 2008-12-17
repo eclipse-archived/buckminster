@@ -104,7 +104,7 @@ public class RxPattern extends RxPart
 		}
 
 		if(parenDepth != 0)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.RxPattern_Unbalanced_parenthesis_in_pattern_0,
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Unbalanced_parenthesis_in_pattern_0,
 					pattern));
 
 		if(stripOuter)

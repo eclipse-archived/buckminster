@@ -65,14 +65,14 @@ public class SimulationActor extends AbstractActor
 			monitor.beginTask(null, ticks);
 
 			PrintStream ps = ctx.getOutputStream();
-			ps.print(NLS.bind(Messages.SimulationActor_Simulation_0_working_for_1_ticks, ctx.getAction().getName(),
-					ticks));
+			ps.print(NLS.bind(Messages.Simulation_0_working_for_1_ticks, ctx.getAction().getName(),
+					Integer.valueOf(ticks)));
 			for(int i = 0; i < ticks; i++)
 			{
 				Thread.sleep(1);
 				MonitorUtils.worked(monitor, 1);
 			}
-			ps.println(Messages.SimulationActor_finished_working);
+			ps.println(Messages.Finished_working);
 
 			return Status.OK_STATUS;
 		}

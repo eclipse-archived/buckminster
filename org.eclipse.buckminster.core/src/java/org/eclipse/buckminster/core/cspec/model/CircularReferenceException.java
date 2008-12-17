@@ -37,7 +37,7 @@ public class CircularReferenceException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.CircularReferenceException_Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1,
+								Messages.Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1,
 								componentName, buildChain(attributeNames, recursionStart)));
 	}
 }

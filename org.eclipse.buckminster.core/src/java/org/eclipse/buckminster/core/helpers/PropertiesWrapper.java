@@ -30,7 +30,7 @@ import org.eclipse.buckminster.core.common.model.IProperties;
  * 
  * @author Thomas Hallgren
  */
-abstract class PropertiesWrapper extends AbstractMap<String, String> implements IProperties
+abstract class PropertiesWrapper extends AbstractMap<String, String> implements IProperties<String>
 {
 	class BackedEntry implements Map.Entry<String, String>
 	{
@@ -117,8 +117,6 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 				? getProperties().getProperty((String)key)
 				: null;
 	}
-
-	protected abstract Properties getProperties();
 
 	public Set<String> immutableKeySet()
 	{
@@ -241,4 +239,6 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 			}
 		};
 	}
+
+	protected abstract Properties getProperties();
 }

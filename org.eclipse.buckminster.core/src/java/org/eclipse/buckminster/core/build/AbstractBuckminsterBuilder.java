@@ -327,7 +327,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		if(kind == INCREMENTAL_BUILD)
 			return this.doIncrementalBuild(args, monitor);
 
-		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, Messages.AbstractBuckminsterBuilder_Unknown_kind, null));
+		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, Messages.Unknown_kind, null));
 	}
 
 	protected IProject[] doCleanBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
@@ -416,7 +416,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	{
 		// if someone has requested notification and then doesn't listen to it,
 		// they deserve to be punished
-		throw new IllegalStateException(Messages.AbstractBuckminsterBuilder_Method_not_overridden);
+		throw new IllegalStateException(Messages.Method_not_overridden);
 	}
 
 	@Override

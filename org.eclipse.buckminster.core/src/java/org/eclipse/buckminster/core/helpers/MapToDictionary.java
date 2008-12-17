@@ -28,7 +28,7 @@ public class MapToDictionary<K, V> extends Dictionary<K, V>
 
 	private final Map<K, V> m_wrappedMap;
 
-	private MapToDictionary(Map<K, V> wrappedMap)
+	public MapToDictionary(Map<K, V> wrappedMap)
 	{
 		m_wrappedMap = wrappedMap;
 	}

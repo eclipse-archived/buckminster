@@ -60,7 +60,7 @@ public class UUIDUtil
 		}
 		catch(NoSuchAlgorithmException nsae)
 		{
-			throw new InternalError(Messages.UUIDUtil_MD5_not_supported);
+			throw new InternalError(Messages.MD5_not_supported);
 		}
 		md.update(name, offset, len);
 		byte[] md5Bytes = md.digest();

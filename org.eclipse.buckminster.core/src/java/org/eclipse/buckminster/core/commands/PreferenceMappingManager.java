@@ -64,32 +64,6 @@ public class PreferenceMappingManager
 		m_mappings = this.findAllMappings();
 	}
 
-	private List<BasicPreferenceHandler> findAllMappings() throws CoreException
-	{
-		List<BasicPreferenceHandler> mappings = new ArrayList<BasicPreferenceHandler>();
-
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		IConfigurationElement[] elems = er.getConfigurationElementsFor(PREFMAPPINGS_EXTPOINT);
-		int idx = elems.length;
-		while(--idx >= 0)
-		{
-			IConfigurationElement elem = elems[idx];
-			BasicPreferenceHandler bph;
-			if(elem.getAttribute(CLASS_ATTRIBUTE) != null)
-				bph = (BasicPreferenceHandler)elem.createExecutableExtension(CLASS_ATTRIBUTE);
-			else
-			{
-				bph = new BasicPreferenceHandler();
-				((IExecutableExtension)bph).setInitializationData(elem, CLASS_ATTRIBUTE, null);
-			}
-			String name = bph.getName();
-			if(name.startsWith(TEST_PREFIX) && !m_includeTests)
-				continue;
-			mappings.add(bph);
-		}
-		return mappings;
-	}
-
 	public List<BasicPreferenceHandler> getAllHandlers(String pattern)
 	{
 		Pattern rx = (pattern == null)
@@ -141,24 +115,50 @@ public class PreferenceMappingManager
 		}
 
 		if(matches == null)
-			throw new UsageException(NLS.bind(Messages.PreferenceMappingManager_No_preference_matches_0, name));
+			throw new UsageException(NLS.bind(Messages.No_preference_matches_0, name));
 
 		int foundMatches = matches.size();
 		if(foundMatches == 1)
 			return matches.get(0);
 
 		StringBuilder bld = new StringBuilder(80);
-		bld.append(NLS.bind(Messages.PreferenceMappingManager_Preference_0_is_ambiguous, name));
+		bld.append(NLS.bind(Messages.Preference_0_is_ambiguous, name));
 		for(int i = 0; i < foundMatches; i++)
 		{
 			if(i > 0)
 			{
 				bld.append(", "); //$NON-NLS-1$
 				if(i + 1 == foundMatches)
-					bld.append(Messages.PreferenceMappingManager_and);
+					bld.append(Messages.And);
 			}
 			bld.append(matches.get(i).getName());
 		}
 		throw new UsageException(bld.toString());
+	}
+
+	private List<BasicPreferenceHandler> findAllMappings() throws CoreException
+	{
+		List<BasicPreferenceHandler> mappings = new ArrayList<BasicPreferenceHandler>();
+
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		IConfigurationElement[] elems = er.getConfigurationElementsFor(PREFMAPPINGS_EXTPOINT);
+		int idx = elems.length;
+		while(--idx >= 0)
+		{
+			IConfigurationElement elem = elems[idx];
+			BasicPreferenceHandler bph;
+			if(elem.getAttribute(CLASS_ATTRIBUTE) != null)
+				bph = (BasicPreferenceHandler)elem.createExecutableExtension(CLASS_ATTRIBUTE);
+			else
+			{
+				bph = new BasicPreferenceHandler();
+				((IExecutableExtension)bph).setInitializationData(elem, CLASS_ATTRIBUTE, null);
+			}
+			String name = bph.getName();
+			if(name.startsWith(TEST_PREFIX) && !m_includeTests)
+				continue;
+			mappings.add(bph);
+		}
+		return mappings;
 	}
 }

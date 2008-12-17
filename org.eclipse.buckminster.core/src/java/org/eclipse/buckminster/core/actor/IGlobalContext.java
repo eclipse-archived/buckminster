@@ -25,7 +25,7 @@ public interface IGlobalContext extends IModelCache
 	 *            The attribute for which we need the properties
 	 * @return The properties to use for attribute.
 	 */
-	Map<String, String> getExecutionProperties(Attribute attribute) throws CoreException;
+	Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException;
 
 	/**
 	 * Returns the cache that is in effect for the whole top level invocation

@@ -44,7 +44,7 @@ public class SetPreference extends WorkspaceCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		if(unparsed.length < 1)
-			throw new UsageException(Messages.SetPreference_You_must_provide_at_least_one_preference_assignment);
+			throw new UsageException(Messages.You_must_provide_at_least_one_preference_assignment);
 		m_assignments = unparsed;
 	}
 
@@ -57,11 +57,11 @@ public class SetPreference extends WorkspaceCommand
 			String assignment = m_assignments[idx];
 			int eqIdx = assignment.indexOf('=');
 			if(eqIdx < 1 || eqIdx >= assignment.length() - 1)
-				throw new UsageException(NLS.bind(Messages.SetPreference__0_is_not_an_assignment, assignment));
+				throw new UsageException(NLS.bind(Messages._0_is_not_an_assignment, assignment));
 			String key = assignment.substring(0, eqIdx);
 			String value = assignment.substring(eqIdx + 1);
 			prefManager.getHandler(key).set(value);
-			System.out.println(NLS.bind(Messages.SetPreference__0_set_to_the_value_1, key, value));
+			System.out.println(NLS.bind(Messages._0_set_to_the_value_1, key, value));
 		}
 		return 0;
 	}

@@ -24,7 +24,7 @@ public class MissingVersionTypeException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.MissingVersionTypeException_No_version_type_with_id_0_has_been_registered_with_extension_point_1,
+								Messages.No_version_type_with_id_0_has_been_registered_with_extension_point_1,
 								versionTypeId, CorePlugin.VERSION_TYPES_POINT));
 	}
 }

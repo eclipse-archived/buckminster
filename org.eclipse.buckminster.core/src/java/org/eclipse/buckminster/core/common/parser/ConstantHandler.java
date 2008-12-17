@@ -27,6 +27,6 @@ public class ConstantHandler extends ValueHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		this.setValueHolder(new Constant(this.getStringValue(attrs, Constant.ATTR_VALUE)));
+		this.setValueHolder(new Constant<String>(this.getStringValue(attrs, Constant.ATTR_VALUE)));
 	}
 }

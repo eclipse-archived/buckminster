@@ -30,15 +30,6 @@ public class PropertyConstantHandler extends PropertyHandler
 	}
 
 	@Override
-	void addYourself(Map<String, String> props)
-	{
-		String key = getKey();
-		props.put(key, m_value);
-		if(props instanceof ExpandingProperties)
-			((ExpandingProperties)props).setMutable(key, getMutable());
-	}
-
-	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
@@ -51,5 +42,14 @@ public class PropertyConstantHandler extends PropertyHandler
 		if(m_value == null)
 			// considering the xsd, this should never happen...
 			throw new MissingRequiredAttributeException(this.getTAG(), qname, this.getDocumentLocator());
+	}
+
+	@Override
+	void addYourself(Map<String, String> props)
+	{
+		String key = getKey();
+		props.put(key, m_value);
+		if(props instanceof ExpandingProperties<?>)
+			((ExpandingProperties<?>)props).setMutable(key, getMutable());
 	}
 }

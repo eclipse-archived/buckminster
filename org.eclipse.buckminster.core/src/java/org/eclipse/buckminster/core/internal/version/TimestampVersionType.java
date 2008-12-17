@@ -78,7 +78,7 @@ public class TimestampVersionType extends AbstractVersionType
 				ts = s_dateFormat.parse(versionString, pp);
 			}
 			if(pp.getErrorIndex() >= 0)
-				throw new VersionSyntaxException(Messages.TimestampVersionType_Not_a_valid_Timestamp_version, versionString, pp.getErrorIndex());
+				throw new VersionSyntaxException(Messages.Not_a_valid_Timestamp_version, versionString, pp.getErrorIndex());
 		}
 		endPosRet[0] = pp.getIndex();
 		return new TimestampVersion(this, ts);

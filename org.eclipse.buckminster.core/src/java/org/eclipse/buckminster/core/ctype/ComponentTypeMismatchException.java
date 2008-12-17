@@ -23,7 +23,7 @@ public class ComponentTypeMismatchException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.ComponentTypeMismatchException_Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2,
+								Messages.Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2,
 								new Object[] { componentName, expectedType, actualType }));
 	}
 }

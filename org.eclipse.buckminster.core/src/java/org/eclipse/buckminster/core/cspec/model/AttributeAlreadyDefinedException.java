@@ -20,7 +20,7 @@ public class AttributeAlreadyDefinedException extends LocalizedException
 
 	public AttributeAlreadyDefinedException(String componentName, String attributeName)
 	{
-		super(NLS.bind(Messages.AttributeAlreadyDefinedException_Attribute_0_is_defined_more_then_once_in_component_1,
+		super(NLS.bind(Messages.Attribute_0_is_defined_more_then_once_in_component_1,
 				attributeName, componentName));
 	}
 }

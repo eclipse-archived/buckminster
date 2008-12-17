@@ -22,7 +22,7 @@ public class DestinationChangeException extends LocalizedException
 
 	public DestinationChangeException(IPath fixedDest, IPath wantedDest)
 	{
-		super(NLS.bind(Messages.DestinationChangeException_attempt_to_change_fixed_materialization_location_0_to_1,
+		super(NLS.bind(Messages.Attempt_to_change_fixed_materialization_location_0_to_1,
 				fixedDest.toPortableString(), wantedDest.toPortableString()));
 	}
 }

@@ -140,7 +140,7 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw new SAXParseException(NLS.bind(Messages.ProductsHandler__0_is_not_a_valid_UpToDatePolicy, tmp),
+				throw new SAXParseException(NLS.bind(Messages._0_is_not_a_valid_UpToDatePolicy, tmp),
 						getDocumentLocator());
 			}
 		}

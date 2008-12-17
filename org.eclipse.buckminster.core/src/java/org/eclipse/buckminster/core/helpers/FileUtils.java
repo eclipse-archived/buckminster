@@ -68,7 +68,7 @@ public abstract class FileUtils
 
 		public CopyOntoSelfException(File source, File destination)
 		{
-			super(NLS.bind(Messages.FileUtils_Cannot_copy_0_to_1_since_destination_equal_or_contained_in_source,
+			super(NLS.bind(Messages.Cannot_copy_0_to_1_since_destination_equal_or_contained_in_source,
 					source, destination));
 		}
 	}
@@ -84,7 +84,7 @@ public abstract class FileUtils
 
 		public DeleteException(File file, Throwable e)
 		{
-			super(e, NLS.bind(Messages.FileUtils_Unable_to_delete_0, file));
+			super(e, NLS.bind(Messages.Unable_to_delete_0, file));
 		}
 	}
 
@@ -94,7 +94,7 @@ public abstract class FileUtils
 
 		public DestinationNotEmptyException(File destination)
 		{
-			super(NLS.bind(Messages.FileUtils_Unable_to_use_0_destination_for_copy_not_empty, destination));
+			super(NLS.bind(Messages.Unable_to_use_0_destination_for_copy_not_empty, destination));
 		}
 	}
 
@@ -109,7 +109,7 @@ public abstract class FileUtils
 
 		public MkdirException(File directory, Throwable e)
 		{
-			super(e, NLS.bind(Messages.FileUtils_Unable_to_create_directory_0, directory));
+			super(e, NLS.bind(Messages.Unable_to_create_directory_0, directory));
 		}
 	}
 
@@ -900,12 +900,12 @@ public abstract class FileUtils
 		{
 			if(directory == null || directory.exists() && !directory.isDirectory())
 				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.FileUtils_Unable_to_create_directory_0_Not_a_directory, directory != null
+						Messages.Unable_to_create_directory_0_Not_a_directory, directory != null
 								? directory
 								: "(null)")); //$NON-NLS-1$
 
 			if(!directory.exists() && !directory.mkdirs())
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.FileUtils_Unable_to_create_directory_0,
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_create_directory_0,
 						directory));
 		}
 	}

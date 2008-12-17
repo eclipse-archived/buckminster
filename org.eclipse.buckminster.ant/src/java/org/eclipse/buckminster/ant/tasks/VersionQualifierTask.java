@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.version.IQualifierGenerator;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -49,7 +50,7 @@ public class VersionQualifierTask
 
 	private static final SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMddHHmm"); //$NON-NLS-1$
 
-	private final Map<String, String> m_properties;
+	private final Map<String, ? extends Object> m_properties;
 
 	private final String m_qualifier;
 
@@ -57,7 +58,7 @@ public class VersionQualifierTask
 	{
 		m_qualifier = qualifier;
 
-		Map<String, String> globalProps = AbstractActor.getActiveContext().getProperties();
+		Map<String, ? extends Object> globalProps = AbstractActor.getActiveContext().getProperties();
 
 		if(propertiesFile == null)
 			m_properties = globalProps;
@@ -67,8 +68,7 @@ public class VersionQualifierTask
 			try
 			{
 				input = new BufferedInputStream(new FileInputStream(propertiesFile));
-				m_properties = new BMProperties(input);
-				m_properties.putAll(globalProps);
+				m_properties = new UnmodifiableMapUnion<String, Object>(new BMProperties(input), globalProps);
 			}
 			catch(IOException e)
 			{
@@ -82,54 +82,9 @@ public class VersionQualifierTask
 		}
 	}
 
-	public Map<String, String> getProperties()
+	public Map<String, ? extends Object> getProperties()
 	{
 		return m_properties;
-	}
-
-	private String getQualifierReplacement(ComponentIdentifier id)
-	{
-		String newQualifier = null;
-		if(isContextReplacement())
-		{
-			if(m_properties.size() != 0)
-			{
-				// First we check to see if there is a match for a precise version
-				//
-				StringBuilder bld = new StringBuilder(QUALIFIER_REPLACEMENT_PREFIX);
-				bld.append(id.getName());
-				bld.append(',');
-				int lenWithId = bld.length();
-
-				// Lookup using id,<version without the .qualifier suffix>
-				//
-				String versionStr = id.getVersion().toString();
-				bld.append(versionStr, 0, versionStr.length() - QUALIFIER_SUFFIX.length() - 1);
-				newQualifier = m_properties.get(bld.toString());
-
-				if(newQualifier == null)
-				{
-					// If not found, then lookup for the id,0.0.0
-					//
-					bld.setLength(lenWithId);
-					bld.append("0.0.0"); //$NON-NLS-1$
-					newQualifier = m_properties.get(bld.toString());
-					if(newQualifier == null)
-						newQualifier = m_properties.get(MATCH_ALL);
-				}
-			}
-
-			if(newQualifier == null)
-			{
-				synchronized(s_dateFormat)
-				{
-					newQualifier = s_dateFormat.format(new Date());
-				}
-			}
-		}
-		else if(!m_qualifier.equalsIgnoreCase(PROPERTY_NONE))
-			newQualifier = m_qualifier;
-		return newQualifier;
 	}
 
 	public boolean isContextReplacement()
@@ -188,5 +143,50 @@ public class VersionQualifierTask
 				version = version.replaceQualifier(newQualifier);
 		}
 		return version;
+	}
+
+	private String getQualifierReplacement(ComponentIdentifier id)
+	{
+		String newQualifier = null;
+		if(isContextReplacement())
+		{
+			if(m_properties.size() != 0)
+			{
+				// First we check to see if there is a match for a precise version
+				//
+				StringBuilder bld = new StringBuilder(QUALIFIER_REPLACEMENT_PREFIX);
+				bld.append(id.getName());
+				bld.append(',');
+				int lenWithId = bld.length();
+
+				// Lookup using id,<version without the .qualifier suffix>
+				//
+				String versionStr = id.getVersion().toString();
+				bld.append(versionStr, 0, versionStr.length() - QUALIFIER_SUFFIX.length() - 1);
+				newQualifier = (String)m_properties.get(bld.toString());
+
+				if(newQualifier == null)
+				{
+					// If not found, then lookup for the id,0.0.0
+					//
+					bld.setLength(lenWithId);
+					bld.append("0.0.0"); //$NON-NLS-1$
+					newQualifier = (String)m_properties.get(bld.toString());
+					if(newQualifier == null)
+						newQualifier = (String)m_properties.get(MATCH_ALL);
+				}
+			}
+
+			if(newQualifier == null)
+			{
+				synchronized(s_dateFormat)
+				{
+					newQualifier = s_dateFormat.format(new Date());
+				}
+			}
+		}
+		else if(!m_qualifier.equalsIgnoreCase(PROPERTY_NONE))
+			newQualifier = m_qualifier;
+		return newQualifier;
 	}
 }

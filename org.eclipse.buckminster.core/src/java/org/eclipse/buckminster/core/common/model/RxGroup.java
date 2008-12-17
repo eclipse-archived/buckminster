@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.common.model;
 
 import java.util.List;
 
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -51,15 +50,15 @@ public class RxGroup extends RxPart
 			bld.append(")?"); //$NON-NLS-1$
 	}
 
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
 	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		for(RxPart part : m_parts)
 			part.toSax(handler, namespace, prefix, part.getDefaultTag());
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
 	}
 }

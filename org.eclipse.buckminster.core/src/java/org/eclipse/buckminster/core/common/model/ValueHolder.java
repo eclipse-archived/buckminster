@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.common.model;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
@@ -25,7 +27,7 @@ import org.eclipse.buckminster.sax.AbstractSaxableElement;
  * 
  * @author Thomas Hallgren
  */
-public abstract class ValueHolder extends AbstractSaxableElement
+public abstract class ValueHolder<T> extends AbstractSaxableElement
 {
 	public static final String NO_VALUE = ""; //$NON-NLS-1$
 
@@ -36,39 +38,10 @@ public abstract class ValueHolder extends AbstractSaxableElement
 		m_mutable = false;
 	}
 
-	/**
-	 * Returns the resolved value of this holder using <code>properties</code> as the scope.
-	 * 
-	 * @param properties
-	 *            The scope used when resolving the value.
-	 * @param recursionGuard
-	 *            A guard that is increased for each recursive expansion that is made.
-	 * @return A string representing the resolved value.
-	 * @throws CircularExpansionException
-	 *             if the <code>recursionGuard</code> reaches its threshold.
-	 */
-	protected abstract String checkedGetValue(Map<String, String> properties, int recursionGuard);
-
-	/**
-	 * Returns resolved value array of this holder using <code>properties</code> as the scope.
-	 * 
-	 * @param properties
-	 *            The scope used when resolving the values
-	 * @param recursionGuard
-	 *            A guard that is increased for each recursive expansion that is made.
-	 * @return A string array representing the resolved values
-	 * @throws CircularExpansionException
-	 *             if the <code>recursionGuard</code> reaches its threshold.
-	 */
-	protected String[] checkedGetValues(Map<String, String> properties, int recursionGuard)
-	{
-		return new String[] { this.checkedGetValue(properties, recursionGuard) };
-	}
-
 	@Override
 	public boolean equals(Object o)
 	{
-		return o == this || (o != null && o.getClass() == this.getClass() && m_mutable == ((ValueHolder)o).m_mutable);
+		return o == this || (o != null && o.getClass() == getClass() && m_mutable == ((ValueHolder<?>)o).m_mutable);
 	}
 
 	/**
@@ -80,9 +53,9 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	 * @throws CircularExpansionException
 	 *             if the <code>recursionGuard</code> reaches its threshold.
 	 */
-	public final String getValue(Map<String, String> properties)
+	public final T getValue(Map<String, ? extends Object> properties)
 	{
-		return this.checkedGetValue(properties, 0);
+		return checkedGetValue(properties, 0);
 	}
 
 	/**
@@ -94,9 +67,9 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	 * @throws CircularExpansionException
 	 *             if the <code>recursionGuard</code> reaches its threshold.
 	 */
-	public final String[] getValues(Map<String, String> properties)
+	public final List<T> getValues(Map<String, ? extends Object> properties)
 	{
-		return this.checkedGetValues(properties, 0);
+		return checkedGetValues(properties, 0);
 	}
 
 	@Override
@@ -134,5 +107,34 @@ public abstract class ValueHolder extends AbstractSaxableElement
 	public void setMutable(boolean flag)
 	{
 		m_mutable = flag;
+	}
+
+	/**
+	 * Returns the resolved value of this holder using <code>properties</code> as the scope.
+	 * 
+	 * @param properties
+	 *            The scope used when resolving the value.
+	 * @param recursionGuard
+	 *            A guard that is increased for each recursive expansion that is made.
+	 * @return A string representing the resolved value.
+	 * @throws CircularExpansionException
+	 *             if the <code>recursionGuard</code> reaches its threshold.
+	 */
+	protected abstract T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard);
+
+	/**
+	 * Returns resolved value array of this holder using <code>properties</code> as the scope.
+	 * 
+	 * @param properties
+	 *            The scope used when resolving the values
+	 * @param recursionGuard
+	 *            A guard that is increased for each recursive expansion that is made.
+	 * @return A string array representing the resolved values
+	 * @throws CircularExpansionException
+	 *             if the <code>recursionGuard</code> reaches its threshold.
+	 */
+	protected List<T> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard)
+	{
+		return Collections.singletonList(checkedGetValue(properties, recursionGuard));
 	}
 }

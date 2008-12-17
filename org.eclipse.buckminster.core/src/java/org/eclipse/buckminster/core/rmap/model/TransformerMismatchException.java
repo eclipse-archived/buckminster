@@ -20,7 +20,7 @@ public class TransformerMismatchException extends LocalizedException
 
 	public TransformerMismatchException(BidirectionalTransformer invalid)
 	{
-		super(NLS.bind(Messages.TransformerMismatchException_The_substitution_0_1_is_not_reversed_by_2_3, new Object[] {
+		super(NLS.bind(Messages.The_substitution_0_1_is_not_reversed_by_2_3, new Object[] {
 				invalid.getFromPattern().toString(), invalid.getFromReplacement(), invalid.getToPattern().toString(),
 				invalid.getToReplacement() }));
 	}

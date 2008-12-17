@@ -25,7 +25,7 @@ public class MissingComponentTypeException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.MissingComponentTypeException_No_component_type_with_id_0_has_been_registered_with_extension_point_1,
+								Messages.No_component_type_with_id_0_has_been_registered_with_extension_point_1,
 								componentTypeId, CorePlugin.COMPONENT_TYPE_POINT));
 	}
 }

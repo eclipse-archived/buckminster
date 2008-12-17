@@ -155,7 +155,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			catch(CoreException e)
 			{
 				throw BuckminsterException
-						.fromMessage(Messages.AbstractSiteMaterializer_Unable_to_install_plugins_from_update_site_PDE_missing);
+						.fromMessage(Messages.Unable_to_install_plugins_from_update_site_PDE_missing);
 			}
 			File tempSite = FileUtils.createTempFolder("bmsite", "tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite,
@@ -266,7 +266,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					try
 					{
 						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
-								Messages.AbstractSiteMaterializer_Start_mirroring));
+								Messages.Start_mirroring));
 						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
 								monitor, 5));
 						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils
@@ -290,7 +290,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 					finally
 					{
 						context.addRequestStatus(first.getRequest(), new Status(IStatus.INFO, CorePlugin.getID(),
-								Messages.AbstractSiteMaterializer_End_mirroring));
+								Messages.End_mirroring));
 						Platform.removeLogListener(listener);
 					}
 				}

@@ -21,6 +21,6 @@ public class MissingComponentException extends LocalizedException
 
 	public MissingComponentException(String componentName)
 	{
-		super(NLS.bind(Messages.MissingComponentException_No_component_0_known_to_Buckminster, componentName));
+		super(NLS.bind(Messages.No_component_0_known_to_Buckminster, componentName));
 	}
 }

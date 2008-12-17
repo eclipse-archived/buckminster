@@ -28,7 +28,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 {
 	private String m_actorName;
 
-	private final ExpandingProperties m_actorProperties = new ExpandingProperties();
+	private final ExpandingProperties<String> m_actorProperties = new ExpandingProperties<String>();
 
 	private boolean m_always = Action.ALWAYS_DEFAULT;
 
@@ -44,7 +44,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 
 	private final HashSet<IPath> m_productPaths = new HashSet<IPath>();
 
-	private final ExpandingProperties m_properties = new ExpandingProperties();
+	private final ExpandingProperties<String> m_properties = new ExpandingProperties<String>();
 
 	private UpToDatePolicy m_upToDatePolicy = UpToDatePolicy.DEFAULT;
 
@@ -117,7 +117,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		return m_actorName;
 	}
 
-	public ExpandingProperties getActorProperties()
+	public ExpandingProperties<String> getActorProperties()
 	{
 		return m_actorProperties;
 	}
@@ -180,7 +180,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		return m_productPaths;
 	}
 
-	public ExpandingProperties getProperties()
+	public ExpandingProperties<String> getProperties()
 	{
 		return m_properties;
 	}

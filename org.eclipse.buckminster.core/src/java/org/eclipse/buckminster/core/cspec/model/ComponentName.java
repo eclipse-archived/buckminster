@@ -32,24 +32,16 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 
 	private final String m_componentType;
 
-	ComponentName(ComponentName other)
-	{
-		super(other.getName());
-		m_componentType = other.getComponentTypeID();
-	}
-
 	public ComponentName(String name, String componentType)
 	{
 		super(name);
 		m_componentType = componentType;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
+	ComponentName(ComponentName other)
 	{
-		super.addAttributes(attrs);
-		if(m_componentType != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
+		super(other.getName());
+		m_componentType = other.getComponentTypeID();
 	}
 
 	public int compareTo(IComponentName o)
@@ -173,5 +165,13 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 			bld.append(':');
 			bld.append(m_componentType);
 		}
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_componentType != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
 	}
 }

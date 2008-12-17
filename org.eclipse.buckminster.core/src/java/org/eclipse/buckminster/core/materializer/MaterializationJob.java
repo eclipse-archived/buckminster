@@ -129,7 +129,7 @@ public class MaterializationJob extends Job
 
 	public MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
 	{
-		super(Messages.MaterializationJob_Materializing);
+		super(Messages.Materializing);
 		m_context = ctx;
 		m_waitForInstall = waitForInstall;
 

@@ -24,7 +24,7 @@ public class MissingMaterializerException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.MissingMaterializerException_No_materializer_with_id_0_has_been_registered_with_extension_point_1,
+								Messages.No_materializer_with_id_0_has_been_registered_with_extension_point_1,
 								materializerId, IMaterializer.MATERIALIZERS_POINT));
 	}
 }

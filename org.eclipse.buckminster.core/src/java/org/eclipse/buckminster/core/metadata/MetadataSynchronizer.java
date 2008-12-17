@@ -69,7 +69,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	{
 		public MetadataRefreshJob()
 		{
-			super(Messages.MetadataSynchronizer_Metadata_refresh);
+			super(Messages.Metadata_refresh);
 			setPriority(SHORT);
 			setSystem(true);
 		}
@@ -131,7 +131,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 					while(s_default != null && (project = getNextProjectNeedingUpdate()) != null)
 					{
 						didSomething = true;
-						monitor.subTask(NLS.bind(Messages.MetadataSynchronizer_Refreshing_0, project.getName()));
+						monitor.subTask(NLS.bind(Messages.Refreshing_0, project.getName()));
 						try
 						{
 							refreshProject(project, MonitorUtils.subMonitor(monitor, 70));
@@ -141,7 +141,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 							if(s_default != null && project.isAccessible())
 								CorePlugin.getLogger().error(
 										e,
-										NLS.bind(Messages.MetadataSynchronizer_Project_refresh_on_0_failed_1, project
+										NLS.bind(Messages.Project_refresh_on_0_failed_1, project
 												.getName(), e.getMessage()));
 						}
 					}
@@ -240,7 +240,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	{
 		public WorkspaceCatchUpJob()
 		{
-			super(Messages.MetadataSynchronizer_Buckminster_workspace_catch_up);
+			super(Messages.Buckminster_workspace_catch_up);
 
 			// We need very high prio on this since we wait
 			// for it to complete during plug-in activation
@@ -251,7 +251,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		@Override
 		protected IStatus run(IProgressMonitor monitor)
 		{
-			monitor.beginTask(Messages.MetadataSynchronizer_Refreshing_project_meta_data, 1000);
+			monitor.beginTask(Messages.Refreshing_project_meta_data, 1000);
 			try
 			{
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -276,7 +276,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 						{
 							CorePlugin.getLogger().warning(
 									e,
-									NLS.bind(Messages.MetadataSynchronizer_Problem_during_meta_data_refresh_0, e
+									NLS.bind(Messages.Problem_during_meta_data_refresh_0, e
 											.getMessage()));
 						}
 					}
@@ -285,7 +285,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			catch(Throwable e)
 			{
 				CorePlugin.getLogger().warning(e,
-						NLS.bind(Messages.MetadataSynchronizer_Problem_during_meta_data_refresh_0, e.getMessage()));
+						NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
 			}
 			finally
 			{
@@ -466,7 +466,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				IProject refdProj = (IProject)resource;
 				if(!refdProj.isOpen())
 				{
-					logger.warning(NLS.bind(Messages.MetadataSynchronizer_Project_0_references_closed_project_1,
+					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1,
 							project.getName(), cref.getName()));
 				}
 				else if(!oldSet.contains(refdProj.getName()))
@@ -493,7 +493,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(logger.isDebugEnabled())
 			{
 				StringBuilder bld = new StringBuilder();
-				bld.append(NLS.bind(Messages.MetadataSynchronizer_Project_0_now_has_dynamic_dependencies_to, project
+				bld.append(NLS.bind(Messages.Project_0_now_has_dynamic_dependencies_to, project
 						.getName()));
 				for(IProject ref : refs)
 				{

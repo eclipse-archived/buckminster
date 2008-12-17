@@ -23,7 +23,7 @@ public class ElementNotFoundException extends LocalizedException
 
 	public ElementNotFoundException(ISaxableStorage<?> storage, UUID uuid)
 	{
-		super(NLS.bind(Messages.ElementNotFoundException_No_element_with_id_0_was_found_in_storage_1, uuid, storage
+		super(NLS.bind(Messages.No_element_with_id_0_was_found_in_storage_1, uuid, storage
 				.getName()));
 	}
 }

@@ -23,7 +23,7 @@ public class GeneratorAlreadyDefinedException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.GeneratorAlreadyDefinedException_A_generator_that_generates_0_is_defined_more_then_once_in_component_1,
+								Messages.A_generator_that_generates_0_is_defined_more_then_once_in_component_1,
 								generates, componentName));
 	}
 }

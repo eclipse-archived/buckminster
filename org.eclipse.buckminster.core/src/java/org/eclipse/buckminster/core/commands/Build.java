@@ -72,7 +72,7 @@ public class Build extends WorkspaceCommand
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		if(unparsed.length > 0)
-			throw new UsageException(Messages.Build_Too_many_arguments);
+			throw new UsageException(Messages.Too_many_arguments);
 	}
 
 	@Override

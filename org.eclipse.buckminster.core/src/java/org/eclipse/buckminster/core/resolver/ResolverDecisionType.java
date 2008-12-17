@@ -21,7 +21,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Branch_0_rejected_1;
+			return Messages.Branch_0_rejected_1;
 		}
 	},
 
@@ -30,7 +30,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Wrong_component_type_0;
+			return Messages.Wrong_component_type_0;
 		}
 	},
 
@@ -39,7 +39,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Resolution_attempt_ended_with_exception_0;
+			return Messages.Resolution_attempt_ended_with_exception_0;
 		}
 	},
 
@@ -48,7 +48,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Filter_0_does_not_match_the_current_property_set;
+			return Messages.Filter_0_does_not_match_the_current_property_set;
 		}
 	},
 
@@ -57,7 +57,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Found_match_0;
+			return Messages.Found_match_0;
 		}
 	},
 
@@ -66,7 +66,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Match_0_was_rejected_1;
+			return Messages.Match_0_was_rejected_1;
 		}
 	},
 
@@ -75,7 +75,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Trunk_Head_rejected_0;
+			return Messages.Trunk_Head_rejected_0;
 		}
 	},
 
@@ -84,7 +84,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_No_branches_were_found;
+			return Messages.No_branches_were_found;
 		}
 	},
 
@@ -93,7 +93,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_No_tags_were_found;
+			return Messages.No_tags_were_found;
 		}
 	},
 
@@ -102,7 +102,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_No_provider_was_found_that_could_resolve_the_request;
+			return Messages.No_provider_was_found_that_could_resolve_the_request;
 		}
 	},
 
@@ -111,7 +111,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Redirecting_to_resource_map_0;
+			return Messages.Redirecting_to_resource_map_0;
 		}
 	},
 
@@ -120,7 +120,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Rejecting_provider_0_1_2;
+			return Messages.Rejecting_provider_0_1_2;
 		}
 	},
 
@@ -129,7 +129,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Revision_0_rejected_1;
+			return Messages.Revision_0_rejected_1;
 		}
 	},
 
@@ -138,7 +138,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_No_searchPath_was_found_with_a_matching_pattern;
+			return Messages.No_searchPath_was_found_with_a_matching_pattern;
 		}
 	},
 
@@ -147,7 +147,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_trunk_head_will_be_searched;
+			return Messages.Trunk_head_will_be_searched;
 		}
 	},
 
@@ -156,7 +156,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_branches_will_be_searched;
+			return Messages.Branches_will_be_searched;
 		}
 	},
 
@@ -165,7 +165,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_tags_will_be_searched;
+			return Messages.Tags_will_be_searched;
 		}
 	},
 
@@ -174,7 +174,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Space_0_rejected_1;
+			return Messages.Space_0_rejected_1;
 		}
 	},
 
@@ -183,7 +183,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Tag_0_rejected_1;
+			return Messages.Tag_0_rejected_1;
 		}
 	},
 
@@ -192,7 +192,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Timestamp_0_rejected_1;
+			return Messages.Timestamp_0_rejected_1;
 		}
 	},
 
@@ -201,7 +201,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Trying_provider_0_1;
+			return Messages.Trying_provider_0_1;
 		}
 	},
 
@@ -210,7 +210,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Using_provider_0_1;
+			return Messages.Using_provider_0_1;
 		}
 	},
 
@@ -219,7 +219,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Using_resolver_0;
+			return Messages.Using_resolver_0;
 		}
 	},
 
@@ -228,7 +228,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Using_resource_map_0;
+			return Messages.Using_resource_map_0;
 		}
 	},
 
@@ -237,7 +237,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Using_search_path_0;
+			return Messages.Using_search_path_0;
 		}
 	},
 
@@ -246,7 +246,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_VersionSelector_for_0_discriminates_all_1;
+			return Messages.VersionSelector_for_0_discriminates_all_1;
 		}
 	},
 
@@ -255,7 +255,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Version_0_rejected_1;
+			return Messages.Version_0_rejected_1;
 		}
 	},
 
@@ -264,7 +264,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Using_version_converter_0_trunk_head_not_considered;
+			return Messages.Using_version_converter_0_trunk_head_not_considered;
 		}
 	},
 
@@ -273,7 +273,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Version_0_was_converted_from_branch_1;
+			return Messages.Version_0_was_converted_from_branch_1;
 		}
 	},
 
@@ -282,7 +282,7 @@ public enum ResolverDecisionType
 		@Override
 		public String toString()
 		{
-			return Messages.ResolverDecisionType_Version_0_was_converted_from_tag_1;
+			return Messages.Version_0_was_converted_from_tag_1;
 		}
 	};
 

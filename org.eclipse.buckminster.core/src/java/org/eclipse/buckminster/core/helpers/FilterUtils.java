@@ -8,98 +8,67 @@
 
 package org.eclipse.buckminster.core.helpers;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.osgi.framework.internal.core.FilterImpl;
 import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
 @SuppressWarnings("restriction")
 public class FilterUtils
 {
-	static class MatchAllAwareFilterImpl extends FilterImpl
+	public static class MatchAll
 	{
-		public MatchAllAwareFilterImpl(String expression) throws InvalidSyntaxException
+		public MatchAll(String v)
 		{
-			super(expression);
-			if(value instanceof Filter[])
-			{
-				Filter[] subFilters = (Filter[])value;
-				int idx = subFilters.length;
-				while(--idx >= 0)
-					subFilters[idx] = new MatchAllAwareFilterImpl(subFilters[idx].toString());
-			}
-		}
-
-		public void addConsultedAttributes(Map<String, String[]> propertyChoices)
-		{
-			if(value instanceof Filter[])
-			{
-				Filter[] subFilters = (Filter[])value;
-				int idx = subFilters.length;
-				while(--idx >= 0)
-					((MatchAllAwareFilterImpl)subFilters[idx]).addConsultedAttributes(propertyChoices);
-				return;
-			}
-			if(attr == null || value == null)
-				return;
-
-			String stringValue;
-			if(value instanceof String[])
-			{
-				String[] substrings = (String[])value;
-				StringBuilder bld = new StringBuilder();
-				int size = substrings.length;
-				for(int i = 0; i < size; i++)
-				{
-					String substr = substrings[i];
-					if(substr == null)
-						bld.append('*');
-					else
-						bld.append(substr);
-				}
-				stringValue = bld.toString();
-			}
-			else
-				stringValue = value.toString();
-
-			// Add the attribute value as a valid choice for the attribute
-			// unless it's already present.
-			//
-			synchronized(propertyChoices)
-			{
-				String[] choices = propertyChoices.get(attr);
-				if(choices == null)
-				{
-					propertyChoices.put(attr, new String[] { stringValue });
-					return;
-				}
-
-				int top = choices.length;
-				int idx = top;
-				while(--idx >= 0)
-					if(stringValue.equals(choices[idx]))
-						return;
-
-				String[] newChoices = new String[top + 1];
-				System.arraycopy(choices, 0, newChoices, 0, top);
-				newChoices[top] = stringValue;
-				propertyChoices.put(attr, newChoices);
-			}
 		}
 
 		@Override
-		protected boolean compare_String(int op, String string, Object value2)
+		public boolean equals(Object o)
 		{
-			return MATCH_ALL.equals(string)
-					? true
-					: super.compare_String(op, string, value2);
+			return true;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return MATCH_ALL.hashCode();
+		}
+
+		@Override
+		public String toString()
+		{
+			return MATCH_ALL;
 		}
 	}
 
 	public static final String MATCH_ALL = "*"; //$NON-NLS-1$
+
+	public static final MatchAll MATCH_ALL_OBJ = new MatchAll(MATCH_ALL);
+
+	private static final Field Filter_attr;
+
+	private static final Field Filter_value;
+
+	static
+	{
+		try
+		{
+			Class<? extends Filter> filterClass = FilterImpl.class;
+			Filter_attr = filterClass.getDeclaredField("attr");
+			Filter_value = filterClass.getDeclaredField("value");
+			Filter_attr.setAccessible(true);
+			Filter_value.setAccessible(true);
+		}
+		catch(Exception e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	/**
 	 * <p>
@@ -121,79 +90,73 @@ public class FilterUtils
 		if(filter == null)
 			return;
 
-		MatchAllAwareFilterImpl maFilter;
-		if(filter instanceof MatchAllAwareFilterImpl)
-			maFilter = (MatchAllAwareFilterImpl)filter;
+		Object value = getFilterValue(filter);
+		if(value instanceof Filter[])
+		{
+			Filter[] subFilters = (Filter[])value;
+			int idx = subFilters.length;
+			while(--idx >= 0)
+				addConsultedAttributes(subFilters[idx], propertyChoices);
+			return;
+		}
+
+		if(value instanceof Filter)
+		{
+			addConsultedAttributes((Filter)value, propertyChoices);
+			return;
+		}
+
+		String attr = getFilterAttr(filter);
+		if(attr == null || value == null)
+			return;
+
+		String stringValue;
+		if(value instanceof String[])
+		{
+			String[] substrings = (String[])value;
+			StringBuilder bld = new StringBuilder();
+			int size = substrings.length;
+			for(int i = 0; i < size; i++)
+			{
+				String substr = substrings[i];
+				if(substr == null)
+					bld.append('*');
+				else
+					bld.append(substr);
+			}
+			stringValue = bld.toString();
+		}
 		else
-		{
-			try
-			{
-				maFilter = new MatchAllAwareFilterImpl(filter.toString());
-			}
-			catch(InvalidSyntaxException e)
-			{
-				// Won't happen since the origin is a filter
-				throw new RuntimeException(e);
-			}
-		}
-		maFilter.addConsultedAttributes(propertyChoices);
-	}
+			stringValue = value.toString();
 
-	private static boolean addProperty(StringBuilder bld, String key, String value)
-	{
-		value = TextUtils.notEmptyTrimmedString(value);
-		if(value == null)
-			return false;
-
-		int bldStart = bld.length();
-		int top = value.length();
-		boolean startNew = true;
-		boolean multi = false;
-		for(int idx = 0; idx < top; ++idx)
+		// Add the attribute value as a valid choice for the attribute
+		// unless it's already present.
+		//
+		synchronized(propertyChoices)
 		{
-			if(startNew)
+			String[] choices = propertyChoices.get(attr);
+			if(choices == null)
 			{
-				if(idx > 0)
-				{
-					bld.append(')');
-					multi = true;
-				}
-				bld.append('(');
-				bld.append(key);
-				bld.append('=');
-				startNew = false;
+				propertyChoices.put(attr, new String[] { stringValue });
+				return;
 			}
-			char c = value.charAt(idx);
-			switch(c)
-			{
-			case '(':
-			case ')':
-			case '\\':
-				bld.append('\\');
-				bld.append(c);
-				continue;
-			case ',':
-				startNew = true;
-				continue;
-			}
-			bld.append(c);
-		}
 
-		bld.append(')');
-		if(multi)
-		{
-			String expr = bld.substring(bldStart);
-			bld.setLength(bldStart);
-			bld.append("(|"); //$NON-NLS-1$
-			bld.append(expr);
-			bld.append(')');
+			int top = choices.length;
+			int idx = top;
+			while(--idx >= 0)
+				if(stringValue.equals(choices[idx]))
+					return;
+
+			String[] newChoices = new String[top + 1];
+			System.arraycopy(choices, 0, newChoices, 0, top);
+			newChoices[top] = stringValue;
+			propertyChoices.put(attr, newChoices);
 		}
-		return true;
 	}
 
 	public static Filter createFilter(String expression) throws InvalidSyntaxException
 	{
-		return new MatchAllAwareFilterImpl(expression);
+		return FrameworkUtil.createFilter(expression);
 	}
 
 	public static Filter createFilter(String os, String ws, String arch, String nl)
@@ -234,7 +197,7 @@ public class FilterUtils
 		return null;
 	}
 
-	public static boolean isMatch(Filter filter, Map<String, String> properties)
+	public static boolean isMatch(Filter filter, Map<String, ? extends Object> properties)
 	{
 		return (filter == null || filter.match(MapToDictionary.wrap(properties)));
 	}
@@ -308,5 +271,81 @@ public class FilterUtils
 			}
 		}
 		return bld.toString();
+	}
+
+	private static boolean addProperty(StringBuilder bld, String key, String value)
+	{
+		value = TextUtils.notEmptyTrimmedString(value);
+		if(value == null)
+			return false;
+
+		int bldStart = bld.length();
+		int top = value.length();
+		boolean startNew = true;
+		boolean multi = false;
+		for(int idx = 0; idx < top; ++idx)
+		{
+			if(startNew)
+			{
+				if(idx > 0)
+				{
+					bld.append(')');
+					multi = true;
+				}
+				bld.append('(');
+				bld.append(key);
+				bld.append('=');
+				startNew = false;
+			}
+			char c = value.charAt(idx);
+			switch(c)
+			{
+			case '(':
+			case ')':
+			case '\\':
+				bld.append('\\');
+				bld.append(c);
+				continue;
+			case ',':
+				startNew = true;
+				continue;
+			}
+			bld.append(c);
+		}
+
+		bld.append(')');
+		if(multi)
+		{
+			String expr = bld.substring(bldStart);
+			bld.setLength(bldStart);
+			bld.append("(|"); //$NON-NLS-1$
+			bld.append(expr);
+			bld.append(')');
+		}
+		return true;
+	}
+
+	private static String getFilterAttr(Filter filter)
+	{
+		try
+		{
+			return (String)Filter_attr.get(filter);
+		}
+		catch(IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static Object getFilterValue(Filter filter)
+	{
+		try
+		{
+			return Filter_value.get(filter);
+		}
+		catch(IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

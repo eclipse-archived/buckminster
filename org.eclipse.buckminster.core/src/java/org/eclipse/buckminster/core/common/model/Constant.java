@@ -22,35 +22,23 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Thomas Hallgren
  */
-public class Constant extends ValueHolder
+public class Constant<T> extends ValueHolder<T>
 {
 	public static final String TAG = "constant"; //$NON-NLS-1$
 
 	public static final String ATTR_VALUE = "value"; //$NON-NLS-1$
 
-	private final String m_value;
+	private final T m_value;
 
-	public Constant(String value)
+	public Constant(T value)
 	{
 		m_value = value;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_VALUE, m_value);
-	}
-
-	@Override
-	protected String checkedGetValue(Map<String, String> properties, int recursionGuard)
-	{
-		return ExpandingProperties.expand(properties, m_value, recursionGuard + 1);
-	}
-
-	@Override
 	public boolean equals(Object o)
 	{
-		return super.equals(o) && Trivial.equalsAllowNull(m_value, ((Constant)o).m_value);
+		return super.equals(o) && Trivial.equalsAllowNull(m_value, ((Constant<?>)o).m_value);
 	}
 
 	public String getDefaultTag()
@@ -71,6 +59,20 @@ public class Constant extends ValueHolder
 	@Override
 	public String toString()
 	{
-		return m_value;
+		return m_value == null
+				? null
+				: m_value.toString();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_VALUE, toString());
+	}
+
+	@Override
+	protected T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
+	{
+		return ExpandingProperties.expand(properties, m_value, recursionGuard + 1);
 	}
 }

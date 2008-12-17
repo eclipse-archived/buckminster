@@ -45,7 +45,7 @@ public class MaxParallelMaterializations extends BasicPreferenceHandler
 		{
 		}
 		throw new IllegalArgumentException(String.format(NLS.bind(
-				Messages.MaxParallelMaterializations__0_illegal_value_for_maxParallelMaterialisations, prefValue)));
+				Messages._0_illegal_value_for_maxParallelMaterialisations, prefValue)));
 
 	}
 

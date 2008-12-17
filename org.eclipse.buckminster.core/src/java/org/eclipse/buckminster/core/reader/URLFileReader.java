@@ -101,7 +101,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		IConnectContext cctx = getConnectContext();
 
 		monitor.beginTask(null, 1000);
-		monitor.subTask(NLS.bind(Messages.URLFileReader_Copying_from_0, url));
+		monitor.subTask(NLS.bind(Messages.Copying_from_0, url));
 
 		InputStream in = null;
 		try

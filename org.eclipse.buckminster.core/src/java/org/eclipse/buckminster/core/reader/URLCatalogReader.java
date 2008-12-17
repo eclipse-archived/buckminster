@@ -162,7 +162,7 @@ public class URLCatalogReader extends AbstractCatalogReader
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
 		if(source == null)
-			throw new UnsupportedOperationException(Messages.URLCatalogReader_Only_file_protocol_is_supported_at_this_time);
+			throw new UnsupportedOperationException(Messages.Only_file_protocol_is_supported_at_this_time);
 
 		File destDir = destination.toFile();
 		boolean success = false;

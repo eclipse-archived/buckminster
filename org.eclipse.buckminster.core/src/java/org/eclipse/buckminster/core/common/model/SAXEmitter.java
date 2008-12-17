@@ -27,9 +27,9 @@ public abstract class SAXEmitter
 	public static void emitProperties(ContentHandler handler, Map<String, String> props, String namespace,
 			String prefix, boolean raw, boolean includeDefaults) throws SAXException
 	{
-		if(raw && props instanceof ExpandingProperties)
+		if(raw && props instanceof ExpandingProperties<?>)
 		{
-			((ExpandingProperties)props).emitProperties(handler, namespace, prefix, includeDefaults);
+			((ExpandingProperties<?>)props).emitProperties(handler, namespace, prefix, includeDefaults);
 			return;
 		}
 
@@ -54,9 +54,9 @@ public abstract class SAXEmitter
 		else
 		{
 			Set<String> keySet;
-			if(props instanceof IProperties)
-				keySet = ((IProperties)props).overlayKeySet();
-			else if(props instanceof MapUnion)
+			if(props instanceof IProperties<?>)
+				keySet = ((IProperties<?>)props).overlayKeySet();
+			else if(props instanceof MapUnion<?, ?>)
 				keySet = ((MapUnion<String, String>)props).overlayKeySet();
 			else
 				keySet = props.keySet();
@@ -68,7 +68,7 @@ public abstract class SAXEmitter
 		String pqName = Utils.makeQualifiedName(prefix, plName);
 
 		AttributesImpl attrs = new AttributesImpl();
-		boolean withMutableAttr = (props instanceof IProperties) && ((IProperties)props).supportsMutability();
+		boolean withMutableAttr = (props instanceof IProperties<?>) && ((IProperties<?>)props).supportsMutability();
 		for(String name : sorted)
 		{
 			String value = props.get(name);
@@ -78,7 +78,7 @@ public abstract class SAXEmitter
 			attrs.clear();
 			Utils.addAttribute(attrs, "key", name); //$NON-NLS-1$
 			Utils.addAttribute(attrs, "value", value); //$NON-NLS-1$
-			if(withMutableAttr && ((IProperties)props).isMutable(name))
+			if(withMutableAttr && ((IProperties<?>)props).isMutable(name))
 				Utils.addAttribute(attrs, "mutable", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 			handler.startElement(namespace, plName, pqName, attrs);
 			handler.endElement(namespace, plName, pqName);

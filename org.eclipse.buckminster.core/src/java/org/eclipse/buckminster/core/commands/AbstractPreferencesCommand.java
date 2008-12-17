@@ -124,7 +124,7 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 		if(option.is(SCOPE_OPTION))
 		{
 			if(m_scope != null)
-				throw new UsageException(Messages.AbstractPreferencesCommand_Only_one_scope_can_be_given);
+				throw new UsageException(Messages.Only_one_scope_can_be_given);
 
 			String scopeName = option.getValue();
 			if(scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
@@ -133,13 +133,13 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 				m_scope = new ConfigurationScope();
 			else
 				throw new UsageException(NLS.bind(
-						Messages.AbstractPreferencesCommand_Invalid_scope_Valid_scopes_are_0_and_1,
+						Messages.Invalid_scope_Valid_scopes_are_0_and_1,
 						ConfigurationScope.SCOPE, InstanceScope.SCOPE));
 		}
 		else if(option.is(FILE_OPTION))
 		{
 			if(m_prefsFile != null)
-				throw new UsageException(Messages.AbstractPreferencesCommand_Only_one_file_can_be_given);
+				throw new UsageException(Messages.Only_one_file_can_be_given);
 			m_prefsFile = new File(option.getValue());
 		}
 	}
@@ -173,7 +173,7 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 			}
 			if(rootKey == null || rootKey.length() == 0)
 				throw new UsageException(NLS.bind(
-						Messages.AbstractPreferencesCommand_Illegal_include_0_Must_be_in_the_form, include));
+						Messages.Illegal_include_0_Must_be_in_the_form, include));
 
 			if(subKeys == null)
 			{

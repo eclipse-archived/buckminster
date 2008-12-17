@@ -34,6 +34,6 @@ public class EclipseBuildActor extends AbstractBuildIntegrationActor
 			if(kindAsString.equals(e.toString()))
 				return kindAsString;
 
-		throw new IllegalArgumentException(NLS.bind(Messages.EclipseBuildActor_Invalid_kind_0, kindAsString));
+		throw new IllegalArgumentException(NLS.bind(Messages.Invalid_kind_0, kindAsString));
 	}
 }

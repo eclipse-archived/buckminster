@@ -45,7 +45,7 @@ public class ExportPreferences extends AbstractPreferencesCommand
 		}
 		catch(IOException e)
 		{
-			throw new SimpleErrorExitException(NLS.bind(Messages.ExportPreferences_Unable_to_open_file_0, prefsFile));
+			throw new SimpleErrorExitException(NLS.bind(Messages.Unable_to_open_file_0, prefsFile));
 		}
 		finally
 		{

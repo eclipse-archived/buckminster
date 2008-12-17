@@ -56,11 +56,11 @@ public class JobBlocker extends JobChangeAdapter
 		Job job = event.getJob();
 		String jobName = job.getName();
 		String className = job.getClass().getName();
-		trace(NLS.bind(Messages.JobBlocker_JOB_AboutToRun_0, jobName));
+		trace(NLS.bind(Messages.JOB_AboutToRun_0, jobName));
 		if(m_blockByName.contains(jobName) || m_blockByClass.contains(className))
 		{
 			job.cancel();
-			trace(NLS.bind(Messages.JobBlocker_blocked_0_1, className, jobName));
+			trace(NLS.bind(Messages.Blocked_0_1, className, jobName));
 			return;
 		}
 	}

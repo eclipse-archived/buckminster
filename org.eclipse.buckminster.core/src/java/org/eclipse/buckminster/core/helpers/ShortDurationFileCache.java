@@ -93,7 +93,7 @@ class CacheEntry
 	public synchronized InputStream open() throws FileNotFoundException
 	{
 		if(m_removePending)
-			throw new FileNotFoundException(Messages.ShortDurationFileCache_File_is_closed);
+			throw new FileNotFoundException(Messages.File_is_closed);
 
 		if(m_tempFile.isTemporary())
 		{

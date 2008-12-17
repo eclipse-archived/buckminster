@@ -62,265 +62,6 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		super(provider, componentType, query);
 	}
 
-	protected abstract boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor)
-			throws CoreException;
-
-	protected VersionMatch getBestBranchOrTagMatch(boolean branches, IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
-		try
-		{
-			List<RevisionEntry> entries = getBranchesOrTags(branches, MonitorUtils.subMonitor(monitor, 50));
-			return getBestBranchOrTagMatch(branches, entries, MonitorUtils.subMonitor(monitor, 50));
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
-	protected VersionMatch getBestBranchOrTagMatch(boolean branches, List<RevisionEntry> entries,
-			IProgressMonitor monitor) throws CoreException
-	{
-		int top = entries.size();
-		if(top == 0)
-		{
-			logDecision(branches
-					? ResolverDecisionType.NO_BRANCHES_FOUND
-					: ResolverDecisionType.NO_TAGS_FOUND);
-			MonitorUtils.complete(monitor);
-			return null;
-		}
-
-		IVersionConverter vConverter = getProvider().getVersionConverter();
-		if(vConverter != null && vConverter.getSelectorType() != (branches
-				? VersionSelector.BRANCH
-				: VersionSelector.TAG))
-		{
-			// Version converter not for the desired type so we will not find anything
-			//
-			if(branches)
-				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "tags", "branches"); //$NON-NLS-1$ //$NON-NLS-2$
-			else
-				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "branches", "tags"); //$NON-NLS-1$ //$NON-NLS-2$
-			MonitorUtils.complete(monitor);
-			return null;
-		}
-
-		monitor.beginTask(null, top * 10);
-		NodeQuery query = getQuery();
-		VersionSelector[] branchTagPath = query.getBranchTagPath();
-		IVersionDesignator versionDesignator = query.getVersionDesignator();
-		long revision = query.getRevision();
-		Date timestamp = query.getTimestamp();
-		VersionMatch best = null;
-		for(RevisionEntry entry : entries)
-		{
-			// Rule out anything that is above a given revision
-			//
-			if(revision != -1 && entry.getRevision() > revision)
-			{
-				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high"); //$NON-NLS-1$
-				continue;
-			}
-
-			// Rule out anything that is later then a given time
-			//
-			if(timestamp != null)
-			{
-				Date entryTs = entry.getTimestamp();
-				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
-				{
-					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young"); //$NON-NLS-1$
-					continue;
-				}
-			}
-
-			String name = entry.getEntryName();
-			VersionSelector branchOrTag = branches
-					? VersionSelector.branch(name)
-					: VersionSelector.tag(name);
-			if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
-			{
-				// This one will be discriminated anyway so there's no need to include it
-				//
-				logDecision(branches
-						? ResolverDecisionType.BRANCH_REJECTED
-						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(
-						Messages.AbstractSCCSVersionFinder_not_in_path_0, VersionSelector.toString(branchTagPath)));
-				continue;
-			}
-
-			IVersion version;
-			VersionMatch match = null;
-			if(vConverter != null)
-			{
-				version = vConverter.createVersion(branchOrTag);
-				if(version == null)
-				{
-					// Converter could not make sense of this tag. Skip it
-					//
-					logDecision(branches
-							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
-							Messages.AbstractSCCSVersionFinder_versionSelector_cannot_make_sense_of_it);
-					MonitorUtils.worked(monitor, 10);
-					continue;
-				}
-
-				// We need to assert that the component really exists on this branch
-				// or with this tag.
-				//
-				match = new VersionMatch(version, branchOrTag, entry.getRevision(), entry.getTimestamp(), null);
-				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
-				{
-					logDecision(branches
-							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
-							Messages.AbstractSCCSVersionFinder_no_component_was_found);
-					continue;
-				}
-				logDecision(branches
-						? ResolverDecisionType.USING_BRANCH_CONVERTED_VERSION
-						: ResolverDecisionType.USING_TAG_CONVERTED_VERSION, version, branchOrTag);
-			}
-			else
-			{
-				try
-				{
-					version = getVersionFromArtifacts(branchOrTag, MonitorUtils.subMonitor(monitor, 10));
-				}
-				catch(CoreException e)
-				{
-					// Something is not right with this entry. Skip it.
-					//
-					logDecision(branches
-							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag, e.getMessage());
-					continue;
-				}
-			}
-
-			if(!(versionDesignator == null || versionDesignator.designates(version)))
-			{
-				// Discriminated by our designator
-				//
-				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
-						Messages.AbstractSCCSVersionFinder_not_designated_by_0, versionDesignator));
-				continue;
-			}
-
-			if(match == null)
-				match = new VersionMatch(version, branchOrTag, entry.getRevision(), entry.getTimestamp(), null);
-
-			if(version == null)
-			{
-				// Unknown component type will not check the existence of any artifacts. We need to
-				// do that here
-				//						
-				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
-				{
-					logDecision(branches
-							? ResolverDecisionType.BRANCH_REJECTED
-							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
-							Messages.AbstractSCCSVersionFinder_no_component_was_found);
-					continue;
-				}
-			}
-
-			if(best == null || query.compare(match, best) > 0)
-			{
-				if(best != null)
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(
-							Messages.AbstractSCCSVersionFinder__0_is_a_better_match, match));
-
-				best = match;
-				if(vConverter == null)
-				{
-					if(query.getResolutionPrio()[0] == IAdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
-						//
-						// Branch/Tag path have the highest prio so there's no need to
-						// check the next entry.
-						//
-						break;
-				}
-				else if(versionDesignator != null && versionDesignator.isExplicit())
-				{
-					// Explicit hit on a version converted tag or branch. This will do just fine.
-					//
-					break;
-				}
-			}
-		}
-		monitor.done();
-		return best;
-	}
-
-	protected VersionMatch getBestTrunkMatch(IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
-		try
-		{
-			RevisionEntry entry = getTrunk(MonitorUtils.subMonitor(monitor, 50));
-			if(entry == null)
-				return null;
-
-			NodeQuery query = getQuery();
-
-			// Rule out anything that is above a given revision
-			//
-			long revision = query.getRevision();
-			if(revision != -1 && entry.getRevision() > revision)
-			{
-				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()),
-						Messages.AbstractSCCSVersionFinder_too_high);
-				return null;
-			}
-
-			// Rule out anything that is later then a given time
-			//
-			Date timestamp = query.getTimestamp();
-			if(timestamp != null)
-			{
-				Date entryTs = entry.getTimestamp();
-				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
-				{
-					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs,
-							Messages.AbstractSCCSVersionFinder_too_young);
-					return null;
-				}
-			}
-
-			IVersion version = null;
-			try
-			{
-				version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
-			}
-			catch(CoreException e)
-			{
-				// Something is not right with this entry. Skip it.
-				//
-				logDecision(ResolverDecisionType.MAIN_REJECTED, e.getMessage());
-				return null;
-			}
-
-			IVersionDesignator versionDesignator = query.getVersionDesignator();
-			if(!(versionDesignator == null || versionDesignator.designates(version)))
-			{
-				// Discriminated by our designator
-				//
-				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
-						Messages.AbstractSCCSVersionFinder_not_designated_by_0, versionDesignator));
-				return null;
-			}
-			return new VersionMatch(version, null, -1, null, null);
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
 		try
@@ -406,8 +147,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 					best = match;
 				else if(match != null && query.compare(match, best) > 0)
 				{
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(
-							Messages.AbstractSCCSVersionFinder__0_is_a_better_match, match));
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(Messages._0_is_a_better_match,
+							match));
 					best = match;
 				}
 			}
@@ -419,12 +160,268 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 					best = match;
 				else if(match != null && query.compare(match, best) > 0)
 				{
-					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(
-							Messages.AbstractSCCSVersionFinder__0_is_a_better_match, match));
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(Messages._0_is_a_better_match,
+							match));
 					best = match;
 				}
 			}
 			return best;
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	protected abstract boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor)
+			throws CoreException;
+
+	protected VersionMatch getBestBranchOrTagMatch(boolean branches, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 100);
+		try
+		{
+			List<RevisionEntry> entries = getBranchesOrTags(branches, MonitorUtils.subMonitor(monitor, 50));
+			return getBestBranchOrTagMatch(branches, entries, MonitorUtils.subMonitor(monitor, 50));
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	protected VersionMatch getBestBranchOrTagMatch(boolean branches, List<RevisionEntry> entries,
+			IProgressMonitor monitor) throws CoreException
+	{
+		int top = entries.size();
+		if(top == 0)
+		{
+			logDecision(branches
+					? ResolverDecisionType.NO_BRANCHES_FOUND
+					: ResolverDecisionType.NO_TAGS_FOUND);
+			MonitorUtils.complete(monitor);
+			return null;
+		}
+
+		IVersionConverter vConverter = getProvider().getVersionConverter();
+		if(vConverter != null && vConverter.getSelectorType() != (branches
+				? VersionSelector.BRANCH
+				: VersionSelector.TAG))
+		{
+			// Version converter not for the desired type so we will not find anything
+			//
+			if(branches)
+				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "tags", "branches"); //$NON-NLS-1$ //$NON-NLS-2$
+			else
+				logDecision(ResolverDecisionType.VERSION_SELECTOR_MISMATCH, "branches", "tags"); //$NON-NLS-1$ //$NON-NLS-2$
+			MonitorUtils.complete(monitor);
+			return null;
+		}
+
+		monitor.beginTask(null, top * 10);
+		NodeQuery query = getQuery();
+		VersionSelector[] branchTagPath = query.getBranchTagPath();
+		IVersionDesignator versionDesignator = query.getVersionDesignator();
+		long revision = query.getRevision();
+		Date timestamp = query.getTimestamp();
+		VersionMatch best = null;
+		for(RevisionEntry entry : entries)
+		{
+			// Rule out anything that is above a given revision
+			//
+			if(revision != -1 && entry.getRevision() > revision)
+			{
+				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high"); //$NON-NLS-1$
+				continue;
+			}
+
+			// Rule out anything that is later then a given time
+			//
+			if(timestamp != null)
+			{
+				Date entryTs = entry.getTimestamp();
+				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
+				{
+					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, "too young"); //$NON-NLS-1$
+					continue;
+				}
+			}
+
+			String name = entry.getEntryName();
+			VersionSelector branchOrTag = branches
+					? VersionSelector.branch(name)
+					: VersionSelector.tag(name);
+			if(branchTagPath.length > 0 && VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
+			{
+				// This one will be discriminated anyway so there's no need to include it
+				//
+				logDecision(branches
+						? ResolverDecisionType.BRANCH_REJECTED
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(Messages.r_not_in_path_0,
+						VersionSelector.toString(branchTagPath)));
+				continue;
+			}
+
+			IVersion version;
+			VersionMatch match = null;
+			if(vConverter != null)
+			{
+				version = vConverter.createVersion(branchOrTag);
+				if(version == null)
+				{
+					// Converter could not make sense of this tag. Skip it
+					//
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag,
+							Messages.VersionSelector_cannot_make_sense_of_it);
+					MonitorUtils.worked(monitor, 10);
+					continue;
+				}
+
+				// We need to assert that the component really exists on this branch
+				// or with this tag.
+				//
+				match = new VersionMatch(version, branchOrTag, entry.getRevision(), entry.getTimestamp(), null);
+				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
+				{
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, Messages.No_component_was_found);
+					continue;
+				}
+				logDecision(branches
+						? ResolverDecisionType.USING_BRANCH_CONVERTED_VERSION
+						: ResolverDecisionType.USING_TAG_CONVERTED_VERSION, version, branchOrTag);
+			}
+			else
+			{
+				try
+				{
+					version = getVersionFromArtifacts(branchOrTag, MonitorUtils.subMonitor(monitor, 10));
+				}
+				catch(CoreException e)
+				{
+					// Something is not right with this entry. Skip it.
+					//
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, e.getMessage());
+					continue;
+				}
+			}
+
+			if(!(versionDesignator == null || versionDesignator.designates(version)))
+			{
+				// Discriminated by our designator
+				//
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(Messages.Not_designated_by_0,
+						versionDesignator));
+				continue;
+			}
+
+			if(match == null)
+				match = new VersionMatch(version, branchOrTag, entry.getRevision(), entry.getTimestamp(), null);
+
+			if(version == null)
+			{
+				// Unknown component type will not check the existence of any artifacts. We need to
+				// do that here
+				//						
+				if(!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10)))
+				{
+					logDecision(branches
+							? ResolverDecisionType.BRANCH_REJECTED
+							: ResolverDecisionType.TAG_REJECTED, branchOrTag, Messages.No_component_was_found);
+					continue;
+				}
+			}
+
+			if(best == null || query.compare(match, best) > 0)
+			{
+				if(best != null)
+					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(Messages._0_is_a_better_match,
+							match));
+
+				best = match;
+				if(vConverter == null)
+				{
+					if(query.getResolutionPrio()[0] == IAdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
+						//
+						// Branch/Tag path have the highest prio so there's no need to
+						// check the next entry.
+						//
+						break;
+				}
+				else if(versionDesignator != null && versionDesignator.isExplicit())
+				{
+					// Explicit hit on a version converted tag or branch. This will do just fine.
+					//
+					break;
+				}
+			}
+		}
+		monitor.done();
+		return best;
+	}
+
+	protected VersionMatch getBestTrunkMatch(IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 100);
+		try
+		{
+			RevisionEntry entry = getTrunk(MonitorUtils.subMonitor(monitor, 50));
+			if(entry == null)
+				return null;
+
+			NodeQuery query = getQuery();
+
+			// Rule out anything that is above a given revision
+			//
+			long revision = query.getRevision();
+			if(revision != -1 && entry.getRevision() > revision)
+			{
+				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()),
+						Messages.Too_high);
+				return null;
+			}
+
+			// Rule out anything that is later then a given time
+			//
+			Date timestamp = query.getTimestamp();
+			if(timestamp != null)
+			{
+				Date entryTs = entry.getTimestamp();
+				if(entryTs != null && entryTs.compareTo(timestamp) > 0)
+				{
+					logDecision(ResolverDecisionType.TIMESTAMP_REJECTED, entryTs, Messages.Too_young);
+					return null;
+				}
+			}
+
+			IVersion version = null;
+			try
+			{
+				version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
+			}
+			catch(CoreException e)
+			{
+				// Something is not right with this entry. Skip it.
+				//
+				logDecision(ResolverDecisionType.MAIN_REJECTED, e.getMessage());
+				return null;
+			}
+
+			IVersionDesignator versionDesignator = query.getVersionDesignator();
+			if(!(versionDesignator == null || versionDesignator.designates(version)))
+			{
+				// Discriminated by our designator
+				//
+				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(Messages.Not_designated_by_0,
+						versionDesignator));
+				return null;
+			}
+			return new VersionMatch(version, null, -1, null, null);
 		}
 		finally
 		{

@@ -41,7 +41,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 
 	private final HashSet<Action> m_actionsPerformed = new HashSet<Action>();
 
-	private final Map<String, String> m_globalProps;
+	private final Map<String, ? extends Object> m_globalProps;
 
 	private final boolean m_forcedExecution;
 
@@ -51,7 +51,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 
 	private IStatus m_status;
 
-	public GlobalContext(Map<String, String> userProps, boolean forcedExecution, boolean quietExecution)
+	public GlobalContext(Map<String, ? extends Object> userProps, boolean forcedExecution, boolean quietExecution)
 	{
 		super(userProps);
 		m_globalProps = RMContext.getGlobalPropertyAdditions();
@@ -59,24 +59,13 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 		m_quietExecution = quietExecution;
 	}
 
-	/**
-	 * Add an <code>action</code> to the set of performed actions.
-	 * 
-	 * @param action
-	 *            The action to add.
-	 */
-	void addPerformedAction(Action action)
-	{
-		m_actionsPerformed.add(action);
-	}
-
-	public Map<String, String> getExecutionProperties(Attribute attribute) throws CoreException
+	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException
 	{
 		Map<String, String> actionProps = (attribute instanceof IAction)
 				? ((IAction)attribute).getProperties()
 				: Collections.<String, String> emptyMap();
 		int mapSize = m_globalProps.size() + actionProps.size() + 10;
-		ExpandingProperties allProps = new ExpandingProperties(mapSize);
+		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(mapSize);
 		allProps.putAll(m_globalProps, true);
 		allProps.putAll(actionProps, true);
 		allProps.putAll(super.getProperties());
@@ -96,10 +85,11 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	 * @author Guillaume CHATELET
 	 */
 	@Override
-	public synchronized Map<String, String> getProperties()
+	public synchronized Map<String, ? extends Object> getProperties()
 	{
-		Map<String, String> userProperties = super.getProperties();
-		ExpandingProperties allProps = new ExpandingProperties(userProperties.size() + m_globalProps.size());
+		Map<String, ? extends Object> userProperties = super.getProperties();
+		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(userProperties.size()
+				+ m_globalProps.size());
 		allProps.putAll(m_globalProps, true);
 		allProps.putAll(userProperties);
 		return allProps;
@@ -108,6 +98,39 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	public IStatus getStatus()
 	{
 		return m_status;
+	}
+
+	public void scheduleRemoval(IPath path)
+	{
+		if(!path.isAbsolute())
+			throw new IllegalArgumentException(Messages.Only_absolute_paths_can_be_scheduled_for_removal);
+
+		int idx = m_scheduledRemovals.size();
+		while(--idx >= 0)
+		{
+			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
+			if(alreadyScheduled.isPrefixOf(path))
+				return;
+			if(path.isPrefixOf(alreadyScheduled))
+				m_scheduledRemovals.remove(idx);
+		}
+		m_scheduledRemovals.add(path);
+	}
+
+	public void setStatus(IStatus status)
+	{
+		m_status = status;
+	}
+
+	/**
+	 * Add an <code>action</code> to the set of performed actions.
+	 * 
+	 * @param action
+	 *            The action to add.
+	 */
+	void addPerformedAction(Action action)
+	{
+		m_actionsPerformed.add(action);
 	}
 
 	boolean hasExecutedKind(int kind)
@@ -174,28 +197,6 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 			monitor.done();
 		}
 		m_scheduledRemovals.clear();
-	}
-
-	public void scheduleRemoval(IPath path)
-	{
-		if(!path.isAbsolute())
-			throw new IllegalArgumentException(Messages.GlobalContext_Only_absolute_paths_can_be_scheduled_for_removal);
-
-		int idx = m_scheduledRemovals.size();
-		while(--idx >= 0)
-		{
-			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
-			if(alreadyScheduled.isPrefixOf(path))
-				return;
-			if(path.isPrefixOf(alreadyScheduled))
-				m_scheduledRemovals.remove(idx);
-		}
-		m_scheduledRemovals.add(path);
-	}
-
-	public void setStatus(IStatus status)
-	{
-		m_status = status;
 	}
 
 	void setWorkspaceRefreshPending(boolean flag)

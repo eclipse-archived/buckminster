@@ -23,7 +23,7 @@ public class ProjectNameMismatchException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.ProjectNameMismatchException_ProjectBinding_name_conflict_information_indicates_0_for_project_named_1,
+								Messages.ProjectBinding_name_conflict_information_indicates_0_for_project_named_1,
 								wantedName, existingName));
 	}
 }

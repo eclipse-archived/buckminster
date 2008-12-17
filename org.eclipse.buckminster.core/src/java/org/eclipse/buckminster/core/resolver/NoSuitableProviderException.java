@@ -22,7 +22,7 @@ public class NoSuitableProviderException extends LocalizedException
 	public NoSuitableProviderException(String searchPathName, String componentName)
 	{
 		super(NLS.bind(
-				Messages.NoSuitableProviderException_No_suitable_provider_for_component_0_was_found_in_searchPath_1,
+				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1,
 				componentName, searchPathName));
 	}
 }

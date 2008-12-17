@@ -32,7 +32,7 @@ public class PathGroup
 	public PathGroup(IPath base, IPath[] paths)
 	{
 		if(base == null)
-			throw new IllegalArgumentException(Messages.PathGroup_base_cannot_be_null);
+			throw new IllegalArgumentException(Messages.Base_cannot_be_null);
 		m_base = base;
 		m_paths = paths;
 	}
@@ -88,10 +88,10 @@ public class PathGroup
 	public void copyTo(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		if(!destination.isAbsolute())
-			throw new IllegalArgumentException(Messages.PathGroup_destination_must_be_absolute);
+			throw new IllegalArgumentException(Messages.Destination_must_be_absolute);
 
 		if(!m_base.isAbsolute())
-			throw new IllegalArgumentException(Messages.PathGroup_source_must_be_absolute);
+			throw new IllegalArgumentException(Messages.Source_must_be_absolute);
 
 		File destDir = destination.toFile().getAbsoluteFile();
 		File baseDir = m_base.toFile().getAbsoluteFile();

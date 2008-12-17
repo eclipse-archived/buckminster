@@ -167,7 +167,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 			if(!fileOverlay.isDirectory())
 				throw new IllegalOverlayException(
-						Messages.AbstractCatalogReader_Only_folders_zip_and_jar_archives_allowed);
+						Messages.Only_folders_zip_and_jar_archives_allowed);
 
 			// Monitor was not used for anything so make it complete
 			//
@@ -281,7 +281,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		String path = url.getPath();
 		if(!(path.endsWith(".zip") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$
 			throw new IllegalOverlayException(
-					Messages.AbstractCatalogReader_Only_zip_and_jar_archives_allowed_for_remote_overlays);
+					Messages.Only_zip_and_jar_archives_allowed_for_remote_overlays);
 
 		File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 		FileUtils.unzip(url, getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);

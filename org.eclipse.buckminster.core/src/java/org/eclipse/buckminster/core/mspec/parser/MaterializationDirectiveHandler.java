@@ -99,7 +99,7 @@ public abstract class MaterializationDirectiveHandler extends PropertyManagerHan
 			catch(IllegalArgumentException e)
 			{
 				throw new SAXParseException(NLS.bind(
-						Messages.MaterializationDirectiveHandler_Invalid_value_for_attribute_0,
+						Messages.Invalid_value_for_attribute_0,
 						MaterializationDirective.ATTR_CONFLICT_RESOLUTION), this.getDocumentLocator());
 			}
 		}

@@ -108,15 +108,6 @@ public class URIMatcher extends RxAssembly
 		m_componentType = componentType;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_BASE, m_base);
-		if(m_versionType != VersionFactory.OSGiType)
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
-	}
-
 	public Resolution createResolution(ProviderMatch pm) throws CoreException
 	{
 		Map<String, String> matchMap = pm.getMatcherMap();
@@ -279,7 +270,7 @@ public class URIMatcher extends RxAssembly
 			return null;
 
 		query = query.getContext().getNodeQuery(query.getQualifiedDependency());
-		query.getProperties().putAll(candidateMap);
+		query = new NodeQuery(query, candidateMap);
 		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(m_componentType),
 				candidate, query);
 		pm.setMatcherMap(candidateMap);
@@ -289,5 +280,14 @@ public class URIMatcher extends RxAssembly
 	public IVersionType getVersionType()
 	{
 		return m_versionType;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_BASE, m_base);
+		if(m_versionType != VersionFactory.OSGiType)
+			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
 	}
 }

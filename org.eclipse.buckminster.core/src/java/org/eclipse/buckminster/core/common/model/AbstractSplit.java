@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.common.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -38,29 +39,6 @@ public abstract class AbstractSplit extends ValueHolderFilter
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
-	}
-
-	@Override
-	protected String checkedGetValue(Map<String, String> properties, int recursionGuard)
-	{
-		String[] values = this.checkedGetValues(properties, recursionGuard);
-		int top = values.length;
-		if(top == 0)
-			return NO_VALUE;
-
-		if(top == 1)
-			return values[0];
-
-		StringBuilder bld = new StringBuilder();
-		for(int idx = 0; idx < top; ++idx)
-			bld.append(values[idx]);
-		return bld.toString();
-	}
-
-	@Override
 	public boolean equals(Object o)
 	{
 		return super.equals(o) && m_pattern.equals(((AbstractSplit)o).m_pattern);
@@ -69,11 +47,6 @@ public abstract class AbstractSplit extends ValueHolderFilter
 	public String getDefaultTag()
 	{
 		return TAG;
-	}
-
-	final Pattern getPattern()
-	{
-		return m_pattern;
 	}
 
 	@Override
@@ -93,5 +66,33 @@ public abstract class AbstractSplit extends ValueHolderFilter
 	public boolean isMultiValueProducer()
 	{
 		return true;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
+	}
+
+	@Override
+	protected String checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
+	{
+		List<String> values = checkedGetValues(properties, recursionGuard);
+		int top = values.size();
+		if(top == 0)
+			return NO_VALUE;
+
+		if(top == 1)
+			return values.get(0);
+
+		StringBuilder bld = new StringBuilder();
+		for(int idx = 0; idx < top; ++idx)
+			bld.append(values.get(idx));
+		return bld.toString();
+	}
+
+	final Pattern getPattern()
+	{
+		return m_pattern;
 	}
 }

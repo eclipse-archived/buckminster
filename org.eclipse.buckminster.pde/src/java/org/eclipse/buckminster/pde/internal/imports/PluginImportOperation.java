@@ -12,6 +12,7 @@ package org.eclipse.buckminster.pde.internal.imports;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,6 +91,42 @@ public class PluginImportOperation extends JarImportOperation
 	public static final int IMPORT_BINARY_WITH_LINKS = 2;
 
 	public static final int IMPORT_WITH_SOURCE = 3;
+
+	private static final Method ClasspathComputer_getClasspath;
+
+	private static final boolean ClasspathComputer_is35;
+
+	private static final String GET_CLASSPATH = "getClasspath";
+
+	static
+	{
+		Method getClasspath;
+		boolean is35 = false;
+		try
+		{
+			getClasspath = ClasspathComputer.class.getDeclaredMethod(GET_CLASSPATH, IProject.class,
+					IPluginModelBase.class, Map.class, boolean.class, boolean.class);
+			is35 = true;
+		}
+		catch(NoSuchMethodException e)
+		{
+			try
+			{
+				getClasspath = ClasspathComputer.class.getDeclaredMethod(GET_CLASSPATH, IProject.class,
+						IPluginModelBase.class, boolean.class, boolean.class);
+			}
+			catch(NoSuchMethodException e1)
+			{
+				throw new ExceptionInInitializerError(e);
+			}
+		}
+		catch(SecurityException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+		ClasspathComputer_getClasspath = getClasspath;
+		ClasspathComputer_is35 = is35;
+	}
 
 	public static void setClasspaths(IProgressMonitor monitor, Map<IProject, IClasspathEntry[]> classpaths)
 			throws JavaModelException
@@ -228,8 +265,7 @@ public class PluginImportOperation extends JarImportOperation
 			if(m_classpathCollector != null)
 			{
 				if(project.hasNature(JavaCore.NATURE_ID) && project.findMember(".classpath") == null) //$NON-NLS-1$
-					m_classpathCollector.addProjectClasspath(project, ClasspathComputer.getClasspath(project, m_model,
-							true, false));
+					m_classpathCollector.addProjectClasspath(project, getClasspath(project));
 			}
 			project.delete(false, true, MonitorUtils.subMonitor(monitor, 100));
 		}
@@ -458,6 +494,20 @@ public class PluginImportOperation extends JarImportOperation
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(id);
 	}
 
+	private IClasspathEntry[] getClasspath(IProject project) throws CoreException
+	{
+		try
+		{
+			return (IClasspathEntry[])(ClasspathComputer_is35
+					? ClasspathComputer_getClasspath.invoke(null, project, m_model, null, Boolean.TRUE, Boolean.FALSE)
+					: ClasspathComputer_getClasspath.invoke(null, project, m_model, Boolean.TRUE, Boolean.FALSE));
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
 	/**
 	 * Creates a path representing a zip file that is named based on the plugin install location. Used to replace
 	 * src.zip with a more unique and meaningful name.
@@ -676,9 +726,11 @@ public class PluginImportOperation extends JarImportOperation
 
 		File installLocation = new File(m_model.getInstallLocation());
 		File[] items = installLocation.listFiles();
-		MonitorUtils.begin(monitor, Messages.linking_imported_plugin, items.length + 1);
-		if(items != null)
+		if(items == null)
+			MonitorUtils.begin(monitor, Messages.linking_imported_plugin, 1);
+		else
 		{
+			MonitorUtils.begin(monitor, Messages.linking_imported_plugin, items.length + 1);
 			for(int i = 0; i < items.length; i++)
 			{
 				File sourceFile = items[i];

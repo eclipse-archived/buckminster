@@ -203,7 +203,7 @@ public class ParserFactory implements IParserFactory
 			}
 			catch(CoreException e)
 			{
-				CorePlugin.getLogger().warning(e, Messages.ParserFactory_Unable_to_load_parser_extensions);
+				CorePlugin.getLogger().warning(e, Messages.Unable_to_load_parser_extensions);
 				m_parserExtensions = Collections.emptyMap();
 			}
 		}

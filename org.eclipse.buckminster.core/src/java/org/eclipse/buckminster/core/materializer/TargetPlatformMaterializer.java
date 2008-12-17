@@ -69,7 +69,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		}
 		if(installSite == null)
 			throw BuckminsterException
-					.fromMessage(Messages.TargetPlatformMaterializer_Could_not_find_a_site_to_install_to);
+					.fromMessage(Messages.Could_not_find_a_site_to_install_to);
 		return installSite.getSite();
 	}
 
@@ -127,7 +127,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 				s = children[0];
 				if(s.getException() instanceof FileNotFoundException && s.getMessage().startsWith("Unable to access")) //$NON-NLS-1$
 					e = BuckminsterException.fromMessage(NLS.bind(
-							Messages.TargetPlatformMaterializer_No_target_platform_found_at_0, destination));
+							Messages.No_target_platform_found_at_0, destination));
 			}
 			throw e;
 		}

@@ -113,12 +113,12 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	public IPreferenceDescriptor[] getPreferenceDescriptors()
 	{
 		PreferenceDescriptor[] pds = new PreferenceDescriptor[4];
-		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, Messages.ResourceMapResolverFactory_Resource_map_URL);
+		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, Messages.Resource_map_URL);
 		pds[1] = new PreferenceDescriptor(OVERRIDE_QUERY_URL_PARAM, PreferenceType.Boolean,
-				Messages.ResourceMapResolverFactory_Override_URL_in_Component_Query);
-		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean, Messages.ResourceMapResolverFactory_Perform_local_resolution);
+				Messages.Override_URL_in_Component_Query);
+		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean, Messages.Perform_local_resolution);
 		pds[3] = new PreferenceDescriptor(RESOLVER_THREADS_MAX_PARAM, PreferenceType.Integer,
-				Messages.ResourceMapResolverFactory_Maximum_number_of_resolver_threads);
+				Messages.Maximum_number_of_resolver_threads);
 		pds[3].setTextWidth(2);
 		pds[3].setIntegerRange(1, 12);
 		return pds;

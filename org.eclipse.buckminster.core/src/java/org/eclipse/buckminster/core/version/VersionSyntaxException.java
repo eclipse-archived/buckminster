@@ -17,7 +17,7 @@ public class VersionSyntaxException extends LocalizedException
 
 	public VersionSyntaxException(String reason, String versionString, int errorPos)
 	{
-		super(NLS.bind(Messages.VersionSyntaxException_Syntax_error_in_version_string_0_at_position_1_2, new Object[] {
+		super(NLS.bind(Messages.Syntax_error_in_version_string_0_at_position_1_2, new Object[] {
 				versionString, Integer.valueOf(errorPos), reason }));
 	}
 }

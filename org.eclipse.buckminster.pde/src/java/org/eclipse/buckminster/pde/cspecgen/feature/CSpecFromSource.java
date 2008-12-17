@@ -44,13 +44,13 @@ public class CSpecFromSource extends CSpecGenerator
 
 	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root"; //$NON-NLS-1$
 
-	private static boolean isListOK(String list, String item)
+	private static boolean isListOK(String list, Object item)
 	{
 		if(list == null || list.length() == 0)
 			return true;
 		StringTokenizer tokens = new StringTokenizer(list, ","); //$NON-NLS-1$
 		while(tokens.hasMoreTokens())
-			if("*".equals(item) || item.equals(tokens.nextElement())) //$NON-NLS-1$
+			if(item.equals("*") || item.equals(tokens.nextElement())) //$NON-NLS-1$
 				return true;
 		return false;
 	}
@@ -237,10 +237,10 @@ public class CSpecFromSource extends CSpecGenerator
 		if(plugins == null || plugins.length == 0)
 			return;
 
-		Map<String, String> props = getReader().getNodeQuery().getProperties();
-		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
-		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
-		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
+		Map<String, ? extends Object> props = getReader().getNodeQuery().getProperties();
+		Object os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
+		Object ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
+		Object arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();

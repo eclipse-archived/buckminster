@@ -42,13 +42,13 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Thomas Hallgren
  */
-public class ExpandingProperties implements IProperties
+public class ExpandingProperties<T extends Object> implements IProperties<T>
 {
-	class EntryWrapper implements Entry<String, String>
+	class EntryWrapper implements Entry<String, T>
 	{
-		private final Entry<String, ValueHolder> m_entry;
+		private final Entry<String, ValueHolder<T>> m_entry;
 
-		public EntryWrapper(Entry<String, ValueHolder> entry)
+		public EntryWrapper(Entry<String, ValueHolder<T>> entry)
 		{
 			m_entry = entry;
 		}
@@ -58,19 +58,19 @@ public class ExpandingProperties implements IProperties
 			return m_entry.getKey();
 		}
 
-		public String getValue()
+		public T getValue()
 		{
-			String value = convertValue(m_entry.getValue(), 0);
+			T value = convertValue(m_entry.getValue(), 0);
 			if(value != null)
 				value = expand(ExpandingProperties.this, value, 0);
 			return value;
 		}
 
-		public synchronized String setValue(String value)
+		public synchronized T setValue(T value)
 		{
 			String key = m_entry.getKey();
-			ValueHolder vh = m_entry.getValue();
-			Constant constant = new Constant(value);
+			ValueHolder<T> vh = m_entry.getValue();
+			Constant<T> constant = new Constant<T>(value);
 			if(!(vh == null || vh.isMutable() || vh.equals(constant)))
 				throw new ImmutablePropertyException(key);
 			m_entry.setValue(constant);
@@ -80,19 +80,35 @@ public class ExpandingProperties implements IProperties
 
 	public static final int MAX_NESTING_DEPTH = 64;
 
-	private static String checkedExpand(Map<String, String> props, String topValue, String value, int recursionGuard)
+	public static <T> Map<String, T> createUnmodifiableProperties(Map<String, T> aMap)
 	{
-		if(value == null)
-			return null;
+		if(aMap == null || aMap.size() == 0)
+			aMap = Collections.emptyMap();
+		else
+			aMap = Collections.unmodifiableMap(new ExpandingProperties<T>(aMap));
+		return aMap;
+	}
+
+	public static <T> T expand(Map<String, ? extends Object> properties, T value, int nestingLevel)
+	{
+		return checkedExpand(properties, value, value, nestingLevel);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> T checkedExpand(Map<String, ? extends Object> props, T topValue, T objVal, int recursionGuard)
+	{
+		if(!(objVal instanceof String))
+			return objVal;
 
 		if(recursionGuard > MAX_NESTING_DEPTH)
-			throw new CircularExpansionException(topValue);
+			throw new CircularExpansionException((String)topValue);
 
+		String value = (String)objVal;
 		StringBuilder bld = null;
 		int fragmentStart = 0;
 		int top = value.length();
 		if(top < 4)
-			return value;
+			return objVal;
 
 		--top; // Last character is not of interest
 		for(int idx = 0; idx < top; ++idx)
@@ -130,8 +146,8 @@ public class ExpandingProperties implements IProperties
 			// We must use the getUnexpandedProperty here if we don't want
 			// to put the CircularExpansion check out of business.
 			//
-			String propVal = (props instanceof ExpandingProperties)
-					? ((ExpandingProperties)props).getExpandedProperty(propKey, recursionGuard + 1)
+			Object propVal = (props instanceof ExpandingProperties<?>)
+					? ((ExpandingProperties<?>)props).getExpandedProperty(propKey, recursionGuard + 1)
 					: props.get(propKey);
 
 			if(propVal != null)
@@ -151,26 +167,12 @@ public class ExpandingProperties implements IProperties
 			++top; // Last character becomes interesting again
 			if(fragmentStart < top)
 				bld.append(value.substring(fragmentStart, top));
-			return bld.toString();
+			value = bld.toString();
 		}
 
-		// No substitution occured
+		// This cast is safe since we were passed a String to begin with.
 		//
-		return value;
-	}
-
-	public static Map<String, String> createUnmodifiableProperties(Map<String, String> aMap)
-	{
-		if(aMap == null || aMap.size() == 0)
-			aMap = Collections.emptyMap();
-		else
-			aMap = Collections.unmodifiableMap(new ExpandingProperties(aMap));
-		return aMap;
-	}
-
-	public static final String expand(Map<String, String> properties, String value, int nestingLevel)
-	{
-		return checkedExpand(properties, value, value, nestingLevel);
+		return (T)value;
 	}
 
 	private static int parsePropertyName(String source, int startIndex, boolean inResolve)
@@ -212,41 +214,42 @@ public class ExpandingProperties implements IProperties
 		return top;
 	}
 
-	private final Map<String, ValueHolder> m_map;
+	private final Map<String, ValueHolder<T>> m_map;
 
 	public ExpandingProperties()
 	{
-		m_map = new HashMap<String, ValueHolder>();
+		m_map = new HashMap<String, ValueHolder<T>>();
 	}
 
 	public ExpandingProperties(int size)
 	{
-		m_map = new HashMap<String, ValueHolder>(size);
+		m_map = new HashMap<String, ValueHolder<T>>(size);
 	}
 
-	public ExpandingProperties(Map<String, String> dflts)
+	@SuppressWarnings("unchecked")
+	public ExpandingProperties(Map<String, ? extends T> dflts)
 	{
-		Map<String, ValueHolder> overlay = new HashMap<String, ValueHolder>();
+		Map<String, ValueHolder<T>> overlay = new HashMap<String, ValueHolder<T>>();
 		if(dflts == null || dflts.size() == 0)
 		{
 			m_map = overlay;
 			return;
 		}
 
-		Map<String, ValueHolder> dfltMap;
-		if(dflts instanceof ExpandingProperties)
-			dfltMap = ((ExpandingProperties)dflts).m_map;
+		Map<String, ValueHolder<T>> dfltMap;
+		if(dflts instanceof ExpandingProperties<?>)
+			dfltMap = ((ExpandingProperties<T>)dflts).m_map;
 		else
 		{
-			dfltMap = new HashMap<String, ValueHolder>(dflts.size());
-			for(Map.Entry<String, String> de : dflts.entrySet())
+			dfltMap = new HashMap<String, ValueHolder<T>>(dflts.size());
+			for(Map.Entry<String, ? extends T> de : dflts.entrySet())
 			{
-				ValueHolder vh = new Constant(de.getValue());
+				ValueHolder<T> vh = new Constant<T>(de.getValue());
 				vh.setMutable(true);
 				dfltMap.put(de.getKey(), vh);
 			}
 		}
-		m_map = new MapUnion<String, ValueHolder>(overlay, dfltMap);
+		m_map = new MapUnion<String, ValueHolder<T>>(overlay, dfltMap);
 	}
 
 	public void clear()
@@ -254,7 +257,7 @@ public class ExpandingProperties implements IProperties
 		if(m_map.isEmpty())
 			return;
 
-		for(Map.Entry<String, ValueHolder> ee : m_map.entrySet())
+		for(Map.Entry<String, ValueHolder<T>> ee : m_map.entrySet())
 			if(!ee.getValue().isMutable())
 				throw new ImmutablePropertyException(ee.getKey());
 
@@ -271,85 +274,23 @@ public class ExpandingProperties implements IProperties
 		return m_map.containsValue(value);
 	}
 
-	private String convertValue(ValueHolder vh, int recursionGuard)
+	public Set<Entry<String, T>> entrySet()
 	{
-		return vh == null
-				? null
-				: vh.checkedGetValue(this, recursionGuard);
-	}
-
-	void emitProperties(ContentHandler handler, String namespace, String prefix, boolean includeDefaults)
-			throws SAXException
-	{
-		String plName = "property"; //$NON-NLS-1$
-		String pqName = Utils.makeQualifiedName(prefix, plName);
-		String pelName = "propertyElement"; //$NON-NLS-1$
-		String peqName = Utils.makeQualifiedName(prefix, pelName);
-		AttributesImpl attrs = new AttributesImpl();
-
-		TreeSet<String> sorted = new TreeSet<String>();
-		if(includeDefaults)
-		{
-			for(String key : keySet())
-				sorted.add(key);
-		}
-		else
-		{
-			for(String name : overlayKeySet())
-				sorted.add(name);
-		}
-
-		for(String name : sorted)
-		{
-			ValueHolder value = m_map.get(name);
-			if(value == null)
-				continue;
-
-			if(includeDefaults && value instanceof Constant)
-			{
-				// We still don't include unmodified system properties.
-				//
-				String sysValue = System.getProperty(name);
-				if(sysValue != null && sysValue.equals(value))
-					continue;
-			}
-
-			attrs.clear();
-			Utils.addAttribute(attrs, "key", name); //$NON-NLS-1$
-			if(value.isMutable())
-				Utils.addAttribute(attrs, "mutable", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-			if(value instanceof Constant)
-			{
-				Utils.addAttribute(attrs, "value", value.toString()); //$NON-NLS-1$
-				handler.startElement(namespace, plName, pqName, attrs);
-				handler.endElement(namespace, plName, pqName);
-			}
-			else
-			{
-				handler.startElement(namespace, pelName, peqName, attrs);
-				value.toSax(handler, namespace, prefix, value.getDefaultTag());
-				handler.endElement(namespace, pelName, peqName);
-			}
-		}
-	}
-
-	public Set<Entry<String, String>> entrySet()
-	{
-		return new AbstractSet<Entry<String, String>>()
+		return new AbstractSet<Entry<String, T>>()
 		{
 			@Override
-			public Iterator<Entry<String, String>> iterator()
+			public Iterator<Entry<String, T>> iterator()
 			{
-				return new Iterator<Entry<String, String>>()
+				return new Iterator<Entry<String, T>>()
 				{
-					private final Iterator<Entry<String, ValueHolder>> m_itor = m_map.entrySet().iterator();
+					private final Iterator<Entry<String, ValueHolder<T>>> m_itor = m_map.entrySet().iterator();
 
 					public boolean hasNext()
 					{
 						return m_itor.hasNext();
 					}
 
-					public Entry<String, String> next()
+					public Entry<String, T> next()
 					{
 						return new EntryWrapper(m_itor.next());
 					}
@@ -375,19 +316,14 @@ public class ExpandingProperties implements IProperties
 		if(o == this)
 			return true;
 
-		return (o instanceof ExpandingProperties) && m_map.equals(((ExpandingProperties)o).m_map);
+		return (o instanceof ExpandingProperties<?>) && m_map.equals(((ExpandingProperties<?>)o).m_map);
 	}
 
-	public String get(Object key)
+	public T get(Object key)
 	{
 		return key instanceof String
 				? getExpandedProperty((String)key, 0)
 				: null;
-	}
-
-	String getExpandedProperty(String key, int recursionGuard)
-	{
-		return convertValue(m_map.get(key), recursionGuard);
 	}
 
 	@Override
@@ -399,7 +335,7 @@ public class ExpandingProperties implements IProperties
 	public Set<String> immutableKeySet()
 	{
 		HashSet<String> immutableSet = new HashSet<String>();
-		for(Map.Entry<String, ValueHolder> me : m_map.entrySet())
+		for(Map.Entry<String, ValueHolder<T>> me : m_map.entrySet())
 		{
 			if(!me.getValue().isMutable())
 				immutableSet.add(me.getKey());
@@ -414,7 +350,7 @@ public class ExpandingProperties implements IProperties
 
 	public boolean isMutable(String key)
 	{
-		ValueHolder v = m_map.get(key);
+		ValueHolder<T> v = m_map.get(key);
 		return v == null || v.isMutable();
 	}
 
@@ -426,7 +362,7 @@ public class ExpandingProperties implements IProperties
 	public Set<String> mutableKeySet()
 	{
 		HashSet<String> mutableSet = new HashSet<String>();
-		for(Map.Entry<String, ValueHolder> me : m_map.entrySet())
+		for(Map.Entry<String, ValueHolder<T>> me : m_map.entrySet())
 		{
 			if(me.getValue().isMutable())
 				mutableSet.add(me.getKey());
@@ -436,35 +372,36 @@ public class ExpandingProperties implements IProperties
 
 	public Set<String> overlayKeySet()
 	{
-		return (m_map instanceof MapUnion)
-				? ((MapUnion<String, ValueHolder>)m_map).overlayKeySet()
+		return (m_map instanceof MapUnion<?, ?>)
+				? ((MapUnion<String, ValueHolder<T>>)m_map).overlayKeySet()
 				: m_map.keySet();
 	}
 
-	public String put(String key, String propVal)
+	public T put(String key, T propVal)
 	{
-		return convertValue(setProperty(key, new Constant(propVal)), 0);
+		return convertValue(setProperty(key, new Constant<T>(propVal)), 0);
 	}
 
-	public String put(String key, String propVal, boolean mutable)
+	public T put(String key, T propVal, boolean mutable)
 	{
-		Constant vh = new Constant(propVal);
+		Constant<T> vh = new Constant<T>(propVal);
 		vh.setMutable(mutable);
 		return convertValue(setProperty(key, vh), 0);
 	}
 
-	public void putAll(Map<? extends String, ? extends String> t)
+	public void putAll(Map<? extends String, ? extends T> t)
 	{
 		putAll(t, false);
 	}
 
-	public void putAll(Map<? extends String, ? extends String> t, boolean mutable)
+	@SuppressWarnings("unchecked")
+	public void putAll(Map<? extends String, ? extends T> t, boolean mutable)
 	{
-		if(t instanceof ExpandingProperties)
+		if(t instanceof ExpandingProperties<?>)
 		{
 			// Defer expansion until access.
 			//
-			for(Map.Entry<String, ValueHolder> ee : ((ExpandingProperties)t).m_map.entrySet())
+			for(Map.Entry<String, ValueHolder<T>> ee : ((ExpandingProperties<T>)t).m_map.entrySet())
 			{
 				ee.getValue().setMutable(mutable);
 				setProperty(ee.getKey(), ee.getValue());
@@ -472,21 +409,21 @@ public class ExpandingProperties implements IProperties
 		}
 		else
 		{
-			for(Map.Entry<? extends String, ? extends String> ee : t.entrySet())
+			for(Map.Entry<? extends String, ? extends T> ee : t.entrySet())
 			{
-				ValueHolder vh = new Constant(ee.getValue());
+				ValueHolder<T> vh = new Constant<T>(ee.getValue());
 				vh.setMutable(mutable);
 				setProperty(ee.getKey(), vh);
 			}
 		}
 	}
 
-	public String remove(Object key)
+	public T remove(Object key)
 	{
 		if(key instanceof String)
 		{
 			String strKey = (String)key;
-			ValueHolder vh = m_map.remove(strKey);
+			ValueHolder<T> vh = m_map.remove(strKey);
 			if(vh != null)
 			{
 				if(!vh.isMutable())
@@ -502,14 +439,14 @@ public class ExpandingProperties implements IProperties
 
 	public void setMutable(String key, boolean flag)
 	{
-		ValueHolder v = m_map.get(key);
+		ValueHolder<T> v = m_map.get(key);
 		if(v != null)
 			v.setMutable(flag);
 	}
 
-	public ValueHolder setProperty(String key, ValueHolder propertyHolder)
+	public ValueHolder<T> setProperty(String key, ValueHolder<T> propertyHolder)
 	{
-		ValueHolder v = m_map.put(key, propertyHolder);
+		ValueHolder<T> v = m_map.put(key, propertyHolder);
 		if(!(v == null || v.isMutable() || v.equals(propertyHolder)))
 		{
 			m_map.put(key, v);
@@ -533,25 +470,25 @@ public class ExpandingProperties implements IProperties
 		return true;
 	}
 
-	public Collection<String> values()
+	public Collection<T> values()
 	{
-		return new AbstractCollection<String>()
+		return new AbstractCollection<T>()
 		{
 			@Override
-			public Iterator<String> iterator()
+			public Iterator<T> iterator()
 			{
-				return new Iterator<String>()
+				return new Iterator<T>()
 				{
-					private final Iterator<ValueHolder> m_itor = m_map.values().iterator();
+					private final Iterator<ValueHolder<T>> m_itor = m_map.values().iterator();
 
 					public boolean hasNext()
 					{
 						return m_itor.hasNext();
 					}
 
-					public String next()
+					public T next()
 					{
-						String value = convertValue(m_itor.next(), 0);
+						T value = convertValue(m_itor.next(), 0);
 						if(value != null)
 							value = expand(ExpandingProperties.this, value, 0);
 						return value;
@@ -570,5 +507,72 @@ public class ExpandingProperties implements IProperties
 				return m_map.size();
 			}
 		};
+	}
+
+	void emitProperties(ContentHandler handler, String namespace, String prefix, boolean includeDefaults)
+			throws SAXException
+	{
+		String plName = "property"; //$NON-NLS-1$
+		String pqName = Utils.makeQualifiedName(prefix, plName);
+		String pelName = "propertyElement"; //$NON-NLS-1$
+		String peqName = Utils.makeQualifiedName(prefix, pelName);
+		AttributesImpl attrs = new AttributesImpl();
+
+		TreeSet<String> sorted = new TreeSet<String>();
+		if(includeDefaults)
+		{
+			for(String key : keySet())
+				sorted.add(key);
+		}
+		else
+		{
+			for(String name : overlayKeySet())
+				sorted.add(name);
+		}
+
+		for(String name : sorted)
+		{
+			ValueHolder<T> value = m_map.get(name);
+			if(value == null)
+				continue;
+
+			if(includeDefaults && value instanceof Constant<?>)
+			{
+				// We still don't include unmodified system properties.
+				//
+				String sysValue = System.getProperty(name);
+				if(sysValue != null && sysValue.equals(value))
+					continue;
+			}
+
+			attrs.clear();
+			Utils.addAttribute(attrs, "key", name); //$NON-NLS-1$
+			if(value.isMutable())
+				Utils.addAttribute(attrs, "mutable", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+			if(value instanceof Constant<?>)
+			{
+				Utils.addAttribute(attrs, "value", value.toString()); //$NON-NLS-1$
+				handler.startElement(namespace, plName, pqName, attrs);
+				handler.endElement(namespace, plName, pqName);
+			}
+			else
+			{
+				handler.startElement(namespace, pelName, peqName, attrs);
+				value.toSax(handler, namespace, prefix, value.getDefaultTag());
+				handler.endElement(namespace, pelName, peqName);
+			}
+		}
+	}
+
+	T getExpandedProperty(String key, int recursionGuard)
+	{
+		return convertValue(m_map.get(key), recursionGuard);
+	}
+
+	private T convertValue(ValueHolder<T> vh, int recursionGuard)
+	{
+		return vh == null
+				? null
+				: vh.checkedGetValue(this, recursionGuard);
 	}
 }

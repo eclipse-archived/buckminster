@@ -140,7 +140,7 @@ public class SearchPath extends AbstractSaxableElement
 					{
 						Provider rejected = bestMatch.getOriginalProvider();
 						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), rejected
-								.getURI(), NLS.bind(Messages.SearchPath__0_1_is_producing_a_better_match, provider
+								.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, provider
 								.getReaderTypeId(), provider.getURI()));
 					}
 					bestMatch = match;
@@ -149,7 +149,7 @@ public class SearchPath extends AbstractSaxableElement
 
 				Provider best = bestMatch.getOriginalProvider();
 				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), provider
-						.getURI(), NLS.bind(Messages.SearchPath__0_1_is_producing_a_better_match, best
+						.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, best
 						.getReaderTypeId(), best.getURI()));
 			}
 			if(bestMatch == null)

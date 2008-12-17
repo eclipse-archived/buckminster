@@ -87,21 +87,14 @@ public class Perform extends WorkspaceCommand
 		m_props.put(key, value);
 	}
 
-	private String formatMarkerMessage(String type, IMarker problem)
+	public boolean isQuiet()
 	{
-		StringBuilder bld = new StringBuilder();
-		bld.append(type);
-		bld.append(": file "); //$NON-NLS-1$
-		bld.append(problem.getResource().getLocation().toOSString());
-		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
-		if(line > 0)
-		{
-			bld.append(", line "); //$NON-NLS-1$
-			bld.append(line);
-		}
-		bld.append(": "); //$NON-NLS-1$
-		bld.append(problem.getAttribute(IMarker.MESSAGE, "")); //$NON-NLS-1$
-		return bld.toString();
+		return m_quiet;
+	}
+
+	public void setQuiet(boolean quiet)
+	{
+		m_quiet = quiet;
 	}
 
 	@Override
@@ -122,7 +115,7 @@ public class Perform extends WorkspaceCommand
 			String v = option.getValue();
 			Matcher m = DEFINE_PATTERN.matcher(v);
 			if(!m.matches())
-				throw new IllegalArgumentException(NLS.bind(Messages.Perform_Not_a_key_value_string_0, v));
+				throw new IllegalArgumentException(NLS.bind(Messages.Not_a_key_value_string_0, v));
 			String key = m.group(1);
 			String value = m.group(2) == null
 					? "" //$NON-NLS-1$
@@ -141,7 +134,7 @@ public class Perform extends WorkspaceCommand
 			}
 			catch(MalformedURLException e)
 			{
-				throw new IllegalArgumentException(NLS.bind(Messages.Perform_Invalid_URL_or_Path_0, v));
+				throw new IllegalArgumentException(NLS.bind(Messages.Invalid_URL_or_Path_0, v));
 			}
 			finally
 			{
@@ -174,8 +167,7 @@ public class Perform extends WorkspaceCommand
 					component = null;
 			}
 			if(component == null || attribute == null)
-				throw new UsageException(
-						Messages.Perform_Attribute_names_must_be_in_the_form_component_name_attribute_name);
+				throw new UsageException(Messages.Attribute_names_must_be_in_the_form_component_name_attribute_name);
 
 			CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
 			addAttribute(cspec.getRequiredAttribute(attribute));
@@ -186,7 +178,7 @@ public class Perform extends WorkspaceCommand
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		if(m_attributes.isEmpty())
-			throw new UsageException(Messages.Perform_No_attributes_specified);
+			throw new UsageException(Messages.No_attributes_specified);
 
 		IPerformManager pm = CorePlugin.getPerformManager();
 		IStatus status = pm.perform(m_attributes, m_props, m_forced, m_quiet, monitor).getStatus();
@@ -237,40 +229,47 @@ public class Perform extends WorkspaceCommand
 		if(warnings + errors > 0)
 		{
 			StringBuilder bld = new StringBuilder();
-			bld.append(Messages.Perform_Found);
+			bld.append(Messages.Found);
 			if(errors > 0)
 			{
 				bld.append(errors);
-				bld.append(Messages.Perform_errors);
+				bld.append(Messages.Errors);
 				if(warnings > 0)
-					bld.append(Messages.Perform_and);
+					bld.append(Messages.And);
 			}
 			if(warnings > 0)
 			{
 				bld.append(warnings);
-				bld.append(Messages.Perform_warnings);
+				bld.append(Messages.Warnings);
 			}
 			System.err.println(bld.toString());
 		}
 
 		if(m_maxWarnings != -1 && warnings > m_maxWarnings)
 		{
-			System.err.println(Messages.Perform_Too_many_warnings_Exiting_with_error_status);
+			System.err.println(Messages.Too_many_warnings_Exiting_with_error_status);
 			exitValue = 1;
 		}
 
 		if(exitValue > 0)
-			System.err.println(Messages.Perform_Build_failed);
+			System.err.println(Messages.Build_failed);
 		return exitValue;
 	}
 
-	public boolean isQuiet()
+	private String formatMarkerMessage(String type, IMarker problem)
 	{
-		return m_quiet;
-	}
-
-	public void setQuiet(boolean quiet)
-	{
-		m_quiet = quiet;
+		StringBuilder bld = new StringBuilder();
+		bld.append(type);
+		bld.append(": file "); //$NON-NLS-1$
+		bld.append(problem.getResource().getLocation().toOSString());
+		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
+		if(line > 0)
+		{
+			bld.append(", line "); //$NON-NLS-1$
+			bld.append(line);
+		}
+		bld.append(": "); //$NON-NLS-1$
+		bld.append(problem.getAttribute(IMarker.MESSAGE, "")); //$NON-NLS-1$
+		return bld.toString();
 	}
 }

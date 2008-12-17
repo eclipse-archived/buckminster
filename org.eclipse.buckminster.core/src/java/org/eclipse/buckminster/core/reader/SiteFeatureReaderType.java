@@ -52,7 +52,7 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		String[] ctypeIDs = provider.getComponentTypeIDs();
 		if(!(ctypeIDs.length == 1 && IComponentType.ECLIPSE_SITE_FEATURE.equals(ctypeIDs[0])))
 			throw BuckminsterException
-					.fromMessage(Messages.SiteFeatureReaderType_Site_reader_can_only_be_used_with_site_feature);
+					.fromMessage(Messages.Site_reader_can_only_be_used_with_site_feature);
 	}
 
 	public static synchronized ISite getSite(String siteURLStr, IProgressMonitor monitor) throws CoreException
@@ -72,7 +72,7 @@ public class SiteFeatureReaderType extends CatalogReaderType
 		catch(CoreException e)
 		{
 			CoreException ew = new CoreException(BuckminsterException.createStatus(e, NLS.bind(
-					Messages.SiteFeatureReaderType_Unable_to_obtain_site_from_0, siteURLStr)));
+					Messages.Unable_to_obtain_site_from_0, siteURLStr)));
 			ew.initCause(e);
 			throw ew;
 		}

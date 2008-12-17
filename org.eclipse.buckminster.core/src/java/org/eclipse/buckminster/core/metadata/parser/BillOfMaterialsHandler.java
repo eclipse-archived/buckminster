@@ -85,7 +85,7 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 		catch(ClassCastException e)
 		{
 			throw new SAXParseException(NLS
-					.bind(Messages.BillOfMaterialsHandler_wrapper_0_does_not_wrap_query, queryId), getDocumentLocator());
+					.bind(Messages.Wrapper_0_does_not_wrap_query, queryId), getDocumentLocator());
 		}
 	}
 
@@ -104,7 +104,7 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 					parent = ((ChildHandler)parent).getParentHandler();
 			}
 			throw new SAXParseException(NLS
-					.bind(Messages.BillOfMaterialsHandler_id_0_appoints_non_existing_wrapper, id), getDocumentLocator());
+					.bind(Messages.Id_0_appoints_non_existing_wrapper, id), getDocumentLocator());
 		}
 		return wrapper.getWrapped();
 	}

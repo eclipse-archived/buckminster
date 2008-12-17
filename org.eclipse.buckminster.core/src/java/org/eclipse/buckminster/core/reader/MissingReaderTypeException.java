@@ -24,7 +24,7 @@ public class MissingReaderTypeException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.MissingReaderTypeException_No_reader_type_with_id_0_has_been_registered_with_extension_point_1,
+								Messages.No_reader_type_with_id_0_has_been_registered_with_extension_point_1,
 								remoteReaderId, CorePlugin.READER_TYPE_POINT));
 	}
 }

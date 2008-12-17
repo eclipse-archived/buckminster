@@ -53,8 +53,8 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 			if(revision == -1)
 				return currentVersion;
 
-			Map<String, String> props = context.getProperties();
-			String format = props.get(FORMAT_PROPERTY);
+			Map<String, ? extends Object> props = context.getProperties();
+			String format = (String)props.get(FORMAT_PROPERTY);
 			if(format == null)
 				format = DEFAULT_FORMAT;
 

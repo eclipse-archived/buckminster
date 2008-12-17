@@ -29,7 +29,8 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -49,7 +50,7 @@ import org.eclipse.core.variables.VariablesPlugin;
  * 
  * @author Thomas Hallgren
  */
-public class RMContext extends ExpandingProperties
+public class RMContext extends ExpandingProperties<Object>
 {
 	public class TagInfo
 	{
@@ -85,6 +86,21 @@ public class RMContext extends ExpandingProperties
 		{
 			return "TAG-ID " + m_tagId + " = " + m_infoString; //$NON-NLS-1$ //$NON-NLS-2$
 		}
+	}
+
+	public static String formatStatus(IStatus status)
+	{
+		StringWriter bld = new StringWriter();
+		BufferedWriter wrt = new BufferedWriter(bld);
+		try
+		{
+			formatStatus(wrt, 0, status);
+			wrt.flush();
+		}
+		catch(IOException e)
+		{
+		}
+		return bld.toString();
 	}
 
 	private static IStatus addTagId(String tagId, IStatus status)
@@ -137,21 +153,6 @@ public class RMContext extends ExpandingProperties
 		}
 	}
 
-	public static String formatStatus(IStatus status)
-	{
-		StringWriter bld = new StringWriter();
-		BufferedWriter wrt = new BufferedWriter(bld);
-		try
-		{
-			formatStatus(wrt, 0, status);
-			wrt.flush();
-		}
-		catch(IOException e)
-		{
-		}
-		return bld.toString();
-	}
-
 	private int m_tagInfoSquenceNumber = 0;
 
 	private final Map<String, TagInfo> m_knownTagInfos = new HashMap<String, TagInfo>();
@@ -186,7 +187,7 @@ public class RMContext extends ExpandingProperties
 		s_staticAdditions = additions;
 	}
 
-	public static Map<String, String> getGlobalPropertyAdditions()
+	public static Map<String, ? extends Object> getGlobalPropertyAdditions()
 	{
 		Map<String, String> sysProps = BMProperties.getSystemProperties();
 		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
@@ -228,12 +229,12 @@ public class RMContext extends ExpandingProperties
 
 	private boolean m_silentStatus;
 
-	public RMContext(Map<String, String> properties)
+	public RMContext(Map<String, ? extends Object> properties)
 	{
 		this(properties, null);
 	}
 
-	public RMContext(Map<String, String> properties, RMContext source)
+	public RMContext(Map<String, ? extends Object> properties, RMContext source)
 	{
 		super(getGlobalPropertyAdditions());
 		putAll(properties, true);
@@ -307,38 +308,6 @@ public class RMContext extends ExpandingProperties
 		m_status = null;
 	}
 
-	private void emitTagInfos()
-	{
-		Logger logger = CorePlugin.getLogger();
-		if(!logger.isInfoEnabled())
-			return;
-
-		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
-		for(TagInfo tagInfo : m_tagInfos.values())
-			if(tagInfo.isUsed())
-				sorted.put(tagInfo.getTagId(), tagInfo);
-
-		if(sorted.size() == 0)
-			return;
-
-		StringWriter bld = new StringWriter();
-		BufferedWriter wrt = new BufferedWriter(bld);
-		try
-		{
-			for(TagInfo tagInfo : sorted.values())
-			{
-				wrt.write(tagInfo.toString());
-				wrt.newLine();
-			}
-			wrt.flush();
-		}
-		catch(IOException e)
-		{
-			// On a StringWriter? Don't think so.
-		}
-		logger.info(bld.toString());
-	}
-
 	/**
 	 * Emit all tags for warnings and errors that have been added earlier.
 	 * 
@@ -359,7 +328,7 @@ public class RMContext extends ExpandingProperties
 		return false;
 	}
 
-	public String getBindingName(Resolution resolution, Map<String, String> props) throws CoreException
+	public String getBindingName(Resolution resolution, Map<String, ? extends Object> props) throws CoreException
 	{
 		ComponentRequest request = resolution.getRequest();
 		String name = null;
@@ -414,9 +383,9 @@ public class RMContext extends ExpandingProperties
 		return query;
 	}
 
-	public Map<String, String> getProperties(ComponentName cName)
+	public Map<String, ? extends Object> getProperties(ComponentName cName)
 	{
-		return new MapUnion<String, String>(cName.getProperties(), this);
+		return new UnmodifiableMapUnion<String, Object>(cName.getProperties(), this);
 	}
 
 	public NodeQuery getRootNodeQuery()
@@ -440,17 +409,6 @@ public class RMContext extends ExpandingProperties
 			status = status.getChildren()[0];
 
 		return status;
-	}
-
-	private synchronized String getTagId(IComponentRequest request)
-	{
-		TagInfo tagInfo = m_tagInfos.get(request);
-		if(tagInfo != null)
-		{
-			tagInfo.setUsed();
-			return tagInfo.getTagId();
-		}
-		return "0000"; //$NON-NLS-1$
 	}
 
 	public synchronized Map<ComponentRequest, TagInfo> getTagInfos()
@@ -479,6 +437,22 @@ public class RMContext extends ExpandingProperties
 		return m_silentStatus;
 	}
 
+	@Override
+	public Object put(String key, Object value)
+	{
+		if("*".equals(value))
+			value = FilterUtils.MATCH_ALL_OBJ;
+		return super.put(key, value);
+	}
+
+	@Override
+	public Object put(String key, Object value, boolean mutable)
+	{
+		if("*".equals(value))
+			value = FilterUtils.MATCH_ALL_OBJ;
+		return super.put(key, value, mutable);
+	}
+
 	public void setContinueOnError(boolean flag)
 	{
 		m_continueOnError = flag;
@@ -487,5 +461,48 @@ public class RMContext extends ExpandingProperties
 	public void setSilentStatus(boolean flag)
 	{
 		m_silentStatus = flag;
+	}
+
+	private void emitTagInfos()
+	{
+		Logger logger = CorePlugin.getLogger();
+		if(!logger.isInfoEnabled())
+			return;
+
+		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
+		for(TagInfo tagInfo : m_tagInfos.values())
+			if(tagInfo.isUsed())
+				sorted.put(tagInfo.getTagId(), tagInfo);
+
+		if(sorted.size() == 0)
+			return;
+
+		StringWriter bld = new StringWriter();
+		BufferedWriter wrt = new BufferedWriter(bld);
+		try
+		{
+			for(TagInfo tagInfo : sorted.values())
+			{
+				wrt.write(tagInfo.toString());
+				wrt.newLine();
+			}
+			wrt.flush();
+		}
+		catch(IOException e)
+		{
+			// On a StringWriter? Don't think so.
+		}
+		logger.info(bld.toString());
+	}
+
+	private synchronized String getTagId(IComponentRequest request)
+	{
+		TagInfo tagInfo = m_tagInfos.get(request);
+		if(tagInfo != null)
+		{
+			tagInfo.setUsed();
+			return tagInfo.getTagId();
+		}
+		return "0000"; //$NON-NLS-1$
 	}
 }

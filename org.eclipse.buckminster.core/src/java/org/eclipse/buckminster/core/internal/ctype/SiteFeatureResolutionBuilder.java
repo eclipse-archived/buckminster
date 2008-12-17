@@ -83,7 +83,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			throw BuckminsterException
 					.fromMessage(NLS
 							.bind(
-									Messages.SiteFeatureResolutionBuilder__0_resolution_builder_can_only_work_with_a_site_feature_reader,
+									Messages._0_resolution_builder_can_only_work_with_a_site_feature_reader,
 									getId()));
 
 		monitor.beginTask(null, 100);

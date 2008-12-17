@@ -23,6 +23,6 @@ public class FileFolderMismatchException extends LocalizedException
 
 	public FileFolderMismatchException(IComponentIdentifier ci, IPath path)
 	{
-		super(NLS.bind(Messages.FileFolderMismatchException_Unable_to_reuse_location_0_for_component_1, path, ci));
+		super(NLS.bind(Messages.Unable_to_reuse_location_0_for_component_1, path, ci));
 	}
 }

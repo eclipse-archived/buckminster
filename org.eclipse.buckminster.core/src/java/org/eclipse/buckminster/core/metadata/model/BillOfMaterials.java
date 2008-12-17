@@ -138,9 +138,9 @@ public class BillOfMaterials extends BOMNode
 	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query, Date timestamp) throws CoreException
 	{
 		if(topNode == null)
-			throw new IllegalArgumentException(Messages.BillOfMaterials_Top_node_cannot_be_null);
+			throw new IllegalArgumentException(Messages.Top_node_cannot_be_null);
 		if(query == null)
-			throw new IllegalArgumentException(Messages.BillOfMaterials_Component_query_cannot_be_null);
+			throw new IllegalArgumentException(Messages.Component_query_cannot_be_null);
 		if(topNode instanceof BillOfMaterials)
 		{
 			BillOfMaterials bom = (BillOfMaterials)topNode;

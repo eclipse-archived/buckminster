@@ -72,15 +72,15 @@ public class PropertyExpander
 	 * @return
 	 * @throws CoreException
 	 */
-	final private static Map<String, String> getVariables(IActionContext ctx) throws CoreException
+	final private static Map<String, ? extends Object> getVariables(IActionContext ctx) throws CoreException
 	{
-		final Map<String, String> map = new HashMap<String, String>();
+		final Map<String, Object> map = new HashMap<String, Object>();
 		map.putAll(getNamedPathMap(ctx));
 		map.putAll(ctx.getProperties());
 		return map;
 	}
 
-	private final Map<String, String> m_variableMap;
+	private final Map<String, ? extends Object> m_variableMap;
 
 	public PropertyExpander(IActionContext ctx) throws CoreException
 	{

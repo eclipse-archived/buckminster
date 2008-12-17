@@ -61,7 +61,7 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 			catch(CoreException e)
 			{
 				logger.error(e, NLS.bind(
-						Messages.ResolverFactoryMaintainer_Unable_to_instantiate_Query_Resolver_Factory_0, elem
+						Messages.Unable_to_instantiate_Query_Resolver_Factory_0, elem
 								.getAttribute("id"))); //$NON-NLS-1$
 			}
 		}

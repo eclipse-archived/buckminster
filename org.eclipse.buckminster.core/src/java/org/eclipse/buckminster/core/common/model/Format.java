@@ -15,8 +15,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * An instance of this class acts as a {@link java.text.MessageFormat} that gets its values from a
- * {@link CollectionHolder} instance.
+ * An instance of this class acts as a {@link java.text.MessageFormat} that gets its values from a {@link ValueHolder}
+ * instance.
  * 
  * @author Thomas Hallgren
  */
@@ -31,20 +31,6 @@ public class Format extends ValueHolderFilter
 	public Format(String pattern)
 	{
 		m_format = pattern;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_FORMAT, m_format);
-	}
-
-	@Override
-	protected String checkedGetValue(Map<String, String> properties, int recursionGuard)
-	{
-		String format = ExpandingProperties.expand(properties, m_format, recursionGuard + 1);
-		MessageFormat messageFormat = new MessageFormat(format);
-		return messageFormat.format(this.checkedGetSourceValues(properties, recursionGuard + 1));
 	}
 
 	@Override
@@ -75,5 +61,19 @@ public class Format extends ValueHolderFilter
 	public String toString()
 	{
 		return getFormat();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_FORMAT, m_format);
+	}
+
+	@Override
+	protected String checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
+	{
+		String format = ExpandingProperties.expand(properties, m_format, recursionGuard + 1);
+		MessageFormat messageFormat = new MessageFormat(format);
+		return messageFormat.format(checkedGetSourceValues(properties, recursionGuard + 1).toArray());
 	}
 }

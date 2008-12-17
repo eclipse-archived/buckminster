@@ -78,7 +78,7 @@ public class TripletVersionType extends AbstractVersionType
 			{
 			}
 		}
-		throw new VersionSyntaxException(NLS.bind(Messages.TripletVersionType_Not_a_valid_0_version, this.getId()),
+		throw new VersionSyntaxException(NLS.bind(Messages.Not_a_valid_0_version, this.getId()),
 				versionString, startPos);
 	}
 

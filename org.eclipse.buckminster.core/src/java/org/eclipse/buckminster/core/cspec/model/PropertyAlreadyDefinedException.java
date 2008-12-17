@@ -17,7 +17,7 @@ public class PropertyAlreadyDefinedException extends LocalizedException
 
 	public PropertyAlreadyDefinedException(String name, String attribute, String propertyCategory, String propertyName)
 	{
-		super(NLS.bind(Messages.PropertyAlreadyDefinedException_CSpec_0_attribute_1_already_has_a_2_named_3,
+		super(NLS.bind(Messages.CSpec_0_attribute_1_already_has_a_2_named_3,
 				new Object[] { name, attribute, propertyCategory, propertyName }));
 	}
 }

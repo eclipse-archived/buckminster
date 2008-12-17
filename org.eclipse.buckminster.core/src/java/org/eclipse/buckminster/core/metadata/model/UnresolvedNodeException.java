@@ -21,6 +21,6 @@ public class UnresolvedNodeException extends LocalizedException
 
 	public UnresolvedNodeException(IComponentRequest request)
 	{
-		super(NLS.bind(Messages.UnresolvedNodeException_Attempt_to_use_an_unresolved_node_Request_is_0, request));
+		super(NLS.bind(Messages.Attempt_to_use_an_unresolved_node_Request_is_0, request));
 	}
 }

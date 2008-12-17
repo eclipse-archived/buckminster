@@ -78,7 +78,7 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 
 			if(candidate == null)
 				throw BuckminsterException
-						.fromMessage(Messages.TargetPlatform_No_targetPlatformProvider_registered_with_targetPlatformProviders_extension_point);
+						.fromMessage(Messages.No_targetPlatformProvider_registered_with_targetPlatformProviders_extension_point);
 			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class"); //$NON-NLS-1$
 			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass()); //$NON-NLS-1$
 		}

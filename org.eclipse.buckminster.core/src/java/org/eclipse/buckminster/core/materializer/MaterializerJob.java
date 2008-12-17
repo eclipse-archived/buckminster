@@ -59,7 +59,7 @@ public class MaterializerJob extends Job implements IJobInfo
 	public String getOperationName()
 	{
 		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
-		return NLS.bind(Messages.MaterializerJob_Materialization_of_0, lastResolution.getComponentIdentifier()
+		return NLS.bind(Messages.Materialization_of_0, lastResolution.getComponentIdentifier()
 				.toString());
 	}
 

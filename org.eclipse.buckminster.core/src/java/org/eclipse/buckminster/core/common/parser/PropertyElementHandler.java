@@ -39,24 +39,11 @@ public class PropertyElementHandler extends PropertyHandler implements ChildPopp
 
 	private ToUpperHandler m_toUpperHandler;
 
-	private ValueHolder m_source;
+	private ValueHolder<String> m_source;
 
 	public PropertyElementHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	@Override
-	void addYourself(Map<String, String> props)
-	{
-		String key = getKey();
-		if(props instanceof ExpandingProperties)
-		{
-			m_source.setMutable(getMutable());
-			((ExpandingProperties)props).setProperty(key, m_source);
-		}
-		else
-			props.put(key, m_source.getValue(props));
 	}
 
 	public void childPopped(ChildHandler child)
@@ -113,5 +100,18 @@ public class PropertyElementHandler extends PropertyHandler implements ChildPopp
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
+	}
+
+	@Override
+	void addYourself(Map<String, String> props)
+	{
+		String key = getKey();
+		if(props instanceof ExpandingProperties<?>)
+		{
+			m_source.setMutable(getMutable());
+			((ExpandingProperties<String>)props).setProperty(key, m_source);
+		}
+		else
+			props.put(key, m_source.getValue(props));
 	}
 }

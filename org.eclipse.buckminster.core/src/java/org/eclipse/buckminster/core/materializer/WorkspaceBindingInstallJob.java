@@ -63,7 +63,7 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 
 	private WorkspaceBindingInstallJob()
 	{
-		super(Messages.WorkspaceBindingInstallJob_workspace_binding_installer);
+		super(Messages.Workspace_binding_installer);
 		setPriority(Job.BUILD);
 		setSystem(true);
 		setUser(false);

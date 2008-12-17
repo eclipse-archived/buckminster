@@ -88,7 +88,7 @@ public abstract class DateAndTimeUtils
 			{
 			}
 		}
-		throw new ParseException(NLS.bind(Messages.DateAndTimeUtils_Unable_to_parse_0_as_timestamp, timestampStr), 0);
+		throw new ParseException(NLS.bind(Messages.Unable_to_parse_0_as_timestamp, timestampStr), 0);
 	}
 
 	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
@@ -101,7 +101,7 @@ public abstract class DateAndTimeUtils
 		}
 		long tm = dt.getTime();
 		if(tm > now + SANITY_THRESHOLD || tm < now - SANITY_THRESHOLD)
-			throw new ParseException(Messages.DateAndTimeUtils_Bogus, 0);
+			throw new ParseException(Messages.Bogus, 0);
 		return dt;
 	}
 

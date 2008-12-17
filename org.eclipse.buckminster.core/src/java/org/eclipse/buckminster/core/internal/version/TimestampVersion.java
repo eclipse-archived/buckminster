@@ -42,7 +42,7 @@ public class TimestampVersion extends AbstractVersion
 	public int compareTo(IVersion o)
 	{
 		if(!(o instanceof TimestampVersion))
-			throw new IllegalArgumentException(Messages.TimestampVersion_Not_a_TimestampVersion);
+			throw new IllegalArgumentException(Messages.Not_a_TimestampVersion);
 
 		// The following line throws a ClassCastException unless
 		// o is indeed a Version. That's OK and expected.

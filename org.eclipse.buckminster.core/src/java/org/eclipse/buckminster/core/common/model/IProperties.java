@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * @author Thomas Hallgren
  */
-public interface IProperties extends Map<String, String>
+public interface IProperties<T> extends Map<String, T>
 {
 	/**
 	 * Returns the set of keys that are immutable in this map. If the implementation doesn't support immutable keys, it
@@ -67,7 +67,7 @@ public interface IProperties extends Map<String, String>
 	 * @throws UnsupportedOperationException
 	 *             if the <code>mutable</code> flag is <code>false</code> and this map does not support mutability
 	 */
-	String put(String key, String value, boolean mutable);
+	T put(String key, T value, boolean mutable);
 
 	/**
 	 * Provided this map supports mutability and holds a value with the name <code>key</code>, the status of that value

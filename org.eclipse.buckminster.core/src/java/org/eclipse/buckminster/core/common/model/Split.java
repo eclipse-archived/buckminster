@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.common.model;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.sax.Utils;
@@ -44,21 +46,6 @@ public class Split extends AbstractSplit
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		if(m_limit != 0)
-			Utils.addAttribute(attrs, ATTR_LIMIT, Integer.toString(m_limit));
-	}
-
-	@Override
-	protected String[] checkedGetValues(Map<String, String> properties, int recursionGuard)
-	{
-		String source = this.checkedGetSourceValue(properties, recursionGuard);
-		return this.getPattern().split(source, m_limit);
-	}
-
-	@Override
 	public boolean equals(Object o)
 	{
 		return super.equals(o) && m_limit == ((Split)o).m_limit;
@@ -70,5 +57,20 @@ public class Split extends AbstractSplit
 		int hc = super.hashCode();
 		hc = 37 * hc + m_limit;
 		return hc;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		if(m_limit != 0)
+			Utils.addAttribute(attrs, ATTR_LIMIT, Integer.toString(m_limit));
+	}
+
+	@Override
+	protected List<String> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard)
+	{
+		String source = checkedGetSourceValue(properties, recursionGuard);
+		return Arrays.asList(getPattern().split(source, m_limit));
 	}
 }

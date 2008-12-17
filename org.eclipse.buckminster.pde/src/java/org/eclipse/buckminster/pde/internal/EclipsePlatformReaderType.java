@@ -218,9 +218,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 									res.getComponentIdentifier(), siteURL }));
 					continue;
 				}
-				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd == null
-						? null
-						: vd.getVersion()));
+				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd.getVersion()));
 			}
 		}
 

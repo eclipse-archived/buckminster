@@ -41,6 +41,6 @@ public class SiteFeatureReader extends AbstractRemoteReader
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		throw new UnsupportedOperationException(Messages.SiteFeatureReader_A_SiteFeatureReader_is_not_capable_of_materializing);
+		throw new UnsupportedOperationException(Messages.A_SiteFeatureReader_is_not_capable_of_materializing);
 	}
 }

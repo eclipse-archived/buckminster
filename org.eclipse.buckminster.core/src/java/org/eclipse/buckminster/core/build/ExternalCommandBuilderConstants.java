@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.build;
 
-import org.eclipse.buckminster.core.Messages;
-
 /**
  * @author kolwing
  * 

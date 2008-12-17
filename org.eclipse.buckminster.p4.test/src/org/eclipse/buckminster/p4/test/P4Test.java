@@ -72,7 +72,7 @@ public class P4Test extends TestCase
 	{
 		final File tempDir = FileUtils.createTempFolder("p4-", ".test");
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
-		Map<String,String> scope = RMContext.getGlobalPropertyAdditions();
+		Map<String,? extends Object> scope = RMContext.getGlobalPropertyAdditions();
 		P4Preferences prefs = P4Preferences.getInstance();
 		Server server = prefs.addServer("public.perforce.com:1666");
 		Client client = server.addClient("buckminster");

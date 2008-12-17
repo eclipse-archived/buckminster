@@ -19,9 +19,9 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
  */
 public abstract class PropertyScope
 {
-	private final Map<String, String> m_scope;
+	private final Map<String, ? extends Object> m_scope;
 
-	protected PropertyScope(Map<String, String> scope)
+	protected PropertyScope(Map<String, ? extends Object> scope)
 	{
 		m_scope = scope;
 	}
@@ -31,7 +31,7 @@ public abstract class PropertyScope
 		return ExpandingProperties.expand(m_scope, value, 0);
 	}
 
-	protected Map<String, String> getScope()
+	protected Map<String, ? extends Object> getScope()
 	{
 		return m_scope;
 	}

@@ -34,12 +34,6 @@ class GeneratorNodeHandler extends BomNodeHandler
 	}
 
 	@Override
-	BOMNode getDepNode()
-	{
-		return m_node;
-	}
-
-	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		UUID cspecId = null;
@@ -52,8 +46,13 @@ class GeneratorNodeHandler extends BomNodeHandler
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.GeneratorNodeHandler_wrapper_0_does_not_wrap_cspec, cspecId),
-					getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_cspec, cspecId), getDocumentLocator());
 		}
+	}
+
+	@Override
+	BOMNode getDepNode()
+	{
+		return m_node;
 	}
 }

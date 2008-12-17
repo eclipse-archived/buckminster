@@ -147,7 +147,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 
 		if(top != schemaLocations.length)
 			throw new IllegalArgumentException(
-					Messages.AbstractParser_the_namespace_and_schemaLocation_arrays_must_be_equal_in_length);
+					Messages.The_namespace_and_schemaLocation_arrays_must_be_equal_in_length);
 		m_namespaceLocations = new ArrayList<String>();
 		for(int idx = 0; idx < top; ++idx)
 		{
@@ -156,7 +156,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			URL schemaURL = getClass().getResource(schemaFile);
 			if(schemaURL == null)
 				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.AbstractParser_Unable_to_find_XMLSchema_for_namespace_0, namespace));
+						Messages.Unable_to_find_XMLSchema_for_namespace_0, namespace));
 			addNamespaceLocation(namespace, schemaURL);
 		}
 
@@ -190,7 +190,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 					ns = getPrefixMapping(prefix);
 					if(ns == null)
 						throw new SAXParseException(NLS
-								.bind(Messages.AbstractParser_Unknown_namespace_prefix_0, prefix), getDocumentLocator());
+								.bind(Messages.Unknown_namespace_prefix_0, prefix), getDocumentLocator());
 					xsiType = xsiType.substring(colonIndex + 1);
 				}
 				else
@@ -214,7 +214,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 		catch(Exception e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.AbstractParser_Unable_to_create_extension_handler_0_1,
+			throw new SAXParseException(NLS.bind(Messages.Unable_to_create_extension_handler_0_1,
 					namespace, xsiType), getDocumentLocator(), e);
 		}
 	}

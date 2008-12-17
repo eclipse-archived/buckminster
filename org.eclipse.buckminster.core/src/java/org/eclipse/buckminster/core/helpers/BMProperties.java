@@ -24,9 +24,9 @@ import java.util.Set;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.IProperties;
 
-public class BMProperties implements IProperties
+public class BMProperties implements IProperties<String>
 {
-	private static final IProperties s_systemProperties = new PropertiesWrapper()
+	private static final IProperties<String> s_systemProperties = new PropertiesWrapper()
 	{
 		@Override
 		protected Properties getProperties()
@@ -39,13 +39,37 @@ public class BMProperties implements IProperties
 	private static final char[] hexDigit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
 			'F' };
 
-	public static IProperties getSystemProperties()
+	public static IProperties<String> getSystemProperties()
 	{
 		return s_systemProperties;
 	}
 
-	private static String saveConvert(String theString, boolean escapeSpace)
+	public static void store(Map<String, ? extends Object> props, OutputStream out, String comments) throws IOException
 	{
+		BufferedWriter awriter;
+		awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1")); //$NON-NLS-1$
+		if(comments != null)
+			writeln(awriter, "#" + comments); //$NON-NLS-1$
+		writeln(awriter, "#" + new Date().toString()); //$NON-NLS-1$
+		synchronized(props)
+		{
+			for(Entry<String, ? extends Object> e : props.entrySet())
+			{
+				String key = e.getKey();
+				key = saveConvert(key, true);
+
+				/*
+				 * No need to escape embedded and trailing spaces for value, hence pass false to flag.
+				 */
+				writeln(awriter, key + "=" + saveConvert(e.getValue(), false)); //$NON-NLS-1$
+			}
+		}
+		awriter.flush();
+	}
+
+	private static String saveConvert(Object value, boolean escapeSpace)
+	{
+		String theString = value.toString();
 		int len = theString.length();
 		int bufLen = len * 2;
 		if(bufLen < 0)
@@ -116,29 +140,6 @@ public class BMProperties implements IProperties
 			}
 		}
 		return outBuffer.toString();
-	}
-
-	public static void store(Map<String, String> props, OutputStream out, String comments) throws IOException
-	{
-		BufferedWriter awriter;
-		awriter = new BufferedWriter(new OutputStreamWriter(out, "8859_1")); //$NON-NLS-1$
-		if(comments != null)
-			writeln(awriter, "#" + comments); //$NON-NLS-1$
-		writeln(awriter, "#" + new Date().toString()); //$NON-NLS-1$
-		synchronized(props)
-		{
-			for(Entry<String, String> e : props.entrySet())
-			{
-				String key = e.getKey();
-				key = saveConvert(key, true);
-
-				/*
-				 * No need to escape embedded and trailing spaces for value, hence pass false to flag.
-				 */
-				writeln(awriter, key + "=" + saveConvert(e.getValue(), false)); //$NON-NLS-1$
-			}
-		}
-		awriter.flush();
 	}
 
 	/**
@@ -229,7 +230,7 @@ public class BMProperties implements IProperties
 	@Override
 	public boolean equals(Object o)
 	{
-		return this == o || (o instanceof Map && o.equals(m_map));
+		return this == o || (o instanceof Map<?, ?> && o.equals(m_map));
 	}
 
 	public String get(Object key)
@@ -245,8 +246,8 @@ public class BMProperties implements IProperties
 
 	public Set<String> immutableKeySet()
 	{
-		return (m_map instanceof IProperties)
-				? ((IProperties)m_map).immutableKeySet()
+		return (m_map instanceof IProperties<?>)
+				? ((IProperties<String>)m_map).immutableKeySet()
 				: m_map.keySet();
 	}
 
@@ -257,8 +258,8 @@ public class BMProperties implements IProperties
 
 	public boolean isMutable(String key)
 	{
-		return (m_map instanceof IProperties)
-				? ((IProperties)m_map).isMutable(key)
+		return (m_map instanceof IProperties<?>)
+				? ((IProperties<String>)m_map).isMutable(key)
 				: true;
 	}
 
@@ -269,16 +270,16 @@ public class BMProperties implements IProperties
 
 	public Set<String> mutableKeySet()
 	{
-		return (m_map instanceof IProperties)
-				? ((IProperties)m_map).mutableKeySet()
+		return (m_map instanceof IProperties<?>)
+				? ((IProperties<String>)m_map).mutableKeySet()
 				: m_map.keySet();
 	}
 
 	public Set<String> overlayKeySet()
 	{
-		if(m_map instanceof IProperties)
-			return ((IProperties)m_map).overlayKeySet();
-		if(m_map instanceof MapUnion)
+		if(m_map instanceof IProperties<?>)
+			return ((IProperties<String>)m_map).overlayKeySet();
+		if(m_map instanceof MapUnion<?, ?>)
 			return ((MapUnion<String, String>)m_map).overlayKeySet();
 		return m_map.keySet();
 	}
@@ -290,10 +291,10 @@ public class BMProperties implements IProperties
 
 	public String put(String key, String value, boolean mutable)
 	{
-		if(m_map instanceof IProperties)
-			return ((IProperties)m_map).put(key, value, mutable);
+		if(m_map instanceof IProperties<?>)
+			return ((IProperties<String>)m_map).put(key, value, mutable);
 		if(!mutable)
-			throw new UnsupportedOperationException(Messages.BMProperties_put_immutable);
+			throw new UnsupportedOperationException(Messages.Put_immutable);
 		return m_map.put(key, value);
 	}
 
@@ -309,10 +310,10 @@ public class BMProperties implements IProperties
 
 	public void setMutable(String key, boolean flag) throws UnsupportedOperationException
 	{
-		if(m_map instanceof IProperties)
-			((IProperties)m_map).setMutable(key, flag);
+		if(m_map instanceof IProperties<?>)
+			((IProperties<String>)m_map).setMutable(key, flag);
 		else if(!flag)
-			throw new UnsupportedOperationException(Messages.BMProperties_setMutable);
+			throw new UnsupportedOperationException(Messages.SetMutable);
 	}
 
 	public int size()
@@ -327,8 +328,8 @@ public class BMProperties implements IProperties
 
 	public boolean supportsMutability()
 	{
-		return (m_map instanceof IProperties)
-				? ((IProperties)m_map).supportsMutability()
+		return (m_map instanceof IProperties<?>)
+				? ((IProperties<String>)m_map).supportsMutability()
 				: false;
 	}
 

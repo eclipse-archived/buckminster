@@ -70,7 +70,7 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.ResolvedNodeHandler_wrapper_0_does_not_wrap_resolution,
+			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_resolution,
 					m_resolutionId), getDocumentLocator());
 		}
 	}

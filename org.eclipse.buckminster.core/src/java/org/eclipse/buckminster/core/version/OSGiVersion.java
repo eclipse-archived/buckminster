@@ -12,8 +12,6 @@ package org.eclipse.buckminster.core.version;
 
 import java.util.Comparator;
 
-import org.eclipse.buckminster.core.Messages;
-
 /**
  * @author Thomas Hallgren
  */

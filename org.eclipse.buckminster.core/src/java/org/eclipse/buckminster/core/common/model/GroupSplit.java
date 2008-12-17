@@ -10,9 +10,11 @@
 
 package org.eclipse.buckminster.core.common.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -46,14 +48,15 @@ public class GroupSplit extends AbstractSplit
 		Utils.addAttribute(attrs, ATTR_STYLE, "group"); //$NON-NLS-1$
 	}
 
-	protected String[] checkedGetValues(IProperties properties, int recursionGuard)
+	@Override
+	protected List<String> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard)
 	{
-		String source = this.checkedGetSourceValue(properties, recursionGuard);
-		Matcher m = this.getPattern().matcher(source);
+		String source = checkedGetSourceValue(properties, recursionGuard);
+		Matcher m = getPattern().matcher(source);
 		int nGroups = m.groupCount();
-		String[] result = new String[nGroups];
-		while(--nGroups >= 0)
-			result[nGroups] = m.group(nGroups + 1);
+		ArrayList<String> result = new ArrayList<String>(nGroups);
+		for(int idx = 0; idx < nGroups; ++idx)
+			result.add(m.group(nGroups + 1));
 		return result;
 	}
 }

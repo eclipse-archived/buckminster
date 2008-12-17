@@ -630,12 +630,12 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 	{
 		int result = defaultValue;
 
-		String value = getProperties().get(property);
-		if(value != null)
+		Object value = getProperties().get(property);
+		if(value instanceof String)
 		{
 			try
 			{
-				result = Integer.parseInt(value);
+				result = Integer.parseInt((String)value);
 				if(result < 1)
 					// It has to be a positive integer. Use the default.
 					result = defaultValue;

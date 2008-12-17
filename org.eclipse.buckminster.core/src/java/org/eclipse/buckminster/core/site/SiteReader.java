@@ -136,7 +136,7 @@ public class SiteReader implements IStreamConsumer<SaxableSite>
 		monitor.beginTask(null, 1);
 		try
 		{
-			monitor.subTask(Messages.SiteReader_Loading_site_definition);
+			monitor.subTask(Messages.Loading_site_definition);
 			SaxableSite site = parseSite(stream, URLUtils.normalizeToURL(streamName));
 			MonitorUtils.worked(monitor, 1);
 			return site;

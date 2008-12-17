@@ -29,6 +29,6 @@ public class LocalReader extends URLCatalogReader
 	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		throw new UnsupportedOperationException(Messages.LocalReader_local_reader_cannot_materialize);
+		throw new UnsupportedOperationException(Messages.local_reader_cannot_materialize);
 	}
 }

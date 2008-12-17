@@ -98,7 +98,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 			throws CoreException
 	{
 		throw new UnsupportedOperationException(NLS.bind(
-				Messages.AbstractReaderType_ReaderType_0_cannot_handle_fetchFactory_data, getId()));
+				Messages.ReaderType_0_cannot_handle_fetchFactory_data, getId()));
 	}
 
 	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException

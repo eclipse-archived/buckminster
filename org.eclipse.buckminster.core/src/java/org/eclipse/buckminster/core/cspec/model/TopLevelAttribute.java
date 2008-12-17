@@ -77,7 +77,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 	}
 
 	@Override
-	public void addDynamicProperties(Map<String, String> properties) throws CoreException
+	public void addDynamicProperties(Map<String, Object> properties) throws CoreException
 	{
 		String actionOutput;
 		CSpec cspec = getCSpec();
@@ -105,7 +105,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		IPath buckminsterTempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster") //$NON-NLS-1$ //$NON-NLS-2$
 				.append(uniqueFolder);
 
-		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
+		String outputRoot = (String)properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		if(outputRoot != null)
 		{
 			// Output root must be qualified with component name to avoid
@@ -128,22 +128,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		int idx = pqs.length;
 		while(--idx >= 0)
 			pqs[idx].appendRelativeFiles(fileNames);
-	}
-
-	@Override
-	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-		if(!m_installerHints.isEmpty())
-		{
-			String qName = Utils.makeQualifiedName(prefix, ELEM_INSTALLER_HINTS);
-			handler.startElement(namespace, ELEM_INSTALLER_HINTS, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-			SAXEmitter.emitProperties(handler, m_installerHints, namespace, prefix, true, false);
-			handler.endElement(namespace, ELEM_INSTALLER_HINTS, qName);
-		}
 	}
 
 	public void getDeepInstallerHints(IModelCache ctx, Map<String, String> hints, Stack<IAttributeFilter> filters)
@@ -279,7 +263,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			pga = cache.get(qName);
 			if(pga == null)
 			{
-				ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
+				ExpandingProperties<Object> local = new ExpandingProperties<Object>(ctx.getProperties());
 				addDynamicProperties(local);
 				pga = internalGetPathGroups(ctx, local, filters);
 				cache.put(qName, pga);
@@ -289,7 +273,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		{
 			// Can't use the cache
 			//
-			ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
+			ExpandingProperties<Object> local = new ExpandingProperties<Object>(ctx.getProperties());
 			addDynamicProperties(local);
 			pga = internalGetPathGroups(ctx, local, filters);
 		}
@@ -320,17 +304,33 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			}
 		}
 		if(uniquePath == null)
-			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.TopLevelAttribute_Unable_to_determine_a_unique_product_path_for_0, this));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_a_unique_product_path_for_0,
+					this));
 		return uniquePath;
 	}
-
-	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
-			Stack<IAttributeFilter> filters) throws CoreException;
 
 	@Override
 	public boolean isPublic()
 	{
 		return m_public;
 	}
+
+	@Override
+	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(handler, namespace, prefix);
+		if(!m_installerHints.isEmpty())
+		{
+			String qName = Utils.makeQualifiedName(prefix, ELEM_INSTALLER_HINTS);
+			handler.startElement(namespace, ELEM_INSTALLER_HINTS, qName, ISaxableElement.EMPTY_ATTRIBUTES);
+			SAXEmitter.emitProperties(handler, m_installerHints, namespace, prefix, true, false);
+			handler.endElement(namespace, ELEM_INSTALLER_HINTS, qName);
+		}
+	}
+
+	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local,
+			Stack<IAttributeFilter> filters) throws CoreException;
 }

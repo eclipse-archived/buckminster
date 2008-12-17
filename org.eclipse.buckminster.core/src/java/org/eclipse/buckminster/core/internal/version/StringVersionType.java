@@ -42,7 +42,7 @@ public class StringVersionType extends AbstractVersionType
 			break;
 		}
 		if(idx == startPos)
-			throw new VersionSyntaxException(Messages.StringVersionType_Not_a_valid_String_version, versionString, startPos);
+			throw new VersionSyntaxException(Messages.Not_a_valid_String_version, versionString, startPos);
 		endPosRet[0] = idx;
 		return new StringVersion(this, versionString.substring(startPos, idx));
 	}

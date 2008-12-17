@@ -49,7 +49,8 @@ public class DepotURI extends PropertyScope
 		}
 	}
 
-	public static Client getClient(Map<String, String> scope, Server server, String clientName) throws CoreException
+	public static Client getClient(Map<String, ? extends Object> scope, Server server, String clientName)
+			throws CoreException
 	{
 		try
 		{
@@ -71,12 +72,12 @@ public class DepotURI extends PropertyScope
 		}
 	}
 
-	public static Client getClient(Map<String, String> scope, URI uri) throws CoreException
+	public static Client getClient(Map<String, ? extends Object> scope, URI uri) throws CoreException
 	{
 		return getClient(scope, getServer(scope, uri), uri.getFragment());
 	}
 
-	public static Server getServer(Map<String, String> scope, URI uri) throws CoreException
+	public static Server getServer(Map<String, ? extends Object> scope, URI uri) throws CoreException
 	{
 		try
 		{
@@ -146,7 +147,7 @@ public class DepotURI extends PropertyScope
 	 * @param properties
 	 * @throws CoreException
 	 */
-	public DepotURI(String urlString, String branch, Map<String, String> properties) throws CoreException
+	public DepotURI(String urlString, String branch, Map<String, ? extends Object> properties) throws CoreException
 	{
 		this(createURI(urlString), branch, properties);
 	}
@@ -195,7 +196,7 @@ public class DepotURI extends PropertyScope
 	 * @param properties
 	 *            The property scope.
 	 */
-	public DepotURI(URI uri, String branch, Map<String, String> properties) throws CoreException
+	public DepotURI(URI uri, String branch, Map<String, ? extends Object> properties) throws CoreException
 	{
 		super(properties);
 		String scheme = uri.getScheme();

@@ -55,7 +55,7 @@ public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
 		try
 		{
 			monitor.beginTask(null, 1);
-			monitor.subTask(Messages.ProjectDescReader_Loading_project_description);
+			monitor.subTask(Messages.Loading_project_description);
 			IWorkspace ws = ResourcesPlugin.getWorkspace();
 			synchronized(ws)
 			{

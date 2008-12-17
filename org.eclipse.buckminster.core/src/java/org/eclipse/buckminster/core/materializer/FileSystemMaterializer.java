@@ -144,7 +144,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							//
 							statistics.addKept(ci);
 							logger.info(NLS.bind(
-									Messages.FileSystemMaterializer_Skipping_materialization_of_0_Instead_reusing_1,
+									Messages.Skipping_materialization_of_0_Instead_reusing_1,
 									ci, artifactLocation));
 
 							mat.store(sm);
@@ -253,7 +253,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				//
 				IReaderType readerType = plugin.getReaderType(entry.getKey());
 
-				matMon.subTask(NLS.bind(Messages.FileSystemMaterializer_Preparing_type_0, readerType.getId()));
+				matMon.subTask(NLS.bind(Messages.Preparing_type_0, readerType.getId()));
 				readerType.prepareMaterialization(rg, context, MonitorUtils.subMonitor(matMon, 8));
 				for(Materialization mi : rg)
 				{

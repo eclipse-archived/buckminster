@@ -20,7 +20,7 @@ public class MissingPropertyException extends LocalizedException
 
 	public MissingPropertyException(String name, String attribute, String propertyCategory, String propertyName)
 	{
-		super(NLS.bind(Messages.MissingPropertyException_CSpec_0_attribute_1_has_no_2_named_3, new Object[] { name,
+		super(NLS.bind(Messages.CSpec_0_attribute_1_has_no_2_named_3, new Object[] { name,
 				attribute, propertyCategory, propertyName }));
 	}
 }

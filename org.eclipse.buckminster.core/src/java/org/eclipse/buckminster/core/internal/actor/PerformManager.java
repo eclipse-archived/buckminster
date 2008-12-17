@@ -59,6 +59,18 @@ public class PerformManager implements IPerformManager
 
 	private static final PrintStream s_nullPrintStream = new PrintStream(NullOutputStream.INSTANCE);
 
+	public static IPath expandPath(Map<String, ? extends Object> properties, IPath path)
+	{
+		if(path != null)
+			path = new Path(ExpandingProperties.expand(properties, path.toPortableString(), 0));
+		return path;
+	}
+
+	public static PerformManager getInstance()
+	{
+		return INSTANCE;
+	}
+
 	private static void addAttributeChildren(GlobalContext ctx, Attribute attribute, Set<String> seen,
 			List<Action> ordered) throws CoreException
 	{
@@ -80,18 +92,6 @@ public class PerformManager implements IPerformManager
 			if(attribute instanceof IAction)
 				ordered.add((Action)attribute);
 		}
-	}
-
-	public static IPath expandPath(Map<String, String> properties, IPath path)
-	{
-		if(path != null)
-			path = new Path(ExpandingProperties.expand(properties, path.toPortableString(), 0));
-		return path;
-	}
-
-	public static PerformManager getInstance()
-	{
-		return INSTANCE;
 	}
 
 	private static List<Action> getOrderedActionList(GlobalContext ctx, List<? extends IAttribute> attributes)
@@ -230,8 +230,8 @@ public class PerformManager implements IPerformManager
 		}
 	}
 
-	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced,
-			boolean quiet, IProgressMonitor monitor) throws CoreException
+	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, ? extends Object> props,
+			boolean forced, boolean quiet, IProgressMonitor monitor) throws CoreException
 	{
 		return perform(Collections.singletonList(((CSpec)cspec.getAdapter(CSpec.class))
 				.getRequiredAttribute(attributeName)), props, forced, quiet, monitor);
@@ -250,7 +250,7 @@ public class PerformManager implements IPerformManager
 		if(logger.isDebugEnabled())
 		{
 			StringBuilder bld = new StringBuilder(40 + actionList.size() * 40);
-			bld.append(Messages.PerformManager_Actions_to_perform_in_order);
+			bld.append(Messages.Actions_to_perform_in_order);
 			for(Action action : actionList)
 			{
 				bld.append("\n  "); //$NON-NLS-1$
@@ -333,8 +333,8 @@ public class PerformManager implements IPerformManager
 		return status;
 	}
 
-	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> userProps, boolean forced,
-			boolean quiet, IProgressMonitor monitor) throws CoreException
+	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, ? extends Object> userProps,
+			boolean forced, boolean quiet, IProgressMonitor monitor) throws CoreException
 	{
 		GlobalContext globalCtx = new GlobalContext(userProps, forced, quiet);
 		monitor.beginTask(null, 1000);

@@ -273,7 +273,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 				// We allow missing properties but we log it nevertheless
 				//
 				CorePlugin.getLogger().info(
-						NLS.bind(Messages.ComponentQuery_Unable_to_read_property_file_0_1, propsURL, e.toString()));
+						NLS.bind(Messages.Unable_to_read_property_file_0_1, propsURL, e.toString()));
 			}
 			finally
 			{
@@ -432,7 +432,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 
 	public String getTagInfo()
 	{
-		return NLS.bind(Messages.ComponentQuery_Query_for_0, m_rootRequest);
+		return NLS.bind(Messages.Query_for_0, m_rootRequest);
 	}
 
 	public Date getTimestamp(ComponentName cName)

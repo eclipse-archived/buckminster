@@ -135,7 +135,7 @@ public class Connection extends PropertyScope
 		this(depotURI.getScope(), depotURI.getClient(), depotURI.getAddress());
 	}
 
-	public Connection(Map<String, String> scope, Client clientPrefs, String address)
+	public Connection(Map<String, ? extends Object> scope, Client clientPrefs, String address)
 	{
 		super(scope);
 		m_charset = null;

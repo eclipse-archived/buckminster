@@ -107,7 +107,7 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 		{
 			File wsRoot = FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation().getURL()));
 			if(!isFolderEmpty(wsRoot))
-				throw new SimpleErrorExitException(NLS.bind(Messages.WorkspaceInitCommand_Workspace_at_0_is_not_empty,
+				throw new SimpleErrorExitException(NLS.bind(Messages.Workspace_at_0_is_not_empty,
 						wsRoot));
 
 			IProgressMonitor nullMon = new NullProgressMonitor();
@@ -134,14 +134,14 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 				fileTemplate = FileUtils.getFile(template);
 				if(fileTemplate == null)
 					throw new SimpleErrorExitException(
-							Messages.WorkspaceInitCommand_Only_zip_and_jar_files_allowed_for_remote_workspace_templates);
+							Messages.Only_zip_and_jar_files_allowed_for_remote_workspace_templates);
 
 				if(!fileTemplate.isAbsolute())
 					fileTemplate = fileTemplate.getAbsoluteFile();
 
 				if(!fileTemplate.isDirectory())
 					throw new SimpleErrorExitException(
-							Messages.WorkspaceInitCommand_Only_folders_zip_and_jar_files_can_be_uses_as_workspace_template);
+							Messages.Only_folders_zip_and_jar_files_can_be_uses_as_workspace_template);
 			}
 			FileUtils.deepCopyUnchecked(fileTemplate, wsRoot, nullMon);
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, nullMon);

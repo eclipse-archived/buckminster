@@ -92,7 +92,7 @@ public class RxAssembly extends AbstractSaxableElement
 
 		if(top != groupCount)
 		{
-			logger.warning(NLS.bind(Messages.RxAssembly_URI_pattern_group_count_was_0_expected_1, Integer
+			logger.warning(NLS.bind(Messages.URI_pattern_group_count_was_0_expected_1, Integer
 					.valueOf(groupCount), Integer.valueOf(top)));
 			top = groupCount;
 		}

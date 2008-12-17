@@ -375,8 +375,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	private void waitForCompletion(IProgressMonitor monitor) throws CoreException
 	{
 		JobBlocker jobBlocker = new JobBlocker();
-		jobBlocker.addNameBlock(Messages.ResourceMapResolver_Building_workspace);
-		jobBlocker.addNameBlock(Messages.ResourceMapResolver_Periodic_workspace_save);
+		jobBlocker.addNameBlock(Messages.Building_workspace);
+		jobBlocker.addNameBlock(Messages.Periodic_workspace_save);
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		try
 		{

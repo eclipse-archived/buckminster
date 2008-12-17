@@ -12,75 +12,6 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.osgi.util.NLS;
 
-class Branch extends VersionSelector
-{
-	Branch(String name)
-	{
-		super(name);
-	}
-
-	@Override
-	public int getType()
-	{
-		return BRANCH;
-	}
-
-	@Override
-	public boolean isDefault()
-	{
-		return getName().equals(DEFAULT_BRANCH);
-	}
-
-	@Override
-	public String toString()
-	{
-		return getName();
-	}
-
-	@Override
-	public void viewNameToString(StringBuilder bld)
-	{
-		bld.append(Messages.VersionSelector_Branch);
-		bld.append(getName());
-	}
-}
-
-class Tag extends VersionSelector
-{
-	Tag(String name)
-	{
-		super(name);
-	}
-
-	@Override
-	public int getType()
-	{
-		return TAG;
-	}
-
-	@Override
-	public boolean isDefault()
-	{
-		// There is no default tag
-		//
-		return false;
-	}
-
-	@Override
-	public void toString(StringBuilder bld)
-	{
-		bld.append('/');
-		super.toString(bld);
-	}
-
-	@Override
-	public void viewNameToString(StringBuilder bld)
-	{
-		bld.append(Messages.VersionSelector_Tag);
-		bld.append(getName());
-	}
-}
-
 /**
  * An instance of this class represents a branch or a tag in a Source Code Control System such as CVS, Subversion, or
  * Perforce.
@@ -147,30 +78,6 @@ public abstract class VersionSelector
 			isTag = true;
 		}
 		return fromString(string, isTag);
-	}
-
-	private static VersionSelector fromString(String string, boolean isTag)
-	{
-		if(string != null)
-		{
-			int top = string.length();
-			for(int idx = 0; idx < top; ++idx)
-			{
-				char c = string.charAt(idx);
-				if(c == '/')
-					throw new IllegalArgumentException(
-							Messages.VersionSelector_The_slash_character_only_legal_at_first_position_of_branch_tag_qualifier);
-
-				if(c == ',' || Character.isWhitespace(c) || Character.isISOControl(c))
-					throw new IllegalArgumentException(NLS.bind(
-							Messages.VersionSelector_The_0_character_is_illegal_in_branch_tag_qualifier, c));
-			}
-			if(top > 0)
-				return isTag
-						? new Tag(string)
-						: new Branch(string);
-		}
-		throw new IllegalArgumentException(Messages.VersionSelector_A_branch_tag_qualifier_cannot_be_empty);
 	}
 
 	/**
@@ -243,6 +150,31 @@ public abstract class VersionSelector
 			path[idx].toString(bld);
 		}
 		return bld.toString();
+	}
+
+	private static VersionSelector fromString(String string, boolean isTag)
+	{
+		if(string != null)
+		{
+			int top = string.length();
+			for(int idx = 0; idx < top; ++idx)
+			{
+				char c = string.charAt(idx);
+				if(c == '/')
+					throw new IllegalArgumentException(
+							Messages.The_slash_character_only_legal_at_first_position_of_branch_tag_qualifier);
+
+				if(c == ',' || Character.isWhitespace(c) || Character.isISOControl(c))
+					throw new IllegalArgumentException(NLS.bind(
+							Messages.The_0_character_is_illegal_in_branch_tag_qualifier, Character
+									.valueOf(c)));
+			}
+			if(top > 0)
+				return isTag
+						? new Tag(string)
+						: new Branch(string);
+		}
+		throw new IllegalArgumentException(Messages.A_branch_tag_qualifier_cannot_be_empty);
 	}
 
 	private final String m_name;
@@ -338,4 +270,73 @@ public abstract class VersionSelector
 	 *            The buffer that will receive the verbose string representation
 	 */
 	public abstract void viewNameToString(StringBuilder bld);
+}
+
+class Branch extends VersionSelector
+{
+	Branch(String name)
+	{
+		super(name);
+	}
+
+	@Override
+	public int getType()
+	{
+		return BRANCH;
+	}
+
+	@Override
+	public boolean isDefault()
+	{
+		return getName().equals(DEFAULT_BRANCH);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
+	}
+
+	@Override
+	public void viewNameToString(StringBuilder bld)
+	{
+		bld.append(Messages.Branch);
+		bld.append(getName());
+	}
+}
+
+class Tag extends VersionSelector
+{
+	Tag(String name)
+	{
+		super(name);
+	}
+
+	@Override
+	public int getType()
+	{
+		return TAG;
+	}
+
+	@Override
+	public boolean isDefault()
+	{
+		// There is no default tag
+		//
+		return false;
+	}
+
+	@Override
+	public void toString(StringBuilder bld)
+	{
+		bld.append('/');
+		super.toString(bld);
+	}
+
+	@Override
+	public void viewNameToString(StringBuilder bld)
+	{
+		bld.append(Messages.Tag);
+		bld.append(getName());
+	}
 }

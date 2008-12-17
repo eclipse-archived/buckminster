@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -30,7 +29,7 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the
- * same {@ IReaderType} that was used when the component was first materialized
+ * same @ IReaderType} that was used when the component was first materialized
  * 
  * @author Thomas Hallgren
  */
@@ -91,8 +90,8 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			if(lastMod == null)
 				return currentVersion;
 
-			Map<String, String> props = context.getProperties();
-			String format = props.get(FORMAT_PROPERTY);
+			Map<String, ? extends Object> props = context.getProperties();
+			String format = (String)props.get(FORMAT_PROPERTY);
 			if(format == null)
 				format = DEFAULT_FORMAT;
 

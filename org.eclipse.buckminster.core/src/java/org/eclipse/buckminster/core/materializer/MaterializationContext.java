@@ -18,7 +18,7 @@ import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -57,31 +57,9 @@ public class MaterializationContext extends RMContext
 
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec, RMContext context)
 	{
-		super(new MapUnion<String, String>(mspec.getProperties(), context), context);
+		super(new UnmodifiableMapUnion<String, Object>(mspec.getProperties(), context), context);
 		m_bom = bom;
 		m_materializationSpec = mspec;
-	}
-
-	private void addTagInfosFromBom()
-	{
-		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
-	}
-
-	private void addTagInfosFromNode(String tagInfo, BOMNode node)
-	{
-		Resolution res = node.getResolution();
-		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
-			return;
-
-		addTagInfo(node.getRequest(), tagInfo);
-		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
-		for(BOMNode child : node.getChildren())
-			addTagInfosFromNode(childTagInfo, child);
-	}
-
-	private IPath expand(IPath path)
-	{
-		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
 	}
 
 	/**
@@ -205,13 +183,119 @@ public class MaterializationContext extends RMContext
 	}
 
 	@Override
-	public Map<String, String> getProperties(ComponentName cName)
+	public Map<String, ? extends Object> getProperties(ComponentName cName)
 	{
-		Map<String, String> p = super.getProperties(cName);
+		Map<String, ? extends Object> p = super.getProperties(cName);
 		IMaterializationNode node = m_materializationSpec.getMatchingNode(cName);
+		return node == null
+				? p
+				: new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
+	}
+
+	public String getSuffixedName(Resolution resolution, String remoteName) throws CoreException
+	{
+		MaterializationSpec mspec = getMaterializationSpec();
+		IComponentName cName = resolution.getComponentIdentifier();
+		if(!mspec.isUnpack(cName))
+			return null;
+
+		String name = mspec.getSuffix(cName);
+		if(name == null)
+			name = remoteName;
+
+		if(name == null)
+		{
+			IReaderType rd = resolution.getProvider().getReaderType();
+			IPath leaf = rd.getLeafArtifact(resolution, this);
+			if(leaf == null || leaf.segmentCount() == 0)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_suffix_for_unpack_of_0,
+						cName));
+			name = leaf.segment(0);
+		}
+		return name;
+	}
+
+	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
+	{
+		IPath nodeLocation = null;
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
 		if(node != null)
-			p.putAll(node.getProperties());
-		return p;
+		{
+			nodeLocation = node.getWorkspaceLocation();
+			if(nodeLocation != null)
+			{
+				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation
+						.toOSString(), 0));
+				IPath tmp = expand(nodeLocation);
+				if(tmp.isAbsolute())
+					return tmp;
+			}
+		}
+
+		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
+		if(rootLocation == null)
+		{
+			if(nodeLocation != null)
+				//
+				// At this point the nodeLocation must be relative so this
+				// is illegal.
+				//
+				throw BuckminsterException.fromMessage(NLS.bind(
+						Messages.WorkspaceLocation_0_in_node_matching_1_cannot_be_relative_unless, nodeLocation, ci));
+
+			// Default to location of current workspace
+			//
+			return ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		}
+
+		return expand((nodeLocation == null)
+				? rootLocation
+				: rootLocation.append(nodeLocation));
+	}
+
+	/**
+	 * If the target platform materializer installs things into the current runtime, this flag will be set to
+	 * <code>true</code>.
+	 * 
+	 * @return <code>true</code> if a materializer altered the current runtime platform.
+	 */
+	public boolean isRebootNeeded()
+	{
+		return m_rebootNeeded;
+	}
+
+	/**
+	 * Set by the target platform materializer when it installs new features into the default target platform (the one
+	 * currently in use).
+	 * 
+	 * @param flag
+	 */
+	public void setRebootNeeded(boolean flag)
+	{
+		m_rebootNeeded = flag;
+	}
+
+	private void addTagInfosFromBom()
+	{
+		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
+	}
+
+	private void addTagInfosFromNode(String tagInfo, BOMNode node)
+	{
+		Resolution res = node.getResolution();
+		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
+			return;
+
+		addTagInfo(node.getRequest(), tagInfo);
+		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
+		for(BOMNode child : node.getChildren())
+			addTagInfosFromNode(childTagInfo, child);
+	}
+
+	private IPath expand(IPath path)
+	{
+		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
 	}
 
 	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException
@@ -249,92 +333,5 @@ public class MaterializationContext extends RMContext
 		if(location == null)
 			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
 		return location;
-	}
-
-	public String getSuffixedName(Resolution resolution, String remoteName) throws CoreException
-	{
-		MaterializationSpec mspec = getMaterializationSpec();
-		IComponentName cName = resolution.getComponentIdentifier();
-		if(!mspec.isUnpack(cName))
-			return null;
-
-		String name = mspec.getSuffix(cName);
-		if(name == null)
-			name = remoteName;
-
-		if(name == null)
-		{
-			IReaderType rd = resolution.getProvider().getReaderType();
-			IPath leaf = rd.getLeafArtifact(resolution, this);
-			if(leaf == null || leaf.segmentCount() == 0)
-				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.MaterializationContext_Unable_to_determine_suffix_for_unpack_of_0, cName));
-			name = leaf.segment(0);
-		}
-		return name;
-	}
-
-	public IPath getWorkspaceLocation(Resolution resolution) throws CoreException
-	{
-		IPath nodeLocation = null;
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-		if(node != null)
-		{
-			nodeLocation = node.getWorkspaceLocation();
-			if(nodeLocation != null)
-			{
-				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation
-						.toOSString(), 0));
-				IPath tmp = expand(nodeLocation);
-				if(tmp.isAbsolute())
-					return tmp;
-			}
-		}
-
-		IPath rootLocation = m_materializationSpec.getWorkspaceLocation();
-		if(rootLocation == null)
-		{
-			if(nodeLocation != null)
-				//
-				// At this point the nodeLocation must be relative so this
-				// is illegal.
-				//
-				throw BuckminsterException
-						.fromMessage(NLS
-								.bind(
-										Messages.MaterializationContext_WorkspaceLocation_0_in_node_matching_1_cannot_be_relative_unless,
-										nodeLocation, ci));
-
-			// Default to location of current workspace
-			//
-			return ResourcesPlugin.getWorkspace().getRoot().getLocation();
-		}
-
-		return expand((nodeLocation == null)
-				? rootLocation
-				: rootLocation.append(nodeLocation));
-	}
-
-	/**
-	 * If the target platform materializer installs things into the current runtime, this flag will be set to
-	 * <code>true</code>.
-	 * 
-	 * @return <code>true</code> if a materializer altered the current runtime platform.
-	 */
-	public boolean isRebootNeeded()
-	{
-		return m_rebootNeeded;
-	}
-
-	/**
-	 * Set by the target platform materializer when it installs new features into the default target platform (the one
-	 * currently in use).
-	 * 
-	 * @param flag
-	 */
-	public void setRebootNeeded(boolean flag)
-	{
-		m_rebootNeeded = flag;
 	}
 }

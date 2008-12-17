@@ -22,7 +22,7 @@ public class ToUpper extends ValueHolderFilter
 	public static final String TAG = "toUpper"; //$NON-NLS-1$
 
 	@Override
-	public String checkedGetValue(Map<String, String> props, int recursionGuard)
+	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard)
 	{
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
 		return (resolved == null || NO_VALUE.equals(resolved))

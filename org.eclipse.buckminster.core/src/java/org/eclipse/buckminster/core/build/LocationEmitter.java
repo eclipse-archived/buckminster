@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -102,6 +101,24 @@ public class LocationEmitter extends PropertiesEmitter
 		addFormat(ARG_FORMAT_ARTIFACTS, FORMAT_LOCATION_ARTIFACT);
 	}
 
+	@Override
+	protected void appendProperties() throws CoreException
+	{
+		try
+		{
+			IModelCache cache = new ModelCache();
+			CSpec cspec = WorkspaceInfo.getCSpec(getProject());
+			String attr = getArgument(ARG_PURPOSE);
+			Set<String> attrs = attr == null
+					? Collections.<String> emptySet()
+					: Collections.singleton(attr);
+			appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
+		}
+		catch(MissingComponentException e)
+		{
+		}
+	}
+
 	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache,
 			HashSet<ComponentIdentifier> seenIds) throws CoreException
 	{
@@ -140,24 +157,6 @@ public class LocationEmitter extends PropertiesEmitter
 		{
 			CSpec childSpec = cache.findCSpec(cspec, dep.getRequest());
 			appendComponentProperties(childSpec, dep.getAttributeNames(), cache, seenIds);
-		}
-	}
-
-	@Override
-	protected void appendProperties() throws CoreException
-	{
-		try
-		{
-			IModelCache cache = new ModelCache();
-			CSpec cspec = WorkspaceInfo.getCSpec(getProject());
-			String attr = getArgument(ARG_PURPOSE);
-			Set<String> attrs = attr == null
-					? Collections.<String> emptySet()
-					: Collections.singleton(attr);
-			appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
-		}
-		catch(MissingComponentException e)
-		{
 		}
 	}
 

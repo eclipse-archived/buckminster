@@ -86,12 +86,12 @@ public class ReplaceHandler extends ValueFilterHandler
 		if(pattern != null)
 		{
 			if(replacement == null)
-				throw new SAXParseException(Messages.ReplaceHandler_pattern_but_no_replacement, this.getDocumentLocator());
+				throw new SAXParseException(Messages.Pattern_but_no_replacement, this.getDocumentLocator());
 			boolean quotePattern = getOptionalBooleanValue(attrs, Replace.ATTR_QUOTE_PATTERN, false);
 			rp.addMatch(new Replace.Match(pattern, replacement, quotePattern));
 		}
 		else if(replacement != null)
-			throw new SAXParseException(Messages.ReplaceHandler_replacement_but_no_pattern, this.getDocumentLocator());
+			throw new SAXParseException(Messages.Replacement_but_no_pattern, this.getDocumentLocator());
 
 		this.setValueHolder(rp);
 	}

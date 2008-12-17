@@ -194,38 +194,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
-		if(m_opml != null)
-			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
-
-		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
-		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
-		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable
-				? "true" //$NON-NLS-1$
-				: "false"); //$NON-NLS-1$
-		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_provider.getId().toString());
-		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
-
-		if(m_componentTypeId != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
-		if(m_persistentId != null)
-			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, m_persistentId);
-		if(m_remoteName != null)
-			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
-		if(m_contentType != null)
-			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
-		if(m_lastModified != 0L)
-			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
-		if(m_size != -1L)
-			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
-		if(m_unpack)
-			Utils.addAttribute(attrs, ATTR_UNPACK, "true"); //$NON-NLS-1$
-	}
-
-	@Override
 	public void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
@@ -298,18 +266,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public String getDefaultTag()
 	{
 		return TAG;
-	}
-
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return XMLConstants.BM_METADATA_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return XMLConstants.BM_METADATA_PREFIX;
 	}
 
 	public long getLastModified()
@@ -519,7 +475,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		Filter cspecFilter = getCSpec().getFilter();
 		FilterUtils.addConsultedAttributes(cspecFilter, attributeUsageMap);
 
-		Map<String, String> properties = query.getProperties();
+		Map<String, ? extends Object> properties = query.getProperties();
 		if(!FilterUtils.isMatch(resFilter, properties))
 		{
 			if(failingFilter != null)
@@ -612,10 +568,54 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(Messages.Resolution_Name);
+		result.append(Messages.Name);
 		result.append(m_request.getName());
 		result.append(", "); //$NON-NLS-1$
 		m_versionMatch.toString(result);
 		return result.toString();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
+		if(m_opml != null)
+			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
+
+		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
+		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable
+				? "true" //$NON-NLS-1$
+				: "false"); //$NON-NLS-1$
+		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_provider.getId().toString());
+		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
+
+		if(m_componentTypeId != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
+		if(m_persistentId != null)
+			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, m_persistentId);
+		if(m_remoteName != null)
+			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
+		if(m_contentType != null)
+			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
+		if(m_lastModified != 0L)
+			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
+		if(m_size != -1L)
+			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
+		if(m_unpack)
+			Utils.addAttribute(attrs, ATTR_UNPACK, "true"); //$NON-NLS-1$
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_METADATA_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_METADATA_PREFIX;
 	}
 }

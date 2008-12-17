@@ -20,6 +20,6 @@ public class SearchPathNotFoundException extends LocalizedException
 
 	public SearchPathNotFoundException(String name)
 	{
-		super(NLS.bind(Messages.SearchPathNotFoundException_Unable_to_find_a_searchPath_for_0, name));
+		super(NLS.bind(Messages.Unable_to_find_a_searchPath_for_0, name));
 	}
 }

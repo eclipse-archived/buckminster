@@ -63,7 +63,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			{
 				if(defToUse == null || defToUse.length() == 0)
 					throw BuckminsterException
-							.fromMessage(Messages.ExternalCommandBuilder_Missing_value_for_definition_to_use);
+							.fromMessage(Messages.Missing_value_for_definition_to_use);
 
 				String resolvedDefsToUse = svm.performStringSubstitution(defToUse);
 
@@ -172,7 +172,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		IPath relativePath = new Path(launcherDefinitionsFile);
 		if(relativePath.isAbsolute())
 			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.ExternalCommandBuilder_Launcher_definitions_file_name_not_relative_to_project_root_0,
+					Messages.Launcher_definitions_file_name_not_relative_to_project_root_0,
 					launcherDefinitionsFile));
 		IPath fullPath = project.getLocation().append(relativePath);
 
@@ -189,10 +189,10 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		String fullCommandLine = getCommandLine(launcherDefinitions, defToUse, addArgs, this.getProject(), kind);
 
 		if(fullCommandLine == null)
-			throw BuckminsterException.fromMessage(Messages.ExternalCommandBuilder_Could_not_resolve_to_a_command_line);
+			throw BuckminsterException.fromMessage(Messages.Could_not_resolve_to_a_command_line);
 
 		Logger logger = CorePlugin.getLogger();
-		logger.info(NLS.bind(Messages.ExternalCommandBuilder_Command_line_0, fullCommandLine));
+		logger.info(NLS.bind(Messages.Command_line_0, fullCommandLine));
 
 		String[] splitCommandLine = this.splitCommandLine(fullCommandLine);
 
@@ -215,7 +215,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			int exitValue = p.waitFor();
 			if(exitValue != 0)
 				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.ExternalCommandBuilder_External_command_0_exited_with_1, fullCommandLine, Integer
+						Messages.External_command_0_exited_with_1, fullCommandLine, Integer
 								.valueOf(exitValue)));
 		}
 		catch(Exception e)
@@ -251,7 +251,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 					Collections.addAll(parsed, this.splitCommandLine(trimmedArg.substring(end + 1)));
 			}
 			else
-				throw new RuntimeException(Messages.ExternalCommandBuilder_Unexpected_non_match);
+				throw new RuntimeException(Messages.Unexpected_non_match);
 		}
 		else if(wsAndQMmatcher.find())
 		{

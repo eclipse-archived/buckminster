@@ -157,44 +157,9 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 				false, null, null);
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
-		if(m_componentTypeIDs.length > 0)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ",")); //$NON-NLS-1$
-		if(m_resolutionFilter != null)
-			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());
-		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
-		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
-	}
-
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
 	{
 		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI); //$NON-NLS-1$
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-		m_uri.toSax(handler, namespace, prefix, TAG_URI);
-
-		if(m_digest != null)
-		{
-			AttributesImpl attrs = new AttributesImpl();
-			Utils.addAttribute(attrs, Format.ATTR_FORMAT, m_digest.getFormat());
-			Utils.addAttribute(attrs, ATTR_ALGORITHM, m_digestAlgorithm);
-			String qName = Utils.makeQualifiedName(prefix, TAG_DIGEST);
-			handler.startElement(namespace, TAG_DIGEST, qName, attrs);
-			handler.endElement(namespace, TAG_DIGEST, qName);
-		}
-
-		if(m_versionConverter != null)
-			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
-		if(m_uriMatcher != null)
-			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
 	}
 
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
@@ -205,7 +170,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		if(score == ProviderScore.REJECTED)
 		{
 			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
-					getURI(), Messages.Provider_Score_is_below_threshold);
+					getURI(), Messages.Score_is_below_threshold);
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
 		}
@@ -249,7 +214,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 					{
 						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
 								readerType, getURI(), String.format(NLS.bind(
-										Messages.Provider_Components_of_type_0_are_not_supported, componentTypeID)));
+										Messages.Components_of_type_0_are_not_supported, componentTypeID)));
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
 								.toString(), null));
 					}
@@ -288,7 +253,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			if(candidate == null)
 			{
 				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
-						getURI(), Messages.Provider_No_component_match_was_found);
+						getURI(), Messages.No_component_match_was_found);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(),
 						problem == null
 								? null
@@ -351,19 +316,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return m_documentation;
 	}
 
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return XMLConstants.BM_RMAP_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return XMLConstants.BM_RMAP_PREFIX;
-	}
-
-	public Map<String, String> getProperties(Map<String, String> properties)
+	public Map<String, ? extends Object> getProperties(Map<String, ? extends Object> properties)
 	{
 		if(m_searchPath != null)
 			properties = m_searchPath.getResourceMap().getProperties(properties);
@@ -401,7 +354,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	/**
 	 * @return Returns expanded the File or Repository URI.
 	 */
-	public final String getURI(Map<String, String> properties)
+	public final String getURI(Map<String, ? extends Object> properties)
 	{
 		return m_uri.getValue(getProperties(properties));
 	}
@@ -449,7 +402,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	{
 		UUID thisId = getId();
 		if(!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty()) //$NON-NLS-1$
-			throw new ReferentialIntegrityException(this, "remove", Messages.Provider_Referenced_from_Resolution); //$NON-NLS-1$
+			throw new ReferentialIntegrityException(this, "remove", Messages.Referenced_from_Resolution); //$NON-NLS-1$
 
 		sm.getProviders().removeElement(thisId);
 	}
@@ -473,5 +426,52 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			handler.endPrefixMapping(pfx);
 
 		handler.endDocument();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
+		if(m_componentTypeIDs.length > 0)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ",")); //$NON-NLS-1$
+		if(m_resolutionFilter != null)
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());
+		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
+		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+		m_uri.toSax(handler, namespace, prefix, TAG_URI);
+
+		if(m_digest != null)
+		{
+			AttributesImpl attrs = new AttributesImpl();
+			Utils.addAttribute(attrs, Format.ATTR_FORMAT, m_digest.getFormat());
+			Utils.addAttribute(attrs, ATTR_ALGORITHM, m_digestAlgorithm);
+			String qName = Utils.makeQualifiedName(prefix, TAG_DIGEST);
+			handler.startElement(namespace, TAG_DIGEST, qName, attrs);
+			handler.endElement(namespace, TAG_DIGEST, qName);
+		}
+
+		if(m_versionConverter != null)
+			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
+		if(m_uriMatcher != null)
+			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_RMAP_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_RMAP_PREFIX;
 	}
 }

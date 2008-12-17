@@ -214,28 +214,72 @@ public class CreateProductBase
 			IOUtils.close(pfInput);
 		}
 
-		Map<String, String> props = m_actionContext.getProperties();
-		String os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
-		if(os == null || FilterUtils.MATCH_ALL.equals(os))
-			os = TargetPlatform.getOS();
-		m_os = os;
+		Map<String, ? extends Object> props = m_actionContext.getProperties();
+		Object os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
+		if(os == null || os.equals(FilterUtils.MATCH_ALL))
+			m_os = TargetPlatform.getOS();
+		else
+			m_os = os.toString();
 
-		String ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
-		if(ws == null || FilterUtils.MATCH_ALL.equals(ws))
-			ws = TargetPlatform.getWS();
-		m_ws = ws;
+		Object ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
+		if(ws == null || ws.equals(FilterUtils.MATCH_ALL))
+			m_ws = TargetPlatform.getWS();
+		else
+			m_ws = ws.toString();
 
-		String arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
-		if(arch == null || FilterUtils.MATCH_ALL.equals(arch))
-			arch = TargetPlatform.getOSArch();
-		m_arch = arch;
+		Object arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
+		if(arch == null || arch.equals(FilterUtils.MATCH_ALL))
+			m_arch = TargetPlatform.getOSArch();
+		else
+			m_arch = arch.toString();
 
-		String nl = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_NL);
-		if(nl == null || FilterUtils.MATCH_ALL.equals(nl))
-			nl = TargetPlatform.getNL();
-		m_nl = nl;
+		Object nl = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_NL);
+		if(nl == null || nl.equals(FilterUtils.MATCH_ALL))
+			m_nl = TargetPlatform.getNL();
+		else
+			m_nl = nl.toString();
 
 		m_copyJavaLauncher = copyJavaLauncher;
+	}
+
+	public String execute() throws Exception
+	{
+		m_hints = null;
+
+		File outputDir = m_outputDir.toFile();
+		if(!outputDir.isDirectory())
+			throw BuckminsterException.fromMessage(NLS.bind(Messages._0_is_not_directory, outputDir));
+
+		if(m_copyJavaLauncher)
+			copyJavaLauncherToRoot();
+
+		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
+		//
+		IProgressMonitor monitor = new NullProgressMonitor();
+		createConfigIniFile(new File(outputDir, "configuration"), monitor); //$NON-NLS-1$
+		createEclipseProductFile(outputDir, monitor);
+		createLauncherIniFile(outputDir, monitor);
+		return createLauncher();
+	}
+
+	public Map<String, String> getHints()
+	{
+		if(m_hints == null || m_hints.size() == 0)
+			return Collections.emptyMap();
+
+		Map<String, String> hints = new HashMap<String, String>();
+		StringBuilder bld = new StringBuilder(100);
+		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
+		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
+		for(Map.Entry<String, String> hint : m_hints.entrySet())
+		{
+			bld.setLength(pfLen);
+			bld.append(hint.getKey());
+			bld.append('.');
+			bld.append(m_product.getName());
+			hints.put(bld.toString(), hint.getValue());
+		}
+		return hints;
 	}
 
 	private void addChmodHint(String perm, String filesAndFolders)
@@ -525,26 +569,6 @@ public class CreateProductBase
 		}
 	}
 
-	public String execute() throws Exception
-	{
-		m_hints = null;
-
-		File outputDir = m_outputDir.toFile();
-		if(!outputDir.isDirectory())
-			throw BuckminsterException.fromMessage(NLS.bind(Messages._0_is_not_directory, outputDir));
-
-		if(m_copyJavaLauncher)
-			copyJavaLauncherToRoot();
-
-		// Generate the configuration/config.ini, .eclipseproduct, <launcher>.ini
-		//
-		IProgressMonitor monitor = new NullProgressMonitor();
-		createConfigIniFile(new File(outputDir, "configuration"), monitor); //$NON-NLS-1$
-		createEclipseProductFile(outputDir, monitor);
-		createLauncherIniFile(outputDir, monitor);
-		return createLauncher();
-	}
-
 	private String getBrandingPlugin()
 	{
 		String id = m_product.getId();
@@ -568,26 +592,6 @@ public class CreateProductBase
 			}
 		}
 		return null;
-	}
-
-	public Map<String, String> getHints()
-	{
-		if(m_hints == null || m_hints.size() == 0)
-			return Collections.emptyMap();
-
-		Map<String, String> hints = new HashMap<String, String>();
-		StringBuilder bld = new StringBuilder(100);
-		bld.append(TopLevelAttribute.INSTALLER_HINT_PREFIX);
-		int pfLen = TopLevelAttribute.INSTALLER_HINT_PREFIX.length();
-		for(Map.Entry<String, String> hint : m_hints.entrySet())
-		{
-			bld.setLength(pfLen);
-			bld.append(hint.getKey());
-			bld.append('.');
-			bld.append(m_product.getName());
-			hints.put(bld.toString(), hint.getValue());
-		}
-		return hints;
 	}
 
 	private String getLauncherName()

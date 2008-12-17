@@ -24,7 +24,7 @@ public class NoSuchActorException extends LocalizedException
 		super(
 				NLS
 						.bind(
-								Messages.NoSuchActorException_Action_0_refers_to_actor_with_id_1_but_no_such_actor_registered_with_extension_point_2,
+								Messages.Action_0_refers_to_actor_with_id_1_but_no_such_actor_registered_with_extension_point_2,
 								new Object[] { actionName, actorName, CorePlugin.ACTORS_POINT }));
 	}
 }

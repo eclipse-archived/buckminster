@@ -176,7 +176,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
 			}
 		}
-		throw BuckminsterException.fromMessage(Messages.AbstractMaterializer_Unable_to_determine_users_home_directory);
+		throw BuckminsterException.fromMessage(Messages.Unable_to_determine_users_home_directory);
 	}
 
 	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException

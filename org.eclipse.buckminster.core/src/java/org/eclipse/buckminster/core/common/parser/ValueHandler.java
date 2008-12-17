@@ -16,19 +16,19 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 
 public abstract class ValueHandler extends ExtensionAwareHandler
 {
-	private ValueHolder m_valueHolder;
+	private ValueHolder<String> m_valueHolder;
 
 	public ValueHandler(AbstractHandler parent)
 	{
 		super(parent);
 	}
 
-	public final ValueHolder getValueHolder()
+	public final ValueHolder<String> getValueHolder()
 	{
 		return m_valueHolder;
 	}
 
-	protected final void setValueHolder(ValueHolder valueHolder)
+	protected final void setValueHolder(ValueHolder<String> valueHolder)
 	{
 		m_valueHolder = valueHolder;
 	}

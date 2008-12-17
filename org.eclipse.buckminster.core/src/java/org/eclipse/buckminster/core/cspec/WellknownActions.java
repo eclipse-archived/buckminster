@@ -135,7 +135,7 @@ public abstract class WellknownActions
 			for(ECLIPSE e : ECLIPSE.values())
 				if(name.equals(e.toString()))
 					return e.kind();
-			throw new InternalError(NLS.bind(Messages.WellknownActions_Unexpected_name_0, name));
+			throw new InternalError(NLS.bind(Messages.Unexpected_name_0, name));
 		}
 
 		public abstract int kind();

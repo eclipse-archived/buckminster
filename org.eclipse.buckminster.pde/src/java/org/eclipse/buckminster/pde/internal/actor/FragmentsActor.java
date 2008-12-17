@@ -61,7 +61,7 @@ public class FragmentsActor extends AbstractActor
 		if(outputDir == null)
 			throw BuckminsterException.fromMessage(Messages.missing_product_base_in_ctf_actor);
 
-		Map<String, String> properties = ctx.getProperties();
+		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
@@ -128,7 +128,7 @@ public class FragmentsActor extends AbstractActor
 		if(outputDir == null)
 			throw BuckminsterException.fromMessage(Messages.missing_product_base_in_ctf_actor);
 
-		Map<String, String> properties = ctx.getProperties();
+		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());

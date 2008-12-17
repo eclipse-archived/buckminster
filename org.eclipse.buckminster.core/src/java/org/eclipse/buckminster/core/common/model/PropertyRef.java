@@ -26,42 +26,40 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Thomas Hallgren
  */
-public class PropertyRef extends ValueHolder
+public class PropertyRef<T> extends ValueHolder<T>
 {
 	public static final String TAG = "propertyRef"; //$NON-NLS-1$
 
 	public static final String ATTR_KEY = "key"; //$NON-NLS-1$
 
+	private final Class<T> m_refClass;
+
 	private final String m_key;
 
-	public PropertyRef(String key)
+	public PropertyRef(Class<T> refClass, String key)
 	{
 		m_key = key;
+		m_refClass = refClass;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_KEY, m_key);
-	}
-
-	@Override
-	public String checkedGetValue(Map<String, String> properties, int recursionGuard)
+	public T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
 	{
 		String expandedKey = ExpandingProperties.expand(properties, m_key, recursionGuard + 1);
-		if(properties instanceof ExpandingProperties)
-			return ((ExpandingProperties)properties).getExpandedProperty(expandedKey, recursionGuard + 1);
-		final String replacementValue = properties.get(expandedKey);
+		if(properties instanceof ExpandingProperties<?>)
+			return m_refClass.cast(((ExpandingProperties<?>)properties).getExpandedProperty(expandedKey,
+					recursionGuard + 1));
+		final Object replacementValue = properties.get(expandedKey);
 		if(replacementValue == null)
 			CorePlugin.getLogger().warning(
-					NLS.bind(Messages.PropertyRef_The_property_0_has_not_been_set_and_will_default_to_null, m_key));
-		return ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1);
+					NLS.bind(Messages.The_property_0_has_not_been_set_and_will_default_to_null, m_key));
+		return m_refClass.cast(ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1));
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		return super.equals(o) && Trivial.equalsAllowNull(m_key, ((PropertyRef)o).m_key);
+		return super.equals(o) && Trivial.equalsAllowNull(m_key, ((PropertyRef<?>)o).m_key);
 	}
 
 	public String getDefaultTag()
@@ -77,5 +75,11 @@ public class PropertyRef extends ValueHolder
 				? 0
 				: m_key.hashCode());
 		return hc;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_KEY, m_key);
 	}
 }

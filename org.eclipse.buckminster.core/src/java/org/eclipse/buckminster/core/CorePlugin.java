@@ -452,7 +452,7 @@ public class CorePlugin extends LogAwarePlugin
 				qualifierGenerator, true);
 		if(vm != null)
 			return vm;
-		throw BuckminsterException.fromMessage(NLS.bind(Messages.CorePlugin_Missing_qualifier_generator_for_id_0,
+		throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_qualifier_generator_for_id_0,
 				qualifierGenerator));
 	}
 
@@ -582,7 +582,7 @@ public class CorePlugin extends LogAwarePlugin
 					}
 					catch(Exception e)
 					{
-						getLogger().warning(e, NLS.bind(Messages.CorePlugin_Unable_to_activate_bundle_0, pluginId));
+						getLogger().warning(e, NLS.bind(Messages.Unable_to_activate_bundle_0, pluginId));
 					}
 					monitor.worked(1);
 				}

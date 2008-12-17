@@ -126,13 +126,13 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	public Resolution getResolution() throws SAXException
 	{
 		if(m_request == null)
-			throw new SAXParseException(NLS.bind(Messages.ResolutionHandler_Missing_required_element_0,
+			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0,
 					XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST), this.getDocumentLocator());
 
 		if(m_versionMatch == null)
 		{
 			if(m_version == null && m_fixedVersionSelector == null)
-				throw new SAXParseException(NLS.bind(Messages.ResolutionHandler_Missing_required_element_0,
+				throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0,
 						XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG), this.getDocumentLocator());
 
 			m_versionMatch = legacyVersionMatch();
@@ -307,7 +307,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 				return new VersionMatch(version, btag, Long.parseLong(m.group(1)), null, artifactType);
 		}
 		throw new SAXParseException(NLS.bind(
-				Messages.ResolutionHandler_Unable_to_parse_legacy_version_selector_string_0, m_fixedVersionSelector),
+				Messages.Unable_to_parse_legacy_version_selector_string_0, m_fixedVersionSelector),
 				getDocumentLocator());
 	}
 }

@@ -29,6 +29,12 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url"; //$NON-NLS-1$
 
 	@Override
+	public String getMaterializerRootDir()
+	{
+		return "siteMirrors"; //$NON-NLS-1$
+	}
+
+	@Override
 	protected ISite getDestinationSite(MaterializationContext context, IPath destination, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -48,16 +54,11 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 	}
 
 	@Override
-	public String getMaterializerRootDir()
-	{
-		return "siteMirrors"; //$NON-NLS-1$
-	}
-
-	@Override
 	protected void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
 			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException
 	{
-		((MirrorSite)destinationSite).mirrorAndExpose(fromSite, features, null, context.get(MIRROR_SITE_URL_PROPERTY));
+		((MirrorSite)destinationSite).mirrorAndExpose(fromSite, features, null, (String)context
+				.get(MIRROR_SITE_URL_PROPERTY));
 		MonitorUtils.complete(monitor);
 	}
 }

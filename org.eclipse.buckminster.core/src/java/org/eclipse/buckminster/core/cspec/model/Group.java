@@ -35,36 +35,6 @@ public class Group extends TopLevelAttribute implements IGroup
 {
 	public static final String ATTR_REBASE = "rebase"; //$NON-NLS-1$
 
-	private static void addPathGroup(HashMap<IPath, ArrayList<IPath>> bld, IPath newBase, IPath currentBase, IPath path)
-	{
-		IPath base;
-		IPath absolute = currentBase;
-		if(path != null)
-			absolute = absolute.append(path);
-
-		if(newBase.isPrefixOf(absolute))
-		{
-			base = newBase;
-			path = absolute.removeFirstSegments(newBase.segmentCount()).setDevice(null);
-		}
-		else
-			base = currentBase;
-
-		ArrayList<IPath> group = bld.get(base);
-		if(group == null)
-		{
-			group = new ArrayList<IPath>();
-			bld.put(base, group);
-		}
-		if(path != null)
-			group.add(path);
-	}
-
-	protected static String getPrereqKey(String componentName, String attributeName)
-	{
-		return componentName + ':' + attributeName;
-	}
-
 	/**
 	 * Rebase all paths that, when resolved, are paths prefixed by newBase
 	 * 
@@ -103,6 +73,36 @@ public class Group extends TopLevelAttribute implements IGroup
 		return newPathGroups.toArray(new PathGroup[newPathGroups.size()]);
 	}
 
+	protected static String getPrereqKey(String componentName, String attributeName)
+	{
+		return componentName + ':' + attributeName;
+	}
+
+	private static void addPathGroup(HashMap<IPath, ArrayList<IPath>> bld, IPath newBase, IPath currentBase, IPath path)
+	{
+		IPath base;
+		IPath absolute = currentBase;
+		if(path != null)
+			absolute = absolute.append(path);
+
+		if(newBase.isPrefixOf(absolute))
+		{
+			base = newBase;
+			path = absolute.removeFirstSegments(newBase.segmentCount()).setDevice(null);
+		}
+		else
+			base = currentBase;
+
+		ArrayList<IPath> group = bld.get(base);
+		if(group == null)
+		{
+			group = new ArrayList<IPath>();
+			bld.put(base, group);
+		}
+		if(path != null)
+			group.add(path);
+	}
+
 	private final List<Prerequisite> m_prerequisites;
 
 	private final IPath m_prerequisiteRebase;
@@ -112,29 +112,6 @@ public class Group extends TopLevelAttribute implements IGroup
 		super(builder);
 		m_prerequisiteRebase = builder.getPrerequisiteRebase();
 		m_prerequisites = Utils.createUnmodifiableList(builder.getPrerequisiteList());
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		IPath prereqsRebase = getPrerequisiteRebase();
-		if(prereqsRebase != null)
-			Utils.addAttribute(attrs, ATTR_REBASE, prereqsRebase.toPortableString());
-	}
-
-	@Override
-	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
-		return cspecBuilder.createGroupBuilder();
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-		for(Prerequisite pr : getPrerequisites())
-			pr.toSax(handler, namespace, prefix, pr.getDefaultTag());
 	}
 
 	public IPath getPrerequisiteRebase()
@@ -174,7 +151,63 @@ public class Group extends TopLevelAttribute implements IGroup
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
+	public boolean isEnabled(IModelCache ctx) throws CoreException
+	{
+		if(!super.isEnabled(ctx))
+			return false;
+
+		// Return true if at least one of the prerequisites are enabled
+		//
+		CSpec cspec = getCSpec();
+		int idx = m_prerequisites.size();
+		if(idx == 0)
+			return true;
+
+		while(--idx >= 0)
+			if(m_prerequisites.get(idx).isEnabled(ctx, cspec))
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean isProducedByActions(IModelCache ctx) throws CoreException
+	{
+		CSpec cspec = getCSpec();
+		int idx = m_prerequisites.size();
+		while(--idx >= 0)
+		{
+			Attribute attr = m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx);
+			if(attr != null && attr.isProducedByActions(ctx))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		IPath prereqsRebase = getPrerequisiteRebase();
+		if(prereqsRebase != null)
+			Utils.addAttribute(attrs, ATTR_REBASE, prereqsRebase.toPortableString());
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createGroupBuilder();
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(handler, namespace, prefix);
+		for(Prerequisite pr : getPrerequisites())
+			pr.toSax(handler, namespace, prefix, pr.getDefaultTag());
+	}
+
+	@Override
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local,
 			Stack<IAttributeFilter> filters) throws CoreException
 	{
 		IPath prereqRebase = getPrerequisiteRebase();
@@ -218,38 +251,5 @@ public class Group extends TopLevelAttribute implements IGroup
 			}
 		}
 		return bld.toArray(new PathGroup[bld.size()]);
-	}
-
-	@Override
-	public boolean isEnabled(IModelCache ctx) throws CoreException
-	{
-		if(!super.isEnabled(ctx))
-			return false;
-
-		// Return true if at least one of the prerequisites are enabled
-		//
-		CSpec cspec = getCSpec();
-		int idx = m_prerequisites.size();
-		if(idx == 0)
-			return true;
-
-		while(--idx >= 0)
-			if(m_prerequisites.get(idx).isEnabled(ctx, cspec))
-				return true;
-		return false;
-	}
-
-	@Override
-	public boolean isProducedByActions(IModelCache ctx) throws CoreException
-	{
-		CSpec cspec = getCSpec();
-		int idx = m_prerequisites.size();
-		while(--idx >= 0)
-		{
-			Attribute attr = m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx);
-			if(attr != null && attr.isProducedByActions(ctx))
-				return true;
-		}
-		return false;
 	}
 }

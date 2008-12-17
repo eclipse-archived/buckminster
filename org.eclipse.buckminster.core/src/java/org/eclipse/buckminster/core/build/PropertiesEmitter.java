@@ -127,7 +127,7 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 	{
 		if(m_propertyFile != null)
 		{
-			monitor.beginTask(Messages.PropertiesEmitter_Deleting + m_propertyFile, 100);
+			monitor.beginTask(Messages.Deleting + m_propertyFile, 100);
 			m_propertyFile.refreshLocal(IResource.DEPTH_ZERO, MonitorUtils.subMonitor(monitor, 50));
 			if(m_propertyFile.exists())
 				m_propertyFile.delete(false, false, MonitorUtils.subMonitor(monitor, 50));
@@ -154,7 +154,7 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 			ticks += 2;
 
 		monitor.beginTask(null, ticks);
-		monitor.subTask(Messages.PropertiesEmitter_Emitting_properties);
+		monitor.subTask(Messages.Emitting_properties);
 
 		m_propertyFile.refreshLocal(IResource.DEPTH_ZERO, MonitorUtils.subMonitor(monitor, 1));
 		Map<String, String> oldProps = null;
@@ -188,7 +188,7 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 			this.appendProperties();
 			MonitorUtils.worked(monitor, 2);
 			AccessibleByteArrayOutputStream output = new AccessibleByteArrayOutputStream();
-			BMProperties.store(m_properties, output, Messages.PropertiesEmitter_Generated_by_Buckminster_Do_not_edit);
+			BMProperties.store(m_properties, output, Messages.Generated_by_Buckminster_Do_not_edit);
 
 			IProgressMonitor storeMonitor = MonitorUtils.subMonitor(monitor, 2);
 			if(oldProps != null)

@@ -31,7 +31,7 @@ public class StringVersion extends AbstractVersion
 	public int compareTo(IVersion o)
 	{
 		if(!(o instanceof StringVersion))
-			throw new IllegalArgumentException(Messages.StringVersion_Not_a_StringVersion);
+			throw new IllegalArgumentException(Messages.Not_a_StringVersion);
 		return m_version.compareTo(((StringVersion)o).m_version);
 	}
 

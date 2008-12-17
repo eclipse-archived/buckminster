@@ -17,7 +17,7 @@ public class MissingPrerequisiteException extends LocalizedException
 
 	public MissingPrerequisiteException(String name, String attribute, String prereqName)
 	{
-		super(NLS.bind(Messages.MissingPrerequisiteException_CSpec_0_attribute_1_does_not_define_prerequisite_2,
+		super(NLS.bind(Messages.CSpec_0_attribute_1_does_not_define_prerequisite_2,
 				new Object[] { name, attribute, prereqName }));
 	}
 }

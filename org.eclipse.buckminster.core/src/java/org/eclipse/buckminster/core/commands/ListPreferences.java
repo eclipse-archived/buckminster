@@ -52,7 +52,7 @@ public class ListPreferences extends AbstractCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException(Messages.ListPreferences_Too_many_arguments);
+			throw new SimpleErrorExitException(Messages.Too_many_arguments);
 		if(len == 1)
 			m_pattern = unparsed[0];
 	}
@@ -65,36 +65,36 @@ public class ListPreferences extends AbstractCommand
 		int top = handlers.size();
 		if(top == 0)
 		{
-			out.print(Messages.ListPreferences_No_preferences_found);
+			out.print(Messages.No_preferences_found);
 			if(m_pattern != null)
-				out.format(NLS.bind(Messages.ListPreferences_is_the_pattern_0_correct, m_pattern));
+				out.format(NLS.bind(Messages.Is_the_pattern_0_correct, m_pattern));
 			out.println();
 			return 0;
 		}
 
-		out.print(Messages.ListPreferences_Found);
+		out.print(Messages.Found);
 		out.print(top);
-		out.println(Messages.ListPreferences_preferences);
+		out.println(Messages.Preferences);
 		for(int idx = 0; idx < top; ++idx)
 		{
 			BasicPreferenceHandler bph = handlers.get(idx);
 			out.println(bph.getName());
 			if(bph.getDescription() != null)
 			{
-				out.print(Messages.ListPreferences_Description);
+				out.print(Messages.Description);
 				out.println(bph.getDescription());
 			}
 			if(bph.getKey() != null)
 			{
-				out.print(Messages.ListPreferences_Key);
+				out.print(Messages.Key);
 				out.println(bph.getKey());
 			}
 			String v = bph.get(null);
 			if(v == null)
-				out.println(Messages.ListPreferences_no_value_set);
+				out.println(Messages.No_value_set);
 			else
 			{
-				out.print(Messages.ListPreferences_Value);
+				out.print(Messages.Value);
 				out.println(v);
 			}
 		}

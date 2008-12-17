@@ -342,7 +342,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 				catch(CoreException e)
 				{
 					CorePlugin.getLogger().warning(BuckminsterException.unwind(e),
-							NLS.bind(Messages.FileStorage_Unable_to_read_0, m_class.getName()));
+							NLS.bind(Messages.Unable_to_read_0, m_class.getName()));
 					if(badKeys == null)
 						badKeys = new HashSet<UUID>();
 					badKeys.add(key);
@@ -403,7 +403,7 @@ public class FileStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
 				}
 			}
 		}
-		throw BuckminsterException.fromMessage(NLS.bind(Messages.FileStorage_No_such_foreign_key_0, keyName));
+		throw BuckminsterException.fromMessage(NLS.bind(Messages.No_such_foreign_key_0, keyName));
 	}
 
 	public synchronized UUID[] getKeys()

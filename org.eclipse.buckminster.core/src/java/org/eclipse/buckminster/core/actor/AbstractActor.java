@@ -39,7 +39,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 	{
 		Stack<IActionContext> ctxStack = s_actionContext.get();
 		if(ctxStack == null || ctxStack.isEmpty())
-			throw new IllegalStateException(Messages.AbstractActor_No_active_IActionContext);
+			throw new IllegalStateException(Messages.No_active_IActionContext);
 		return ctxStack.peek();
 	}
 
@@ -52,8 +52,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 			return true;
 		if("false".equalsIgnoreCase(propVal)) //$NON-NLS-1$
 			return false;
-		throw new IllegalArgumentException(NLS.bind(Messages.AbstractActor__0_not_valid_value_of_boolean_property,
-				propVal));
+		throw new IllegalArgumentException(NLS.bind(Messages._0_not_valid_value_of_boolean_property, propVal));
 	}
 
 	private String m_name;
@@ -69,19 +68,9 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		m_logger = CorePlugin.getLogger();
 	}
 
-	protected final String getActorProperty(String key)
-	{
-		return m_action.getActorProperties().get(key);
-	}
-
 	public final String getId()
 	{
 		return m_id;
-	}
-
-	protected final Logger getLogger()
-	{
-		return m_logger;
 	}
 
 	public final String getName()
@@ -106,57 +95,9 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		this.internalInit();
 	}
 
-	protected void internalInit() throws CoreException
-	{
-		// noop
-	}
-
-	abstract protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
-
 	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
 	{
 		return false;
-	}
-
-	private void loggableActionInfo(StringBuilder sb)
-	{
-		if(m_action.getPrerequisitesAlias() != null)
-		{
-			sb.append("\n  "); //$NON-NLS-1$
-			sb.append(Messages.AbstractActor_Prerequisite_alias);
-			sb.append(m_action.getPrerequisitesAlias());
-		}
-		if(m_action.getPrerequisiteRebase() != null)
-		{
-			sb.append("\n  "); //$NON-NLS-1$
-			sb.append(Messages.AbstractActor_Prerequisite_rebase);
-			sb.append(m_action.getPrerequisiteRebase().toOSString());
-		}
-		if(m_action.getProductAlias() != null)
-		{
-			sb.append("\n  "); //$NON-NLS-1$
-			sb.append(Messages.AbstractActor_Product_alias);
-			sb.append(m_action.getProductAlias());
-		}
-		if(m_action.getProductBase() != null)
-		{
-			sb.append("\n  "); //$NON-NLS-1$
-			sb.append(Messages.AbstractActor_Product_base);
-			sb.append(m_action.getProductBase().toOSString());
-		}
-	}
-
-	private void loggableProps(StringBuilder sb, Map<String, String> props)
-	{
-		Properties sysProps = System.getProperties();
-		for(Map.Entry<String, String> entry : props.entrySet())
-		{
-			if(sysProps.getProperty(entry.getKey()) == null)
-			{
-				sb.append("\n  "); //$NON-NLS-1$
-				sb.append(entry.getKey()).append('=').append(entry.getValue());
-			}
-		}
 	}
 
 	public final synchronized IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
@@ -164,7 +105,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		// the stored context is per perform only; if referenced otherwise we ensure that
 		// null is received, triggering a NPE
 		//
-		Map<String, String> props = ctx.getProperties();
+		Map<String, ? extends Object> props = ctx.getProperties();
 		Stack<IActionContext> ctxStack = s_actionContext.get();
 		if(ctxStack == null)
 		{
@@ -191,7 +132,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 				m_logger.info(bld.toString());
 			}
 
-			ctx.getGlobalContext().scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP)));
+			ctx.getGlobalContext().scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP).toString()));
 			IStatus status = internalPerform(ctx, monitor);
 			if(isDebug || !quiet)
 			{
@@ -220,5 +161,63 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 	{
 		m_name = config.getAttribute(ActorFactory.ACTOR_NAME_ATTR);
 		m_id = config.getAttribute(ActorFactory.ACTOR_ID_ATTR);
+	}
+
+	protected final String getActorProperty(String key)
+	{
+		return m_action.getActorProperties().get(key);
+	}
+
+	protected final Logger getLogger()
+	{
+		return m_logger;
+	}
+
+	protected void internalInit() throws CoreException
+	{
+		// noop
+	}
+
+	abstract protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
+
+	private void loggableActionInfo(StringBuilder sb)
+	{
+		if(m_action.getPrerequisitesAlias() != null)
+		{
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.Prerequisite_alias);
+			sb.append(m_action.getPrerequisitesAlias());
+		}
+		if(m_action.getPrerequisiteRebase() != null)
+		{
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.Prerequisite_rebase);
+			sb.append(m_action.getPrerequisiteRebase().toOSString());
+		}
+		if(m_action.getProductAlias() != null)
+		{
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.Product_alias);
+			sb.append(m_action.getProductAlias());
+		}
+		if(m_action.getProductBase() != null)
+		{
+			sb.append("\n  "); //$NON-NLS-1$
+			sb.append(Messages.Product_base);
+			sb.append(m_action.getProductBase().toOSString());
+		}
+	}
+
+	private void loggableProps(StringBuilder sb, Map<String, ? extends Object> props)
+	{
+		Properties sysProps = System.getProperties();
+		for(Map.Entry<String, ? extends Object> entry : props.entrySet())
+		{
+			if(sysProps.getProperty(entry.getKey()) == null)
+			{
+				sb.append("\n  "); //$NON-NLS-1$
+				sb.append(entry.getKey()).append('=').append(entry.getValue());
+			}
+		}
 	}
 }

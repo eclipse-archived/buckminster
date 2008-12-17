@@ -62,7 +62,7 @@ public class GetPreference extends AbstractCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException(Messages.GetPreference_Too_many_arguments);
+			throw new SimpleErrorExitException(Messages.Too_many_arguments);
 		if(len == 1)
 			m_name = unparsed[0];
 	}
@@ -71,7 +71,7 @@ public class GetPreference extends AbstractCommand
 	protected int run(IProgressMonitor monitor) throws Exception
 	{
 		if(m_name == null)
-			throw new SimpleErrorExitException(Messages.GetPreference_You_must_provide_a_preference_name);
+			throw new SimpleErrorExitException(Messages.You_must_provide_a_preference_name);
 
 		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);
 		String v = bph.get(m_default);

@@ -153,7 +153,7 @@ public class MainResolver implements IResolver
 						throw new CoreException(status);
 
 					StringBuilder bld = new StringBuilder();
-					bld.append(Messages.MainResolver_Unable_to_resolve);
+					bld.append(Messages.Unable_to_resolve);
 
 					for(int idx = 0; idx < top; ++idx)
 					{

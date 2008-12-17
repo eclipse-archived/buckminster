@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class P4ReaderType extends CatalogReaderType
 {
-	public static DepotURI getDepotLocation(IResolution resolution, Map<String, String> properties)
+	public static DepotURI getDepotLocation(IResolution resolution, Map<String, ? extends Object> properties)
 			throws CoreException
 	{
 		return new DepotURI(resolution.getRepository(), getNonDefaultBranchName(resolution), properties);
@@ -81,7 +81,7 @@ public class P4ReaderType extends CatalogReaderType
 	@Override
 	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException
 	{
-		Map<String, String> properties = context.getProperties(resolution.getRequest());
+		Map<String, ? extends Object> properties = context.getProperties(resolution.getRequest());
 		DepotURI depotLocation = getDepotLocation(resolution, properties);
 		String localRoot = depotLocation.getLocalRoot();
 		IPath root = null;

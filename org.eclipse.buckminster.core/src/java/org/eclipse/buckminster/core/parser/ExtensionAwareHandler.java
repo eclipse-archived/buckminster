@@ -60,7 +60,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	{
 		Locator locator = this.getDocumentLocator();
 		warningOnce(String.format(NLS.bind(
-				Messages.ExtensionAwareHandler_Use_of_deprecated_attribute_0_1_Use_attribute_2_instead_3_line_4,
+				Messages.Use_of_deprecated_attribute_0_1_Use_attribute_2_instead_3_line_4,
 				new Object[] { elementName, attrName, useInstead, locator.getSystemId(),
 						new Integer(locator.getLineNumber()) })));
 	}
@@ -71,7 +71,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 		warningOnce(String
 				.format(NLS
 						.bind(
-								Messages.ExtensionAwareHandler_Use_of_deprecated_attribute_0_1_was_ignored_Use_attribute_2_instead_3_line_4,
+								Messages.Use_of_deprecated_attribute_0_1_was_ignored_Use_attribute_2_instead_3_line_4,
 								new Object[] { elementName, attrName, useInstead, locator.getSystemId(),
 										new Integer(locator.getLineNumber()) })));
 	}
@@ -80,7 +80,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	{
 		Locator locator = this.getDocumentLocator();
 		warningOnce(String.format(NLS.bind(
-				Messages.ExtensionAwareHandler_Use_of_deprecated_value_for_attribute_0_1_Was_2_should_be_3_4_line_5,
+				Messages.Use_of_deprecated_value_for_attribute_0_1_Was_2_should_be_3_4_line_5,
 				new Object[] { elementName, attrName, oldValue, useInstead, locator.getSystemId(),
 						new Integer(locator.getLineNumber()) })));
 	}
@@ -89,7 +89,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	{
 		Locator locator = this.getDocumentLocator();
 		warningOnce(String.format(NLS.bind(
-				Messages.ExtensionAwareHandler_Use_of_deprecated_element_0_Use_element_1_instead_2_line_3,
+				Messages.Use_of_deprecated_element_0_Use_element_1_instead_2_line_3,
 				new Object[] { elementName, useInstead, locator.getSystemId(), new Integer(locator.getLineNumber()) })));
 	}
 
@@ -97,7 +97,7 @@ public abstract class ExtensionAwareHandler extends ChildHandler
 	{
 		Locator locator = this.getDocumentLocator();
 		warningOnce(String.format(NLS.bind(
-				Messages.ExtensionAwareHandler_Use_of_deprecated_element_0_was_ignored_1_line_2, new Object[] {
+				Messages.Use_of_deprecated_element_0_was_ignored_1_line_2, new Object[] {
 						elementName, locator.getSystemId(), new Integer(locator.getLineNumber()) })));
 	}
 

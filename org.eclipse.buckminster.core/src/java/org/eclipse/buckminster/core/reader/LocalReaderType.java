@@ -51,7 +51,7 @@ public class LocalReaderType extends URLCatalogReaderType
 		{
 			File file = FileUtils.getFile(URLUtils.normalizeToURL(rc.getRepository()));
 			if(file == null)
-				throw new IllegalArgumentException(Messages.LocalReaderType_Resolution_not_created_using_LocalReader);
+				throw new IllegalArgumentException(Messages.Resolution_not_created_using_LocalReader);
 			IPath path = Path.fromOSString(file.toString());
 			if(path.toFile().isDirectory())
 				path = path.addTrailingSeparator();

@@ -184,7 +184,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 		if(repFrom == null || repTo == null)
 			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.AbstractComponentType_Component_type_0_defines_desiredNamePattern_but_no_substitution,
+					Messages.Component_type_0_defines_desiredNamePattern_but_no_substitution,
 					getId()));
 
 		Matcher matcher = repFrom.matcher(componentName);

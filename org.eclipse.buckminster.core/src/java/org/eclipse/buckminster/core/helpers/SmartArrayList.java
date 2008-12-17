@@ -97,7 +97,7 @@ public class SmartArrayList<E> extends ArrayList<E>
 				{
 					if(!aux.endsWith("\"")) //$NON-NLS-1$
 					{
-						throw new Exception(NLS.bind(Messages.SmartArrayList_Unbalanced_double_quotes_0, values));
+						throw new Exception(NLS.bind(Messages.Unbalanced_double_quotes_0, values));
 					}
 					aux = aux.substring(1, aux.length() - 1);
 				}
@@ -115,7 +115,7 @@ public class SmartArrayList<E> extends ArrayList<E>
 
 		if(!firstMatch)
 		{
-			throw new Exception(NLS.bind(Messages.SmartArrayList_Bad_value_list_0, values));
+			throw new Exception(NLS.bind(Messages.Bad_value_list_0, values));
 		}
 
 		return result;

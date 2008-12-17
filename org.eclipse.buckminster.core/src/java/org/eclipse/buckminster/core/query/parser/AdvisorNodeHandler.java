@@ -196,7 +196,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 					prios[idx++] = Integer.parseInt(tokens.nextToken());
 				}
 				if(idx != max)
-					throw new SAXParseException(Messages.AdvisorNodeHandler_Incorrect_number_of_resolution_priorites, this.getDocumentLocator());
+					throw new SAXParseException(Messages.Incorrect_number_of_resolution_priorites, this.getDocumentLocator());
 			}
 			catch(NumberFormatException e)
 			{

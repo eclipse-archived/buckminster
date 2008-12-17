@@ -138,8 +138,8 @@ public class WorkspaceInfo
 	public static void forceRefreshOnAll(IProgressMonitor monitor)
 	{
 		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK,
-				Messages.WorkspaceInfo_Problems_during_metadata_refresh, null);
-		monitor.beginTask(Messages.WorkspaceInfo_Refreshing_meta_data, 1000);
+				Messages.Problems_during_metadata_refresh, null);
+		monitor.beginTask(Messages.Refreshing_meta_data, 1000);
 		s_hasBeenActivated = true;
 		try
 		{

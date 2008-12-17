@@ -37,5 +37,5 @@ public interface IModelCache
 	 * 
 	 * @return The properties for this invocation
 	 */
-	Map<String, String> getProperties();
+	Map<String, ? extends Object> getProperties();
 }

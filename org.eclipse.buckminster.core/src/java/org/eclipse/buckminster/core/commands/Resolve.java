@@ -56,6 +56,26 @@ public class Resolve extends WorkspaceInitCommand
 
 	private IConnectContext m_connectContext;
 
+	public void setBomFile(File bomFile)
+	{
+		m_bomFile = bomFile;
+	}
+
+	public void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
+	}
+
+	public void setResolveOnly(boolean flag)
+	{
+		m_resolveOnly = flag;
+	}
+
+	public void setURL(URL url)
+	{
+		m_url = url;
+	}
+
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
@@ -85,7 +105,7 @@ public class Resolve extends WorkspaceInitCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new UsageException(Messages.Resolve_Too_many_arguments);
+			throw new UsageException(Messages.Too_many_arguments);
 		if(len == 1)
 			setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
@@ -146,31 +166,10 @@ public class Resolve extends WorkspaceInitCommand
 		{
 			CoreException be = BuckminsterException.wrap(t);
 			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
-				logger
-						.error(Messages.Resolve_An_SSL_handshake_exception_occurred_keystore);
+				logger.error(Messages.An_SSL_handshake_exception_occurred_keystore);
 			throw be;
 		}
-		logger.info(Messages.Resolve_Query_complete);
+		logger.info(Messages.Query_complete);
 		return 0;
-	}
-
-	public void setBomFile(File bomFile)
-	{
-		m_bomFile = bomFile;
-	}
-
-	public void setConnectContext(IConnectContext cctx)
-	{
-		m_connectContext = cctx;
-	}
-
-	public void setResolveOnly(boolean flag)
-	{
-		m_resolveOnly = flag;
-	}
-
-	public void setURL(URL url)
-	{
-		m_url = url;
 	}
 }

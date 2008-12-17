@@ -138,7 +138,7 @@ public class FetcherActor extends AbstractActor
 	 */
 	private String getDestinationDirectory() throws CoreException
 	{
-		final String homePath = getActiveContext().getProperties().get("buckminster.home"); //$NON-NLS-1$
+		final String homePath = (String)getActiveContext().getProperties().get("buckminster.home"); //$NON-NLS-1$
 		final String toDir = getSafeProperty(FETCHER_TO_DIR);
 		if(toDir == null)
 		{

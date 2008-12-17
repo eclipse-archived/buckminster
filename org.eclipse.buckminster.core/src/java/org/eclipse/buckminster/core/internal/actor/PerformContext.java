@@ -126,7 +126,7 @@ public class PerformContext implements IActionContext
 
 	private final PrintStream m_outputStream;
 
-	private final Map<String, String> m_properties;
+	private final Map<String, ? extends Object> m_properties;
 
 	public PerformContext(GlobalContext globalCtx, Action action, PrintStream out, PrintStream err,
 			IProgressMonitor cancellationMonitor) throws CoreException
@@ -147,13 +147,13 @@ public class PerformContext implements IActionContext
 			return;
 
 		CSpec cspec = action.getCSpec();
-		Map<String, String> properties = getProperties();
+		Map<String, ? extends Object> properties = getProperties();
 		IPath prereqRebase = action.getPrerequisiteRebase();
 		if(prereqRebase != null)
 		{
 			prereqRebase = PerformManager.expandPath(properties, prereqRebase);
 			if(prereqRebase.isAbsolute())
-				throw BuckminsterException.fromMessage(Messages.PerformContext_Action_prerequisite_base_can_not_be_absolute);
+				throw BuckminsterException.fromMessage(Messages.Action_prerequisite_base_can_not_be_absolute);
 			prereqRebase = cspec.getComponentLocation().append(prereqRebase);
 		}
 
@@ -298,7 +298,7 @@ public class PerformContext implements IActionContext
 		return m_globalCtx.getPathGroupsCache();
 	}
 
-	public Map<String, String> getProperties()
+	public Map<String, ? extends Object> getProperties()
 	{
 		return m_properties;
 	}

@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -52,7 +52,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	{
 		super(parentContext == null
 				? componentQuery.getGlobalProperties()
-				: new MapUnion<String, String>(componentQuery.getGlobalProperties(), parentContext));
+				: new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), parentContext));
 		m_componentQuery = componentQuery;
 		m_parentContext = parentContext;
 	}
@@ -110,19 +110,24 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public Map<String, String> getProperties(ComponentName cName)
+	public Map<String, ? extends Object> getProperties(ComponentName cName)
 	{
-		IAdvisorNode node;
-		Map<String, String> p = super.getProperties(cName);
+		IAdvisorNode parentNode = null;
+		IAdvisorNode node = null;
+		Map<String, ? extends Object> p = super.getProperties(cName);
 		if(m_parentContext != null)
-		{
-			node = m_parentContext.getComponentQuery().getMatchingNode(cName);
-			if(node != null)
-				p.putAll(node.getProperties());
-		}
+			parentNode = m_parentContext.getComponentQuery().getMatchingNode(cName);
+
 		node = getComponentQuery().getMatchingNode(cName);
-		if(node != null)
-			p.putAll(node.getProperties());
+		if(parentNode == null && node == null)
+			return p;
+
+		if(parentNode != null)
+			p = new UnmodifiableMapUnion<String, Object>(parentNode.getProperties(), p);
+
+		if(node != null && node != parentNode)
+			p = new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
+
 		return p;
 	}
 

@@ -39,7 +39,7 @@ class VersionFinder extends AbstractSCCSVersionFinder
 	VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
 	{
 		super(provider, ctype, query);
-		Map<String, String> props = query.getProperties();
+		Map<String, ? extends Object> props = query.getProperties();
 		m_depotURI = new DepotURI(DepotURI.createURI(provider.getURI(props)), null, props);
 		m_connection = new Connection(m_depotURI);
 	}
@@ -49,7 +49,7 @@ class VersionFinder extends AbstractSCCSVersionFinder
 	{
 		String[] branchNameBin = new String[1];
 		FileSpec.Specifier specifier = P4RemoteReader.getSpecifier(versionMatch, m_connection, branchNameBin);
-		Map<String, String> props = getQuery().getProperties();
+		Map<String, ? extends Object> props = getQuery().getProperties();
 		String uri = getProvider().getURI(props);
 		DepotURI depotURI = new DepotURI(uri, branchNameBin[0], props);
 		DepotFolder[] folders = m_connection.getFolders(depotURI.getDepotPath(), specifier);

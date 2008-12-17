@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -47,11 +48,18 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 {
 	private final RMContext m_context;
 
-	private final Map<String, String> m_properties;
+	private final Map<String, ? extends Object> m_properties;
 
 	private final QualifiedDependency m_qDep;
 
 	private transient IComponentType m_componentType;
+
+	public NodeQuery(NodeQuery query, Map<String, ? extends Object> additionalProperties)
+	{
+		m_context = query.getContext();
+		m_qDep = query.getQualifiedDependency();
+		m_properties = new UnmodifiableMapUnion<String, Object>(additionalProperties, query.getProperties());
+	}
 
 	public NodeQuery(RMContext context, ComponentRequest request, Set<String> attributes)
 	{
@@ -198,80 +206,6 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return cmp;
 	}
 
-	private int compareSelectors(VersionMatch vm1, VersionMatch vm2)
-	{
-		int cmp = 0;
-		VersionSelector[] branchTagPath = getBranchTagPath();
-		if(branchTagPath.length > 0)
-		{
-			// The match with the lower index is considered greater. A match
-			// with no index (-1) will always loose
-			//
-			int v1idx = VersionSelector.indexOf(branchTagPath, vm1.getBranchOrTag());
-			int v2idx = VersionSelector.indexOf(branchTagPath, vm2.getBranchOrTag());
-			if(v1idx >= 0)
-			{
-				if(v2idx >= 0)
-					cmp = (v1idx < v2idx)
-							? 1
-							: ((v1idx == v2idx)
-									? 0
-									: -1);
-				else
-					cmp = 1;
-			}
-			else
-			{
-				if(v2idx >= 0)
-					cmp = -1;
-			}
-		}
-		return cmp;
-	}
-
-	private int compareVersions(VersionMatch vm1, VersionMatch vm2)
-	{
-		// Compare the versions.
-		//
-		IVersion v1 = vm1.getVersion();
-		IVersion v2 = vm2.getVersion();
-		IVersionDesignator vd = getVersionDesignator();
-
-		if(vd != null)
-		{
-			// Only consider designated versions
-			//
-			if(v1 != null && !vd.designates(v1))
-				v1 = null;
-			if(v2 != null && !vd.designates(v2))
-				v2 = null;
-		}
-
-		int cmp = 0;
-		if(v1 == null)
-		{
-			if(v2 != null)
-				cmp = -1; // Consider v1 to be less
-		}
-		else
-		{
-			if(v2 == null)
-				cmp = 1; // Consider v2 to be less
-			else
-			{
-				// When the versions are of different type (this
-				// can only happen when no versionDesignator was
-				// present to discriminate above) we will consider
-				// them equal so that they don't affect the
-				// outcome.
-				//
-				if(v1.getType().isComparableTo(v2.getType()))
-					cmp = v1.compareTo(v2);
-			}
-		}
-		return cmp;
-	}
-
 	/**
 	 * Returns the attributes designated by this query.
 	 * 
@@ -316,7 +250,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			}
 			catch(CoreException e)
 			{
-				throw new IllegalStateException(Messages.NodeQuery_Unable_to_obtain_component_type, e);
+				throw new IllegalStateException(Messages.Unable_to_obtain_component_type, e);
 			}
 		}
 		return m_componentType;
@@ -339,12 +273,12 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 *            The component request.
 	 * @return the properties that the resolver should use.
 	 */
-	public Map<String, String> getProperties()
+	public Map<String, ? extends Object> getProperties()
 	{
 		return m_properties;
 	}
 
-	public String getProperty(String mapName)
+	public Object getProperty(String mapName)
 	{
 		return getProperties().get(mapName);
 	}
@@ -389,7 +323,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	{
 		if(m_context instanceof ResolutionContext)
 			return (ResolutionContext)m_context;
-		throw new IllegalStateException(Messages.NodeQuery_ResolutionContext_requested_during_Materialization);
+		throw new IllegalStateException(Messages.ResolutionContext_requested_during_Materialization);
 	}
 
 	public int[] getResolutionPrio()
@@ -474,7 +408,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			{
 				logDecision(branchOrTag == null || branchOrTag.getType() == VersionSelector.BRANCH
 						? ResolverDecisionType.BRANCH_REJECTED
-						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(Messages.NodeQuery_not_in_path_0,
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(Messages.Not_in_path_0,
 						VersionSelector.toString(branchTagPath)));
 				return false;
 			}
@@ -483,8 +417,8 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		IVersionDesignator designator = getVersionDesignator();
 		if(designator != null && !designator.designates(version))
 		{
-			logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
-					Messages.NodeQuery_Not_designated_by_0, designator));
+			logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(Messages.Not_designated_by_0,
+					designator));
 			return false;
 		}
 		return true;
@@ -582,5 +516,79 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public boolean useWorkspace()
 	{
 		return getComponentQuery().useWorkspace(getComponentRequest());
+	}
+
+	private int compareSelectors(VersionMatch vm1, VersionMatch vm2)
+	{
+		int cmp = 0;
+		VersionSelector[] branchTagPath = getBranchTagPath();
+		if(branchTagPath.length > 0)
+		{
+			// The match with the lower index is considered greater. A match
+			// with no index (-1) will always loose
+			//
+			int v1idx = VersionSelector.indexOf(branchTagPath, vm1.getBranchOrTag());
+			int v2idx = VersionSelector.indexOf(branchTagPath, vm2.getBranchOrTag());
+			if(v1idx >= 0)
+			{
+				if(v2idx >= 0)
+					cmp = (v1idx < v2idx)
+							? 1
+							: ((v1idx == v2idx)
+									? 0
+									: -1);
+				else
+					cmp = 1;
+			}
+			else
+			{
+				if(v2idx >= 0)
+					cmp = -1;
+			}
+		}
+		return cmp;
+	}
+
+	private int compareVersions(VersionMatch vm1, VersionMatch vm2)
+	{
+		// Compare the versions.
+		//
+		IVersion v1 = vm1.getVersion();
+		IVersion v2 = vm2.getVersion();
+		IVersionDesignator vd = getVersionDesignator();
+
+		if(vd != null)
+		{
+			// Only consider designated versions
+			//
+			if(v1 != null && !vd.designates(v1))
+				v1 = null;
+			if(v2 != null && !vd.designates(v2))
+				v2 = null;
+		}
+
+		int cmp = 0;
+		if(v1 == null)
+		{
+			if(v2 != null)
+				cmp = -1; // Consider v1 to be less
+		}
+		else
+		{
+			if(v2 == null)
+				cmp = 1; // Consider v2 to be less
+			else
+			{
+				// When the versions are of different type (this
+				// can only happen when no versionDesignator was
+				// present to discriminate above) we will consider
+				// them equal so that they don't affect the
+				// outcome.
+				//
+				if(v1.getType().isComparableTo(v2.getType()))
+					cmp = v1.compareTo(v2);
+			}
+		}
+		return cmp;
 	}
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
@@ -65,15 +64,6 @@ public class Replace extends ValueHolderFilter
 		}
 
 		@Override
-		protected void addAttributes(AttributesImpl attrs) throws SAXException
-		{
-			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
-			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);
-			if(m_quotePattern)
-				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true"); //$NON-NLS-1$
-		}
-
-		@Override
 		public boolean equals(Object o)
 		{
 			if(o == this)
@@ -100,6 +90,15 @@ public class Replace extends ValueHolderFilter
 					? 17
 					: 0);
 			return hc;
+		}
+
+		@Override
+		protected void addAttributes(AttributesImpl attrs) throws SAXException
+		{
+			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
+			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);
+			if(m_quotePattern)
+				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true"); //$NON-NLS-1$
 		}
 
 		String match(String resolved)
@@ -131,23 +130,13 @@ public class Replace extends ValueHolderFilter
 
 	private final ArrayList<Match> m_matchers = new ArrayList<Match>();
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		// If we have exactly one, then use attributes instead of
-		// subelements
-		//
-		if(m_matchers.size() == 1)
-			m_matchers.get(0).addAttributes(attrs);
-	}
-
 	public void addMatch(Match match)
 	{
 		m_matchers.add(match);
 	}
 
 	@Override
-	public String checkedGetValue(Map<String, String> props, int recursionGuard)
+	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard)
 	{
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
 		if(resolved == null || NO_VALUE.equals(resolved))
@@ -160,24 +149,6 @@ public class Replace extends ValueHolderFilter
 				return result;
 		}
 		return resolved;
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-		int top = m_matchers.size();
-
-		// If there's only one it will be added as an attribute.
-		//
-		if(top > 1)
-		{
-			for(int idx = 0; idx < top; ++idx)
-			{
-				Match match = m_matchers.get(idx);
-				match.toSax(handler, namespace, prefix, match.getDefaultTag());
-			}
-		}
 	}
 
 	@Override
@@ -197,5 +168,33 @@ public class Replace extends ValueHolderFilter
 		int hc = super.hashCode();
 		hc = 37 * hc + m_matchers.hashCode();
 		return hc;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		// If we have exactly one, then use attributes instead of
+		// subelements
+		//
+		if(m_matchers.size() == 1)
+			m_matchers.get(0).addAttributes(attrs);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(handler, namespace, prefix);
+		int top = m_matchers.size();
+
+		// If there's only one it will be added as an attribute.
+		//
+		if(top > 1)
+		{
+			for(int idx = 0; idx < top; ++idx)
+			{
+				Match match = m_matchers.get(idx);
+				match.toSax(handler, namespace, prefix, match.getDefaultTag());
+			}
+		}
 	}
 }

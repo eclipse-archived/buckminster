@@ -29,7 +29,7 @@ import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -90,7 +90,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 	private final HashMap<String, SearchPath> m_searchPaths = new HashMap<String, SearchPath>();
 
-	private final Map<String, String> m_properties = new ExpandingProperties(null);
+	private final Map<String, String> m_properties = new ExpandingProperties<String>(null);
 
 	private Documentation m_documentation;
 
@@ -125,21 +125,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		m_searchPaths.clear();
 		m_properties.clear();
 		m_documentation = null;
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-
-		for(SearchPath searchPath : m_searchPaths.values())
-			searchPath.toSax(handler, namespace, prefix, searchPath.getDefaultTag());
-
-		for(Matcher matcher : m_matchers)
-			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
 	}
 
 	public URL getContextURL()
@@ -177,10 +162,10 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		return m_properties;
 	}
 
-	public Map<String, String> getProperties(Map<String, String> properties)
+	public Map<String, ? extends Object> getProperties(Map<String, ? extends Object> properties)
 	{
 		if(!m_properties.isEmpty())
-			properties = new MapUnion<String, String>(properties, m_properties);
+			properties = new UnmodifiableMapUnion<String, Object>(properties, m_properties);
 		return properties;
 	}
 
@@ -225,8 +210,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
 		SearchPath searchPath = getSearchPath(query);
 		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
-				Messages.ResourceMap_No_suitable_provider_for_component_0_was_found_in_searchPath_1, query
-						.getComponentRequest(), searchPath.getName()), null);
+				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, query.getComponentRequest(),
+				searchPath.getName()), null);
 
 		try
 		{
@@ -273,7 +258,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 						if(!versionDesignator.designates(version))
 						{
 							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED,
-									version, NLS.bind(Messages.ResourceMap_not_designated_by_0, versionDesignator));
+									version, NLS.bind(Messages.Not_designated_by_0, versionDesignator));
 							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
 									.toString(), null));
@@ -341,5 +326,20 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		super.toSax(handler, namespace, prefix, localName);
 		for(Map.Entry<String, String> pfxMapping : pfxMappings)
 			handler.endPrefixMapping(pfxMapping.getKey());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
+		for(SearchPath searchPath : m_searchPaths.values())
+			searchPath.toSax(handler, namespace, prefix, searchPath.getDefaultTag());
+
+		for(Matcher matcher : m_matchers)
+			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
 	}
 }

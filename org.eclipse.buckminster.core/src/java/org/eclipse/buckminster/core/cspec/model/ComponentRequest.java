@@ -78,25 +78,6 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		m_filter = filter;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_versionDesignator != null)
-		{
-			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionDesignator.toString());
-			IVersion version = m_versionDesignator.getVersion();
-			if(version != null)
-			{
-				IVersionType vt = version.getType();
-				if(vt != null)
-					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
-			}
-		}
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
-	}
-
 	public void appendViewName(StringBuilder bld)
 	{
 		bld.append(getName());
@@ -181,7 +162,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 				: m_filter.hashCode());
 	}
 
-	public boolean isEnabled(Map<String, String> properties)
+	public boolean isEnabled(Map<String, ? extends Object> properties)
 	{
 		return m_filter == null || FilterUtils.isMatch(m_filter, properties);
 	}
@@ -237,5 +218,24 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		}
 		if(m_filter != null)
 			bld.append(m_filter);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_versionDesignator != null)
+		{
+			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionDesignator.toString());
+			IVersion version = m_versionDesignator.getVersion();
+			if(version != null)
+			{
+				IVersionType vt = version.getType();
+				if(vt != null)
+					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
+			}
+		}
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 	}
 }

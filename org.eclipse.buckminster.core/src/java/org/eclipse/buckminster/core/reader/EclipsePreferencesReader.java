@@ -51,7 +51,7 @@ public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePrefere
 		try
 		{
 			monitor.beginTask(null, 1);
-			monitor.subTask(Messages.EclipsePreferencesReader_Loading_preferences);
+			monitor.subTask(Messages.Loading_preferences);
 			return ECRemotePrefs.loadFromStream(stream);
 		}
 		finally

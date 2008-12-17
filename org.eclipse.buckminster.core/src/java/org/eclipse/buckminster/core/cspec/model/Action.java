@@ -105,18 +105,6 @@ public class Action extends TopLevelAttribute implements IAction
 		m_upToDatePolicy = builder.getUpToDatePolicy();
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_actorName != null)
-			Utils.addAttribute(attrs, ATTR_ACTOR, m_actorName);
-		if(m_always != ALWAYS_DEFAULT)
-			Utils.addAttribute(attrs, ATTR_ALWAYS, Boolean.toString(m_always));
-		if(m_assignConsoleSupport != ASSIGN_CONSOLE_SUPPORT_DEFAULT)
-			Utils.addAttribute(attrs, ATTR_ASSIGN_CONSOLE_SUPPORT, Boolean.toString(m_assignConsoleSupport));
-	}
-
 	public void addInstallerHints(IModelCache ctx, Map<String, String> installerHints) throws CoreException
 	{
 		CSpec cspec = getCSpec();
@@ -148,52 +136,6 @@ public class Action extends TopLevelAttribute implements IAction
 		return copy;
 	}
 
-	@Override
-	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
-		return cspecBuilder.createActionBuilder();
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-
-		if(!m_actorProperties.isEmpty())
-		{
-			String qName = Utils.makeQualifiedName(prefix, ELEM_ACTOR_PROPERTIES);
-			handler.startElement(namespace, ELEM_ACTOR_PROPERTIES, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-			SAXEmitter.emitProperties(handler, m_actorProperties, namespace, prefix, true, false);
-			handler.endElement(namespace, ELEM_ACTOR_PROPERTIES, qName);
-		}
-
-		if(!m_properties.isEmpty())
-		{
-			String qName = Utils.makeQualifiedName(prefix, ELEM_PROPERTIES);
-			handler.startElement(namespace, ELEM_PROPERTIES, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-			SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-			handler.endElement(namespace, ELEM_PROPERTIES, qName);
-		}
-
-		if(m_prerequisites.getPrerequisites().size() > 0)
-			m_prerequisites.toSax(handler, namespace, prefix, m_prerequisites.getDefaultTag());
-
-		AttributesImpl attrs = new AttributesImpl();
-		if(m_productAlias != null)
-			Utils.addAttribute(attrs, Prerequisite.ATTR_ALIAS, m_productAlias);
-		if(m_productBase != null)
-			Utils.addAttribute(attrs, Artifact.ATTR_BASE, m_productBase.toPortableString());
-		if(m_productFileCount >= 0)
-			Utils.addAttribute(attrs, ATTR_PRODUCT_FILE_COUNT, Integer.toString(m_productFileCount));
-		if(m_upToDatePolicy != UpToDatePolicy.DEFAULT)
-			Utils.addAttribute(attrs, ATTR_UP_TO_DATE_POLICY, m_upToDatePolicy.name());
-		ArrayList<ISaxableElement> allProds = new ArrayList<ISaxableElement>();
-		for(IPath path : m_products)
-			allProds.add((SaxablePath)path);
-		allProds.addAll(getCSpec().getActionArtifacts(this));
-		Utils.emitCollection(namespace, prefix, ELEM_PRODUCTS, null, attrs, allProds, handler);
-	}
-
 	public String getActorName()
 	{
 		try
@@ -213,19 +155,19 @@ public class Action extends TopLevelAttribute implements IAction
 		return m_actorProperties;
 	}
 
-	public String getBindingName(Map<String, String> globalProps)
+	public String getBindingName(Map<String, ? extends Object> globalProps)
 	{
 		Map<String, String> actionProps = getProperties();
 		if(actionProps.containsKey(BINDING_NAME))
 		{
-			ExpandingProperties allProps = new ExpandingProperties(globalProps);
+			ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(globalProps);
 			allProps.putAll(actionProps);
-			return allProps.get(BINDING_NAME);
+			return (String)allProps.get(BINDING_NAME);
 		}
 		return null;
 	}
 
-	public IPath getExpandedBase(IPath productBase, Map<String, String> local)
+	public IPath getExpandedBase(IPath productBase, Map<String, ? extends Object> local)
 	{
 		if(productBase == null)
 			return getExpandedDefaultBase(local);
@@ -236,7 +178,7 @@ public class Action extends TopLevelAttribute implements IAction
 		return productBase;
 	}
 
-	public IPath getExpandedDefaultBase(Map<String, String> local)
+	public IPath getExpandedDefaultBase(Map<String, ? extends Object> local)
 	{
 		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
 	}
@@ -249,22 +191,6 @@ public class Action extends TopLevelAttribute implements IAction
 	public IPath getPrerequisiteRebase()
 	{
 		return m_prerequisites.getPrerequisiteRebase();
-	}
-
-	private Map<String, Long> getPrerequisiteRelativeFiles(IModelCache ctx) throws CoreException
-	{
-		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
-		CSpec cspec = getCSpec();
-		for(Prerequisite pq : getPrerequisites(null))
-		{
-			if(!pq.isContributor())
-				continue;
-
-			IAttribute ag = pq.getReferencedAttribute(cspec, ctx);
-			if(ag instanceof TopLevelAttribute)
-				((TopLevelAttribute)ag).appendRelativeFiles(ctx, filesAndDates);
-		}
-		return filesAndDates;
 	}
 
 	@Override
@@ -303,13 +229,6 @@ public class Action extends TopLevelAttribute implements IAction
 		return m_products;
 	}
 
-	private Map<String, Long> getProductRelativeFiles(IModelCache ctx) throws CoreException
-	{
-		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
-		appendRelativeFiles(ctx, filesAndDates);
-		return filesAndDates;
-	}
-
 	public Map<String, String> getProperties()
 	{
 		return m_properties;
@@ -318,34 +237,6 @@ public class Action extends TopLevelAttribute implements IAction
 	public UpToDatePolicy getUpToDatePolicy()
 	{
 		return m_upToDatePolicy;
-	}
-
-	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local,
-			Stack<IAttributeFilter> filters) throws CoreException
-	{
-		CSpec cspec = getCSpec();
-		ArrayList<PathGroup> pathGroups = new ArrayList<PathGroup>();
-
-		int numProducts = m_products.size();
-		if(m_productBase != null || numProducts > 0)
-		{
-			// Add the anonymous group
-			//
-			IPath productBase = getExpandedBase(m_productBase, local);
-			IPath[] pathArr = m_products.toArray(new IPath[numProducts]);
-			while(--numProducts >= 0)
-				pathArr[numProducts] = PerformManager.expandPath(local, pathArr[numProducts]);
-			pathGroups.add(new PathGroup(productBase, pathArr));
-		}
-
-		// Add produced artifacts
-		//
-		for(Artifact a : cspec.getActionArtifacts(this))
-			for(PathGroup pathGroup : a.getPathGroups(ctx, filters))
-				pathGroups.add(pathGroup);
-
-		return pathGroups.toArray(new PathGroup[pathGroups.size()]);
 	}
 
 	public final boolean isAlways()
@@ -497,9 +388,118 @@ public class Action extends TopLevelAttribute implements IAction
 	}
 
 	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_actorName != null)
+			Utils.addAttribute(attrs, ATTR_ACTOR, m_actorName);
+		if(m_always != ALWAYS_DEFAULT)
+			Utils.addAttribute(attrs, ATTR_ALWAYS, Boolean.toString(m_always));
+		if(m_assignConsoleSupport != ASSIGN_CONSOLE_SUPPORT_DEFAULT)
+			Utils.addAttribute(attrs, ATTR_ASSIGN_CONSOLE_SUPPORT, Boolean.toString(m_assignConsoleSupport));
+	}
+
+	@Override
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
+	{
+		return cspecBuilder.createActionBuilder();
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(handler, namespace, prefix);
+
+		if(!m_actorProperties.isEmpty())
+		{
+			String qName = Utils.makeQualifiedName(prefix, ELEM_ACTOR_PROPERTIES);
+			handler.startElement(namespace, ELEM_ACTOR_PROPERTIES, qName, ISaxableElement.EMPTY_ATTRIBUTES);
+			SAXEmitter.emitProperties(handler, m_actorProperties, namespace, prefix, true, false);
+			handler.endElement(namespace, ELEM_ACTOR_PROPERTIES, qName);
+		}
+
+		if(!m_properties.isEmpty())
+		{
+			String qName = Utils.makeQualifiedName(prefix, ELEM_PROPERTIES);
+			handler.startElement(namespace, ELEM_PROPERTIES, qName, ISaxableElement.EMPTY_ATTRIBUTES);
+			SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+			handler.endElement(namespace, ELEM_PROPERTIES, qName);
+		}
+
+		if(m_prerequisites.getPrerequisites().size() > 0)
+			m_prerequisites.toSax(handler, namespace, prefix, m_prerequisites.getDefaultTag());
+
+		AttributesImpl attrs = new AttributesImpl();
+		if(m_productAlias != null)
+			Utils.addAttribute(attrs, Prerequisite.ATTR_ALIAS, m_productAlias);
+		if(m_productBase != null)
+			Utils.addAttribute(attrs, Artifact.ATTR_BASE, m_productBase.toPortableString());
+		if(m_productFileCount >= 0)
+			Utils.addAttribute(attrs, ATTR_PRODUCT_FILE_COUNT, Integer.toString(m_productFileCount));
+		if(m_upToDatePolicy != UpToDatePolicy.DEFAULT)
+			Utils.addAttribute(attrs, ATTR_UP_TO_DATE_POLICY, m_upToDatePolicy.name());
+		ArrayList<ISaxableElement> allProds = new ArrayList<ISaxableElement>();
+		for(IPath path : m_products)
+			allProds.add((SaxablePath)path);
+		allProds.addAll(getCSpec().getActionArtifacts(this));
+		Utils.emitCollection(namespace, prefix, ELEM_PRODUCTS, null, attrs, allProds, handler);
+	}
+
+	@Override
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local,
+			Stack<IAttributeFilter> filters) throws CoreException
+	{
+		CSpec cspec = getCSpec();
+		ArrayList<PathGroup> pathGroups = new ArrayList<PathGroup>();
+
+		int numProducts = m_products.size();
+		if(m_productBase != null || numProducts > 0)
+		{
+			// Add the anonymous group
+			//
+			IPath productBase = getExpandedBase(m_productBase, local);
+			IPath[] pathArr = m_products.toArray(new IPath[numProducts]);
+			while(--numProducts >= 0)
+				pathArr[numProducts] = PerformManager.expandPath(local, pathArr[numProducts]);
+			pathGroups.add(new PathGroup(productBase, pathArr));
+		}
+
+		// Add produced artifacts
+		//
+		for(Artifact a : cspec.getActionArtifacts(this))
+			for(PathGroup pathGroup : a.getPathGroups(ctx, filters))
+				pathGroups.add(pathGroup);
+
+		return pathGroups.toArray(new PathGroup[pathGroups.size()]);
+	}
+
+	@Override
 	void setCSPec(CSpec cspec)
 	{
 		super.setCSPec(cspec);
 		m_prerequisites.setCSPec(cspec);
+	}
+
+	private Map<String, Long> getPrerequisiteRelativeFiles(IModelCache ctx) throws CoreException
+	{
+		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
+		CSpec cspec = getCSpec();
+		for(Prerequisite pq : getPrerequisites(null))
+		{
+			if(!pq.isContributor())
+				continue;
+
+			IAttribute ag = pq.getReferencedAttribute(cspec, ctx);
+			if(ag instanceof TopLevelAttribute)
+				((TopLevelAttribute)ag).appendRelativeFiles(ctx, filesAndDates);
+		}
+		return filesAndDates;
+	}
+
+	private Map<String, Long> getProductRelativeFiles(IModelCache ctx) throws CoreException
+	{
+		HashMap<String, Long> filesAndDates = new HashMap<String, Long>();
+		appendRelativeFiles(ctx, filesAndDates);
+		return filesAndDates;
 	}
 }

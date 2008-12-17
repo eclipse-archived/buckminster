@@ -27,6 +27,6 @@ public class PropertyRefHandler extends ValueHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		this.setValueHolder(new PropertyRef(this.getStringValue(attrs, PropertyRef.ATTR_KEY)));
+		setValueHolder(new PropertyRef<String>(String.class, getStringValue(attrs, PropertyRef.ATTR_KEY)));
 	}
 }

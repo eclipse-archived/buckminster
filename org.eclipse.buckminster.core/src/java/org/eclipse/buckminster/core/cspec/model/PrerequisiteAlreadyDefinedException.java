@@ -21,7 +21,7 @@ public class PrerequisiteAlreadyDefinedException extends LocalizedException
 	public PrerequisiteAlreadyDefinedException(String name, String attribute, String prerequisite)
 	{
 		super(NLS.bind(
-				Messages.PrerequisiteAlreadyDefinedException_CSpec_0_attribute_1_already_has_a_prerequisite_named_2,
+				Messages.CSpec_0_attribute_1_already_has_a_prerequisite_named_2,
 				new Object[] { name, attribute, prerequisite }));
 	}
 }

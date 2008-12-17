@@ -88,7 +88,7 @@ public class MaterializationUtils
 		}
 	}
 
-	private static Map<MaterializationSpecBuilder, Map<String, String>> m_expandProperties = new HashMap<MaterializationSpecBuilder, Map<String, String>>();
+	private static Map<MaterializationSpecBuilder, Map<String, ? extends Object>> m_expandProperties = new HashMap<MaterializationSpecBuilder, Map<String, ? extends Object>>();
 
 	private static Map<MaterializationSpecBuilder, Set<PropertyEntryByLength>> m_generalizeProperties = new HashMap<MaterializationSpecBuilder, Set<PropertyEntryByLength>>();
 
@@ -206,7 +206,7 @@ public class MaterializationUtils
 	 */
 	public static IPath expandPath(MaterializationSpecBuilder mspec, IPath installLocation)
 	{
-		Map<String, String> properties = m_expandProperties.get(mspec);
+		Map<String, ? extends Object> properties = m_expandProperties.get(mspec);
 
 		if(properties == null)
 		{
@@ -238,7 +238,7 @@ public class MaterializationUtils
 
 			for(String key : context.keySet())
 			{
-				String value = context.get(key);
+				String value = (String)context.get(key);
 
 				if(value == null || value.length() == 0)
 					continue;

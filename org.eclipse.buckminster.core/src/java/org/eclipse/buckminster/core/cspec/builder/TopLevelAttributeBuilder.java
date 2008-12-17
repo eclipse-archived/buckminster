@@ -20,7 +20,7 @@ import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedExcept
  */
 public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 {
-	private ExpandingProperties m_installerHints = null;
+	private ExpandingProperties<String> m_installerHints = null;
 
 	private boolean m_public = false;
 
@@ -81,15 +81,6 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	@Override
 	public abstract Attribute createAttribute();
 
-	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias)
-	{
-		PrerequisiteBuilder bld = createPrerequisiteBuilder();
-		bld.setComponentName(component);
-		bld.setName(name);
-		bld.setAlias(alias);
-		return bld;
-	}
-
 	public PrerequisiteBuilder createPrerequisiteBuilder()
 	{
 		return new PrerequisiteBuilder(this);
@@ -101,10 +92,10 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		return m_installerHints;
 	}
 
-	public ExpandingProperties getInstallerHintsForAdd()
+	public ExpandingProperties<String> getInstallerHintsForAdd()
 	{
 		if(m_installerHints == null)
-			m_installerHints = new ExpandingProperties();
+			m_installerHints = new ExpandingProperties<String>();
 		return m_installerHints;
 	}
 
@@ -136,5 +127,14 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	public void setPublic(boolean flag)
 	{
 		m_public = flag;
+	}
+
+	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias)
+	{
+		PrerequisiteBuilder bld = createPrerequisiteBuilder();
+		bld.setComponentName(component);
+		bld.setName(name);
+		bld.setAlias(alias);
+		return bld;
 	}
 }

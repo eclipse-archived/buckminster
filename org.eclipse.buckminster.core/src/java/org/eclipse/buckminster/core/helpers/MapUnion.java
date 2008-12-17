@@ -32,6 +32,27 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 
 		private boolean m_phase1 = true;
 
+		public boolean hasNext()
+		{
+			m_currentKey = this.getValidKey(m_currentKey);
+			return m_currentKey != null;
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
+
+		K nextKey()
+		{
+			K key = this.getValidKey(m_currentKey);
+			if(key == null)
+				throw new NoSuchElementException();
+
+			m_currentKey = null; // Force retrieval of next key
+			return key;
+		}
+
 		private K getValidKey(K key)
 		{
 			if(m_phase1)
@@ -64,27 +85,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V>
 					return key;
 			}
 			return null;
-		}
-
-		public boolean hasNext()
-		{
-			m_currentKey = this.getValidKey(m_currentKey);
-			return m_currentKey != null;
-		}
-
-		K nextKey()
-		{
-			K key = this.getValidKey(m_currentKey);
-			if(key == null)
-				throw new NoSuchElementException();
-
-			m_currentKey = null; // Force retrieval of next key
-			return key;
-		}
-
-		public void remove()
-		{
-			throw new UnsupportedOperationException();
 		}
 	}
 

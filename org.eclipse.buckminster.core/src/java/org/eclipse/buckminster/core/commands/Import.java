@@ -44,14 +44,24 @@ public class Import extends WorkspaceInitCommand
 
 	private IConnectContext m_connectContext;
 
+	public void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
+	}
+
+	public void setURL(URL url)
+	{
+		m_url = url;
+	}
+
 	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new UsageException(Messages.Import_Too_many_arguments);
+			throw new UsageException(Messages.Too_many_arguments);
 		else if(len < 1)
-			throw new UsageException(Messages.Import_Missing_BOM_URL);
+			throw new UsageException(Messages.Missing_BOM_URL);
 		setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
 
@@ -147,17 +157,7 @@ public class Import extends WorkspaceInitCommand
 		{
 			MonitorUtils.done(monitor);
 		}
-		logger.info(Messages.Import_Import_complete);
+		logger.info(Messages.Import_complete);
 		return 0;
-	}
-
-	public void setConnectContext(IConnectContext cctx)
-	{
-		m_connectContext = cctx;
-	}
-
-	public void setURL(URL url)
-	{
-		m_url = url;
 	}
 }

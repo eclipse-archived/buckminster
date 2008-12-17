@@ -49,7 +49,7 @@ public class UnsetPreference extends WorkspaceCommand
 	{
 		int len = unparsed.length;
 		if(len > 1)
-			throw new SimpleErrorExitException(Messages.UnsetPreference_Too_many_arguments);
+			throw new SimpleErrorExitException(Messages.Too_many_arguments);
 		if(len == 1)
 			m_name = unparsed[0];
 	}
@@ -58,11 +58,11 @@ public class UnsetPreference extends WorkspaceCommand
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		if(m_name == null)
-			throw new UsageException(Messages.UnsetPreference_You_must_provide_a_preference_name);
+			throw new UsageException(Messages.You_must_provide_a_preference_name);
 
 		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);
 		bph.unset();
-		System.out.println(NLS.bind(Messages.UnsetPreference_Unset_the_value_for_0, bph.getName()));
+		System.out.println(NLS.bind(Messages.Unset_the_value_for_0, bph.getName()));
 		return 0;
 	}
 }

@@ -34,9 +34,9 @@ public class PythonOutputStream extends BufferedOutputStream implements PythonSt
 			this.writeString((String)obj);
 		else if(obj instanceof Integer)
 			this.writeInt(((Integer)obj).intValue());
-		else if(obj instanceof Map)
+		else if(obj instanceof Map<?, ?>)
 			this.writeMap((Map<?, ?>)obj);
-		else if(obj instanceof List)
+		else if(obj instanceof List<?>)
 			this.writeList((List<?>)obj);
 		else if(obj instanceof Double)
 			this.writeDouble(((Double)obj).doubleValue());

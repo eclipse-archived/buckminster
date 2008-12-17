@@ -49,13 +49,22 @@ public abstract class WorkspaceCommand extends AbstractCommand
 		}
 		catch(Throwable e)
 		{
-			Buckminster.getLogger().error(e,
-					NLS.bind(Messages.WorkspaceCommand_Error_while_saving_workspace_0, e.getMessage()));
+			Buckminster.getLogger().error(e, NLS.bind(Messages.Error_while_saving_workspace_0, e.getMessage()));
 		}
 		monitor.done();
 	}
 
 	private boolean m_inWorkspace = false;
+
+	public boolean isInWorkspace()
+	{
+		return m_inWorkspace;
+	}
+
+	public void setInWorkspace(boolean inWorkspace)
+	{
+		m_inWorkspace = inWorkspace;
+	}
 
 	protected void initWorkspace(IProgressMonitor monitor) throws Exception
 	{
@@ -68,11 +77,6 @@ public abstract class WorkspaceCommand extends AbstractCommand
 	}
 
 	protected abstract int internalRun(IProgressMonitor monitor) throws Exception;
-
-	public boolean isInWorkspace()
-	{
-		return m_inWorkspace;
-	}
 
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception
@@ -110,7 +114,7 @@ public abstract class WorkspaceCommand extends AbstractCommand
 				catch(Throwable e)
 				{
 					Buckminster.getLogger().error(
-							NLS.bind(Messages.WorkspaceCommand_Error_while_refreshing_workspace_0, e.getMessage()), e);
+							NLS.bind(Messages.Error_while_refreshing_workspace_0, e.getMessage()), e);
 				}
 
 				// Suspend the job manager temporarily and wait for all jobs to drain
@@ -173,10 +177,5 @@ public abstract class WorkspaceCommand extends AbstractCommand
 				monitor.done();
 			}
 		}
-	}
-
-	public void setInWorkspace(boolean inWorkspace)
-	{
-		m_inWorkspace = inWorkspace;
 	}
 }

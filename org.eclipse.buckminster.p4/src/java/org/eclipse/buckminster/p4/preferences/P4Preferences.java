@@ -68,8 +68,8 @@ public class P4Preferences
 		return server;
 	}
 
-	public Server configureDefaultServer(Map<String, String> scope, boolean overwrite) throws BackingStoreException,
-			CoreException
+	public Server configureDefaultServer(Map<String, ? extends Object> scope, boolean overwrite)
+			throws BackingStoreException, CoreException
 	{
 		BufferedReader reader = null;
 		Map<String, String> p4Properties;
