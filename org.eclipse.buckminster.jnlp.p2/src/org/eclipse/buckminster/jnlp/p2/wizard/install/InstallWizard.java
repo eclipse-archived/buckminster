@@ -10,7 +10,6 @@ package org.eclipse.buckminster.jnlp.p2.wizard.install;
 
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ARTIFACT_UNKNOWN_TEXT;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_AUTHENTICATOR_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_FILE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
@@ -76,7 +75,6 @@ import java.util.Properties;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.Distro;
