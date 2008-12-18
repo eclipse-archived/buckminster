@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2.installer;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class InstallDescription
 {
-	private URL[] m_artifactRepos;
+	private URI[] m_artifactRepos;
 
 	private IPath m_installLocation;
 
@@ -36,7 +36,7 @@ public class InstallDescription
 
 	private String m_launcherName;
 
-	private URL[] m_metadataRepos;
+	private URI[] m_metadataRepos;
 
 	private String m_productName;
 
@@ -57,7 +57,7 @@ public class InstallDescription
 	 * 
 	 * @return a list of artifact repository URLs
 	 */
-	public URL[] getArtifactRepositories()
+	public URI[] getArtifactRepositories()
 	{
 		return m_artifactRepos;
 	}
@@ -95,7 +95,7 @@ public class InstallDescription
 	 * 
 	 * @return a list of metadata repository URLs
 	 */
-	public URL[] getMetadataRepositories()
+	public URI[] getMetadataRepositories()
 	{
 		return m_metadataRepos;
 	}
@@ -134,7 +134,7 @@ public class InstallDescription
 		this.m_agentLocation = agentLocation;
 	}
 
-	public void setArtifactRepositories(URL[] value)
+	public void setArtifactRepositories(URI[] value)
 	{
 		this.m_artifactRepos = value;
 	}
@@ -159,7 +159,7 @@ public class InstallDescription
 		this.m_launcherName = name;
 	}
 
-	public void setMetadataRepositories(URL[] value)
+	public void setMetadataRepositories(URI[] value)
 	{
 		this.m_metadataRepos = value;
 	}

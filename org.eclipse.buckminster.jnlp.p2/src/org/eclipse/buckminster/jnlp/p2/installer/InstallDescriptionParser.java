@@ -15,7 +15,8 @@ package org.eclipse.buckminster.jnlp.p2.installer;
 import static org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys.*;
 
 import java.io.*;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -78,11 +79,11 @@ public class InstallDescriptionParser
 	{
 		String property = properties.getProperty(PROP_ARTIFACT_REPOSITORY);
 		if(property != null)
-			description.setArtifactRepositories(getURLs(property));
+			description.setArtifactRepositories(getURIs(property));
 
 		property = properties.getProperty(PROP_METADATA_REPOSITORY);
 		if(property != null)
-			description.setMetadataRepositories(getURLs(property));
+			description.setMetadataRepositories(getURIs(property));
 
 		property = properties.getProperty(PROP_IS_AUTO_START);
 		if(property != null)
@@ -152,25 +153,25 @@ public class InstallDescriptionParser
 		description.setProfileProperties(profileProperties);
 	}
 
-	private static URL[] getURLs(String spec)
+	private static URI[] getURIs(String spec)
 	{
 		if(spec == null)
 			return null;
 		String[] urlSpecs = getArrayFromString(spec, ","); //$NON-NLS-1$
-		ArrayList<URL> result = new ArrayList<URL>(urlSpecs.length);
+		ArrayList<URI> result = new ArrayList<URI>(urlSpecs.length);
 		for(int i = 0; i < urlSpecs.length; i++)
 		{
 			try
 			{
-				result.add(new URL(urlSpecs[i]));
+				result.add(new URI(urlSpecs[i]));
 			}
-			catch(MalformedURLException e)
+			catch(URISyntaxException e)
 			{
 				LogHelper.log(new Status(IStatus.ERROR, JNLPPlugin.JNLP_P2,
 						"Invalid URL in install description: " + urlSpecs[i], e)); //$NON-NLS-1$
 			}
 		}
-		return result.toArray(new URL[result.size()]);
+		return result.toArray(new URI[result.size()]);
 	}
 
 	private static void safeClose(InputStream in)

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2.installer;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.*;
 
 import org.eclipse.buckminster.jnlp.p2.JNLPPlugin;
@@ -301,7 +301,7 @@ public class InstallUpdateProductOperation implements IInstallOperation
 
 	private void prepareArtifactRepositories() throws ProvisionException
 	{
-		URL[] repos = m_installDescription.getArtifactRepositories();
+		URI[] repos = m_installDescription.getArtifactRepositories();
 		if(repos == null)
 			return;
 		for(int i = 0; i < repos.length; i++)
@@ -310,7 +310,7 @@ public class InstallUpdateProductOperation implements IInstallOperation
 
 	private void prepareMetadataRepositories() throws ProvisionException
 	{
-		URL[] repos = m_installDescription.getMetadataRepositories();
+		URI[] repos = m_installDescription.getMetadataRepositories();
 		if(repos == null)
 			return;
 		for(int i = 0; i < repos.length; i++)
