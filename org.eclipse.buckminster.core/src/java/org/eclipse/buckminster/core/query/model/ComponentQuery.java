@@ -151,20 +151,9 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		if(properties == null || properties.size() == 0)
 			m_properties = Collections.emptyMap();
 		else
-			m_properties = Collections.unmodifiableMap(new ExpandingProperties(properties));
+			m_properties = Collections.unmodifiableMap(new ExpandingProperties<String>(properties));
 
 		m_contextURL = bld.getContextURL();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_resourceMapURL != null)
-			Utils.addAttribute(attrs, ATTR_RESOURCE_MAP, m_resourceMapURL.toString());
-		if(m_propertiesURL != null)
-			Utils.addAttribute(attrs, ATTR_PROPERTIES, m_propertiesURL.toString());
-		if(m_shortDesc != null)
-			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
 	}
 
 	public boolean allowCircularDependency(ComponentName cName)
@@ -173,19 +162,6 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null
 				? false
 				: node.allowCircularDependency();
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-
-		m_rootRequest.toSax(handler, namespace, prefix, ELEM_ROOT_REQUEST);
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-
-		for(AdvisorNode node : m_advisorNodes)
-			node.toSax(handler, namespace, prefix, node.getDefaultTag());
 	}
 
 	public List<? extends IAdvisorNode> getAdvisoryNodes()
@@ -234,24 +210,12 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return m_documentation;
 	}
 
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return BM_CQUERY_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return BM_CQUERY_PREFIX;
-	}
-
 	public synchronized Map<String, String> getGlobalProperties()
 	{
 		if(m_allProperties != null)
 			return m_allProperties;
 
-		m_allProperties = new ExpandingProperties();
+		m_allProperties = new ExpandingProperties<String>();
 		m_allProperties.putAll(m_properties);
 
 		if(m_propertiesURL != null)
@@ -264,7 +228,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 				Map<String, String> urlProps = new BMProperties(input);
 				if(urlProps.size() > 0)
 				{
-					m_allProperties = new ExpandingProperties(m_allProperties);
+					m_allProperties = new ExpandingProperties<String>(m_allProperties);
 					m_allProperties.putAll(urlProps);
 				}
 			}
@@ -272,8 +236,8 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			{
 				// We allow missing properties but we log it nevertheless
 				//
-				CorePlugin.getLogger().info(
-						NLS.bind(Messages.Unable_to_read_property_file_0_1, propsURL, e.toString()));
+				CorePlugin.getLogger()
+						.info(NLS.bind(Messages.Unable_to_read_property_file_0_1, propsURL, e.toString()));
 			}
 			finally
 			{
@@ -488,11 +452,6 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return bld.createComponentQuery();
 	}
 
-	private void setConnectContext(IConnectContext cctx)
-	{
-		m_connectContext = cctx;
-	}
-
 	public boolean skipComponent(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
@@ -551,5 +510,46 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null
 				? true
 				: node.isUseWorkspace();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		if(m_resourceMapURL != null)
+			Utils.addAttribute(attrs, ATTR_RESOURCE_MAP, m_resourceMapURL.toString());
+		if(m_propertiesURL != null)
+			Utils.addAttribute(attrs, ATTR_PROPERTIES, m_propertiesURL.toString());
+		if(m_shortDesc != null)
+			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		m_rootRequest.toSax(handler, namespace, prefix, ELEM_ROOT_REQUEST);
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
+		for(AdvisorNode node : m_advisorNodes)
+			node.toSax(handler, namespace, prefix, node.getDefaultTag());
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return BM_CQUERY_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return BM_CQUERY_PREFIX;
+	}
+
+	private void setConnectContext(IConnectContext cctx)
+	{
+		m_connectContext = cctx;
 	}
 }

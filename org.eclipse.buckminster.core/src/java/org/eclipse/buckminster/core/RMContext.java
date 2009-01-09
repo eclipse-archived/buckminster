@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.common.model.Constant;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -437,25 +439,24 @@ public class RMContext extends ExpandingProperties<Object>
 		return m_silentStatus;
 	}
 
-	@Override
-	public Object put(String key, Object value)
-	{
-		if("*".equals(value))
-			value = FilterUtils.MATCH_ALL_OBJ;
-		return super.put(key, value);
-	}
-
-	@Override
-	public Object put(String key, Object value, boolean mutable)
-	{
-		if("*".equals(value))
-			value = FilterUtils.MATCH_ALL_OBJ;
-		return super.put(key, value, mutable);
-	}
-
 	public void setContinueOnError(boolean flag)
 	{
 		m_continueOnError = flag;
+	}
+
+	@Override
+	public ValueHolder<Object> setProperty(String key, ValueHolder<Object> propertyHolder)
+	{
+		if(propertyHolder instanceof Constant<?>)
+		{
+			Constant<Object> c = (Constant<Object>)propertyHolder;
+			if("*".equals(c.getConstantValue())) //$NON-NLS-1$
+			{
+				propertyHolder = new Constant<Object>(FilterUtils.MATCH_ALL_OBJ);
+				propertyHolder.setMutable(c.isMutable());
+			}
+		}
+		return super.setProperty(key, propertyHolder);
 	}
 
 	public void setSilentStatus(boolean flag)

@@ -28,15 +28,15 @@ class AlterActionHandler extends AlterAttributeHandler
 			AlterAction.ELEM_ALTER_ACTOR_PROPERTIES)
 	{
 		@Override
-		protected void addRemovedProperty(String key) throws SAXException
+		public ExpandingProperties<String> getProperties()
 		{
-			getAlterActionBuilder().addRemoveActorProperty(key);
+			return getAlterActionBuilder().getAlterActorProperties();
 		}
 
 		@Override
-		public ExpandingProperties getProperties()
+		protected void addRemovedProperty(String key) throws SAXException
 		{
-			return getAlterActionBuilder().getAlterActorProperties();
+			getAlterActionBuilder().addRemoveActorProperty(key);
 		}
 	};
 
@@ -44,15 +44,15 @@ class AlterActionHandler extends AlterAttributeHandler
 			AlterAction.ELEM_ALTER_PROPERTIES)
 	{
 		@Override
-		protected void addRemovedProperty(String key) throws SAXException
+		public ExpandingProperties<String> getProperties()
 		{
-			getAlterActionBuilder().addRemoveProperty(key);
+			return getAlterActionBuilder().getAlterProperties();
 		}
 
 		@Override
-		public ExpandingProperties getProperties()
+		protected void addRemovedProperty(String key) throws SAXException
 		{
-			return getAlterActionBuilder().getAlterProperties();
+			getAlterActionBuilder().addRemoveProperty(key);
 		}
 	};
 
@@ -63,12 +63,6 @@ class AlterActionHandler extends AlterAttributeHandler
 	AlterActionHandler(AbstractHandler parent, boolean publ)
 	{
 		super(parent, new ActionHandler(parent, publ));
-	}
-
-	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterActionBuilder((ActionBuilder)baseBuilder);
 	}
 
 	@Override
@@ -91,6 +85,12 @@ class AlterActionHandler extends AlterAttributeHandler
 	public ActionBuilder getActionBuilder()
 	{
 		return (ActionBuilder)this.getBaseHandler().getAttributeBuilder();
+	}
+
+	@Override
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
+	{
+		return new AlterActionBuilder((ActionBuilder)baseBuilder);
 	}
 
 	AlterActionBuilder getAlterActionBuilder()

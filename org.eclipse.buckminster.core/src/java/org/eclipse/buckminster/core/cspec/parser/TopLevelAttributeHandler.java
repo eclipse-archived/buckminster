@@ -32,16 +32,6 @@ public abstract class TopLevelAttributeHandler extends AttributeHandler
 		m_public = publ;
 	}
 
-	protected abstract TopLevelAttributeBuilder createAttributeBuilder();
-
-	@Override
-	protected CSpecElementBuilder createBuilder()
-	{
-		TopLevelAttributeBuilder bld = createAttributeBuilder();
-		bld.setPublic(m_public);
-		return bld;
-	}
-
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
@@ -52,7 +42,7 @@ public abstract class TopLevelAttributeHandler extends AttributeHandler
 				m_installerHintsHandler = new PropertyManagerHandler(this, TopLevelAttribute.ELEM_INSTALLER_HINTS)
 				{
 					@Override
-					public ExpandingProperties getProperties()
+					public ExpandingProperties<String> getProperties()
 					{
 						return ((TopLevelAttributeBuilder)getBuilder()).getInstallerHintsForAdd();
 					}
@@ -68,5 +58,15 @@ public abstract class TopLevelAttributeHandler extends AttributeHandler
 	public final TopLevelAttributeBuilder getAttributeBuilder()
 	{
 		return (TopLevelAttributeBuilder)getBuilder();
+	}
+
+	protected abstract TopLevelAttributeBuilder createAttributeBuilder();
+
+	@Override
+	protected CSpecElementBuilder createBuilder()
+	{
+		TopLevelAttributeBuilder bld = createAttributeBuilder();
+		bld.setPublic(m_public);
+		return bld;
 	}
 }

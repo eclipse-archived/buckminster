@@ -26,7 +26,7 @@ public class AlterActionArtifactBuilder extends AlterArtifactBuilder
 	@Override
 	public AlterAttribute<Artifact> createAlterAttribute()
 	{
-		return new AlterActionArtifact((ActionArtifact)this.createBase(), this.getRemovedHints(), this
-				.getAlteredHints(), this.getRemovedPaths());
+		return new AlterActionArtifact((ActionArtifact)createBase(), getRemovedHints(), getAlteredHints(),
+				getRemovedPaths());
 	}
 }

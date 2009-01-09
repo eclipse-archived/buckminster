@@ -32,15 +32,15 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 			AlterAttribute.ELEM_ALTER_INSTALLER_HINTS)
 	{
 		@Override
-		protected void addRemovedProperty(String key) throws SAXException
+		public ExpandingProperties<String> getProperties()
 		{
-			m_builder.addRemovedInstallerHint(key);
+			return m_builder.getAlteredHints();
 		}
 
 		@Override
-		public ExpandingProperties getProperties()
+		protected void addRemovedProperty(String key) throws SAXException
 		{
-			return m_builder.getAlteredHints();
+			m_builder.addRemovedInstallerHint(key);
 		}
 	};
 
@@ -57,8 +57,6 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 		((ChildPoppedListener)m_baseHandler).childPopped(child);
 	}
 
-	abstract AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder);
-
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
@@ -70,14 +68,24 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 		return ch;
 	}
 
-	AlterAttribute<? extends TopLevelAttribute> getAlterAttribute()
-	{
-		return m_builder.createAlterAttribute();
-	}
-
 	public TopLevelAttributeBuilder getAttributeBuilder()
 	{
 		return m_baseHandler.getAttributeBuilder();
+	}
+
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_baseHandler.handleAttributes(attrs);
+		m_builder = this.createAlterAttributeBuilder(m_baseHandler.getAttributeBuilder());
+		m_builder.setCSpecName(this.getCSpecExtensionName());
+	}
+
+	abstract AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder);
+
+	AlterAttribute<? extends TopLevelAttribute> getAlterAttribute()
+	{
+		return m_builder.createAlterAttribute();
 	}
 
 	AttributeHandler getBaseHandler()
@@ -88,13 +96,5 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 	AlterAttributeBuilder getBuilder()
 	{
 		return m_builder;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_baseHandler.handleAttributes(attrs);
-		m_builder = this.createAlterAttributeBuilder(m_baseHandler.getAttributeBuilder());
-		m_builder.setCSpecName(this.getCSpecExtensionName());
 	}
 }

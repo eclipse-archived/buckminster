@@ -31,11 +31,11 @@ public class AlterActionBuilder extends AlterAttributeBuilder
 
 	private final HashSet<String> m_removedPrerequisites = new HashSet<String>();
 
-	private final ExpandingProperties m_alteredActorProperties = new ExpandingProperties();
+	private final ExpandingProperties<String> m_alteredActorProperties = new ExpandingProperties<String>();
 
 	private final HashSet<String> m_removedActorProperties = new HashSet<String>();
 
-	private final ExpandingProperties m_alteredProperties = new ExpandingProperties();
+	private final ExpandingProperties<String> m_alteredProperties = new ExpandingProperties<String>();
 
 	private final HashSet<String> m_removedProperties = new HashSet<String>();
 
@@ -111,19 +111,19 @@ public class AlterActionBuilder extends AlterAttributeBuilder
 				m_alteredProperties, m_removedPaths);
 	}
 
-	@Override
-	Action createBase()
-	{
-		return ((ActionBuilder)getBaseBuilder()).createAttribute();
-	}
-
-	public ExpandingProperties getAlterActorProperties()
+	public ExpandingProperties<String> getAlterActorProperties()
 	{
 		return m_alteredActorProperties;
 	}
 
-	public ExpandingProperties getAlterProperties()
+	public ExpandingProperties<String> getAlterProperties()
 	{
 		return m_alteredProperties;
+	}
+
+	@Override
+	Action createBase()
+	{
+		return ((ActionBuilder)getBaseBuilder()).createAttribute();
 	}
 }

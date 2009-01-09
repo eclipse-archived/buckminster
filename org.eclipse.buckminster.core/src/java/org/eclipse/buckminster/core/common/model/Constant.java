@@ -41,6 +41,11 @@ public class Constant<T> extends ValueHolder<T>
 		return super.equals(o) && Trivial.equalsAllowNull(m_value, ((Constant<?>)o).m_value);
 	}
 
+	public T getConstantValue()
+	{
+		return m_value;
+	}
+
 	public String getDefaultTag()
 	{
 		return TAG;

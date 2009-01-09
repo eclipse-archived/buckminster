@@ -560,20 +560,6 @@ public class Messages extends NLS
 
 	public static String Cannot_materialize;
 
-	public static String FILTER_TRAILING_CHARACTERS;
-
-	public static String FILTER_MISSING_LEFTPAREN;
-
-	public static String FILTER_MISSING_RIGHTPAREN;
-
-	public static String FILTER_INVALID_OPERATOR;
-
-	public static String FILTER_MISSING_ATTR;
-
-	public static String FILTER_INVALID_VALUE;
-
-	public static String FILTER_MISSING_VALUE;
-
 	static
 	{
 		// initialize resource bundle

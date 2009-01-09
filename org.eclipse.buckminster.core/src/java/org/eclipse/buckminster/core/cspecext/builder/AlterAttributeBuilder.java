@@ -24,7 +24,7 @@ public abstract class AlterAttributeBuilder
 
 	private final HashSet<String> m_removedHints = new HashSet<String>();
 
-	private final ExpandingProperties m_alteredHints = new ExpandingProperties();
+	private final ExpandingProperties<String> m_alteredHints = new ExpandingProperties<String>();
 
 	private String m_cspecName = null;
 
@@ -52,12 +52,7 @@ public abstract class AlterAttributeBuilder
 
 	public abstract AlterAttribute<?> createAlterAttribute();
 
-	IAttribute createBase()
-	{
-		return getBaseBuilder().createAttribute();
-	}
-
-	public ExpandingProperties getAlteredHints()
+	public ExpandingProperties<String> getAlteredHints()
 	{
 		return m_alteredHints;
 	}
@@ -85,5 +80,10 @@ public abstract class AlterAttributeBuilder
 	public void setCSpecName(String cspecName)
 	{
 		m_cspecName = cspecName;
+	}
+
+	IAttribute createBase()
+	{
+		return getBaseBuilder().createAttribute();
 	}
 }

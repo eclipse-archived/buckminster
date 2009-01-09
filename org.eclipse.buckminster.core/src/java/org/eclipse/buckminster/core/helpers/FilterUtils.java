@@ -59,8 +59,8 @@ public class FilterUtils
 		try
 		{
 			Class<? extends Filter> filterClass = FilterImpl.class;
-			Filter_attr = filterClass.getDeclaredField("attr");
-			Filter_value = filterClass.getDeclaredField("value");
+			Filter_attr = filterClass.getDeclaredField("attr"); //$NON-NLS-1$
+			Filter_value = filterClass.getDeclaredField("value"); //$NON-NLS-1$
 			Filter_attr.setAccessible(true);
 			Filter_value.setAccessible(true);
 		}

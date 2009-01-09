@@ -38,7 +38,7 @@ public class ActionHandler extends TopLevelAttributeHandler
 		m_actorPropsHandler = new PropertyManagerHandler(this, Action.ELEM_ACTOR_PROPERTIES)
 		{
 			@Override
-			public ExpandingProperties getProperties()
+			public ExpandingProperties<String> getProperties()
 			{
 				return getActionBuilder().getActorProperties();
 			}
@@ -48,22 +48,11 @@ public class ActionHandler extends TopLevelAttributeHandler
 		m_propsHandler = new PropertyManagerHandler(this, Action.ELEM_PROPERTIES)
 		{
 			@Override
-			public ExpandingProperties getProperties()
+			public ExpandingProperties<String> getProperties()
 			{
 				return getActionBuilder().getProperties();
 			}
 		};
-	}
-
-	final void addProductPath(IPath path)
-	{
-		getActionBuilder().addProductPath(path);
-	}
-
-	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
-		return getCSpecBuilder().createActionBuilder();
 	}
 
 	@Override
@@ -97,6 +86,17 @@ public class ActionHandler extends TopLevelAttributeHandler
 		builder.setAlways(getOptionalBooleanValue(attrs, Action.ATTR_ALWAYS, Action.ALWAYS_DEFAULT));
 		builder.setAssignConsoleSupport(getOptionalBooleanValue(attrs, Action.ATTR_ASSIGN_CONSOLE_SUPPORT,
 				Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT));
+	}
+
+	@Override
+	protected TopLevelAttributeBuilder createAttributeBuilder()
+	{
+		return getCSpecBuilder().createActionBuilder();
+	}
+
+	final void addProductPath(IPath path)
+	{
+		getActionBuilder().addProductPath(path);
 	}
 
 	final void setProductAlias(String productAlias)

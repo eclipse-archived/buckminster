@@ -93,9 +93,9 @@ public class ResourceMapHandler extends PropertyManagerHandler
 	}
 
 	@Override
-	public ExpandingProperties getProperties()
+	public ExpandingProperties<String> getProperties()
 	{
-		return (ExpandingProperties)this.getResourceMap().getProperties();
+		return (ExpandingProperties<String>)getResourceMap().getProperties();
 	}
 
 	public ResourceMap getResourceMap()

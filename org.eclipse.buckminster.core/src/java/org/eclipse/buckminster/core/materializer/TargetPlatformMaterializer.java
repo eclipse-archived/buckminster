@@ -68,8 +68,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			}
 		}
 		if(installSite == null)
-			throw BuckminsterException
-					.fromMessage(Messages.Could_not_find_a_site_to_install_to);
+			throw BuckminsterException.fromMessage(Messages.Could_not_find_a_site_to_install_to);
 		return installSite.getSite();
 	}
 
@@ -79,11 +78,17 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		CorePlugin corePlugin = CorePlugin.getDefault();
 		Preferences preferences = corePlugin.getPluginPreferences();
 		String path = preferences.getString(TARGET_PLATFORM_PATH);
-		if(!"".equals(path))
+		if(!"".equals(path)) //$NON-NLS-1$
 		{
 			return Path.fromOSString(path);
 		}
 		return getDefaultInstallRoot();
+	}
+
+	@Override
+	public String getMaterializerRootDir()
+	{
+		return "downloads"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -126,8 +131,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			{
 				s = children[0];
 				if(s.getException() instanceof FileNotFoundException && s.getMessage().startsWith("Unable to access")) //$NON-NLS-1$
-					e = BuckminsterException.fromMessage(NLS.bind(
-							Messages.No_target_platform_found_at_0, destination));
+					e = BuckminsterException.fromMessage(NLS.bind(Messages.No_target_platform_found_at_0, destination));
 			}
 			throw e;
 		}
@@ -139,12 +143,6 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		{
 			monitor.done();
 		}
-	}
-
-	@Override
-	public String getMaterializerRootDir()
-	{
-		return "downloads"; //$NON-NLS-1$
 	}
 
 	@Override
