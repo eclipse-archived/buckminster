@@ -86,7 +86,7 @@ public class Utils
 			List<T> newList;
 			if(coll.size() == 1)
 			{
-				T value = (coll instanceof List)
+				T value = (coll instanceof List<?>)
 						? ((List<T>)coll).get(0)
 						: coll.iterator().next();
 				newList = Collections.singletonList(value);
@@ -126,7 +126,7 @@ public class Utils
 			Set<T> newSet;
 			if(coll.size() == 1)
 			{
-				T value = (coll instanceof List)
+				T value = (coll instanceof List<?>)
 						? ((List<T>)coll).get(0)
 						: coll.iterator().next();
 				newSet = Collections.singleton(value);
