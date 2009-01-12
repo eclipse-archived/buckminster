@@ -111,28 +111,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <update label="%updateSiteName" url="http://download.eclipse.org/tools/buckminster/updates"/>
    </url>
 
-   <requires>
-      <import plugin="com.ibm.icu.base"/>
-      <import plugin="org.apache.ant" version="1.7.0" match="compatible"/>
-      <import plugin="org.eclipse.ant.core" version="3.1.200" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.ant" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.cmdline" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.core" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.download" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.opml" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.sax" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.3.100" match="compatible"/>
-      <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.update.configurator" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.update.core" version="3.2.100" match="compatible"/>
-   </requires>
-
    <plugin
          id="org.eclipse.pde.build"
          download-size="0"
@@ -215,6 +193,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.eclipse.core.commands"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.jarprocessor"
          download-size="0"
          install-size="0"
          version="0.0.0"
