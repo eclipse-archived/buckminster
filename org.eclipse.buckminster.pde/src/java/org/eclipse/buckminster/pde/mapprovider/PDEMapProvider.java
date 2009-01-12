@@ -41,6 +41,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.mapfile.MapFile;
@@ -56,7 +57,6 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.Filter;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 

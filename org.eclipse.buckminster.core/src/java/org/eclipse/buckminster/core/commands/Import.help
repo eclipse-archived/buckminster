@@ -10,13 +10,22 @@ usage: import
 --help
   Show this help text
 
+ -B <filename>
+--bomfile <filename>
+  Store the resolting BOM in the file denoted by <filename>
+
  -C
 --continueonerror
   Continue even if not all components can be imported.
+
+ -N
+--noimport
+  Stop after the BOM has been created, i.e. do not populate the workspace.
 
  -T <template workspace>
 --template <template workspace>
   Initialize the workspace from a template workspace prior to import.
 
 <url_or_path>
-  An url/path to a component BOM file
+  An url/path to a CQUERY, MSPEC, or BOM file
+  

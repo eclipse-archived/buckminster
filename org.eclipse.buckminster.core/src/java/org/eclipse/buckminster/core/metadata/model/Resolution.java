@@ -22,7 +22,6 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
@@ -37,11 +36,11 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -470,24 +469,29 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	{
 		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
 		Filter resFilter = getProvider().getResolutionFilter();
-		FilterUtils.addConsultedAttributes(resFilter, attributeUsageMap);
-
-		Filter cspecFilter = getCSpec().getFilter();
-		FilterUtils.addConsultedAttributes(cspecFilter, attributeUsageMap);
-
 		Map<String, ? extends Object> properties = query.getProperties();
-		if(!FilterUtils.isMatch(resFilter, properties))
+
+		if(resFilter != null)
 		{
-			if(failingFilter != null)
-				failingFilter[0] = resFilter;
-			return false;
+			resFilter.addConsultedAttributes(attributeUsageMap);
+			if(!resFilter.matchCase(properties))
+			{
+				if(failingFilter != null)
+					failingFilter[0] = resFilter;
+				return false;
+			}
 		}
 
-		if(!FilterUtils.isMatch(cspecFilter, properties))
+		Filter cspecFilter = getCSpec().getFilter();
+		if(cspecFilter != null)
 		{
-			if(failingFilter != null)
-				failingFilter[0] = cspecFilter;
-			return false;
+			cspecFilter.addConsultedAttributes(attributeUsageMap);
+			if(!cspecFilter.matchCase(properties))
+			{
+				if(failingFilter != null)
+					failingFilter[0] = cspecFilter;
+				return false;
+			}
 		}
 		return true;
 	}

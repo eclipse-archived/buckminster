@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -80,14 +82,21 @@ public class InvokeAction extends AbstractCSpecAction
 		public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
 		{
 			IPerformManager pm = CorePlugin.getPerformManager();
-			Map<String, String> props = null;
+			Map<String, Object> props = null;
 			if(m_propertiesFile != null)
 			{
 				BufferedInputStream input = null;
 				try
 				{
 					input = new BufferedInputStream(new FileInputStream(m_propertiesFile));
-					props = new BMProperties(input);
+					props = new HashMap<String, Object>(new BMProperties(input));
+
+					// Replace string value "*" with the special object that
+					// match all entries
+					//
+					for(Map.Entry<String, Object> entry : props.entrySet())
+						if("*".equals(entry.getValue())) //$NON-NLS-1$
+							entry.setValue(FilterUtils.MATCH_ALL_OBJ);
 				}
 				catch(IOException e)
 				{

@@ -10,8 +10,8 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.osgi.framework.InvalidSyntaxException;
@@ -59,7 +59,7 @@ public class ComponentRequestHandler extends ExtensionAwareHandler
 		{
 			try
 			{
-				m_builder.setFilter(FilterUtils.createFilter(filter));
+				m_builder.setFilter(FilterFactory.newInstance(filter));
 			}
 			catch(InvalidSyntaxException e)
 			{

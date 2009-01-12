@@ -229,14 +229,13 @@
 			status="NORMAL" />
   <command
         addhelpflags="true"
-        class="org.eclipse.buckminster.core.commands.Resolve"
-        name="resolve"
-        status="NORMAL"/>
-  <command
-        addhelpflags="true"
         class="org.eclipse.buckminster.core.commands.Import"
         name="import"
-        status="NORMAL"/>
+        status="NORMAL">
+     <alias
+           name="resolve">
+     </alias>
+  </command>
       <command
             addhelpflags="true"
             class="org.eclipse.buckminster.core.commands.SetPreference"

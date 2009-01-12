@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +47,6 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.helpers.MapToDictionary;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -57,13 +54,13 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -525,7 +522,6 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 	public boolean isPruneApplicable(RMContext context, Map<String, ? extends Object> properties,
 			boolean pruneForAttributes, Set<String> attrNames) throws CoreException
 	{
-		Dictionary<String, ? extends Object> propsDict = null;
 		Collection<ComponentRequest> deps = getDependencies().values();
 		for(ComponentRequest dep : deps)
 		{
@@ -533,11 +529,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			if(filter == null)
 				continue;
 
-			if(propsDict == null)
-				propsDict = MapToDictionary.wrap(properties);
-
-			FilterUtils.addConsultedAttributes(filter, context.getFilterAttributeUsageMap());
-			if(!filter.match(propsDict))
+			filter.addConsultedAttributes(context.getFilterAttributeUsageMap());
+			if(!filter.matchCase(properties))
 				//
 				// This dependency is pruned
 				//
@@ -617,17 +610,13 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		// Prune the dependencies according to LDAP filters. Add the dependencies
 		// that match to the new cspec
 		//
-		Dictionary<String, ? extends Object> propsDict = null;
 		for(ComponentRequest dep : referencedDeps)
 		{
 			Filter filter = dep.getFilter();
 			if(filter != null)
 			{
-				if(propsDict == null)
-					propsDict = MapToDictionary.wrap(properties);
-
-				FilterUtils.addConsultedAttributes(filter, context.getFilterAttributeUsageMap());
-				if(!filter.match(propsDict))
+				filter.addConsultedAttributes(context.getFilterAttributeUsageMap());
+				if(!filter.matchCase(properties))
 					//
 					// This dependency is pruned
 					//

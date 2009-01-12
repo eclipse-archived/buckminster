@@ -111,8 +111,8 @@ abstract class FilterImpl implements Filter
 		public Object get(Object key)
 		{
 			return m_caseSensitive
-					? get(key)
-					: get(((String)key).toLowerCase());
+					? super.get(key)
+					: super.get(((String)key).toLowerCase());
 		}
 	}
 

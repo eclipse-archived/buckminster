@@ -24,12 +24,13 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.helpers.MapToDictionary;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -43,7 +44,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
-import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -95,9 +95,9 @@ public class FragmentsActor extends AbstractActor
 			{
 				try
 				{
-					Filter filter = FilterUtils.createFilter(fragment.getPlatformFilter());
+					Filter filter = FilterFactory.newInstance(fragment.getPlatformFilter());
 					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-					if(!filter.match(MapToDictionary.wrap(properties)))
+					if(!filter.match(properties))
 						continue;
 				}
 				catch(InvalidSyntaxException e)
@@ -174,9 +174,9 @@ public class FragmentsActor extends AbstractActor
 				{
 					try
 					{
-						Filter filter = FilterUtils.createFilter(fragment.getPlatformFilter());
+						Filter filter = FilterFactory.newInstance(fragment.getPlatformFilter());
 						filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-						if(!filter.match(MapToDictionary.wrap(properties)))
+						if(!filter.match(properties))
 							continue;
 					}
 					catch(InvalidSyntaxException e)

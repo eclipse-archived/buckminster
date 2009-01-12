@@ -22,8 +22,8 @@ import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.IFileInfo;
-import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren

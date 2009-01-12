@@ -25,10 +25,10 @@ import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren

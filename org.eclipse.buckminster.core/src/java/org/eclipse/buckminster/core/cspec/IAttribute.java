@@ -13,7 +13,7 @@ import java.util.Map;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.osgi.framework.Filter;
+import org.eclipse.buckminster.osgi.filter.Filter;
 
 public interface IAttribute
 {

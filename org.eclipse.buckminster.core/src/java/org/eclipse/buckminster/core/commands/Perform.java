@@ -29,6 +29,7 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -63,7 +64,7 @@ public class Perform extends WorkspaceCommand
 
 	private int m_maxWarnings = -1;
 
-	private Map<String, String> m_props;
+	private Map<String, Object> m_props;
 
 	private boolean m_quiet;
 
@@ -75,15 +76,28 @@ public class Perform extends WorkspaceCommand
 	public void addProperties(Map<String, String> properties)
 	{
 		if(m_props == null)
-			m_props = new HashMap<String, String>(properties);
+			m_props = new HashMap<String, Object>(properties);
 		else
 			m_props.putAll(properties);
+
+		// Replace string value "*" with the special object that
+		// match all entries
+		//
+		for(Map.Entry<String, Object> entry : m_props.entrySet())
+			if("*".equals(entry.getValue())) //$NON-NLS-1$
+				entry.setValue(FilterUtils.MATCH_ALL_OBJ);
 	}
 
-	public void addProperty(String key, String value)
+	public void addProperty(String key, Object value)
 	{
 		if(m_props == null)
-			m_props = new HashMap<String, String>();
+			m_props = new HashMap<String, Object>();
+
+		// Replace string value "*" with the special object that
+		// match all entries
+		//
+		if("*".equals(value)) //$NON-NLS-1$
+			value = FilterUtils.MATCH_ALL_OBJ;
 		m_props.put(key, value);
 	}
 

@@ -44,6 +44,8 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -75,7 +77,6 @@ import org.eclipse.pde.internal.core.iproduct.IProduct;
 import org.eclipse.pde.internal.core.iproduct.IProductFeature;
 import org.eclipse.pde.internal.core.iproduct.IProductPlugin;
 import org.eclipse.pde.internal.core.product.ProductModel;
-import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -239,7 +240,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		bundleHostDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
 		try
 		{
-			bundleHostDep.setFilter(FilterUtils.createFilter("(bundleHost=true)")); //$NON-NLS-1$
+			bundleHostDep.setFilter(FilterFactory.newInstance("(bundleHost=true)")); //$NON-NLS-1$
 		}
 		catch(InvalidSyntaxException e)
 		{
@@ -284,7 +285,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			{
 				try
 				{
-					fl = FilterUtils.createFilter("(|" + fl + nfl + ')'); //$NON-NLS-1$
+					fl = FilterFactory.newInstance("(|" + fl + nfl + ')'); //$NON-NLS-1$
 				}
 				catch(InvalidSyntaxException e)
 				{
@@ -435,7 +436,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 		try
 		{
-			Filter filter = FilterUtils.createFilter(filterStr);
+			Filter filter = FilterFactory.newInstance(filterStr);
 			getCSpec().setFilter(FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX)); //$NON-NLS-1$
 		}
 		catch(InvalidSyntaxException e)

@@ -39,6 +39,7 @@ import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.Logger;
@@ -46,7 +47,6 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.osgi.framework.Filter;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -212,7 +212,7 @@ public class URIMatcher extends RxAssembly
 			}
 
 			Filter filter = getFilter(matchMap);
-			if(!FilterUtils.isMatch(filter, query.getProperties()))
+			if(!(filter == null || filter.matchCase(query.getProperties())))
 			{
 				logger.debug("URI filter %s does not match current environment", filter); //$NON-NLS-1$
 				continue;

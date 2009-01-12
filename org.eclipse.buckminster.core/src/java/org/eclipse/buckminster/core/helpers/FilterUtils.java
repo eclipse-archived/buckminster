@@ -8,17 +8,13 @@
 
 package org.eclipse.buckminster.core.helpers;
 
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.TargetPlatform;
-import org.eclipse.osgi.framework.internal.core.FilterImpl;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.osgi.framework.InvalidSyntaxException;
 
-@SuppressWarnings("restriction")
 public class FilterUtils
 {
 	public static class MatchAll
@@ -50,115 +46,6 @@ public class FilterUtils
 
 	public static final MatchAll MATCH_ALL_OBJ = new MatchAll(MATCH_ALL);
 
-	private static final Field Filter_attr;
-
-	private static final Field Filter_value;
-
-	static
-	{
-		try
-		{
-			Class<? extends Filter> filterClass = FilterImpl.class;
-			Filter_attr = filterClass.getDeclaredField("attr"); //$NON-NLS-1$
-			Filter_value = filterClass.getDeclaredField("value"); //$NON-NLS-1$
-			Filter_attr.setAccessible(true);
-			Filter_value.setAccessible(true);
-		}
-		catch(Exception e)
-		{
-			throw new ExceptionInInitializerError(e);
-		}
-	}
-
-	/**
-	 * <p>
-	 * Scan the filter and find all attributes that this filter makes use of. For each attribute found, the values that
-	 * the attribute will be compared against are collected into a unique array of strings and put into o the provided
-	 * <code>propertyChoices</code> map keyed by the name of the attribute.
-	 * </p>
-	 * <p>
-	 * It is guaranteed that all updates to the <code>propertyChoices</code> map are synchronised.
-	 * </p>
-	 * 
-	 * @param filter
-	 *            The filter to scan
-	 * @param propertyChoices
-	 *            The map that will receive the results.
-	 */
-	public static void addConsultedAttributes(Filter filter, Map<String, String[]> propertyChoices)
-	{
-		if(filter == null)
-			return;
-
-		Object value = getFilterValue(filter);
-		if(value instanceof Filter[])
-		{
-			Filter[] subFilters = (Filter[])value;
-			int idx = subFilters.length;
-			while(--idx >= 0)
-				addConsultedAttributes(subFilters[idx], propertyChoices);
-			return;
-		}
-
-		if(value instanceof Filter)
-		{
-			addConsultedAttributes((Filter)value, propertyChoices);
-			return;
-		}
-
-		String attr = getFilterAttr(filter);
-		if(attr == null || value == null)
-			return;
-
-		String stringValue;
-		if(value instanceof String[])
-		{
-			String[] substrings = (String[])value;
-			StringBuilder bld = new StringBuilder();
-			int size = substrings.length;
-			for(int i = 0; i < size; i++)
-			{
-				String substr = substrings[i];
-				if(substr == null)
-					bld.append('*');
-				else
-					bld.append(substr);
-			}
-			stringValue = bld.toString();
-		}
-		else
-			stringValue = value.toString();
-
-		// Add the attribute value as a valid choice for the attribute
-		// unless it's already present.
-		//
-		synchronized(propertyChoices)
-		{
-			String[] choices = propertyChoices.get(attr);
-			if(choices == null)
-			{
-				propertyChoices.put(attr, new String[] { stringValue });
-				return;
-			}
-
-			int top = choices.length;
-			int idx = top;
-			while(--idx >= 0)
-				if(stringValue.equals(choices[idx]))
-					return;
-
-			String[] newChoices = new String[top + 1];
-			System.arraycopy(choices, 0, newChoices, 0, top);
-			newChoices[top] = stringValue;
-			propertyChoices.put(attr, newChoices);
-		}
-	}
-
-	public static Filter createFilter(String expression) throws InvalidSyntaxException
-	{
-		return FrameworkUtil.createFilter(expression);
-	}
-
 	public static Filter createFilter(String os, String ws, String arch, String nl)
 	{
 		StringBuilder bld = new StringBuilder();
@@ -185,7 +72,7 @@ public class FilterUtils
 			}
 			try
 			{
-				return createFilter(bld.toString());
+				return FilterFactory.newInstance(bld.toString());
 			}
 			catch(InvalidSyntaxException e)
 			{
@@ -197,18 +84,13 @@ public class FilterUtils
 		return null;
 	}
 
-	public static boolean isMatch(Filter filter, Map<String, ? extends Object> properties)
-	{
-		return (filter == null || filter.match(MapToDictionary.wrap(properties)));
-	}
-
 	public static Filter replaceAttributeNames(Filter filter, String from, String to)
 	{
 		if(filter == null)
 			return null;
 		try
 		{
-			return createFilter(replaceAttributeNames(filter.toString(), from, to));
+			return FilterFactory.newInstance(replaceAttributeNames(filter.toString(), from, to));
 		}
 		catch(InvalidSyntaxException e)
 		{
@@ -323,29 +205,5 @@ public class FilterUtils
 			bld.append(')');
 		}
 		return true;
-	}
-
-	private static String getFilterAttr(Filter filter)
-	{
-		try
-		{
-			return (String)Filter_attr.get(filter);
-		}
-		catch(IllegalAccessException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static Object getFilterValue(Filter filter)
-	{
-		try
-		{
-			return Filter_value.get(filter);
-		}
-		catch(IllegalAccessException e)
-		{
-			throw new RuntimeException(e);
-		}
 	}
 }

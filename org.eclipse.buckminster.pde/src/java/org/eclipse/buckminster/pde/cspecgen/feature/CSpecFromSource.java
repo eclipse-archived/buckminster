@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -33,7 +34,6 @@ import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
-import org.osgi.framework.Filter;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecGenerator

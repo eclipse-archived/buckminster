@@ -45,6 +45,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.feature.FeatureBuilder;
@@ -856,7 +857,7 @@ public class CreateProductBase
 
 				processedBundles.add(id);
 				String filterSpec = bundle.getPlatformFilter();
-				if(filterSpec == null || FilterUtils.createFilter(filterSpec).match(environment))
+				if(filterSpec == null || FilterFactory.newInstance(filterSpec).match(environment))
 				{
 					if(first)
 						first = false;

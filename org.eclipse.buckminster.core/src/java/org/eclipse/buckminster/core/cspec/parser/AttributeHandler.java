@@ -11,7 +11,7 @@ import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecElementBuilder;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -39,12 +39,6 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 	}
 
 	@Override
-	protected CSpecElementBuilder createBuilder()
-	{
-		return getCSpecBuilder().createAttributeBuilder();
-	}
-
-	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
@@ -68,12 +62,18 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 		{
 			try
 			{
-				getAttributeBuilder().setFilter(FilterUtils.createFilter(filterStr));
+				getAttributeBuilder().setFilter(FilterFactory.newInstance(filterStr));
 			}
 			catch(InvalidSyntaxException e)
 			{
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}
+	}
+
+	@Override
+	protected CSpecElementBuilder createBuilder()
+	{
+		return getCSpecBuilder().createAttributeBuilder();
 	}
 }

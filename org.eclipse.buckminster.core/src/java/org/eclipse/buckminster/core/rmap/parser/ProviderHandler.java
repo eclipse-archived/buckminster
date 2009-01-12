@@ -17,18 +17,18 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.FormatHandler;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.URIMatcher;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
-import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -143,60 +143,11 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		return ch;
 	}
 
-	protected final String[] getComponentTypes()
-	{
-		return m_componentTypes;
-	}
-
-	protected final String getDigestAlgorithm()
-	{
-		return m_digestAlgorithm;
-	}
-
-	protected final Format getDigestFormat()
-	{
-		return m_digestFormat;
-	}
-
-	protected final Documentation getDocumentation()
-	{
-		return m_documentation;
-	}
-
 	public Provider getProvider()
 	{
 		return new Provider(getSearchPath(), m_readerType, m_componentTypes, m_versionConverter, m_uriFormat,
 				m_digestFormat, m_digestAlgorithm, m_resolutionFilter, m_mutable, m_source, m_uriMatcher,
 				m_documentation);
-	}
-
-	protected final String getReaderType()
-	{
-		return m_readerType;
-	}
-
-	protected final Filter getResolutionFilter()
-	{
-		return m_resolutionFilter;
-	}
-
-	protected SearchPath getSearchPath()
-	{
-		SearchPath searchPath = null;
-		AbstractHandler parent = getParentHandler();
-		if(parent instanceof SearchPathHandler)
-			searchPath = ((SearchPathHandler)parent).getSearchPath();
-		return searchPath;
-	}
-
-	protected final Format getUriFormat()
-	{
-		return m_uriFormat;
-	}
-
-	protected final VersionConverterDesc getVersionConverter()
-	{
-		return m_versionConverter;
 	}
 
 	@Override
@@ -280,7 +231,7 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		{
 			try
 			{
-				m_resolutionFilter = FilterUtils.createFilter(resFilter);
+				m_resolutionFilter = FilterFactory.newInstance(resFilter);
 			}
 			catch(InvalidSyntaxException e)
 			{
@@ -296,6 +247,55 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		m_versionConverter = null;
 		m_uriMatcher = null;
 		m_documentation = null;
+	}
+
+	protected final String[] getComponentTypes()
+	{
+		return m_componentTypes;
+	}
+
+	protected final String getDigestAlgorithm()
+	{
+		return m_digestAlgorithm;
+	}
+
+	protected final Format getDigestFormat()
+	{
+		return m_digestFormat;
+	}
+
+	protected final Documentation getDocumentation()
+	{
+		return m_documentation;
+	}
+
+	protected final String getReaderType()
+	{
+		return m_readerType;
+	}
+
+	protected final Filter getResolutionFilter()
+	{
+		return m_resolutionFilter;
+	}
+
+	protected SearchPath getSearchPath()
+	{
+		SearchPath searchPath = null;
+		AbstractHandler parent = getParentHandler();
+		if(parent instanceof SearchPathHandler)
+			searchPath = ((SearchPathHandler)parent).getSearchPath();
+		return searchPath;
+	}
+
+	protected final Format getUriFormat()
+	{
+		return m_uriFormat;
+	}
+
+	protected final VersionConverterDesc getVersionConverter()
+	{
+		return m_versionConverter;
 	}
 
 	protected final boolean isMutable()

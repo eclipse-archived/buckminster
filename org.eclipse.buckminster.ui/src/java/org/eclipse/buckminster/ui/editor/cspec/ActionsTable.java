@@ -21,8 +21,8 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
@@ -195,7 +195,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		{
 			try
 			{
-				builder.setFilter(FilterUtils.createFilter(filterStr));
+				builder.setFilter(FilterFactory.newInstance(filterStr));
 			}
 			catch(InvalidSyntaxException e)
 			{
@@ -215,7 +215,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		}
 		builder.setProductBase(prodBasePath);
 
-		ExpandingProperties properties = builder.getActorProperties();
+		ExpandingProperties<String> properties = builder.getActorProperties();
 
 		if(properties != null)
 		{

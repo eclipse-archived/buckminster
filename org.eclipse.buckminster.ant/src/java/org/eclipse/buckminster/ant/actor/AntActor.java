@@ -142,55 +142,6 @@ public class AntActor extends AbstractActor
 		return buildFilePath;
 	}
 
-	private IPath getBuildFileExtension(String buildFileId) throws CoreException
-	{
-		IConfigurationElement resourceElem = null;
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntBuilderConstants.BUILD_SCRIPT_POINT))
-		{
-			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
-			{
-				resourceElem = elem;
-				break;
-			}
-		}
-
-		if(resourceElem == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_No_extension_found_defines_0_1,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
-
-		// The resource must be loaded by the bundle that contributes it
-		//
-		String contributor = resourceElem.getContributor().getName();
-		Bundle contributorBundle = Platform.getBundle(contributor);
-		if(contributorBundle == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unable_to_load_bundle_0, contributor));
-
-		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
-		if(rsURL == null)
-			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.AntActor_Extension_found_using_0_1_appoints_non_existing_resource,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
-
-		try
-		{
-			rsURL = FileLocator.toFileURL(rsURL);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-
-		if(!"file".equalsIgnoreCase(rsURL.getProtocol())) //$NON-NLS-1$
-			//
-			// This should never happen. It's a resource in an active plug-in right?
-			//
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unexpected_protocol_0, rsURL
-					.getProtocol()));
-
-		return FileUtils.getFileAsPath(rsURL);
-	}
-
 	protected String getBuildFileIdProperty(IActionContext ctx) throws CoreException
 	{
 		return TextUtils.notEmptyTrimmedString(this
@@ -255,9 +206,10 @@ public class AntActor extends AbstractActor
 
 			// We add the installer hints onto the context properties.
 			//
-			ExpandingProperties props = new ExpandingProperties();
-			props.putAll(ctx.getProperties());
-			props.putAll(this.getDefaultProperties(ctx));
+			ExpandingProperties<String> props = new ExpandingProperties<String>();
+			for(Map.Entry<String, ? extends Object> entry : ctx.getProperties().entrySet())
+				props.put(entry.getKey(), entry.getValue().toString());
+			props.putAll(getDefaultProperties(ctx));
 			ctx.getAction().addInstallerHints(ctx, props);
 			Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 			addActorPathGroups(ctx, namedPathGroupArrays);
@@ -304,5 +256,54 @@ public class AntActor extends AbstractActor
 			System.setErr(origErr);
 			monitor.done();
 		}
+	}
+
+	private IPath getBuildFileExtension(String buildFileId) throws CoreException
+	{
+		IConfigurationElement resourceElem = null;
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntBuilderConstants.BUILD_SCRIPT_POINT))
+		{
+			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
+			{
+				resourceElem = elem;
+				break;
+			}
+		}
+
+		if(resourceElem == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_No_extension_found_defines_0_1,
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
+
+		// The resource must be loaded by the bundle that contributes it
+		//
+		String contributor = resourceElem.getContributor().getName();
+		Bundle contributorBundle = Platform.getBundle(contributor);
+		if(contributorBundle == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unable_to_load_bundle_0, contributor));
+
+		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
+		if(rsURL == null)
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.AntActor_Extension_found_using_0_1_appoints_non_existing_resource,
+					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
+
+		try
+		{
+			rsURL = FileLocator.toFileURL(rsURL);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+
+		if(!"file".equalsIgnoreCase(rsURL.getProtocol())) //$NON-NLS-1$
+			//
+			// This should never happen. It's a resource in an active plug-in right?
+			//
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unexpected_protocol_0, rsURL
+					.getProtocol()));
+
+		return FileUtils.getFileAsPath(rsURL);
 	}
 }

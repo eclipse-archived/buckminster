@@ -9,8 +9,8 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.IFileInfo;
-import org.osgi.framework.Filter;
 
 public interface IResolution extends IFileInfo
 {

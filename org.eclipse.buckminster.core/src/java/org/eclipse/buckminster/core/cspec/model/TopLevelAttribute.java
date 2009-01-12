@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -33,7 +34,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -152,7 +152,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 					if(triplet.length == 3)
 					{
 						Filter filter = FilterUtils.createFilter(triplet[0], triplet[1], triplet[2], null);
-						if(!FilterUtils.isMatch(filter, ctx.getProperties()))
+						if(!filter.matchCase(ctx.getProperties()))
 							//
 							// Not applicable for the current build
 							//

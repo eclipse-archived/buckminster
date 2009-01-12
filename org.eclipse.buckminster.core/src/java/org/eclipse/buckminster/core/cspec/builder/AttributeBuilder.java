@@ -15,8 +15,8 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IPath;
-import org.osgi.framework.Filter;
 
 /**
  * @author Thomas Hallgren

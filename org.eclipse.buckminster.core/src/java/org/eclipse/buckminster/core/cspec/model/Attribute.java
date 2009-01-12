@@ -18,11 +18,10 @@ import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.osgi.framework.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -137,10 +136,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 
 	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
-		if(m_filter == null)
-			return true;
-
-		return FilterUtils.isMatch(m_filter, ctx.getProperties());
+		return m_filter == null || m_filter.matchCase(ctx.getProperties());
 	}
 
 	public boolean isProducedByActions(IModelCache cache) throws CoreException

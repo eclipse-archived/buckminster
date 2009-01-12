@@ -16,6 +16,8 @@ import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.VersionDesignator;
@@ -34,7 +36,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -57,7 +58,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 			{
 				filter = value == null
 						? null
-						: FilterUtils.createFilter(value);
+						: FilterFactory.newInstance(value);
 			}
 			catch(InvalidSyntaxException e)
 			{

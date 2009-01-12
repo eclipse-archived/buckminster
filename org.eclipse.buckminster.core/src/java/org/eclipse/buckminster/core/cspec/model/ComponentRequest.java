@@ -13,15 +13,14 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.osgi.framework.Filter;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -164,7 +163,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	public boolean isEnabled(Map<String, ? extends Object> properties)
 	{
-		return m_filter == null || FilterUtils.isMatch(m_filter, properties);
+		return m_filter == null || m_filter.matchCase(properties);
 	}
 
 	public ComponentRequest mergeDesignator(ComponentRequest that) throws CoreException
