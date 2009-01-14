@@ -291,6 +291,178 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		}
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
+		String ctypeID = m_componentIdentifier.getComponentTypeID();
+		if(ctypeID != null)
+			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, ctypeID);
+
+		IVersion version = m_componentIdentifier.getVersion();
+		if(version != null)
+		{
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
+		}
+
+		if(m_projectInfo != null)
+			Utils.addAttribute(attrs, ATTR_PROJECT_INFO, m_projectInfo.toString());
+
+		if(m_shortDesc != null)
+			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
+
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
+	}
+
+	private void addDependencyBundle(Map<ComponentRequest, Set<String>> deps, IAttribute dp) throws CoreException
+	{
+		// Make sure that the pruned CSpec has all prerequisites
+		//
+		for(IPrerequisite prereq : dp.getPrerequisites())
+		{
+			if(prereq.isExternal())
+			{
+				ComponentRequest rq = getDependency(prereq.getComponentName());
+				Set<String> attributes = deps.get(rq);
+				if(attributes == null)
+				{
+					attributes = new HashSet<String>();
+					deps.put(rq, attributes);
+				}
+				attributes.add(prereq.getAttribute());
+			}
+			else
+			{
+				IAttribute localGroup = getAttribute(prereq.getAttribute());
+				if(localGroup instanceof IActionArtifact)
+					localGroup = ((ActionArtifact)localGroup).getAction();
+				addDependencyBundle(deps, localGroup);
+			}
+		}
+	}
+
+	private void addReferencedDependencies(Set<ComponentRequest> dependencies, Set<String> attrNames, Attribute attr,
+			Stack<IAttributeFilter> filters) throws CoreException
+	{
+		if(attrNames.contains(attr.getName()))
+			return;
+
+		// Make sure that the pruned CSpec has all prerequisites
+		//
+		attrNames.add(attr.getName());
+
+		if(attr instanceof IActionArtifact)
+		{
+			addReferencedDependencies(dependencies, attrNames, ((ActionArtifact)attr).getAction(), filters);
+			return;
+		}
+
+		for(Prerequisite prereq : attr.getPrerequisites(filters))
+		{
+			if(prereq.isExternal())
+			{
+				if(dependencies != null)
+					dependencies.add(getDependency(prereq.getComponentName()));
+			}
+			else
+			{
+				Attribute localAttr = getRequiredAttribute(prereq.getAttribute());
+				if(prereq.isPatternFilter())
+				{
+					if(filters == null)
+						filters = new Stack<IAttributeFilter>();
+					filters.push(prereq);
+					addReferencedDependencies(dependencies, attrNames, localAttr, filters);
+					filters.pop();
+				}
+				else
+					addReferencedDependencies(dependencies, attrNames, localAttr, filters);
+			}
+		}
+	}
+
+	private boolean dependenciesFulfilled(Attribute attr, CSpecBuilder bld, Stack<IAttributeFilter> filters)
+			throws CoreException
+	{
+		if(attr instanceof IActionArtifact)
+			attr = ((ActionArtifact)attr).getAction();
+
+		for(Prerequisite pq : attr.getPrerequisites(filters))
+		{
+			if(pq.isExternal())
+			{
+				if(bld.getDependency(pq.getComponentName()) == null)
+					return false;
+				continue;
+			}
+
+			if(pq.isPatternFilter())
+			{
+				if(filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(pq);
+			}
+			if(!dependenciesFulfilled(getRequiredAttribute(pq.getAttribute()), bld, filters))
+				return false;
+
+			if(pq.isPatternFilter())
+				filters.pop();
+		}
+		return true;
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		Utils.emitCollection(namespace, prefix, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, m_dependencies.values(), handler);
+		Utils.emitCollection(namespace, prefix, ELEM_GENERATORS, Generator.TAG, m_generators.values(), handler);
+		ArrayList<Attribute> topArtifacts = new ArrayList<Attribute>();
+		ArrayList<Attribute> actions = new ArrayList<Attribute>();
+		ArrayList<Attribute> groups = new ArrayList<Attribute>();
+		for(Attribute attr : m_attributes.values())
+		{
+			if(attr instanceof IAction)
+				actions.add(attr);
+			else if(attr instanceof IGroup)
+				groups.add(attr);
+			else if(!(attr instanceof IActionArtifact))
+				topArtifacts.add(attr);
+		}
+		Collections.sort(topArtifacts, s_attributeSorter);
+		Collections.sort(actions, s_attributeSorter);
+		Collections.sort(groups, s_attributeSorter);
+		Utils.emitCollection(namespace, prefix, ELEM_ARTIFACTS, null, topArtifacts, handler);
+		Utils.emitCollection(namespace, prefix, ELEM_ACTIONS, null, actions, handler);
+		Utils.emitCollection(namespace, prefix, ELEM_GROUPS, null, groups, handler);
+	}
+
+	List<ActionArtifact> getActionArtifacts(Action action)
+	{
+		List<ActionArtifact> artifacts = null;
+		String actionName = action.getName();
+		for(IAttribute ag : m_attributes.values())
+		{
+			if(!(ag instanceof IActionArtifact))
+				continue;
+
+			ActionArtifact aa = (ActionArtifact)ag;
+			if(aa.getActionName().equals(actionName))
+			{
+				if(artifacts == null)
+					artifacts = new ArrayList<ActionArtifact>();
+				artifacts.add(aa);
+			}
+		}
+		if(artifacts == null)
+			artifacts = Collections.emptyList();
+		return artifacts;
+	}
+
 	public Attribute getAttribute(String name)
 	{
 		Attribute attr = m_attributes.get(name);
@@ -372,6 +544,18 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	@Override
+	protected String getElementNamespace(String namespace)
+	{
+		return XMLConstants.BM_CSPEC_NS;
+	}
+
+	@Override
+	protected String getElementPrefix(String prefix)
+	{
+		return XMLConstants.BM_CSPEC_PREFIX;
 	}
 
 	public Filter getFilter()
@@ -588,29 +772,37 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		// Find all truly referenced dependencies. A dependency can
 		// be referenced from an attribute or from a generator
 		//
-		Set<ComponentRequest> referencedDeps = new HashSet<ComponentRequest>();
-		Set<String> referencedAttrs = new HashSet<String>();
-		for(String attrName : attrNames)
+		Collection<ComponentRequest> deps;
+		if(attrNames.isEmpty() && getGenerators().isEmpty())
+			deps = getDependencies().values();
+		else
 		{
-			Attribute attr = getAttribute(attrName);
-			if(attr != null)
-				addReferencedDependencies(referencedDeps, referencedAttrs, attr, null);
-		}
+			Set<ComponentRequest> referencedDeps = new HashSet<ComponentRequest>();
 
-		for(IGenerator generator : getGenerators().values())
-		{
-			String component = generator.getComponent();
-			if(component == null)
-				addReferencedDependencies(referencedDeps, referencedAttrs, getRequiredAttribute(generator
-						.getAttribute()), null);
-			else
-				referencedDeps.add(getDependency(component));
+			Set<String> referencedAttrs = new HashSet<String>();
+			for(String attrName : attrNames)
+			{
+				Attribute attr = getAttribute(attrName);
+				if(attr != null)
+					addReferencedDependencies(referencedDeps, referencedAttrs, attr, null);
+			}
+
+			for(IGenerator generator : getGenerators().values())
+			{
+				String component = generator.getComponent();
+				if(component == null)
+					addReferencedDependencies(referencedDeps, referencedAttrs, getRequiredAttribute(generator
+							.getAttribute()), null);
+				else
+					referencedDeps.add(getDependency(component));
+			}
+			deps = referencedDeps;
 		}
 
 		// Prune the dependencies according to LDAP filters. Add the dependencies
 		// that match to the new cspec
 		//
-		for(ComponentRequest dep : referencedDeps)
+		for(ComponentRequest dep : deps)
 		{
 			Filter filter = dep.getFilter();
 			if(filter != null)
@@ -711,190 +903,6 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			else
 				getDependency(component);
 		}
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
-		String ctypeID = m_componentIdentifier.getComponentTypeID();
-		if(ctypeID != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, ctypeID);
-
-		IVersion version = m_componentIdentifier.getVersion();
-		if(version != null)
-		{
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
-		}
-
-		if(m_projectInfo != null)
-			Utils.addAttribute(attrs, ATTR_PROJECT_INFO, m_projectInfo.toString());
-
-		if(m_shortDesc != null)
-			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
-
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-
-		Utils.emitCollection(namespace, prefix, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, m_dependencies.values(), handler);
-		Utils.emitCollection(namespace, prefix, ELEM_GENERATORS, Generator.TAG, m_generators.values(), handler);
-		ArrayList<Attribute> topArtifacts = new ArrayList<Attribute>();
-		ArrayList<Attribute> actions = new ArrayList<Attribute>();
-		ArrayList<Attribute> groups = new ArrayList<Attribute>();
-		for(Attribute attr : m_attributes.values())
-		{
-			if(attr instanceof IAction)
-				actions.add(attr);
-			else if(attr instanceof IGroup)
-				groups.add(attr);
-			else if(!(attr instanceof IActionArtifact))
-				topArtifacts.add(attr);
-		}
-		Collections.sort(topArtifacts, s_attributeSorter);
-		Collections.sort(actions, s_attributeSorter);
-		Collections.sort(groups, s_attributeSorter);
-		Utils.emitCollection(namespace, prefix, ELEM_ARTIFACTS, null, topArtifacts, handler);
-		Utils.emitCollection(namespace, prefix, ELEM_ACTIONS, null, actions, handler);
-		Utils.emitCollection(namespace, prefix, ELEM_GROUPS, null, groups, handler);
-	}
-
-	@Override
-	protected String getElementNamespace(String namespace)
-	{
-		return XMLConstants.BM_CSPEC_NS;
-	}
-
-	@Override
-	protected String getElementPrefix(String prefix)
-	{
-		return XMLConstants.BM_CSPEC_PREFIX;
-	}
-
-	List<ActionArtifact> getActionArtifacts(Action action)
-	{
-		List<ActionArtifact> artifacts = null;
-		String actionName = action.getName();
-		for(IAttribute ag : m_attributes.values())
-		{
-			if(!(ag instanceof IActionArtifact))
-				continue;
-
-			ActionArtifact aa = (ActionArtifact)ag;
-			if(aa.getActionName().equals(actionName))
-			{
-				if(artifacts == null)
-					artifacts = new ArrayList<ActionArtifact>();
-				artifacts.add(aa);
-			}
-		}
-		if(artifacts == null)
-			artifacts = Collections.emptyList();
-		return artifacts;
-	}
-
-	private void addDependencyBundle(Map<ComponentRequest, Set<String>> deps, IAttribute dp) throws CoreException
-	{
-		// Make sure that the pruned CSpec has all prerequisites
-		//
-		for(IPrerequisite prereq : dp.getPrerequisites())
-		{
-			if(prereq.isExternal())
-			{
-				ComponentRequest rq = getDependency(prereq.getComponentName());
-				Set<String> attributes = deps.get(rq);
-				if(attributes == null)
-				{
-					attributes = new HashSet<String>();
-					deps.put(rq, attributes);
-				}
-				attributes.add(prereq.getAttribute());
-			}
-			else
-			{
-				IAttribute localGroup = getAttribute(prereq.getAttribute());
-				if(localGroup instanceof IActionArtifact)
-					localGroup = ((ActionArtifact)localGroup).getAction();
-				addDependencyBundle(deps, localGroup);
-			}
-		}
-	}
-
-	private void addReferencedDependencies(Set<ComponentRequest> dependencies, Set<String> attrNames, Attribute attr,
-			Stack<IAttributeFilter> filters) throws CoreException
-	{
-		if(attrNames.contains(attr.getName()))
-			return;
-
-		// Make sure that the pruned CSpec has all prerequisites
-		//
-		attrNames.add(attr.getName());
-
-		if(attr instanceof IActionArtifact)
-		{
-			addReferencedDependencies(dependencies, attrNames, ((ActionArtifact)attr).getAction(), filters);
-			return;
-		}
-
-		for(Prerequisite prereq : attr.getPrerequisites(filters))
-		{
-			if(prereq.isExternal())
-			{
-				if(dependencies != null)
-					dependencies.add(getDependency(prereq.getComponentName()));
-			}
-			else
-			{
-				Attribute localAttr = getRequiredAttribute(prereq.getAttribute());
-				if(prereq.isPatternFilter())
-				{
-					if(filters == null)
-						filters = new Stack<IAttributeFilter>();
-					filters.push(prereq);
-					addReferencedDependencies(dependencies, attrNames, localAttr, filters);
-					filters.pop();
-				}
-				else
-					addReferencedDependencies(dependencies, attrNames, localAttr, filters);
-			}
-		}
-	}
-
-	private boolean dependenciesFulfilled(Attribute attr, CSpecBuilder bld, Stack<IAttributeFilter> filters)
-			throws CoreException
-	{
-		if(attr instanceof IActionArtifact)
-			attr = ((ActionArtifact)attr).getAction();
-
-		for(Prerequisite pq : attr.getPrerequisites(filters))
-		{
-			if(pq.isExternal())
-			{
-				if(bld.getDependency(pq.getComponentName()) == null)
-					return false;
-				continue;
-			}
-
-			if(pq.isPatternFilter())
-			{
-				if(filters == null)
-					filters = new Stack<IAttributeFilter>();
-				filters.push(pq);
-			}
-			if(!dependenciesFulfilled(getRequiredAttribute(pq.getAttribute()), bld, filters))
-				return false;
-
-			if(pq.isPatternFilter())
-				filters.pop();
-		}
-		return true;
 	}
 
 	private void verifyNonCircularDependency(Stack<String> seenAttributes, Collection<Prerequisite> prereqs,
