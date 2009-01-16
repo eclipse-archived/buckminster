@@ -39,6 +39,8 @@ public interface KeyConstants
 
 	public static final String ACTION_OUTPUT_ROOT = "buckminster.output.root"; //$NON-NLS-1$
 
+	public static final String ACTION_TEMP_ROOT = "buckminster.temp.root"; //$NON-NLS-1$
+
 	public static final String ACTION_OUTPUT = "buckminster.output"; //$NON-NLS-1$
 
 	public static final String ACTION_HOME = "buckminster.home"; //$NON-NLS-1$

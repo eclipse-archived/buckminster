@@ -102,8 +102,14 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		}
 		String uniqueFolder = bld.toString();
 
-		IPath buckminsterTempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster") //$NON-NLS-1$ //$NON-NLS-2$
-				.append(uniqueFolder);
+		String tempRootStr = (String)properties.get(KeyConstants.ACTION_TEMP_ROOT);
+		IPath tempRoot;
+		if(tempRootStr == null)
+			tempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster"); //$NON-NLS-1$ //$NON-NLS-2$
+		else
+			tempRoot = Path.fromOSString(tempRootStr);
+
+		String actionTemp = tempRoot.append(uniqueFolder).append("temp").toPortableString(); //$NON-NLS-1$
 
 		String outputRoot = (String)properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		if(outputRoot != null)
@@ -114,10 +120,10 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			actionOutput = Path.fromOSString(outputRoot).append(uniqueFolder).toPortableString();
 		}
 		else
-			actionOutput = buckminsterTempRoot.append("build").toPortableString(); //$NON-NLS-1$
+			actionOutput = tempRoot.append("build").toPortableString(); //$NON-NLS-1$
 
 		properties.put(KeyConstants.ACTION_OUTPUT, actionOutput);
-		properties.put(KeyConstants.ACTION_TEMP, buckminsterTempRoot.append("temp").toPortableString()); //$NON-NLS-1$
+		properties.put(KeyConstants.ACTION_TEMP, actionTemp);
 		properties.put(KeyConstants.ACTION_HOME, cspec.getComponentLocation().toOSString());
 		properties.putAll(cspec.getComponentIdentifier().getProperties());
 	}
