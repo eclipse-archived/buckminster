@@ -243,4 +243,9 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 					.getComponentName()));
 		monitor.done();
 	}
+
+	public boolean isUnpack()
+	{
+		return m_base.isUnpack();
+	}
 }

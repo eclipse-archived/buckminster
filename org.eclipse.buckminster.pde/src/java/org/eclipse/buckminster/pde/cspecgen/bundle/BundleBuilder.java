@@ -18,13 +18,21 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
+import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
+import org.eclipse.buckminster.pde.internal.EclipseImportReader;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.pde.internal.model.ExternalBuildModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
@@ -236,5 +244,20 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		{
 			monitor.done();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder#createResolution(org.eclipse.buckminster.core.reader.IComponentReader, org.eclipse.buckminster.core.cspec.builder.CSpecBuilder, org.eclipse.buckminster.opml.builder.OPMLBuilder)
+	 */
+	@Override
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+			throws CoreException
+	{
+		if(reader instanceof EclipseImportReader)
+		{
+			EclipseImportReader eclipseImportReader = (EclipseImportReader)reader;
+			return super.createResolution(reader, cspecBuilder, opmlBuilder, eclipseImportReader.isUnpack());
+		}
+		return super.createResolution(reader, cspecBuilder, opmlBuilder);
 	}
 }

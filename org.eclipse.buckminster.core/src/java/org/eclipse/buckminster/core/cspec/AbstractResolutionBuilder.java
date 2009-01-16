@@ -138,8 +138,13 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
 	}
 
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
-			throws CoreException
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder	cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
+			{
+			  return createResolution(reader, cspecBuilder, opmlBuilder, false);
+			}
+
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder,
+			boolean unpack) throws CoreException
 	{
 		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder, opmlBuilder);
 
@@ -153,6 +158,7 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		resBld.setVersionMatch(providerMatch.getVersionMatch());
 		resBld.setMaterializable(reader.canMaterialize());
 		resBld.setRepository(providerMatch.getRepositoryURI());
+		resBld.setUnpack(unpack);
 		if(reader instanceof IFileReader)
 			resBld.setFileInfo(((IFileReader)reader).getFileInfo());
 		return new Resolution(resBld);

@@ -101,6 +101,8 @@ final class EclipseImportBase
 
 	private final URL m_remoteLocation;
 
+	private boolean m_unpack = false;
+
 	private static final UUID CACHE_IMPORT_BASE_CACHE = UUID.randomUUID();
 
 	public static EclipseImportBase obtain(NodeQuery query, String repositoryURI) throws CoreException
@@ -284,5 +286,25 @@ final class EclipseImportBase
 	boolean isLocal()
 	{
 		return m_remoteLocation == null;
+	}
+
+	/**
+	 * Should this bundle be unpacked (set in the enclosing feature.xml)
+	 * 
+	 * @return true if supposed to be unpacked
+	 */
+	boolean isUnpack()
+	{
+		return m_unpack;
+	}
+
+	/**
+	 * Should this bundle be unpacked (set in the enclosing feature.xml)
+	 * 
+	 * @param unpack
+	 */
+	void setUnpack(boolean unpack)
+	{
+		m_unpack = unpack;
 	}
 }

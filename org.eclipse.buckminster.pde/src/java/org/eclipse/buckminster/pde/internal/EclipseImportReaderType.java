@@ -767,6 +767,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					}
 					jarFile.delete();
 				}
+				base.setUnpack(unpack);
 
 				// Cache this using the remote key also so that the next time someone asks for it, the local
 				// version is returned

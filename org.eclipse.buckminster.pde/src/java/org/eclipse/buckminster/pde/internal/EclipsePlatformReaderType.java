@@ -292,7 +292,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			plugin.setModel(generatedFeatureModel);
 			plugin.setId(id);
 			plugin.setVersion(vStr);
-			plugin.setUnpack(false);
+			plugin.setUnpack(res.isUnpack());
 			generatedFeature.addPlugins(new IFeaturePlugin[] { plugin });
 		}
 
