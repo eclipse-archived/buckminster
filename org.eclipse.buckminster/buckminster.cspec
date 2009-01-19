@@ -210,7 +210,7 @@
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp/" fileCount="1" upToDatePolicy="COUNT"/>
         </cs:private>
-        <cs:private name="eclipse.sign.site" filter="(local.sign=false)" actor="ant">
+        <cs:private name="eclipse.sign.site" filter="(!(local.sign=true))" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
                 <cs:property key="targets" value="sign.jars"/>
