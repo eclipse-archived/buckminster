@@ -36,6 +36,16 @@ public class ZipArchiveReader extends AbstractCatalogReader
 		m_zipFileReader = fileReader;
 	}
 
+	public IComponentReader getFileReader()
+	{
+		return m_zipFileReader;
+	}
+
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
+	{
+		throw new UnsupportedOperationException(Messages.Cannot_materialize);
+	}
+
 	@Override
 	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
 	{
@@ -91,11 +101,6 @@ public class ZipArchiveReader extends AbstractCatalogReader
 		{
 			IOUtils.close(zi);
 		}
-	}
-
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
-		throw new UnsupportedOperationException(Messages.Cannot_materialize);
 	}
 
 	@Override

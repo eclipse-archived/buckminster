@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -68,6 +69,48 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 	private String m_nature;
 
 	private int m_weight = 0;
+
+	public int compareTo(IResolutionBuilder o)
+	{
+		int ow = o.getWeight();
+		return m_weight > ow
+				? 1
+				: (m_weight == ow
+						? 0
+						: -1);
+	}
+
+	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+			throws CoreException
+	{
+		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
+	}
+
+	public String getComponentTypeID()
+	{
+		return null;
+	}
+
+	public String getNature()
+	{
+		return m_nature;
+	}
+
+	public int getWeight()
+	{
+		return m_weight;
+	}
+
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+			throws CoreException
+	{
+		String tmp = config.getAttribute("weight"); //$NON-NLS-1$
+		if(tmp != null)
+			m_weight = Integer.parseInt(tmp);
+		m_nature = config.getAttribute("nature"); //$NON-NLS-1$
+		super.setInitializationData(config, propertyName, data);
+	}
 
 	protected void applyExtensions(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, IComponentReader reader,
 			IProgressMonitor monitor) throws CoreException
@@ -122,26 +165,11 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		}
 	}
 
-	public int compareTo(IResolutionBuilder o)
-	{
-		int ow = o.getWeight();
-		return m_weight > ow
-				? 1
-				: (m_weight == ow
-						? 0
-						: -1);
-	}
-
-	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
 			throws CoreException
 	{
-		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
+		return createResolution(reader, cspecBuilder, opmlBuilder, false);
 	}
-
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder	cspecBuilder, OPMLBuilder opmlBuilder) throws CoreException
-			{
-			  return createResolution(reader, cspecBuilder, opmlBuilder, false);
-			}
 
 	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder,
 			boolean unpack) throws CoreException
@@ -159,34 +187,10 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		resBld.setMaterializable(reader.canMaterialize());
 		resBld.setRepository(providerMatch.getRepositoryURI());
 		resBld.setUnpack(unpack);
+		if(reader instanceof ZipArchiveReader)
+			reader = ((ZipArchiveReader)reader).getFileReader();
 		if(reader instanceof IFileReader)
 			resBld.setFileInfo(((IFileReader)reader).getFileInfo());
 		return new Resolution(resBld);
-	}
-
-	public String getComponentTypeID()
-	{
-		return null;
-	}
-
-	public String getNature()
-	{
-		return m_nature;
-	}
-
-	public int getWeight()
-	{
-		return m_weight;
-	}
-
-	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
-		String tmp = config.getAttribute("weight"); //$NON-NLS-1$
-		if(tmp != null)
-			m_weight = Integer.parseInt(tmp);
-		m_nature = config.getAttribute("nature"); //$NON-NLS-1$
-		super.setInitializationData(config, propertyName, data);
 	}
 }
