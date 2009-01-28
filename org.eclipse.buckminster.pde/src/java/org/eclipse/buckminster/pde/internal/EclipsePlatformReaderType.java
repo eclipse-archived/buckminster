@@ -185,6 +185,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	public List<Resolution> convertToSiteFeatures(RMContext context, File siteFolder, List<Resolution> features,
 			List<Resolution> plugins) throws CoreException
 	{
+		List<Resolution> topFeatures = getTopFeatures(features);
+
 		HashSet<ComponentIdentifier> pluginNames = new HashSet<ComponentIdentifier>();
 
 		HashMap<String, List<Resolution>> siteAndFeatures = new HashMap<String, List<Resolution>>();
@@ -196,13 +198,18 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				continue;
 
 			String siteURL = urlString.substring(0, idx);
-			List<Resolution> featuresOnSite = siteAndFeatures.get(siteURL);
-			if(featuresOnSite == null)
+
+			if(topFeatures.contains(res))
 			{
-				featuresOnSite = new ArrayList<Resolution>();
-				siteAndFeatures.put(siteURL, featuresOnSite);
+				List<Resolution> featuresOnSite = siteAndFeatures.get(siteURL);
+				if(featuresOnSite == null)
+				{
+					featuresOnSite = new ArrayList<Resolution>();
+					siteAndFeatures.put(siteURL, featuresOnSite);
+				}
+				featuresOnSite.add(res);
 			}
-			featuresOnSite.add(res);
+
 			for(ComponentRequest dep : res.getCSpec().getDependencies().values())
 			{
 				if(!IComponentType.OSGI_BUNDLE.equals(dep.getComponentTypeID()))
@@ -425,5 +432,30 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	{
 		MonitorUtils.complete(monitor);
 		return new EclipsePlatformVersionFinder(this, provider, ctype, nodeQuery);
+	}
+
+	/**
+	 * Returns TOP features - features that are not included into other features
+	 * 
+	 * @param features
+	 * @return
+	 */
+	private List<Resolution> getTopFeatures(List<Resolution> features)
+	{
+		List<Resolution> topFeatures = new ArrayList<Resolution>();
+		topFeatures.addAll(features);
+
+		List<Resolution> includedFeatures = new ArrayList<Resolution>();
+
+		for(Resolution res : features)
+			for(ComponentRequest dep : res.getCSpec().getDependencies().values())
+				if(IComponentType.ECLIPSE_FEATURE.equals(dep.getComponentTypeID()))
+					for(Resolution featureRes : features)
+						if(dep.designates(featureRes.getComponentIdentifier()))
+							includedFeatures.add(featureRes);
+
+		topFeatures.removeAll(includedFeatures);
+
+		return topFeatures;
 	}
 }
