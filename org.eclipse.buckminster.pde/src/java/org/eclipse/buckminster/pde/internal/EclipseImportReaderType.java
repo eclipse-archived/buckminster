@@ -12,8 +12,10 @@ package org.eclipse.buckminster.pde.internal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,16 +23,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -43,12 +45,10 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -58,9 +58,8 @@ import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.pde.mapfile.MapFile;
 import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.BuckminsterPreferences;
+import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IProject;
@@ -69,11 +68,23 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRequest;
+import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
+import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
+import org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryIO;
+import org.eclipse.equinox.internal.p2.metadata.repository.URLMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRequest;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -81,21 +92,127 @@ import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PDEState;
 import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.IIncludedFeatureReference;
-import org.eclipse.update.core.IPluginEntry;
-import org.eclipse.update.core.ISite;
-import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.PluginEntry;
-import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
-import org.eclipse.update.internal.core.FeatureDownloadException;
+import org.eclipse.update.internal.jarprocessor.Utils;
 import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
+	/**
+	 * A request to mirror (copy) an artifact into a given destination artifact repository.
+	 */
+	public static class CopyRequest extends ArtifactRequest
+	{
+		private final File m_destination;
+
+		public CopyRequest(IArtifactRepository src, IArtifactKey key, File destination)
+		{
+			super(key);
+			setSourceRepository(src);
+			m_destination = destination;
+		}
+
+		@Override
+		public void perform(IProgressMonitor monitor)
+		{
+			monitor.subTask(NLS.bind(Messages.downloading_0, getArtifactKey().getId()));
+
+			// if the request does not have a descriptor then try to fill one in by getting
+			// the list of all and randomly picking one that appears to be optimized.
+			IArtifactDescriptor optimized = null;
+			IArtifactDescriptor canonical = null;
+			IArtifactDescriptor descriptor = null;
+
+			IArtifactDescriptor[] descriptors = source.getArtifactDescriptors(getArtifactKey());
+			if(descriptors.length > 0)
+			{
+				for(int i = 0; i < descriptors.length; i++)
+				{
+					if(descriptors[i].getProperty(IArtifactDescriptor.FORMAT) == null)
+						canonical = descriptors[i];
+					else if(ProcessingStepHandler.canProcess(descriptors[i]))
+						optimized = descriptors[i];
+				}
+
+				boolean chooseCanonical = source.getLocation().equals("file"); //$NON-NLS-1$
+				// If the source repo is local then look for a canonical descriptor so we don't waste processing
+				// time.
+				descriptor = chooseCanonical
+						? canonical
+						: optimized;
+
+				// if the descriptor is still null then we could not find our first choice of format so switch the
+				// logic.
+				if(descriptor == null)
+					descriptor = !chooseCanonical
+							? canonical
+							: optimized;
+			}
+
+			// if the descriptor is not set now then the repo does not have the requested artifact
+			if(descriptor == null)
+			{
+				setResult(new Status(IStatus.ERROR, PDEPlugin.getPluginId(), NLS.bind(Messages.artifact_not_found_0,
+						getArtifactKey())));
+				return;
+			}
+
+			IStatus status = transfer(descriptor, monitor);
+			if(monitor.isCanceled())
+			{
+				setResult(Status.CANCEL_STATUS);
+				return;
+			}
+
+			if(status.isOK() || status.getSeverity() == IStatus.CANCEL)
+			{
+				setResult(status);
+				return;
+			}
+
+			if(descriptor == canonical || canonical == null)
+			{
+				setResult(status);
+				return;
+			}
+
+			// try with canonical
+			setResult(transfer(canonical, monitor));
+		}
+
+		private IStatus transfer(IArtifactDescriptor descriptor, IProgressMonitor monitor)
+		{
+			IStatus status;
+			do
+			{
+				status = transferSingle(descriptor, monitor);
+			} while(status.getSeverity() == IStatus.ERROR && status.getCode() == IArtifactRepository.CODE_RETRY);
+			return status;
+		}
+
+		private IStatus transferSingle(IArtifactDescriptor descriptor, IProgressMonitor monitor)
+		{
+			OutputStream destination = null;
+			IStatus status = null;
+			try
+			{
+				destination = new FileOutputStream(m_destination);
+				status = source.getArtifact(descriptor, destination, monitor);
+			}
+			catch(IOException e)
+			{
+				status = BuckminsterException.createStatus(e);
+			}
+			finally
+			{
+				Utils.close(destination);
+			}
+			return status;
+		}
+	}
+
 	public static class RemotePluginEntry extends PluginEntry
 	{
 		private final URL m_remoteLocation;
@@ -113,7 +230,49 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
 
-	private static final UUID CACHE_KEY_PLUGIN_ENTRIES_CACHE = UUID.randomUUID();
+	private static final UUID CACHE_KEY_MDR_CACHE = UUID.randomUUID();
+
+	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor)
+			throws CoreException
+	{
+		IArtifactRepositoryManager manager = (IArtifactRepositoryManager)ServiceHelper.getService(PDEPlugin
+				.getContext(), IArtifactRepositoryManager.class.getName());
+		if(manager == null)
+			throw new IllegalStateException("No metadata repository manager found"); //$NON-NLS-1$
+
+		SubMonitor subMon = SubMonitor.convert(monitor, 200);
+		try
+		{
+			return manager.loadRepository(repoLocation, subMon.newChild(100));
+		}
+		catch(ProvisionException e)
+		{
+			return manager.refreshRepository(repoLocation, subMon.newChild(100));
+		}
+		finally
+		{
+			if(monitor != null)
+				monitor.done();
+		}
+	}
+
+	public static File getTempSite(Map<UUID, Object> ucache) throws CoreException
+	{
+		Map<String, File> siteCache = getSiteCache(ucache);
+		synchronized(siteCache)
+		{
+			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite"; //$NON-NLS-1$
+			File tempSite = siteCache.get(key);
+			if(tempSite != null)
+				return tempSite;
+
+			tempSite = FileUtils.createTempFolder("bmsite", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+			new File(tempSite, PLUGINS_FOLDER).mkdir();
+			new File(tempSite, FEATURES_FOLDER).mkdir();
+			siteCache.put(key, tempSite);
+			return tempSite;
+		}
+	}
 
 	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, IVersion version,
 			String subDir) throws MalformedURLException, CoreException
@@ -135,7 +294,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return new URL(remoteLocation, subDir + '/' + name + '_' + version + ".jar"); //$NON-NLS-1$
 	}
 
-	private static RemotePluginEntry[] getMapPluginEntries(URL location, IConnectContext cctx) throws CoreException
+	static RemotePluginEntry[] getMapPluginEntries(URL location, IConnectContext cctx) throws CoreException
 	{
 		InputStream input = null;
 		try
@@ -192,22 +351,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<URL, IPluginEntry[]> getPluginEntriesCache(Map<UUID, Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<URL, IPluginEntry[]> cache = (Map<URL, IPluginEntry[]>)ctxUserCache.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
-			if(cache == null)
-			{
-				cache = Collections.synchronizedMap(new HashMap<URL, IPluginEntry[]>());
-				ctxUserCache.put(CACHE_KEY_PLUGIN_ENTRIES_CACHE, cache);
-			}
-			return cache;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Map<String, File> getSiteCache(Map<UUID, Object> ctxUserCache)
+	static Map<String, File> getSiteCache(Map<UUID, Object> ctxUserCache)
 	{
 		synchronized(ctxUserCache)
 		{
@@ -221,21 +365,19 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	public static File getTempSite(Map<UUID, Object> ucache) throws CoreException
+	@SuppressWarnings("unchecked")
+	private static Map<String, IMetadataRepository> getMDRCache(Map<UUID, Object> ctxUserCache)
 	{
-		Map<String, File> siteCache = getSiteCache(ucache);
-		synchronized(siteCache)
+		synchronized(ctxUserCache)
 		{
-			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite"; //$NON-NLS-1$
-			File tempSite = siteCache.get(key);
-			if(tempSite != null)
-				return tempSite;
-
-			tempSite = FileUtils.createTempFolder("bmsite", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-			new File(tempSite, PLUGINS_FOLDER).mkdir();
-			new File(tempSite, FEATURES_FOLDER).mkdir();
-			siteCache.put(key, tempSite);
-			return tempSite;
+			Map<String, IMetadataRepository> cache = (Map<String, IMetadataRepository>)ctxUserCache
+					.get(CACHE_KEY_MDR_CACHE);
+			if(cache == null)
+			{
+				cache = Collections.synchronizedMap(new HashMap<String, IMetadataRepository>());
+				ctxUserCache.put(CACHE_KEY_MDR_CACHE, cache);
+			}
+			return cache;
 		}
 	}
 
@@ -245,62 +387,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private final HashMap<File, IPluginModelBase[]> m_pluginCache = new HashMap<File, IPluginModelBase[]>();
 
-	private final int m_connectionRetryCount;
-
-	private final long m_connectionRetryDelay;
-
 	public EclipseImportReaderType()
 	{
-		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
-		m_connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
-	}
-
-	private void addFeaturePluginEntries(HashMap<VersionedIdentifier, IPluginEntry> entries,
-			HashSet<VersionedIdentifier> seenFeatures, IFeature feature, IProgressMonitor monitor) throws CoreException
-	{
-		for(IPluginEntry entry : feature.getRawPluginEntries())
-			entries.put(entry.getVersionedIdentifier(), entry);
-
-		IIncludedFeatureReference[] includedFeatures = feature.getIncludedFeatureReferences();
-		if(includedFeatures.length == 0)
-		{
-			MonitorUtils.complete(monitor);
-			return;
-		}
-
-		monitor.beginTask(null, includedFeatures.length * 100);
-		for(IIncludedFeatureReference ref : includedFeatures)
-		{
-			VersionedIdentifier vid = ref.getVersionedIdentifier();
-			if(seenFeatures.contains(vid))
-				MonitorUtils.worked(monitor, 100);
-			else
-			{
-				seenFeatures.add(vid);
-				IFeature includedFeature = obtainFeature(ref, MonitorUtils.subMonitor(monitor, 50));
-				if(feature != null)
-					addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils
-							.subMonitor(monitor, 50));
-			}
-		}
-		monitor.done();
 	}
 
 	public synchronized void addProjectClasspath(IProject project, IClasspathEntry[] classPath)
 	{
 		m_classpaths.put(project, classPath);
-	}
-
-	private CoreException createException(ArrayList<IStatus> resultStatus)
-	{
-		int errCount = resultStatus.size();
-		if(errCount == 1)
-			return new CoreException(resultStatus.get(0));
-
-		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
-		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
-				Messages.problems_loading_feature, null);
-		return new CoreException(multiStatus);
 	}
 
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
@@ -327,6 +420,124 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		{
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
+	{
+		MonitorUtils.complete(monitor);
+		return new EclipseImportReader(this, providerMatch);
+	}
+
+	@Override
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
+	{
+		String url = provider.getURI(nodeQuery.getProperties());
+		URI uri = URI.create(url);
+		String path = uri.getPath();
+		if(path.endsWith(".jar") || path.endsWith(".zip") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		{
+			MonitorUtils.complete(monitor);
+			return new EclipseImportFinder(this, provider, ctype, nodeQuery);
+		}
+
+		StringBuilder bld = new StringBuilder(path);
+		if(!path.endsWith("/")) //$NON-NLS-1$
+			bld.append('/');
+
+		String base = bld.toString().intern();
+		synchronized(base)
+		{
+			Map<String, IMetadataRepository> mdrCache = getMDRCache(nodeQuery.getContext().getUserCache());
+			IMetadataRepository mdr = mdrCache.get(base);
+			if(mdr != null)
+			{
+				MonitorUtils.complete(monitor);
+				return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
+			}
+
+			if(mdrCache.containsKey(base))
+			{
+				// Null stored in cache which means that we know that there's no P2 info
+				MonitorUtils.complete(monitor);
+				return new EclipseImportFinder(this, provider, ctype, nodeQuery);
+			}
+
+			SubMonitor subMon = SubMonitor.convert(monitor, 2000);
+			bld.append(URLMetadataRepository.CONTENT_FILENAME);
+			int len = bld.length();
+
+			bld.append(".jar"); //$NON-NLS-1$
+			IFileInfo[] fiHandle = new IFileInfo[1];
+			InputStream in = null;
+			try
+			{
+				try
+				{
+					URL location = new URL(uri.getScheme(), uri.getHost(), uri.getPort(), bld.toString());
+					in = DownloadManager.getCache().open(location, provider.getConnectContext(), null, fiHandle,
+							subMon.newChild(800));
+
+					JarInputStream jarStream = new JarInputStream(in);
+					JarEntry jarEntry = jarStream.getNextJarEntry();
+					String entryName = URLMetadataRepository.CONTENT_FILENAME + URLMetadataRepository.XML_EXTENSION;
+					while(jarEntry != null && !entryName.equals(jarEntry.getName()))
+						jarEntry = jarStream.getNextJarEntry();
+
+					if(jarEntry == null)
+						throw new FileNotFoundException();
+
+					MetadataRepositoryIO mdrIO = new MetadataRepositoryIO();
+					mdr = mdrIO.read(location, jarStream, subMon.newChild(200));
+					mdrCache.put(base, mdr);
+					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
+				}
+				catch(IOException e)
+				{
+					Utils.close(in);
+					in = null;
+				}
+
+				bld.setLength(len);
+				bld.append(URLMetadataRepository.XML_EXTENSION);
+				try
+				{
+					URL location = new URL(uri.getScheme(), uri.getHost(), uri.getPort(), bld.toString());
+					in = DownloadManager.getCache().open(location, provider.getConnectContext(), null, fiHandle,
+							subMon.newChild(800));
+					MetadataRepositoryIO mdrIO = new MetadataRepositoryIO();
+					mdr = mdrIO.read(location, in, subMon.newChild(200));
+					mdrCache.put(base, mdr);
+					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
+				}
+				catch(IOException e)
+				{
+					mdrCache.put(base, null);
+					return new EclipseImportFinder(this, provider, ctype, nodeQuery);
+				}
+			}
+			finally
+			{
+				Utils.close(in);
+				if(monitor != null)
+					monitor.done();
+			}
+		}
+	}
+
+	@Override
+	public synchronized void postMaterialization(MaterializationContext context, IProgressMonitor monitor)
+			throws CoreException
+	{
+		// Create needed classpath entries in each project
+		//
+		PluginImportOperation.setClasspaths(monitor, m_classpaths);
+
+		// Clear cached entries
+		//
+		m_pluginCache.clear();
+		m_featureCache.clear();
+		m_classpaths.clear();
 	}
 
 	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
@@ -357,40 +568,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return candidates;
 	}
 
-	List<ISiteFeatureReference> getFeatureReferences(URL location, String componentName, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ArrayList<ISiteFeatureReference> result = new ArrayList<ISiteFeatureReference>();
-		for(ISiteFeatureReference ref : getSiteFeatureReferences(location, monitor))
-		{
-			if(ref.getVersionedIdentifier().getIdentifier().equals(componentName))
-				result.add(ref);
-		}
-		return result;
-	}
-
-	private IFeatureModel[] getPlatformFeatures()
-	{
-		return PDECore.getDefault().getFeatureModelManager().getModels();
-	}
-
-	private IPluginModelBase[] getPlatformPlugins()
-	{
-		return PDECore.getDefault().getModelManager().getExternalModels();
-	}
-
-	List<IPluginEntry> getPluginEntries(URL location, IConnectContext cctx, NodeQuery query, String componentName,
-			IProgressMonitor monitor) throws CoreException
-	{
-		ArrayList<IPluginEntry> result = new ArrayList<IPluginEntry>();
-		for(IPluginEntry entry : getSitePluginEntries(location, cctx, query, monitor))
-		{
-			if(entry.getVersionedIdentifier().getIdentifier().equals(componentName))
-				result.add(entry);
-		}
-		return result;
-	}
-
 	IPluginModelBase getPluginModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		IPluginModelBase model = null;
@@ -407,25 +584,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return model;
 	}
 
-	@SuppressWarnings("deprecation")
-	public synchronized IPluginModelBase getPluginModelBase(URL location, IConnectContext cctx, String id,
-			String version, ProviderMatch templateInfo) throws CoreException
-	{
-		for(IPluginEntry candidate : getSitePluginEntries(location, cctx, templateInfo.getNodeQuery(),
-				new NullProgressMonitor()))
-		{
-			VersionedIdentifier vi = candidate.getVersionedIdentifier();
-			String name = vi.getIdentifier();
-			if(id.equals(name))
-			{
-				String versionStr = vi.getVersion().toString();
-				if(version == null || version.equals(versionStr))
-					return localize(vi.getIdentifier(), versionStr, templateInfo);
-			}
-		}
-		return null;
-	}
-
 	List<IPluginModelBase> getPluginModels(File location, String pluginName, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -438,24 +596,181 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return candidates;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new EclipseImportReader(this, providerMatch);
-	}
-
-	private ISiteFeatureReference[] getSiteFeatureReferences(URL location, IProgressMonitor monitor)
+	EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
 			throws CoreException
 	{
-		ISite site;
-		synchronized(SiteManager.class)
-		{
-			site = SiteManager.getSite(location, true, monitor);
-			if(site == null)
-				throw new OperationCanceledException();
+		NodeQuery query = rInfo.getNodeQuery();
+		EclipseImportBase base = EclipseImportBase.obtain(query, rInfo.getRepositoryURI());
+		if(base.isLocal())
+			return base;
 
-			return site.getFeatureReferences();
+		// Synchronize on base, it uses a lightweight pattern so only
+		// one instance will exists for any given URI/request combination
+		//
+		synchronized(base)
+		{
+			Map<UUID, Object> userCache = query.getContext().getUserCache();
+			String name = base.getComponentName();
+			monitor.beginTask(null, 1000);
+			monitor.subTask(NLS.bind(Messages.localizing_0, name));
+
+			try
+			{
+				IConnectContext cctx = rInfo.getConnectContext();
+				String typeDir = isPlugin
+						? PLUGINS_FOLDER
+						: FEATURES_FOLDER;
+
+				File tempSite = getTempSite(userCache);
+				File subDir = new File(tempSite, typeDir);
+				String jarName;
+				File jarFile;
+
+				VersionMatch vm = rInfo.getVersionMatch();
+				if(vm.getArtifactInfo() != null)
+				{
+					// This is a P2 artifact. Copy it from the artifact repository
+					//
+					IArtifactKey ak = ArtifactKey.parse(vm.getArtifactInfo());
+					IArtifactRepository ar = getArtifactRepository(base.getRemoteLocation().toURI(), monitor);
+					jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
+					jarFile = new File(subDir, jarName);
+					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ar, ak, jarFile) },
+							monitor);
+					if(!status.isOK())
+						throw new CoreException(status);
+				}
+				else
+				{
+					URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, rInfo.getComponentName(),
+							vm.getVersion(), typeDir);
+
+					// Use a temporary local site
+					//
+					IPath path = Path.fromPortableString(pluginURL.getPath());
+					jarName = path.lastSegment();
+					if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
+						throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_url_fore_remote_import_0,
+								pluginURL));
+
+					jarFile = new File(subDir, jarName);
+					InputStream input = null;
+					try
+					{
+						input = DownloadManager.getCache().open(pluginURL, cctx, null, null,
+								MonitorUtils.subMonitor(monitor, 900));
+						FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
+					}
+					finally
+					{
+						IOUtils.close(input);
+					}
+				}
+				Key remoteKey = base.getKey();
+
+				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base //$NON-NLS-1$
+						.getQuery(), name).toString());
+
+				File destDir = null;
+				boolean unpack = true;
+				ConflictResolution cres = ConflictResolution.REPLACE;
+
+				if(jarName.endsWith(".zip")) //$NON-NLS-1$
+				{
+					// Special orbit packaging. Just unzip into the plug-ins folder
+					//
+					destDir = subDir;
+					cres = ConflictResolution.UPDATE;
+				}
+				else
+				{
+					if(!base.isFeature())
+					{
+						// Guess unpack based on classpath
+						//
+						JarFile jf = new JarFile(jarFile);
+						Manifest mf = jf.getManifest();
+						if(mf != null)
+						{
+							String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(
+									Constants.BUNDLE_CLASSPATH), ","); //$NON-NLS-1$
+
+							int top = classPath.length;
+							unpack = (top > 0);
+							for(int idx = 0; idx < top; ++idx)
+							{
+								if(classPath[idx].trim().equals(".")) //$NON-NLS-1$
+								{
+									unpack = false;
+									break;
+								}
+							}
+						}
+						jf.close();
+					}
+					if(unpack)
+					{
+						String vcName = jarName.substring(0, jarName.length() - 4);
+						destDir = new File(subDir, vcName);
+					}
+				}
+
+				if(unpack)
+				{
+					InputStream input = new FileInputStream(jarFile);
+					try
+					{
+						FileUtils.unzip(input, null, destDir, cres, MonitorUtils.subMonitor(monitor, 100));
+					}
+					finally
+					{
+						IOUtils.close(input);
+					}
+					jarFile.delete();
+				}
+				base.setUnpack(unpack);
+
+				// Cache this using the remote key also so that the next time someone asks for it, the local
+				// version is returned
+				//
+				EclipseImportBase.getImportBaseCacheCache(userCache).put(remoteKey, base);
+				return base;
+			}
+			catch(URISyntaxException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+			finally
+			{
+				monitor.done();
+			}
 		}
+	}
+
+	private CoreException createException(ArrayList<IStatus> resultStatus)
+	{
+		int errCount = resultStatus.size();
+		if(errCount == 1)
+			return new CoreException(resultStatus.get(0));
+
+		IStatus[] children = resultStatus.toArray(new IStatus[errCount]);
+		MultiStatus multiStatus = new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, children,
+				Messages.problems_loading_feature, null);
+		return new CoreException(multiStatus);
+	}
+
+	private IFeatureModel[] getPlatformFeatures()
+	{
+		return PDECore.getDefault().getFeatureModelManager().getModels();
+	}
+
+	private IPluginModelBase[] getPlatformPlugins()
+	{
+		return PDECore.getDefault().getModelManager().getExternalModels();
 	}
 
 	private synchronized IFeatureModel[] getSiteFeatures(File location, IProgressMonitor monitor) throws CoreException
@@ -518,75 +833,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return result;
 	}
 
-	public IPluginEntry[] getSitePluginEntries(URL location, IConnectContext cctx, NodeQuery query,
-			IProgressMonitor monitor) throws CoreException
-	{
-		synchronized(location.toString().intern())
-		{
-			Map<URL, IPluginEntry[]> cache = getPluginEntriesCache(query.getContext().getUserCache());
-			IPluginEntry[] entries = cache.get(location);
-			if(entries != null)
-				return entries;
-
-			if(location.getPath().endsWith(".map")) //$NON-NLS-1$
-			{
-				MonitorUtils.complete(monitor);
-				entries = getMapPluginEntries(location, cctx);
-				cache.put(location, entries);
-				return entries;
-			}
-
-			ISite site;
-			MonitorUtils.begin(monitor, 100);
-			synchronized(SiteManager.class)
-			{
-				site = SiteManager.getSite(location, true, MonitorUtils.subMonitor(monitor, 50));
-				if(site == null)
-					throw new OperationCanceledException();
-
-				try
-				{
-					entries = site.getPluginEntries();
-					cache.put(location, entries);
-					MonitorUtils.worked(monitor, 50);
-					return entries;
-				}
-				catch(UnsupportedOperationException uoe)
-				{
-					// Damn it! We need to use the slow version.
-					//
-					HashMap<VersionedIdentifier, IPluginEntry> entryCache = new HashMap<VersionedIdentifier, IPluginEntry>();
-					HashSet<VersionedIdentifier> seenFeatures = new HashSet<VersionedIdentifier>();
-					IFeatureReference[] refs = getSiteFeatureReferences(location, MonitorUtils.subMonitor(monitor, 10));
-					IProgressMonitor itemsMonitor = MonitorUtils.subMonitor(monitor, 40);
-					itemsMonitor.beginTask(null, refs.length * 100);
-
-					for(IFeatureReference ref : refs)
-					{
-						// The getFeature() call is not thread-safe. It uses static variables without
-						// synchronization
-						//
-						VersionedIdentifier vid = ref.getVersionedIdentifier();
-						if(seenFeatures.add(vid))
-						{
-							IFeature feature = obtainFeature(ref, MonitorUtils.subMonitor(itemsMonitor, 50));
-							if(feature != null)
-								addFeaturePluginEntries(entryCache, seenFeatures, feature, MonitorUtils.subMonitor(
-										itemsMonitor, 50));
-						}
-					}
-					entries = entryCache.values().toArray(new IPluginEntry[entryCache.size()]);
-					cache.put(location, entries);
-					return entries;
-				}
-				finally
-				{
-					MonitorUtils.done(monitor);
-				}
-			}
-		}
-	}
-
 	private synchronized IPluginModelBase[] getSitePlugins(File location, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -634,220 +880,5 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		{
 			monitor.done();
 		}
-	}
-
-	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new EclipseImportFinder(this, provider, ctype, nodeQuery);
-	}
-
-	private IPluginModelBase localize(String pluginID, String versionStr, ProviderMatch templateInfo)
-			throws CoreException
-	{
-		IVersion version = VersionFactory.OSGiType.fromString(versionStr);
-		NodeQuery tplNq = templateInfo.getNodeQuery();
-		Provider provider = templateInfo.getProvider();
-		VersionMatch vm = new VersionMatch(version, VersionSelector.tag(versionStr), -1, null, null);
-
-		NodeQuery nq = new NodeQuery(tplNq.getContext(), new ComponentRequest(pluginID, IComponentType.OSGI_BUNDLE,
-				VersionFactory.createDesignator(VersionFactory.OSGiType, versionStr)), null);
-		ProviderMatch pm = new ProviderMatch(provider, templateInfo.getComponentType(), vm, ProviderScore.GOOD, nq);
-		return getPluginModel(pm, new NullProgressMonitor());
-	}
-
-	EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
-			throws CoreException
-	{
-		NodeQuery query = rInfo.getNodeQuery();
-		EclipseImportBase base = EclipseImportBase.obtain(query, rInfo.getRepositoryURI());
-		if(base.isLocal())
-			return base;
-
-		// Synchronize on base, it uses a lightweight pattern so only
-		// one instance will exists for any given URI/request combination
-		//
-		synchronized(base)
-		{
-			Map<UUID, Object> userCache = query.getContext().getUserCache();
-			String name = base.getComponentName();
-			monitor.beginTask(null, 1000);
-			monitor.subTask(NLS.bind(Messages.localizing_0, name));
-
-			try
-			{
-				IConnectContext cctx = rInfo.getConnectContext();
-				String typeDir = isPlugin
-						? PLUGINS_FOLDER
-						: FEATURES_FOLDER;
-				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, rInfo.getComponentName(),
-						rInfo.getVersionMatch().getVersion(), typeDir);
-
-				// Use a temporary local site
-				//
-				IPath path = Path.fromPortableString(pluginURL.getPath());
-				String jarName = path.lastSegment();
-				if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
-					throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_url_fore_remote_import_0,
-							pluginURL));
-
-				String vcName = jarName.substring(0, jarName.length() - 4);
-				File tempSite = getTempSite(userCache);
-				File subDir = new File(tempSite, typeDir);
-				File jarFile = new File(subDir, jarName);
-				InputStream input = null;
-				try
-				{
-					input = DownloadManager.getCache().open(pluginURL, cctx, null, null,
-							MonitorUtils.subMonitor(monitor, 900));
-					FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
-				}
-				finally
-				{
-					IOUtils.close(input);
-				}
-				Key remoteKey = base.getKey();
-
-				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base //$NON-NLS-1$
-						.getQuery(), name).toString());
-
-				File destDir = null;
-				boolean unpack = true;
-				ConflictResolution cres = ConflictResolution.REPLACE;
-
-				if(jarName.endsWith(".zip")) //$NON-NLS-1$
-				{
-					// Special orbit packaging. Just unzip into the plug-ins folder
-					//
-					destDir = subDir;
-					cres = ConflictResolution.UPDATE;
-				}
-				else
-				{
-					if(!base.isFeature())
-					{
-						// Guess unpack based on classpath
-						//
-						JarFile jf = new JarFile(jarFile);
-						Manifest mf = jf.getManifest();
-						if(mf != null)
-						{
-							String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(
-									Constants.BUNDLE_CLASSPATH), ","); //$NON-NLS-1$
-
-							int top = classPath.length;
-							unpack = (top > 0);
-							for(int idx = 0; idx < top; ++idx)
-							{
-								if(classPath[idx].trim().equals(".")) //$NON-NLS-1$
-								{
-									unpack = false;
-									break;
-								}
-							}
-						}
-						jf.close();
-					}
-					if(unpack)
-						destDir = new File(subDir, vcName);
-				}
-
-				if(unpack)
-				{
-					input = new FileInputStream(jarFile);
-					try
-					{
-						FileUtils.unzip(input, null, destDir, cres, MonitorUtils.subMonitor(monitor, 100));
-					}
-					finally
-					{
-						IOUtils.close(input);
-					}
-					jarFile.delete();
-				}
-				base.setUnpack(unpack);
-
-				// Cache this using the remote key also so that the next time someone asks for it, the local
-				// version is returned
-				//
-				EclipseImportBase.getImportBaseCacheCache(userCache).put(remoteKey, base);
-				return base;
-			}
-			catch(URISyntaxException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				monitor.done();
-			}
-		}
-	}
-
-	private IFeature obtainFeature(IFeatureReference ref, IProgressMonitor monitor)
-	{
-		Exception e;
-		Logger logger = PDEPlugin.getLogger();
-		for(int retryCount = 0;;)
-		{
-			try
-			{
-				logger.debug("Downloading %s", ref.getURL()); //$NON-NLS-1$
-				return ref.getFeature(monitor);
-			}
-			catch(FeatureDownloadException ex)
-			{
-				if(retryCount < m_connectionRetryCount)
-				{
-					Throwable t = ex.getStatus().getException();
-					if(t instanceof IOException)
-					{
-						if(!(t instanceof FileNotFoundException))
-						{
-							++retryCount;
-							try
-							{
-								Thread.sleep(m_connectionRetryDelay);
-								logger.warning(NLS.bind(Messages.connection_to_0_failed_on_1_retry_attempt_2_started,
-										new Object[] { ref.getURL(), t.getMessage(), new Integer(retryCount) }));
-								continue;
-							}
-							catch(InterruptedException e1)
-							{
-							}
-						}
-					}
-				}
-				e = ex;
-			}
-			catch(Exception ex)
-			{
-				e = ex;
-			}
-			break;
-		}
-		logger.warning(e, e.getMessage());
-		return null;
-	}
-
-	@Override
-	public synchronized void postMaterialization(MaterializationContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
-		// Create needed classpath entries in each project
-		//
-		PluginImportOperation.setClasspaths(monitor, m_classpaths);
-
-		// Clear cached entries
-		//
-		m_pluginCache.clear();
-		m_featureCache.clear();
-		m_classpaths.clear();
 	}
 }

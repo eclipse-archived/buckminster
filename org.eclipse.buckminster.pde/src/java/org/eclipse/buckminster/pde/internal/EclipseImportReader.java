@@ -67,13 +67,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 					.getComponentName()));
 	}
 
-	public IPluginModelBase getPluginModelBase(String pluginId, String version) throws CoreException
-	{
-		EclipseImportReaderType rt = (EclipseImportReaderType)getReaderType();
-		return rt.getPluginModelBase(m_base.getRemoteLocation(), getConnectContext(), pluginId, version,
-				getProviderMatch());
-	}
-
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 1000);
@@ -90,6 +83,11 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		{
 			monitor.done();
 		}
+	}
+
+	public boolean isUnpack()
+	{
+		return m_base.isUnpack();
 	}
 
 	@Override
@@ -242,10 +240,5 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_localized_model_for_0, m_base
 					.getComponentName()));
 		monitor.done();
-	}
-
-	public boolean isUnpack()
-	{
-		return m_base.isUnpack();
 	}
 }

@@ -119,6 +119,8 @@ public class Messages extends NLS
 
 	public static String _0_is_not_valid_setting_for_target_1_pref;
 
+	public static String artifact_not_found_0;
+
 	static
 	{
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

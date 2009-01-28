@@ -148,8 +148,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			if(!(versionDesignator == null || versionDesignator.designates(v)))
 			{
 				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, String.format(
-							Messages.not_designated_by_0, versionDesignator));
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0,
+							versionDesignator));
 				continue;
 			}
 

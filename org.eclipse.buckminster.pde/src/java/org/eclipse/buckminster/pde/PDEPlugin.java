@@ -27,6 +27,8 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 
 	private static PDEPlugin s_plugin;
 
+	private static BundleContext s_context;
+
 	static
 	{
 		s_namesOfInterest.add(PLUGIN_FILE.toLowerCase());
@@ -35,6 +37,11 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 		s_namesOfInterest.add(FRAGMENT_FILE.toLowerCase());
 		s_namesOfInterest.add(BUILD_PROPERTIES_FILE.toLowerCase());
 		s_namesOfInterest.add(MANIFEST.toLowerCase());
+	}
+
+	public static BundleContext getContext()
+	{
+		return s_context;
 	}
 
 	/**
@@ -107,6 +114,7 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
+		s_context = context;
 		super.start(context);
 	}
 
@@ -117,6 +125,7 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
 	public void stop(BundleContext context) throws Exception
 	{
 		super.stop(context);
+		s_context = null;
 		s_plugin = null;
 		m_resourceBundle = null;
 	}

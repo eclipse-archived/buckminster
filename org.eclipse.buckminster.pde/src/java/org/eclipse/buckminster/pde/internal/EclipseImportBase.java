@@ -29,12 +29,9 @@ import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
-import org.eclipse.update.core.IPluginEntry;
-import org.eclipse.update.core.ISiteFeatureReference;
 
 @SuppressWarnings("restriction")
 final class EclipseImportBase
@@ -222,12 +219,6 @@ final class EclipseImportBase
 		return readerType.getFeatureModels(getLocation(), getComponentName(), monitor);
 	}
 
-	List<ISiteFeatureReference> getFeatureReferences(EclipseImportReaderType readerType, IProgressMonitor monitor)
-			throws CoreException
-	{
-		return readerType.getFeatureReferences(getRemoteLocation(), getComponentName(), monitor);
-	}
-
 	Key getKey()
 	{
 		return m_key;
@@ -238,12 +229,6 @@ final class EclipseImportBase
 		if(m_location == null && !m_platform)
 			throw BuckminsterException.fromMessage(Messages.site_is_not_local);
 		return m_location;
-	}
-
-	List<IPluginEntry> getPluginEntries(EclipseImportReaderType readerType, IConnectContext cctx, NodeQuery query,
-			IProgressMonitor monitor) throws CoreException
-	{
-		return readerType.getPluginEntries(getRemoteLocation(), cctx, query, getComponentName(), monitor);
 	}
 
 	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor)
