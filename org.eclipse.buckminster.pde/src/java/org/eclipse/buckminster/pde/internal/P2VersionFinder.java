@@ -93,7 +93,7 @@ public class P2VersionFinder extends AbstractVersionFinder
 		IVersionDesignator designator = request.getVersionDesignator();
 		if(designator != null)
 		{
-			if(!designator.getVersion().getType().equals(IVersionType.OSGI))
+			if(!designator.getVersion().getType().getId().equals(IVersionType.OSGI))
 				//
 				// We only deal with OSGi versions
 				//
