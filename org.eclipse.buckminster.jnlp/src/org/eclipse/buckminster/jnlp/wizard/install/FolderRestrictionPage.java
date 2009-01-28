@@ -8,11 +8,11 @@
 
 package org.eclipse.buckminster.jnlp.wizard.install;
 
-import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
-import org.eclipse.buckminster.jnlp.wizard.LoginDialog;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.Messages;
+import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
+import org.eclipse.buckminster.jnlp.wizard.LoginDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -55,6 +55,8 @@ public class FolderRestrictionPage extends InstallWizardPage
 
 	private Label m_userNameLabel;
 
+	private IWizardPage m_nextPage;
+
 	protected FolderRestrictionPage()
 	{
 		super(MaterializationConstants.STEP_RESTRICTION, Messages.folder_restriction,
@@ -63,6 +65,8 @@ public class FolderRestrictionPage extends InstallWizardPage
 
 	public void createControl(Composite parent)
 	{
+		m_nextPage = getInstallWizard().getSelectDistroPage();
+
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		pageComposite.setLayout(layout);
@@ -228,7 +232,7 @@ public class FolderRestrictionPage extends InstallWizardPage
 	@Override
 	public IWizardPage getNextPage()
 	{
-		return getWizard().getPage(MaterializationConstants.STEP_DOWNLOAD_LOCATION);
+		return m_nextPage;
 	}
 
 	@Override
@@ -256,6 +260,14 @@ public class FolderRestrictionPage extends InstallWizardPage
 		{
 			// no information - try to get the artifact
 		}
+
+		if(!getInstallWizard().isStackInfoRetrieved() && !getInstallWizard().isDistroRetrieved())
+			getInstallWizard().retrieveStackInfo();
+
+		if(getInstallWizard().isDistroRetrieved())
+			m_nextPage = getInstallWizard().getDownloadPage();
+		else
+			m_nextPage = getInstallWizard().getSelectDistroPage();
 
 		return true;
 	}
