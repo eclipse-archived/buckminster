@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2.installer;
 
-import org.osgi.framework.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
-public class VersionedName
-{
+@SuppressWarnings("restriction")
+public class VersionedName {
 	private String m_id;
-
 	private Version m_version;
 
 	/**
@@ -24,41 +23,41 @@ public class VersionedName
 	 * id/version.
 	 * @param spec the spec for the versioned id to create
 	 * @return the parsed versioned id
+	 * @throws IllegalArgumentException If <code>spec</code> is improperly
+	 *         formatted.
 	 */
 	public static VersionedName parse(String spec) {
 		String[] segments = InstallDescriptionParser.getArrayFromString(spec, "/"); //$NON-NLS-1$
 		return new VersionedName(segments[0], segments.length == 1 ? null : segments[1]);
 	}
 
-	public VersionedName(String id, String version)
-	{
+	/**
+	 * Creates a new versioned name with the given id and version.
+	 * @param id The identifier
+	 * @param version The version
+	 * @throws IllegalArgumentException If <code>version</code> is improperly
+	 *         formatted.
+	 */
+	public VersionedName(String id, String version) {
 		this.m_id = id;
-		this.m_version = new Version(version == null
-				? "0.0.0"
-				: version);
+		this.m_version = new Version(version == null ? "0.0.0" : version);
 	}
 
-	public VersionedName(String id, Version version)
-	{
+	public VersionedName(String id, Version version) {
 		this.m_id = id;
 		this.m_version = version;
 	}
 
-	public String getId()
-	{
+	public String getId() {
 		return m_id;
 	}
 
-	public Version getVersion()
-	{
+	public Version getVersion() {
 		return m_version;
 	}
 
 	@Override
-	public String toString()
-	{
-		return m_id + "/" + (m_version == null
-				? "0.0.0"
-				: m_version.toString());
+	public String toString() {
+		return m_id + "/" + (m_version == null ? "0.0.0" : m_version.toString());
 	}
 }
