@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -314,7 +315,8 @@ public class QueryEditor extends EditorPart
 
 	private CompoundModifyListener m_compoundModifyListener;
 
-	private final DateFormat m_timestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+	private final SimpleDateFormat m_timestampFormat = (SimpleDateFormat)DateFormat.getDateTimeInstance(
+			DateFormat.SHORT, DateFormat.SHORT);
 
 	private int m_lastSelectedNode = -1;
 
@@ -1718,7 +1720,7 @@ public class QueryEditor extends EditorPart
 			{
 				failureActivator.activate();
 				MessageDialog.openError(getSite().getShell(), null,
-						Messages.timestamp_must_conform_to_format_with_colon + m_timestampFormat.toString());
+						Messages.timestamp_must_conform_to_format_with_colon + m_timestampFormat.toPattern());
 				return false;
 			}
 		}
