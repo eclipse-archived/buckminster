@@ -1,6 +1,5 @@
 package org.eclipse.buckminster.pde.internal;
 
-import java.net.URI;
 import java.util.Iterator;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -12,19 +11,14 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
-import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 
 @SuppressWarnings("restriction")
@@ -37,30 +31,6 @@ public class P2VersionFinder extends AbstractVersionFinder
 	private static final String FEATURE_CLASSIFIER = "org.eclipse.update.feature"; //$NON-NLS-1$
 
 	private static final String BUNDLE_CLASSIFIER = "osgi.bundle"; //$NON-NLS-1$
-
-	public static IMetadataRepository getMetadataRepository(URI repoLocation, IProgressMonitor monitor)
-			throws CoreException
-	{
-		IMetadataRepositoryManager manager = (IMetadataRepositoryManager)ServiceHelper.getService(PDEPlugin
-				.getContext(), IMetadataRepositoryManager.class.getName());
-		if(manager == null)
-			throw new IllegalStateException("No metadata repository manager found"); //$NON-NLS-1$
-
-		SubMonitor subMon = SubMonitor.convert(monitor, 200);
-		try
-		{
-			return manager.loadRepository(repoLocation, subMon.newChild(100));
-		}
-		catch(ProvisionException e)
-		{
-			return manager.refreshRepository(repoLocation, subMon.newChild(100));
-		}
-		finally
-		{
-			if(monitor != null)
-				monitor.done();
-		}
-	}
 
 	private final IMetadataRepository m_mdr;
 
