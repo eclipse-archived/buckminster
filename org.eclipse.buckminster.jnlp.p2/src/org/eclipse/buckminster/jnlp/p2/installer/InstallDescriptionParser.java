@@ -14,56 +14,19 @@ package org.eclipse.buckminster.jnlp.p2.installer;
 
 import static org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys.*;
 
-import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
-import org.eclipse.buckminster.jnlp.p2.JNLPPlugin;
+import org.eclipse.buckminster.jnlp.p2.JNLPException;
+import org.eclipse.buckminster.jnlp.p2.MaterializationConstants;
 import org.eclipse.core.runtime.*;
-import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
 
 /**
  * This class is responsible for loading install descriptions from a stream.
  */
-@SuppressWarnings("restriction")
 public class InstallDescriptionParser
 {
-	/**
-	 * Loads and returns an install description that is stored in a properties file.
-	 * 
-	 * @param site
-	 *            The URL of the install properties file.
-	 */
-	public static InstallDescription createDescription(String site, SubMonitor monitor) throws IOException
-	{
-		// if no description URL was given from the outside, look for an "install.properties" file
-		// in relative to where the installer is running. This allows the installer to be self-contained
-		InputStream in = null;
-		if(site == null)
-		{
-			File file = new File("installer.properties").getAbsoluteFile(); //$NON-NLS-1$
-			if(file.exists())
-				in = new FileInputStream(file);
-		}
-		else
-			in = new URL(site).openStream();
-
-		Properties properties = new Properties();
-		try
-		{
-			if(in != null)
-				properties.load(in);
-		}
-		finally
-		{
-			safeClose(in);
-		}
-		
-		return createDescription(properties);
-	}
-
 	public static InstallDescription createDescription(Properties properties)
 	{
 		InstallDescription result = new InstallDescription();
@@ -77,9 +40,36 @@ public class InstallDescriptionParser
 	
 	private static InstallDescription initialize(InstallDescription description, Properties properties)
 	{
-		String property = properties.getProperty(PROP_ARTIFACT_REPOSITORY);
+		String property = properties.getProperty(PROP_ARTIFACT_REPOSITORY_COUNT);
 		if(property != null)
-			description.setArtifactRepositories(getURIs(property));
+		{
+			int cnt;
+			try
+			{
+				cnt = new Integer(property).intValue();
+			}
+			catch(NumberFormatException e)
+			{
+				throw new JNLPException("Invalid number of artifact repositories: " + property, MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+			}
+			
+			List<URI> repoURIs = new ArrayList<URI>(cnt);
+			for(int i = 0; i < cnt; i++)
+			{
+				String repo = properties.getProperty(composeArtifactRepositoryProperty(i));
+				
+				if(repo != null)
+					try
+					{
+						repoURIs.add(new URI(repo));
+					}
+					catch(URISyntaxException e)
+					{
+						throw new JNLPException("Invalid artifact repository URL: " + repo, MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+					}
+			}
+			description.setArtifactRepositories(repoURIs.toArray(new URI[cnt]));
+		}
 
 		property = properties.getProperty(PROP_METADATA_REPOSITORY);
 		if(property != null)
@@ -141,7 +131,16 @@ public class InstallDescriptionParser
 		// any remaining properties are profile properties
 		Map<Object, Object> profileProperties = new HashMap<Object, Object>(properties);
 		profileProperties.remove(PROP_PROFILE_NAME);
-		profileProperties.remove(PROP_ARTIFACT_REPOSITORY);
+		
+		String property = properties.getProperty(PROP_ARTIFACT_REPOSITORY_COUNT);
+		if(property != null)
+		{
+			int cnt = new Integer(property).intValue();
+			for(int i = 0; i < cnt; i++)
+				profileProperties.remove(composeArtifactRepositoryProperty(i));
+		}
+		
+		profileProperties.remove(PROP_ARTIFACT_REPOSITORY_COUNT);
 		profileProperties.remove(PROP_METADATA_REPOSITORY);
 		profileProperties.remove(PROP_IS_AUTO_START);
 		profileProperties.remove(PROP_LAUNCHER_NAME);
@@ -167,24 +166,10 @@ public class InstallDescriptionParser
 			}
 			catch(URISyntaxException e)
 			{
-				LogHelper.log(new Status(IStatus.ERROR, JNLPPlugin.JNLP_P2,
-						"Invalid URL in install description: " + urlSpecs[i], e)); //$NON-NLS-1$
+				throw new JNLPException("Invalid URL in install description: " + urlSpecs[i], MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e); //$NON-NLS-1$
 			}
 		}
 		return result.toArray(new URI[result.size()]);
-	}
-
-	private static void safeClose(InputStream in)
-	{
-		try
-		{
-			if(in != null)
-				in.close();
-		}
-		catch(IOException e)
-		{
-			// ignore secondary failure during close
-		}
 	}
 
 	/**

@@ -12,11 +12,13 @@ package org.eclipse.buckminster.jnlp.p2.installer;
  * @author Karel Brezina
  *
  */
-public interface P2PropertyKeys
+public class P2PropertyKeys
 {
 	public static final String PROP_AGENT_LOCATION = "eclipse.p2.agentLocation"; //$NON-NLS-1$
 
-	public static final String PROP_ARTIFACT_REPOSITORY = "eclipse.p2.artifacts";//$NON-NLS-1$
+	public static final String PROP_ARTIFACT_REPOSITORY_COUNT = "eclipse.p2.artifact.repository.count";
+
+	public static final String PROP_ARTIFACT_REPOSITORY_PREFIX = "eclipse.p2.artifact.repository";
 
 	public static final String PROP_BUNDLE_LOCATION = "eclipse.p2.bundleLocation";//$NON-NLS-1$
 
@@ -37,4 +39,9 @@ public interface P2PropertyKeys
 	public static final String PROP_ROOT_VERSION = "eclipse.p2.rootVersion";//$NON-NLS-1$
 
 	public static final String PROP_ROOTS = "eclipse.p2.roots";//$NON-NLS-1$
+	
+	public static String composeArtifactRepositoryProperty(int repoIdx)
+	{
+		return String.format("%s.%d", PROP_ARTIFACT_REPOSITORY_PREFIX, Integer.valueOf(repoIdx));
+	}
 }
