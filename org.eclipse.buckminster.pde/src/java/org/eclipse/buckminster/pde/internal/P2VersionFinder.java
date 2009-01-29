@@ -21,16 +21,18 @@ import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 @SuppressWarnings("restriction")
 public class P2VersionFinder extends AbstractVersionFinder
 {
 	private static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
+
+	private static final String FEATURE_JAR = ".feature.jar"; //$NON-NLS-1$
 
 	private static final String FEATURE_CLASSIFIER = "org.eclipse.update.feature"; //$NON-NLS-1$
 
@@ -88,8 +90,6 @@ public class P2VersionFinder extends AbstractVersionFinder
 			//
 			return null;
 
-		final String iuName = name;
-
 		IVersionDesignator designator = request.getVersionDesignator();
 		if(designator != null)
 		{
@@ -101,18 +101,7 @@ public class P2VersionFinder extends AbstractVersionFinder
 			vr = new VersionRange(designator.toString());
 		}
 
-		final VersionRange range = vr;
-
-		Query repoQuery = new MatchQuery()
-		{
-			@Override
-			public boolean isMatch(Object candidate)
-			{
-				IInstallableUnit iu = ((IInstallableUnit)candidate);
-				return iuName.equals(iu.getId()) && (range == null || range.isIncluded(iu.getVersion()));
-			}
-		};
-		Collector c = m_mdr.query(repoQuery, new Collector(), monitor);
+		Collector c = m_mdr.query(new InstallableUnitQuery(name, vr), new Collector(), monitor);
 		if(c.isEmpty())
 			return null;
 
@@ -152,8 +141,56 @@ public class P2VersionFinder extends AbstractVersionFinder
 				}
 			}
 		}
+
 		if(wanted == null)
-			return null;
+		{
+			if(!isFeature)
+				return null;
+
+			// Check if the <feature name>.feature.jar requirement is present
+			//
+			String featureJarName = name.substring(0, name.length() - FEATURE_GROUP.length()) + FEATURE_JAR;
+			IRequiredCapability found = null;
+			for(IRequiredCapability rqc : best.getRequiredCapabilities())
+				if(IInstallableUnit.NAMESPACE_IU_ID.equals(rqc.getNamespace()) && featureJarName.equals(rqc.getName()))
+				{
+					found = rqc;
+					break;
+				}
+
+			if(found == null)
+				return null;
+
+			c = new Collector();
+			m_mdr.query(new InstallableUnitQuery(found.getName(), found.getRange()), c, monitor);
+			if(c.isEmpty())
+				return null;
+
+			itor = c.iterator();
+			IInstallableUnit bestJar = null;
+			while(itor.hasNext())
+			{
+				IInstallableUnit iu = (IInstallableUnit)itor.next();
+				if(bestJar == null || bestJar.getVersion().compareTo(iu.getVersion()) < 0)
+					bestJar = iu;
+			}
+
+			// Find the wanted artifact.
+			//
+			artifacts = bestJar.getArtifacts();
+			idx = artifacts.length;
+			while(--idx >= 0)
+			{
+				IArtifactKey ak = artifacts[idx];
+				if(ak.getClassifier().equals(FEATURE_CLASSIFIER))
+				{
+					wanted = ak;
+					break;
+				}
+			}
+			if(wanted == null)
+				return null;
+		}
 
 		return new VersionMatch(VersionFactory.OSGiType.fromString(best.getVersion().toString()), null, -1, null,
 				wanted.toString());

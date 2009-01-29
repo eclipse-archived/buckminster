@@ -262,7 +262,9 @@ public class CSpecFromSource extends CSpecGenerator
 			if(skipComponent(query, dep))
 				continue;
 
-			cspec.addDependency(dep);
+			if(!addDependency(dep))
+				continue;
+
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 		}

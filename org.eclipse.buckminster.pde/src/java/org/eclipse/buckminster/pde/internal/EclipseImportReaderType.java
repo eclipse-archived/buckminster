@@ -435,7 +435,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		String url = provider.getURI(nodeQuery.getProperties());
 		URI uri = URI.create(url);
 		String path = uri.getPath();
-		if(path.endsWith(".jar") || path.endsWith(".zip") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		if(path.endsWith(".jar") || path.endsWith(".map") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		{
 			MonitorUtils.complete(monitor);
 			return new EclipseImportFinder(this, provider, ctype, nodeQuery);
