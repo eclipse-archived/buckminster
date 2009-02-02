@@ -1299,7 +1299,17 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 			tmp = ARTIFACT_UNKNOWN_TEXT;
 		}
-		m_brandingString = tmp;
+		else
+		{
+			try
+			{
+				m_brandingString = new String(Base64.decodeBase64(tmp.getBytes()), "UTF-8");
+			}
+			catch(UnsupportedEncodingException e1)
+			{
+				m_artifactDocumentation = ARTIFACT_UNKNOWN_TEXT;
+			}
+		}
 
 		tmp = properties.get(PROP_WINDOW_TITLE);
 		if(tmp == null)
