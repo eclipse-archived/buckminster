@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -71,6 +72,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.Utilities;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -115,9 +117,6 @@ public class CorePlugin extends LogAwarePlugin
 
 	private static CorePlugin s_plugin;
 
-	/**
-	 * Returns the shared instance.
-	 */
 	public static CorePlugin getDefault()
 	{
 		return s_plugin;
@@ -245,6 +244,8 @@ public class CorePlugin extends LogAwarePlugin
 	private final ShortDurationURLCache m_urlCache = new ShortDurationURLCache();
 
 	private WorkspaceJob m_updatePrefsJob;
+
+	private IdentityHashMap<Object, ServiceReference> m_services;
 
 	/**
 	 * The constructor.
@@ -498,6 +499,20 @@ public class CorePlugin extends LogAwarePlugin
 		return m_resourceBundle;
 	}
 
+	public <T> T getService(Class<T> serviceClass) throws CoreException
+	{
+		BundleContext context = getBundle().getBundleContext();
+		String serviceName = serviceClass.getName();
+		ServiceReference serviceRef = context.getServiceReference(serviceName);
+		if(serviceRef == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
+		T service = serviceClass.cast(context.getService(serviceRef));
+		if(m_services == null)
+			m_services = new IdentityHashMap<Object, ServiceReference>();
+		m_services.put(service, serviceRef);
+		return service;
+	}
+
 	public IVersionConverter getVersionConverter(String versionConverter) throws CoreException
 	{
 		if(versionConverter == null)
@@ -555,6 +570,7 @@ public class CorePlugin extends LogAwarePlugin
 	public void start(BundleContext context) throws Exception
 	{
 		super.start(context);
+
 		Job startJob = new Job("Core plugin starter") //$NON-NLS-1$
 		{
 			@Override
@@ -601,6 +617,13 @@ public class CorePlugin extends LogAwarePlugin
 	@Override
 	public void stop(BundleContext context) throws Exception
 	{
+		if(m_services != null)
+		{
+			for(ServiceReference serviceRef : m_services.values())
+				context.ungetService(serviceRef);
+			m_services = null;
+		}
+
 		MetadataSynchronizer.tearDown();
 		stopAllJobs();
 		m_urlCache.clear();
@@ -617,6 +640,16 @@ public class CorePlugin extends LogAwarePlugin
 			m_updatePrefsJob.cancel();
 			m_updatePrefsJob.join();
 			m_updatePrefsJob = null;
+		}
+	}
+
+	public void ungetService(Object service)
+	{
+		if(m_services != null)
+		{
+			ServiceReference serviceRef = m_services.remove(service);
+			if(serviceRef != null)
+				getBundle().getBundleContext().ungetService(serviceRef);
 		}
 	}
 }

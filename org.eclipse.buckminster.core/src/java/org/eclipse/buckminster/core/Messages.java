@@ -560,6 +560,12 @@ public class Messages extends NLS
 
 	public static String Cannot_materialize;
 
+	public static String Unable_to_resolve_0_1_in_MDR_2;
+
+	public static String Missing_OSGi_Service_0;
+
+	public static String Missing_OSGi_Bundle_0;
+
 	static
 	{
 		// initialize resource bundle
