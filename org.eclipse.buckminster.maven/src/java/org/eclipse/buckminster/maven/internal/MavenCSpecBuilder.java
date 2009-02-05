@@ -91,6 +91,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			}
 
 			CSpecBuilder cspecBld = ri.createCSpec();
+			cspecBld.setComponentTypeID(MavenComponentType.ID);
 			GroupBuilder archives = AbstractComponentType.addSelfAsJarArtifactGroups(cspecBld);
 			if(pomDoc != null)
 			{

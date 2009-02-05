@@ -57,6 +57,8 @@ import org.w3c.dom.Node;
  */
 public class MavenComponentType extends AbstractComponentType
 {
+	public static final String ID = "maven"; //$NON-NLS-1$
+
 	private static final MavenCSpecBuilder s_builder = new MavenCSpecBuilder();
 
 	private static SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US); //$NON-NLS-1$
@@ -307,12 +309,13 @@ public class MavenComponentType extends AbstractComponentType
 			return;
 		}
 
-		ComponentName adviceKey = new ComponentName(componentName, null);
+		ComponentName adviceKey = new ComponentName(componentName, ID);
 		if(query.skipComponent(adviceKey))
 			return;
 
 		ComponentRequestBuilder depBld = cspec.createDependencyBuilder();
 		depBld.setName(componentName);
+		depBld.setComponentTypeID(ID);
 
 		IVersionDesignator vd = query.getVersionOverride(adviceKey);
 		if(vd == null)
