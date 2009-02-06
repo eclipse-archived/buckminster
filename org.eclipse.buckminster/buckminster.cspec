@@ -170,18 +170,32 @@
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/product.s/" upToDatePolicy="MAPPER"/>
         </cs:public>
-        <cs:public name="zip.jnlp" actor="ant">
+        <cs:private name="zip.jnlp.buckminster" filter="(!(buckminster.jnlp.p2=true))" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="zip.jnlp"/>
             </cs:actorProperties>
             <cs:prerequisites>
                 <cs:attribute name="java.binary.archive" alias="bootstrap.jar" component="org.eclipse.buckminster.jnlp.bootstrap"/>
                 <cs:attribute name="wrap.jnlp" alias="product.jars"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.z/" fileCount="1" upToDatePolicy="COUNT">
-                <cs:path path="jnlp-package.zip"/>
+                <cs:path path="jnlp-package-bm.zip"/>
             </cs:products>
-        </cs:public>
+        </cs:private>
+        <cs:private name="zip.jnlp.p2" filter="(buckminster.jnlp.p2=true)" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="zip.jnlp"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="java.binary.archive" alias="bootstrap.jar" component="org.eclipse.buckminster.jnlp.bootstrap"/>
+                <cs:attribute name="wrap.jnlp" alias="product.jars"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.z/" fileCount="1" upToDatePolicy="COUNT">
+                <cs:path path="jnlp-package-p2.zip"/>
+            </cs:products>
+        </cs:private>
         <cs:private name="build.jnlp.buckminster" filter="(!(buckminster.jnlp.p2=true))" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/headless.ant"/>
@@ -236,8 +250,7 @@
                 <cs:property key="targets" value="normalize.jars"/>
             </cs:actorProperties>
             <cs:prerequisites>
-                <cs:attribute name="build.jnlp.buckminster" alias="requirement"/>
-                <cs:attribute name="build.jnlp.p2" alias="requirement"/>
+                <cs:attribute name="build.jnlp" alias="requirement"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.n/" upToDatePolicy="MAPPER"/>
         </cs:private>
@@ -273,6 +286,14 @@
         </cs:private>
     </cs:actions>
     <cs:groups>
+		<cs:public name="zip.jnlp">
+	        <cs:attribute name="zip.jnlp.buckminster"/>
+	        <cs:attribute name="zip.jnlp.p2"/>
+		</cs:public>
+	    <cs:private name="build.jnlp">
+   			<cs:attribute name="build.jnlp.buckminster"/>
+   			<cs:attribute name="build.jnlp.p2"/>
+	    </cs:private>
         <cs:public name="build.all">
             <cs:attribute name="build.core.product"/>
             <cs:attribute name="build.external.site"/>

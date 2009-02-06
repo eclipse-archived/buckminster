@@ -209,19 +209,40 @@
 </jnlp>
 ]]></echo>
 	</target>
+	
+    <!-- Writes revisions of the buckminster projects to the build.properties file
+    -->
+    <target name="write.jnlp.revision.0">
+        <available classname="org.eclipse.buckminster.ant.taskdefs.ResourceLocation" property="got.buckminster.tasks"/>
+    </target>
+    <target name="write.jnlp.revision.1" if="got.buckminster.tasks">
+    	<condition property="jnlp.project.name" value="org.eclipse.buckminster.jnlp.p2" else="org.eclipse.buckminster.jnlp">
+    		<istrue value="${buckminster.jnlp.p2}"/>
+    	</condition>
+    	<buckminster.resourceLocation property="jnlp.project.root" path="${jnlp.project.name}" />
+        <buckminster.lastRevision property="jnlp.revision" readerType="svn" workingCopy="${jnlp.project.root}" />
+		<concat destfile="${buckminster.temp}/exploded/build.properties" append="false"># generated file, do NOT edit
+project.name.0=${jnlp.project.name}
+project.revision.0=${jnlp.revision}
+		</concat>
+    </target>
 
-	<target name="zip.jnlp">
+	<target name="create.exploded.folder">
 		<delete dir="${buckminster.temp}/exploded"/>
 		<mkdir dir="${buckminster.temp}/exploded"/>
-
+	</target>
+		
+	<target name="zip.jnlp" depends="create.exploded.folder, write.jnlp.revision.0, write.jnlp.revision.1">
 		<buckminster.valuefileset id="product.jars" value="${fs:product.jars}"/>
 		<buckminster.valuefileset id="bootstrap.jar" value="${fs:bootstrap.jar}"/>
 		<copy todir="${buckminster.temp}/exploded">
 			<fileset refid="product.jars"/>
 			<fileset refid="bootstrap.jar"/>
 		</copy>
+		
 		<dirname file="${sp:product.output}" property="output.dir"/>
 		<mkdir dir="${output.dir}"/>
 		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
 	</target>
+
 </project>
