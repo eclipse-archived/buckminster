@@ -54,7 +54,7 @@ public class LoginPage extends InstallWizardPage
 	
 	public void createControl(Composite parent)
 	{		
-		m_nextPage = getInstallWizard().getSelectDistroPage();
+		m_nextPage = getInstallWizard().getDownloadPage();
 		
 		m_login = new LoginPanel(getInstallWizard().getAuthenticatorLoginKeyUserName());
 
@@ -191,13 +191,10 @@ public class LoginPage extends InstallWizardPage
 				m_nextPage = getInstallWizard().getFolderRestrictionPage();
 			else
 			{
-				if(!getInstallWizard().isStackInfoRetrieved())
+				if(!getInstallWizard().isMaterializerInitialized())
 					getInstallWizard().retrieveStackInfo();
 				
-				if(getInstallWizard().getDistro() != null)
-					m_nextPage = getInstallWizard().getDownloadPage();
-				else
-					m_nextPage = getInstallWizard().getSelectDistroPage();
+				m_nextPage = getInstallWizard().getDownloadPage();
 			}
 		}
 		

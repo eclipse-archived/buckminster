@@ -33,7 +33,6 @@ import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPE
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_DISTRO_ID;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_DRAFT;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
@@ -75,10 +74,7 @@ import java.util.Properties;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
-import org.eclipse.buckminster.jnlp.distroprovider.Distro;
-import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.p2.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.p2.JNLPException;
@@ -189,15 +185,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private boolean m_draft;
 
-	private Long m_distroId;
-
-	private Distro m_distro;
-	
 	private Properties m_distroP2Properties;
 	
 	private OPML m_opml;
-
-	private Map<Long, Distro> m_retrievedDistroCache = new HashMap<Long, Distro>();
 
 	private Long m_cspecId;
 
@@ -217,8 +207,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private LoginPage m_loginPage;
 
-	private SelectDistroPage m_selectDistroPage;
-
 	private FolderRestrictionPage m_folderRestrictionPage;
 
 	private SimpleDownloadPage m_downloadPage;
@@ -228,8 +216,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private DonePage m_donePage;
 
 	private FeedsPage m_infoPage;
-
-	private final MaterializationSpecBuilder m_builder = new MaterializationSpecBuilder();
 
 	private final Map<String, String> m_properties;
 
@@ -256,8 +242,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private boolean m_materializationFinished = false;
 
 	private boolean m_problemInProperties = false;
-
-	private List<DistroVariant> m_distroVariants;
 
 	public InstallWizard(Map<String, String> properties)
 	{
@@ -562,9 +546,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					: getServiceProvider());
 			addAdvancedPage(m_loginPage);
 
-			m_selectDistroPage = new SelectDistroPage();
-			addAdvancedPage(m_selectDistroPage);
-
 			m_downloadPage = new SimpleDownloadPage();
 			addAdvancedPage(m_downloadPage);
 
@@ -686,11 +667,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_folderRestrictionPage;
 	}
 
-	IWizardPage getSelectDistroPage()
-	{
-		return m_selectDistroPage;
-	}
-
 	IWizardPage getDownloadPage()
 	{
 		return m_downloadPage;
@@ -731,34 +707,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_materializationFinished;
 	}
 
-	public MaterializationSpecBuilder getMaterializationSpecBuilder()
-	{
-		return m_builder;
-	}
-
 	boolean isDraft()
 	{
 		return m_draft;
-	}
-
-	Long getDistroId()
-	{
-		return m_distroId;
-	}
-
-	Distro getDistro()
-	{
-		return m_distro;
-	}
-
-	void setDistro(Distro distro)
-	{
-		m_distro = distro;
-	}
-	
-	List<DistroVariant> getDistroVariants()
-	{
-		return m_distroVariants;
 	}
 
 	Properties getDistroP2Properties()
@@ -818,80 +769,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	void retrieveStackInfo()
 	{
-		m_distroVariants = null;
-		DistroVariant distroVariant = null;
-		m_distro = null;
-
-		if(m_distroId == null)
-		{
-			retrieveDistroVariants();
-
-			if(m_distroVariants.size() == 1)
-			{
-				distroVariant = m_distroVariants.get(0);
-
-				if(distroVariant.isBroken() || !distroVariant.isCompatible())
-					distroVariant = null;
-			}
-		}
-
-		if(m_distroId != null || distroVariant != null)
-		{
-			Long distroId = m_distroId != null
-					? m_distroId
-					: distroVariant.getDistroId();
-			retrieveDistro(distroId);
-		}
-	}
-
-	void retrieveDistroVariants()
-	{
-		m_distroVariants = null;
-		try
-		{
-			getContainer().run(true, false, new IRunnableWithProgress()
-			{
-
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-				{
-					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-					monitor.subTask("Retrieving stack variations");
-
-					try
-					{
-						m_distroVariants = m_distroProvider.getDistroVariants(m_draft, m_cspecId);
-					}
-					catch(Exception e)
-					{
-						throw new InvocationTargetException(e);
-					}
-
-					monitor.done();
-				}
-			});
-		}
-		catch(Exception e)
-		{
-			// I don't want to show the original exception
-			// Throwable originalException = e;
-
-			// if(e instanceof InvocationTargetException && e.getCause() != null)
-			// 	originalException = e.getCause();
-
-			throw new JNLPException("Cannot read stack variations", ERROR_CODE_REMOTE_IO_EXCEPTION);
-		}
-	}
-
-	void retrieveDistro(final Long distroId)
-	{
-		m_distro = null;
-
-		if(distroId == null)
-			return;
-
-		m_distro = m_retrievedDistroCache.get(distroId);
-
-		if(m_distro == null)
+		if(m_distroP2Properties == null)
 		{
 			try
 			{
@@ -905,8 +783,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 						try
 						{
-							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, distroId);
-							
+							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, null);
 							// TODO read OPML
 							m_opml = null;
 						}
@@ -915,25 +792,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 							throw new InvocationTargetException(e);
 						}
 
-						try
-						{
-							m_distro = m_distroProvider.getDistro(m_draft, m_cspecId, distroId);
-						}
-						catch(Exception e)
-						{
-							throw new InvocationTargetException(e);
-						}
-						m_retrievedDistroCache.put(distroId, m_distro);
-
-						m_builder.initFrom(m_distro.getMspec());
-
-						// extra properties
-						m_builder.getProperties().put("distro.name", m_artifactName);
-
-						IPath location = m_builder.getInstallLocation() == null
-								? Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName))
-								: MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
-						m_builder.setInstallLocation(location);
+						m_installLocation = Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName));
 
 						monitor.done();
 					}
@@ -981,16 +840,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_loginRequired;
 	}
 
-	boolean isStackInfoRetrieved()
-	{
-		return m_distroVariants != null;
-	}
-
-	boolean isDistroRetrieved()
-	{
-		return m_distro != null;
-	}
-
 	boolean isMaterializerInitialized()
 	{
 		return m_distroP2Properties != null;
@@ -1003,7 +852,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	void resetMaterializerInitialization()
 	{
-		m_distroVariants = null;
 		m_distroP2Properties = null;
 	}
 
@@ -1260,7 +1108,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			tmp = ARTIFACT_UNKNOWN_TEXT;
 		}
 
-		m_builder.setName(tmp);
 		m_artifactName = tmp;
 
 		m_artifactVersion = properties.get(PROP_ARTIFACT_VERSION);
@@ -1401,19 +1248,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
 		m_draft = VALUE_TRUE.equalsIgnoreCase(tmp);
-
-		tmp = properties.get(PROP_DISTRO_ID);
-		if(tmp != null && tmp.length() > 0)
-		{
-			try
-			{
-				m_distroId = new Long(tmp);
-			}
-			catch(NumberFormatException e)
-			{
-				m_distroId = null;
-			}
-		}
 
 		tmp = properties.get(PROP_CSPEC_ID);
 		if(tmp == null)

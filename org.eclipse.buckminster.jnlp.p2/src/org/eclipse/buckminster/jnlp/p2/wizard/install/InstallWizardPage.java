@@ -8,7 +8,6 @@
 
 package org.eclipse.buckminster.jnlp.p2.wizard.install;
 
-import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizardPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 
@@ -27,11 +26,6 @@ abstract class InstallWizardPage extends AdvancedWizardPage
 		super(pageName, title, message, titleImage);
 	}
 
-	MaterializationSpecBuilder getMaterializationSpecBuilder()
-	{
-		return getInstallWizard().getMaterializationSpecBuilder();
-	}
-	
 	InstallWizard getInstallWizard()
 	{
 		return (InstallWizard)getAdvancedWizard();

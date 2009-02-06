@@ -298,7 +298,6 @@ public class SimpleDownloadPage extends InstallWizardPage
 		
 		if(currentPage.equals(getInstallWizard().getStartingPage())
 				|| currentPage.equals(getInstallWizard().getLoginPage())
-				|| currentPage.equals(getInstallWizard().getSelectDistroPage())
 				|| currentPage.equals(getInstallWizard().getFolderRestrictionPage()))
 			return false;
 

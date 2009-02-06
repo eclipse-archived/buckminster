@@ -45,7 +45,7 @@ public class StartPage extends InstallWizardPage
 
 	public void createControl(Composite parent)
 	{				
-		m_nextPage = getInstallWizard().getSelectDistroPage();
+		m_nextPage = getInstallWizard().getDownloadPage();
 		
 		Composite pageComposite = new Composite(parent, SWT.NONE);
 		pageComposite.setLayout(new GridLayout(1, false));
@@ -172,13 +172,10 @@ public class StartPage extends InstallWizardPage
 				m_nextPage = getInstallWizard().getFolderRestrictionPage();
 			else
 			{
-				if(!getInstallWizard().isStackInfoRetrieved() && !getInstallWizard().isDistroRetrieved())
+				if(!getInstallWizard().isMaterializerInitialized())
 					getInstallWizard().retrieveStackInfo();
 				
-				if(getInstallWizard().isDistroRetrieved())
 					m_nextPage = getInstallWizard().getDownloadPage();
-				else
-					m_nextPage = getInstallWizard().getSelectDistroPage();
 			}
 		
 		return true;
