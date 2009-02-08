@@ -32,6 +32,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -83,8 +84,13 @@ import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifact
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRequest;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -538,6 +544,42 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		m_pluginCache.clear();
 		m_featureCache.clear();
 		m_classpaths.clear();
+	}
+
+	IInstallableUnit getCachedInstallableUnit(ProviderMatch providerMatch) throws CoreException
+	{
+		NodeQuery query = providerMatch.getNodeQuery();
+		URI uri = URI.create(providerMatch.getRepositoryURI());
+		String path = uri.getPath();
+		if(path.endsWith(".jar") || path.endsWith(".map") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			return null;
+
+		StringBuilder bld = new StringBuilder(path);
+		if(!path.endsWith("/")) //$NON-NLS-1$
+			bld.append('/');
+
+		String base = bld.toString();
+		Map<String, IMetadataRepository> mdrCache = getMDRCache(query.getContext().getUserCache());
+		IMetadataRepository mdr = mdrCache.get(base);
+		if(mdr == null)
+			return null;
+
+		IVersion bv = providerMatch.getVersionMatch().getVersion();
+		if(bv == null)
+			return null;
+
+		Version v = Version.parseVersion(bv.toString());
+		VersionRange vr = new VersionRange(v, true, v, true);
+
+		IComponentRequest cr = query.getComponentRequest();
+		String name = cr.getName();
+		if(IComponentType.ECLIPSE_FEATURE.equals(cr.getComponentTypeID())
+				&& !name.endsWith(IPDEConstants.FEATURE_GROUP))
+			name += IPDEConstants.FEATURE_GROUP;
+		Collector c = mdr.query(new InstallableUnitQuery(name, vr), new Collector(), null);
+		if(c.isEmpty())
+			return null;
+		return (IInstallableUnit)c.iterator().next();
 	}
 
 	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException

@@ -11,6 +11,7 @@ import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
@@ -24,8 +25,6 @@ import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 @SuppressWarnings("restriction")
 public class P2VersionFinder extends AbstractVersionFinder
 {
-	private static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
-
 	private static final String FEATURE_JAR = ".feature.jar"; //$NON-NLS-1$
 
 	private static final String FEATURE_CLASSIFIER = "org.eclipse.update.feature"; //$NON-NLS-1$
@@ -51,8 +50,8 @@ public class P2VersionFinder extends AbstractVersionFinder
 
 		if(isFeature)
 		{
-			if(!name.endsWith(FEATURE_GROUP))
-				name += FEATURE_GROUP;
+			if(!name.endsWith(IPDEConstants.FEATURE_GROUP))
+				name += IPDEConstants.FEATURE_GROUP;
 		}
 		else if(!ctype.getId().equals(IComponentType.OSGI_BUNDLE))
 			//
@@ -119,7 +118,7 @@ public class P2VersionFinder extends AbstractVersionFinder
 
 			// Check if the <feature name>.feature.jar requirement is present
 			//
-			String featureJarName = name.substring(0, name.length() - FEATURE_GROUP.length()) + FEATURE_JAR;
+			String featureJarName = name.substring(0, name.length() - IPDEConstants.FEATURE_GROUP.length()) + FEATURE_JAR;
 			IRequiredCapability found = null;
 			for(IRequiredCapability rqc : best.getRequiredCapabilities())
 				if(IInstallableUnit.NAMESPACE_IU_ID.equals(rqc.getNamespace()) && featureJarName.equals(rqc.getName()))

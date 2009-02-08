@@ -26,9 +26,6 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
-import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -174,19 +171,8 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder,
 			boolean unpack) throws CoreException
 	{
-		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder, opmlBuilder);
-
-		ProviderMatch providerMatch = reader.getProviderMatch();
-		Provider provider = providerMatch.getProvider();
-		NodeQuery nq = providerMatch.getNodeQuery();
-		resBld.setComponentTypeId(providerMatch.getComponentType().getId());
-		resBld.getRequest().initFrom(nq.getComponentRequest());
-		resBld.setAttributes(nq.getRequiredAttributes());
-		resBld.setProvider(provider);
-		resBld.setVersionMatch(providerMatch.getVersionMatch());
+		ResolutionBuilder resBld = reader.getProviderMatch().createResolution(cspecBuilder, opmlBuilder, unpack);
 		resBld.setMaterializable(reader.canMaterialize());
-		resBld.setRepository(providerMatch.getRepositoryURI());
-		resBld.setUnpack(unpack);
 		if(reader instanceof ZipArchiveReader)
 			reader = ((ZipArchiveReader)reader).getFileReader();
 		if(reader instanceof IFileReader)

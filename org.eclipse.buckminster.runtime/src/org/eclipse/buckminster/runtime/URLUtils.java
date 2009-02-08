@@ -12,6 +12,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -105,6 +109,62 @@ public abstract class URLUtils
 			}
 		}
 		return url;
+	}
+
+	public static String[] decodeToQueryPairs(String query)
+	{
+		if(query == null || query.length() == 0)
+			return Trivial.EMPTY_STRING_ARRAY;
+
+		// split on a solitary '&'
+		//
+		String[] pairs = query.split("(?<!&)&(?!&)"); //$NON-NLS-1$
+		int idx = pairs.length;
+		if(idx == 0)
+			return Trivial.EMPTY_STRING_ARRAY;
+
+		while(--idx >= 0)
+			pairs[idx] = pairs[idx].replace("&&", "&"); //$NON-NLS-1$ //$NON-NLS-2$
+		return pairs;
+	}
+
+	public static String encodeFromQueryPairs(List<String> pairs)
+	{
+		if(pairs == null || pairs.size() == 0)
+			return null;
+
+		StringBuilder query = new StringBuilder();
+		for(String pair : pairs)
+		{
+			// if k/v pairs have already been added, add a single delimiter
+			//
+			if(query.length() > 0)
+				query.append('&');
+
+			appendQueryItem(query, pair);
+		}
+
+		return query.toString();
+	}
+
+	public static String encodeFromQueryPairs(Map<String, String> map)
+	{
+		if(map == null || map.size() == 0)
+			return null;
+
+		StringBuilder query = new StringBuilder();
+		for(Map.Entry<String, String> entry : map.entrySet())
+		{
+			// if k/v pairs have already been added, add a single delimiter
+			//
+			if(query.length() > 0)
+				query.append('&');
+
+			appendQueryItem(query, entry.getKey());
+			query.append('=');
+			appendQueryItem(query, entry.getValue());
+		}
+		return query.toString();
 	}
 
 	public static URI getParentURI(URI uri)
@@ -249,6 +309,28 @@ public abstract class URLUtils
 		}
 	}
 
+	public static Map<String, String> queryAsParameters(String query)
+	{
+		if(query == null)
+			return Collections.emptyMap();
+
+		String[] pairs = decodeToQueryPairs(query);
+		int top = pairs.length;
+		if(top == 0)
+			return Collections.emptyMap();
+
+		Map<String, String> p = new HashMap<String, String>(top);
+		while(--top >= 0)
+		{
+			// now split the pair on the first '=' only
+			// (one '=' is required to be there, even if the value is blank)
+			//
+			String[] kv = pairs[top].split("=", 2); //$NON-NLS-1$
+			p.put(kv[0], kv[1]);
+		}
+		return p;
+	}
+
 	public static URL resolveURL(URL contextURL, String url)
 	{
 		if(url == null)
@@ -263,6 +345,18 @@ public abstract class URLUtils
 		catch(MalformedURLException e)
 		{
 			return null;
+		}
+	}
+
+	private static void appendQueryItem(StringBuilder query, String item)
+	{
+		int top = item.length();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = item.charAt(idx);
+			if(c == '&')
+				query.append(c);
+			query.append(c);
 		}
 	}
 }

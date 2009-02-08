@@ -294,6 +294,10 @@
           class="org.eclipse.buckminster.core.materializer.TargetPlatformMaterializer"
           id="targetPlatform">
     </materializer>
+    <materializer
+          class="org.eclipse.buckminster.core.materializer.P2Materializer"
+          id="p2">
+    </materializer>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.targetPlatformProviders">

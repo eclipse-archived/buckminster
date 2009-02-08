@@ -16,11 +16,11 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -314,7 +314,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 			boolean moduleAfterBranch = false;
 			if(m_trunkStructure)
 			{
-				for(String entry : TextUtils.decodeToQueryPairs(uri.getQuery()))
+				for(String entry : URLUtils.decodeToQueryPairs(uri.getQuery()))
 				{
 					if(entry.equalsIgnoreCase("moduleBeforeTag")) //$NON-NLS-1$
 						moduleBeforeTag = true;

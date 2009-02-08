@@ -17,13 +17,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.p4.Messages;
 import org.eclipse.buckminster.p4.preferences.Client;
 import org.eclipse.buckminster.p4.preferences.P4Preferences;
 import org.eclipse.buckminster.p4.preferences.Server;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -209,7 +209,7 @@ public class DepotURI extends PropertyScope
 
 		String defaultBranch = null;
 		String clientName = null;
-		String[] pairs = TextUtils.decodeToQueryPairs(uri.getQuery());
+		String[] pairs = URLUtils.decodeToQueryPairs(uri.getQuery());
 		for(String pair : pairs)
 		{
 			// now split the pair on the first '=' only

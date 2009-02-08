@@ -20,7 +20,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -103,7 +102,7 @@ public class URLReaderType extends AbstractReaderType
 			return Path.fromPortableString(name);
 
 		URI uri = getURI(resolution.getRepository());
-		Map<String, String> params = TextUtils.queryAsParameters(uri.getQuery());
+		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
 		String pathStr = params.get("file"); //$NON-NLS-1$
 		if(pathStr == null)
 			pathStr = uri.getPath();

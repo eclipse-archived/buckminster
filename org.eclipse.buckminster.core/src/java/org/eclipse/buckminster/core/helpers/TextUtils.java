@@ -14,10 +14,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.runtime.Trivial;
@@ -161,44 +157,6 @@ public class TextUtils
 		}
 	}
 
-	public static String[] decodeToQueryPairs(String query)
-	{
-		if(query == null || query.length() == 0)
-			return Trivial.EMPTY_STRING_ARRAY;
-
-		// split on a solitary '&'
-		//
-		String[] pairs = query.split("(?<!&)&(?!&)"); //$NON-NLS-1$
-		int idx = pairs.length;
-		if(idx == 0)
-			return Trivial.EMPTY_STRING_ARRAY;
-
-		while(--idx >= 0)
-			pairs[idx] = pairs[idx].replace("&&", "&"); //$NON-NLS-1$ //$NON-NLS-2$
-		return pairs;
-	}
-
-	public static String encodeFromQueryPairs(List<String> pairs)
-	{
-		if(pairs == null || pairs.size() == 0)
-			return null;
-
-		StringBuilder query = new StringBuilder();
-		for(String pair : pairs)
-		{
-			// if k/v pairs have already been added, add a single delimiter
-			//
-			if(query.length() > 0)
-				query.append('&');
-
-			// ensure that any 'delimiter' is doubled
-			//
-			query.append(pair.replace("&", "&&")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-		return query.toString();
-	}
-
 	/**
 	 * Returns the index of <code>element</code> in the array <code>array</code> or <code>-1</code> if
 	 * <code>element</code> is not equal to any of the <code>array</code> elements. The method will return
@@ -297,28 +255,6 @@ public class TextUtils
 		return txt == null
 				? "" //$NON-NLS-1$
 				: txt.toString();
-	}
-
-	public static Map<String, String> queryAsParameters(String query)
-	{
-		if(query == null)
-			return Collections.emptyMap();
-
-		String[] pairs = decodeToQueryPairs(query);
-		int top = pairs.length;
-		if(top == 0)
-			return Collections.emptyMap();
-
-		Map<String, String> p = new HashMap<String, String>(top);
-		while(--top >= 0)
-		{
-			// now split the pair on the first '=' only
-			// (one '=' is required to be there, even if the value is blank)
-			//
-			String[] kv = pairs[top].split("=", 2); //$NON-NLS-1$
-			p.put(kv[0], kv[1]);
-		}
-		return p;
 	}
 
 	public static String[] split(String str, String delim)

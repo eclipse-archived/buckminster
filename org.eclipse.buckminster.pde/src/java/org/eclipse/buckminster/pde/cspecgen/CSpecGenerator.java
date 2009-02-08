@@ -199,6 +199,59 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld.toString();
 	}
 
+	static boolean addDependency(CSpecBuilder cspecBuilder, ComponentRequestBuilder dependency) throws CoreException
+	{
+		ComponentRequestBuilder old = cspecBuilder.getDependency(dependency.getName());
+		if(old == null)
+		{
+			cspecBuilder.addDependency(dependency);
+			return true;
+		}
+
+		IVersionDesignator vd = old.getVersionDesignator();
+		IVersionDesignator nvd = dependency.getVersionDesignator();
+		if(vd == null)
+			vd = nvd;
+		else
+		{
+			if(nvd != null)
+			{
+				vd = vd.merge(nvd);
+				if(vd == null)
+					//
+					// Version ranges were not possible to merge, i.e. no intersection
+					//
+					throw new DependencyAlreadyDefinedException(cspecBuilder.getName(), old.getName());
+			}
+		}
+
+		Filter fl = old.getFilter();
+		Filter nfl = dependency.getFilter();
+		if(fl == null || nfl == null)
+			fl = null;
+		else
+		{
+			if(!fl.equals(nfl))
+			{
+				try
+				{
+					fl = FilterFactory.newInstance("(|" + fl + nfl + ')'); //$NON-NLS-1$
+				}
+				catch(InvalidSyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+		}
+
+		if(vd == old.getVersionDesignator() && fl == old.getFilter())
+			return false;
+
+		old.setVersionDesignator(vd);
+		old.setFilter(fl);
+		return false;
+	}
+
 	private final CSpecBuilder m_cspecBuilder;
 
 	private final ICatalogReader m_reader;
@@ -251,55 +304,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected boolean addDependency(ComponentRequestBuilder dependency) throws CoreException
 	{
-		ComponentRequestBuilder old = m_cspecBuilder.getDependency(dependency.getName());
-		if(old == null)
-		{
-			m_cspecBuilder.addDependency(dependency);
-			return true;
-		}
-
-		IVersionDesignator vd = old.getVersionDesignator();
-		IVersionDesignator nvd = dependency.getVersionDesignator();
-		if(vd == null)
-			vd = nvd;
-		else
-		{
-			if(nvd != null)
-			{
-				vd = vd.merge(nvd);
-				if(vd == null)
-					//
-					// Version ranges were not possible to merge, i.e. no intersection
-					//
-					throw new DependencyAlreadyDefinedException(m_cspecBuilder.getName(), old.getName());
-			}
-		}
-
-		Filter fl = old.getFilter();
-		Filter nfl = dependency.getFilter();
-		if(fl == null || nfl == null)
-			fl = null;
-		else
-		{
-			if(!fl.equals(nfl))
-			{
-				try
-				{
-					fl = FilterFactory.newInstance("(|" + fl + nfl + ')'); //$NON-NLS-1$
-				}
-				catch(InvalidSyntaxException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			}
-		}
-
-		if(vd == old.getVersionDesignator() && fl == old.getFilter())
-			return false;
-
-		old.setVersionDesignator(vd);
-		old.setFilter(fl);
-		return false;
+		return addDependency(m_cspecBuilder, dependency);
 	}
 
 	protected void addProducts(final IProgressMonitor monitor) throws CoreException

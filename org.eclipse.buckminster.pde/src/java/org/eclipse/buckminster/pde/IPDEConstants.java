@@ -187,4 +187,6 @@ public interface IPDEConstants
 	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
 
 	static final String TOP_FOLDER_SUFFIX = ".topfolder"; //$NON-NLS-1$
+
+	public static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
 }

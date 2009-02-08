@@ -22,11 +22,11 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -183,7 +183,7 @@ final class EclipseImportBase
 		m_key = key;
 		m_feature = IComponentType.ECLIPSE_FEATURE.equals(key.getRequest().getComponentTypeID());
 
-		Map<String, String> params = TextUtils.queryAsParameters(uri.getQuery());
+		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
 		String importType = params.get(PARAM_IMPORT_TYPE);
 		if(importType == null || IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
 			m_type = PluginImportOperation.IMPORT_BINARY;

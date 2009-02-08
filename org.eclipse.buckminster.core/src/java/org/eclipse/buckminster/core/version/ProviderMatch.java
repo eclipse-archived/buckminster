@@ -15,11 +15,13 @@ import java.util.Map;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -96,6 +98,24 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		bld.setComponentTypeID(request.getComponentTypeID());
 		bld.setVersion(m_versionMatch.getVersion());
 		return bld;
+	}
+
+	public ResolutionBuilder createResolution(CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder, boolean unpack)
+			throws CoreException
+	{
+		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder, opmlBuilder);
+
+		Provider provider = getProvider();
+		NodeQuery nq = getNodeQuery();
+		resBld.setMaterializable(true);
+		resBld.setComponentTypeId(getComponentType().getId());
+		resBld.getRequest().initFrom(nq.getComponentRequest());
+		resBld.setAttributes(nq.getRequiredAttributes());
+		resBld.setProvider(provider);
+		resBld.setVersionMatch(getVersionMatch());
+		resBld.setRepository(getRepositoryURI());
+		resBld.setUnpack(unpack);
+		return resBld;
 	}
 
 	public String getComponentName()
