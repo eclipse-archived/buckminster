@@ -114,21 +114,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <update label="Buckminster" url="http://download.eclipse.org/tools/buckminster/updates"/>
    </url>
 
-   <requires>
-      <import plugin="org.eclipse.buckminster.cmdline" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.core.jobs" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.net" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.3.100" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi.services" version="3.1.200" match="compatible"/>
-      <import plugin="org.eclipse.update.core" version="3.2.100" match="compatible"/>
-      <import plugin="org.eclipse.update.configurator" version="3.1.100" match="compatible"/>
-   </requires>
-
    <plugin
          id="org.eclipse.buckminster.ant"
          download-size="0"
@@ -519,6 +504,34 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.eclipse.equinox.p2.updatesite"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.director"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.sat4j.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.sat4j.pb"
          download-size="0"
          install-size="0"
          version="0.0.0"
