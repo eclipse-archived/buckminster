@@ -498,7 +498,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					mdrCache.put(base, mdr);
 					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
 				}
-				catch(IOException e)
+				catch(Exception e)
 				{
 					Utils.close(in);
 					in = null;
@@ -516,7 +516,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					mdrCache.put(base, mdr);
 					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
 				}
-				catch(IOException e)
+				catch(Exception e)
 				{
 					mdrCache.put(base, null);
 					return new EclipseImportFinder(this, provider, ctype, nodeQuery);

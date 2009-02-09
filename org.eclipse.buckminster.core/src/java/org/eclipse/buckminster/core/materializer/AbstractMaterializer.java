@@ -47,12 +47,6 @@ import org.eclipse.osgi.service.datalocation.Location;
  */
 public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer
 {
-	private static IConfigurationElement[] getElements()
-	{
-		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
-	}
-
 	public static String[] getMaterializerIDs(boolean includeEmptyEntry)
 	{
 		IConfigurationElement[] elems = getElements();
@@ -103,51 +97,17 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
+	private static IConfigurationElement[] getElements()
+	{
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
+	}
+
 	public boolean canWorkInParallel()
 	{
 		// Most materializers should be able to do this.
 		//
 		return true;
-	}
-
-	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context, Set<String> generated,
-			Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
-	{
-		IMaterializer materializer;
-		if(node instanceof GeneratorNode)
-			materializer = this;
-		else
-		{
-			String materializerId = context.getMaterializationSpec().getMaterializerID(node.getResolution());
-			materializer = materializerId.equals(getId())
-					? this
-					: CorePlugin.getDefault().getMaterializer(materializerId);
-		}
-		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
-	}
-
-	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
-		CSpec cspec = generatorNode.getDeclaringCSpec();
-		try
-		{
-			IPerformManager performManager = CorePlugin.getPerformManager();
-			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), generatorNode
-					.getAttribute(), new ModelCache());
-			if(generatorAttribute != null)
-			{
-				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);
-				return true;
-			}
-		}
-		catch(CoreException e)
-		{
-			if(!context.isContinueOnError())
-				throw e;
-			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
-		}
-		return false;
 	}
 
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
@@ -226,5 +186,49 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		// The AbstractMaterializer will not perform any install actions
 		//
 		MonitorUtils.complete(monitor);
+	}
+
+	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context, Set<String> generated,
+			Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
+	{
+		Resolution res = node.getResolution();
+		if(res == null)
+			return;
+
+		IMaterializer materializer;
+		if(node instanceof GeneratorNode)
+			materializer = this;
+		else
+		{
+			String materializerId = context.getMaterializationSpec().getMaterializerID(res);
+			materializer = materializerId.equals(getId())
+					? this
+					: CorePlugin.getDefault().getMaterializer(materializerId);
+		}
+		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
+	}
+
+	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context,
+			IProgressMonitor monitor) throws CoreException
+	{
+		CSpec cspec = generatorNode.getDeclaringCSpec();
+		try
+		{
+			IPerformManager performManager = CorePlugin.getPerformManager();
+			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), generatorNode
+					.getAttribute(), new ModelCache());
+			if(generatorAttribute != null)
+			{
+				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);
+				return true;
+			}
+		}
+		catch(CoreException e)
+		{
+			if(!context.isContinueOnError())
+				throw e;
+			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
+		}
+		return false;
 	}
 }
