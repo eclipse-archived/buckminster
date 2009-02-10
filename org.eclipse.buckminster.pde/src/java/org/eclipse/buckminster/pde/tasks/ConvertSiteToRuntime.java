@@ -47,7 +47,14 @@ public class ConvertSiteToRuntime
 
 	private static final String PLUGINS_DIR = "plugins"; //$NON-NLS-1$
 
-	public static boolean guessUnpack(File bundleJar) throws CoreException
+	private final File m_productRoot;
+
+	public ConvertSiteToRuntime(File productRoot)
+	{
+		m_productRoot = productRoot;
+	}
+
+	public boolean guessUnpack(File bundleJar) throws CoreException
 	{
 		try
 		{
@@ -55,8 +62,10 @@ public class ConvertSiteToRuntime
 			try
 			{
 				Manifest mf = jf.getManifest();
-				Attributes attrs = mf.getMainAttributes();
+				if(mf == null)
+					return false;
 
+				Attributes attrs = mf.getMainAttributes();
 				String value = attrs.getValue(Constants.FRAGMENT_HOST);
 				if(value != null)
 				{
@@ -93,13 +102,6 @@ public class ConvertSiteToRuntime
 			throw BuckminsterException.wrap(e);
 		}
 		return false;
-	}
-
-	private final File m_productRoot;
-
-	public ConvertSiteToRuntime(File productRoot)
-	{
-		m_productRoot = productRoot;
 	}
 
 	public void run() throws CoreException
