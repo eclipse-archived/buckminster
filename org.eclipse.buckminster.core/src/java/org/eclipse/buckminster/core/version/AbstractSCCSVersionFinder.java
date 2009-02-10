@@ -421,7 +421,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 						versionDesignator));
 				return null;
 			}
-			return new VersionMatch(version, null, -1, null, null);
+			return new VersionMatch(version, null, query.getRevision(), query.getTimestamp(), null);
 		}
 		finally
 		{

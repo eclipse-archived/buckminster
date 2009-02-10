@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.client.Command;
 
 @SuppressWarnings("restriction")
@@ -57,7 +58,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	@Override
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
 	{
-		RepositoryMetaData metaData = getMetaData(monitor);
+		RepositoryMetaData metaData = getMetaData(monitor, null);
 		Date lastModTime = metaData.getLastModification();
 		if(lastModTime == null)
 			lastModTime = new Date();
@@ -83,17 +84,25 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
 	{
-		RepositoryMetaData metaData = getMetaData(monitor);
-		Date lastModTime = metaData.getLastModification();
-		if(lastModTime == null)
-			lastModTime = new Date();
-		return new RevisionEntry(null, lastModTime, -1);
+		CVSTag fixedTag = null;
+		Date timestamp = getQuery().getTimestamp();
+		if(timestamp != null)
+			fixedTag = new CVSTag(timestamp);
+
+		RepositoryMetaData metaData = getMetaData(monitor, fixedTag);
+		if(timestamp == null)
+		{
+			timestamp = metaData.getLastModification();
+			if(timestamp == null)
+				timestamp = new Date();
+		}
+		return new RevisionEntry(null, timestamp, -1);
 	}
 
-	private RepositoryMetaData getMetaData(IProgressMonitor monitor) throws CoreException
+	private RepositoryMetaData getMetaData(IProgressMonitor monitor, CVSTag fixedTag) throws CoreException
 	{
 		if(m_metaData == null)
-			m_metaData = RepositoryMetaData.getMetaData(m_session, null, monitor);
+			m_metaData = RepositoryMetaData.getMetaData(m_session, fixedTag, monitor);
 		else
 			MonitorUtils.complete(monitor);
 		return m_metaData;
