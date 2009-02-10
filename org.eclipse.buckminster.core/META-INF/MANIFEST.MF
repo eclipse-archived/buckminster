@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="1.0.0",
  org.eclipse.core.variables;bundle-version="3.2.0",
  org.eclipse.core.runtime;bundle-version="3.3.100",
  org.eclipse.ecf;bundle-version="2.0.0",
- org.eclipse.buckminster.osgi.filter;bundle-version="1.0.0"
+ org.eclipse.buckminster.osgi.filter;bundle-version="1.0.0",
+ org.eclipse.equinox.p2.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.buckminster.core,
@@ -54,6 +55,7 @@ Import-Package: org.eclipse.equinox.internal.p2.core.helpers,
  org.eclipse.equinox.internal.provisional.p2.core,
  org.eclipse.equinox.internal.provisional.p2.director,
  org.eclipse.equinox.internal.provisional.p2.engine,
+ org.eclipse.equinox.internal.provisional.p2.engine.phases,
  org.eclipse.equinox.internal.provisional.p2.metadata,
  org.eclipse.equinox.internal.provisional.p2.metadata.query,
  org.eclipse.equinox.internal.provisional.p2.metadata.repository,
