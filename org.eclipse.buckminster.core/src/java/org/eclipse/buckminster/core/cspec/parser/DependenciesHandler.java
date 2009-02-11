@@ -10,11 +10,11 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -39,7 +39,7 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 			{
 				getCSpecBuilder().addDependency(((ComponentRequestHandler)child).getBuilder());
 			}
-			catch(DependencyAlreadyDefinedException e)
+			catch(CoreException e)
 			{
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}

@@ -224,16 +224,21 @@ public class SelectBOMPage extends AbstractQueryPage
 						input = byteBld.getInputStream();
 
 						IParserFactory pf = CorePlugin.getDefault().getParserFactory();
-						MaterializationSpec mspec;
-						try
+						MaterializationSpec mspec = null;
+						String path = urlToParse.getPath();
+						if(!(path.endsWith(".cquery") || path.endsWith(".bom")))
 						{
-							mspec = pf.getMaterializationSpecParser(true).parse(urlToParse.toString(), input);
-						}
-						catch(CoreException e)
-						{
-							// Assume this was not an mspec
-							//
-							mspec = null;
+							try
+							{
+								mspec = pf.getMaterializationSpecParser(true).parse(urlToParse.toString(), input);
+							}
+							catch(CoreException e)
+							{
+								// Assume this was not an mspec
+								//
+								if(urlToParse.getPath().endsWith(".mspec"))
+									throw e;
+							}
 						}
 						MonitorUtils.worked(monitor, 5);
 
@@ -252,16 +257,20 @@ public class SelectBOMPage extends AbstractQueryPage
 						input = byteBld.getInputStream();
 
 						BillOfMaterials bom;
-						ComponentQuery cquery;
-						try
+						ComponentQuery cquery = null;
+						if(!urlToParse.getPath().endsWith(".bom"))
 						{
-							cquery = ComponentQuery.fromStream(urlToParse, null, input, true);
-						}
-						catch(CoreException e)
-						{
-							// Assume this was not a cquery, restart input
-							//
-							cquery = null;
+							try
+							{
+								cquery = ComponentQuery.fromStream(urlToParse, null, input, true);
+							}
+							catch(CoreException e)
+							{
+								// Assume this was not a cquery, restart input
+								//
+								if(urlToParse.getPath().endsWith(".cquery"))
+									throw e;
+							}
 						}
 						MonitorUtils.worked(monitor, 5);
 

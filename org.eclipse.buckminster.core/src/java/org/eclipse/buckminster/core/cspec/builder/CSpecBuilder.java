@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
@@ -23,18 +24,32 @@ import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedExceptio
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
+import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class CSpecBuilder implements ICSpecData
 {
+	private static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
+
 	private HashMap<String, AttributeBuilder> m_attributes;
 
 	private String m_componentType;
@@ -54,6 +69,91 @@ public class CSpecBuilder implements ICSpecData
 	private IVersion m_version;
 
 	private Filter m_filter;
+
+	public CSpecBuilder()
+	{
+	}
+
+	public CSpecBuilder(IInstallableUnit iu) throws CoreException
+	{
+		String name = iu.getId();
+		boolean isFeature = name.endsWith(FEATURE_GROUP);
+		if(isFeature)
+		{
+			name = name.substring(0, name.length() - FEATURE_GROUP.length());
+			setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
+		}
+		else
+			setComponentTypeID(IComponentType.OSGI_BUNDLE);
+
+		setName(name);
+
+		Version v = iu.getVersion();
+		if(v != null)
+			setVersion(v.toString(), IVersionType.OSGI);
+
+		String filterStr = iu.getFilter();
+		if(filterStr != null)
+			try
+			{
+				Filter filter = FilterFactory.newInstance(filterStr);
+				filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
+				setFilter(filter);
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+
+		for(IRequiredCapability cap : iu.getRequiredCapabilities())
+		{
+			// We only bother with direct dependencies to other IU's here
+			// since package imports etc. are not yet supported
+			//
+			String namespace = cap.getNamespace();
+			name = cap.getName();
+			String ctype;
+			if(IInstallableUnit.NAMESPACE_IU_ID.equals(namespace))
+			{
+				if(name.endsWith(FEATURE_GROUP))
+				{
+					name = name.substring(0, name.length() - FEATURE_GROUP.length());
+					ctype = IComponentType.ECLIPSE_FEATURE;
+				}
+				else if(isFeature)
+					ctype = IComponentType.OSGI_BUNDLE;
+				else
+					continue;
+			}
+			else if(IComponentType.OSGI_BUNDLE.equals(namespace))
+				ctype = namespace;
+			else
+				// Package or something else that we don't care about here
+				continue;
+
+			ComponentRequestBuilder crb = new ComponentRequestBuilder();
+			crb.setName(name);
+			crb.setComponentTypeID(ctype);
+
+			VersionRange vr = cap.getRange();
+			if(vr != null)
+				crb.setVersionDesignator(vr.toString(), IVersionType.OSGI);
+
+			filterStr = cap.getFilter();
+			if(filterStr != null)
+				try
+				{
+					Filter filter = FilterFactory.newInstance(filterStr);
+					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
+					crb.setFilter(filter);
+				}
+				catch(InvalidSyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			addDependency(crb);
+		}
+	}
 
 	public ActionBuilder addAction(String actionName, boolean publ, String actorName, boolean always)
 			throws AttributeAlreadyDefinedException
@@ -89,23 +189,69 @@ public class CSpecBuilder implements ICSpecData
 		m_attributes.put(name, attribute.getAttributeBuilder(this));
 	}
 
-	public void addDependency(IComponentRequest dependency) throws DependencyAlreadyDefinedException
+	public boolean addDependency(IComponentRequest dependency) throws CoreException
 	{
 		String name = dependency.getName();
-		if(m_dependencies == null)
-			m_dependencies = new HashMap<String, ComponentRequestBuilder>();
-		else if(m_dependencies.containsKey(name))
-			throw new DependencyAlreadyDefinedException(m_name, name);
+		ComponentRequestBuilder old = getDependency(name);
+		if(old == null)
+		{
+			if(m_dependencies == null)
+				m_dependencies = new HashMap<String, ComponentRequestBuilder>();
 
-		ComponentRequestBuilder bld;
-		if(dependency instanceof ComponentRequestBuilder)
-			bld = (ComponentRequestBuilder)dependency;
+			ComponentRequestBuilder bld;
+			if(dependency instanceof ComponentRequestBuilder)
+				bld = (ComponentRequestBuilder)dependency;
+			else
+			{
+				bld = createDependencyBuilder();
+				bld.initFrom(dependency);
+			}
+			m_dependencies.put(name, bld);
+			return true;
+		}
+
+		IVersionDesignator vd = old.getVersionDesignator();
+		IVersionDesignator nvd = dependency.getVersionDesignator();
+		if(vd == null)
+			vd = nvd;
 		else
 		{
-			bld = createDependencyBuilder();
-			bld.initFrom(dependency);
+			if(nvd != null)
+			{
+				vd = vd.merge(nvd);
+				if(vd == null)
+					//
+					// Version ranges were not possible to merge, i.e. no intersection
+					//
+					throw new DependencyAlreadyDefinedException(getName(), old.getName());
+			}
 		}
-		m_dependencies.put(name, bld);
+
+		Filter fl = old.getFilter();
+		Filter nfl = dependency.getFilter();
+		if(fl == null || nfl == null)
+			fl = null;
+		else
+		{
+			if(!fl.equals(nfl))
+			{
+				try
+				{
+					fl = FilterFactory.newInstance("(|" + fl + nfl + ')'); //$NON-NLS-1$
+				}
+				catch(InvalidSyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+		}
+
+		if(vd == old.getVersionDesignator() && fl == old.getFilter())
+			return false;
+
+		old.setVersionDesignator(vd);
+		old.setFilter(fl);
+		return false;
 	}
 
 	public void addGenerator(IGenerator generator) throws GeneratorAlreadyDefinedException
@@ -471,4 +617,5 @@ public class CSpecBuilder implements ICSpecData
 		}
 		m_version = VersionFactory.createVersion(versionTypeId, versionString);
 	}
+
 }

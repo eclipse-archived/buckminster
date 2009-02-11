@@ -44,11 +44,7 @@ public class EclipseBundleType extends AbstractComponentType
 		{
 			IInstallableUnit iu = ((EclipseImportReaderType)readerType).getCachedInstallableUnit(rInfo);
 			if(iu != null)
-			{
-				CSpecBuilder cspecBuilder = new CSpecBuilder();
-				PDEBuilder.createCSpecFromIU(cspecBuilder, iu);
-				return PDEBuilder.createNode(rInfo, cspecBuilder, null);
-			}
+				return PDEBuilder.createNode(rInfo, new CSpecBuilder(iu), null);
 		}
 		return super.getResolution(rInfo, forResolutionAidOnly, monitor);
 	}

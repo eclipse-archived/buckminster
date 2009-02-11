@@ -566,6 +566,8 @@ public class Messages extends NLS
 
 	public static String Missing_OSGi_Bundle_0;
 
+	public static String p2_materializer_cannot_process_readertype_0;
+
 	static
 	{
 		// initialize resource bundle

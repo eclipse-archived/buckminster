@@ -32,7 +32,6 @@ import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -795,7 +794,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				m_cspec.addDependency(dependency);
 			}
 		}
-		catch(DependencyAlreadyDefinedException e)
+		catch(CoreException e)
 		{
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;

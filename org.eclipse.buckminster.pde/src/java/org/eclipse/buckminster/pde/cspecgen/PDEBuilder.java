@@ -14,12 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -28,12 +25,9 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
-import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.osgi.filter.Filter;
-import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
@@ -41,20 +35,14 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.pde.core.IModel;
-import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * This abstract builder contains all functionality that is common to the PDE Cspec builders. Subclasses must implement
  * {@link #parseFile(IComponentReader reader)}.
  * 
- * @author thhal
+ * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConstants
 {
 	/**
@@ -66,87 +54,6 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 	 * Name of the optional target.
 	 */
 	public static final String OPTIONAL_TARGET = "optional"; //$NON-NLS-1$
-
-	public static void createCSpecFromIU(CSpecBuilder cspecBuilder, IInstallableUnit iu) throws CoreException
-	{
-		String name = iu.getId();
-		boolean isFeature = name.endsWith(IPDEConstants.FEATURE_GROUP);
-		if(isFeature)
-		{
-			name = name.substring(0, name.length() - IPDEConstants.FEATURE_GROUP.length());
-			cspecBuilder.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
-		}
-		else
-			cspecBuilder.setComponentTypeID(IComponentType.OSGI_BUNDLE);
-
-		cspecBuilder.setName(name);
-
-		Version v = iu.getVersion();
-		if(v != null)
-			cspecBuilder.setVersion(v.toString(), IVersionType.OSGI);
-
-		String filterStr = iu.getFilter();
-		if(filterStr != null)
-			try
-			{
-				Filter filter = FilterFactory.newInstance(filterStr);
-				filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-				cspecBuilder.setFilter(filter);
-			}
-			catch(InvalidSyntaxException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-
-		for(IRequiredCapability cap : iu.getRequiredCapabilities())
-		{
-			// We only bother with direct dependencies to other IU's here
-			// since package imports etc. are not yet supported
-			//
-			String namespace = cap.getNamespace();
-			name = cap.getName();
-			String ctype;
-			if(IInstallableUnit.NAMESPACE_IU_ID.equals(namespace))
-			{
-				if(name.endsWith(IPDEConstants.FEATURE_GROUP))
-				{
-					name = name.substring(0, name.length() - IPDEConstants.FEATURE_GROUP.length());
-					ctype = IComponentType.ECLIPSE_FEATURE;
-				}
-				else if(isFeature)
-					ctype = IComponentType.OSGI_BUNDLE;
-				else
-					continue;
-			}
-			else if(IComponentType.OSGI_BUNDLE.equals(namespace))
-				ctype = namespace;
-			else
-				// Package or something else that we don't care about here
-				continue;
-
-			ComponentRequestBuilder crb = new ComponentRequestBuilder();
-			crb.setName(name);
-			crb.setComponentTypeID(ctype);
-
-			VersionRange vr = cap.getRange();
-			if(vr != null)
-				crb.setVersionDesignator(vr.toString(), IVersionType.OSGI);
-
-			filterStr = cap.getFilter();
-			if(filterStr != null)
-				try
-				{
-					Filter filter = FilterFactory.newInstance(filterStr);
-					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-					crb.setFilter(filter);
-				}
-				catch(InvalidSyntaxException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			CSpecGenerator.addDependency(cspecBuilder, crb);
-		}
-	}
 
 	public static ResolvedNode createNode(ProviderMatch providerMatch, CSpecBuilder cspecBuilder,
 			OPMLBuilder opmlBuilder) throws CoreException

@@ -29,7 +29,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileHandle;
@@ -40,7 +39,6 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.core.version.VersionFactory;
@@ -199,59 +197,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld.toString();
 	}
 
-	static boolean addDependency(CSpecBuilder cspecBuilder, ComponentRequestBuilder dependency) throws CoreException
-	{
-		ComponentRequestBuilder old = cspecBuilder.getDependency(dependency.getName());
-		if(old == null)
-		{
-			cspecBuilder.addDependency(dependency);
-			return true;
-		}
-
-		IVersionDesignator vd = old.getVersionDesignator();
-		IVersionDesignator nvd = dependency.getVersionDesignator();
-		if(vd == null)
-			vd = nvd;
-		else
-		{
-			if(nvd != null)
-			{
-				vd = vd.merge(nvd);
-				if(vd == null)
-					//
-					// Version ranges were not possible to merge, i.e. no intersection
-					//
-					throw new DependencyAlreadyDefinedException(cspecBuilder.getName(), old.getName());
-			}
-		}
-
-		Filter fl = old.getFilter();
-		Filter nfl = dependency.getFilter();
-		if(fl == null || nfl == null)
-			fl = null;
-		else
-		{
-			if(!fl.equals(nfl))
-			{
-				try
-				{
-					fl = FilterFactory.newInstance("(|" + fl + nfl + ')'); //$NON-NLS-1$
-				}
-				catch(InvalidSyntaxException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			}
-		}
-
-		if(vd == old.getVersionDesignator() && fl == old.getFilter())
-			return false;
-
-		old.setVersionDesignator(vd);
-		old.setFilter(fl);
-		return false;
-	}
-
 	private final CSpecBuilder m_cspecBuilder;
 
 	private final ICatalogReader m_reader;
@@ -304,7 +249,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected boolean addDependency(ComponentRequestBuilder dependency) throws CoreException
 	{
-		return addDependency(m_cspecBuilder, dependency);
+		return m_cspecBuilder.addDependency(dependency);
 	}
 
 	protected void addProducts(final IProgressMonitor monitor) throws CoreException
