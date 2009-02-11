@@ -14,10 +14,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -30,6 +32,7 @@ import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -82,11 +85,13 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		if(v != null)
 			cspecBuilder.setVersion(v.toString(), IVersionType.OSGI);
 
-		String filter = iu.getFilter();
-		if(filter != null)
+		String filterStr = iu.getFilter();
+		if(filterStr != null)
 			try
 			{
-				cspecBuilder.setFilter(FilterFactory.newInstance(filter));
+				Filter filter = FilterFactory.newInstance(filterStr);
+				filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
+				cspecBuilder.setFilter(filter);
 			}
 			catch(InvalidSyntaxException e)
 			{
@@ -127,11 +132,13 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			if(vr != null)
 				crb.setVersionDesignator(vr.toString(), IVersionType.OSGI);
 
-			filter = cap.getFilter();
-			if(filter != null)
+			filterStr = cap.getFilter();
+			if(filterStr != null)
 				try
 				{
-					crb.setFilter(FilterFactory.newInstance(filter));
+					Filter filter = FilterFactory.newInstance(filterStr);
+					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
+					crb.setFilter(filter);
 				}
 				catch(InvalidSyntaxException e)
 				{
