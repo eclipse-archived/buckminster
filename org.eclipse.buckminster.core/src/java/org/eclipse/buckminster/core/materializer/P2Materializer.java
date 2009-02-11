@@ -159,6 +159,8 @@ public class P2Materializer extends AbstractMaterializer
 		IArtifactRepositoryManager arManager = bundle.getService(IArtifactRepositoryManager.class);
 		IEngine engine = bundle.getService(IEngine.class);
 		IProfileRegistry registry = bundle.getService(IProfileRegistry.class);
+		Map<URI, IMetadataRepository> knownMDRs = new HashMap<URI, IMetadataRepository>();
+		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
 		try
 		{
 			for(Map.Entry<IPath, List<Resolution>> entry : resPerLocation.entrySet())
@@ -171,14 +173,19 @@ public class P2Materializer extends AbstractMaterializer
 					SubMonitor subSubMon = subMon.newChild(800 / ress.size());
 					subSubMon.setWorkRemaining(1000);
 					URI repoURI = cleanURIFromImportType(URI.create(res.getRepository()));
-					if(mdrManager.contains(repoURI))
+					IMetadataRepository mdr = knownMDRs.get(repoURI);
+					if(mdr == null)
 					{
-						if(mdrsToRemove == null)
-							mdrsToRemove = new ArrayList<URI>();
-						mdrsToRemove.add(repoURI);
+						if(mdrManager.contains(repoURI))
+						{
+							if(mdrsToRemove == null)
+								mdrsToRemove = new ArrayList<URI>();
+							mdrsToRemove.add(repoURI);
+						}
+						mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
+						knownMDRs.put(repoURI, mdr);
 					}
 
-					IMetadataRepository mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
 					IComponentIdentifier cid = res.getComponentIdentifier();
 					Version version = new Version(cid.getVersion().toString());
 					VersionRange range = new VersionRange(version, true, version, true);
@@ -203,13 +210,18 @@ public class P2Materializer extends AbstractMaterializer
 					//
 					if(iu.getArtifacts().length > 0)
 					{
-						if(arManager.contains(repoURI))
+						IArtifactRepository ar = knownARs.get(repoURI);
+						if(ar == null)
 						{
-							if(arsToRemove == null)
-								arsToRemove = new ArrayList<URI>();
-							arsToRemove.add(repoURI);
+							if(arManager.contains(repoURI))
+							{
+								if(arsToRemove == null)
+									arsToRemove = new ArrayList<URI>();
+								arsToRemove.add(repoURI);
+							}
+							ar = getArtifactRepository(arManager, repoURI, subSubMon.newChild(250));
+							knownARs.put(repoURI, ar);
 						}
-						getArtifactRepository(arManager, repoURI, subSubMon.newChild(250));
 					}
 					else
 						subSubMon.worked(250);
