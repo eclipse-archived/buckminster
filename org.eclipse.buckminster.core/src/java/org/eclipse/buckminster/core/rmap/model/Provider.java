@@ -445,6 +445,10 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	{
 		if(m_documentation != null)
 			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		if(m_uriMatcher != null)
+			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
+
 		m_uri.toSax(handler, namespace, prefix, TAG_URI);
 
 		if(m_digest != null)
@@ -459,8 +463,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 		if(m_versionConverter != null)
 			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
-		if(m_uriMatcher != null)
-			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
 	}
 
 	@Override
