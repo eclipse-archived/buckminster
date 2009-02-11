@@ -88,6 +88,7 @@ import org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys;
 import org.eclipse.buckminster.jnlp.p2.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizard;
 import org.eclipse.buckminster.jnlp.p2.wizard.ILoginHandler;
+import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -186,8 +187,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private boolean m_draft;
 
 	private Properties m_distroP2Properties;
-	
-	private OPML m_opml;
+
+	private IOPML m_opml;
 
 	private Long m_cspecId;
 
@@ -232,9 +233,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	private String m_authenticatorUserName;
 
 	private String m_authenticatorPassword;
-	
+
 	private IPath m_installLocation;
-	
+
 	private String m_profileName;
 
 	private final List<LearnMoreItem> m_learnMores;
@@ -454,8 +455,8 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			if(getComponentInfoProvider() != null)
 				try
 				{
-					m_infoPageURL = getComponentInfoProvider().prepareHTML(getProperties(),
-							getOPML(), MaterializationUtils.getDefaultDestination(null));
+					m_infoPageURL = getComponentInfoProvider().prepareHTML(getProperties(), getOPML(),
+							MaterializationUtils.getDefaultDestination(null));
 				}
 				catch(Exception e)
 				{
@@ -479,7 +480,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		catch(Exception e)
 		{
 			showOriginalPage(originalPage);
-			
+
 			// final IStatus status = BuckminsterException.wrap(e).getStatus();
 			final IStatus status = BuckminsterException.fromMessage(BuckminsterException.wrap(e),
 					UNIVERSAL_ERROR_MESSAGE).getStatus();
@@ -509,10 +510,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		installDescription.setAgentLocation(getInstallLocation().append("p2")); //$NON-NLS-1$
 		installDescription.setBundleLocation(getInstallLocation());
 		installDescription.getProfileProperties().put(P2PropertyKeys.PROP_PROFILE_NAME, getProfileName());
-			
+
 		return installDescription;
 	}
-	
+
 	public void removeAuthenticatorLoginKey()
 	{
 		m_loginKey = null;
@@ -722,16 +723,16 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		m_distroP2Properties = properties;
 	}
 
-	OPML getOPML()
+	IOPML getOPML()
 	{
 		return m_opml;
 	}
-	
+
 	void setOPML(OPML opml)
 	{
 		m_opml = opml;
 	}
-	
+
 	String[] getMaterializers()
 	{
 		return MATERIALIZERS;
@@ -784,15 +785,15 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						try
 						{
 							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, null);
-							// TODO read OPML
-							m_opml = null;
+							m_opml = m_distroProvider.getOPML(m_draft, m_cspecId);
 						}
 						catch(Exception e)
 						{
 							throw new InvocationTargetException(e);
 						}
 
-						m_installLocation = Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName));
+						m_installLocation = Path.fromOSString(MaterializationUtils
+								.getDefaultDestination(m_artifactName));
 
 						monitor.done();
 					}
@@ -812,6 +813,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 						originalException);
 			}
 		}
+
+		if(m_distroP2Properties.size() == 0)
+			throw new JNLPException("Materialization properties were not retrieved",
+					ERROR_CODE_MISSING_PROPERTY_EXCEPTION);
 	}
 
 	boolean isLoggedIn()
@@ -864,22 +869,22 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	{
 		return m_installLocation;
 	}
-	
+
 	void setInstallLocation(IPath location)
 	{
 		m_installLocation = location;
 	}
-	
+
 	String getProfileName()
 	{
 		return m_profileName;
 	}
-	
+
 	void setProfileName(String profileName)
 	{
 		m_profileName = profileName;
 	}
-	
+
 	public BMProperties getLocalProperties()
 	{
 		return m_localProperties;

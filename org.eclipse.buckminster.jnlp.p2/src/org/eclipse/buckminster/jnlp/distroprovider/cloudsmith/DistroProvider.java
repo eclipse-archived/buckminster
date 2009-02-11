@@ -30,6 +30,8 @@ import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.IAccountService;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.LoginResponse;
+import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.buckminster.opml.model.OPML;
 import org.jabsorb.client.Client;
 import org.jabsorb.client.ErrorResponse;
 import org.jabsorb.client.HTTPSession;
@@ -474,7 +476,6 @@ public class DistroProvider implements IRemoteDistroProvider
 				MaterializationSpec mspec = mspecParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent())));
 				
 				return new Distro(bom, mspec);
-
 			}
 		};
 
@@ -493,6 +494,26 @@ public class DistroProvider implements IRemoteDistroProvider
 				properties.putAll(m_remoteDistroService.getDistroP2Properties(draft, cspecId, distroId));
 				
 				return properties;
+			}
+		};
+
+		return method.run();
+	}
+
+	public IOPML getOPML(final boolean draft, final Long cspecId) throws Exception
+	{
+		MethodWrapper<IOPML> method = new MethodWrapper<IOPML>()
+		{
+			@Override
+			public IOPML process() throws Exception
+			{
+				byte[] opmlCompressedBytes = m_remoteDistroService.getOPML(draft, cspecId);
+				
+				if(opmlCompressedBytes == null)
+					return null;
+				
+				IParser<OPML> opmlParser = CorePlugin.getDefault().getParserFactory().getOPMLParser(true);
+				return opmlParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(opmlCompressedBytes)));
 			}
 		};
 

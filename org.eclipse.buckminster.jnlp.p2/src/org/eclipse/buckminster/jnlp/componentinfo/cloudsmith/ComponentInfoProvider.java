@@ -210,7 +210,7 @@ public class ComponentInfoProvider implements IComponentInfoProvider
 	{
 		Element tr = null;
 		
-		if(outline.getType() == OutlineType.RSS)
+		if(outline.getType() == OutlineType.RSS || outline.getType() == OutlineType.ATOM)
 		{
 			tr = m_xml.createElement(TAG_TR);
 			

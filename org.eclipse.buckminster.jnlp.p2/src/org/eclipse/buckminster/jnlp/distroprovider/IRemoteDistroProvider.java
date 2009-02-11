@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.eclipse.buckminster.opml.IOPML;
 
 /**
  * A distro provider - you can register, login, logout, get a distro, ...
@@ -123,4 +124,6 @@ public interface IRemoteDistroProvider
 	Distro getDistro(boolean draft, Long cspecId, Long distroId) throws Exception;
 	
 	Properties getDistroP2Properties(boolean draft, Long cspecId, Long distroId) throws Exception;
+	
+	IOPML getOPML(boolean draft, Long cspecId) throws Exception;
 }

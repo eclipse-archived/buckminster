@@ -24,4 +24,6 @@ public interface IDistroService
 	DistroContent getDistro(boolean draft, Long cspecId, Long distroId);
 	
 	Map<String, String> getDistroP2Properties(boolean draft, Long cspecId, Long distroId);
+	
+	byte[] getOPML(boolean draft, Long cspecId);
 }
