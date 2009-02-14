@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 import org.osgi.framework.BundleException;
@@ -87,6 +88,10 @@ public class ConvertSiteToRuntime
 					}
 					return true;
 				}
+
+				value = attrs.getValue(IPDEBuildConstants.ECLIPSE_BUNDLE_SHAPE);
+				if(value != null)
+					return value.equals("dir"); //$NON-NLS-1$
 			}
 			finally
 			{

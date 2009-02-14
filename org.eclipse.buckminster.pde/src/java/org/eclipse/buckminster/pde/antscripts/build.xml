@@ -247,6 +247,11 @@
 		<buckminster.consolidateBundle inputFile="${sp:manifest}" outputFile="${sp:action.output}" propertiesFile="${sp:properties}"/>
 	</target>
 
+	<target name="create.source.manifest" depends="create.output.dir">
+		<property name="sp:properties" value=""/>
+		<buckminster.consolidateSourceBundle inputFile="${sp:manifest}" outputFile="${sp:action.output}" propertiesFile="${sp:properties}"/>
+	</target>
+
 	<target name="expand.feature.version" depends="create.output.dir">
 		<property name="sp:properties" value=""/>
 		<property name="generateVersionSuffix" value="true"/>

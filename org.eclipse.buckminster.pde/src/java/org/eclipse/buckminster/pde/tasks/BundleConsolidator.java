@@ -69,10 +69,11 @@ public class BundleConsolidator extends VersionConsolidator
 		Manifest manifest = new Manifest(new ByteArrayInputStream(m_bytes));
 		Attributes a = manifest.getMainAttributes();
 		String symbolicName = a.getValue(Constants.BUNDLE_SYMBOLICNAME);
+		String id = null;
+		IVersion newVersion = null;
 		boolean changed = false;
 		if(symbolicName != null)
 		{
-			String id;
 			try
 			{
 				ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, symbolicName);
@@ -90,7 +91,7 @@ public class BundleConsolidator extends VersionConsolidator
 				{
 					IVersion version = VersionFactory.OSGiType.fromString(versionStr);
 					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
-					IVersion newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier> emptyList());
+					newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier> emptyList());
 
 					if(!(newVersion == null || version.equals(newVersion)))
 					{
@@ -103,6 +104,9 @@ public class BundleConsolidator extends VersionConsolidator
 				}
 			}
 		}
+
+		// mind the order of the operands
+		changed = treatManifest(manifest, id, newVersion) || changed;
 
 		OutputStream out = null;
 		try
@@ -120,5 +124,22 @@ public class BundleConsolidator extends VersionConsolidator
 		{
 			IOUtils.close(out);
 		}
+	}
+
+	/**
+	 * Subclasses may override and treat the manifest in whichever way they like, as long as it stays valid.
+	 * 
+	 * @param manifest
+	 *            The manifest to treat. Never null.
+	 * @param symbolicName
+	 *            The symbolicName of the bundle, aka bundle ID. May be null.
+	 * @param version
+	 *            The (new) version of the bundle. May be null.
+	 * @return Whether the method has changed the manifest or not.
+	 */
+	protected boolean treatManifest(Manifest manifest, String symbolicName, IVersion version)
+	{
+		// empty default implementation
+		return false;
 	}
 }

@@ -170,6 +170,15 @@ public class CSpecFromSource extends CSpecGenerator
 			if(cpe.getEntryKind() != IClasspathEntry.CPE_SOURCE)
 				continue;
 
+			// add the class path entry to build sources
+			IPath cpePath = asProjectRelativeFolder(cpe.getPath(), projectRootReplacement);
+			ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE + '_' + cnt++, false,
+					WellKnownExports.JAVA_SOURCES, projectRootReplacement[0]);
+			ab.addPath(cpePath);
+			if(ebSrcBld == null)
+				ebSrcBld = getGroupEclipseBuildSource(true);
+			ebSrcBld.addLocalPrerequisite(ab);
+
 			// The output declared in the source entry is a product of the
 			// Eclipse build. If there's no output declared, we use the
 			// default.
@@ -203,20 +212,12 @@ public class CSpecFromSource extends CSpecGenerator
 					absPath = null;
 				}
 
-				ArtifactBuilder ab = eclipseBuild.addProductArtifact(getArtifactName(output), false,
+				ArtifactBuilder ab2 = eclipseBuild.addProductArtifact(getArtifactName(output), false,
 						WellKnownExports.JAVA_BINARIES, base);
 				if(absPath != null)
-					ab.addPath(absPath);
-				eclipseBuildProducts.put(output, ab);
+					ab2.addPath(absPath);
+				eclipseBuildProducts.put(output, ab2);
 			}
-
-			IPath cpePath = asProjectRelativeFolder(cpe.getPath(), projectRootReplacement);
-			ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE + '_' + cnt++, false,
-					WellKnownExports.JAVA_SOURCES, projectRootReplacement[0]);
-			ab.addPath(cpePath);
-			if(ebSrcBld == null)
-				ebSrcBld = getGroupEclipseBuildSource(true);
-			ebSrcBld.addLocalPrerequisite(ab);
 		}
 		if(ebSrcBld != null)
 			normalizeGroup(ebSrcBld);
@@ -323,6 +324,7 @@ public class CSpecFromSource extends CSpecGenerator
 			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
 
 			// Add the action that will create the manifest copy with the version expanded
+			// Another action that will do the same for the manifest used for the source bundle
 			//
 			IPath manifestPath = new Path(MANIFEST);
 			ArtifactBuilder rawManifest = cspec.addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null, manifestFolder);
@@ -337,6 +339,18 @@ public class CSpecFromSource extends CSpecGenerator
 			versionExpansionAction.setProductBase(OUTPUT_DIR_TEMP);
 			versionExpansionAction.addProductPath(manifestPath);
 			manifest = versionExpansionAction;
+
+			// this is for the source manifest
+			ActionBuilder sourceManifestAction = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_MANIFEST,
+					false);
+
+			sourceManifestAction.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
+			sourceManifestAction.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
+
+			sourceManifestAction.setProductAlias(ALIAS_OUTPUT);
+			sourceManifestAction.setProductBase(OUTPUT_DIR_TEMP);
+			IPath sourceManifestPath = new Path(SOURCE_MANIFEST);
+			sourceManifestAction.addProductPath(sourceManifestPath);
 		}
 		else
 		{
@@ -427,6 +441,29 @@ public class CSpecFromSource extends CSpecGenerator
 				jarContents.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES);
 		}
 
+		GroupBuilder srcIncludesSource = null;
+		IBuildEntry srcIncludesEntry = build.getEntry(IBuildEntry.SRC_INCLUDES);
+		if(srcIncludesEntry != null)
+		{
+			cnt = 0;
+			for(String token : srcIncludesEntry.getTokens())
+			{
+				if(token.length() == 0)
+					continue;
+
+				IPath srcInclude = new Path(token);
+
+				if(srcIncludesSource == null)
+					srcIncludesSource = cspec.addGroup(IBuildEntry.SRC_INCLUDES, false);
+
+				IPath biPath = resolveLink(srcInclude, projectRootReplacement);
+				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.SRC_INCLUDES + '_' + cnt++, false, null,
+						projectRootReplacement[0]);
+				ab.addPath(biPath);
+				srcIncludesSource.addLocalPrerequisite(ab);
+			}
+		}
+
 		if(simpleBundle)
 		{
 			// These products from the eclipse.build will contain the .class files for the bundle
@@ -477,6 +514,23 @@ public class CSpecFromSource extends CSpecGenerator
 		}
 		bundleAndFragments.addLocalPrerequisite(buildPlugin);
 		bundleJars.addLocalPrerequisite(bundleAndFragments);
+
+		if(srcIncludesSource != null)
+		{
+			normalizeGroup(srcIncludesSource);
+
+			// Add Action to create a source bundle jar
+			ActionBuilder sourceBundleAction = addAntAction(ATTRIBUTE_SOURCE_BUNDLE_JAR, TASK_CREATE_BUNDLE_JAR, true);
+			sourceBundleAction.addLocalPrerequisite(IBuildEntry.SRC_INCLUDES, ALIAS_REQUIREMENTS);
+			sourceBundleAction.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
+			sourceBundleAction.setProductAlias(ALIAS_OUTPUT);
+			sourceBundleAction.setProductBase(OUTPUT_DIR_JAR);
+		}
+		else
+		{
+			// Add an empty group so that it can be referenced
+			cspec.addGroup(ATTRIBUTE_SOURCE_BUNDLE_JAR, true);
+		}
 
 		addProducts(MonitorUtils.subMonitor(monitor, 20));
 		monitor.done();

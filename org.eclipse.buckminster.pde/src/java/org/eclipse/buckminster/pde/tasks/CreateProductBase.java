@@ -806,7 +806,7 @@ public class CreateProductBase
 		for(int idx = 0; idx < top; ++idx)
 		{
 			String id = pluginModels.get(idx).getSymbolicName();
-			if("org.eclipse.update.configurator".equals(id))
+			if("org.eclipse.update.configurator".equals(id)) //$NON-NLS-1$
 			{
 				dynamicDiscovery = true;
 				break;

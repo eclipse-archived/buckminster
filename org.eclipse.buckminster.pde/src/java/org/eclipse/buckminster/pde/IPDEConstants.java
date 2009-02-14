@@ -61,6 +61,8 @@ public interface IPDEConstants
 	 */
 	static final String ATTRIBUTE_BUNDLE_JAR = "bundle.jar"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_SOURCE_BUNDLE_JAR = "source.bundle.jar"; //$NON-NLS-1$
+
 	/**
 	 * Denotes a fully deployable bundle in jar format plus fragments from the target platform
 	 */
@@ -100,6 +102,8 @@ public interface IPDEConstants
 
 	static final String ATTRIBUTE_MANIFEST = "manifest"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_SOURCE_MANIFEST = "source.manifest"; //$NON-NLS-1$
+
 	/**
 	 * Appoints all files that PDE features wants to copy to the root of a product they are included in.
 	 */
@@ -131,6 +135,8 @@ public interface IPDEConstants
 	static final String HINT_PERMISSIONS = "permissions"; //$NON-NLS-1$
 
 	static final String MANIFEST = IPDEBuildConstants.MANIFEST;
+
+	static final String SOURCE_MANIFEST = "SOURCE_" + IPDEBuildConstants.MANIFEST; //$NON-NLS-1$
 
 	static final IPath OUTPUT_DIR = new Path(KeyConstants.ACTION_OUTPUT_REF + '/');
 
@@ -184,9 +190,13 @@ public interface IPDEConstants
 
 	static final String TASK_UNZIP = "unzip"; //$NON-NLS-1$
 
+	static final String TASK_CREATE_SOURCE_MANIFEST = "create.source.manifest"; //$NON-NLS-1$
+
 	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
 
 	static final String TOP_FOLDER_SUFFIX = ".topfolder"; //$NON-NLS-1$
+
+	static final String MANIFEST_HEADER_SOURCE_BUNDLE = "Eclipse-SourceBundle"; //$NON-NLS-1$
 
 	public static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
 }

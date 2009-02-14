@@ -98,6 +98,10 @@
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.consolidateBundle"/>
   <antTask
+        class="org.eclipse.buckminster.pde.ant.SourceBundleConsolidatorTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.consolidateSourceBundle"/>
+  <antTask
         class="org.eclipse.buckminster.pde.ant.ImportBundleTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.importBundle"/>
