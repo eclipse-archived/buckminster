@@ -20,6 +20,8 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
+import org.eclipse.buckminster.core.metadata.MissingComponentException;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -176,9 +178,18 @@ public class Group extends TopLevelAttribute implements IGroup
 		int idx = m_prerequisites.size();
 		while(--idx >= 0)
 		{
-			Attribute attr = m_prerequisites.get(idx).getReferencedAttribute(cspec, ctx);
-			if(attr != null && attr.isProducedByActions(ctx))
-				return true;
+			Prerequisite pq = m_prerequisites.get(idx);
+			try
+			{
+				Attribute attr = pq.getReferencedAttribute(cspec, ctx);
+				if(attr != null && attr.isProducedByActions(ctx))
+					return true;
+			}
+			catch(MissingComponentException e)
+			{
+				return CSpec.SELF_ARTIFACT.equals(pq.getAttribute())
+						&& !WorkspaceInfo.getGenerators(pq.getComponentName()).isEmpty();
+			}
 		}
 		return false;
 	}

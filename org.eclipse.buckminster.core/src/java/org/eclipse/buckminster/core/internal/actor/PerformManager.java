@@ -30,8 +30,13 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
+import org.eclipse.buckminster.core.metadata.AmbigousComponentException;
+import org.eclipse.buckminster.core.metadata.MissingComponentException;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IContainer;
@@ -84,7 +89,64 @@ public class PerformManager implements IPerformManager
 			CSpec cspec = attribute.getCSpec();
 			for(Prerequisite preq : attribute.getPrerequisites())
 			{
-				Attribute ag = preq.getReferencedAttribute(cspec, ctx);
+				Attribute ag = null;
+				try
+				{
+					ag = preq.getReferencedAttribute(cspec, ctx);
+				}
+				catch(MissingComponentException e)
+				{
+					// The component might need to be generated in which case it's
+					// generator must be built.
+					//
+					if(!CSpec.SELF_ARTIFACT.equals(preq.getAttribute()))
+						//
+						// A reference to a generated attribute can only reference the
+						// component as a whole (i.e. it's 'self' attribute) since there's
+						// no way of knowing what other attributes it may have.
+						//
+						throw e;
+
+					List<Generator> generators = WorkspaceInfo.getGenerators(preq.getComponentName());
+					if(generators.size() == 0)
+						//
+						// There is no known generator for the component
+						//
+						throw e;
+
+					// If several candidates are found, we prefer the cspec that requested the
+					// attribute if it is also a generator.
+					//
+					CSpec generatorCSpec = null;
+					String generatorAttribute = null;
+					for(Generator generator : generators)
+					{
+						CSpec candidate = WorkspaceInfo.getResolution(
+								new ComponentRequest(generator.getComponent(), null, null), false).getCSpec();
+
+						if(candidate.equals(cspec))
+						{
+							generatorCSpec = candidate;
+							generatorAttribute = generator.getAttribute();
+							break;
+						}
+
+						if(generatorCSpec != null)
+							//
+							// We find a generator for the desired component in more then
+							// one other component. This is an ambiguity that we cannot resolve.
+							//
+							throw new AmbigousComponentException(generator.getComponent());
+
+						generatorCSpec = candidate;
+						generatorAttribute = generator.getAttribute();
+					}
+
+					// Add the attribute that represents the generated component
+					//
+					addAttributeChildren(ctx, generatorCSpec.getAttribute(generatorAttribute), seen, ordered);
+				}
+
 				if(ag != null)
 					addAttributeChildren(ctx, ag, seen, ordered);
 			}
