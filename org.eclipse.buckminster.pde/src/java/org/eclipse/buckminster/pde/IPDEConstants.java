@@ -28,6 +28,8 @@ public interface IPDEConstants
 
 	static final String ACTION_COPY_PLUGINS = "copy.plugins"; //$NON-NLS-1$
 
+	static final String ACTION_COPY_SOURCE_PLUGINS = "copy.source.plugins"; //$NON-NLS-1$
+
 	/**
 	 * The feature in a format suitable for an update site. No sub-features nor bundles are included. The base of the
 	 * attribute
@@ -36,10 +38,14 @@ public interface IPDEConstants
 	 */
 	static final String ATTRIBUTE_FEATURE_JAR = "feature.jar"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_SOURCE_FEATURE_JAR = "source.feature.jar"; //$NON-NLS-1$
+
 	/**
 	 * Denotes group consisting of this feature in jar format and all included features, also in jar format.
 	 */
 	static final String ATTRIBUTE_FEATURE_JARS = "feature.jars"; //$NON-NLS-1$
+
+	static final String ATTRIBUTE_SOURCE_FEATURE_JARS = "source.feature.jars"; //$NON-NLS-1$
 
 	/**
 	 * Denotes group consisting of this feature and all included features and bundles in a format sutiable for
@@ -49,6 +55,8 @@ public interface IPDEConstants
 	 *        <code>features</code> and <code>plugins</code> folders.
 	 */
 	static final String ATTRIBUTE_FEATURE_EXPORTS = "feature.exports"; //$NON-NLS-1$
+
+	static final String ATTRIBUTE_FEATURE_EXPORTS_WITH_SOURCE = "feature.exports.with.source"; //$NON-NLS-1$
 
 	/**
 	 * The attribut that, when triggered, will clean out all built artifacts including the Eclipse build. This attribute
@@ -68,6 +76,8 @@ public interface IPDEConstants
 	 */
 	static final String ATTRIBUTE_BUNDLE_AND_FRAGMENTS = "bundle.and.fragments"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE = "bundle.and.fragments.source"; //$NON-NLS-1$
+
 	/**
 	 * Denotes a fully deployable bundle in jar format imported into a wrapper using import
 	 */
@@ -78,6 +88,11 @@ public interface IPDEConstants
 	 * also in jar format.
 	 */
 	static final String ATTRIBUTE_BUNDLE_JARS = "bundle.jars"; //$NON-NLS-1$
+
+	/**
+	 * Denotes a list consisting of all source bundle jar files provided by a feature.
+	 */
+	static final String ATTRIBUTE_SOURCE_BUNDLE_JARS = "source.bundle.jars"; //$NON-NLS-1$
 
 	/**
 	 * Denotes a bundle in unpacked format
@@ -115,6 +130,8 @@ public interface IPDEConstants
 	 * Appoints an action that will copy the fragments for the current component from the workspace or target platform
 	 */
 	static final String ATTRIBUTE_TARGET_FRAGMENTS = "target.fragments"; //$NON-NLS-1$
+
+	static final String ATTRIBUTE_TARGET_FRAGMENTS_SOURCE = "target.fragments.source"; //$NON-NLS-1$
 
 	static final String BUILD_FILE_ID = "buckminster.pdetasks"; //$NON-NLS-1$
 
@@ -165,6 +182,8 @@ public interface IPDEConstants
 	static final String TASK_EXPAND_BUNDLE_VERSION = "expand.bundle.version"; //$NON-NLS-1$
 
 	static final String TASK_EXPAND_FEATURE_VERSION = "expand.feature.version"; //$NON-NLS-1$
+
+	static final String TASK_CREATE_SOURCE_FEATURE = "create.source.feature"; //$NON-NLS-1$
 
 	static final String TASK_CREATE_BUNDLE_JAR = "create.bundle.jar"; //$NON-NLS-1$
 

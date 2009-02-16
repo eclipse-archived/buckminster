@@ -102,6 +102,10 @@
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.consolidateSourceBundle"/>
   <antTask
+        class="org.eclipse.buckminster.pde.ant.SourceFeatureCreatorTask"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.createSourceFeature"/>
+  <antTask
         class="org.eclipse.buckminster.pde.ant.ImportBundleTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.importBundle"/>

@@ -86,6 +86,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 {
 	public static final IPath OUTPUT_DIR_JAR = OUTPUT_DIR.append("jar"); //$NON-NLS-1$
 
+	public static final IPath OUTPUT_DIR_SOURCE_JAR = OUTPUT_DIR.append("source.jar"); //$NON-NLS-1$
+
 	public static final IPath OUTPUT_DIR_FRAGMENTS = OUTPUT_DIR.append("fragments"); //$NON-NLS-1$
 
 	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site"); //$NON-NLS-1$
@@ -279,6 +281,19 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		//
 		ActionBuilder copyPlugins = addAntAction(ACTION_COPY_PLUGINS, TASK_COPY_GROUP, false);
 		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS);
+		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+		copyPlugins.setProductAlias(ALIAS_OUTPUT);
+		copyPlugins.setProductBase(OUTPUT_DIR_SITE.append(PLUGINS_FOLDER));
+		copyPlugins.setUpToDatePolicy(UpToDatePolicy.MAPPER);
+		return copyPlugins;
+	}
+
+	protected ActionBuilder createCopySourcePluginsAction() throws CoreException
+	{
+		// Copy all plug-ins that all features (including this one) is including.
+		//
+		ActionBuilder copyPlugins = addAntAction(ACTION_COPY_SOURCE_PLUGINS, TASK_COPY_GROUP, false);
+		copyPlugins.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyPlugins.setProductAlias(ALIAS_OUTPUT);
 		copyPlugins.setProductBase(OUTPUT_DIR_SITE.append(PLUGINS_FOLDER));

@@ -38,6 +38,7 @@ import org.eclipse.buckminster.core.reader.ProjectDescReader;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.jdt.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.internal.resources.LinkDescription;
@@ -510,10 +511,24 @@ public class CSpecFromSource extends CSpecGenerator
 			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
 			copyTargetFragments.addLocalPrerequisite(getAttributeEclipseBuild());
 			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.ACTOR);
+			copyTargetFragments.addProperty(FragmentsActor.PROP_FRAGMENT_ATTRIBUTE, ATTRIBUTE_BUNDLE_JAR, false);
 			bundleAndFragments.addLocalPrerequisite(copyTargetFragments);
 		}
 		bundleAndFragments.addLocalPrerequisite(buildPlugin);
 		bundleJars.addLocalPrerequisite(bundleAndFragments);
+
+		GroupBuilder bundleAndFragmentsSource = cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE, true);
+		if(!(model instanceof IFragmentModel))
+		{
+			ActionBuilder copyTargetFragmentsSource = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS_SOURCE, false,
+					ACTOR_COPY_TARGET_FRAGMENTS, false);
+			copyTargetFragmentsSource.setProductAlias(ALIAS_OUTPUT);
+			copyTargetFragmentsSource.setProductBase(OUTPUT_DIR_FRAGMENTS);
+			copyTargetFragmentsSource.setUpToDatePolicy(UpToDatePolicy.ACTOR);
+			copyTargetFragmentsSource.addProperty(FragmentsActor.PROP_FRAGMENT_ATTRIBUTE, ATTRIBUTE_SOURCE_BUNDLE_JAR,
+					false);
+			bundleAndFragmentsSource.addLocalPrerequisite(copyTargetFragmentsSource);
+		}
 
 		if(srcIncludesSource != null)
 		{
@@ -524,7 +539,8 @@ public class CSpecFromSource extends CSpecGenerator
 			sourceBundleAction.addLocalPrerequisite(IBuildEntry.SRC_INCLUDES, ALIAS_REQUIREMENTS);
 			sourceBundleAction.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
 			sourceBundleAction.setProductAlias(ALIAS_OUTPUT);
-			sourceBundleAction.setProductBase(OUTPUT_DIR_JAR);
+			sourceBundleAction.setProductBase(OUTPUT_DIR_SOURCE_JAR);
+			bundleAndFragmentsSource.addLocalPrerequisite(sourceBundleAction);
 		}
 		else
 		{

@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.commands;
 
+import java.util.List;
+
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.cmdline.Option;
@@ -41,9 +43,12 @@ public class GetPreference extends AbstractCommand
 
 	private String m_default;
 
-	protected OptionDescriptor[] getOptionDescriptors() throws Exception
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
-		return new OptionDescriptor[] { TEST_DESCRIPTOR, DEFAULT_DESCRIPTOR, ONLYVALUE_DESCRIPTOR };
+		appendHere.add(TEST_DESCRIPTOR);
+		appendHere.add(DEFAULT_DESCRIPTOR);
+		appendHere.add(ONLYVALUE_DESCRIPTOR);
 	}
 
 	@Override

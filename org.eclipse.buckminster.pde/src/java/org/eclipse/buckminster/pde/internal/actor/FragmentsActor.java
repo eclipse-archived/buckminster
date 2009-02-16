@@ -53,6 +53,8 @@ public class FragmentsActor extends AbstractActor
 {
 	public static final String ID = "copyTargetFragments"; //$NON-NLS-1$
 
+	public static final String PROP_FRAGMENT_ATTRIBUTE = "fragment.attribute"; //$NON-NLS-1$
+
 	@Override
 	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
 	{
@@ -64,11 +66,11 @@ public class FragmentsActor extends AbstractActor
 		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
-		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
-		if(launcherPlugin == null)
+		IPluginModelBase plugin = PluginRegistry.findModel(cid.getName());
+		if(plugin == null)
 			return true;
 
-		BundleDescription bundle = launcherPlugin.getBundleDescription();
+		BundleDescription bundle = plugin.getBundleDescription();
 		if(bundle == null)
 			return true;
 
@@ -152,6 +154,10 @@ public class FragmentsActor extends AbstractActor
 			return Status.OK_STATUS;
 		}
 
+		String fragmentAttribute = (String)properties.get(PROP_FRAGMENT_ATTRIBUTE);
+		if(fragmentAttribute == null)
+			fragmentAttribute = IPDEConstants.ATTRIBUTE_BUNDLE_JAR;
+
 		monitor.beginTask(null, 100 + 100 * fragments.length);
 		IPerformManager performManager = CorePlugin.getPerformManager();
 		try
@@ -196,7 +202,7 @@ public class FragmentsActor extends AbstractActor
 				// (if it indeed is an action)
 				//
 				CSpec cspec = res.getCSpec();
-				Attribute bundleJar = cspec.getAttribute(IPDEConstants.ATTRIBUTE_BUNDLE_JAR);
+				Attribute bundleJar = cspec.getAttribute(fragmentAttribute);
 				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(), MonitorUtils
 						.subMonitor(monitor, 70));
 

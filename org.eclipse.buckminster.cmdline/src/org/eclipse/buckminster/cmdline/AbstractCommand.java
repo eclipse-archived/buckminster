@@ -31,33 +31,35 @@ abstract public class AbstractCommand
 
 	private boolean m_addHelpFlags;
 
-	final int basicRun(String calledUsingName, CommandInfo cmdInfo, String[] commandArgs) throws Exception
+	public ProgressProvider getProgressProvider()
 	{
-		m_calledUsingName = calledUsingName;
-		m_cmdInfo = cmdInfo;
-
-		ArrayList<OptionDescriptor> optionDescriptors = new ArrayList<OptionDescriptor>();
-		this.getOptionDescriptors(optionDescriptors);
-		if(m_addHelpFlags)
-			optionDescriptors.add(s_helpDescriptor);
-
-		try
+		return new ProgressProvider()
 		{
-			boolean helpRequested = this.parseOptions(commandArgs, optionDescriptors);
-			if(helpRequested)
+			@Override
+			public IProgressMonitor createMonitor(Job job)
 			{
-				this.help();
-				return Headless.EXIT_OK;
+				return this.getDefaultMonitor();
 			}
-			return this.run(this.getProgressProvider().getDefaultMonitor());
-		}
-		catch(UsageException e)
-		{
-			System.err.println(e.getMessage());
-			if(e.isEmitHelp())
-				this.help();
-			return Headless.EXIT_FAIL;
-		}
+		};
+	}
+
+	public void init(boolean addHelpFlags)
+	{
+		m_addHelpFlags = addHelpFlags;
+	}
+
+	/**
+	 * Internal run command. Assumes that all options has been set.
+	 * 
+	 * @param cmdName
+	 *            The name of the command.
+	 * @return the exit code.
+	 */
+	public int run(String cmdName) throws Exception
+	{
+		m_calledUsingName = cmdName;
+		m_cmdInfo = CommandInfo.getCommand(cmdName);
+		return this.run(this.getProgressProvider().getDefaultMonitor());
 	}
 
 	protected void beginOptionProcessing() throws Exception
@@ -96,18 +98,6 @@ abstract public class AbstractCommand
 	{
 	}
 
-	public ProgressProvider getProgressProvider()
-	{
-		return new ProgressProvider()
-		{
-			@Override
-			public IProgressMonitor createMonitor(Job job)
-			{
-				return this.getDefaultMonitor();
-			}
-		};
-	}
-
 	protected void handleOption(Option option) throws Exception
 	{
 		// noop
@@ -142,9 +132,35 @@ abstract public class AbstractCommand
 		}
 	}
 
-	public void init(boolean addHelpFlags)
+	protected abstract int run(IProgressMonitor monitor) throws Exception;
+
+	final int basicRun(String calledUsingName, CommandInfo cmdInfo, String[] commandArgs) throws Exception
 	{
-		m_addHelpFlags = addHelpFlags;
+		m_calledUsingName = calledUsingName;
+		m_cmdInfo = cmdInfo;
+
+		ArrayList<OptionDescriptor> optionDescriptors = new ArrayList<OptionDescriptor>();
+		this.getOptionDescriptors(optionDescriptors);
+		if(m_addHelpFlags)
+			optionDescriptors.add(s_helpDescriptor);
+
+		try
+		{
+			boolean helpRequested = this.parseOptions(commandArgs, optionDescriptors);
+			if(helpRequested)
+			{
+				this.help();
+				return Headless.EXIT_OK;
+			}
+			return this.run(this.getProgressProvider().getDefaultMonitor());
+		}
+		catch(UsageException e)
+		{
+			System.err.println(e.getMessage());
+			if(e.isEmitHelp())
+				this.help();
+			return Headless.EXIT_FAIL;
+		}
 	}
 
 	private boolean parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception
@@ -165,21 +181,5 @@ abstract public class AbstractCommand
 		this.endOptionProcessing();
 		this.handleUnparsed(pr.getUnparsed());
 		return helpRequested;
-	}
-
-	protected abstract int run(IProgressMonitor monitor) throws Exception;
-
-	/**
-	 * Internal run command. Assumes that all options has been set.
-	 * 
-	 * @param cmdName
-	 *            The name of the command.
-	 * @return the exit code.
-	 */
-	public int run(String cmdName) throws Exception
-	{
-		m_calledUsingName = cmdName;
-		m_cmdInfo = CommandInfo.getCommand(cmdName);
-		return this.run(this.getProgressProvider().getDefaultMonitor());
 	}
 }

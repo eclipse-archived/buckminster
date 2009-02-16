@@ -40,7 +40,11 @@ public class CSpecFromSource extends CSpecGenerator
 {
 	private static final String ACTION_COPY_FEATURES = "copy.features"; //$NON-NLS-1$
 
+	private static final String ACTION_COPY_SOURCE_FEATURES = "copy.source.features"; //$NON-NLS-1$
+
 	private static final String ATTRIBUTE_FEATURE_REFS = "feature.references"; //$NON-NLS-1$
+
+	private static final String ATTRIBUTE_SOURCE_FEATURE_REFS = "source.feature.references"; //$NON-NLS-1$
 
 	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root"; //$NON-NLS-1$
 
@@ -81,6 +85,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// the group will reference the features where they are found.
 		//
 		GroupBuilder featureRefs = cspec.addGroup(ATTRIBUTE_FEATURE_REFS, true); // without self
+		cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_REFS, true);
 
 		// All bundles imported by this feature and all included features. Does
 		// not imply copying since the group will reference the bundles where they
@@ -88,11 +93,16 @@ public class CSpecFromSource extends CSpecGenerator
 		//
 		cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
 
+		// Source of all bundles imported by this feature and all included features.
+		//
+		cspec.addGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS, true);
+
 		// This feature, its imported bundles, all included features, and their
 		// imported bundles copied into a site structure (with a plugins and a
 		// features folder).
 		//
 		cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
+		cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS_WITH_SOURCE, true);
 
 		cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
 		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN); //$NON-NLS-1$
@@ -186,7 +196,10 @@ public class CSpecFromSource extends CSpecGenerator
 
 		createFeatureManifestAction();
 		createFeatureJarAction();
+		createFeatureSourceManifestAction();
+		createFeatureSourceJarAction();
 		createFeatureExportsAction();
+		createFeatureExportsWithSourceAction();
 		addProducts(MonitorUtils.subMonitor(monitor, 80));
 		MonitorUtils.done(monitor);
 	}
@@ -215,7 +228,9 @@ public class CSpecFromSource extends CSpecGenerator
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder featureRefs = cspec.getRequiredGroup(ATTRIBUTE_FEATURE_REFS);
+		GroupBuilder featureSourceRefs = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		GroupBuilder productRootFiles = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES);
 		for(IFeatureChild feature : features)
 		{
@@ -225,7 +240,9 @@ public class CSpecFromSource extends CSpecGenerator
 
 			cspec.addDependency(dep);
 			featureRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_FEATURE_JARS);
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 			productRootFiles.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
 		}
@@ -246,14 +263,10 @@ public class CSpecFromSource extends CSpecGenerator
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 		for(IFeaturePlugin plugin : plugins)
 		{
-			// This is a quick and dirty solution. If the plugin is found in the
-			// target platform, include it. If not, don't.
-			// TODO: The correct solution is to always include it but to make
-			// it os/ws/arch dependent. Awaits implementation
-			//
 			if(!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch)))
 				if(manager.findEntry(plugin.getId()) == null)
 					continue;
@@ -266,6 +279,7 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
 		}
 	}
@@ -316,11 +330,34 @@ public class CSpecFromSource extends CSpecGenerator
 		return copyFeatures;
 	}
 
+	private ActionBuilder createCopySourceFeaturesAction() throws CoreException
+	{
+		// Copy all features (including this one) to the features directory.
+		//
+		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_SOURCE_FEATURES, TASK_COPY_GROUP, false);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JARS);
+		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+		copyFeatures.setProductAlias(ALIAS_OUTPUT);
+		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));
+		copyFeatures.setUpToDatePolicy(UpToDatePolicy.MAPPER);
+		return copyFeatures;
+	}
+
 	private void createFeatureExportsAction() throws CoreException
 	{
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
 		featureExports.addLocalPrerequisite(createCopyPluginsAction());
+		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
+	}
+
+	private void createFeatureExportsWithSourceAction() throws CoreException
+	{
+		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS_WITH_SOURCE);
+		featureExports.addLocalPrerequisite(ACTION_COPY_FEATURES);
+		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);
+		featureExports.addLocalPrerequisite(createCopySourceFeaturesAction());
+		featureExports.addLocalPrerequisite(createCopySourcePluginsAction());
 		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
 	}
 
@@ -367,6 +404,45 @@ public class CSpecFromSource extends CSpecGenerator
 		manifest.setProductAlias(ALIAS_OUTPUT);
 		manifest.setProductBase(OUTPUT_DIR_TEMP);
 		manifest.addProductPath(featureFile);
+	}
+
+	private void createFeatureSourceJarAction() throws CoreException
+	{
+		CSpecBuilder cspec = getCSpec();
+
+		// Create the action that builds the jar file with all source bundles for the feature
+		//
+		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_SOURCE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
+		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
+
+		// We use the same content as the original feature (i.e. license, etc.).
+		//
+		if(cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
+			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
+		featureJarBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+
+		featureJarBuilder.setProductAlias(ALIAS_OUTPUT);
+		featureJarBuilder.setProductBase(OUTPUT_DIR_SOURCE_JAR);
+		featureJarBuilder.setUpToDatePolicy(UpToDatePolicy.COUNT);
+		featureJarBuilder.setProductFileCount(1);
+
+		GroupBuilder featureJars = cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_JARS, true); // including self
+		featureJars.addLocalPrerequisite(featureJarBuilder);
+		featureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
+	}
+
+	private void createFeatureSourceManifestAction() throws CoreException
+	{
+		// Create the action that creates the version expanded feature.xml for features
+		// and bundles that contains source code.
+		//
+		ActionBuilder manifest = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_FEATURE, true);
+		manifest.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
+		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS, ALIAS_BUNDLES);
+		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS, ALIAS_FEATURES);
+		manifest.setProductAlias(ALIAS_OUTPUT);
+		manifest.setProductBase(OUTPUT_DIR_TEMP);
+		manifest.addProductPath(new Path("source." + FEATURE_FILE)); //$NON-NLS-1$
 	}
 
 	private void createRootsArtifact(String filesAndFolders, Filter filter) throws CoreException

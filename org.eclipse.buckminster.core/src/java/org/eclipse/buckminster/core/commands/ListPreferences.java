@@ -35,9 +35,10 @@ public class ListPreferences extends AbstractCommand
 
 	private String m_pattern = null;
 
-	protected OptionDescriptor[] getOptionDescriptors() throws Exception
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
-		return new OptionDescriptor[] { TEST_DESCRIPTOR };
+		appendHere.add(TEST_DESCRIPTOR);
 	}
 
 	@Override

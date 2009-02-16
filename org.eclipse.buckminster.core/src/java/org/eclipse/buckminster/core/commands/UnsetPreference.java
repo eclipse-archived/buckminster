@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.core.commands;
 
+import java.util.List;
+
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
@@ -32,9 +34,10 @@ public class UnsetPreference extends WorkspaceCommand
 
 	private String m_name;
 
-	protected OptionDescriptor[] getOptionDescriptors() throws Exception
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
-		return new OptionDescriptor[] { TEST_DESCRIPTOR };
+		appendHere.add(TEST_DESCRIPTOR);
 	}
 
 	@Override

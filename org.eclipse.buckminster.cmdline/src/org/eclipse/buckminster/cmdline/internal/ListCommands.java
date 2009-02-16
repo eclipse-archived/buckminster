@@ -65,9 +65,12 @@ public class ListCommands extends AbstractCommand
 
 	private int m_style = NORMAL;
 
-	protected OptionDescriptor[] getOptionDescriptors() throws Exception
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
-		return new OptionDescriptor[] { HIDDEN_OPT, DISABLED_OPT, STYLE_OPT };
+		appendHere.add(HIDDEN_OPT);
+		appendHere.add(DISABLED_OPT);
+		appendHere.add(STYLE_OPT);
 	}
 
 	@Override

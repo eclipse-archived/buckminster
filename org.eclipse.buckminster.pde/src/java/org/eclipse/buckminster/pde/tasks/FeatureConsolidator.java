@@ -60,6 +60,64 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 
 	private static final int QUALIFIER_SUFFIX_VERSION = 1;
 
+	static InputStream getInput(File dirOrZip, String fileName) throws CoreException, FileNotFoundException
+	{
+		if(dirOrZip.isDirectory())
+			return new BufferedInputStream(new FileInputStream(new File(dirOrZip, fileName)));
+
+		JarFile jarFile = null;
+		try
+		{
+			jarFile = new JarFile(dirOrZip);
+			JarEntry entry = jarFile.getJarEntry(fileName);
+			if(entry == null)
+				throw new FileNotFoundException(String.format("%s[%s]", dirOrZip, fileName)); //$NON-NLS-1$
+
+			// Closing the jarFile is hereby the responsibility of the user of
+			// the returned InputStream
+			//
+			final JarFile innerJarFile = jarFile;
+			jarFile = null;
+			return new FilterInputStream(innerJarFile.getInputStream(entry))
+			{
+				@Override
+				public void close() throws IOException
+				{
+					try
+					{
+						super.close();
+					}
+					catch(IOException e)
+					{
+					}
+					innerJarFile.close();
+				}
+			};
+		}
+		catch(FileNotFoundException e)
+		{
+			throw e;
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_read_0, dirOrZip));
+		}
+		finally
+		{
+			if(jarFile != null)
+			{
+				try
+				{
+					jarFile.close();
+				}
+				catch(IOException e)
+				{
+					PDEPlugin.getLogger().error(e, NLS.bind(Messages.error_while_closing_0, dirOrZip));
+				}
+			}
+		}
+	}
+
 	private static void addVersion(Map<String, OSGiVersion[]> versionMap, String id, String versionStr)
 			throws VersionSyntaxException
 	{
@@ -162,64 +220,6 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			candidate = version;
 
 		return candidate;
-	}
-
-	private static InputStream getInput(File dirOrZip, String fileName) throws CoreException, FileNotFoundException
-	{
-		if(dirOrZip.isDirectory())
-			return new BufferedInputStream(new FileInputStream(new File(dirOrZip, fileName)));
-
-		JarFile jarFile = null;
-		try
-		{
-			jarFile = new JarFile(dirOrZip);
-			JarEntry entry = jarFile.getJarEntry(fileName);
-			if(entry == null)
-				throw new FileNotFoundException(String.format("%s[%s]", dirOrZip, fileName)); //$NON-NLS-1$
-
-			// Closing the jarFile is hereby the responsibility of the user of
-			// the returned InputStream
-			//
-			final JarFile innerJarFile = jarFile;
-			jarFile = null;
-			return new FilterInputStream(innerJarFile.getInputStream(entry))
-			{
-				@Override
-				public void close() throws IOException
-				{
-					try
-					{
-						super.close();
-					}
-					catch(IOException e)
-					{
-					}
-					innerJarFile.close();
-				}
-			};
-		}
-		catch(FileNotFoundException e)
-		{
-			throw e;
-		}
-		catch(Exception e)
-		{
-			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_read_0, dirOrZip));
-		}
-		finally
-		{
-			if(jarFile != null)
-			{
-				try
-				{
-					jarFile.close();
-				}
-				catch(IOException e)
-				{
-					PDEPlugin.getLogger().error(e, NLS.bind(Messages.error_while_closing_0, dirOrZip));
-				}
-			}
-		}
 	}
 
 	// Encode a non-negative number as a variable length string, with the
@@ -382,7 +382,6 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 	{
 		IFeature feature = m_featureModel.getFeature();
 		String id = feature.getId();
-		String versionStr = feature.getVersion();
 
 		ArrayList<ComponentIdentifier> deps = new ArrayList<ComponentIdentifier>();
 		for(IFeatureChild ref : feature.getIncludedFeatures())
@@ -398,67 +397,62 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 			if(cid != null)
 				deps.add(cid);
 		}
-
-		boolean usingGenerator = false;
-		IVersion newVersion = null;
-		String newVersionStr = versionStr;
-		if(versionStr != null)
-		{
-			IVersion version;
-			try
-			{
-				version = VersionFactory.OSGiType.fromString(versionStr);
-			}
-			catch(VersionSyntaxException e)
-			{
-				version = null;
-			}
-
-			if(version != null)
-			{
-				if(versionStr.endsWith(PROPERTY_QUALIFIER))
-				{
-					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
-					newVersion = replaceQualifier(ci, deps);
-					usingGenerator = isUsingGenerator(ci);
-					if(newVersion == null)
-						newVersion = version;
-					else if(!version.equals(newVersion))
-					{
-						newVersionStr = newVersion.toString();
-						feature.setVersion(newVersionStr);
-						if(isContextReplacement())
-						{
-							int lastDot = versionStr.lastIndexOf("."); //$NON-NLS-1$
-							m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
-						}
-					}
-				}
-
-				if(!usingGenerator)
-				{
-					String suffix = generateFeatureVersionSuffix();
-					if(suffix != null)
-					{
-						if(newVersion == null)
-							newVersion = version;
-						String qualifier = newVersion.getQualifier();
-						if(qualifier == null)
-							qualifier = suffix;
-						else
-						{
-							StringBuilder bld = new StringBuilder();
-							bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
-							bld.append('-');
-							bld.append(suffix);
-							qualifier = bld.toString();
-						}
-						feature.setVersion(newVersion.replaceQualifier(qualifier).toString());
-					}
-				}
-			}
-		}
+		consolidateFeatureVersion(deps);
 		m_featureModel.save(getOutputFile());
+	}
+
+	private void consolidateFeatureVersion(List<ComponentIdentifier> deps) throws CoreException
+	{
+		IFeature feature = m_featureModel.getFeature();
+		String versionStr = feature.getVersion();
+		if(versionStr == null)
+			return;
+
+		IVersion version;
+		try
+		{
+			version = VersionFactory.OSGiType.fromString(versionStr);
+		}
+		catch(VersionSyntaxException e)
+		{
+			return;
+		}
+
+		if(versionStr.endsWith(PROPERTY_QUALIFIER))
+		{
+			ComponentIdentifier ci = new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version);
+			IVersion newVersion = replaceQualifier(ci, deps);
+			if(newVersion != null && !version.equals(newVersion))
+			{
+				String newVersionStr = newVersion.toString();
+				feature.setVersion(newVersionStr);
+				if(isContextReplacement())
+				{
+					int lastDot = versionStr.lastIndexOf("."); //$NON-NLS-1$
+					m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
+				}
+				version = newVersion;
+			}
+			if(isUsingGenerator(ci))
+				return;
+		}
+
+		String suffix = generateFeatureVersionSuffix();
+		if(suffix == null)
+			return;
+
+		String qualifier = version.getQualifier();
+		if(qualifier == null)
+			qualifier = suffix;
+		else
+		{
+			StringBuilder bld = new StringBuilder();
+			bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
+			bld.append('-');
+			bld.append(suffix);
+			qualifier = bld.toString();
+		}
+		feature.setVersion(version.replaceQualifier(qualifier).toString());
 	}
 
 	/**
@@ -588,7 +582,8 @@ public class FeatureConsolidator extends VersionConsolidator implements IModelCh
 				if(qualifier == null)
 					continue;
 
-				for(int j = 0; j < qualifier.length(); ++j)
+				int top = qualifier.length();
+				for(int j = 0; j < top; ++j)
 					qualifierSums[j] += charValue(qualifier.charAt(j));
 			}
 
