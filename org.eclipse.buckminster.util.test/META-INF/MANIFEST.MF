@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Util Test
+Bundle-SymbolicName: org.eclipse.buckminster.util.test
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.buckminster.util.test.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit4;bundle-version="4.5.0",
+ org.eclipse.buckminster.util.progress;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
