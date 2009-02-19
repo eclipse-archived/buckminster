@@ -139,11 +139,12 @@ public class StartPage extends InstallWizardPage
 		setControl(pageComposite);
 	}
 	
+	@SuppressWarnings("restriction")
 	@Override
 	protected void beforeDisplaySetup()
 	{
 		m_artifactNameText.setText(getInstallWizard().getArtifactName());
-		m_artifactVersionText.setText(getInstallWizard().getCSpecVersionString() + " - " + getInstallWizard().getCSpecVersionType());//ArtifactVersion());
+		m_artifactVersionText.setText(getInstallWizard().getCSpecVersion().getOriginal());
 		m_artifactDescriptionText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));
 		m_artifactDocumentationText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
 		m_publisherInfoText.setText(getInstallWizard().getBrandingString());

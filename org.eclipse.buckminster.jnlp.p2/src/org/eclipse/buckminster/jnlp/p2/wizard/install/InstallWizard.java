@@ -32,7 +32,6 @@ import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPE
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_NAME;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_DRAFT;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL;
 import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
@@ -102,6 +101,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -116,6 +116,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Thomas Hallgren
  * 
  */
+@SuppressWarnings("restriction")
 public class InstallWizard extends AdvancedWizard implements ILoginHandler
 {
 	static private final String DISTROPROVIDER_EXTPOINT = "org.eclipse.buckminster.jnlp.p2.distroProvider";
@@ -196,9 +197,9 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 	private String m_cspecType;
 
-	private String m_cspecVersionString;
+	private Version m_cspecVersion;
 
-	private String m_cspecVersionType;
+	private String m_cspecVersionString;
 
 	private String m_eclipseDistroTools34UpdateSiteURL;
 
@@ -620,9 +621,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_cspecVersionString;
 	}
 
-	public String getCSpecVersionType()
+	public Version getCSpecVersion()
 	{
-		return m_cspecVersionType;
+		if(m_cspecVersion == null)
+			m_cspecVersion = new Version(m_cspecVersionString);
+		
+		return m_cspecVersion;
 	}
 
 	public String getEclipseDistroTools34UpdateSiteURL()
@@ -1292,14 +1296,6 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		if(m_cspecVersionString == null)
 		{
 			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_STRING);
-			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
-					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
-		}
-
-		m_cspecVersionType = properties.get(PROP_CSPEC_VERSION_TYPE);
-		if(m_cspecVersionType == null)
-		{
-			Throwable e = new MissingPropertyException(PROP_CSPEC_VERSION_TYPE);
 			errorList.add(new ErrorEntry(BuckminsterException.wrap(e).getStatus(),
 					ERROR_CODE_MISSING_PROPERTY_EXCEPTION));
 		}
