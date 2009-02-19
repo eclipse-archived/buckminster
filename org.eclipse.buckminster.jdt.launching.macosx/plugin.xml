@@ -5,7 +5,7 @@
          point="org.eclipse.jdt.launching.vmInstallTypes">
       <vmInstallType
             class="org.eclipse.buckminster.jdt.launching.macosx.MacOSXVMInstallType"
-            id="org.eclipse.jdt.buckminster.jdt.launching.macosx.MacOSXType">
+            id="org.eclipse.buckminster.jdt.launching.macosx.MacOSXType">
       </vmInstallType>
    </extension>
 </plugin>

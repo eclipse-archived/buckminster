@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Plugin;
 public class MacOSXLaunchingPlugin extends Plugin {
 	
 	private static MacOSXLaunchingPlugin fgPlugin;
-	private static final String RESOURCE_BUNDLE= "org.eclipse.jdt.internal.launching.macosx.MacOSXLauncherMessages";//$NON-NLS-1$
+	private static final String RESOURCE_BUNDLE= "org.eclipse.buckminster.jdt.launching.macosx.MacOSXLauncherMessages";//$NON-NLS-1$
 	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	public MacOSXLaunchingPlugin() {
@@ -50,7 +50,7 @@ public class MacOSXLaunchingPlugin extends Plugin {
 			// If the default instance is not yet initialized,
 			// return a static identifier. This identifier must
 			// match the plugin id defined in plugin.xml
-			return "org.eclipse.jdt.launching.macosx"; //$NON-NLS-1$
+			return "org.eclipse.buckminster.jdt.launching.macosx"; //$NON-NLS-1$
 		}
 		return getDefault().getBundle().getSymbolicName();
 	}
