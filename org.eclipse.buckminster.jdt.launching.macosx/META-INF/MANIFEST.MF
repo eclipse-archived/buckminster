@@ -13,5 +13,5 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.jdt.launching
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.350.qualifier
 Eclipse-LazyStart: true
