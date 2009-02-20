@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site
-      mirrorsURL="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates/headless-site.xml&amp;format=xml"
+      mirrorsURL="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-3.5/headless-site.xml&amp;format=xml"
       pack200="true">
-   <description url="http://download.eclipse.org/tools/buckminster/updates/headless-site.xml">
-      The update site for Buckminster
+   <description url="http://download.eclipse.org/tools/buckminster/updates-3.5/headless-site.xml">
+      The update site for Buckminster Headless 3.5 Milestones
    </description>
 </site>
