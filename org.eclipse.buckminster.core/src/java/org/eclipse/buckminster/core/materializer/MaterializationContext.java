@@ -196,7 +196,7 @@ public class MaterializationContext extends RMContext
 	{
 		MaterializationSpec mspec = getMaterializationSpec();
 		IComponentName cName = resolution.getComponentIdentifier();
-		if(!mspec.isUnpack(cName))
+		if(!(resolution.isUnpack() || mspec.isUnpack(cName)))
 			return null;
 
 		String name = mspec.getSuffix(cName);

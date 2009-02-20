@@ -29,8 +29,8 @@ public class MaterializerEndPoint
 		String suffixedName = ctx.getSuffixedName(resolution, remoteName);
 		Installer installer = (suffixedName == null)
 				? Installer.getPlainInstaller()
-				: Installer.getInstaller(suffixedName, ctx.getMaterializationSpec().isExpand(
-						resolution.getComponentIdentifier()));
+				: Installer.getInstaller(suffixedName, resolution.isUnpack()
+						|| ctx.getMaterializationSpec().isExpand(resolution.getComponentIdentifier()));
 		return new MaterializerEndPoint(location, installer);
 	}
 
