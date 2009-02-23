@@ -45,11 +45,19 @@ import org.osgi.framework.Bundle;
  */
 public class AntActor extends AbstractActor
 {
-	public static final String ID = "ant"; //$NON-NLS-1$
+	public static final String ACTOR_ID = "ant"; //$NON-NLS-1$
 
-	public final static String BUILD_SCRIPT_ID = "id"; //$NON-NLS-1$
+	public static final String PROP_BUILD_FILE_ID = "buildFileId"; //$NON-NLS-1$
 
-	public final static String BUILD_SCRIPT_RESOURCE = "resource"; //$NON-NLS-1$
+	public static final String PROP_TARGETS = "targets"; //$NON-NLS-1$
+
+	public static final String PROP_BUILD_FILE = "buildFile"; //$NON-NLS-1$
+
+	private static final String BUILD_SCRIPT_POINT = AntBuilderConstants.PLUGIN_ID + ".buildScripts"; //$NON-NLS-1$
+
+	private final static String BUILD_SCRIPT_ID = "id"; //$NON-NLS-1$
+
+	private final static String BUILD_SCRIPT_RESOURCE = "resource"; //$NON-NLS-1$
 
 	private static void addPathGroupArraysToProperties(Map<String, PathGroup[]> namedPGA, Map<String, String> props)
 	{
@@ -122,7 +130,7 @@ public class AntActor extends AbstractActor
 		{
 			if(buildFileId == null)
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Property_not_set_0,
-						AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
+						AntActor.PROP_BUILD_FILE));
 
 			buildFileId = ExpandingProperties.expand(ctx.getProperties(), buildFileId, 0);
 			return this.getBuildFileExtension(buildFileId);
@@ -130,9 +138,8 @@ public class AntActor extends AbstractActor
 
 		if(buildFileId != null)
 			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.AntActor_Properties_0_and_1_are_mutually_exclusive,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
+					Messages.AntActor_Properties_0_and_1_are_mutually_exclusive, AntActor.PROP_BUILD_FILE,
+					AntActor.PROP_BUILD_FILE_ID));
 
 		buildFile = ExpandingProperties.expand(ctx.getProperties(), buildFile, 0);
 		IPath buildFilePath = new Path(buildFile);
@@ -144,14 +151,12 @@ public class AntActor extends AbstractActor
 
 	protected String getBuildFileIdProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.notEmptyTrimmedString(this
-				.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID));
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntActor.PROP_BUILD_FILE_ID));
 	}
 
 	protected String getBuildFileProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils
-				.notEmptyTrimmedString(this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE));
+		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntActor.PROP_BUILD_FILE));
 	}
 
 	protected Map<String, String> getDefaultProperties(IActionContext ctx) throws CoreException
@@ -182,7 +187,7 @@ public class AntActor extends AbstractActor
 
 	protected final String getTargetsString(IActionContext ctx)
 	{
-		String tlist = this.getActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_TARGETS);
+		String tlist = this.getActorProperty(AntActor.PROP_TARGETS);
 
 		// if no targets field has been defined, use the action name
 		//
@@ -262,7 +267,7 @@ public class AntActor extends AbstractActor
 	{
 		IConfigurationElement resourceElem = null;
 		IExtensionRegistry er = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : er.getConfigurationElementsFor(AntBuilderConstants.BUILD_SCRIPT_POINT))
+		for(IConfigurationElement elem : er.getConfigurationElementsFor(BUILD_SCRIPT_POINT))
 		{
 			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
 			{
@@ -273,7 +278,7 @@ public class AntActor extends AbstractActor
 
 		if(resourceElem == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_No_extension_found_defines_0_1,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
+					AntActor.PROP_BUILD_FILE_ID, buildFileId));
 
 		// The resource must be loaded by the bundle that contributes it
 		//
@@ -286,7 +291,7 @@ public class AntActor extends AbstractActor
 		if(rsURL == null)
 			throw BuckminsterException.fromMessage(NLS.bind(
 					Messages.AntActor_Extension_found_using_0_1_appoints_non_existing_resource,
-					AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, buildFileId));
+					AntActor.PROP_BUILD_FILE_ID, buildFileId));
 
 		try
 		{

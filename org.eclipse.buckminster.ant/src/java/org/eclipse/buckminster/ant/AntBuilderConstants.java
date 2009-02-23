@@ -36,13 +36,5 @@ public interface AntBuilderConstants
 
 	static final String DEFAULT_CLEAN_KIND_TARGET = "clean"; //$NON-NLS-1$
 
-	static final String ANT_ACTOR_PROPERTY_BUILD_FILE_ID = "buildFileId"; //$NON-NLS-1$
-
-	static final String BUILD_SCRIPT_POINT = PLUGIN_ID + ".buildScripts"; //$NON-NLS-1$
-
 	static final String BUILDER_NAME = PLUGIN_ID + ".builder"; //$NON-NLS-1$
-
-	static final String ANT_ACTOR_PROPERTY_TARGETS = "targets"; //$NON-NLS-1$
-
-	static final String ANT_ACTOR_PROPERTY_BUILD_FILE = "buildFile"; //$NON-NLS-1$
 }

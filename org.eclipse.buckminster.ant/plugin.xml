@@ -25,6 +25,10 @@
 	<extension point="org.eclipse.ant.core.antTasks">
 		<antTask
 			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.contextProperty"
+			class="org.eclipse.buckminster.ant.taskdefs.ContextProperty" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
 			name="buckminster.bind"
 			class="org.eclipse.buckminster.ant.taskdefs.WorkspaceBind" />
 		<antTask
