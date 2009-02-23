@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2006-2009, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -82,7 +82,7 @@ public class FragmentsActor extends AbstractActor
 		for(BundleDescription fragment : fragments)
 		{
 			String fragmentName = fragment.getName();
-			if(fragmentName.contains(".compatibility")) //$NON-NLS-1$
+			if(fragmentName.contains(".compatibility") || fragmentName.endsWith(".test")) //$NON-NLS-1$ //$NON-NLS-2$
 				//
 				// Compatibility fragments must be explicitly brought in using
 				// a product or a feature

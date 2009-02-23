@@ -745,7 +745,7 @@ public class CreateProductBase
 			return main;
 
 		State stateCopy = main.getFactory().createState(main);
-		stateCopy.setResolver(Platform.getPlatformAdmin().getResolver());
+		stateCopy.setResolver(Platform.getPlatformAdmin().createResolver());
 		stateCopy.setPlatformProperties(main.getPlatformProperties());
 		for(Dictionary<String, String> properties : getStatePlatformProperties(stateCopy))
 		{
@@ -778,10 +778,8 @@ public class CreateProductBase
 			if(cname == null)
 				continue;
 
-			if(cname.equals("org.eclipse.equinox.executable") || cname.equals("org.eclipse.platform.launchers")) //$NON-NLS-1$ //$NON-NLS-2$
-			{
-				return (pq.getReferencedAttribute(cspec, m_actionContext) != null);
-			}
+			if((cname.equals("org.eclipse.equinox.executable") || cname.equals("org.eclipse.platform.launchers")) && pq.getReferencedAttribute(cspec, m_actionContext) != null) //$NON-NLS-1$ //$NON-NLS-2$
+				return true;
 		}
 		return false;
 	}

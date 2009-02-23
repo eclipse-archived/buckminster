@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -17,9 +18,12 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.jarprocessor.JarProcessorActor;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.tasks.P2SiteGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -34,19 +38,50 @@ import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
+import org.osgi.framework.InvalidSyntaxException;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecGenerator
 {
 	private static final String ACTION_COPY_FEATURES = "copy.features"; //$NON-NLS-1$
 
-	private static final String ACTION_COPY_SOURCE_FEATURES = "copy.source.features"; //$NON-NLS-1$
+	private static final String ACTION_COPY_SITE_FEATURES = "copy.subfeatures"; //$NON-NLS-1$
 
 	private static final String ATTRIBUTE_FEATURE_REFS = "feature.references"; //$NON-NLS-1$
 
 	private static final String ATTRIBUTE_SOURCE_FEATURE_REFS = "source.feature.references"; //$NON-NLS-1$
 
 	private static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root"; //$NON-NLS-1$
+
+	private static final Filter SIGNING_ENABLED;
+
+	private static final Filter SIGNING_DISABLED;
+
+	private static final Filter PACK_ENABLED;
+
+	private static final Filter PACK_DISABLED;
+
+	private static final Filter SIGNING_AND_PACK_DISABLED;
+
+	private static final Filter SIGNING_ENABLED_AND_PACK_DISABLED;
+
+	static
+	{
+		try
+		{
+			SIGNING_ENABLED = FilterFactory.newInstance("(site.signing=true)");
+			SIGNING_DISABLED = FilterFactory.newInstance("(!(site.signing=true))");
+			PACK_ENABLED = FilterFactory.newInstance("(site.pack200=true)");
+			PACK_DISABLED = FilterFactory.newInstance("(!(site.pack200=true))");
+			SIGNING_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(!(site.signing=true)))");
+			SIGNING_ENABLED_AND_PACK_DISABLED = FilterFactory
+					.newInstance("(&(!(site.pack200=true))(site.signing=true))");
+		}
+		catch(InvalidSyntaxException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	private static boolean isListOK(String list, Object item)
 	{
@@ -85,7 +120,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// the group will reference the features where they are found.
 		//
 		GroupBuilder featureRefs = cspec.addGroup(ATTRIBUTE_FEATURE_REFS, true); // without self
-		cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_REFS, true);
+		cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_REFS, true).setFilter(SOURCE_FILTER);
 
 		// All bundles imported by this feature and all included features. Does
 		// not imply copying since the group will reference the bundles where they
@@ -95,14 +130,14 @@ public class CSpecFromSource extends CSpecGenerator
 
 		// Source of all bundles imported by this feature and all included features.
 		//
-		cspec.addGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS, true);
+		cspec.addGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS, true).setFilter(SOURCE_FILTER);
 
 		// This feature, its imported bundles, all included features, and their
 		// imported bundles copied into a site structure (with a plugins and a
 		// features folder).
 		//
 		cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
-		cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS_WITH_SOURCE, true);
+		cspec.addGroup(ATTRIBUTE_SITE_FEATURE_EXPORTS, true);
 
 		cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
 		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN); //$NON-NLS-1$
@@ -199,7 +234,11 @@ public class CSpecFromSource extends CSpecGenerator
 		createFeatureSourceManifestAction();
 		createFeatureSourceJarAction();
 		createFeatureExportsAction();
-		createFeatureExportsWithSourceAction();
+		createSiteFeatureExportsAction();
+		createSiteRepackAction();
+		createSiteSignAction();
+		createSitePackAction();
+		createSiteAction();
 		addProducts(MonitorUtils.subMonitor(monitor, 80));
 		MonitorUtils.done(monitor);
 	}
@@ -323,6 +362,7 @@ public class CSpecFromSource extends CSpecGenerator
 		//
 		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_FEATURES, TASK_COPY_GROUP, false);
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_JARS);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JARS);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
 		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));
@@ -330,12 +370,13 @@ public class CSpecFromSource extends CSpecGenerator
 		return copyFeatures;
 	}
 
-	private ActionBuilder createCopySourceFeaturesAction() throws CoreException
+	private ActionBuilder createCopySiteFeaturesAction() throws CoreException
 	{
-		// Copy all features (including this one) to the features directory.
+		// Copy all features (excluding this one) to the features directory.
 		//
-		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_SOURCE_FEATURES, TASK_COPY_GROUP, false);
-		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JARS);
+		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_SITE_FEATURES, TASK_COPY_GROUP, false);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
 		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));
@@ -348,16 +389,6 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
 		featureExports.addLocalPrerequisite(createCopyPluginsAction());
-		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-	}
-
-	private void createFeatureExportsWithSourceAction() throws CoreException
-	{
-		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS_WITH_SOURCE);
-		featureExports.addLocalPrerequisite(ACTION_COPY_FEATURES);
-		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);
-		featureExports.addLocalPrerequisite(createCopySourceFeaturesAction());
-		featureExports.addLocalPrerequisite(createCopySourcePluginsAction());
 		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
 	}
 
@@ -518,6 +549,60 @@ public class CSpecFromSource extends CSpecGenerator
 			if(isFile)
 				productRoot.addPath(leaf);
 		}
+	}
+
+	private void createSiteAction() throws CoreException
+	{
+		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_P2, true, ACTOR_P2_SITE_GENERATOR, false);
+
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_FEATURE_EXPORTS, P2SiteGenerator.ALIAS_SITE,
+				SIGNING_AND_PACK_DISABLED);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_PACKED, P2SiteGenerator.ALIAS_SITE, PACK_ENABLED);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_SIGNED, P2SiteGenerator.ALIAS_SITE,
+				SIGNING_ENABLED_AND_PACK_DISABLED);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_FEATURE_JAR, P2SiteGenerator.ALIAS_SITE_FEATURE);
+		siteBuilder.setProductBase(OUTPUT_DIR_SITE_P2);
+	}
+
+	private void createSiteFeatureExportsAction() throws CoreException
+	{
+		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_SITE_FEATURE_EXPORTS);
+		featureExports.addLocalPrerequisite(createCopySiteFeaturesAction());
+		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);
+		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
+	}
+
+	private void createSitePackAction() throws CoreException
+	{
+		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_PACKED, true, JarProcessorActor.ACTOR_ID, true);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_FEATURE_EXPORTS, JarProcessorActor.ALIAS_JAR_FOLDER,
+				SIGNING_DISABLED);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_SIGNED, JarProcessorActor.ALIAS_JAR_FOLDER, SIGNING_ENABLED);
+		siteBuilder.getProperties().put(JarProcessorActor.PROP_COMMAND, JarProcessorActor.COMMAND_PACK);
+		siteBuilder.setProductBase(OUTPUT_DIR_SITE_PACKED);
+	}
+
+	private void createSiteRepackAction() throws CoreException
+	{
+		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_REPACKED, false, JarProcessorActor.ACTOR_ID,
+				true);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_FEATURE_EXPORTS, JarProcessorActor.ALIAS_JAR_FOLDER);
+		siteBuilder.getProperties().put(JarProcessorActor.PROP_COMMAND, JarProcessorActor.COMMAND_REPACK);
+		siteBuilder.setProductBase(OUTPUT_DIR_SITE_REPACKED);
+	}
+
+	private void createSiteSignAction() throws CoreException
+	{
+		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_SIGNED, true, AntActor.ACTOR_ID, true);
+		Map<String, String> actorProps = siteBuilder.getActorProperties();
+		actorProps.put(AntActor.PROP_BUILD_FILE_ID, "buckminster.signing"); //$NON-NLS-1$
+		actorProps.put(AntActor.PROP_TARGETS, "sign.jars"); //$NON-NLS-1$
+
+		siteBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_REPACKED, null, PACK_ENABLED);
+		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_FEATURE_EXPORTS, null, PACK_DISABLED);
+		siteBuilder.setProductBase(OUTPUT_DIR_SITE_SIGNED);
+		siteBuilder.setProductAlias(ALIAS_OUTPUT);
 	}
 
 	private GroupBuilder getInternalProductRoot() throws CoreException

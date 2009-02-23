@@ -14,6 +14,8 @@ public interface IPDEConstants
 {
 	static final String ACTOR_COPY_TARGET_FRAGMENTS = "copyTargetFragments"; //$NON-NLS-1$
 
+	static final String ACTOR_P2_SITE_GENERATOR = "p2SiteGenerator"; //$NON-NLS-1$
+
 	static final String ALIAS_BUNDLES = "bundles"; //$NON-NLS-1$
 
 	static final String ALIAS_FEATURES = "features"; //$NON-NLS-1$
@@ -27,8 +29,6 @@ public interface IPDEConstants
 	static final String ALIAS_PROPERTIES = "properties"; //$NON-NLS-1$
 
 	static final String ACTION_COPY_PLUGINS = "copy.plugins"; //$NON-NLS-1$
-
-	static final String ACTION_COPY_SOURCE_PLUGINS = "copy.source.plugins"; //$NON-NLS-1$
 
 	/**
 	 * The feature in a format suitable for an update site. No sub-features nor bundles are included. The base of the
@@ -48,7 +48,7 @@ public interface IPDEConstants
 	static final String ATTRIBUTE_SOURCE_FEATURE_JARS = "source.feature.jars"; //$NON-NLS-1$
 
 	/**
-	 * Denotes group consisting of this feature and all included features and bundles in a format sutiable for
+	 * Denotes group consisting of this feature and all included features and bundles in a format suitable for
 	 * publishing on an update site. The base of the attribute
 	 * 
 	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be folder that contains the
@@ -56,7 +56,40 @@ public interface IPDEConstants
 	 */
 	static final String ATTRIBUTE_FEATURE_EXPORTS = "feature.exports"; //$NON-NLS-1$
 
-	static final String ATTRIBUTE_FEATURE_EXPORTS_WITH_SOURCE = "feature.exports.with.source"; //$NON-NLS-1$
+	/**
+	 * <p>
+	 * Denotes group consisting all included features and bundles, but excluding this feature, in a format suitable for
+	 * publishing on an update site. The base of the attribute.
+	 * </p>
+	 * <p>
+	 * This group is intended to be used when the feature describes a site and the feature itself thus should not be
+	 * considered unit in that site.
+	 * </p>
+	 * 
+	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be folder that contains the
+	 *        <code>features</code> and <code>plugins</code> folders.
+	 */
+	static final String ATTRIBUTE_SITE_FEATURE_EXPORTS = "site.feature.exports"; //$NON-NLS-1$
+
+	/**
+	 * Site repacked by pack200 and ready for signing
+	 */
+	static final String ATTRIBUTE_SITE_REPACKED = "site.repacked"; //$NON-NLS-1$
+
+	/**
+	 * Signed site
+	 */
+	static final String ATTRIBUTE_SITE_SIGNED = "site.signed"; //$NON-NLS-1$
+
+	/**
+	 * Site packed with pack200
+	 */
+	static final String ATTRIBUTE_SITE_PACKED = "site.packed"; //$NON-NLS-1$
+
+	/**
+	 * Site with p2 meta-data.
+	 */
+	static final String ATTRIBUTE_SITE_P2 = "site.p2"; //$NON-NLS-1$
 
 	/**
 	 * The attribut that, when triggered, will clean out all built artifacts including the Eclipse build. This attribute

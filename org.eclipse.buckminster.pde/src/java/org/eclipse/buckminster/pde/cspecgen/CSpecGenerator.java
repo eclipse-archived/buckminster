@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.buckminster.ant.AntBuilderConstants;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
@@ -92,6 +91,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site"); //$NON-NLS-1$
 
+	public static final IPath OUTPUT_DIR_SITE_P2 = OUTPUT_DIR.append("site.p2"); //$NON-NLS-1$
+
+	public static final IPath OUTPUT_DIR_SITE_REPACKED = OUTPUT_DIR.append("site.repacked"); //$NON-NLS-1$
+
+	public static final IPath OUTPUT_DIR_SITE_PACKED = OUTPUT_DIR.append("site.packed"); //$NON-NLS-1$
+
+	public static final IPath OUTPUT_DIR_SITE_SIGNED = OUTPUT_DIR.append("site.signed"); //$NON-NLS-1$
+
 	public static final IPath OUTPUT_DIR_TEMP = OUTPUT_DIR.append("temp"); //$NON-NLS-1$
 
 	public static final String LAUNCHER_BUNDLE = "org.eclipse.equinox.launcher"; //$NON-NLS-1$
@@ -99,6 +106,20 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	public static final String LAUNCHER_FEATURE_3_2 = "org.eclipse.platform.launchers"; //$NON-NLS-1$
 
 	public static final String LAUNCHER_FEATURE = "org.eclipse.equinox.executable"; //$NON-NLS-1$
+
+	public static final Filter SOURCE_FILTER;
+
+	static
+	{
+		try
+		{
+			SOURCE_FILTER = FilterFactory.newInstance("(!(cbi.include.source=false))"); //$NON-NLS-1$
+		}
+		catch(InvalidSyntaxException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
@@ -225,9 +246,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected ActionBuilder addAntAction(String actionName, String targetName, boolean asPublic) throws CoreException
 	{
-		ActionBuilder action = m_cspecBuilder.addAction(actionName, asPublic, AntActor.ID, false);
-		action.addActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_TARGETS, targetName, false);
-		action.addActorProperty(AntBuilderConstants.ANT_ACTOR_PROPERTY_BUILD_FILE_ID, BUILD_FILE_ID, false);
+		ActionBuilder action = m_cspecBuilder.addAction(actionName, asPublic, AntActor.ACTOR_ID, false);
+		action.addActorProperty(AntActor.PROP_TARGETS, targetName, false);
+		action.addActorProperty(AntActor.PROP_BUILD_FILE_ID, BUILD_FILE_ID, false);
 		return action;
 	}
 
@@ -281,18 +302,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		//
 		ActionBuilder copyPlugins = addAntAction(ACTION_COPY_PLUGINS, TASK_COPY_GROUP, false);
 		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS);
-		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-		copyPlugins.setProductAlias(ALIAS_OUTPUT);
-		copyPlugins.setProductBase(OUTPUT_DIR_SITE.append(PLUGINS_FOLDER));
-		copyPlugins.setUpToDatePolicy(UpToDatePolicy.MAPPER);
-		return copyPlugins;
-	}
-
-	protected ActionBuilder createCopySourcePluginsAction() throws CoreException
-	{
-		// Copy all plug-ins that all features (including this one) is including.
-		//
-		ActionBuilder copyPlugins = addAntAction(ACTION_COPY_SOURCE_PLUGINS, TASK_COPY_GROUP, false);
 		copyPlugins.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyPlugins.setProductAlias(ALIAS_OUTPUT);

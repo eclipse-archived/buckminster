@@ -21,6 +21,8 @@ public class Messages extends NLS
 
 	public static String outputdir_can_not_be_null;
 
+	public static String prerequisite_0_for_action_1_must_be_a_feature;
+
 	public static String productFile_cannot_be_null;
 
 	public static String target_loc_cannot_be_null;
@@ -74,6 +76,8 @@ public class Messages extends NLS
 	public static String unable_to_obtain_URL_for_0;
 
 	public static String unable_to_parse_feature_0;
+
+	public static String unable_to_parse_feature_from_0;
 
 	public static String unable_to_save_feature_model;
 

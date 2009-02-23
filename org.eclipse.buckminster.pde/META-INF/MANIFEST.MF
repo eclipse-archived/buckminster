@@ -24,7 +24,11 @@ Require-Bundle: org.eclipse.buckminster.jdt;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.3.100",
  org.eclipse.update.core;bundle-version="3.2.100",
  org.apache.ant;bundle-version="1.7.0",
- org.eclipse.ecf;bundle-version="2.0.0"
+ org.eclipse.ecf;bundle-version="2.0.0",
+ org.eclipse.equinox.p2.publisher,
+ org.eclipse.buckminster.jarprocessor;bundle-version="1.0.0",
+ org.eclipse.equinox.p2.artifact.repository,
+ org.eclipse.equinox.p2.metadata.repository
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-BundleShape: dir
@@ -34,12 +38,16 @@ Export-Package: org.eclipse.buckminster.pde.cspecgen,
 Import-Package: org.eclipse.equinox.internal.p2.artifact.repository,
  org.eclipse.equinox.internal.p2.core.helpers,
  org.eclipse.equinox.internal.p2.metadata,
+ org.eclipse.equinox.internal.p2.metadata.generator.features,
  org.eclipse.equinox.internal.p2.metadata.repository,
  org.eclipse.equinox.internal.provisional.p2.artifact.repository,
  org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing,
  org.eclipse.equinox.internal.provisional.p2.core,
  org.eclipse.equinox.internal.provisional.p2.core.repository,
  org.eclipse.equinox.internal.provisional.p2.metadata,
+ org.eclipse.equinox.internal.provisional.p2.metadata.generator,
  org.eclipse.equinox.internal.provisional.p2.metadata.query,
  org.eclipse.equinox.internal.provisional.p2.metadata.repository,
- org.eclipse.equinox.internal.provisional.p2.query
+ org.eclipse.equinox.internal.provisional.p2.query,
+ org.eclipse.equinox.p2.publisher,
+ org.eclipse.equinox.p2.publisher.eclipse
