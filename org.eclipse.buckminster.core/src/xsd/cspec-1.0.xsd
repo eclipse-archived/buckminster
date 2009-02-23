@@ -464,6 +464,13 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="filter" type="string" use="optional">
+			<annotation>
+				<documentation>
+					An OSGi filter controlling inclusion of the prerequisite
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="contributor" type="boolean" use="optional">
 			<annotation>
 				<documentation>

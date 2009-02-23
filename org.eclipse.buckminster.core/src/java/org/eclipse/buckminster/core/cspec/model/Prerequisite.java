@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -33,6 +34,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 	public static final String ATTR_EXCLUDE_PATTERN = "excludePattern"; //$NON-NLS-1$
 
 	public static final String ATTR_INCLUDE_PATTERN = "includePattern"; //$NON-NLS-1$
+
+	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
 	public static final String ATTR_OPTIONAL = "optional"; //$NON-NLS-1$
 
@@ -83,6 +86,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	private final Pattern m_includePattern;
 
+	private final Filter m_filter;
+
 	private final boolean m_optional;
 
 	public Prerequisite(PrerequisiteBuilder bld)
@@ -94,29 +99,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		m_componentName = bld.getComponentName();
 		m_excludePattern = bld.getExcludePattern();
 		m_includePattern = bld.getIncludePattern();
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		if(m_alias != null)
-			Utils.addAttribute(attrs, ATTR_ALIAS, m_alias);
-		if(!m_contributor)
-			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false"); //$NON-NLS-1$
-		if(m_excludePattern != null)
-			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
-		if(m_includePattern != null)
-			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
-		if(m_optional)
-			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true"); //$NON-NLS-1$
-		if(m_componentName != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
+		m_filter = bld.getFilter();
 	}
 
 	public final String getAlias()
@@ -144,6 +127,11 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		return m_excludePattern;
 	}
 
+	public Filter getFilter()
+	{
+		return m_filter;
+	}
+
 	public Pattern getIncludePattern()
 	{
 		return m_includePattern;
@@ -151,7 +139,9 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException
 	{
-		return ownerCSpec.getReferencedAttribute(m_componentName, getName(), ctx);
+		return (m_filter == null || m_filter.match(ctx.getProperties()))
+				? ownerCSpec.getReferencedAttribute(m_componentName, getName(), ctx)
+				: null;
 	}
 
 	public boolean isContributor()
@@ -161,6 +151,9 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException
 	{
+		if(!(m_filter == null || m_filter.match(cache.getProperties())))
+			return false;
+
 		return isExternal()
 				? (getReferencedAttribute(cspec, cache) != null)
 				: cspec.getAttribute(getAttribute()).isEnabled(cache);
@@ -193,5 +186,30 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 			return getName();
 
 		return m_componentName + '#' + getAttribute();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_alias != null)
+			Utils.addAttribute(attrs, ATTR_ALIAS, m_alias);
+		if(!m_contributor)
+			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false"); //$NON-NLS-1$
+		if(m_excludePattern != null)
+			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
+		if(m_includePattern != null)
+			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
+		if(m_optional)
+			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true"); //$NON-NLS-1$
+		if(m_componentName != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
 	}
 }

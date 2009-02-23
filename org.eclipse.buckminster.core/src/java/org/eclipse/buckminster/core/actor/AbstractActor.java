@@ -14,7 +14,9 @@ import java.util.Stack;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -22,6 +24,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -219,5 +222,42 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 				sb.append(entry.getKey()).append('=').append(entry.getValue());
 			}
 		}
+	}
+
+	public static IPath getSingleProductPath(IActionContext ctx, Attribute attr, boolean atBase) throws CoreException
+	{
+		IPath productPath = null;
+		for(PathGroup pathGroup : attr.getPathGroups(ctx, null))
+		{
+			IPath pp = null;
+			if(atBase)
+				pp = pathGroup.getBase();
+			else
+			{
+				IPath[] paths = pathGroup.getPaths();
+				if(paths.length == 1)
+					pp = pathGroup.getBase().append(paths[0]);
+				else if(paths.length == 0)
+					pp = pathGroup.getBase();
+			}
+			if(pp == null)
+			{
+				productPath = null;
+				break;
+			}
+	
+			if(productPath == null)
+				productPath = pp;
+			else if(!productPath.equals(pp))
+			{
+				productPath = null;
+				break;
+			}
+		}
+	
+		if(productPath == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.product_for_action_0_must_be_single_path, attr
+					.getQualifiedName()));
+		return productPath;
 	}
 }

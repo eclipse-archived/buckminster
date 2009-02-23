@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.core.cspec;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
+
 public interface IPrerequisite extends IAttributeFilter
 {
 	String getAlias();
@@ -7,6 +9,8 @@ public interface IPrerequisite extends IAttributeFilter
 	String getAttribute();
 
 	String getComponentName();
+
+	Filter getFilter();
 
 	String getName();
 

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.osgi.filter.Filter;
 
 /**
  * @author Thomas Hallgren
@@ -28,6 +29,8 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	private Pattern m_excludePattern;
 
 	private Pattern m_includePattern;
+
+	private Filter m_filter;
 
 	private boolean m_optional = false;
 
@@ -47,6 +50,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		m_optional = false;
 		m_excludePattern = null;
 		m_includePattern = null;
+		m_filter = null;
 	}
 
 	public Prerequisite createPrerequisite()
@@ -79,6 +83,11 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return m_excludePattern;
 	}
 
+	public Filter getFilter()
+	{
+		return m_filter;
+	}
+
 	public Pattern getIncludePattern()
 	{
 		return m_includePattern;
@@ -93,6 +102,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		m_contributor = prerequisite.isContributor();
 		m_excludePattern = prerequisite.getExcludePattern();
 		m_includePattern = prerequisite.getIncludePattern();
+		m_filter = prerequisite.getFilter();
 	}
 
 	public boolean isContributor()
@@ -133,6 +143,11 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	public void setExcludePattern(Pattern excludePattern)
 	{
 		m_excludePattern = excludePattern;
+	}
+
+	public void setFilter(Filter filter)
+	{
+		m_filter = filter;
 	}
 
 	public void setIncludePattern(Pattern includePattern)

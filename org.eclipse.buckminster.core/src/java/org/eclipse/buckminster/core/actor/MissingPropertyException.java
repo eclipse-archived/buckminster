@@ -5,19 +5,19 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.core.cspecext.model;
+package org.eclipse.buckminster.core.actor;
 
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.osgi.util.NLS;
 
-public class MissingPrerequisiteException extends LocalizedException
+public class MissingPropertyException extends LocalizedException
 {
-	private static final long serialVersionUID = -5156211146234700929L;
+	private static final long serialVersionUID = 3944567444454920623L;
 
-	public MissingPrerequisiteException(String name, String attribute, String prereqName)
+	public MissingPropertyException(Action action, Object alias)
 	{
-		super(NLS.bind(Messages.CSpec_0_attribute_1_does_not_define_prerequisite_2,
-				new Object[] { name, attribute, prereqName }));
+		super(NLS.bind(Messages.action_0_is_missing_required_property_1, action.getQualifiedName(), alias));
 	}
 }

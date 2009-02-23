@@ -520,6 +520,10 @@ public class Messages extends NLS
 
 	public static String A_branch_tag_qualifier_cannot_be_empty;
 
+	public static String action_0_is_missing_required_property_1;
+
+	public static String action_0_is_missing_required_prerequisite_with_alias_1;
+
 	public static String Branch;
 
 	public static String Tag;
@@ -567,6 +571,14 @@ public class Messages extends NLS
 	public static String Missing_OSGi_Bundle_0;
 
 	public static String p2_materializer_cannot_process_readertype_0;
+
+	public static String prerequisite_named_0_is_not_known_to_action_1;
+
+	public static String input_of_action_0_must_be_folder;
+
+	public static String output_of_action_0_must_be_folder;
+
+	public static String product_for_action_0_must_be_single_path;
 
 	static
 	{

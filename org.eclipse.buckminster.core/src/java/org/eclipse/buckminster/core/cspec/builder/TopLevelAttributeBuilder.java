@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.osgi.filter.Filter;
 
 /**
  * @author Thomas Hallgren
@@ -31,7 +32,7 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 
 	public final void addExternalPrerequisite(String name, String attr) throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(name, attr, null));
+		addPrerequisite(createPrerequisite(name, attr, null, null));
 	}
 
 	public void addInstallerHint(String key, String hint)
@@ -57,12 +58,18 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 
 	public final void addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(null, attr, null));
+		addPrerequisite(createPrerequisite(null, attr, null, null));
 	}
 
 	public final void addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(null, attr, alias));
+		addPrerequisite(createPrerequisite(null, attr, alias, null));
+	}
+
+	public final void addLocalPrerequisite(String attr, String alias, Filter filter)
+			throws PrerequisiteAlreadyDefinedException
+	{
+		addPrerequisite(createPrerequisite(null, attr, alias, filter));
 	}
 
 	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException
@@ -129,12 +136,13 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		m_public = flag;
 	}
 
-	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias)
+	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias, Filter filter)
 	{
 		PrerequisiteBuilder bld = createPrerequisiteBuilder();
 		bld.setComponentName(component);
 		bld.setName(name);
 		bld.setAlias(alias);
+		bld.setFilter(filter);
 		return bld;
 	}
 }
