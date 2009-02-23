@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jarprocessor Actor for Buckminster
+Bundle-SymbolicName: org.eclipse.buckminster.jarprocessor;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Cloudsmith Inc
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.sax;bundle-version="1.0.0",
+ org.eclipse.buckminster.runtime,
+ org.eclipse.core.runtime,
+ org.eclipse.equinox.p2.jarprocessor;bundle-version="1.0.0"
+Export-Package: org.eclipse.buckminster.jarprocessor

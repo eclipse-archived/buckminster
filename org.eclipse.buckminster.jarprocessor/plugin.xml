@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.buckminster.core.actors">
+      <actor
+            ID="jarProcessor"
+            class="org.eclipse.buckminster.jarprocessor.JarProcessorActor"
+            name="Jar Processor Actor">
+      </actor>
+   </extension>
+   <extension
+        point="org.eclipse.buckminster.ant.buildScripts">
+     <buildScript
+            id="buckminster.signing"
+            resource="/org/eclipse/buckminster/jarprocessor/antscript/signing.ant"/>
+   </extension>
+</plugin>
