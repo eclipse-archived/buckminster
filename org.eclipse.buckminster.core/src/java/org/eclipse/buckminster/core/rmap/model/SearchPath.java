@@ -25,6 +25,7 @@ import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
@@ -52,12 +53,6 @@ public class SearchPath extends AbstractSaxableElement
 		m_name = name;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-	}
-
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
 	{
 		for(Provider provider : m_providers)
@@ -67,13 +62,6 @@ public class SearchPath extends AbstractSaxableElement
 	public final void addProvider(Provider provider)
 	{
 		m_providers.add(provider);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(Provider provider : m_providers)
-			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
 	}
 
 	public String getDefaultTag()
@@ -149,13 +137,22 @@ public class SearchPath extends AbstractSaxableElement
 
 				Provider best = bestMatch.getOriginalProvider();
 				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), provider
-						.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, best
-						.getReaderTypeId(), best.getURI()));
+						.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), best
+						.getURI()));
 			}
+
 			if(bestMatch == null)
 			{
 				query.logDecision(ResolverDecisionType.PROVIDER_NOT_FOUND);
-				throw new CoreException(problemCollector);
+				IStatus errStatus = problemCollector;
+				for(;;)
+				{
+					IStatus[] children = errStatus.getChildren();
+					if(children.length != 1)
+						break;
+					errStatus = children[0];
+				}
+				throw new CoreException(errStatus);
 			}
 
 			Provider best = bestMatch.getOriginalProvider();
@@ -181,5 +178,18 @@ public class SearchPath extends AbstractSaxableElement
 	public ResourceMap getResourceMap()
 	{
 		return m_resourceMap;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_NAME, m_name);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		for(Provider provider : m_providers)
+			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
 	}
 }

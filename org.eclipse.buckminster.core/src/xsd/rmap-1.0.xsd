@@ -38,13 +38,15 @@
 		</sequence>
 	</complexType>
 	<complexType name="Matcher" abstract="true">
-		<attribute name="pattern" type="string" use="required" />
+		<attribute name="pattern" type="string" use="optional" />
 	</complexType>
 	<complexType name="Locator">
 		<complexContent>
 			<extension base="rm:Matcher">
 				<attribute name="searchPathRef" type="string"
 					use="required" />
+				<attribute name="failOnError" type="boolean"
+					use="optional" default="true"/>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -55,7 +57,6 @@
 			</extension>
 		</complexContent>
 	</complexType>
-
 
 	<complexType name="Provider">
 		<sequence>

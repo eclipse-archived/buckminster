@@ -142,16 +142,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		return m_documentation;
 	}
 
-	public SearchPath getLocalSearchPath(String componentName) throws CoreException
-	{
-		for(Matcher matcher : m_matchers)
-		{
-			if(matcher instanceof Locator && matcher.matches(componentName))
-				return matcher.getSearchPath(null);
-		}
-		return null;
-	}
-
 	public List<Matcher> getMatchers()
 	{
 		return m_matchers;
@@ -167,23 +157,6 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		if(!m_properties.isEmpty())
 			properties = new UnmodifiableMapUnion<String, Object>(properties, m_properties);
 		return properties;
-	}
-
-	public SearchPath getSearchPath(NodeQuery query) throws CoreException
-	{
-		ComponentRequest request = query.getComponentRequest();
-		String componentName = request.getName();
-		for(Matcher matcher : m_matchers)
-		{
-			if(matcher.matches(componentName))
-			{
-				SearchPath sp = matcher.getSearchPath(query);
-				query.logDecision(ResolverDecisionType.USING_SEARCH_PATH, sp.getName());
-				return sp;
-			}
-		}
-		query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object)null);
-		throw new SearchPathNotFoundException("component " + componentName); //$NON-NLS-1$
 	}
 
 	public SearchPath getSearchPathByReference(String searchPathRef) throws SearchPathNotFoundException
@@ -207,12 +180,95 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 	public BOMNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
-		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
-		SearchPath searchPath = getSearchPath(query);
+		ComponentRequest request = query.getComponentRequest();
+		CoreException lastFailure = null;
+		String componentName = request.getName();
+		for(Matcher matcher : m_matchers)
+		{
+			if(!matcher.matches(componentName))
+				continue;
+
+			if(matcher instanceof Redirect)
+				return ((Redirect)matcher).getResourceMap(query).resolve(query, monitor);
+
+			Locator locator = (Locator)matcher;
+			try
+			{
+				SearchPath sp = getSearchPathByReference(locator.getSearchPath());
+				query.logDecision(ResolverDecisionType.USING_SEARCH_PATH, sp.getName());
+				return resolve(query, sp, monitor);
+			}
+			catch(CoreException e)
+			{
+				if(locator.isFailOnError())
+					throw e;
+				lastFailure = e;
+			}
+		}
+
+		if(lastFailure == null)
+		{
+			query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object)null);
+			throw new SearchPathNotFoundException("component " + componentName); //$NON-NLS-1$
+		}
+		throw lastFailure;
+	}
+
+	public void setDocumentation(Documentation documentation)
+	{
+		m_documentation = documentation;
+	}
+
+	/**
+	 * Emit the SAX events that forms the XML representation for this instance
+	 * 
+	 * @param handler
+	 *            The handler that will receive the events.
+	 * @throws SAXException
+	 *             if the handler throws an exception when receiving the events
+	 */
+	public void toSax(ContentHandler handler) throws SAXException
+	{
+		handler.startDocument();
+		toSax(handler, XMLConstants.BM_RMAP_NS, XMLConstants.BM_RMAP_PREFIX, getDefaultTag());
+		handler.endDocument();
+	}
+
+	@Override
+	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
+	{
+		HashMap<String, String> prefixMappings = new HashMap<String, String>();
+		addPrefixMappings(prefixMappings);
+		Set<Map.Entry<String, String>> pfxMappings = prefixMappings.entrySet();
+		for(Map.Entry<String, String> pfxMapping : pfxMappings)
+			handler.startPrefixMapping(pfxMapping.getKey(), pfxMapping.getValue());
+		super.toSax(handler, namespace, prefix, localName);
+		for(Map.Entry<String, String> pfxMapping : pfxMappings)
+			handler.endPrefixMapping(pfxMapping.getKey());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+
+		for(SearchPath searchPath : m_searchPaths.values())
+			searchPath.toSax(handler, namespace, prefix, searchPath.getDefaultTag());
+
+		for(Matcher matcher : m_matchers)
+			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
+	}
+
+	private BOMNode resolve(NodeQuery query, SearchPath searchPath, IProgressMonitor monitor) throws CoreException
+	{
 		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
 				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, query.getComponentRequest(),
 				searchPath.getName()), null);
 
+		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
 		try
 		{
 			for(boolean first = true;; first = false)
@@ -293,53 +349,5 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		{
 			monitor.done();
 		}
-	}
-
-	public void setDocumentation(Documentation documentation)
-	{
-		m_documentation = documentation;
-	}
-
-	/**
-	 * Emit the SAX events that forms the XML representation for this instance
-	 * 
-	 * @param handler
-	 *            The handler that will receive the events.
-	 * @throws SAXException
-	 *             if the handler throws an exception when receiving the events
-	 */
-	public void toSax(ContentHandler handler) throws SAXException
-	{
-		handler.startDocument();
-		toSax(handler, XMLConstants.BM_RMAP_NS, XMLConstants.BM_RMAP_PREFIX, getDefaultTag());
-		handler.endDocument();
-	}
-
-	@Override
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
-	{
-		HashMap<String, String> prefixMappings = new HashMap<String, String>();
-		addPrefixMappings(prefixMappings);
-		Set<Map.Entry<String, String>> pfxMappings = prefixMappings.entrySet();
-		for(Map.Entry<String, String> pfxMapping : pfxMappings)
-			handler.startPrefixMapping(pfxMapping.getKey(), pfxMapping.getValue());
-		super.toSax(handler, namespace, prefix, localName);
-		for(Map.Entry<String, String> pfxMapping : pfxMappings)
-			handler.endPrefixMapping(pfxMapping.getKey());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
-
-		for(SearchPath searchPath : m_searchPaths.values())
-			searchPath.toSax(handler, namespace, prefix, searchPath.getDefaultTag());
-
-		for(Matcher matcher : m_matchers)
-			matcher.toSax(handler, namespace, prefix, matcher.getDefaultTag());
 	}
 }

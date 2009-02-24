@@ -38,25 +38,24 @@ public class Redirect extends Matcher
 		m_url = url;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_HREF, m_url);
-		super.addAttributes(attrs);
-	}
-
 	public String getDefaultTag()
 	{
 		return TAG;
 	}
 
-	@Override
-	public SearchPath getSearchPath(NodeQuery query) throws CoreException
+	public ResourceMap getResourceMap(NodeQuery query) throws CoreException
 	{
 		ResourceMap rmap = getOwner();
 		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
 		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
 		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
-		return ResourceMap.fromURL(url, query.getComponentQuery().getConnectContext()).getSearchPath(query);
+		return ResourceMap.fromURL(url, query.getComponentQuery().getConnectContext());
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_HREF, m_url);
+		super.addAttributes(attrs);
 	}
 }

@@ -12,10 +12,8 @@ package org.eclipse.buckminster.core.rmap.model;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -36,12 +34,6 @@ public abstract class Matcher extends AbstractSaxableElement
 		m_pattern = Pattern.compile(pattern);
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
-	}
-
 	public final ResourceMap getOwner()
 	{
 		return m_owner;
@@ -52,10 +44,15 @@ public abstract class Matcher extends AbstractSaxableElement
 		return m_pattern;
 	}
 
-	public abstract SearchPath getSearchPath(NodeQuery query) throws CoreException;
-
 	public final boolean matches(String componentName)
 	{
-		return m_pattern.matcher(componentName).find();
+		return m_pattern == null || m_pattern.matcher(componentName).find();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		if(m_pattern != null)
+			Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
 	}
 }

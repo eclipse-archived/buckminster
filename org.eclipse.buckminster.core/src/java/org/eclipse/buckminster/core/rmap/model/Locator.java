@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
-import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -22,21 +21,24 @@ public class Locator extends Matcher
 {
 	public static final String TAG = "locator"; //$NON-NLS-1$
 
+	public static final String ATTR_FAIL_ON_ERROR = "failOnError"; //$NON-NLS-1$
+
 	public static final String ATTR_SEARCH_PATH_REF = "searchPathRef"; //$NON-NLS-1$
 
 	private final String m_searchPath;
 
+	private final boolean m_failOnError;
+
 	public Locator(ResourceMap owner, String pattern, String searchPath)
+	{
+		this(owner, pattern, searchPath, true);
+	}
+
+	public Locator(ResourceMap owner, String pattern, String searchPath, boolean failOnError)
 	{
 		super(owner, pattern);
 		m_searchPath = searchPath;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, m_searchPath.toString());
-		super.addAttributes(attrs);
+		m_failOnError = failOnError;
 	}
 
 	public String getDefaultTag()
@@ -44,15 +46,23 @@ public class Locator extends Matcher
 		return TAG;
 	}
 
-	@Override
-	public SearchPath getSearchPath(NodeQuery query) throws SearchPathNotFoundException
-	{
-		return getOwner().getSearchPathByReference(m_searchPath);
-	}
-
-	public String getSearchPathName()
+	public String getSearchPath()
 	{
 		return m_searchPath;
+	}
+
+	public boolean isFailOnError()
+	{
+		return m_failOnError;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, m_searchPath);
+		if(!m_failOnError)
+			Utils.addAttribute(attrs, ATTR_FAIL_ON_ERROR, Boolean.toString(m_failOnError));
+		super.addAttributes(attrs);
 	}
 
 }
