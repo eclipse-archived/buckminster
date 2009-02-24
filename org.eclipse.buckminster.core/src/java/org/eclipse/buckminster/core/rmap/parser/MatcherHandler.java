@@ -37,9 +37,8 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 		{
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
-			rmap.addMatcher(new Locator(rmap, getPattern(),
-					getOptionalStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF), getOptionalBooleanValue(attrs,
-							Locator.ATTR_FAIL_ON_ERROR, true)));
+			rmap.addMatcher(new Locator(rmap, getPattern(), getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF),
+					getOptionalBooleanValue(attrs, Locator.ATTR_FAIL_ON_ERROR, true)));
 		}
 	}
 
@@ -72,7 +71,7 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_pattern = getStringValue(attrs, "pattern"); //$NON-NLS-1$
+		m_pattern = getOptionalStringValue(attrs, "pattern"); //$NON-NLS-1$
 	}
 
 	final String getPattern()
