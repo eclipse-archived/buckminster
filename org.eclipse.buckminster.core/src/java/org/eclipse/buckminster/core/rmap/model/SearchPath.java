@@ -25,7 +25,6 @@ import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
@@ -144,15 +143,7 @@ public class SearchPath extends AbstractSaxableElement
 			if(bestMatch == null)
 			{
 				query.logDecision(ResolverDecisionType.PROVIDER_NOT_FOUND);
-				IStatus errStatus = problemCollector;
-				for(;;)
-				{
-					IStatus[] children = errStatus.getChildren();
-					if(children.length != 1)
-						break;
-					errStatus = children[0];
-				}
-				throw new CoreException(errStatus);
+				throw new CoreException(problemCollector);
 			}
 
 			Provider best = bestMatch.getOriginalProvider();

@@ -31,7 +31,9 @@ public abstract class Matcher extends AbstractSaxableElement
 	public Matcher(ResourceMap owner, String pattern)
 	{
 		m_owner = owner;
-		m_pattern = Pattern.compile(pattern);
+		m_pattern = pattern == null
+				? null
+				: Pattern.compile(pattern);
 	}
 
 	public final ResourceMap getOwner()

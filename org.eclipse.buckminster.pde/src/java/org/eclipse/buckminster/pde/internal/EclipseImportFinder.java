@@ -237,9 +237,10 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	{
 		IVersion bestFit = null;
 
+		String cname = m_base.getComponentName();
 		for(IPluginEntry model : getSitePluginEntries(m_base.getRemoteLocation(), getConnectContext(), m_query, monitor))
 		{
-			if(!model.getVersionedIdentifier().getIdentifier().equals(m_base.getComponentName()))
+			if(!model.getVersionedIdentifier().getIdentifier().equals(cname))
 				continue;
 
 			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion()

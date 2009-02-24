@@ -180,8 +180,11 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 	public BOMNode resolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 2000);
+
 		ComponentRequest request = query.getComponentRequest();
-		CoreException lastFailure = null;
+		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
+				"No suitable provider for component {0} was found in resourceMap {1}", request, getContextURL()), null);
+
 		String componentName = request.getName();
 		for(Matcher matcher : m_matchers)
 		{
@@ -200,18 +203,19 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 			}
 			catch(CoreException e)
 			{
+				problemCollector.add(e.getStatus());
 				if(locator.isFailOnError())
-					throw e;
-				lastFailure = e;
+					break;
 			}
 		}
 
-		if(lastFailure == null)
+		if(problemCollector.getChildren().length == 0)
 		{
 			query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object)null);
-			throw new SearchPathNotFoundException("component " + componentName); //$NON-NLS-1$
+			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, NLS.bind(
+					Messages.Unable_to_find_a_searchPath_for_0, request), null));
 		}
-		throw lastFailure;
+		throw new CoreException(problemCollector);
 	}
 
 	public void setDocumentation(Documentation documentation)

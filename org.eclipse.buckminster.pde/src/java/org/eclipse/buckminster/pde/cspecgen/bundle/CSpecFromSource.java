@@ -317,13 +317,14 @@ public class CSpecFromSource extends CSpecGenerator
 		boolean versionExpansion = versionQualifier != null
 				? versionQualifier.startsWith("qualifier") //$NON-NLS-1$
 				: false;
+
+		// Add the build.properties artifact. We want to manage that separately since it
+		// is one of the requirements for expanding the bundle version
+		//
+		cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
+
 		if(versionExpansion)
 		{
-			// Add the build.properties artifact. We want to manage that separately since it
-			// is one of the requirements for expanding the bundle version
-			//
-			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
-
 			// Add the action that will create the manifest copy with the version expanded
 			// Another action that will do the same for the manifest used for the source bundle
 			//
@@ -340,18 +341,6 @@ public class CSpecFromSource extends CSpecGenerator
 			versionExpansionAction.setProductBase(OUTPUT_DIR_TEMP);
 			versionExpansionAction.addProductPath(manifestPath);
 			manifest = versionExpansionAction;
-
-			// this is for the source manifest
-			ActionBuilder sourceManifestAction = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_MANIFEST,
-					false);
-
-			sourceManifestAction.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
-			sourceManifestAction.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
-
-			sourceManifestAction.setProductAlias(ALIAS_OUTPUT);
-			sourceManifestAction.setProductBase(OUTPUT_DIR_TEMP);
-			IPath sourceManifestPath = new Path(SOURCE_MANIFEST);
-			sourceManifestAction.addProductPath(sourceManifestPath);
 		}
 		else
 		{
@@ -534,7 +523,20 @@ public class CSpecFromSource extends CSpecGenerator
 		{
 			normalizeGroup(srcIncludesSource);
 
-			// Add Action to create a source bundle jar
+			// Add Actions to create a source bundle jar
+
+			// this is for the source manifest
+			ActionBuilder sourceManifestAction = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_MANIFEST,
+					false);
+			sourceManifestAction.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
+			sourceManifestAction.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
+
+			sourceManifestAction.setProductAlias(ALIAS_OUTPUT);
+			sourceManifestAction.setProductBase(OUTPUT_DIR_TEMP);
+			IPath sourceManifestPath = new Path(SOURCE_MANIFEST);
+			sourceManifestAction.addProductPath(sourceManifestPath);
+
+			// this is for the source bundle
 			ActionBuilder sourceBundleAction = addAntAction(ATTRIBUTE_SOURCE_BUNDLE_JAR, TASK_CREATE_BUNDLE_JAR, true);
 			sourceBundleAction.addLocalPrerequisite(IBuildEntry.SRC_INCLUDES, ALIAS_REQUIREMENTS);
 			sourceBundleAction.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
