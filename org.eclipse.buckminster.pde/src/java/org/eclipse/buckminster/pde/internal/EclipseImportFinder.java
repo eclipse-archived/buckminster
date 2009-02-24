@@ -74,14 +74,14 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	private static final UUID CACHE_KEY_PLUGIN_ENTRIES_CACHE = UUID.randomUUID();
 
 	@SuppressWarnings("unchecked")
-	private static Map<URL, IPluginEntry[]> getPluginEntriesCache(Map<UUID, Object> ctxUserCache)
+	private static Map<String, IPluginEntry[]> getPluginEntriesCache(Map<UUID, Object> ctxUserCache)
 	{
 		synchronized(ctxUserCache)
 		{
-			Map<URL, IPluginEntry[]> cache = (Map<URL, IPluginEntry[]>)ctxUserCache.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
+			Map<String, IPluginEntry[]> cache = (Map<String, IPluginEntry[]>)ctxUserCache.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
 			if(cache == null)
 			{
-				cache = Collections.synchronizedMap(new HashMap<URL, IPluginEntry[]>());
+				cache = Collections.synchronizedMap(new HashMap<String, IPluginEntry[]>());
 				ctxUserCache.put(CACHE_KEY_PLUGIN_ENTRIES_CACHE, cache);
 			}
 			return cache;
@@ -265,10 +265,11 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	private IPluginEntry[] getSitePluginEntries(URL location, IConnectContext cctx, NodeQuery query,
 			IProgressMonitor monitor) throws CoreException
 	{
-		synchronized(location.toString().intern())
+		String cacheKey = location.toString().intern();
+		synchronized(cacheKey)
 		{
-			Map<URL, IPluginEntry[]> cache = getPluginEntriesCache(query.getContext().getUserCache());
-			IPluginEntry[] entries = cache.get(location);
+			Map<String, IPluginEntry[]> cache = getPluginEntriesCache(query.getContext().getUserCache());
+			IPluginEntry[] entries = cache.get(cacheKey);
 			if(entries != null)
 				return entries;
 
@@ -276,7 +277,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 			{
 				MonitorUtils.complete(monitor);
 				entries = EclipseImportReaderType.getMapPluginEntries(location, cctx);
-				cache.put(location, entries);
+				cache.put(cacheKey, entries);
 				return entries;
 			}
 
@@ -291,7 +292,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 				try
 				{
 					entries = site.getPluginEntries();
-					cache.put(location, entries);
+					cache.put(cacheKey, entries);
 					MonitorUtils.worked(monitor, 50);
 					return entries;
 				}
@@ -320,7 +321,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 						}
 					}
 					entries = entryCache.values().toArray(new IPluginEntry[entryCache.size()]);
-					cache.put(location, entries);
+					cache.put(cacheKey, entries);
 					return entries;
 				}
 				finally

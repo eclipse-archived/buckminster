@@ -76,6 +76,7 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRequest;
 import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
+import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepositoryFactory;
 import org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryIO;
 import org.eclipse.equinox.internal.p2.metadata.repository.URLMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
@@ -470,6 +471,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			}
 
 			SubMonitor subMon = SubMonitor.convert(monitor, 2000);
+
 			bld.append(URLMetadataRepository.CONTENT_FILENAME);
 			int len = bld.length();
 
@@ -513,6 +515,19 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 							subMon.newChild(800));
 					MetadataRepositoryIO mdrIO = new MetadataRepositoryIO();
 					mdr = mdrIO.read(location, in, subMon.newChild(200));
+					mdrCache.put(base, mdr);
+					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
+				}
+				catch(Exception e)
+				{
+					Utils.close(in);
+					in = null;
+				}
+
+				try
+				{
+					CompositeMetadataRepositoryFactory cmf = new CompositeMetadataRepositoryFactory();
+					mdr = cmf.load(uri, subMon.newChild(200));
 					mdrCache.put(base, mdr);
 					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
 				}
