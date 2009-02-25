@@ -305,6 +305,20 @@ public class CSpecFromSource extends CSpecGenerator
 			}
 		}
 
+		IBuildEntry secondaryDeps = build.getEntry(IBuildEntry.SECONDARY_DEPENDENCIES);
+		if(secondaryDeps != null)
+		{
+			// Add dependencies unless they have been added as imports already
+			//
+			for(String depName : secondaryDeps.getTokens())
+			{
+				ComponentRequestBuilder dep = cspec.createDependencyBuilder();
+				dep.setName(depName);
+				dep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+				addDependency(dep);
+			}
+		}
+
 		// The manifest version may end with ".qualifier" in which case it needs to be expanded.
 		// The expansion will create a new copy in a different location. In case there is no
 		// expansion, we can use the original file.
