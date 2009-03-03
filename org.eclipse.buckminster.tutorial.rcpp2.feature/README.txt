@@ -1,0 +1,1 @@
+This feature adds the plugins needed to make a RCP app self managed using p2.
