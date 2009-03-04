@@ -33,6 +33,7 @@ import org.eclipse.ecf.filetransfer.IFileTransferListener;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransfer;
 import org.eclipse.ecf.filetransfer.IRetrieveFileTransferContainerAdapter;
 import org.eclipse.ecf.filetransfer.IncomingFileTransferException;
+import org.eclipse.ecf.filetransfer.UserCancelledException;
 import org.eclipse.ecf.filetransfer.events.IFileTransferEvent;
 import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferEvent;
 import org.eclipse.ecf.filetransfer.events.IIncomingFileTransferReceiveDataEvent;
@@ -99,9 +100,9 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 
 	public synchronized void handleTransferEvent(IFileTransferEvent event)
 	{
-		IIncomingFileTransfer source = ((IIncomingFileTransferEvent)event).getSource();
 		if(event instanceof IIncomingFileTransferReceiveStartEvent)
 		{
+			IIncomingFileTransfer source = ((IIncomingFileTransferEvent)event).getSource();
 			try
 			{
 				FileInfoBuilder fi = new FileInfoBuilder();
@@ -113,7 +114,9 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 				m_fileInfo = fi;
 
 				if(m_onlyGetInfo)
-					((IIncomingFileTransferReceiveStartEvent)event).cancel();
+				{
+					source.cancel();
+				}
 				else
 					((IIncomingFileTransferReceiveStartEvent)event).receive(m_outputStream, this);
 			}
@@ -135,6 +138,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		}
 		else if(event instanceof IIncomingFileTransferReceiveDataEvent)
 		{
+			IIncomingFileTransfer source = ((IIncomingFileTransferEvent)event).getSource();
 			if(m_monitor != null)
 			{
 				if(m_monitor.isCanceled())
@@ -162,7 +166,11 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 				IOUtils.close(m_outputStream);
 
 			if(m_exception == null)
+			{
 				m_exception = ((IIncomingFileTransferReceiveDoneEvent)event).getException();
+				if(m_exception instanceof UserCancelledException)
+					m_exception = null;
+			}
 		}
 	}
 
