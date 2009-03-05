@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.eclipse.buckminster.jnlp;
 
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -17,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizardDialog;
@@ -184,6 +188,19 @@ public class Application implements IApplication
 			finally
 			{
 				IOUtils.close(propStream);
+			}
+
+			m_errorURL = properties.get(MaterializationConstants.PROP_ERROR_URL);
+			if(m_errorURL == null)
+				m_errorURL = MaterializationConstants.ERROR_HELP_URL;
+
+			String errorMessage = properties.get(MaterializationConstants.PROP_ERROR_MESSAGE);
+
+			if(errorMessage != null)
+			{
+				errorCode = MaterializationConstants.ERROR_CODE_404_EXCEPTION;
+				throw BuckminsterException
+						.fromMessage(new String(Base64.decodeBase64(errorMessage.getBytes()), "UTF-8")); //$NON-NLS-1$
 			}
 
 			try
