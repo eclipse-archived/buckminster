@@ -120,6 +120,8 @@ public interface MaterializationConstants
 
 	public static final String PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL = "eclipseDistroTools3.3UpdateSiteURL";
 
+	public static final String PROP_ERROR_MESSAGE = "errorMessage"; //$NON-NLS-1$
+
 	public static final String PROPERTY_DISTRO_NAME = "distro.name";
 
 	public static final String[] MATERIALIZERS = { "filesystem", "workspace" };
