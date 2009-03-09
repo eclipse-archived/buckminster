@@ -82,7 +82,7 @@ public class FragmentsActor extends AbstractActor
 		for(BundleDescription fragment : fragments)
 		{
 			String fragmentName = fragment.getName();
-			if(fragmentName.contains(".compatibility") || fragmentName.endsWith(".test")) //$NON-NLS-1$ //$NON-NLS-2$
+			if(fragmentName.contains(".compatibility") || fragmentName.endsWith(".test") || fragmentName.endsWith(".dummy")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				//
 				// Compatibility fragments must be explicitly brought in using
 				// a product or a feature

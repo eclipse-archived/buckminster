@@ -92,6 +92,7 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 					IFeature feature = model.getFeature();
 
 					FeatureChild fc = new FeatureChild();
+					fc.setModel(featureModel);
 					fc.loadFrom(model.getFeature());
 					fc.setArch(feature.getArch());
 					fc.setOS(feature.getOS());

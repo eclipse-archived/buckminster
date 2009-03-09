@@ -128,6 +128,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		GroupBuilder fullClean = cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
 		GroupBuilder bundleJars = cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
+		cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, true);
 
 		if(localReader)
 			m_projectDesc = ProjectDescReader.getProjectDescription(getReader(), MonitorUtils.subMonitor(monitor, 15));
@@ -582,6 +583,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder fullClean = cspec.getRequiredGroup(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 
 		for(IPluginImport pluginImport : imports)
 		{
@@ -608,6 +610,7 @@ public class CSpecFromSource extends CSpecGenerator
 			addExternalPrerequisite(getAttributeBuildRequirements(), component, ATTRIBUTE_JAVA_BINARIES, optional);
 			if(pluginImport.isReexported())
 				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, optional);
+			addExternalPrerequisite(productConfigExports, component, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, optional);
 		}
 	}
 

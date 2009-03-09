@@ -83,10 +83,12 @@ public class CSpecFromBinary extends CSpecGenerator
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		GroupBuilder bundleJars = cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
 		GroupBuilder bundleAndFragments = cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS, true);
+
 		bundleJars.addLocalPrerequisite(bundleAndFragments);
 
 		// We need an empty group for binary bundles
 		cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE, true);
+		cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, true);
 
 		IPluginModelBase model = m_plugin.getPluginModel();
 		if(model instanceof IFragmentModel)

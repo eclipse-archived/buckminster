@@ -7,12 +7,20 @@
  ******************************************************************************/
 package org.eclipse.buckminster.pde.tasks;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.actor.IllegalPrerequisiteException;
@@ -21,9 +29,15 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
+import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,58 +45,267 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
-import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureParser;
+import org.eclipse.equinox.internal.p2.publisher.VersionedName;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.spi.p2.artifact.repository.SimpleArtifactRepositoryFactory;
 import org.eclipse.equinox.internal.provisional.spi.p2.metadata.repository.SimpleMetadataRepositoryFactory;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
+import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.eclipse.BundlesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction;
+import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
+import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 @SuppressWarnings("restriction")
 public class P2SiteGenerator extends AbstractActor
 {
 	public static final String ALIAS_SITE = "site"; //$NON-NLS-1$
 
-	public static final String ALIAS_SITE_FEATURE = "site.feature"; //$NON-NLS-1$
+	public static final String ALIAS_SITE_DEFINER = "site.definer"; //$NON-NLS-1$
 
-	public void run(File siteFeature, File siteFolder) throws CoreException
+	public static final String ALIAS_PRODUCT_CONFIGS = "product.configs"; //$NON-NLS-1$
+
+	private final static String MATCH_ALL = "*"; //$NON-NLS-1$
+
+	private static final String WS_CARBON = "carbon"; //$NON-NLS-1$
+
+	private static final String WS_COCOA = "cocoa"; //$NON-NLS-1$
+
+	private static final String WS_GTK = "gtk"; //$NON-NLS-1$
+
+	private static final String WS_MOTIF = "motif"; //$NON-NLS-1$
+
+	private static final String WS_WIN32 = "win32"; //$NON-NLS-1$
+
+	private static final String WS_WPF = "wpf"; //$NON-NLS-1$
+
+	private static final String OS_AIX = "aix"; //$NON-NLS-1$
+
+	private static final String OS_HPUX = "hpux"; //$NON-NLS-1$
+
+	private static final String OS_LINUX = "linux"; //$NON-NLS-1$
+
+	private static final String OS_MACOSX = "macosx"; //$NON-NLS-1$
+
+	private static final String OS_SOLARIS = "solaris"; //$NON-NLS-1$
+
+	private static final String OS_WIN32 = "win32"; //$NON-NLS-1$
+
+	private static final String ARCH_IA64_32 = "ia64_32"; //$NON-NLS-1$
+
+	private static final String ARCH_PPC = "ppc"; //$NON-NLS-1$
+
+	private static final String ARCH_SPARC = "sparc"; //$NON-NLS-1$
+
+	private static final String ARCH_X86 = "x86"; //$NON-NLS-1$
+
+	private static final String ARCH_X86_64 = "x86_64"; //$NON-NLS-1$
+
+	private final static String[][] s_defaultKnownConfigs = { //
+	{ WS_CARBON, OS_MACOSX, ARCH_PPC }, //
+			{ WS_CARBON, OS_MACOSX, ARCH_X86 }, //
+			{ WS_COCOA, OS_MACOSX, ARCH_PPC }, //
+			{ WS_COCOA, OS_MACOSX, ARCH_X86 }, //
+			{ WS_COCOA, OS_MACOSX, ARCH_X86_64 }, //
+			{ WS_GTK, OS_LINUX, ARCH_PPC }, //
+			{ WS_GTK, OS_LINUX, ARCH_X86 }, //
+			{ WS_GTK, OS_LINUX, ARCH_X86_64 }, //
+			{ WS_GTK, OS_SOLARIS, ARCH_SPARC }, //
+			{ WS_MOTIF, OS_AIX, ARCH_PPC }, //
+			{ WS_MOTIF, OS_HPUX, ARCH_IA64_32 }, //
+			{ WS_MOTIF, OS_LINUX, ARCH_X86 }, //
+			{ WS_WIN32, OS_WIN32, ARCH_X86 }, //
+			{ WS_WIN32, OS_WIN32, ARCH_X86_64 }, //
+			{ WS_WPF, OS_WIN32, ARCH_X86 }, //
+	};
+
+	public static String[] getConfigurations(Map<String, ? extends Object> props)
 	{
-		if(siteFolder == null)
+		// Return a list of configurations. Typically only one but might be
+		// several if one or several of ws, os, or arch contains a wildcard
+		//
+		String targetWS = props.get(TargetPlatform.TARGET_WS).toString();
+		if(targetWS == null)
+			targetWS = org.eclipse.pde.core.plugin.TargetPlatform.getWS();
+
+		String targetOS = props.get(TargetPlatform.TARGET_OS).toString();
+		if(targetOS == null)
+			targetOS = org.eclipse.pde.core.plugin.TargetPlatform.getOS();
+
+		String targetArch = props.get(TargetPlatform.TARGET_ARCH).toString();
+		if(targetArch == null)
+			targetArch = org.eclipse.pde.core.plugin.TargetPlatform.getOSArch();
+
+		if(!(MATCH_ALL.equals(targetOS) || MATCH_ALL.equals(targetWS) || MATCH_ALL.equals(targetArch)))
+			return new String[] { targetWS + '.' + targetOS + '.' + targetArch };
+
+		// TODO: Add a way to extend the list of known configurations. Or, possibly
+		// use what's in the executable feature.
+		//
+		ArrayList<String> possibleMatches = new ArrayList<String>();
+		for(String[] config : s_defaultKnownConfigs)
+		{
+			if(isMatch(config, targetWS, targetOS, targetArch))
+				possibleMatches.add(config[0] + '.' + config[1] + '.' + config[2]);
+		}
+		return possibleMatches.toArray(new String[possibleMatches.size()]);
+	}
+
+	private static void addProductAction(File sourceFolder, List<IPublisherAction> actions, File executableFeature,
+			IProductDescriptor product, Map<String, String> buildProperties) throws CoreException
+	{
+		if(product.useFeatures())
+			actions.add(new CategoriesAction(sourceFolder, buildProperties, TypedCollections
+					.getProductFeatures(product)));
+
+		String flavor = buildProperties.get("org.eclipse.p2.flavor"); //$NON-NLS-1$
+		if(flavor == null)
+			flavor = "tooling"; //$NON-NLS-1$
+		actions.add(new ProductAction(null, product, flavor, executableFeature));
+	}
+
+	private static IProductDescriptor getProductDescriptor(File productFile) throws CoreException
+	{
+		try
+		{
+			return new ProductFile(productFile.getAbsolutePath());
+		}
+		catch(RuntimeException e)
+		{
+			throw e;
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	private static boolean isMatch(String[] config, String targetWS, String targetOS, String targetArch)
+	{
+		return (MATCH_ALL.equals(targetWS) || config[0].equals(targetWS))
+				&& (MATCH_ALL.equals(targetOS) || config[1].equals(targetOS))
+				&& (MATCH_ALL.equals(targetArch) || config[2].equals(targetArch));
+	}
+
+	private static Feature parse(File sourceFolder, File featureFile) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			input = new BufferedInputStream(new FileInputStream(featureFile));
+			FeatureManifestParser parser = new FeatureManifestParser();
+			Feature feature = parser.parse(input);
+			if(feature == null)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_manifest_file_0,
+						featureFile));
+
+			List<String> messageKeys = TypedCollections.getMessageKeys(parser);
+			String[] keyStrings = messageKeys.toArray(new String[messageKeys.size()]);
+			feature.setLocalizations(LocalizationHelper.getDirPropertyLocalizations(sourceFolder,
+					"feature", null, keyStrings)); //$NON-NLS-1$
+			feature.setLocation(sourceFolder.toString());
+			return feature;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_parse_feature_manifest_file_0,
+					featureFile));
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
+
+	private static Map<String, String> readBuildProperties(File sourceFolder) throws CoreException
+	{
+		InputStream input = null;
+		try
+		{
+			File buildProps = new File(sourceFolder, IPDEConstants.BUILD_PROPERTIES_FILE);
+			input = new BufferedInputStream(new FileInputStream(buildProps));
+			return new BMProperties(input);
+		}
+		catch(FileNotFoundException e)
+		{
+			// This is OK. The build.properties file is not required
+			return Collections.emptyMap();
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(input);
+		}
+	}
+
+	public void run(File siteDefiner, File sourceFolder, List<File> productConfigs, File executableFeature,
+			File siteFolder, Map<String, ? extends Object> properties) throws CoreException
+	{
+		if(siteDefiner == null || siteFolder == null)
 			// Nothing to do
 			return;
 
-		FeatureParser parser = new FeatureParser();
-		Feature topFeature = parser.parse(siteFeature);
-		if(topFeature == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_from_0, siteFeature));
+		// The site can be defined by a feature or a product.
+		//
+		String fileName = siteDefiner.getName();
+		String siteDescriptorName;
 
-		topFeature.setLocation(siteFeature.toString());
 		PublisherInfo info = new PublisherInfo();
+		Object siteDescriptor;
+		if(fileName.equals("feature.xml")) //$NON-NLS-1$
+		{
+			Feature feature = parse(sourceFolder, siteDefiner);
+			if(feature == null)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_from_0, siteDefiner));
+			siteDescriptor = feature;
+			siteDescriptorName = feature.getLabel();
+			if(siteDescriptorName == null)
+				siteDescriptorName = feature.getId();
+		}
+		else
+		{
+			IProductDescriptor productDesc = getProductDescriptor(siteDefiner);
+			siteDescriptorName = productDesc.getProductName();
+			if(siteDescriptorName == null)
+				siteDescriptorName = productDesc.getId();
+
+			info.setConfigurations(getConfigurations(properties));
+			siteDescriptor = productDesc;
+		}
 
 		URI siteURI = siteFolder.toURI();
 		SimpleArtifactRepositoryFactory arFactory = new SimpleArtifactRepositoryFactory();
-		IArtifactRepository ar = arFactory
-				.create(siteURI, topFeature.getLabel() + " - Artifact Repository", null, null); //$NON-NLS-1$
+		IArtifactRepository ar = arFactory.create(siteURI, siteDescriptorName + " - Artifact Repository", null, null); //$NON-NLS-1$
 		String trueStr = Boolean.toString(true);
 		ar.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		ar.setProperty(Publisher.PUBLISH_PACK_FILES_AS_SIBLINGS, trueStr);
 
 		info.setArtifactRepository(ar);
+		info.setArtifactOptions(IPublisherInfo.A_PUBLISH | IPublisherInfo.A_INDEX);
 
 		SimpleMetadataRepositoryFactory mdrFactory = new SimpleMetadataRepositoryFactory();
-		IMetadataRepository mdr = mdrFactory.create(siteURI, topFeature.getLabel(), null, null);
+		IMetadataRepository mdr = mdrFactory.create(siteURI, siteDescriptorName, null, null);
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
 
-		IPublisherAction[] actions = createActions(topFeature, siteFolder);
-		Publisher publisher = createPublisher(info);
+		IPublisherAction[] actions = createActions(sourceFolder, siteDescriptor, executableFeature, siteFolder,
+				productConfigs);
+		Publisher publisher = new Publisher(info);
 		IStatus result = publisher.publish(actions, new NullProgressMonitor());
 		if(result.getSeverity() == IStatus.ERROR)
 			throw new CoreException(result);
@@ -92,10 +315,12 @@ public class P2SiteGenerator extends AbstractActor
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
 		Action action = ctx.getAction();
-		IPath outputPath = AbstractActor.getSingleProductPath(ctx, action, false);
+		IPath outputPath = AbstractActor.getSingleAttributePath(ctx, action, false);
 		IPath site = null;
-		IPath siteFeature = null;
+		IPath siteDefiner = null;
+		File exeFeatureFile = null;
 		CSpec cspec = action.getCSpec();
+		List<IPath> productConfigs = null;
 		for(Prerequisite preq : action.getPrerequisites())
 		{
 			if(ALIAS_SITE.equals(preq.getAlias()))
@@ -103,28 +328,63 @@ public class P2SiteGenerator extends AbstractActor
 				// This prerequisite should appoint the site as a folder
 				//
 				Attribute rt = preq.getReferencedAttribute(cspec, ctx);
-				if(rt != null)
-					site = AbstractActor.getSingleProductPath(ctx, rt, true);
+				if(rt == null)
+					continue;
+
+				site = AbstractActor.getSingleAttributePath(ctx, rt, true);
+
+				// Check if the executable feature is included in the site
+				//
+				for(IPath path : AbstractActor.getPathList(ctx, rt, false))
+				{
+					if(!path.lastSegment().equals("features")) //$NON-NLS-1$
+						continue;
+
+					File featuresFolder = path.toFile().getAbsoluteFile();
+					String[] featureJars = path.toFile().getAbsoluteFile().list();
+					if(featureJars == null)
+						break;
+
+					for(String featureJar : featureJars)
+					{
+						if(featureJar.startsWith("org.eclipse.equinox.executable_")) //$NON-NLS-1$
+						{
+							exeFeatureFile = new File(featuresFolder, featureJar);
+							break;
+						}
+					}
+					break;
+				}
 				continue;
 			}
 
-			if(ALIAS_SITE_FEATURE.equals(preq.getAlias()))
+			if(ALIAS_SITE_DEFINER.equals(preq.getAlias()))
 			{
 				// This prerequisite should appoint the site defining feature as a folder
 				//
 				Attribute rt = preq.getReferencedAttribute(cspec, ctx);
 				if(rt != null)
-					siteFeature = AbstractActor.getSingleProductPath(ctx, rt, false);
+					siteDefiner = AbstractActor.getSingleAttributePath(ctx, rt, false);
 				continue;
 			}
+
+			if(ALIAS_PRODUCT_CONFIGS.equals(preq.getAlias()))
+			{
+				// This prerequisite should appoint the site defining feature as a folder
+				//
+				Attribute rt = preq.getReferencedAttribute(cspec, ctx);
+				productConfigs = AbstractActor.getPathList(ctx, rt, false);
+				continue;
+			}
+
 			throw new IllegalPrerequisiteException(action, preq.getName());
 		}
 
 		if(site == null)
 			throw new MissingPrerequisiteException(action, ALIAS_SITE);
 
-		if(siteFeature == null)
-			throw new MissingPrerequisiteException(action, ALIAS_SITE_FEATURE);
+		if(siteDefiner == null)
+			throw new MissingPrerequisiteException(action, ALIAS_SITE_DEFINER);
 
 		if(!outputPath.hasTrailingSeparator())
 			throw new IllegalArgumentException(NLS.bind(
@@ -160,40 +420,29 @@ public class P2SiteGenerator extends AbstractActor
 			}
 		}
 
-		File siteFeatureFile = siteFeature.toFile().getAbsoluteFile();
-		if(siteFeature.hasTrailingSeparator())
+		File siteDefinerFile = siteDefiner.toFile().getAbsoluteFile();
+
+		List<File> productConfigFiles;
+		if(productConfigs == null)
+			productConfigFiles = Collections.emptyList();
+		else
 		{
-			// This can be a feature folder in which case it contains a feature.xml
-			//
-			boolean multipleJars = false;
-			boolean isFeatureFolder = false;
-			String jarFile = null;
-			for(String file : siteFeatureFile.list())
+			productConfigFiles = new ArrayList<File>(productConfigs.size());
+			for(IPath path : productConfigs)
 			{
-				if(file.endsWith(".jar")) //$NON-NLS-1$
-				{
-					// Possible feature file
-					multipleJars = jarFile != null;
-					jarFile = file;
-					continue;
-				}
-				if(file.equals("feature.xml")) //$NON-NLS-1$
-				{
-					isFeatureFolder = true;
-					break;
-				}
-			}
-			if(!isFeatureFolder)
-			{
-				if(jarFile == null || multipleJars)
-					throw BuckminsterException.fromMessage(NLS.bind(
-							Messages.prerequisite_0_for_action_1_must_be_a_feature, ALIAS_SITE_FEATURE, action
-									.getQualifiedName()));
-				siteFeatureFile = new File(siteFeatureFile, jarFile);
+				File productConfigFile = path.toFile().getAbsoluteFile();
+				if(!productConfigFile.equals(siteDefinerFile))
+					productConfigFiles.add(productConfigFile);
 			}
 		}
 
-		run(siteFeatureFile, siteDir);
+		IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE, null,
+				null);
+		if(launcherFeature != null)
+			exeFeatureFile = new File(launcherFeature.getInstallLocation());
+
+		run(siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, exeFeatureFile, siteDir, ctx
+				.getProperties());
 		if(siteDir != outputDir)
 		{
 			// Zip the content of the siteDir. The name of the zip should
@@ -212,29 +461,51 @@ public class P2SiteGenerator extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private IPublisherAction[] createActions(Feature topFeature, File siteFolder) throws CoreException
+	private IPublisherAction[] createActions(File sourceFolder, Object siteDescriptor, File executableFeature,
+			File siteFolder, List<File> productConfigs) throws CoreException
 	{
-		return new IPublisherAction[] { createFeaturesAction(siteFolder), createBundlesAction(siteFolder),
-				createCategoriesAction(topFeature) };
-	}
+		ArrayList<IPublisherAction> actions = new ArrayList<IPublisherAction>();
+		actions.add(new FeaturesAction(new File[] { new File(siteFolder, "features") })); //$NON-NLS-1$
+		actions.add(new BundlesAction(new File[] { new File(siteFolder, "plugins") })); //$NON-NLS-1$
 
-	private IPublisherAction createBundlesAction(File siteFolder)
-	{
-		return new BundlesAction(new File[] { new File(siteFolder, "plugins") }); //$NON-NLS-1$
-	}
+		Map<String, String> buildProperties = readBuildProperties(sourceFolder);
+		if(siteDescriptor instanceof Feature)
+		{
+			Feature topFeature = (Feature)siteDescriptor;
+			URLEntry[] siteRefs = topFeature.getDiscoverySites();
+			if(siteRefs.length > 0)
+				actions.add(new SiteReferencesAction(siteRefs));
 
-	private IPublisherAction createCategoriesAction(Feature topFeature) throws CoreException
-	{
-		return new FeatureToP2SiteAction(topFeature);
-	}
+			URLEntry mirrorsSite = topFeature.getUpdateSite();
+			if(mirrorsSite != null && mirrorsSite.getURL() != null)
+				actions.add(new MirrorsSiteAction(mirrorsSite.getURL()));
 
-	private IPublisherAction createFeaturesAction(File siteFolder)
-	{
-		return new FeaturesAction(new File[] { new File(siteFolder, "features") }); //$NON-NLS-1$
-	}
+			ArrayList<VersionedName> featureList = new ArrayList<VersionedName>();
+			for(FeatureEntry fe : topFeature.getEntries())
+			{
+				if(fe.isPatch() || fe.isPlugin() || fe.isRequires())
+					continue;
 
-	private Publisher createPublisher(PublisherInfo info)
-	{
-		return new Publisher(info);
+				String vstr = fe.getVersion();
+				Version version = vstr == null
+						? null
+						: new Version(vstr);
+				featureList.add(new VersionedName(fe.getId(), version));
+			}
+			actions.add(new CategoriesAction(sourceFolder, buildProperties, featureList));
+		}
+		else
+		{
+			IProductDescriptor product = (IProductDescriptor)siteDescriptor;
+			addProductAction(sourceFolder, actions, executableFeature, product, buildProperties);
+		}
+
+		for(File productConfigFile : productConfigs)
+		{
+			File productSourceFolder = productConfigFile.getParentFile();
+			addProductAction(productSourceFolder, actions, executableFeature, getProductDescriptor(productConfigFile),
+					readBuildProperties(productSourceFolder));
+		}
+		return actions.toArray(new IPublisherAction[actions.size()]);
 	}
 }

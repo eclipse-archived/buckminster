@@ -7,14 +7,7 @@
  ******************************************************************************/
 package org.eclipse.buckminster.pde.tasks;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -28,20 +21,16 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.pde.IPDEConstants;
-import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.metadata.generator.features.SiteCategory;
+import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
@@ -50,16 +39,12 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.CompositeQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
-import org.eclipse.equinox.p2.publisher.eclipse.Feature;
-import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
-import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 
@@ -69,7 +54,7 @@ import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
  * already been generated.
  */
 @SuppressWarnings("restriction")
-public class FeatureToP2SiteAction extends AbstractPublisherAction
+public class CategoriesAction extends AbstractPublisherAction
 {
 	private static final String PROP_CATEGORY_DESCRIPTION_PREFIX = "category.description."; //$NON-NLS-1$
 
@@ -139,38 +124,14 @@ public class FeatureToP2SiteAction extends AbstractPublisherAction
 
 	private final Map<String, String> m_buildProperties;
 
-	private final Feature m_topFeature;
+	private final List<VersionedName> m_featureEntries;
 
-	public FeatureToP2SiteAction(Feature topFeature) throws CoreException
+	public CategoriesAction(File projectRoot, Map<String, String> buildProperties, List<VersionedName> featureEntries)
+			throws CoreException
 	{
-		m_topFeature = topFeature;
-		File featureRoot = new File(topFeature.getLocation());
-
-		Map<Locale, Properties> localizations = Collections.emptyMap();
-		Map<String, String> properties = Collections.emptyMap();
-
-		InputStream input = null;
-		try
-		{
-			File buildProps = new File(featureRoot, IPDEConstants.BUILD_PROPERTIES_FILE);
-			input = new BufferedInputStream(new FileInputStream(buildProps));
-			properties = new BMProperties(input);
-			localizations = getLocalizations(properties, featureRoot);
-		}
-		catch(FileNotFoundException e)
-		{
-			// This is OK. The build.properties file is not required
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(input);
-		}
-		m_buildProperties = properties;
-		m_localizations = localizations;
+		m_buildProperties = buildProperties;
+		m_localizations = getLocalizations(buildProperties, projectRoot);
+		m_featureEntries = featureEntries;
 	}
 
 	/**
@@ -246,29 +207,6 @@ public class FeatureToP2SiteAction extends AbstractPublisherAction
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
-		// publish the top feature discovery sites as repository references
-		IMetadataRepository mdr = publisherInfo.getMetadataRepository();
-		for(URLEntry refSite : m_topFeature.getDiscoverySites())
-			generateSiteReference(refSite.getURL(), refSite.getAnnotation(), null, mdr);
-
-		URLEntry mirrorsSite = m_topFeature.getUpdateSite();
-		if(mirrorsSite != null)
-		{
-			String mirrors = mirrorsSite.getURL();
-			if(mirrors != null)
-			{
-				publisherInfo.getMetadataRepository().setProperty(IRepository.PROP_MIRRORS_URL, mirrors);
-				// there does not really need to be an artifact repo but if there is, setup its mirrors.
-				if(publisherInfo.getArtifactRepository() != null)
-					publisherInfo.getArtifactRepository().setProperty(IRepository.PROP_MIRRORS_URL, mirrors);
-			}
-		}
-		generateCategories(publisherInfo, results, monitor);
-		return Status.OK_STATUS;
-	}
-
-	private void generateCategories(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
 		Map<SiteCategory, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<SiteCategory, Set<IInstallableUnit>>();
 		Map<IInstallableUnit, List<SiteCategory>> featuresToCategories = getFeatureToCategoryMappings(publisherInfo,
 				results, monitor);
@@ -287,6 +225,7 @@ public class FeatureToP2SiteAction extends AbstractPublisherAction
 			}
 		}
 		generateCategoryIUs(categoriesToFeatureIUs, results);
+		return Status.OK_STATUS;
 	}
 
 	/**
@@ -302,33 +241,6 @@ public class FeatureToP2SiteAction extends AbstractPublisherAction
 	{
 		for(Map.Entry<SiteCategory, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
 			result.addIU(createCategoryIU(entry.getKey(), entry.getValue(), null), IPublisherResult.NON_ROOT);
-	}
-
-	/**
-	 * Generates and publishes a reference to an update site location
-	 * 
-	 * @param location
-	 *            The update site location
-	 * @param label
-	 *            The update site label
-	 * @param featureId
-	 *            the identifier of the feature where the error occurred, or null
-	 * @param metadataRepo
-	 *            The repository into which the references are added
-	 */
-	private void generateSiteReference(String location, String label, String featureId, IMetadataRepository metadataRepo)
-	{
-		if(metadataRepo == null)
-			return;
-		try
-		{
-			URI associateLocation = new URI(location);
-			metadataRepo.addReference(associateLocation, label, IRepository.TYPE_METADATA, IRepository.ENABLED);
-			metadataRepo.addReference(associateLocation, label, IRepository.TYPE_ARTIFACT, IRepository.ENABLED);
-		}
-		catch(URISyntaxException e)
-		{
-		}
 	}
 
 	private IInstallableUnit getFeatureIU(String name, Version version, IPublisherInfo publisherInfo,
@@ -452,16 +364,9 @@ public class FeatureToP2SiteAction extends AbstractPublisherAction
 				defaultCategoryList = Collections.singletonList(cat);
 		}
 
-		for(FeatureEntry fe : m_topFeature.getEntries())
+		for(VersionedName fe : m_featureEntries)
 		{
-			String vstr = fe.getVersion();
-			if(fe.isPatch() || fe.isPlugin() || fe.isRequires())
-				continue;
-
-			Version version = vstr == null
-					? null
-					: new Version(vstr);
-			IInstallableUnit iu = getFeatureIU(fe.getId(), version, publisherInfo, results, monitor);
+			IInstallableUnit iu = getFeatureIU(fe.getId(), fe.getVersion(), publisherInfo, results, monitor);
 			if(iu == null || mappings.containsKey(iu))
 				continue;
 

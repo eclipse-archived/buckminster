@@ -527,7 +527,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				try
 				{
 					CompositeMetadataRepositoryFactory cmf = new CompositeMetadataRepositoryFactory();
-					mdr = cmf.load(uri, subMon.newChild(200));
+					mdr = cmf.load(uri, 0, subMon.newChild(200));
 					mdrCache.put(base, mdr);
 					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
 				}
