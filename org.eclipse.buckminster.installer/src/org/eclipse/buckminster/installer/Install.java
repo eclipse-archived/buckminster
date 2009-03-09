@@ -12,7 +12,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Properties;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.Headless;
@@ -23,36 +22,24 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
-import org.eclipse.equinox.internal.p2.engine.Profile;
 import org.eclipse.equinox.internal.p2.engine.SimpleProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.eventbus.IProvisioningEventBus;
 import org.eclipse.equinox.internal.provisional.p2.director.IPlanner;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
 import org.eclipse.equinox.internal.provisional.p2.director.ProvisioningPlan;
-import org.eclipse.equinox.internal.provisional.p2.engine.CommitOperationEvent;
 import org.eclipse.equinox.internal.provisional.p2.engine.DefaultPhaseSet;
 import org.eclipse.equinox.internal.provisional.p2.engine.IEngine;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
-import org.eclipse.equinox.internal.provisional.p2.engine.InstallableUnitEvent;
-import org.eclipse.equinox.internal.provisional.p2.engine.InstallableUnitOperand;
-import org.eclipse.equinox.internal.provisional.p2.engine.Operand;
 import org.eclipse.equinox.internal.provisional.p2.engine.ProvisioningContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.CompositeQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
-import org.eclipse.equinox.p2.publisher.PublisherInfo;
-import org.eclipse.equinox.p2.publisher.eclipse.BundlesAction;
-import org.eclipse.osgi.service.datalocation.Location;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
@@ -184,7 +171,7 @@ public class Install extends AbstractCommand
 		String profileId = bucky.getBundle().getBundleContext().getProperty("eclipse.p2.profile");
 		if(profileId == null)
 		{
-			profileId = "BuckminsterHeadless";
+			profileId = "Buckminster";
 			System.setProperty("eclipse.p2.profile", profileId);
 		}
 
@@ -192,47 +179,6 @@ public class Install extends AbstractCommand
 		try
 		{
 			IProfile profile = profileRegistry.getProfile(profileId);
-			if(profile == null)
-			{
-				Location location = Platform.getInstallLocation();
-				File installDir = new File(location.getURL().toURI());
-				String destination = installDir.getAbsolutePath();
-				Properties props = new Properties();
-				props.setProperty(IProfile.PROP_INSTALL_FOLDER, destination);
-				props.setProperty(IProfile.PROP_CACHE, destination);
-				props.setProperty(IProfile.PROP_DESCRIPTION, "Buckminster Headless");
-				props.setProperty(IProfile.PROP_INSTALL_FEATURES, "true");
-				props.setProperty(IProfile.PROP_FLAVOR, "tooling");
-				props.setProperty(IProfile.PROP_ROAMING, "true");
-				Profile profImpl = (Profile)ProvisioningHelper.addProfile(profileId, props);
-
-				IProvisioningEventBus bus = bucky.getService(IProvisioningEventBus.class);
-				IEngine engine = bucky.getService(IEngine.class);
-				profileRegistry.lockProfile(profImpl);
-				try
-				{
-					// Create metadata for 'self'
-					//
-					PublisherInfo info = new PublisherInfo();
-					for(File bundleFile : new File(installDir, "plugins").listFiles())
-					{
-						BundleDescription bd = BundlesAction.createBundleDescription(bundleFile);
-						IArtifactKey key = BundlesAction.createBundleArtifactKey(bd.getSymbolicName(), bd.getVersion()
-								.toString());
-						IInstallableUnit iu = BundlesAction.createBundleIU(bd, key, info);
-						profImpl.addInstallableUnit(iu);
-						bus.publishEvent(new InstallableUnitEvent("collect", false, profImpl,
-								new InstallableUnitOperand(iu, null), InstallableUnitEvent.INSTALL, null));
-					}
-					bus.publishEvent(new CommitOperationEvent(profImpl, new DefaultPhaseSet(), new Operand[0], engine));
-					profileRegistry.updateProfile(profImpl);
-				}
-				finally
-				{
-					profileRegistry.unlockProfile(profImpl);
-				}
-				profile = profileRegistry.getProfile(profileId);
-			}
 			IInstallableUnit[] rootArr = getRootIUs(m_site, profile, m_feature, m_version, monitor);
 
 			// Add as root IU's to a request
