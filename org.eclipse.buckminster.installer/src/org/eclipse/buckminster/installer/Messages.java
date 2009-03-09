@@ -20,7 +20,7 @@ public class Messages extends NLS
 
 	public static String no_site_provided;
 
-	public static String no_suitable_feature_version_found;
+	public static String no_suitable_feature_version_found_matching_0;
 
 	public static String no_uninstall_in_development_mode;
 

@@ -7,6 +7,9 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.actor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
@@ -56,6 +59,65 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		if("false".equalsIgnoreCase(propVal)) //$NON-NLS-1$
 			return false;
 		throw new IllegalArgumentException(NLS.bind(Messages._0_not_valid_value_of_boolean_property, propVal));
+	}
+
+	public static List<IPath> getPathList(IActionContext ctx, Attribute attr, boolean atBase) throws CoreException
+	{
+		PathGroup[] groups = attr.getPathGroups(ctx, null);
+		if(groups.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<IPath> pathList = new ArrayList<IPath>();
+		for(PathGroup pathGroup : groups)
+		{
+			IPath base = pathGroup.getBase();
+			if(atBase)
+			{
+				pathList.add(base);
+				continue;
+			}
+
+			for(IPath path : pathGroup.getPaths())
+				pathList.add(base.append(path));
+		}
+		return pathList;
+	}
+
+	public static IPath getSingleAttributePath(IActionContext ctx, Attribute attr, boolean atBase) throws CoreException
+	{
+		IPath productPath = null;
+		for(PathGroup pathGroup : attr.getPathGroups(ctx, null))
+		{
+			IPath pp = null;
+			if(atBase)
+				pp = pathGroup.getBase();
+			else
+			{
+				IPath[] paths = pathGroup.getPaths();
+				if(paths.length == 1)
+					pp = pathGroup.getBase().append(paths[0]);
+				else if(paths.length == 0)
+					pp = pathGroup.getBase();
+			}
+			if(pp == null)
+			{
+				productPath = null;
+				break;
+			}
+
+			if(productPath == null)
+				productPath = pp;
+			else if(!productPath.equals(pp))
+			{
+				productPath = null;
+				break;
+			}
+		}
+
+		if(productPath == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.product_for_action_0_must_be_single_path, attr
+					.getQualifiedName()));
+		return productPath;
 	}
 
 	private String m_name;
@@ -222,42 +284,5 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 				sb.append(entry.getKey()).append('=').append(entry.getValue());
 			}
 		}
-	}
-
-	public static IPath getSingleProductPath(IActionContext ctx, Attribute attr, boolean atBase) throws CoreException
-	{
-		IPath productPath = null;
-		for(PathGroup pathGroup : attr.getPathGroups(ctx, null))
-		{
-			IPath pp = null;
-			if(atBase)
-				pp = pathGroup.getBase();
-			else
-			{
-				IPath[] paths = pathGroup.getPaths();
-				if(paths.length == 1)
-					pp = pathGroup.getBase().append(paths[0]);
-				else if(paths.length == 0)
-					pp = pathGroup.getBase();
-			}
-			if(pp == null)
-			{
-				productPath = null;
-				break;
-			}
-	
-			if(productPath == null)
-				productPath = pp;
-			else if(!productPath.equals(pp))
-			{
-				productPath = null;
-				break;
-			}
-		}
-	
-		if(productPath == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.product_for_action_0_must_be_single_path, attr
-					.getQualifiedName()));
-		return productPath;
 	}
 }

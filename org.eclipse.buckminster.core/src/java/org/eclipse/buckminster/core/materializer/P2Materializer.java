@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -163,14 +164,14 @@ public class P2Materializer extends AbstractMaterializer
 			rss.add(res);
 		}
 
-		CorePlugin bundle = CorePlugin.getDefault();
+		Buckminster bucky = Buckminster.getDefault();
 		SubMonitor subMon = SubMonitor.convert(monitor, resPerLocation.size() * 1000);
 		List<URI> mdrsToRemove = null;
 		List<URI> arsToRemove = null;
-		IMetadataRepositoryManager mdrManager = bundle.getService(IMetadataRepositoryManager.class);
-		IArtifactRepositoryManager arManager = bundle.getService(IArtifactRepositoryManager.class);
-		IEngine engine = bundle.getService(IEngine.class);
-		IProfileRegistry registry = bundle.getService(IProfileRegistry.class);
+		IMetadataRepositoryManager mdrManager = bucky.getService(IMetadataRepositoryManager.class);
+		IArtifactRepositoryManager arManager = bucky.getService(IArtifactRepositoryManager.class);
+		IEngine engine = bucky.getService(IEngine.class);
+		IProfileRegistry registry = bucky.getService(IProfileRegistry.class);
 		Map<URI, IMetadataRepository> knownMDRs = new HashMap<URI, IMetadataRepository>();
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
 		try
@@ -221,7 +222,7 @@ public class P2Materializer extends AbstractMaterializer
 							throw BuckminsterException.fromMessage(NLS.bind(
 									Messages.p2_materializer_cannot_process_readertype_0, rType));
 
-						IComponentType ctype = bundle.getComponentType(cid.getComponentTypeID());
+						IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
 						IPath location = installLocation;
 						IPath ctypeRelative = ctype.getRelativeLocation();
 						if(ctypeRelative != null)
@@ -237,7 +238,7 @@ public class P2Materializer extends AbstractMaterializer
 						else
 							location = location.append(leafName + ".jar"); //$NON-NLS-1$
 
-						IReaderType readerType = bundle.getReaderType(rType);
+						IReaderType readerType = CorePlugin.getDefault().getReaderType(rType);
 						IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
 						try
 						{
@@ -345,7 +346,7 @@ public class P2Materializer extends AbstractMaterializer
 					PhaseSet phaseSet = new PhaseSet(new Phase[] { new Collect(100) })
 					{ /* nothing to override */
 					};
-					engine = bundle.getService(IEngine.class);
+					engine = bucky.getService(IEngine.class);
 					IStatus status = engine.perform(profile, phaseSet, operands, new ProvisioningContext(), subMon
 							.newChild(200));
 					if(status.getSeverity() == IStatus.ERROR)
@@ -367,10 +368,10 @@ public class P2Materializer extends AbstractMaterializer
 				for(URI repoLocation : arsToRemove)
 					arManager.removeRepository(repoLocation);
 
-			bundle.ungetService(mdrManager);
-			bundle.ungetService(arManager);
-			bundle.ungetService(registry);
-			bundle.ungetService(engine);
+			bucky.ungetService(mdrManager);
+			bucky.ungetService(arManager);
+			bucky.ungetService(registry);
+			bucky.ungetService(engine);
 		}
 		return Collections.emptyList();
 	}

@@ -41,7 +41,7 @@ public class JarProcessorActor extends AbstractActor
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
 	{
 		Action action = ctx.getAction();
-		IPath outputPath = AbstractActor.getSingleProductPath(ctx, action, false);
+		IPath outputPath = AbstractActor.getSingleAttributePath(ctx, action, false);
 		IPath jarFolder = null;
 		CSpec cspec = action.getCSpec();
 
@@ -54,7 +54,7 @@ public class JarProcessorActor extends AbstractActor
 				//
 				Attribute rt = preq.getReferencedAttribute(cspec, ctx);
 				if(rt != null)
-					jarFolder = AbstractActor.getSingleProductPath(ctx, rt, true);
+					jarFolder = AbstractActor.getSingleAttributePath(ctx, rt, true);
 				continue;
 			}
 			throw new IllegalPrerequisiteException(action, preq.getName());

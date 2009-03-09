@@ -27,6 +27,10 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * This class controls all aspects of the application's execution
@@ -114,6 +118,81 @@ public class Headless implements IApplication, OptionValueType
 
 	private int m_logLevel = Logger.INFO;
 
+	static private final String EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
+
+	static private final String FRAMEWORKADMIN_EQUINOX = "org.eclipse.equinox.frameworkadmin.equinox"; //$NON-NLS-1$
+
+	static private final String SIMPLE_CONFIGURATOR_MANIPULATOR = "org.eclipse.equinox.simpleconfigurator.manipulator"; //$NON-NLS-1$
+
+	private static final Integer EXIT_ERROR = Integer.valueOf(13);
+
+	public Object run(Object objArgs) throws Exception
+	{
+		Buckminster.setHeadless();
+		int exitValue = EXIT_FAIL;
+		try
+		{
+			exitValue = run((String[])objArgs);
+		}
+		catch(OperationCanceledException e)
+		{
+			System.err.println(Messages.Headless_Command_canceled);
+		}
+		catch(InterruptedException e)
+		{
+			System.err.println(Messages.Headless_Command_was_interrupted);
+		}
+		catch(SimpleErrorExitException e)
+		{
+			System.err.println(e.getMessage());
+			exitValue = e.getExitValue();
+		}
+		catch(UsageException e)
+		{
+			System.err.println(e.getMessage());
+			if(e.isEmitHelp())
+				help(System.out);
+		}
+		catch(Throwable e)
+		{
+			BuckminsterException.deeplyPrint(e, System.err, m_displayStackTrace);
+		}
+		return new Integer(exitValue);
+	}
+
+	public Object start(IApplicationContext context) throws Exception
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
+		try
+		{
+			if(!startEarly(packageAdmin, EXEMPLARY_SETUP))
+			{
+				Buckminster.getLogger().error(NLS.bind("Missing bundle {0}", EXEMPLARY_SETUP));
+				return EXIT_ERROR;
+			}
+			if(!startEarly(packageAdmin, SIMPLE_CONFIGURATOR_MANIPULATOR))
+			{
+				Buckminster.getLogger().error(NLS.bind("Missing bundle {0}", SIMPLE_CONFIGURATOR_MANIPULATOR));
+				return EXIT_ERROR;
+			}
+			if(!startEarly(packageAdmin, FRAMEWORKADMIN_EQUINOX))
+			{
+				Buckminster.getLogger().error(NLS.bind("Missing bundle {0}", FRAMEWORKADMIN_EQUINOX));
+				return EXIT_ERROR;
+			}
+		}
+		finally
+		{
+			bucky.ungetService(packageAdmin);
+		}
+		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
+	}
+
+	public void stop()
+	{
+	}
+
 	protected void help(PrintStream ps) throws Exception
 	{
 		PrintStream out = System.out;
@@ -180,7 +259,8 @@ public class Headless implements IApplication, OptionValueType
 		if(unparsed.length > 0)
 		{
 			if(scriptFile != null)
-				throw new UsageException(Messages.Headless_The_scriptfile_option_cannot_be_combined_with_a_command, true);
+				throw new UsageException(Messages.Headless_The_scriptfile_option_cannot_be_combined_with_a_command,
+						true);
 
 			String[] commandArgs = new String[unparsed.length - 1];
 			System.arraycopy(unparsed, 1, commandArgs, 0, commandArgs.length);
@@ -218,40 +298,6 @@ public class Headless implements IApplication, OptionValueType
 					IOUtils.close(lines);
 			}
 		}
-	}
-
-	public Object run(Object objArgs) throws Exception
-	{
-		Buckminster.setHeadless();
-		int exitValue = EXIT_FAIL;
-		try
-		{
-			exitValue = run((String[])objArgs);
-		}
-		catch(OperationCanceledException e)
-		{
-			System.err.println(Messages.Headless_Command_canceled);
-		}
-		catch(InterruptedException e)
-		{
-			System.err.println(Messages.Headless_Command_was_interrupted);
-		}
-		catch(SimpleErrorExitException e)
-		{
-			System.err.println(e.getMessage());
-			exitValue = e.getExitValue();
-		}
-		catch(UsageException e)
-		{
-			System.err.println(e.getMessage());
-			if(e.isEmitHelp())
-				help(System.out);
-		}
-		catch(Throwable e)
-		{
-			BuckminsterException.deeplyPrint(e, System.err, m_displayStackTrace);
-		}
-		return new Integer(exitValue);
 	}
 
 	protected int run(String[] args) throws Exception
@@ -299,12 +345,28 @@ public class Headless implements IApplication, OptionValueType
 		return EXIT_OK;
 	}
 
-	public Object start(IApplicationContext context) throws Exception
+	private synchronized Bundle getBundle(PackageAdmin packageAdmin, String symbolicName)
 	{
-		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
+		Bundle[] bundles = packageAdmin.getBundles(symbolicName, null);
+		if(bundles == null)
+			return null;
+		// Return the first bundle that is not installed or uninstalled
+		for(int i = 0; i < bundles.length; i++)
+		{
+			if((bundles[i].getState() & (Bundle.INSTALLED | Bundle.UNINSTALLED)) == 0)
+			{
+				return bundles[i];
+			}
+		}
+		return null;
 	}
 
-	public void stop()
+	private boolean startEarly(PackageAdmin packageAdmin, String bundleName) throws BundleException
 	{
+		Bundle bundle = getBundle(packageAdmin, bundleName);
+		if(bundle == null)
+			return false;
+		bundle.start(Bundle.START_TRANSIENT);
+		return true;
 	}
 }

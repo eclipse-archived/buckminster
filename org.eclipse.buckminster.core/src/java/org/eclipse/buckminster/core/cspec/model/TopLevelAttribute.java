@@ -13,6 +13,7 @@ import java.util.Stack;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.commands.GetConfiguration;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -168,6 +169,8 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 				}
 				bld.setLength(pfLen);
 				bld.append(hint.getKey());
+				bld.append('.');
+				bld.append(getCSpec().getName());
 				bld.append('.');
 				bld.append(getName());
 				hints.put(bld.toString(), hint.getValue());

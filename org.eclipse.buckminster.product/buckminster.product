@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
 <product name="Buckminster" id="org.eclipse.buckminster.cmdline.product" application="org.eclipse.buckminster.cmdline.headless" useFeatures="true">
 
-   <configIni use="custom" path="/org.eclipse.buckminster.product/config.ini"/>
+   <configIni>
+   </configIni>
 
    <launcherArgs>
+      <programArgs>-nosplash</programArgs>
    </launcherArgs>
 
    <windowImages/>
 
-   <launcher name="_removethisfile">
+   <launcher name="buckminster">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
+   <vm>
+      <linux>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/OSGi%Minimum-1.0</linux>
+   </vm>
+
+
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.eclipse.buckminster.product" version=""/>
+      <feature id="org.eclipse.buckminster.product"/>
    </features>
+
 
 </product>

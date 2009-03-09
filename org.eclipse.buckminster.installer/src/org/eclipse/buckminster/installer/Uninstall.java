@@ -1,36 +1,27 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2007-2009, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.installer;
 
-import java.util.ArrayList;
-
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
-import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.update.configuration.IConfiguredSite;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
+import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
+import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
-/**
- * @author kolwing
- * 
- */
+@SuppressWarnings("restriction")
 public class Uninstall extends AbstractCommand
 {
-	private String m_version;
+	private Version m_version;
 
 	private String m_feature;
 
@@ -43,7 +34,7 @@ public class Uninstall extends AbstractCommand
 		if(len > 0)
 			m_feature = unparsed[0];
 		if(len > 1)
-			m_version = unparsed[1];
+			m_version = Version.parseVersion(unparsed[1]);
 	}
 
 	@Override
@@ -53,82 +44,15 @@ public class Uninstall extends AbstractCommand
 			throw new SimpleErrorExitException(Messages.no_feature_id_provided);
 
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+		IProfile profile = ProvisioningHelper.getProfile(IProfileRegistry.SELF);
+		IInstallableUnit[] rootArr = Install.getRootIUs(null, profile, m_feature, m_version, monitor);
 
-		try
-		{
-			if(Platform.inDevelopmentMode())
-				throw new SimpleErrorExitException(Messages.no_uninstall_in_development_mode);
-
-			VersionedIdentifier vidToFind = new VersionedIdentifier(m_feature, m_version == null
-					? "0.0.0" : m_version); //$NON-NLS-1$
-
-			monitor.subTask(NLS.bind(Messages.searching_for_0_, vidToFind));
-
-			IConfiguredSite uninstallSite = null;
-
-			IConfiguredSite[] configuredSites = SiteManager.getLocalSite().getCurrentConfiguration()
-					.getConfiguredSites();
-			for(int idx = 0; idx < configuredSites.length; ++idx)
-			{
-				IConfiguredSite configuredSite = configuredSites[idx];
-				if(configuredSite.isProductSite() && configuredSite.isUpdatable())
-				{
-					uninstallSite = configuredSite;
-					break;
-				}
-				MonitorUtils.worked(monitor, 1);
-			}
-
-			if(uninstallSite == null)
-				throw new SimpleErrorExitException(Messages.site_to_uninstall_from_not_found);
-
-			// search the features
-			//
-			ArrayList<IFeatureReference> matches = new ArrayList<IFeatureReference>();
-			IFeatureReference[] featureRefs = uninstallSite.getFeatureReferences();
-			for(int idx = 0; idx < featureRefs.length; ++idx)
-			{
-				IFeatureReference featureRef = featureRefs[idx];
-				VersionedIdentifier vid = featureRef.getVersionedIdentifier();
-				if(vid.getIdentifier().equals(m_feature))
-				{
-					if(m_version == null)
-						matches.add(featureRef);
-					else
-					{
-						if(vid.equals(vidToFind))
-						{
-							matches.add(featureRef);
-							break;
-						}
-					}
-				}
-				MonitorUtils.worked(monitor, 1);
-			}
-
-			if(matches.isEmpty())
-				throw new SimpleErrorExitException(Messages.no_suitable_feature_version_found);
-
-			if(matches.size() > 1)
-			{
-				StringBuffer sb = new StringBuffer();
-				for(int idx = 0; idx < matches.size(); ++idx)
-					sb.append(' ').append(matches.get(idx).getVersionedIdentifier().getVersion());
-				throw new SimpleErrorExitException(NLS.bind(Messages.multiple_versions_found_0, sb.toString()));
-			}
-			IFeature featureToUninstall = matches.get(0).getFeature(MonitorUtils.subMonitor(monitor, 1000));
-			monitor.subTask(NLS.bind(Messages.uninstalling_0_, featureToUninstall.getVersionedIdentifier()));
-
-			if(uninstallSite.isConfigured(featureToUninstall))
-				uninstallSite.unconfigure(featureToUninstall);
-			MonitorUtils.worked(monitor, 1);
-			uninstallSite.remove(featureToUninstall, MonitorUtils.subMonitor(monitor, 1000));
-		}
-		finally
-		{
-			monitor.done();
-		}
-
-		return 0;
+		// Add as root IU's to a request
+		ProfileChangeRequest request = new ProfileChangeRequest(profile);
+		for(IInstallableUnit rootIU : rootArr)
+			request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU, Boolean.TRUE
+					.toString());
+		request.removeInstallableUnits(rootArr);
+		return Install.planAndExecute(profile, request, null, monitor);
 	}
 }

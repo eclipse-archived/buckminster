@@ -7,9 +7,14 @@
  *****************************************************************************/
 package org.eclipse.buckminster.runtime;
 
+import java.util.IdentityHashMap;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -57,9 +62,25 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		s_headless = true;
 	}
 
+	private IdentityHashMap<Object, ServiceReference> m_services;
+
 	public Buckminster()
 	{
 		s_plugin = this;
+	}
+
+	public <T> T getService(Class<T> serviceClass) throws CoreException
+	{
+		BundleContext context = getBundle().getBundleContext();
+		String serviceName = serviceClass.getName();
+		ServiceReference serviceRef = context.getServiceReference(serviceName);
+		if(serviceRef == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
+		T service = serviceClass.cast(context.getService(serviceRef));
+		if(m_services == null)
+			m_services = new IdentityHashMap<Object, ServiceReference>();
+		m_services.put(service, serviceRef);
+		return service;
 	}
 
 	public void preferenceChange(PreferenceChangeEvent event)
@@ -98,10 +119,29 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		BuckminsterPreferences.addListener(this);
 	}
 
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
 	@Override
 	public void stop(BundleContext context) throws Exception
 	{
+		if(m_services != null)
+		{
+			for(ServiceReference serviceRef : m_services.values())
+				context.ungetService(serviceRef);
+			m_services = null;
+		}
 		s_plugin = null;
 		super.stop(context);
+	}
+
+	public void ungetService(Object service)
+	{
+		if(m_services != null)
+		{
+			ServiceReference serviceRef = m_services.remove(service);
+			if(serviceRef != null)
+				getBundle().getBundleContext().ungetService(serviceRef);
+		}
 	}
 }
