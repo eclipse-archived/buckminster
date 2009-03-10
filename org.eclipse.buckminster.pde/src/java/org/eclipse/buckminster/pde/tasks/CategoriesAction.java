@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.internal.p2.metadata.generator.features.SiteCategory;
 import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
@@ -56,6 +55,57 @@ import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 @SuppressWarnings("restriction")
 public class CategoriesAction extends AbstractPublisherAction
 {
+	private static class Category
+	{
+		private String m_description;
+
+		private String m_label;
+
+		private final String m_name;
+
+		Category(String name)
+		{
+			m_name = name;
+		}
+
+		@Override
+		public boolean equals(Object value)
+		{
+			return value instanceof Category && ((Category)value).m_name.equals(m_name);
+		}
+
+		public String getDescription()
+		{
+			return m_description;
+		}
+
+		public String getLabel()
+		{
+			return m_label;
+		}
+
+		public String getName()
+		{
+			return m_name;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return m_name.hashCode();
+		}
+
+		public void setDescription(String description)
+		{
+			m_description = description;
+		}
+
+		public void setLabel(String label)
+		{
+			m_label = label;
+		}
+	}
+
 	private static final String PROP_CATEGORY_DESCRIPTION_PREFIX = "category.description."; //$NON-NLS-1$
 
 	private static final String PROP_CATEGORY_MEMBERS_PREFIX = "category.members."; //$NON-NLS-1$
@@ -67,14 +117,13 @@ public class CategoriesAction extends AbstractPublisherAction
 	private static final Pattern s_idAndVersionPattern = Pattern
 			.compile("^(\\S)_([0-9]+(?:\\.[0-9]+){0,2}(?:\\.[A-Za-z0-9_-]))$"); //$NON-NLS-1$
 
-	private static final List<SiteCategory> s_defaultCategoryList;
+	private static final List<Category> s_defaultCategoryList;
 
 	static
 	{
-		SiteCategory defaultCategory = new SiteCategory();
+		Category defaultCategory = new Category("Default"); //$NON-NLS-1$
 		defaultCategory.setDescription("Default category for otherwise uncategorized features"); //$NON-NLS-1$
 		defaultCategory.setLabel("Uncategorized"); //$NON-NLS-1$
-		defaultCategory.setName("Default"); //$NON-NLS-1$
 		s_defaultCategoryList = Collections.singletonList(defaultCategory);
 	}
 
@@ -145,7 +194,7 @@ public class CategoriesAction extends AbstractPublisherAction
 	 *            The parent category, or <code>null</code>
 	 * @return an IU representing the category
 	 */
-	public IInstallableUnit createCategoryIU(SiteCategory category, Set<IInstallableUnit> featureIUs,
+	public IInstallableUnit createCategoryIU(Category category, Set<IInstallableUnit> featureIUs,
 			IInstallableUnit parentCategory)
 	{
 		InstallableUnitDescription cat = new MetadataFactory.InstallableUnitDescription();
@@ -176,25 +225,21 @@ public class CategoriesAction extends AbstractPublisherAction
 		ArrayList<IProvidedCapability> providedCapabilities = new ArrayList<IProvidedCapability>();
 		providedCapabilities.add(PublisherHelper.createSelfCapability(categoryId, Version.emptyVersion));
 
-		Map<?, ?> localizations = category.getLocalizations();
-		if(localizations != null)
+		for(Map.Entry<Locale, Properties> locEntry : m_localizations.entrySet())
 		{
-			for(Map.Entry<Locale, Properties> locEntry : m_localizations.entrySet())
+			Locale locale = locEntry.getKey();
+			Properties translatedStrings = locEntry.getValue();
+			Enumeration<?> propertyKeys = translatedStrings.propertyNames();
+			while(propertyKeys.hasMoreElements())
 			{
-				Locale locale = locEntry.getKey();
-				Properties translatedStrings = locEntry.getValue();
-				Enumeration<?> propertyKeys = translatedStrings.propertyNames();
-				while(propertyKeys.hasMoreElements())
-				{
-					String key = (String)propertyKeys.nextElement();
+				String key = (String)propertyKeys.nextElement();
 
-					// Is the category using this key?
-					//
-					if(isKeyReference(category.getLabel(), key) || isKeyReference(category.getDescription(), key))
-						cat.setProperty(locale.toString() + '.' + key, translatedStrings.getProperty(key));
-				}
-				providedCapabilities.add(PublisherHelper.makeTranslationCapability(categoryId, locale));
+				// Is the category using this key?
+				//
+				if(isKeyReference(category.getLabel(), key) || isKeyReference(category.getDescription(), key))
+					cat.setProperty(locale.toString() + '.' + key, translatedStrings.getProperty(key));
 			}
+			providedCapabilities.add(PublisherHelper.makeTranslationCapability(categoryId, locale));
 		}
 
 		cat.setCapabilities(providedCapabilities.toArray(new IProvidedCapability[providedCapabilities.size()]));
@@ -207,13 +252,13 @@ public class CategoriesAction extends AbstractPublisherAction
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
-		Map<SiteCategory, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<SiteCategory, Set<IInstallableUnit>>();
-		Map<IInstallableUnit, List<SiteCategory>> featuresToCategories = getFeatureToCategoryMappings(publisherInfo,
+		Map<Category, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<Category, Set<IInstallableUnit>>();
+		Map<IInstallableUnit, List<Category>> featuresToCategories = getFeatureToCategoryMappings(publisherInfo,
 				results, monitor);
-		for(Map.Entry<IInstallableUnit, List<SiteCategory>> entry : featuresToCategories.entrySet())
+		for(Map.Entry<IInstallableUnit, List<Category>> entry : featuresToCategories.entrySet())
 		{
 			IInstallableUnit iu = entry.getKey();
-			for(SiteCategory category : entry.getValue())
+			for(Category category : entry.getValue())
 			{
 				Set<IInstallableUnit> featureIUs = categoriesToFeatureIUs.get(category);
 				if(featureIUs == null)
@@ -232,14 +277,13 @@ public class CategoriesAction extends AbstractPublisherAction
 	 * Generates IUs corresponding to update site categories.
 	 * 
 	 * @param categoriesToFeatures
-	 *            Map of SiteCategory ->Set (Feature IUs in that category).
+	 *            Map of Category ->Set (Feature IUs in that category).
 	 * @param result
 	 *            The generator result being built
 	 */
-	private void generateCategoryIUs(Map<SiteCategory, Set<IInstallableUnit>> categoriesToFeatures,
-			IPublisherResult result)
+	private void generateCategoryIUs(Map<Category, Set<IInstallableUnit>> categoriesToFeatures, IPublisherResult result)
 	{
-		for(Map.Entry<SiteCategory, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
+		for(Map.Entry<Category, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
 			result.addIU(createCategoryIU(entry.getKey(), entry.getValue(), null), IPublisherResult.NON_ROOT);
 	}
 
@@ -282,27 +326,25 @@ public class CategoriesAction extends AbstractPublisherAction
 		return null;
 	}
 
-	private Map<IInstallableUnit, List<SiteCategory>> getFeatureToCategoryMappings(IPublisherInfo publisherInfo,
+	private Map<IInstallableUnit, List<Category>> getFeatureToCategoryMappings(IPublisherInfo publisherInfo,
 			IPublisherResult results, IProgressMonitor monitor)
 	{
-		HashMap<IInstallableUnit, List<SiteCategory>> mappings = new HashMap<IInstallableUnit, List<SiteCategory>>();
+		HashMap<IInstallableUnit, List<Category>> mappings = new HashMap<IInstallableUnit, List<Category>>();
 
-		Map<String, SiteCategory> categories = new HashMap<String, SiteCategory>();
+		Map<String, Category> categories = new HashMap<String, Category>();
 		for(Map.Entry<String, String> entry : m_buildProperties.entrySet())
 		{
 			String key = entry.getKey();
 			if(key.startsWith(PROP_CATEGORY_ID_PREFIX))
 			{
 				String id = key.substring(PROP_CATEGORY_ID_PREFIX.length());
-				SiteCategory cat = categories.get(id);
+				Category cat = categories.get(id);
 				if(cat == null)
 				{
-					cat = new SiteCategory();
+					cat = new Category(id);
 					categories.put(id, cat);
 				}
-				cat.setName(id);
 				cat.setLabel(entry.getValue());
-				cat.setLocalizations(m_localizations);
 			}
 		}
 
@@ -312,7 +354,7 @@ public class CategoriesAction extends AbstractPublisherAction
 			if(key.startsWith(PROP_CATEGORY_DESCRIPTION_PREFIX))
 			{
 				String id = key.substring(PROP_CATEGORY_DESCRIPTION_PREFIX.length());
-				SiteCategory cat = categories.get(id);
+				Category cat = categories.get(id);
 				if(cat != null)
 					cat.setDescription(entry.getValue());
 				continue;
@@ -321,7 +363,7 @@ public class CategoriesAction extends AbstractPublisherAction
 			if(key.startsWith(PROP_CATEGORY_MEMBERS_PREFIX))
 			{
 				String id = key.substring(PROP_CATEGORY_MEMBERS_PREFIX.length());
-				SiteCategory cat = categories.get(id);
+				Category cat = categories.get(id);
 				if(cat == null)
 					continue;
 
@@ -341,10 +383,10 @@ public class CategoriesAction extends AbstractPublisherAction
 					if(iu == null)
 						continue;
 
-					List<SiteCategory> catList = mappings.get(iu);
+					List<Category> catList = mappings.get(iu);
 					if(catList == null)
 					{
-						catList = new ArrayList<SiteCategory>();
+						catList = new ArrayList<Category>();
 						mappings.put(iu, catList);
 						catList.add(cat);
 					}
@@ -355,11 +397,11 @@ public class CategoriesAction extends AbstractPublisherAction
 			}
 		}
 
-		List<SiteCategory> defaultCategoryList = s_defaultCategoryList;
+		List<Category> defaultCategoryList = s_defaultCategoryList;
 		String defaultCategory = m_buildProperties.get(PROP_CATEGORY_DEFAULT);
 		if(defaultCategory != null)
 		{
-			SiteCategory cat = categories.get(defaultCategory);
+			Category cat = categories.get(defaultCategory);
 			if(cat != null)
 				defaultCategoryList = Collections.singletonList(cat);
 		}

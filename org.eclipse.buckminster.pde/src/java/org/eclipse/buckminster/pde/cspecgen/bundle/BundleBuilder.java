@@ -10,25 +10,25 @@
 
 package org.eclipse.buckminster.pde.cspecgen.bundle;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
-import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.reader.LocalReaderType;
 import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
@@ -40,7 +40,9 @@ import org.eclipse.buckminster.pde.internal.model.ExternalExtensionsModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.build.IBuildModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -62,6 +64,9 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("restriction")
 public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstants
 {
+	private static IPath s_platformPluginsFolder = Path.fromOSString(
+			TargetPlatform.getPlatformInstallLocation().getAbsolutePath()).append(IPDEConstants.PLUGINS_FOLDER);
+
 	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly,
 			IProgressMonitor monitor) throws CoreException
 	{
@@ -70,11 +75,30 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			MonitorUtils.complete(monitor);
 			try
 			{
-				return ((EclipsePlatformReader)reader).getPluginModelBase();
+				IPluginModelBase pluginModelBase = ((EclipsePlatformReader)reader).getPluginModelBase();
+				if(forResolutionAidOnly)
+					return pluginModelBase;
+
+				String location = pluginModelBase.getInstallLocation();
+				if(s_platformPluginsFolder.isPrefixOf(Path.fromOSString(location)))
+					return pluginModelBase;
+
+				File locationFile = new File(location);
+				if(locationFile.isFile())
+					return pluginModelBase;
+
+				// Self hosted from workspace. We can (and must) build this one from
+				// source
+				//
+				reader = (ICatalogReader)LocalReaderType.getReader(locationFile.toURI().toURL(), null); //$NON-NLS-1$
 			}
 			catch(IllegalStateException e)
 			{
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
+			}
+			catch(MalformedURLException e)
+			{
+				throw BuckminsterException.wrap(e);
 			}
 		}
 
@@ -213,6 +237,26 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		return IComponentType.OSGI_BUNDLE;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder#createResolution(org.eclipse.buckminster.core.reader
+	 * .IComponentReader, org.eclipse.buckminster.core.cspec.builder.CSpecBuilder,
+	 * org.eclipse.buckminster.opml.builder.OPMLBuilder)
+	 */
+	@Override
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+			throws CoreException
+	{
+		if(reader instanceof EclipseImportReader)
+		{
+			EclipseImportReader eclipseImportReader = (EclipseImportReader)reader;
+			return super.createResolution(reader, cspecBuilder, opmlBuilder, eclipseImportReader.isUnpack());
+		}
+		return super.createResolution(reader, cspecBuilder, opmlBuilder);
+	}
+
 	@Override
 	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
 			IProgressMonitor monitor) throws CoreException
@@ -244,20 +288,5 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		{
 			monitor.done();
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder#createResolution(org.eclipse.buckminster.core.reader.IComponentReader, org.eclipse.buckminster.core.cspec.builder.CSpecBuilder, org.eclipse.buckminster.opml.builder.OPMLBuilder)
-	 */
-	@Override
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
-			throws CoreException
-	{
-		if(reader instanceof EclipseImportReader)
-		{
-			EclipseImportReader eclipseImportReader = (EclipseImportReader)reader;
-			return super.createResolution(reader, cspecBuilder, opmlBuilder, eclipseImportReader.isUnpack());
-		}
-		return super.createResolution(reader, cspecBuilder, opmlBuilder);
 	}
 }

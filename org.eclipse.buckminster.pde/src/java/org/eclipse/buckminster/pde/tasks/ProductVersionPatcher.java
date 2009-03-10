@@ -29,6 +29,11 @@ public class ProductVersionPatcher implements IProductDescriptor
 		m_product = product;
 	}
 
+	public String getApplication()
+	{
+		return m_product.getApplication();
+	}
+
 	public List<?> getBundleInfos()
 	{
 		List<BundleInfo> bis = TypedCollections.getBundleInfos(m_product);
@@ -98,6 +103,11 @@ public class ProductVersionPatcher implements IProductDescriptor
 	public File getLocation()
 	{
 		return m_product.getLocation();
+	}
+
+	public String getProductId()
+	{
+		return m_product.getProductId();
 	}
 
 	public String getProductName()
