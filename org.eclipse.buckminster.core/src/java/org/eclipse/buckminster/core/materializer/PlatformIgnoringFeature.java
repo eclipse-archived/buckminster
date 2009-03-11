@@ -51,7 +51,7 @@ public class PlatformIgnoringFeature extends Feature
 			VersionedIdentifier versionedIdentifier = iPluginEntry.getVersionedIdentifier();
 			String identifier = versionedIdentifier.getIdentifier();
 			PluginVersionIdentifier version = versionedIdentifier.getVersion();
-			if((identifier.startsWith("org.eclipse.swt.") || identifier.startsWith("org.eclipse.equinox.launcher."))
+			if((identifier.startsWith("org.eclipse.swt.") || identifier.startsWith("org.eclipse.equinox.launcher.")) //$NON-NLS-1$ //$NON-NLS-2$
 					&& (version.getMajorComponent() == 0 && version.getMinorComponent() == 0 && version
 							.getServiceComponent() == 0))
 			{

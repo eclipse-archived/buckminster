@@ -366,8 +366,6 @@ public class Messages extends NLS
 
 	public static String Unable_to_parse_legacy_version_selector_string_0;
 
-	public static String An_SSL_handshake_exception_occurred_keystore;
-
 	public static String Wrapper_0_does_not_wrap_resolution;
 
 	public static String Branch_0_rejected_1;
@@ -566,15 +564,13 @@ public class Messages extends NLS
 
 	public static String Unable_to_resolve_0_1_in_MDR_2;
 
-	public static String Missing_OSGi_Service_0;
-
-	public static String Missing_OSGi_Bundle_0;
-
 	public static String p2_materializer_cannot_process_readertype_0;
 
 	public static String prerequisite_named_0_is_not_known_to_action_1;
 
 	public static String input_of_action_0_must_be_folder;
+
+	public static String no_suitable_provider_for_0_was_found_in_resourceMap_1;
 
 	public static String output_of_action_0_must_be_folder;
 

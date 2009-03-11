@@ -183,7 +183,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 
 		ComponentRequest request = query.getComponentRequest();
 		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
-				"No suitable provider for component {0} was found in resourceMap {1}", request, getContextURL()), null);
+				Messages.no_suitable_provider_for_0_was_found_in_resourceMap_1, request, getContextURL()), null);
 
 		String componentName = request.getName();
 		for(Matcher matcher : m_matchers)
