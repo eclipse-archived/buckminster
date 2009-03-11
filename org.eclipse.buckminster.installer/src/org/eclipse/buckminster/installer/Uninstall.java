@@ -17,6 +17,7 @@ import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
 public class Uninstall extends AbstractCommand
@@ -34,7 +35,15 @@ public class Uninstall extends AbstractCommand
 		if(len > 0)
 			m_feature = unparsed[0];
 		if(len > 1)
-			m_version = Version.parseVersion(unparsed[1]);
+			try
+			{
+				m_version = Version.parseVersion(unparsed[1]);
+			}
+			catch(IllegalArgumentException e)
+			{
+				throw new SimpleErrorExitException(NLS
+						.bind("Unable to parse version: {0}", unparsed[1], e.getMessage()));
+			}
 	}
 
 	@Override
