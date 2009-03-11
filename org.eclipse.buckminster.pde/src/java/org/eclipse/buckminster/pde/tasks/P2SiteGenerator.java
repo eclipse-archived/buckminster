@@ -31,6 +31,8 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -66,6 +68,7 @@ import org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 @SuppressWarnings("restriction")
@@ -163,17 +166,54 @@ public class P2SiteGenerator extends AbstractActor
 		return possibleMatches.toArray(new String[possibleMatches.size()]);
 	}
 
-	private static void addProductAction(File sourceFolder, List<IPublisherAction> actions, File executableFeature,
-			IProductDescriptor product, Map<String, String> buildProperties) throws CoreException
+	private static void addProductAction(File sourceFolder, List<IPublisherAction> actions, IProductDescriptor product,
+			Map<String, String> buildProperties) throws CoreException
 	{
-		if(product.useFeatures())
-			actions.add(new CategoriesAction(sourceFolder, buildProperties, TypedCollections
-					.getProductFeatures(product)));
-
 		String flavor = buildProperties.get("org.eclipse.p2.flavor"); //$NON-NLS-1$
 		if(flavor == null)
 			flavor = "tooling"; //$NON-NLS-1$
-		actions.add(new ProductAction(null, product, flavor, executableFeature));
+
+		File exeFeature = null;
+		if(product.useFeatures())
+		{
+			List<VersionedName> features = TypedCollections.getProductFeatures(product);
+			actions.add(new CategoriesAction(sourceFolder, buildProperties, features));
+
+			int idx = features.size();
+			while(--idx >= 0)
+			{
+				VersionedName feature = features.get(idx);
+				Version v = feature.getVersion();
+				exeFeature = getExeFeatureFileIfReferenced(feature.getId(), v == null
+						? null
+						: v.toString());
+				if(exeFeature != null)
+					break;
+			}
+		}
+		actions.add(new ProductAction(null, product, flavor, exeFeature));
+	}
+
+	private static File getExeFeatureFileIfReferenced(String featureId, String featureVersion) throws CoreException
+	{
+		IVersionDesignator vd = null;
+		if(featureVersion != null && featureVersion.length() > 0 && !"0.0.0".equals(featureVersion)) //$NON-NLS-1$
+			vd = VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.fromString(featureVersion));
+		IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(featureId, vd, null);
+		File eff = null;
+		if(feature != null)
+		{
+			if(CSpecGenerator.LAUNCHER_BUNDLE.equals(featureId))
+				eff = new File(feature.getInstallLocation());
+			else
+				for(IFeatureChild child : feature.getFeature().getIncludedFeatures())
+				{
+					eff = getExeFeatureFileIfReferenced(child.getId(), child.getVersion());
+					if(eff != null)
+						break;
+				}
+		}
+		return eff;
 	}
 
 	private static IProductDescriptor getProductDescriptor(File productFile) throws CoreException
@@ -253,8 +293,8 @@ public class P2SiteGenerator extends AbstractActor
 		}
 	}
 
-	public void run(File siteDefiner, File sourceFolder, List<File> productConfigs, File executableFeature,
-			File siteFolder, Map<String, ? extends Object> properties) throws CoreException
+	public void run(File siteDefiner, File sourceFolder, List<File> productConfigs, File siteFolder,
+			Map<String, ? extends Object> properties) throws CoreException
 	{
 		if(siteDefiner == null || siteFolder == null)
 			// Nothing to do
@@ -303,8 +343,7 @@ public class P2SiteGenerator extends AbstractActor
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
 
-		IPublisherAction[] actions = createActions(sourceFolder, siteDescriptor, executableFeature, siteFolder,
-				productConfigs);
+		IPublisherAction[] actions = createActions(sourceFolder, siteDescriptor, siteFolder, productConfigs);
 		Publisher publisher = new Publisher(info);
 		IStatus result = publisher.publish(actions, new NullProgressMonitor());
 		if(result.getSeverity() == IStatus.ERROR)
@@ -318,7 +357,6 @@ public class P2SiteGenerator extends AbstractActor
 		IPath outputPath = AbstractActor.getSingleAttributePath(ctx, action, false);
 		IPath site = null;
 		IPath siteDefiner = null;
-		File exeFeatureFile = null;
 		CSpec cspec = action.getCSpec();
 		List<IPath> productConfigs = null;
 		for(Prerequisite preq : action.getPrerequisites())
@@ -332,29 +370,6 @@ public class P2SiteGenerator extends AbstractActor
 					continue;
 
 				site = AbstractActor.getSingleAttributePath(ctx, rt, true);
-
-				// Check if the executable feature is included in the site
-				//
-				for(IPath path : AbstractActor.getPathList(ctx, rt, false))
-				{
-					if(!path.lastSegment().equals("features")) //$NON-NLS-1$
-						continue;
-
-					File featuresFolder = path.toFile().getAbsoluteFile();
-					String[] featureJars = path.toFile().getAbsoluteFile().list();
-					if(featureJars == null)
-						break;
-
-					for(String featureJar : featureJars)
-					{
-						if(featureJar.startsWith("org.eclipse.equinox.executable_")) //$NON-NLS-1$
-						{
-							exeFeatureFile = new File(featuresFolder, featureJar);
-							break;
-						}
-					}
-					break;
-				}
 				continue;
 			}
 
@@ -436,13 +451,7 @@ public class P2SiteGenerator extends AbstractActor
 			}
 		}
 
-		IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE, null,
-				null);
-		if(launcherFeature != null)
-			exeFeatureFile = new File(launcherFeature.getInstallLocation());
-
-		run(siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, exeFeatureFile, siteDir, ctx
-				.getProperties());
+		run(siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, siteDir, ctx.getProperties());
 		if(siteDir != outputDir)
 		{
 			// Zip the content of the siteDir. The name of the zip should
@@ -461,8 +470,8 @@ public class P2SiteGenerator extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private IPublisherAction[] createActions(File sourceFolder, Object siteDescriptor, File executableFeature,
-			File siteFolder, List<File> productConfigs) throws CoreException
+	private IPublisherAction[] createActions(File sourceFolder, Object siteDescriptor, File siteFolder,
+			List<File> productConfigs) throws CoreException
 	{
 		ArrayList<IPublisherAction> actions = new ArrayList<IPublisherAction>();
 		actions.add(new FeaturesAction(new File[] { new File(siteFolder, "features") })); //$NON-NLS-1$
@@ -497,13 +506,13 @@ public class P2SiteGenerator extends AbstractActor
 		else
 		{
 			IProductDescriptor product = (IProductDescriptor)siteDescriptor;
-			addProductAction(sourceFolder, actions, executableFeature, product, buildProperties);
+			addProductAction(sourceFolder, actions, product, buildProperties);
 		}
 
 		for(File productConfigFile : productConfigs)
 		{
 			File productSourceFolder = productConfigFile.getParentFile();
-			addProductAction(productSourceFolder, actions, executableFeature, getProductDescriptor(productConfigFile),
+			addProductAction(productSourceFolder, actions, getProductDescriptor(productConfigFile),
 					readBuildProperties(productSourceFolder));
 		}
 		return actions.toArray(new IPublisherAction[actions.size()]);
