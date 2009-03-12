@@ -1,18 +1,18 @@
 #!/bin/sh
 #
-# Copyright (c) 2006-2007, Cloudsmith Inc.
+# Copyright (c) 2006-2009, Cloudsmith Inc.
 # The code, documentation and other materials contained herein have been
 # licensed under the Eclipse Public License - v 1.0 by the copyright holder
 # listed above, as the Initial Contributor under such license. The text of
 # such license is available at www.eclipse.org.
 #
-# This script will launch buckminster
+# This script will launch the Equinox framework
 #
 # usage:
-#   buckminster [ -vm <java binary> ] <command> <command opts> [ -vmargs <vmargs> ]
+#   <script name> [ -vm <java binary> ] <command> <command opts> [ -vmargs <vmargs> ]
 #
 # Alternatively, you bypass this script and instead use:
-#   <java binary> <vmargs> -jar startup.jar <command> <command opts>
+#   <java binary> <vmargs> -jar <equinox launcher jar> <command> <command opts>
 #
 VM=java
 ARGS=
@@ -40,5 +40,7 @@ do
         esac
 done
 
-EXE_DIR=`dirname $0`
-eval $VM $* -jar \"$EXE_DIR/startup.jar\" $ARGS
+EXE_DIR=`dirname "$0"`
+launcher=`ls "$EXE_DIR"/plugins/org.eclipse.equinox.launcher_*.jar | sort | tail -1`
+eval $VM $* -jar \"$launcher\" $ARGS
+
