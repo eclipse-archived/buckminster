@@ -3,7 +3,7 @@
 
 <product name="Buckminster" id="org.eclipse.buckminster.cmdline.product" application="org.eclipse.buckminster.cmdline.headless" useFeatures="true">
 
-   <configIni>
+   <configIni use="default">
    </configIni>
 
    <launcherArgs>
@@ -12,7 +12,7 @@
 
    <windowImages/>
 
-   <launcher name="buckminster">
+   <launcher>
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -20,16 +20,17 @@
    </launcher>
 
    <vm>
-      <linux>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/OSGi%Minimum-1.0</linux>
    </vm>
-
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.eclipse.buckminster.product"/>
+      <feature id="org.eclipse.buckminster.product" version="1.1.350.qualifier"/>
    </features>
 
+   <configurations>
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="0" />
+   </configurations>
 
 </product>
