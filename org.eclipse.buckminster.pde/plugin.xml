@@ -121,10 +121,6 @@
         class="org.eclipse.buckminster.pde.ant.UpdateSiteGeneratorTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.updateSiteGenerator"/>
-  <antTask
-        class="org.eclipse.buckminster.pde.ant.P2SiteGeneratorTask"
-        library="ant_tasks/ant_tasks.jar"
-        name="buckminster.p2SiteGenerator"/>
 	</extension>
  <extension
        point="org.eclipse.buckminster.cmdline.prefmappings">
