@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
+import org.eclipse.equinox.p2.publisher.PublisherResult;
 
 /**
  * Action that generates version adjusted products
@@ -30,6 +31,11 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
 		((ProductVersionPatcher)product).setQueryable(results);
-		return super.perform(publisherInfo, results, monitor);
+
+		IPublisherResult innerResult = new PublisherResult();
+		IStatus status = super.perform(publisherInfo, innerResult, monitor);
+		if(status.getSeverity() != IStatus.ERROR)
+			results.merge(innerResult, IPublisherResult.MERGE_MATCHING);
+		return status;
 	}
 }

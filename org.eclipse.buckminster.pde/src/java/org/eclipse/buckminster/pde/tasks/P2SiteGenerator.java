@@ -306,6 +306,8 @@ public class P2SiteGenerator extends AbstractActor
 		String siteDescriptorName;
 
 		PublisherInfo info = new PublisherInfo();
+		info.setConfigurations(getConfigurations(properties));
+
 		Object siteDescriptor;
 		if(fileName.equals("feature.xml")) //$NON-NLS-1$
 		{
@@ -324,7 +326,6 @@ public class P2SiteGenerator extends AbstractActor
 			if(siteDescriptorName == null)
 				siteDescriptorName = productDesc.getId();
 
-			info.setConfigurations(getConfigurations(properties));
 			siteDescriptor = productDesc;
 		}
 
