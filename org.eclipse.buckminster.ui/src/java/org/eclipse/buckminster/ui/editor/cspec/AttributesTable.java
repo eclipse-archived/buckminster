@@ -8,9 +8,7 @@
 
 package org.eclipse.buckminster.ui.editor.cspec;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -20,7 +18,6 @@ import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
-import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
 import org.eclipse.buckminster.ui.general.editor.structured.StructuredTable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -46,10 +43,6 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 
 	private Button m_publicCheck;
 
-	private List<Property> m_installerHints = new ArrayList<Property>();
-
-	private SimpleTableEditor<Property> m_installerHintsEditor;
-
 	private Text m_documentationText;
 
 	private T m_currentBuilder;
@@ -65,7 +58,6 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 	{
 		m_nameText.setEnabled(enabled);
 		m_publicCheck.setEnabled(enabled);
-		m_installerHintsEditor.setEnabled(enabled);
 		m_documentationText.setEnabled(enabled);
 	}
 
@@ -120,27 +112,6 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 		return docComposite;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Control createInstallerHintsStackLayer(Composite stackComposite)
-	{
-		Composite composite = new Composite(stackComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginHeight = layout.marginWidth = 0;
-		composite.setLayout(layout);
-
-		EditorUtils.createHeaderLabel(composite, Messages.installer_hints, 1);
-
-		PropertiesTable ihTable = new PropertiesTable(m_installerHints);
-		ihTable.addTableModifyListener(FIELD_LISTENER);
-
-		m_installerHintsEditor = new SimpleTableEditor<Property>(composite, ihTable, null,
-				Messages.attribute_installer_hints_with_dash, null, null, SWT.NONE);
-
-		m_installerHintsEditor.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		return composite;
-	}
-
 	protected CSpecBuilder getCSpecBuilder()
 	{
 		return m_cspec;
@@ -158,9 +129,6 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 
 		m_nameText.setText(TextUtils.notNullString(builder.getName()));
 		m_publicCheck.setSelection(builder.isPublic());
-
-		CSpecEditorUtils.copyAndSortItems(builder.getInstallerHints(), m_installerHints);
-		m_installerHintsEditor.refresh();
 
 		Documentation doc = builder.getDocumentation();
 		m_documentationText.setText(TextUtils.notNullString(doc == null
@@ -190,17 +158,6 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 
 		builder.setName(UiUtils.trimmedValue(m_nameText));
 		builder.setPublic(m_publicCheck.getSelection());
-
-		Map<String, String> hints = builder.getInstallerHints();
-
-		if(hints != null)
-		{
-			hints.clear();
-		}
-		for(Property property : m_installerHints)
-		{
-			builder.addInstallerHint(property.getKey(), property.getValue(), true);
-		}
 
 		String doc = UiUtils.trimmedValue(m_documentationText);
 

@@ -107,11 +107,6 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute
 		return m_filter;
 	}
 
-	public Map<String, String> getInstallerHints()
-	{
-		return Collections.emptyMap();
-	}
-
 	public PathGroup[] getPathGroups(IModelCache ctx, Stack<IAttributeFilter> filters) throws CoreException
 	{
 		return PathGroup.EMPTY_ARRAY;

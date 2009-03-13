@@ -8,7 +8,6 @@
 package org.eclipse.buckminster.core.cspec;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
@@ -22,8 +21,6 @@ public interface IAttribute
 	Documentation getDocumentation();
 
 	Filter getFilter();
-
-	Map<String, String> getInstallerHints();
 
 	String getName();
 

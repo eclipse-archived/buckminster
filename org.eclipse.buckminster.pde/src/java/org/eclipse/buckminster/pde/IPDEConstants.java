@@ -102,8 +102,6 @@ public interface IPDEConstants
 	 */
 	static final String ATTRIBUTE_IMPORTED_JAR = "imported.jar"; //$NON-NLS-1$
 
-	static final String ATTRIBUTE_INTERNAL_PRODUCT_ROOT = "internal.product.root"; //$NON-NLS-1$
-
 	static final String ATTRIBUTE_JAR_CONTENTS = "jar.contents"; //$NON-NLS-1$
 
 	/**
@@ -124,11 +122,6 @@ public interface IPDEConstants
 	 * Denotes a list consisting of all product configurations contained in the bundle or feature
 	 */
 	static final String ATTRIBUTE_PRODUCT_CONFIGS = "product.configurations"; //$NON-NLS-1$
-
-	/**
-	 * Appoints all files that PDE features wants to copy to the root of a product they are included in.
-	 */
-	static final String ATTRIBUTE_PRODUCT_ROOT_FILES = "product.root.files"; //$NON-NLS-1$
 
 	static final String ATTRIBUTE_RAW_MANIFEST = "raw.manifest"; //$NON-NLS-1$
 
@@ -207,8 +200,6 @@ public interface IPDEConstants
 
 	static final String FRAGMENT_FILE = "fragment.xml"; //$NON-NLS-1$
 
-	static final String HINT_PERMISSIONS = "permissions"; //$NON-NLS-1$
-
 	static final String MANIFEST = IPDEBuildConstants.MANIFEST;
 
 	static final String MANIFEST_HEADER_SOURCE_BUNDLE = "Eclipse-SourceBundle"; //$NON-NLS-1$
@@ -228,8 +219,6 @@ public interface IPDEConstants
 	static final String PROP_DELETE_DIR = "dir.to.delete"; //$NON-NLS-1$
 
 	static final String PROP_DELETE_FILE = "file.to.delete"; //$NON-NLS-1$
-
-	static final String PROP_DELETE_UILAUNCHER = "buckminster.eclipse.deleteuilauncher"; //$NON-NLS-1$
 
 	static final String PROP_PRODUCT_FILE = "buckminster.eclipse.productFile"; //$NON-NLS-1$
 

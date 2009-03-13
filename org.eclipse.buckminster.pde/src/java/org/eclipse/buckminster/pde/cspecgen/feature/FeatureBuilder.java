@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2006-2009, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -34,40 +31,11 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 /**
  * A CSpec builder that creates a cspec from a Eclipse plugin.xml file.
  * 
- * @author thhal
+ * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
 public class FeatureBuilder extends PDEBuilder
 {
-	public static void addRootsPermissions(Map<String, String> hints, String perm, String filesAndFolders, String[] spec)
-	{
-		StringBuilder bld = new StringBuilder();
-		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ","); //$NON-NLS-1$
-		while(tokenizer.hasMoreTokens())
-		{
-			if(bld.length() > 0)
-				bld.append(',');
-			bld.append(tokenizer.nextToken().trim());
-			bld.append(':');
-			bld.append(perm);
-		}
-
-		if(bld.length() > 0)
-		{
-			String key = (spec != null && spec.length >= 3)
-					? String.format("%s/%s.%s.%s", HINT_PERMISSIONS, spec[0], spec[1], spec[2]) //$NON-NLS-1$
-					: HINT_PERMISSIONS;
-
-			String permissions = hints.get(key);
-			if(permissions != null)
-			{
-				bld.append(',');
-				bld.append(permissions);
-			}
-			hints.put(key, bld.toString());
-		}
-	}
-
 	@Override
 	public int compareTo(IResolutionBuilder other)
 	{

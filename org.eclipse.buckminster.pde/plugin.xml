@@ -86,10 +86,6 @@
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.targetPlatformLocation"/>
   <antTask
-        class="org.eclipse.buckminster.pde.ant.CreateProductBaseTask"
-        library="ant_tasks/ant_tasks.jar"
-        name="buckminster.createProductBase"/>
-  <antTask
         class="org.eclipse.buckminster.pde.ant.FeatureConsolidatorTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.consolidateFeature"/>
@@ -117,10 +113,6 @@
         class="org.eclipse.buckminster.pde.ant.JNLPSiteGeneratorTask"
         library="ant_tasks/ant_tasks.jar"
         name="buckminster.jnlpSiteGenerator"/>
-  <antTask
-        class="org.eclipse.buckminster.pde.ant.UpdateSiteGeneratorTask"
-        library="ant_tasks/ant_tasks.jar"
-        name="buckminster.updateSiteGenerator"/>
 	</extension>
  <extension
        point="org.eclipse.buckminster.cmdline.prefmappings">

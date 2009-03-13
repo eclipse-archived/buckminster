@@ -105,29 +105,6 @@ public class Action extends TopLevelAttribute implements IAction
 		m_upToDatePolicy = builder.getUpToDatePolicy();
 	}
 
-	public void addInstallerHints(IModelCache ctx, Map<String, String> installerHints) throws CoreException
-	{
-		CSpec cspec = getCSpec();
-		Stack<IAttributeFilter> filters = null;
-		for(Prerequisite prereq : getPrerequisites(null))
-		{
-			IAttribute ag = prereq.getReferencedAttribute(cspec, ctx);
-			if(!(ag instanceof TopLevelAttribute))
-				continue;
-
-			if(prereq.isPatternFilter())
-			{
-				if(filters == null)
-					filters = new Stack<IAttributeFilter>();
-				filters.push(prereq);
-				((TopLevelAttribute)ag).getDeepInstallerHints(ctx, installerHints, filters);
-				filters.pop();
-			}
-			else
-				((TopLevelAttribute)ag).getDeepInstallerHints(ctx, installerHints, filters);
-		}
-	}
-
 	@Override
 	public IAttribute copy()
 	{

@@ -39,7 +39,6 @@ public class AlterArtifact extends AlterAttribute<Artifact>
 	{
 		IArtifact base = getBase();
 		ArtifactBuilder aBld = (ArtifactBuilder)original;
-		alterInstallerHints(aBld);
 		alterPaths(aBld);
 		alterDocumentation(aBld);
 		aBld.setType(CSpecExtension.overrideCheckNull(aBld.getType(), base.getType()));

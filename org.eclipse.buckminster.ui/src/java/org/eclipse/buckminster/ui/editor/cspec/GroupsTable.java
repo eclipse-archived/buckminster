@@ -49,7 +49,6 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
-		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
 		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 

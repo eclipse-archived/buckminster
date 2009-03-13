@@ -11,13 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.MissingPathException;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.PathAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.PropertyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
-import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -80,15 +78,9 @@ public abstract class AlterAttribute<T extends TopLevelAttribute>
 
 	private final T m_base;
 
-	private final Map<String, String> m_alteredHints;
-
-	private final Set<String> m_removedHints;
-
 	protected AlterAttribute(T base, Set<String> removedHints, Map<String, String> alteredHints)
 	{
 		m_base = base;
-		m_removedHints = Utils.createUnmodifiableSet(removedHints);
-		m_alteredHints = ExpandingProperties.createUnmodifiableProperties(alteredHints);
 	}
 
 	/**
@@ -108,25 +100,6 @@ public abstract class AlterAttribute<T extends TopLevelAttribute>
 		original.setDocumentation(origDoc == null
 				? baseDoc
 				: origDoc.merge(baseDoc));
-	}
-
-	public void alterInstallerHints(TopLevelAttributeBuilder original) throws CoreException
-	{
-		// Assert that all hints to remove really exists
-		//
-		performPropertyAlterations(original.getCSpecName(), original.getName(), "installer hint", original //$NON-NLS-1$
-				.getInstallerHints(), m_alteredHints, m_base.getInstallerHints(), m_removedHints);
-	}
-
-	/**
-	 * Returns the base for the alteration image. The base represents all attribute chagnes and collection additions.
-	 * Collection removals and alterations to collection elements will be handled by extra additions.
-	 * 
-	 * @return THe base for the alteration image.
-	 */
-	protected final T getBase()
-	{
-		return m_base;
 	}
 
 	/**
@@ -150,5 +123,16 @@ public abstract class AlterAttribute<T extends TopLevelAttribute>
 	public boolean isTypeConformant(TopLevelAttribute origAttr)
 	{
 		return origAttr.getClass().equals(m_base.getClass());
+	}
+
+	/**
+	 * Returns the base for the alteration image. The base represents all attribute chagnes and collection additions.
+	 * Collection removals and alterations to collection elements will be handled by extra additions.
+	 * 
+	 * @return THe base for the alteration image.
+	 */
+	protected final T getBase()
+	{
+		return m_base;
 	}
 }

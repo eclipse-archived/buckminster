@@ -64,7 +64,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 	public void fillStack(Composite stackComposite)
 	{
 		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
-		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
 		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 

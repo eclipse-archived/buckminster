@@ -7,36 +7,25 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.commands.GetConfiguration;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.common.model.SAXEmitter;
-import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.sax.ISaxableElement;
-import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 /**
  * The super class for actions, artifacts, and groups
@@ -49,8 +38,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 
 	public final static String INSTALLER_HINT_PREFIX = PROPERTY_PREFIX + "install."; //$NON-NLS-1$
 
-	public static final String ELEM_INSTALLER_HINTS = "installerHints"; //$NON-NLS-1$
-
 	public static final String PUBLIC_TAG = "public"; //$NON-NLS-1$
 
 	public static final String PRIVATE_TAG = "private"; //$NON-NLS-1$
@@ -59,22 +46,18 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 
 	public static final String DEFINE_TAG = "define"; //$NON-NLS-1$
 
-	private final Map<String, String> m_installerHints;
-
 	private final boolean m_public;
 
 	TopLevelAttribute(String name)
 	{
 		super(name);
 		m_public = false;
-		m_installerHints = Collections.emptyMap();
 	}
 
 	TopLevelAttribute(TopLevelAttributeBuilder builder)
 	{
 		super(builder);
 		m_public = builder.isPublic();
-		m_installerHints = ExpandingProperties.createUnmodifiableProperties(builder.getInstallerHints());
 	}
 
 	@Override
@@ -137,66 +120,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			pqs[idx].appendRelativeFiles(fileNames);
 	}
 
-	public void getDeepInstallerHints(IModelCache ctx, Map<String, String> hints, Stack<IAttributeFilter> filters)
-			throws CoreException
-	{
-		Map<String, String> myHints = getInstallerHints();
-		if(myHints.size() > 0)
-		{
-			StringBuilder bld = new StringBuilder(100);
-			bld.append(INSTALLER_HINT_PREFIX);
-			int pfLen = INSTALLER_HINT_PREFIX.length();
-			for(Map.Entry<String, String> hint : myHints.entrySet())
-			{
-				// Check for '/' since it indicates a key that is augmented with
-				// a platform specifier in the form os.ws.arch
-				//
-				String key = hint.getKey();
-				int slashIdx = key.lastIndexOf('/');
-				if(slashIdx > 0)
-				{
-					String[] triplet = TextUtils.split(key.substring(slashIdx + 1), "."); //$NON-NLS-1$
-					if(triplet.length == 3)
-					{
-						Filter filter = FilterUtils.createFilter(triplet[0], triplet[1], triplet[2], null);
-						if(!filter.matchCase(ctx.getProperties()))
-							//
-							// Not applicable for the current build
-							//
-							continue;
-						key = key.substring(0, slashIdx);
-					}
-				}
-				bld.setLength(pfLen);
-				bld.append(hint.getKey());
-				bld.append('.');
-				bld.append(getCSpec().getName());
-				bld.append('.');
-				bld.append(getName());
-				hints.put(bld.toString(), hint.getValue());
-			}
-		}
-
-		CSpec cspec = getCSpec();
-		for(Prerequisite child : getPrerequisites(filters))
-		{
-			IAttribute refAttr = child.getReferencedAttribute(cspec, ctx);
-			if(!(refAttr instanceof TopLevelAttribute))
-				continue;
-
-			if(child.isPatternFilter())
-			{
-				if(filters == null)
-					filters = new Stack<IAttributeFilter>();
-				filters.push(child);
-				((TopLevelAttribute)refAttr).getDeepInstallerHints(ctx, hints, filters);
-				filters.pop();
-			}
-			else
-				((TopLevelAttribute)refAttr).getDeepInstallerHints(ctx, hints, filters);
-		}
-	}
-
 	@Override
 	public String getDefaultTag()
 	{
@@ -230,12 +153,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 			}
 		}
 		return oldest;
-	}
-
-	@Override
-	public final Map<String, String> getInstallerHints()
-	{
-		return m_installerHints;
 	}
 
 	public long getLastModified(IModelCache ctx, long threshold, int[] fileCount) throws CoreException
@@ -326,19 +243,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 
 	@Override
 	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(handler, namespace, prefix);
-		if(!m_installerHints.isEmpty())
-		{
-			String qName = Utils.makeQualifiedName(prefix, ELEM_INSTALLER_HINTS);
-			handler.startElement(namespace, ELEM_INSTALLER_HINTS, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-			SAXEmitter.emitProperties(handler, m_installerHints, namespace, prefix, true, false);
-			handler.endElement(namespace, ELEM_INSTALLER_HINTS, qName);
-		}
-	}
 
 	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local,
 			Stack<IAttributeFilter> filters) throws CoreException;

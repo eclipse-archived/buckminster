@@ -68,13 +68,6 @@ public class AlterAction extends AlterAttribute<Action>
 		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
-	protected void alterActorProperties(ActionBuilder original) throws CoreException
-	{
-		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original //$NON-NLS-1$
-				.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
-				m_removedActorProperties);
-	}
-
 	@Override
 	public void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException
 	{
@@ -87,7 +80,6 @@ public class AlterAction extends AlterAttribute<Action>
 		ag.alterAttribute(groupBld);
 
 		alterProductPaths(actionBld);
-		alterInstallerHints(actionBld);
 		alterActorProperties(actionBld);
 		alterProperties(actionBld);
 		alterDocumentation(actionBld);
@@ -95,6 +87,13 @@ public class AlterAction extends AlterAttribute<Action>
 		actionBld
 				.setProductAlias(CSpecExtension.overrideCheckNull(actionBld.getProductAlias(), base.getProductAlias()));
 		actionBld.setProductBase(CSpecExtension.overrideCheckNull(actionBld.getProductBase(), base.getProductBase()));
+	}
+
+	protected void alterActorProperties(ActionBuilder original) throws CoreException
+	{
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original //$NON-NLS-1$
+				.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
+				m_removedActorProperties);
 	}
 
 	protected void alterProductPaths(ActionBuilder original) throws CoreException

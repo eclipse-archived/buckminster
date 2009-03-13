@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.cspec.builder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -60,11 +59,6 @@ public class AttributeBuilder extends CSpecElementBuilder implements IAttribute
 	public Filter getFilter()
 	{
 		return m_filter;
-	}
-
-	public Map<String, String> getInstallerHints()
-	{
-		return Collections.emptyMap();
 	}
 
 	public IPath getPrerequisiteRebase()

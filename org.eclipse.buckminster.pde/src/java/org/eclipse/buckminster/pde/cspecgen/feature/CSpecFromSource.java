@@ -1,3 +1,10 @@
+/*****************************************************************************
+ * Copyright (c) 2006-2009, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
 import java.util.List;
@@ -9,19 +16,15 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.osgi.filter.Filter;
-import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -29,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.core.PDECore;
@@ -77,7 +79,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
 		//
-		GroupBuilder featureRefs = cspec.addGroup(ATTRIBUTE_FEATURE_REFS, true); // without self
+		cspec.addGroup(ATTRIBUTE_FEATURE_REFS, true); // without self
 		cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_REFS, true).setFilter(SOURCE_FILTER);
 
 		// All bundles imported by this feature and all included features. Does
@@ -98,7 +100,6 @@ public class CSpecFromSource extends CSpecGenerator
 		cspec.addGroup(ATTRIBUTE_SITE_FEATURE_EXPORTS, true);
 
 		cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, true);
-		cspec.addGroup(ATTRIBUTE_PRODUCT_ROOT_FILES, true);
 		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN); //$NON-NLS-1$
 
 		addFeatures();
@@ -131,58 +132,6 @@ public class CSpecFromSource extends CSpecGenerator
 				{
 					createBinIncludesArtifact(entry.getValue());
 					continue;
-				}
-
-				if(!key.startsWith(ROOT))
-					continue;
-
-				Filter filter = null;
-				String[] permSpec = null;
-				String permStr = null;
-				if(key.length() > ROOT.length())
-				{
-					if(key.charAt(ROOT.length()) != '.')
-						continue;
-
-					String[] s = TextUtils.split(key.substring(ROOT.length() + 1), "."); //$NON-NLS-1$
-					switch(s.length)
-					{
-					case 2: // permissions.digits
-						permStr = s[1];
-						break;
-					case 3: // os.ws.arch
-						filter = FilterUtils.createFilter(s[0], s[1], s[2], null);
-						break;
-					case 5: // os.ws.arch.permissions.digits
-						permSpec = s;
-						permStr = s[4];
-						break;
-					}
-				}
-
-				if(permStr != null)
-					FeatureBuilder.addRootsPermissions(featureRefs.getInstallerHintsForAdd(), permStr,
-							entry.getValue(), permSpec);
-				else
-					createRootsArtifact(entry.getValue(), filter);
-			}
-
-			GroupBuilder productRoots = cspec.getGroup(ATTRIBUTE_INTERNAL_PRODUCT_ROOT);
-			if(productRoots != null)
-			{
-				List<PrerequisiteBuilder> preqs = productRoots.getPrerequisites();
-				if(preqs.size() == 1)
-				{
-					// Replace the internal product root group with it's one and only
-					// prerequisite.
-					//
-					String prName = productRoots.getName();
-					ArtifactBuilder artifact = cspec.getArtifactBuilder(preqs.iterator().next().getName());
-					cspec.removeAttribute(prName);
-
-					cspec.removeAttribute(artifact.getName());
-					artifact.setName(prName);
-					cspec.addAttribute(artifact);
 				}
 			}
 			MonitorUtils.worked(monitor, 20);
@@ -225,7 +174,6 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder featureSourceRefs = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
-		GroupBuilder productRootFiles = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES);
 
 		String self = cspec.getName();
 		for(VersionedName feature : features)
@@ -243,7 +191,6 @@ public class CSpecFromSource extends CSpecGenerator
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
 			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
-			productRootFiles.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
 		}
 	}
 
@@ -280,7 +227,6 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder featureSourceRefs = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
-		GroupBuilder productRootFiles = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		for(IFeatureChild feature : features)
 		{
@@ -294,7 +240,6 @@ public class CSpecFromSource extends CSpecGenerator
 			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
 			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
 			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
-			productRootFiles.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_ROOT_FILES);
 			productConfigExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
@@ -508,98 +453,11 @@ public class CSpecFromSource extends CSpecGenerator
 		manifest.addProductPath(new Path("source." + FEATURE_FILE)); //$NON-NLS-1$
 	}
 
-	private void createRootsArtifact(String filesAndFolders, Filter filter) throws CoreException
-	{
-		CSpecBuilder cspec = getCSpec();
-		StringTokenizer tokenizer = new StringTokenizer(filesAndFolders, ","); //$NON-NLS-1$
-		GroupBuilder productRoots = null;
-		while(tokenizer.hasMoreTokens())
-		{
-			// Here PDE decided that files needed a prefix whereas folders did not and that
-			// absolute paths needed another prefix whereas relative paths did not. I'm curious;
-			// why not say that entries ending with '/' are folders and use standard notation
-			// for absolute paths?
-			//
-			String token = tokenizer.nextToken().trim();
-			if(token.startsWith("absolute:")) //$NON-NLS-1$
-				//
-				// Why whould a feature copy anything using absolute paths? If it did, it would
-				// make it hopelessly dependent on install location. Not good. We don't permit
-				// it here.
-				//
-				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.component_0_contains_absolute_path_in_buildproperties, getCSpec().getName()));
-
-			IPath path;
-			boolean isFile = token.startsWith("file:"); //$NON-NLS-1$
-			if(isFile)
-			{
-				if("file:bin/win32/win32/x86/eclipse.exe".equals(token)) //$NON-NLS-1$
-					token = "file:bin/win32/win32/x86/launcher.exe"; //$NON-NLS-1$
-				else if("file:bin/wpf/win32/x86/eclipse.exe".equals(token)) //$NON-NLS-1$
-					token = "file:bin/wpf/win32/x86/launcher.exe"; //$NON-NLS-1$
-
-				path = new Path(token.substring(5));
-			}
-			else
-				path = new Path(token);
-
-			// Make sure it really is relative
-			//
-			IPath leaf = null;
-			path = path.makeRelative().setDevice(null);
-			if(isFile)
-			{
-				leaf = new Path(path.lastSegment());
-				path = path.removeLastSegments(1);
-			}
-			path = path.addTrailingSeparator();
-
-			if(productRoots == null)
-				productRoots = getInternalProductRoot();
-
-			ArtifactBuilder productRoot = null;
-			List<PrerequisiteBuilder> preqs = productRoots.getPrerequisites();
-			for(PrerequisiteBuilder preq : preqs)
-			{
-				ArtifactBuilder ag = cspec.getRequiredArtifact(preq.getName());
-				if(ag.getBase().equals(path))
-				{
-					productRoot = ag;
-					break;
-				}
-			}
-
-			if(productRoot == null)
-			{
-				int n = preqs.size();
-				productRoot = cspec.addArtifact(ATTRIBUTE_INTERNAL_PRODUCT_ROOT + '.' + n, false, null, path);
-				productRoot.setFilter(filter);
-				productRoots.addLocalPrerequisite(productRoot);
-			}
-
-			if(isFile)
-				productRoot.addPath(leaf);
-		}
-	}
-
 	private void createSiteFeatureExportsAction() throws CoreException
 	{
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_SITE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(createCopySiteFeaturesAction());
 		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);
 		featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-	}
-
-	private GroupBuilder getInternalProductRoot() throws CoreException
-	{
-		CSpecBuilder cspec = getCSpec();
-		GroupBuilder productRoot = cspec.getGroup(ATTRIBUTE_INTERNAL_PRODUCT_ROOT);
-		if(productRoot == null)
-		{
-			productRoot = cspec.addGroup(ATTRIBUTE_INTERNAL_PRODUCT_ROOT, false);
-			cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_ROOT_FILES).addLocalPrerequisite(productRoot);
-		}
-		return productRoot;
 	}
 }

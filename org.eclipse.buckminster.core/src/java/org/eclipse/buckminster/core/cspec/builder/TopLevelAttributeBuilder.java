@@ -7,9 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-import java.util.Map;
-
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
@@ -21,8 +18,6 @@ import org.eclipse.buckminster.osgi.filter.Filter;
  */
 public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 {
-	private ExpandingProperties<String> m_installerHints = null;
-
 	private boolean m_public = false;
 
 	TopLevelAttributeBuilder(CSpecBuilder cspecBuilder)
@@ -33,22 +28,6 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	public final void addExternalPrerequisite(String name, String attr) throws PrerequisiteAlreadyDefinedException
 	{
 		addPrerequisite(createPrerequisite(name, attr, null, null));
-	}
-
-	public void addInstallerHint(String key, String hint)
-	{
-		getInstallerHintsForAdd().put(key, hint, false);
-	}
-
-	public void addInstallerHint(String key, String hint, boolean mutable)
-	{
-		getInstallerHintsForAdd().put(key, hint, mutable);
-	}
-
-	public void addInstallerHints(Map<String, String> hints)
-	{
-		if(hints != null && hints.size() > 0)
-			getInstallerHintsForAdd().putAll(hints, true);
 	}
 
 	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException
@@ -81,7 +60,6 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	public void clear()
 	{
 		super.clear();
-		m_installerHints = null;
 		m_public = false;
 	}
 
@@ -94,25 +72,10 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 	}
 
 	@Override
-	public Map<String, String> getInstallerHints()
-	{
-		return m_installerHints;
-	}
-
-	public ExpandingProperties<String> getInstallerHintsForAdd()
-	{
-		if(m_installerHints == null)
-			m_installerHints = new ExpandingProperties<String>();
-		return m_installerHints;
-	}
-
-	@Override
 	public void initFrom(IAttribute attribute)
 	{
 		super.initFrom(attribute);
-		m_installerHints = null;
 		m_public = attribute.isPublic();
-		addInstallerHints(attribute.getInstallerHints());
 	}
 
 	@Override

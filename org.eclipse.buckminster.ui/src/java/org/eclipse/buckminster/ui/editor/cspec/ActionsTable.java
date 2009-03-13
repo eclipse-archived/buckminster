@@ -126,7 +126,6 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
 		addStackMapping(Messages.properties, createPropertiesStackLayer(stackComposite));
 		addStackMapping(Messages.products, createProductsStackLayer(stackComposite));
-		addStackMapping(Messages.installer_hints, createInstallerHintsStackLayer(stackComposite));
 		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 

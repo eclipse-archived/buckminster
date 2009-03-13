@@ -215,7 +215,6 @@ public class AntActor extends AbstractActor
 			for(Map.Entry<String, ? extends Object> entry : ctx.getProperties().entrySet())
 				props.put(entry.getKey(), entry.getValue().toString());
 			props.putAll(getDefaultProperties(ctx));
-			ctx.getAction().addInstallerHints(ctx, props);
 			Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 			addActorPathGroups(ctx, namedPathGroupArrays);
 			addPathGroupArraysToProperties(namedPathGroupArrays, props);

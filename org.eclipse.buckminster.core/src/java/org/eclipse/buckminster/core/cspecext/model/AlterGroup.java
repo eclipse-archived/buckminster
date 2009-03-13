@@ -48,7 +48,6 @@ public class AlterGroup extends AlterAttribute<Group>
 	{
 		Group base = getBase();
 		GroupBuilder gBld = (GroupBuilder)original;
-		alterInstallerHints(gBld);
 		alterPrerequisiteMap(gBld);
 		alterDocumentation(gBld);
 		gBld.setPrerequisiteRebase(CSpecExtension.overrideCheckNull(gBld.getPrerequisiteRebase(), base
