@@ -319,16 +319,26 @@ public class CSpecFromSource extends CSpecGenerator
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 
 		boolean isExeFeature = "org.eclipse.equinox.executable".equals(m_feature.getId()); //$NON-NLS-1$
+		boolean isRCPFeature = "org.eclipse.rcp".equals(m_feature.getId()); //$NON-NLS-1$
 		for(IFeaturePlugin plugin : plugins)
 		{
-			if(isExeFeature
-					|| !(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(),
-							arch)))
-				//
+			if(!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch)))
+			{
 				// Only include this if we can find it in the target platform
 				//
 				if(manager.findEntry(plugin.getId()) == null)
 					continue;
+			}
+
+			if((isExeFeature || isRCPFeature)
+					&& (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null))
+			{
+				// Only include this if we can find it in the target platform. See
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+				//
+				if(manager.findEntry(plugin.getId()) == null)
+					continue;
+			}
 
 			ComponentRequestBuilder dep = createDependency(plugin);
 			if(skipComponent(query, dep))
@@ -376,20 +386,6 @@ public class CSpecFromSource extends CSpecGenerator
 
 			binIncludes.addPath(new Path(path));
 		}
-	}
-
-	private ActionBuilder createCopyBinariesAction() throws CoreException
-	{
-		// Copy all features (including this one) to the features directory.
-		//
-		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_FEATURES, TASK_COPY_GROUP, false);
-		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_JARS);
-		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JARS);
-		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
-		copyFeatures.setProductAlias(ALIAS_OUTPUT);
-		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));
-		copyFeatures.setUpToDatePolicy(UpToDatePolicy.MAPPER);
-		return copyFeatures;
 	}
 
 	private ActionBuilder createCopyFeaturesAction() throws CoreException

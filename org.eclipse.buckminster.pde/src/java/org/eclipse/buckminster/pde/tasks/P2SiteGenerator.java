@@ -203,7 +203,7 @@ public class P2SiteGenerator extends AbstractActor
 		File eff = null;
 		if(feature != null)
 		{
-			if(CSpecGenerator.LAUNCHER_BUNDLE.equals(featureId))
+			if(CSpecGenerator.LAUNCHER_FEATURE.equals(featureId))
 				eff = new File(feature.getInstallLocation());
 			else
 				for(IFeatureChild child : feature.getFeature().getIncludedFeatures())
