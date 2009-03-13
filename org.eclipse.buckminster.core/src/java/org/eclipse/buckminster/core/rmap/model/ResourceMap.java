@@ -185,6 +185,20 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
 				Messages.no_suitable_provider_for_0_was_found_in_resourceMap_1, request, getContextURL()), null);
 
+		Map<String, ? extends Object> props = query.getProperties();
+		if(!m_properties.isEmpty())
+		{
+			if(props.isEmpty())
+				props = m_properties;
+			else
+			{
+				Map<String, Object> propUnion = new HashMap<String, Object>(m_properties.size() + props.size());
+				propUnion.putAll(m_properties);
+				propUnion.putAll(props);
+				props = propUnion;
+			}
+		}
+
 		String componentName = request.getName();
 		for(Matcher matcher : m_matchers)
 		{
@@ -197,7 +211,9 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 			Locator locator = (Locator)matcher;
 			try
 			{
-				SearchPath sp = getSearchPathByReference(locator.getSearchPath());
+				String searchPathRef = locator.getSearchPath();
+				searchPathRef = ExpandingProperties.expand(props, searchPathRef, 0);
+				SearchPath sp = getSearchPathByReference(searchPathRef);
 				query.logDecision(ResolverDecisionType.USING_SEARCH_PATH, sp.getName());
 				return resolve(query, sp, monitor);
 			}
