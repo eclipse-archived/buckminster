@@ -24,6 +24,10 @@
          id="org.eclipse.buckminster.tutorial.rcpp2.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.equinox.executable"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.buckminster.tutorial.mailapp"
          download-size="0"

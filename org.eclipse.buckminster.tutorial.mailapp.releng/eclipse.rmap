@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	(c) 2004-2005
+	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+	Pontus Rydin, Nils Unden, Peer Torngren
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the individual
+	copyright holders listed above, as Initial Contributors under such license.
+	The text of such license is available at www.eclipse.org.
+-->
+<rmap xmlns="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
+
+	<property key="useBuild" value="RBUILD"/>
+
+	<searchPath name="org.eclipse.buckminster">
+		<provider readerType="svn" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true"
+			source="true">
+			<uri
+				format="http://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/{0}?moduleAfterTag&amp;moduleAfterBranch">
+				<bc:propertyRef key="buckminster.component" />
+			</uri>
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.platform.NBUILD">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5-N-builds?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.platform.IBUILD">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5-I-builds?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.platform.MBUILD">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5milestones?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.platform.RBUILD">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.4?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.galileo">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/releases/galileo?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="orbit">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/tools/orbit/downloads/drops/S20090307012903/updateSite?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.buckminster(\..+)?"/>
+	<locator searchPathRef="org.eclipse.platform.${useBuild}" failOnError="false" />
+	<locator searchPathRef="org.eclipse.galileo" failOnError="false" />
+	<locator searchPathRef="orbit" />
+
+</rmap>
