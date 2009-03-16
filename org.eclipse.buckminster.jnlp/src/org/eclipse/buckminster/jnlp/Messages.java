@@ -36,6 +36,8 @@ public class Messages extends NLS
 
 	public static String cancelled;
 
+	public static String completed;
+
 	public static String cannot_connect_to_the_remote_authentication_service;
 
 	public static String cannot_connect_to_the_remote_server;

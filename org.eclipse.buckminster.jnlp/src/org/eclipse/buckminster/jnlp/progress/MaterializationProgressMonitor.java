@@ -126,7 +126,7 @@ public class MaterializationProgressMonitor implements IProgressMonitor
 			});
 		}
 
-		subTask(m_jobName + " " + (isCanceled() ? Messages.canceled : Messages.canceled)); //$NON-NLS-1$
+		subTask(m_jobName + " " + (isCanceled() ? Messages.canceled : Messages.completed)); //$NON-NLS-1$
 
 		final boolean[] visible = new boolean[1];
 
