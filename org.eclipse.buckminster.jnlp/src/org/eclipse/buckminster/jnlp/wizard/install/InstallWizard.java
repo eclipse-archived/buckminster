@@ -20,42 +20,41 @@ import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_CODE_R
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_TITLE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_HELP_URL;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.ERROR_WINDOW_TITLE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZATOR_PROPERTIES;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.MATERIALIZERS;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.META_AREA;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_VERSION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DESCRIPTION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_DOCUMENTATION;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_NAME;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ARTIFACT_VERSION;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_BASE_PATH_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HOME_PAGE_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDFEEDS_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDREADER_URL;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_KEY;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SERVICE_PROVIDER;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_FOLDER_PATH;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DRAFT;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DISTRO_ID;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_ID;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_NAME;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_TYPE;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_CSPEC_VERSION_TYPE;
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DISTRO_ID;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_DRAFT;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_ERROR_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_FOLDER_PATH;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HELP_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_HOME_PAGE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDFEEDS_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_CLOUDREADER_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LEARN_MORE_URL;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_KEY;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_LOGIN_REQUIRED;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_PROFILE_TEXT;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_SERVICE_PROVIDER;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_ICON;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WINDOW_TITLE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.PROP_WIZARD_ICON;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_FALSE;
-
-import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 import static org.eclipse.buckminster.jnlp.MaterializationConstants.VALUE_TRUE;
+import static org.eclipse.buckminster.jnlp.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,8 +78,6 @@ import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.HelpLinkErrorDialog;
-import org.eclipse.buckminster.jnlp.wizard.ILoginHandler;
-import org.eclipse.buckminster.jnlp.wizard.IUnresolvedNodeHandler;
 import org.eclipse.buckminster.jnlp.JNLPException;
 import org.eclipse.buckminster.jnlp.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.MaterializationUtils;
@@ -93,6 +90,8 @@ import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.ui.general.wizard.AdvancedWizard;
+import org.eclipse.buckminster.jnlp.wizard.ILoginHandler;
+import org.eclipse.buckminster.jnlp.wizard.IUnresolvedNodeHandler;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -967,18 +966,18 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 		m_distro = m_retrievedDistroCache.get(distroId);
 
-		if(m_distro == null)
+		try
 		{
-			try
+			getContainer().run(true, false, new IRunnableWithProgress()
 			{
-				getContainer().run(true, false, new IRunnableWithProgress()
+
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 				{
+					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+					monitor.subTask(Messages.retrieving_distro_specification);
 
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+					if(m_distro == null)
 					{
-						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-						monitor.subTask(Messages.retrieving_distro_specification);
-
 						try
 						{
 							m_distro = m_distroProvider.getDistro(m_draft, m_cspecId, distroId);
@@ -988,39 +987,39 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 							throw new InvocationTargetException(e);
 						}
 						m_retrievedDistroCache.put(distroId, m_distro);
-
-						m_builder.initFrom(m_distro.getMspec());
-
-						// extra properties
-						m_builder.getProperties().put("distro.name", m_artifactName); //$NON-NLS-1$
-
-						IPath location = m_builder.getInstallLocation() == null
-								? Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName))
-								: MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
-						m_builder.setInstallLocation(location);
-
-						m_cachedBOM = m_distro.getBom();
-						saveBOMLocally();
-
-						initMSpecTree();
-
-						monitor.done();
 					}
-				});
-			}
-			catch(Exception e)
-			{
-				if(e instanceof JNLPException)
-					throw (JNLPException)e;
 
-				Throwable originalException = e;
+					m_builder.initFrom(m_distro.getMspec());
 
-				if(e instanceof InvocationTargetException && e.getCause() != null)
-					originalException = e.getCause();
+					// extra properties
+					m_builder.getProperties().put("distro.name", m_artifactName); //$NON-NLS-1$
 
-				throw new JNLPException(Messages.cannot_read_distro_specification, ERROR_CODE_REMOTE_IO_EXCEPTION,
-						originalException);
-			}
+					IPath location = m_builder.getInstallLocation() == null
+							? Path.fromOSString(MaterializationUtils.getDefaultDestination(m_artifactName))
+							: MaterializationUtils.expandPath(m_builder, m_builder.getInstallLocation());
+					m_builder.setInstallLocation(location);
+
+					m_cachedBOM = m_distro.getBom();
+					saveBOMLocally();
+
+					initMSpecTree();
+
+					monitor.done();
+				}
+			});
+		}
+		catch(Exception e)
+		{
+			if(e instanceof JNLPException)
+				throw (JNLPException)e;
+
+			Throwable originalException = e;
+
+			if(e instanceof InvocationTargetException && e.getCause() != null)
+				originalException = e.getCause();
+
+			throw new JNLPException(Messages.cannot_read_distro_specification, ERROR_CODE_REMOTE_IO_EXCEPTION,
+					originalException);
 		}
 	}
 
