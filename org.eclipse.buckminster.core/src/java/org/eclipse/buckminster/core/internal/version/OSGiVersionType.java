@@ -15,13 +15,13 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.update.core.VersionedIdentifier;
-import org.osgi.framework.Version;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings( { "deprecation", "restriction" })
 public class OSGiVersionType extends TripletVersionType
 {
 	// Slight variant of the TripletVersionPattern. This pattern will not
@@ -34,6 +34,11 @@ public class OSGiVersionType extends TripletVersionType
 	@Override
 	public IVersion coerce(Object object)
 	{
+		if(object instanceof org.osgi.framework.Version)
+		{
+			org.osgi.framework.Version v = (org.osgi.framework.Version)object;
+			return new OSGiVersion(this, v.getMajor(), v.getMinor(), v.getMicro(), v.getQualifier());
+		}
 		if(object instanceof Version)
 		{
 			Version v = (Version)object;
