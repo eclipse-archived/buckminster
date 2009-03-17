@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
@@ -207,8 +208,8 @@ public class ProductVersionPatcher implements IProductDescriptor
 		}
 
 		String iuID = id;
-		if(isFeature && !iuID.endsWith(".feature.group"))
-			iuID += ".feature.group";
+		if(isFeature && !iuID.endsWith(IPDEConstants.FEATURE_GROUP))
+			iuID += IPDEConstants.FEATURE_GROUP;
 
 		InstallableUnitQuery query = new InstallableUnitQuery(iuID, range);
 		Collector result = m_mdr.query(query, new Collector(), null);

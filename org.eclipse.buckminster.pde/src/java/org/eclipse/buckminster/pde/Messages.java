@@ -17,22 +17,6 @@ public class Messages extends NLS
 
 	public static String unable_to_manifest_from_0;
 
-	public static String _0_is_not_directory;
-
-	public static String output_of_action_0_must_be_folder;
-
-	public static String outputdir_can_not_be_null;
-
-	public static String prerequisite_0_for_action_1_must_be_a_feature;
-
-	public static String productFile_cannot_be_null;
-
-	public static String target_loc_cannot_be_null;
-
-	public static String unable_to_read_file_0;
-
-	public static String component_0_contains_absolute_path_in_buildproperties;
-
 	public static String manifest_has_malformed_LDAP_rule_for;
 
 	public static String invalid_import_type_0;
