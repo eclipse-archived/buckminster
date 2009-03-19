@@ -26,15 +26,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.core.headless.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.buckminster.cvs.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.buckminster.cvs.headless.feature"
          version="0.0.0"/>
 
    <includes
@@ -46,27 +38,11 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.pde.headless.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.buckminster.product"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.buckminster.subclipse.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.subclipse.headless.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.buckminster.subversive.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.buckminster.subversive.headless.feature"
          version="0.0.0"/>
 
 </feature>
