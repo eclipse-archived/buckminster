@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.buckminster.site.eclipse.headless"
+      label="Buckminster Headless"
+      version="1.1.0.qualifier"
+      provider-name="Cloudsmith Inc.">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update url="http://download.eclipse.org/tools/buckminster/headless-3.5/"/>
+   </url>
+
+   <includes
+         id="org.eclipse.buckminster.core.headless.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.buckminster.cvs.headless.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.buckminster.maven.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.buckminster.pde.headless.feature"
+         version="0.0.0"/>
+
+</feature>
