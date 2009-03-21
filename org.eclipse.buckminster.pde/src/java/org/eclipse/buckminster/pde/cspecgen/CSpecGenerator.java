@@ -462,6 +462,15 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		siteBuilder.setProductAlias(ALIAS_OUTPUT);
 	}
 
+	protected void createSiteZipAction() throws CoreException
+	{
+		ActionBuilder siteZip = addAntAction(ATTRIBUTE_SITE_ZIP, TASK_CREATE_SITE_ZIP, true);
+		siteZip.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
+		siteZip.addLocalPrerequisite(ATTRIBUTE_SITE_P2, ALIAS_REQUIREMENTS);
+		siteZip.setProductBase(OUTPUT_DIR);
+		siteZip.setProductAlias(ALIAS_OUTPUT);
+	}
+
 	protected String expand(String value) throws CoreException
 	{
 		value = TextUtils.notEmptyTrimmedString(value);
@@ -633,6 +642,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			createSiteSignAction(ATTRIBUTE_FEATURE_EXPORTS);
 			createSitePackAction(ATTRIBUTE_FEATURE_EXPORTS);
 			createSiteAction(ATTRIBUTE_FEATURE_EXPORTS, productConfigArtifact.getName());
+			createSiteZipAction();
 		}
 		finally
 		{

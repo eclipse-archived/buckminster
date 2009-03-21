@@ -153,6 +153,7 @@ public class CSpecFromSource extends CSpecGenerator
 			createSiteSignAction(ATTRIBUTE_SITE_FEATURE_EXPORTS);
 			createSitePackAction(ATTRIBUTE_SITE_FEATURE_EXPORTS);
 			createSiteAction(ATTRIBUTE_SITE_FEATURE_EXPORTS, ATTRIBUTE_MANIFEST);
+			createSiteZipAction();
 		}
 		MonitorUtils.done(monitor);
 	}

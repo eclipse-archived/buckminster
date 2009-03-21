@@ -113,6 +113,15 @@
 		</buckminster.jar>
 	</target>
 
+	<target name="create.site.zip">
+		<extractFeatureVersion file="${sp:manifest}" property="site.version"/>
+		<extractFeatureId file="${sp:manifest}" property="site.id"/>
+		<mkdir dir="${sp:action.output}"/>
+		<buckminster.zip zipfile="${sp:action.output}/${site.id}_${site.version}.zip">
+			<buckminster.filesetgroup value="${fs:action.requirements}"/>
+		</buckminster.zip>
+	</target>
+
 	<target name="create.feature.jar">
 		<extractFeatureVersion file="${sp:manifest}" property="feature.version"/>
 		<extractFeatureId file="${sp:manifest}" property="feature.id"/>

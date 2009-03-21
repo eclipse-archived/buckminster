@@ -141,6 +141,11 @@ public interface IPDEConstants
 	static final String ATTRIBUTE_SITE_FEATURE_EXPORTS = "site.feature.exports"; //$NON-NLS-1$
 
 	/**
+	 * Zipped site.
+	 */
+	static final String ATTRIBUTE_SITE_ZIP = "site.p2.zip"; //$NON-NLS-1$
+
+	/**
 	 * Site with p2 meta-data.
 	 */
 	static final String ATTRIBUTE_SITE_P2 = "site.p2"; //$NON-NLS-1$
@@ -235,6 +240,8 @@ public interface IPDEConstants
 	static final String TASK_CREATE_FEATURE_JAR = "create.feature.jar"; //$NON-NLS-1$
 
 	static final String TASK_CREATE_JAR = "create.jar"; //$NON-NLS-1$
+
+	static final String TASK_CREATE_SITE_ZIP = "create.site.zip"; //$NON-NLS-1$
 
 	static final String TASK_CREATE_JAR_WM = "create.jar.with.manifest"; //$NON-NLS-1$
 
