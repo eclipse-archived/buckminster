@@ -11,11 +11,8 @@ Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.equinox.internal.p2.console,
  org.eclipse.equinox.internal.p2.engine,
  org.eclipse.equinox.internal.provisional.p2.core,
- org.eclipse.equinox.internal.provisional.p2.core.eventbus,
  org.eclipse.equinox.internal.provisional.p2.director,
  org.eclipse.equinox.internal.provisional.p2.engine,
  org.eclipse.equinox.internal.provisional.p2.metadata,
  org.eclipse.equinox.internal.provisional.p2.metadata.query,
- org.eclipse.equinox.internal.provisional.p2.query,
- org.eclipse.equinox.p2.publisher,
- org.eclipse.equinox.p2.publisher.eclipse
+ org.eclipse.equinox.internal.provisional.p2.query
