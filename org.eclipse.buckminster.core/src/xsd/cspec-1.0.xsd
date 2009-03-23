@@ -548,7 +548,7 @@
 					<element name="alterInstallerHints"
 						type="cs:AlterProperties" />
 					<element name="alterPrerequisites"
-						type="cs:AlterGroup" />
+						type="cs:AlterPrerequisites" />
 					<element name="alterActorProperties"
 						type="cs:AlterProperties" />
 					<element name="alterProperties"
@@ -589,6 +589,17 @@
 				<choice minOccurs="0" maxOccurs="unbounded">
 					<element name="alterInstallerHints"
 						type="cs:AlterProperties" />
+					<element name="alterAttribute"
+						type="cs:Prerequisite" />
+					<element name="remove" type="cs:Remove" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AlterPrerequisites">
+		<complexContent>
+			<extension base="cs:Prerequisites">
+				<choice minOccurs="0" maxOccurs="unbounded">
 					<element name="alterAttribute"
 						type="cs:Prerequisite" />
 					<element name="remove" type="cs:Remove" />
