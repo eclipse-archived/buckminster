@@ -48,6 +48,11 @@ set VMARGS=
 
 :vmargs
 	shift
+:vmargs_loop
+	if [%1] == [] goto endloop
+	set VMARGS=%VMARGS% %1
+	shift
+	goto vmargs_loop
 
 :endloop
 
@@ -56,4 +61,4 @@ rem Get path to equinox launcher jar and invoke
 rem ----------------------------------------------------------------
 for /f "delims= tokens=1" %%c in ('dir /B /S /OD %EXE_DIR%\plugins\org.eclipse.equinox.launcher_*.jar') do set EQUINOXJAR=%%c
 
-%VM% %1 %2 %3 %4 %5 %6 %7 %8 %9 -jar "%EQUINOXJAR%" %ARGS%
+%VM% %VMARGS% -jar "%EQUINOXJAR%" %ARGS%
