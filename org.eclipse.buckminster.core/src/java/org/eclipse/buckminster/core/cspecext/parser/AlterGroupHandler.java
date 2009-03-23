@@ -13,6 +13,7 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.parser.AttributeHandler;
 import org.eclipse.buckminster.core.cspec.parser.GroupHandler;
 import org.eclipse.buckminster.core.cspec.parser.PrerequisiteHandler;
 import org.eclipse.buckminster.core.cspecext.builder.AlterAttributeBuilder;
@@ -41,19 +42,14 @@ class AlterGroupHandler extends AlterAttributeHandler
 		}
 	};
 
+	AlterGroupHandler(AbstractHandler parent, AttributeHandler baseHandler)
+	{
+		super(parent, baseHandler);
+	}
+
 	AlterGroupHandler(AbstractHandler parent, boolean publ)
 	{
 		super(parent, new GroupHandler(parent, publ));
-	}
-
-	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
-	{
-		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
-	}
-
-	void addRemovePrerequisite(String key)
-	{
-		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
 	}
 
 	@Override
@@ -77,12 +73,6 @@ class AlterGroupHandler extends AlterAttributeHandler
 	}
 
 	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
-	}
-
-	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
@@ -93,5 +83,21 @@ class AlterGroupHandler extends AlterAttributeHandler
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
+	}
+
+	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
+	{
+		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
+	}
+
+	void addRemovePrerequisite(String key)
+	{
+		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
+	}
+
+	@Override
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
+	{
+		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
 	}
 }

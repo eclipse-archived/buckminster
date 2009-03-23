@@ -18,11 +18,11 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class PrerequisitesHandler extends GroupHandler
+public class PrerequisitesHandler extends GroupHandler
 {
 	public static final String TAG = Prerequisites.TAG;
 
-	PrerequisitesHandler(AbstractHandler parent)
+	public PrerequisitesHandler(AbstractHandler parent)
 	{
 		super(parent, false);
 	}
@@ -33,14 +33,14 @@ class PrerequisitesHandler extends GroupHandler
 		return getActionBuilder().getPrerequisitesBuilder();
 	}
 
-	private ActionBuilder getActionBuilder()
-	{
-		return (ActionBuilder)((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
-	}
-
 	@Override
 	protected String getNameAttribute(Attributes attrs) throws SAXException
 	{
 		return getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS);
+	}
+
+	private ActionBuilder getActionBuilder()
+	{
+		return (ActionBuilder)((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
 	}
 }

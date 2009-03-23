@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.cspecext.parser;
 
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.parser.PrerequisitesHandler;
 import org.eclipse.buckminster.core.cspecext.model.AlterAction;
 import org.eclipse.buckminster.sax.AbstractHandler;
 
@@ -21,7 +22,7 @@ class AlterPrerequisitesHandler extends AlterGroupHandler
 
 	AlterPrerequisitesHandler(AbstractHandler parent)
 	{
-		super(parent, false);
+		super(parent, new PrerequisitesHandler(parent));
 	}
 
 	@Override
