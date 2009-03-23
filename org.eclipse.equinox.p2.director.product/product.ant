@@ -37,5 +37,23 @@
 			<jvmarg value="-Declipse.p2.profile=${profile}"/>
 			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
 		</java>
+
+		<!-- Overwrite the generated configuration file -->
+		<copy file="${buckminster.home}/config.ini" todir="${destination}/configuration" overwrite="true"/>
+
+		<!-- Copy needed platform specific fragments -->
+		<copy todir="${destination}/plugins">
+			<fileset dir="${eclipse.home}/plugins" excludes="*.source_*.jar">
+				<include name="org.eclipse.core.net.*.jar"/>
+				<include name="org.eclipse.equinox.security.*.jar"/>
+			</fileset>
+		</copy>
+
+		<!-- eclipse.ini is not needed since we don't launch using an executable -->
+		<delete file="${destination}/eclipse.ini"/>
+
+		<!-- This app can do without the P2 profile and cache -->
+		<delete dir="${destination}/p2"/>
+		<delete file="${destination}/artifacts.xml"/>
 	</target>
 </project>
