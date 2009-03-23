@@ -1,0 +1,41 @@
+<project>
+	 <pathconvert property="equinox.launcher.jar">
+	   <first count="1">
+	     <sort>
+	       <fileset dir="${eclipse.home}/plugins" includes="**/org.eclipse.equinox.launcher_*.jar"/>
+	       <reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
+	         <date/>
+	       </reverse>
+	     </sort>
+	   </first>
+	 </pathconvert>
+
+	<target name="create.product">
+		<property name="destination" location="${sp:destination}"/>
+		<makeurl property="repository" file="${sp:repository}"/>
+		<mkdir dir="${destination}"/>
+
+		<echo message="${equinox.launcher.jar}"/>
+		<echo message="${repository}"/>
+		<echo message="${destination}"/>
+		<java jar="${equinox.launcher.jar}" fork="true" failonerror="true" >
+			<arg value="-application"/>
+			<arg value="org.eclipse.equinox.p2.director.app.application"/>
+			<arg value="-ar"/>
+			<arg value="file:${repository}"/>
+			<arg value="-mr"/>
+			<arg value="file:${repository}"/>
+			<arg value="-dest"/>
+			<arg value="${destination}"/>
+			<arg value="-bundlepool"/>
+			<arg value="${destination}"/>
+			<arg value="-profile"/>
+			<arg value="${profile}"/>
+			<arg value="-installIU"/>
+			<arg value="${iu}"/>
+			<jvmarg value="-Declipse.p2.data.area=${destination}/p2"/>
+			<jvmarg value="-Declipse.p2.profile=${profile}"/>
+			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
+		</java>
+	</target>
+</project>
