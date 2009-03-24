@@ -391,7 +391,7 @@
 				<attribute name="alias" type="string" use="optional"/>
 			</extension>
 		</complexContent>
-	</complexType
+	</complexType>
 
 	<complexType name="Prerequisites">
 		<sequence>
