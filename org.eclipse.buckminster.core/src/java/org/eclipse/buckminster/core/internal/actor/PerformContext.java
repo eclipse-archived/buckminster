@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -214,19 +215,23 @@ public class PerformContext implements IActionContext
 	public void addProductPathGroup(Map<String, PathGroup[]> pgas) throws CoreException
 	{
 		Action action = getAction();
-		PathGroup[] product = action.getPathGroups(this, null);
-		if(product.length > 0)
+		List<ActionArtifact> productArtifacts = action.getProductArtifacts();
+		if(productArtifacts.size() == 0)
 		{
-			PathGroup[] pathGroups = normalizePathGroups(product);
-			String alias = action.getProductAlias();
-			if(alias != null)
-				pgas.put(alias, pathGroups);
-			else
-				pgas.put(PRODUCT_PREFIX + action.getName(), pathGroups);
+			PathGroup[] product = action.getPathGroups(this, null);
+			if(product.length > 0)
+			{
+				PathGroup[] pathGroups = normalizePathGroups(product);
+				String alias = action.getProductAlias();
+				if(alias != null)
+					pgas.put(alias, pathGroups);
+				else
+					pgas.put(PRODUCT_PREFIX + action.getName(), pathGroups);
+			}
 		}
 		else
 		{
-			for(ActionArtifact productArtifact : action.getProductArtifacts())
+			for(ActionArtifact productArtifact : productArtifacts)
 			{
 				PathGroup[] pathGroups = normalizePathGroups(productArtifact.getPathGroups(this, null));
 				String alias = productArtifact.getAlias();
