@@ -3,8 +3,7 @@
       id="org.eclipse.buckminster.subclipse.headless.feature"
       label="Buckminster - Subclipse based SVN support for headless operation"
       version="1.0.0.qualifier"
-      provider-name="Eclipse Buckminster Project"
-      plugin="org.eclipse.buckminster.subclipse">
+      provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature provides headless SVN integration for Buckminster.
@@ -106,10 +105,6 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
    </license>
-
-   <url>
-      <update label="Buckminster" url="http://download.cloudsmith.com/buckminster/external"/>
-   </url>
 
    <requires>
       <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>

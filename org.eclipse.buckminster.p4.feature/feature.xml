@@ -3,8 +3,7 @@
       id="org.eclipse.buckminster.p4.feature"
       label="Buckminster - Perforce support"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org"
-      plugin="org.eclipse.buckminster.p4.ui">
+      provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature provides the Perforce integration for Buckminster.
@@ -106,10 +105,6 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
    </license>
-
-   <url>
-      <update label="Buckminster" url="http://download.eclipse.org/tools/buckminster/updates"/>
-   </url>
 
    <requires>
       <import plugin="org.eclipse.buckminster.ui"/>
