@@ -43,14 +43,19 @@
             <products alias="action.output" base="${buckminster.output}/signed.jars/"/>
         </private>
 
- 	</actions>
+        <private name="site.signed" actor="ant">
+            <actorProperties>
+                <property key="buildFileId" value="buckminster.pdetasks"/>
+                <property key="targets" value="copy.group"/>
+            </actorProperties>
+            <prerequisites alias="action.requirements">
+ 				<attribute name="unprocessed.jars"/>
+ 				<attribute name="signed.jars"/>
+            </prerequisites>
+            <products alias="action.output" base="${buckminster.output}/site.signed/" upToDatePolicy="MAPPER"/>
+        </private>
 
- 	<groups>
- 		<public name="site.signed">
- 			<attribute name="unprocessed.jars"/>
- 			<attribute name="signed.jars"/>
- 		</public>
- 	</groups>
+ 	</actions>
 
 	<alterActions>
         <remove name="site.signed"/>
