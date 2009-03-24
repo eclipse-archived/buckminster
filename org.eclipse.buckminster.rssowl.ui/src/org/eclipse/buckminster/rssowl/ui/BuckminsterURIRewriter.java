@@ -19,7 +19,7 @@ import org.eclipse.buckminster.download.DownloadManager;
 
 import org.eclipse.buckminster.jnlp.ide.IDEApplication;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.ui.ExternalFileEditorInput;
+import org.eclipse.buckminster.ui.editor.ExternalFileEditorInput;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
@@ -287,7 +287,7 @@ public class BuckminsterURIRewriter implements IRewriter
 				try
 				{
 					output = new FileOutputStream(tempFile);
-					DownloadManager.readInto(url, output, null);
+					DownloadManager.readInto(url, null, output, null);
 				}
 				finally
 				{

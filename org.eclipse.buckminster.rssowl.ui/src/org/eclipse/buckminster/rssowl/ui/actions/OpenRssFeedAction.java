@@ -16,9 +16,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.rssowl.core.persist.IBookMark;
 import org.rssowl.core.persist.reference.FeedLinkReference;
+import org.rssowl.core.util.CoreUtils;
 import org.rssowl.ui.internal.Activator;
-import org.rssowl.ui.internal.CacheService;
-import org.rssowl.ui.internal.Controller;
 import org.rssowl.ui.internal.OwlUI;
 import org.rssowl.ui.internal.editors.feed.FeedView;
 import org.rssowl.ui.internal.editors.feed.FeedViewInput;
@@ -37,7 +36,6 @@ public class OpenRssFeedAction extends AbstractBrowseableFeedAction
 	@Override
 	protected void run(IBrowseableFeed instance, Shell shell)
 	{
-		CacheService fCacheService = Controller.getDefault().getCacheService();
 		IWorkbenchPage page = OwlUI.getPage();
 		if(page == null)
 			return;
@@ -46,7 +44,7 @@ public class OpenRssFeedAction extends AbstractBrowseableFeedAction
 		FeedLinkReference flink = new FeedLinkReference(instance.getBrowseableURI());
 
 		// Find a bookmark using this link
-		IBookMark bookmark = fCacheService.getBookMark(flink);
+		IBookMark bookmark = CoreUtils.getBookMark(flink);
 		if(bookmark == null)
 			return;
 		
