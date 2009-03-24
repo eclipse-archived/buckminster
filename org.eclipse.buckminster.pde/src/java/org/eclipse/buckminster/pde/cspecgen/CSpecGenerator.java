@@ -372,7 +372,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		//
 		ActionBuilder copyPlugins = addAntAction(ACTION_COPY_PLUGINS, TASK_COPY_GROUP, false);
 		copyPlugins.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS);
-		copyPlugins.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS);
+		if(isFeature())
+			copyPlugins.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		copyPlugins.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyPlugins.setProductAlias(ALIAS_OUTPUT);
 		copyPlugins.setProductBase(OUTPUT_DIR_SITE.append(PLUGINS_FOLDER));
