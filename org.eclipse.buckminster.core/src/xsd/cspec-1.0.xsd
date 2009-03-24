@@ -208,9 +208,9 @@
 										maxOccurs="unbounded">
 										<element name="path" type="cs:Path" />
 										<element name="public"
-											type="cs:Artifact" />
+											type="cs:ActionArtifact" />
 										<element name="private"
-											type="cs:Artifact" />
+											type="cs:ActionArtifact" />
 									</choice>
 								</sequence>
 								<attribute name="alias" type="string"
@@ -385,6 +385,14 @@
 		</complexContent>
 	</complexType>
 
+	<complexType name="ActionArtifact">
+		<complexContent>
+			<extension base="cs:Artifact">
+				<attribute name="alias" type="string" use="optional">
+			</extension>
+		</complexContent>
+	</complexType
+
 	<complexType name="Prerequisites">
 		<sequence>
 			<element name="documentation" type="com:Documentation"
@@ -541,6 +549,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
 	<complexType name="AlterAction">
 		<complexContent>
 			<extension base="cs:Action">

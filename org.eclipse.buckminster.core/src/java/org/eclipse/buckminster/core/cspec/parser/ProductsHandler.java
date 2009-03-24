@@ -43,17 +43,18 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		}
 
 		@Override
-		protected TopLevelAttributeBuilder createAttributeBuilder()
-		{
-			return getCSpecBuilder().createActionArtifactBuilder();
-		}
-
-		@Override
 		public void handleAttributes(Attributes attrs) throws SAXException
 		{
 			super.handleAttributes(attrs);
-			((ActionArtifactBuilder)this.getBuilder()).setActionName(((ProductsHandler)this.getParentHandler())
-					.getActionName());
+			ActionArtifactBuilder productBuilder = (ActionArtifactBuilder)this.getBuilder();
+			productBuilder.setActionName(((ProductsHandler)this.getParentHandler()).getActionName());
+			productBuilder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
+		}
+
+		@Override
+		protected TopLevelAttributeBuilder createAttributeBuilder()
+		{
+			return getCSpecBuilder().createActionArtifactBuilder();
 		}
 	}
 
@@ -68,18 +69,6 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 	ProductsHandler(AbstractHandler parent)
 	{
 		super(parent);
-	}
-
-	final void addProductArtifact(AttributeBuilder artifact) throws SAXException
-	{
-		try
-		{
-			this.getCSpecBuilder().addAttribute(artifact);
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
 	}
 
 	public void childPopped(ChildHandler child) throws SAXException
@@ -105,11 +94,6 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
-	}
-
-	final String getActionName()
-	{
-		return ((CSpecElementHandler)this.getParentHandler()).getBuilder().getName();
 	}
 
 	public TopLevelAttributeBuilder getAttributeBuilder()
@@ -144,5 +128,22 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 						getDocumentLocator());
 			}
 		}
+	}
+
+	final void addProductArtifact(AttributeBuilder artifact) throws SAXException
+	{
+		try
+		{
+			this.getCSpecBuilder().addAttribute(artifact);
+		}
+		catch(AttributeAlreadyDefinedException e)
+		{
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
+	}
+
+	final String getActionName()
+	{
+		return ((CSpecElementHandler)this.getParentHandler()).getBuilder().getName();
 	}
 }

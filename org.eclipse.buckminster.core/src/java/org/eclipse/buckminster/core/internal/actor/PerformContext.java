@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -222,6 +223,18 @@ public class PerformContext implements IActionContext
 				pgas.put(alias, pathGroups);
 			else
 				pgas.put(PRODUCT_PREFIX + action.getName(), pathGroups);
+		}
+		else
+		{
+			for(ActionArtifact productArtifact : action.getProductArtifacts())
+			{
+				PathGroup[] pathGroups = normalizePathGroups(productArtifact.getPathGroups(this, null));
+				String alias = productArtifact.getAlias();
+				if(alias != null)
+					pgas.put(alias, pathGroups);
+				else
+					pgas.put(PRODUCT_PREFIX + productArtifact.getName(), pathGroups);
+			}
 		}
 	}
 

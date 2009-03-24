@@ -14,8 +14,10 @@ import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
@@ -24,10 +26,13 @@ public class ActionArtifact extends Artifact implements IActionArtifact
 {
 	private final String m_actionName;
 
+	private final String m_alias;
+
 	public ActionArtifact(ActionArtifactBuilder builder)
 	{
 		super(builder);
 		m_actionName = builder.getActionName();
+		m_alias = builder.getAlias();
 	}
 
 	public final Action getAction() throws MissingAttributeException
@@ -40,6 +45,11 @@ public class ActionArtifact extends Artifact implements IActionArtifact
 		return m_actionName;
 	}
 
+	public String getAlias()
+	{
+		return m_alias;
+	}
+
 	@Override
 	public boolean isEnabled(IModelCache ctx) throws CoreException
 	{
@@ -50,6 +60,14 @@ public class ActionArtifact extends Artifact implements IActionArtifact
 	public boolean isProducedByActions(IModelCache ctx)
 	{
 		return true;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		if(m_alias != null)
+			Utils.addAttribute(attrs, Prerequisite.ATTR_ALIAS, m_alias);
 	}
 
 	@Override

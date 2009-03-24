@@ -19,6 +19,8 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 {
 	private String m_actionName;
 
+	private String m_alias;
+
 	ActionArtifactBuilder(CSpecBuilder cspecBuilder)
 	{
 		super(cspecBuilder);
@@ -29,6 +31,7 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 	{
 		super.clear();
 		m_actionName = null;
+		m_alias = null;
 	}
 
 	@Override
@@ -40,6 +43,11 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 	public String getActionName()
 	{
 		return m_actionName;
+	}
+
+	public String getAlias()
+	{
+		return m_alias;
 	}
 
 	@Override
@@ -56,10 +64,16 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 		IActionArtifact actionArtifact = (IActionArtifact)attribute;
 		super.initFrom(actionArtifact);
 		m_actionName = actionArtifact.getActionName();
+		m_alias = actionArtifact.getAlias();
 	}
 
 	public void setActionName(String actionName)
 	{
 		m_actionName = actionName;
+	}
+
+	public void setAlias(String alias)
+	{
+		m_alias = alias;
 	}
 }
