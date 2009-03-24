@@ -388,7 +388,7 @@
 	<complexType name="ActionArtifact">
 		<complexContent>
 			<extension base="cs:Artifact">
-				<attribute name="alias" type="string" use="optional">
+				<attribute name="alias" type="string" use="optional"/>
 			</extension>
 		</complexContent>
 	</complexType
