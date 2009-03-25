@@ -99,7 +99,6 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 					fc.setWS(feature.getWS());
 					fc.setNL(feature.getNL());
 					fc.setLabel(feature.getLabel());
-					fc.setModel(featureModel);
 
 					sourceFeature.addIncludedFeatures(new IFeatureChild[] { fc });
 					continue;
