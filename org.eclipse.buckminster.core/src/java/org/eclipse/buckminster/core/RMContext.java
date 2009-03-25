@@ -392,7 +392,7 @@ public class RMContext extends ExpandingProperties<Object>
 
 	public NodeQuery getRootNodeQuery()
 	{
-		return getNodeQuery(getComponentQuery().getRootRequest());
+		return getNodeQuery(getComponentQuery().getExpandedRootRequest(this));
 	}
 
 	/**

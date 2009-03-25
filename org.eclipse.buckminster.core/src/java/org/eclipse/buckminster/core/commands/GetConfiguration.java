@@ -59,7 +59,8 @@ public class GetConfiguration extends WorkspaceCommand
 			MonitorUtils.worked(monitor, 1);
 			ResolutionContext context = new ResolutionContext(query);
 			MainResolver resolver = new MainResolver(context);
-			BillOfMaterials bom = resolver.resolve(query.getRootRequest(), MonitorUtils.subMonitor(monitor, 1));
+			BillOfMaterials bom = resolver.resolve(query.getExpandedRootRequest(context), MonitorUtils.subMonitor(
+					monitor, 1));
 			IStatus status = context.getStatus();
 			switch(status.getSeverity())
 			{

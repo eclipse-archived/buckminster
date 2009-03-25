@@ -38,7 +38,8 @@ public class BuckminsterComponentType extends AbstractComponentType
 		if(reader instanceof ICatalogReader)
 		{
 			NodeQuery query = reader.getNodeQuery();
-			boolean atTop = query.getComponentRequest().equals(query.getComponentQuery().getRootRequest());
+			boolean atTop = query.getComponentRequest().equals(
+					query.getComponentQuery().getExpandedRootRequest(query.getContext()));
 			if(!atTop)
 			{
 				return ((ICatalogReader)reader).exists(CorePlugin.CQUERY_FILE, monitor)

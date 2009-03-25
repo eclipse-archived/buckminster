@@ -178,7 +178,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
 	{
-		return logDecision(getComponentQuery().getRootRequest(), decisionType, args);
+		return logDecision(getComponentQuery().getExpandedRootRequest(this), decisionType, args);
 	}
 
 	@Override

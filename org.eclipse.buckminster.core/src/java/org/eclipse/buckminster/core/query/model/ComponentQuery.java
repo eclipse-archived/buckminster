@@ -210,6 +210,16 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return m_documentation;
 	}
 
+	public ComponentRequest getExpandedRootRequest(Map<String, ? extends Object> properties)
+	{
+		String name = m_rootRequest.getName();
+		String expName = ExpandingProperties.expand(properties, name, 0);
+		return name.equals(expName)
+				? m_rootRequest
+				: new ComponentRequest(expName, m_rootRequest.getComponentTypeID(), m_rootRequest
+						.getVersionDesignator());
+	}
+
 	public synchronized Map<String, String> getGlobalProperties()
 	{
 		if(m_allProperties != null)
