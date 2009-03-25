@@ -96,15 +96,13 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		String actionTemp = tempRoot.append(uniqueFolder).append("temp").toPortableString(); //$NON-NLS-1$
 
 		String outputRoot = (String)properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
-		if(outputRoot != null)
-		{
-			// Output root must be qualified with component name to avoid
-			// conflicts
-			//
-			actionOutput = Path.fromOSString(outputRoot).append(uniqueFolder).toPortableString();
-		}
-		else
-			actionOutput = tempRoot.append("build").toPortableString(); //$NON-NLS-1$
+		if(outputRoot == null)
+			outputRoot = tempRoot.append("build").toOSString(); //$NON-NLS-1$
+
+		// Output root must be qualified with component name to avoid
+		// conflicts
+		//
+		actionOutput = Path.fromOSString(outputRoot).append(uniqueFolder).toPortableString();
 
 		properties.put(KeyConstants.ACTION_OUTPUT, actionOutput);
 		properties.put(KeyConstants.ACTION_TEMP, actionTemp);
