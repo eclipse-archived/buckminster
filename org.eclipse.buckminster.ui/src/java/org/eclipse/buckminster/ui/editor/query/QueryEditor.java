@@ -48,6 +48,7 @@ import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.actions.BlankQueryAction;
 import org.eclipse.buckminster.ui.editor.ArtifactType;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
+import org.eclipse.buckminster.ui.editor.IDerivedEditorInput;
 import org.eclipse.buckminster.ui.editor.Properties;
 import org.eclipse.buckminster.ui.editor.PropertiesModifyEvent;
 import org.eclipse.buckminster.ui.editor.PropertiesModifyListener;
@@ -102,6 +103,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorMatchingStrategy;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
@@ -116,7 +120,7 @@ import org.eclipse.ui.part.EditorPart;
  * @author Karel Brezina
  * 
  */
-public class QueryEditor extends EditorPart
+public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 {
 	class AdvisorNodeLabelProvider extends LabelProvider implements ITableLabelProvider
 	{
@@ -559,6 +563,28 @@ public class QueryEditor extends EditorPart
 	public boolean isSaveAsAllowed()
 	{
 		return true;
+	}
+
+	public boolean matches(IEditorReference editorRef, IEditorInput input)
+	{
+		IEditorPart part = (IEditorPart)editorRef.getPart(false);
+		if(part != null)
+		{
+			IEditorInput editorInput = part.getEditorInput();
+			if(editorInput != null)
+			{
+				if(editorInput.equals(input))
+					return true;
+
+				if(editorInput instanceof IDerivedEditorInput)
+				{
+					IEditorInput originalEditorInput = ((IDerivedEditorInput)editorInput).getOriginalInput();
+					if(originalEditorInput.equals(input))
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
