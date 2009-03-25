@@ -80,7 +80,7 @@ public class RemoteResolver implements IResolver
 
 	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException
 	{
-		return resolve(m_context.getComponentQuery().getRootRequest(), monitor);
+		return resolve(m_context.getComponentQuery().getExpandedRootRequest(m_context), monitor);
 	}
 
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException

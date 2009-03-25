@@ -74,7 +74,7 @@ public class ResolveJob extends Job
 				resolutionMonitor = monitor;
 
 			Display display = m_site.getShell().getDisplay();
-			ComponentRequest rootRequest = query.getRootRequest();
+			ComponentRequest rootRequest = query.getExpandedRootRequest(ctx);
 			final BillOfMaterials bom = m_resolver.resolve(rootRequest, resolutionMonitor);
 			IStatus status = ctx.getStatus();
 			if(!ctx.isContinueOnError())
