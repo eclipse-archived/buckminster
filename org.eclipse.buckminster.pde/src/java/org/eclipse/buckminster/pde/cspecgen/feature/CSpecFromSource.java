@@ -264,8 +264,10 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 
-		boolean isExeFeature = "org.eclipse.equinox.executable".equals(m_feature.getId()); //$NON-NLS-1$
-		boolean isRCPFeature = "org.eclipse.rcp".equals(m_feature.getId()); //$NON-NLS-1$
+		String id = m_feature.getId();
+		boolean hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
+				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+				|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
 		for(IFeaturePlugin plugin : plugins)
 		{
 			if(!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch)))
@@ -276,8 +278,7 @@ public class CSpecFromSource extends CSpecGenerator
 					continue;
 			}
 
-			if((isExeFeature || isRCPFeature)
-					&& (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null))
+			if(hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null))
 			{
 				// Only include this if we can find it in the target platform. See
 				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
