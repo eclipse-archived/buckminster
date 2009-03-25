@@ -74,6 +74,7 @@
         extensions="cquery"
         icon="icons/cquery.png"
         id="org.eclipse.buckminster.ui.editor.QueryEditor"
+        matchingStrategy="org.eclipse.buckminster.ui.editor.query.QueryEditor"
         name="Component Query Editor">
 		</editor>
   <editor
