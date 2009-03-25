@@ -44,16 +44,19 @@ public class P2VersionFinder extends AbstractVersionFinder
 		NodeQuery query = getQuery();
 		ComponentRequest request = query.getComponentRequest();
 		IComponentType ctype = request.getComponentType();
+		String ctypeId = (ctype == null)
+				? IComponentType.OSGI_BUNDLE
+				: ctype.getId();
 		String name = request.getName();
 		VersionRange vr = null;
-		boolean isFeature = ctype.getId().equals(IComponentType.ECLIPSE_FEATURE);
+		boolean isFeature = ctypeId.equals(IComponentType.ECLIPSE_FEATURE);
 
 		if(isFeature)
 		{
 			if(!name.endsWith(IPDEConstants.FEATURE_GROUP))
 				name += IPDEConstants.FEATURE_GROUP;
 		}
-		else if(!ctype.getId().equals(IComponentType.OSGI_BUNDLE))
+		else if(!ctypeId.equals(IComponentType.OSGI_BUNDLE))
 			//
 			// We only deal with features and bundles
 			//
@@ -118,7 +121,8 @@ public class P2VersionFinder extends AbstractVersionFinder
 
 			// Check if the <feature name>.feature.jar requirement is present
 			//
-			String featureJarName = name.substring(0, name.length() - IPDEConstants.FEATURE_GROUP.length()) + FEATURE_JAR;
+			String featureJarName = name.substring(0, name.length() - IPDEConstants.FEATURE_GROUP.length())
+					+ FEATURE_JAR;
 			IRequiredCapability found = null;
 			for(IRequiredCapability rqc : best.getRequiredCapabilities())
 				if(IInstallableUnit.NAMESPACE_IU_ID.equals(rqc.getNamespace()) && featureJarName.equals(rqc.getName()))
