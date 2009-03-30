@@ -116,7 +116,7 @@ public class BMClasspathContainer implements IClasspathContainer
 			return;
 		seenIDs.add(cid);
 
-		for(ComponentRequest refToChild : cspec.getDependencies().values())
+		for(ComponentRequest refToChild : cspec.getDependencies())
 		{
 			CSpec childSpec = cache.findCSpec(cspec, refToChild);
 			this.addNodeToClassPath(childSpec, cpes, cache, seenIDs, depth + 1);
