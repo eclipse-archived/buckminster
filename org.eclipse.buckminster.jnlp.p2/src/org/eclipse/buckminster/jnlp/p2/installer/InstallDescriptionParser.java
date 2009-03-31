@@ -116,6 +116,19 @@ public class InstallDescriptionParser
 				roots[i] = VersionedName.parse(rootList[i]);
 			description.setRoots(roots);
 		}
+		
+		// TODO remove
+		/*
+		description.setArtifactRepositories(getURIs("file:///C:/tmp/P2installer/REPOs/Compound/"));//getURIs("http://download.eclipse.org/eclipse/updates/3.4/,http://download.eclipse.org/releases/ganymede/"));
+		description.setMetadataRepositories(getURIs("file:///C:/tmp/P2installer/REPOs/Compound/"));//getURIs("http://localhost:8080/jbosshome/metadata/,http://download.eclipse.org/eclipse/updates/3.4/,http://download.eclipse.org/releases/ganymede/"));
+		VersionedName[] roots = new VersionedName[3];
+		roots[0] = VersionedName.parse("org.eclipse.platform.ide");
+		roots[1] = VersionedName.parse("org.eclipse.epp.usagedata.feature.feature.group");
+		roots[2] = VersionedName.parse("epp.sdk");
+		description.setRoots(roots);
+		*/
+		// end of remove
+		
 		return description;
 	}
 

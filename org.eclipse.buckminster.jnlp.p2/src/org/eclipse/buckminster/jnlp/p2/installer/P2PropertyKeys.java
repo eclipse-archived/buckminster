@@ -40,6 +40,8 @@ public class P2PropertyKeys
 
 	public static final String PROP_ROOTS = "eclipse.p2.roots";//$NON-NLS-1$
 	
+	public static final String PROP_OPML = "materializer.opml";//$NON-NLS-1$
+	
 	public static String composeArtifactRepositoryProperty(int repoIdx)
 	{
 		return String.format("%s.%d", PROP_ARTIFACT_REPOSITORY_PREFIX, Integer.valueOf(repoIdx));

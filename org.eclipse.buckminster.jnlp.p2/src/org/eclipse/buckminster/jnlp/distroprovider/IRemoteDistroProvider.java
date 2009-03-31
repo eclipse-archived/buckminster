@@ -8,11 +8,10 @@
 
 package org.eclipse.buckminster.jnlp.distroprovider;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.eclipse.buckminster.opml.IOPML;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A distro provider - you can register, login, logout, get a distro, ...
@@ -119,11 +118,5 @@ public interface IRemoteDistroProvider
 	 */
 	IRemoteDistroProvider createDuplicate(boolean login) throws Exception;
 	
-	List<DistroVariant> getDistroVariants(boolean draft, Long stackId) throws Exception;
-	
-	Distro getDistro(boolean draft, Long cspecId, Long distroId) throws Exception;
-	
-	Properties getDistroP2Properties(boolean draft, Long cspecId, Long distroId) throws Exception;
-	
-	IOPML getOPML(boolean draft, Long cspecId) throws Exception;
+	Properties getDistroP2Properties(boolean draft, Long cspecId, IProgressMonitor monitor) throws Exception;
 }

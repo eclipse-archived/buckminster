@@ -8,51 +8,10 @@
 
 package org.eclipse.buckminster.jnlp.p2.wizard.install;
 
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ARTIFACT_UNKNOWN_TEXT;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_AUTHENTICATOR_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MATERIALIZATION_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MISSING_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_NO_AUTHENTICATOR_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_HELP_TITLE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_HELP_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_WINDOW_TITLE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.LOCALPROP_ENABLE_TP_WIZARD;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.MATERIALIZATOR_PROPERTIES;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.MATERIALIZERS;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.META_AREA;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ARTIFACT_DESCRIPTION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ARTIFACT_DOCUMENTATION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ARTIFACT_NAME;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ARTIFACT_VERSION;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_BASE_PATH_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_ID;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_NAME;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_TYPE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_CSPEC_VERSION_STRING;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_DRAFT;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_33_UPDATE_SITE_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ECLIPSE_DISTRO_TOOLS_34_UPDATE_SITE_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_ERROR_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_FOLDER_PATH;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_HELP_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_HOME_PAGE_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_LEARN_MORE_CLOUDFEEDS_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_LEARN_MORE_CLOUDREADER_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_LEARN_MORE_URL;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_LOGIN_KEY;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_LOGIN_REQUIRED;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_PROFILE_TEXT;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_SERVICE_PROVIDER;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_WINDOW_ICON;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_WINDOW_TITLE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.PROP_WIZARD_ICON;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.VALUE_FALSE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.VALUE_TRUE;
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.WINDOW_TITLE_UNKNOWN;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -73,8 +32,10 @@ import java.util.Properties;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.jnlp.componentinfo.IComponentInfoProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
+import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.TransferUtils;
 import org.eclipse.buckminster.jnlp.p2.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.p2.JNLPException;
 import org.eclipse.buckminster.jnlp.p2.MaterializationConstants;
@@ -86,6 +47,7 @@ import org.eclipse.buckminster.jnlp.p2.installer.InstallDescriptionParser;
 import org.eclipse.buckminster.jnlp.p2.installer.P2PropertyKeys;
 import org.eclipse.buckminster.jnlp.p2.progress.MaterializationProgressProvider;
 import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizard;
+import org.eclipse.buckminster.jnlp.p2.ui.general.wizard.AdvancedWizardDialog;
 import org.eclipse.buckminster.jnlp.p2.wizard.ILoginHandler;
 import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.opml.model.OPML;
@@ -772,24 +734,35 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 		return m_distroProvider.checkFolderReadAccess(m_folderPath);
 	}
 
-	void retrieveStackInfo()
+	void retrieveStackInfo() throws InterruptedException
 	{
 		if(m_distroP2Properties == null)
 		{
 			try
 			{
-				getContainer().run(true, false, new IRunnableWithProgress()
+				((AdvancedWizardDialog)getContainer()).disableNavigation();
+
+				getContainer().run(true, true, new IRunnableWithProgress()
 				{
 
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
 					{
-						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-						monitor.subTask("Retrieving distro specification");
-
 						try
+						{	
+							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, monitor);
+							m_opml = null;
+							
+							String opmlString = m_distroP2Properties.getProperty(PROP_OPML);
+							
+							if(opmlString != null)
+							{
+								IParser<OPML> opmlParser = CorePlugin.getDefault().getParserFactory().getOPMLParser(true);
+								m_opml = opmlParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(opmlString.getBytes("UTF-8"))));
+							}							
+						}
+						catch(InterruptedException e)
 						{
-							m_distroP2Properties = m_distroProvider.getDistroP2Properties(m_draft, m_cspecId, null);
-							m_opml = m_distroProvider.getOPML(m_draft, m_cspecId);
+							throw e;
 						}
 						catch(Exception e)
 						{
@@ -798,10 +771,12 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 						m_installLocation = Path.fromOSString(MaterializationUtils
 								.getDefaultDestination(m_artifactName));
-
-						monitor.done();
 					}
 				});
+			}
+			catch(InterruptedException e)
+			{
+				throw e;
 			}
 			catch(Exception e)
 			{
@@ -815,6 +790,10 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 
 				throw new JNLPException("Cannot read distro specification", ERROR_CODE_REMOTE_IO_EXCEPTION,
 						originalException);
+			}
+			finally
+			{
+				getContainer().updateButtons();
 			}
 		}
 

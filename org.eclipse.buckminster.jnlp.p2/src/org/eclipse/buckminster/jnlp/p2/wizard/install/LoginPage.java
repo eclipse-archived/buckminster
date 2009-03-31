@@ -192,7 +192,14 @@ public class LoginPage extends InstallWizardPage
 			else
 			{
 				if(!getInstallWizard().isMaterializerInitialized())
-					getInstallWizard().retrieveStackInfo();
+					try
+					{
+						getInstallWizard().retrieveStackInfo();
+					}
+					catch(InterruptedException e)
+					{
+						return false;
+					}
 				
 				m_nextPage = getInstallWizard().getDownloadPage();
 			}

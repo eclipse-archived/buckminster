@@ -8,38 +8,31 @@
 
 package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
-import java.util.Map;
-
 /**
- * @author Karel Brezina
- *
+ * Holds progress information
+ * 
+ * @author Filip Hrbek
  */
-public interface IDistroService
+public interface IProgressInfo
 {
 	/**
-	 * Cancel resolution
-	 */
-	void cancel();
-
-	/**
-	 * Fires distro resolution
-
-	 * @param draft	is draft stack
-	 * @param cspecId CSpec ID
-	 */
-	void fireDistroResolution(boolean draft, Long cspecId);
-
-	/**
-	 * Get progress information
+	 * Returns description of the task currently being processed
 	 * 
-	 * @return
+	 * @return current task description
 	 */
-	IProgressInfo getProgressInfo();
+	String getMessage();
 
 	/**
-	 * Gets resolution results
+	 * Returns progress in ticks
 	 * 
-	 * @return P2 properties + OPML
+	 * @return progress in ticks
 	 */
-	Map<String, String> getDistroP2Properties();
+	int getWorked();
+
+	/**
+	 * Returns true if the process being monitored has already finished
+	 * 
+	 * @return true or false
+	 */
+	boolean isDone();
 }

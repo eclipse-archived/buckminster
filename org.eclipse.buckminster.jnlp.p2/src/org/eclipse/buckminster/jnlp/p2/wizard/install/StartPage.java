@@ -163,22 +163,29 @@ public class StartPage extends InstallWizardPage
 			((AdvancedWizardDialog)getContainer()).getButtonFromButtonArea(IDialogConstants.NEXT_ID).setFocus();
 	}
 	
-    @Override
+	@Override
 	public boolean performPageCommit()
 	{
-		if(getInstallWizard().isLoginRequired() && (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
+		if(getInstallWizard().isLoginRequired()
+				&& (!getInstallWizard().isLoggedIn() || getInstallWizard().isLoginPageRequested()))
 			m_nextPage = getInstallWizard().getLoginPage();
+		else if(getInstallWizard().isFolderRestrictionPageNeeded())
+			m_nextPage = getInstallWizard().getFolderRestrictionPage();
 		else
-			if(getInstallWizard().isFolderRestrictionPageNeeded())
-				m_nextPage = getInstallWizard().getFolderRestrictionPage();
-			else
-			{
-				if(!getInstallWizard().isMaterializerInitialized())
+		{
+			if(!getInstallWizard().isMaterializerInitialized())
+				try
+				{
 					getInstallWizard().retrieveStackInfo();
-				
-					m_nextPage = getInstallWizard().getDownloadPage();
-			}
-		
+				}
+				catch(InterruptedException e)
+				{
+					return false;
+				}
+
+			m_nextPage = getInstallWizard().getDownloadPage();
+		}
+
 		return true;
 	}
     

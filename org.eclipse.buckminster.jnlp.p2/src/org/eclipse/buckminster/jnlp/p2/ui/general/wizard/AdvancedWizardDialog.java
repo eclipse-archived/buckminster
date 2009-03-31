@@ -128,6 +128,13 @@ public class AdvancedWizardDialog extends WizardDialog
     	}
     }
     
+    public void disableNavigation()
+    {
+		getButton(IDialogConstants.BACK_ID).setEnabled(false);
+		getButton(IDialogConstants.NEXT_ID).setEnabled(false);
+		getButton(IDialogConstants.FINISH_ID).setEnabled(false);
+    }
+    
 	@Override
 	public boolean isHelpAvailable()
 	{

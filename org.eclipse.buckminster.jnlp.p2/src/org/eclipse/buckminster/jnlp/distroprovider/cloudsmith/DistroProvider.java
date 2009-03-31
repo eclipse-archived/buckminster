@@ -8,10 +8,7 @@
 
 package org.eclipse.buckminster.jnlp.distroprovider.cloudsmith;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -19,19 +16,12 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.helpers.CryptoUtils;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.jnlp.distroprovider.Distro;
-import org.eclipse.buckminster.jnlp.distroprovider.DistroVariant;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.IAccountService;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.LoginResponse;
-import org.eclipse.buckminster.opml.IOPML;
-import org.eclipse.buckminster.opml.model.OPML;
+import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.jabsorb.client.Client;
 import org.jabsorb.client.ErrorResponse;
 import org.jabsorb.client.HTTPSession;
@@ -434,55 +424,7 @@ public class DistroProvider implements IRemoteDistroProvider
 			login(m_lastLoginUserName, m_lastLoginPassword);
 	}
 
-	public List<DistroVariant> getDistroVariants(final boolean draft, final Long stackId) throws Exception
-	{
-		MethodWrapper<List<DistroVariant>> method = new MethodWrapper<List<DistroVariant>>()
-		{
-
-			@Override
-			public List<DistroVariant> process() throws Exception
-			{
-				Map<String, String> properties = new HashMap<String, String>();
-				
-				properties.put(DistroVariant.TARGET_ARCH, TargetPlatform.getInstance().getArch());
-				properties.put(DistroVariant.TARGET_OS, TargetPlatform.getInstance().getOS());
-				properties.put(DistroVariant.TARGET_WS, TargetPlatform.getInstance().getWS());
-				properties.put(DistroVariant.TARGET_NL, TargetPlatform.getInstance().getNL());
-
-				return m_remoteDistroService.getDistroVariants(draft, stackId, properties);
-			}
-		};
-
-		return method.run();
-	}
-
-	public Distro getDistro(final boolean draft, final Long cspecId, final Long distroId) throws Exception
-	{
-		MethodWrapper<Distro> method = new MethodWrapper<Distro>()
-		{
-
-			@Override
-			public Distro process() throws Exception
-			{
-				DistroContent distroContent = m_remoteDistroService.getDistro(draft, cspecId, distroId);
-				
-				if(distroContent == null || distroContent.getBomContent() == null || distroContent.getMspecContent() == null)
-					return null;
-				
-				IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
-				BillOfMaterials bom = bomParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getBomContent())));
-				
-				IParser<MaterializationSpec> mspecParser = CorePlugin.getDefault().getParserFactory().getMaterializationSpecParser(true);
-				MaterializationSpec mspec = mspecParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(distroContent.getMspecContent())));
-				
-				return new Distro(bom, mspec);
-			}
-		};
-
-		return method.run();
-	}
-
-	public Properties getDistroP2Properties(final boolean draft, final Long cspecId, final Long distroId) throws Exception
+	public Properties getDistroP2Properties(final boolean draft, final Long cspecId, final IProgressMonitor monitor) throws Exception
 	{
 		MethodWrapper<Properties> method = new MethodWrapper<Properties>()
 		{
@@ -491,29 +433,71 @@ public class DistroProvider implements IRemoteDistroProvider
 			public Properties process() throws Exception
 			{
 				Properties properties = new Properties();
-				properties.putAll(m_remoteDistroService.getDistroP2Properties(draft, cspecId, distroId));
+
+				try
+				{
+					monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+					monitor.subTask("Starting distro resolution");
+
+					int lastWorked = 0;
+
+					try
+					{
+						m_remoteDistroService.fireDistroResolution(draft, cspecId);
+					}
+					catch(Exception e)
+					{
+						throw BuckminsterException.wrap(e);
+					}
+
+					IProgressInfo progressInfo = null;
+
+					while(progressInfo == null || !progressInfo.isDone())
+					{
+						try
+						{
+							Thread.sleep(500);
+						}
+						catch(InterruptedException i)
+						{
+						}
+
+						progressInfo = m_remoteDistroService.getProgressInfo();
+						String message = progressInfo.getMessage();
+						int worked = progressInfo.getWorked() * 100;
+
+						monitor.subTask(message);
+						monitor.worked(worked - lastWorked);
+
+						lastWorked = worked;
+
+						if(monitor.isCanceled())
+						{
+							m_remoteDistroService.cancel();
+							throw new InterruptedException();
+						}
+					}
+
+					try
+					{
+						Map<String, String> remoteProperties = m_remoteDistroService.getDistroP2Properties();
+						
+						if(remoteProperties != null)
+							properties.putAll(remoteProperties);
+					}
+					catch(Exception e)
+					{
+						throw BuckminsterException.wrap(e);
+					}
+				}
+				finally
+				{
+					monitor.done();
+				}
+
+				m_remoteDistroService.fireDistroResolution(draft, cspecId);
 				
 				return properties;
-			}
-		};
-
-		return method.run();
-	}
-
-	public IOPML getOPML(final boolean draft, final Long cspecId) throws Exception
-	{
-		MethodWrapper<IOPML> method = new MethodWrapper<IOPML>()
-		{
-			@Override
-			public IOPML process() throws Exception
-			{
-				byte[] opmlCompressedBytes = m_remoteDistroService.getOPML(draft, cspecId);
-				
-				if(opmlCompressedBytes == null)
-					return null;
-				
-				IParser<OPML> opmlParser = CorePlugin.getDefault().getParserFactory().getOPMLParser(true);
-				return opmlParser.parse("byte image", new ByteArrayInputStream(TransferUtils.decompress(opmlCompressedBytes)));
 			}
 		};
 
