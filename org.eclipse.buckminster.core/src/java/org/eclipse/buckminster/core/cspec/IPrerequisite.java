@@ -10,6 +10,8 @@ public interface IPrerequisite extends IAttributeFilter
 
 	String getComponentName();
 
+	String getComponentType();
+
 	Filter getFilter();
 
 	String getName();

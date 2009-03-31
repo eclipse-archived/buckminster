@@ -12,7 +12,7 @@ usage: import
 
  -B <filename>
 --bomfile <filename>
-  Store the resolting BOM in the file denoted by <filename>
+  Store the resulting BOM in the file denoted by <filename>
 
  -C
 --continueonerror

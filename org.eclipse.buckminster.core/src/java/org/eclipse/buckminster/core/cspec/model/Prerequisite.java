@@ -29,6 +29,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	public static final String ATTR_COMPONENT = "component"; //$NON-NLS-1$
 
+	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
+
 	public static final String ATTR_CONTRIBUTOR = "contributor"; //$NON-NLS-1$
 
 	public static final String ATTR_EXCLUDE_PATTERN = "excludePattern"; //$NON-NLS-1$
@@ -80,6 +82,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	private final String m_componentName;
 
+	private final String m_componentType;
+
 	private final boolean m_contributor;
 
 	private final Pattern m_excludePattern;
@@ -97,6 +101,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		m_contributor = bld.isContributor();
 		m_optional = bld.isOptional();
 		m_componentName = bld.getComponentName();
+		m_componentType = bld.getComponentType();
 		m_excludePattern = bld.getExcludePattern();
 		m_includePattern = bld.getIncludePattern();
 		m_filter = bld.getFilter();
@@ -115,6 +120,11 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 	public final String getComponentName()
 	{
 		return m_componentName;
+	}
+
+	public final String getComponentType()
+	{
+		return m_componentType;
 	}
 
 	public String getDefaultTag()
@@ -140,7 +150,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException
 	{
 		return (m_filter == null || m_filter.match(ctx.getProperties()))
-				? ownerCSpec.getReferencedAttribute(m_componentName, getName(), ctx)
+				? ownerCSpec.getReferencedAttribute(m_componentName, m_componentType, getName(), ctx)
 				: null;
 	}
 
@@ -204,6 +214,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true"); //$NON-NLS-1$
 		if(m_componentName != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
+		if(m_componentType != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
 		if(m_filter != null)
 			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 	}

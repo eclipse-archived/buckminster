@@ -441,6 +441,14 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="componentType" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The type of a dependency when this prerequisite
+					extends beyond the cspec where it is declared.
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="alias" type="string" use="optional">
 			<annotation>
 				<documentation>

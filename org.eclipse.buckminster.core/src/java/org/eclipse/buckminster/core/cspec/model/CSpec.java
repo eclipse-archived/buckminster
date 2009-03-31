@@ -35,7 +35,6 @@ import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.IGroup;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
@@ -92,6 +91,9 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 	public static final String SELF_ARTIFACT = "buckminster.component.self"; //$NON-NLS-1$
 
 	public static final String TAG = "cspec"; //$NON-NLS-1$
+
+	// This string should be something that is very unlikely to appear in a component name
+	public static final String COMPONENT_NAME_TYPE_SEPARATOR = "/!@@!/"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 4;
 
@@ -169,6 +171,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 
 	public CSpec(CSpecBuilder cspecBld)
 	{
+		cspecBld.finalWrapUp();
 		m_componentIdentifier = cspecBld.getComponentIdentifier();
 		m_projectInfo = cspecBld.getProjectInfo();
 		m_documentation = cspecBld.getDocumentation();
@@ -236,7 +239,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			m_attributes = Collections.unmodifiableMap(map);
 		}
 
-		Map<String, ? extends IComponentRequest> dependencies = cspecBld.getDependencies();
+		Map<String, ComponentRequestBuilder> dependencies = cspecBld.getDependencyMap();
 		top = (dependencies == null)
 				? 0
 				: dependencies.size();
@@ -245,10 +248,9 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		else
 		{
 			Map<String, ComponentRequest> map;
-			Collection<? extends IComponentRequest> values = dependencies.values();
 			if(top == 1)
 			{
-				ComponentRequestBuilder bld = (ComponentRequestBuilder)values.iterator().next();
+				ComponentRequestBuilder bld = dependencies.values().iterator().next();
 				map = Collections
 						.unmodifiableMap(Collections.singletonMap(bld.getName(), bld.createComponentRequest()));
 			}
@@ -258,8 +260,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 				// written in the exact same order at all times
 				//
 				map = new TreeMap<String, ComponentRequest>();
-				for(IComponentRequest bld : values)
-					map.put(bld.getName(), ((ComponentRequestBuilder)bld).createComponentRequest());
+				for(Map.Entry<String, ComponentRequestBuilder> entry : dependencies.entrySet())
+					map.put(entry.getKey(), entry.getValue().createComponentRequest());
 			}
 			m_dependencies = Collections.unmodifiableMap(map);
 		}
@@ -357,17 +359,26 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		return TAG;
 	}
 
-	public Map<String, ComponentRequest> getDependencies()
+	public Collection<ComponentRequest> getDependencies()
 	{
-		return m_dependencies;
+		return m_dependencies.values();
 	}
 
-	public ComponentRequest getDependency(String dependencyName) throws MissingDependencyException
+	public ComponentRequest getDependency(String dependencyName, String componentType)
+			throws MissingDependencyException
 	{
 		ComponentRequest dependency = m_dependencies.get(dependencyName);
-		if(dependency == null)
-			throw new MissingDependencyException(m_componentIdentifier.toString(), dependencyName);
-		return dependency;
+		if(dependency != null)
+			return dependency;
+
+		if(componentType != null)
+		{
+			dependency = m_dependencies.get(dependencyName + COMPONENT_NAME_TYPE_SEPARATOR + componentType);
+			if(dependency != null)
+				return dependency;
+		}
+
+		throw new MissingDependencyException(m_componentIdentifier.toString(), dependencyName);
 	}
 
 	public Documentation getDocumentation()
@@ -429,7 +440,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			// All dependencies must be included in the result. Even the one for
 			// which there is no requested attribute.
 			//
-			for(ComponentRequest dep : getDependencies().values())
+			for(ComponentRequest dep : getDependencies())
 				deps.put(dep, new HashSet<String>());
 		}
 
@@ -449,7 +460,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 					continue;
 				}
 
-				ComponentRequest dep = getDependency(component);
+				ComponentRequest dep = getDependency(component, null);
 				Set<String> attrs = deps.get(dep);
 				if(attrs == null)
 				{
@@ -466,15 +477,15 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		return qDeps;
 	}
 
-	public Attribute getReferencedAttribute(String componentName, String attributeName, IModelCache ctx)
-			throws CoreException
+	public Attribute getReferencedAttribute(String componentName, String componentType, String attributeName,
+			IModelCache ctx) throws CoreException
 	{
 		CSpec referencedCSpec;
 		if(componentName == null)
 			referencedCSpec = this;
 		else
 		{
-			ComponentRequest dep = getDependency(componentName);
+			ComponentRequest dep = getDependency(componentName, componentType);
 			if(!dep.isEnabled(ctx.getProperties()))
 				return null;
 
@@ -523,7 +534,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 	public boolean isPruneApplicable(RMContext context, Map<String, ? extends Object> properties,
 			boolean pruneForAttributes, Set<String> attrNames) throws CoreException
 	{
-		Collection<ComponentRequest> deps = getDependencies().values();
+		Collection<ComponentRequest> deps = getDependencies();
 		for(ComponentRequest dep : deps)
 		{
 			Filter filter = dep.getFilter();
@@ -591,7 +602,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		//
 		Collection<ComponentRequest> deps;
 		if(attrNames.isEmpty() && getGenerators().isEmpty())
-			deps = getDependencies().values();
+			deps = getDependencies();
 		else
 		{
 			Set<ComponentRequest> referencedDeps = new HashSet<ComponentRequest>();
@@ -611,7 +622,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 					addReferencedDependencies(referencedDeps, referencedAttrs, getRequiredAttribute(generator
 							.getAttribute()), null);
 				else
-					referencedDeps.add(getDependency(component));
+					referencedDeps.add(getDependency(component, null));
 			}
 			deps = referencedDeps;
 		}
@@ -658,7 +669,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 					//
 					continue;
 			}
-			else if(bld.getDependency(component) == null)
+			else if(bld.getDependency(component, null) == null)
 				//
 				// Dependency no longer exists
 				//
@@ -718,7 +729,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			if(component == null)
 				getRequiredAttribute(generator.getAttribute());
 			else
-				getDependency(component);
+				getDependency(component, null);
 		}
 	}
 
@@ -814,7 +825,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		{
 			if(prereq.isExternal())
 			{
-				ComponentRequest rq = getDependency(prereq.getComponentName());
+				ComponentRequest rq = getDependency(prereq.getComponentName(), prereq.getComponentType());
 				Set<String> attributes = deps.get(rq);
 				if(attributes == null)
 				{
@@ -854,7 +865,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			if(prereq.isExternal())
 			{
 				if(dependencies != null)
-					dependencies.add(getDependency(prereq.getComponentName()));
+					dependencies.add(getDependency(prereq.getComponentName(), prereq.getComponentType()));
 			}
 			else
 			{
@@ -883,7 +894,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		{
 			if(pq.isExternal())
 			{
-				if(bld.getDependency(pq.getComponentName()) == null)
+				if(bld.getDependency(pq.getComponentName(), pq.getComponentType()) == null)
 					return false;
 				continue;
 			}
@@ -955,7 +966,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			{
 				// Test that the dependency is present.
 				//
-				getDependency(prereq.getComponentName());
+				getDependency(prereq.getComponentName(), prereq.getComponentType());
 				continue;
 			}
 

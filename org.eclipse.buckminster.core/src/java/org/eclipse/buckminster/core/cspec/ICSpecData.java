@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.core.cspec;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -20,9 +21,9 @@ public interface ICSpecData extends IAdaptable
 
 	String getComponentTypeID();
 
-	Map<String, ? extends IComponentRequest> getDependencies();
+	Collection<? extends IComponentRequest> getDependencies();
 
-	IComponentRequest getDependency(String dependencyName) throws MissingDependencyException;
+	IComponentRequest getDependency(String dependencyName, String componentType) throws MissingDependencyException;
 
 	Documentation getDocumentation();
 

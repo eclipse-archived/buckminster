@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
+import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -294,6 +295,17 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return m_cspecBuilder.addDependency(dependency);
 	}
 
+	protected void addExternalPrerequisite(GroupBuilder group, String component, String type, String name,
+			boolean optional) throws CoreException
+	{
+		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
+		pqBld.setComponentName(component);
+		pqBld.setComponentType(type);
+		pqBld.setName(name);
+		pqBld.setOptional(optional);
+		group.addPrerequisite(pqBld);
+	}
+
 	protected void addProductBundles(IProductDescriptor productDescriptor) throws CoreException
 	{
 		if(productDescriptor.useFeatures())
@@ -327,8 +339,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				continue;
 
 			String component = dependency.getName();
-			fullClean.addExternalPrerequisite(component, ATTRIBUTE_FULL_CLEAN);
-			bundleJars.addExternalPrerequisite(component, ATTRIBUTE_BUNDLE_JARS);
+			fullClean.addExternalPrerequisite(component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN);
+			bundleJars.addExternalPrerequisite(component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
 		}
 	}
 
@@ -638,7 +650,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					// Ensure that a dependency exists to the executable feature.
 					//
 					if(addDependency(dep))
-						featureExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_EXPORTS);
+						featureExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_EXPORTS);
 				}
 			}
 			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);

@@ -456,6 +456,8 @@ public class Messages extends NLS
 
 	public static String You_must_provide_at_least_one_preference_assignment;
 
+	public static String You_must_provide_at_least_one_preference_to_unset;
+
 	public static String File_is_closed;
 
 	public static String Finished_working;

@@ -8,6 +8,8 @@
 package org.eclipse.buckminster.core.cspec.builder;
 
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,24 +184,47 @@ public class CSpecBuilder implements ICSpecData
 	public boolean addDependency(IComponentRequest dependency) throws CoreException
 	{
 		String name = dependency.getName();
-		ComponentRequestBuilder old = getDependency(name);
+		String depType = dependency.getComponentTypeID();
+		ComponentRequestBuilder bld;
+		if(dependency instanceof ComponentRequestBuilder)
+			bld = (ComponentRequestBuilder)dependency;
+		else
+		{
+			bld = createDependencyBuilder();
+			bld.initFrom(dependency);
+		}
+
+		ComponentRequestBuilder old = getDependency(name, depType);
 		if(old == null)
 		{
 			if(m_dependencies == null)
 				m_dependencies = new HashMap<String, ComponentRequestBuilder>();
 
-			ComponentRequestBuilder bld;
-			if(dependency instanceof ComponentRequestBuilder)
-				bld = (ComponentRequestBuilder)dependency;
-			else
-			{
-				bld = createDependencyBuilder();
-				bld.initFrom(dependency);
-			}
 			m_dependencies.put(name, bld);
 			return true;
 		}
 
+		String oldType = old.getComponentTypeID();
+		if(oldType != null && depType != null && !oldType.equals(depType))
+		{
+			// The types of the components differ. Remove the unqualified
+			// entry and add the new qualified ones
+			//
+			m_dependencies.remove(name);
+			StringBuilder nameBld = new StringBuilder(name);
+			nameBld.append(CSpec.COMPONENT_NAME_TYPE_SEPARATOR);
+			int len = nameBld.length();
+			nameBld.append(oldType);
+			m_dependencies.put(nameBld.toString(), old);
+			nameBld.setLength(len);
+			nameBld.append(depType);
+			m_dependencies.put(nameBld.toString(), bld);
+			return true;
+		}
+
+		// We cannot determine a difference in component type so the
+		// ranges must be mergeable
+		//
 		VersionRange vd = old.getVersionRange();
 		VersionRange nvd = dependency.getVersionRange();
 		if(vd == null)
@@ -239,6 +264,8 @@ public class CSpecBuilder implements ICSpecData
 		if(vd == old.getVersionRange() && fl == old.getFilter())
 			return false;
 
+		if(oldType == null && depType != null)
+			old.setComponentTypeID(depType);
 		old.setVersionRange(vd);
 		old.setFilter(fl);
 		return false;
@@ -325,6 +352,20 @@ public class CSpecBuilder implements ICSpecData
 		return new GroupBuilder(this);
 	}
 
+	public void finalWrapUp()
+	{
+		if(m_attributes != null && m_dependencies != null)
+		{
+			for(AttributeBuilder attr : m_attributes.values())
+			{
+				if(attr instanceof GroupBuilder)
+					((GroupBuilder)attr).finalWrapUp(m_dependencies);
+				else if(attr instanceof ActionBuilder)
+					((ActionBuilder)attr).getPrerequisitesBuilder().finalWrapUp(m_dependencies);
+			}
+		}
+	}
+
 	public ActionBuilder getActionBuilder(String name)
 	{
 		AttributeBuilder attr = m_attributes.get(name);
@@ -375,16 +416,29 @@ public class CSpecBuilder implements ICSpecData
 		return m_componentType;
 	}
 
-	public Map<String, ComponentRequestBuilder> getDependencies()
-	{
-		return m_dependencies;
-	}
-
-	public ComponentRequestBuilder getDependency(String dependencyName)
+	public Collection<ComponentRequestBuilder> getDependencies()
 	{
 		return m_dependencies == null
-				? null
-				: m_dependencies.get(dependencyName);
+				? Collections.<ComponentRequestBuilder> emptyList()
+				: m_dependencies.values();
+	}
+
+	public ComponentRequestBuilder getDependency(String dependencyName, String componentType)
+			throws MissingDependencyException
+	{
+		ComponentRequestBuilder dependency = null;
+		if(m_dependencies != null)
+		{
+			dependency = m_dependencies.get(dependencyName);
+			if(dependency == null && componentType != null)
+				dependency = m_dependencies.get(dependencyName + CSpec.COMPONENT_NAME_TYPE_SEPARATOR + componentType);
+		}
+		return dependency;
+	}
+
+	public Map<String, ComponentRequestBuilder> getDependencyMap()
+	{
+		return m_dependencies;
 	}
 
 	public Documentation getDocumentation()
@@ -451,12 +505,13 @@ public class CSpecBuilder implements ICSpecData
 		return attr;
 	}
 
-	public ComponentRequestBuilder getRequiredDependency(String name) throws MissingDependencyException
+	public ComponentRequestBuilder getRequiredDependency(String dependencyName, String componentType)
+			throws MissingDependencyException
 	{
-		ComponentRequestBuilder dep = getDependency(name);
-		if(dep == null)
-			throw new MissingDependencyException(m_name, name);
-		return dep;
+		ComponentRequestBuilder dependency = getDependency(dependencyName, componentType);
+		if(dependency == null)
+			throw new MissingDependencyException(m_name, dependencyName);
+		return dependency;
 	}
 
 	public GroupBuilder getRequiredGroup(String name) throws MissingAttributeException
@@ -482,7 +537,7 @@ public class CSpecBuilder implements ICSpecData
 		return m_version;
 	}
 
-	public void initFrom(ICSpecData cspec)
+	public void initFrom(ICSpecData cspec) throws CoreException
 	{
 		m_name = cspec.getName();
 		m_componentType = cspec.getComponentTypeID();
@@ -502,16 +557,12 @@ public class CSpecBuilder implements ICSpecData
 		else
 			m_attributes = null;
 
-		Map<String, ? extends IComponentRequest> deps = cspec.getDependencies();
+		Collection<? extends IComponentRequest> deps = cspec.getDependencies();
 		if(deps.size() > 0)
 		{
 			m_dependencies = new HashMap<String, ComponentRequestBuilder>(deps.size());
-			for(IComponentRequest dep : deps.values())
-			{
-				ComponentRequestBuilder db = createDependencyBuilder();
-				db.initFrom(dep);
-				m_dependencies.put(dep.getName(), db);
-			}
+			for(IComponentRequest dep : deps)
+				addDependency(dep);
 		}
 		else
 			m_dependencies = null;

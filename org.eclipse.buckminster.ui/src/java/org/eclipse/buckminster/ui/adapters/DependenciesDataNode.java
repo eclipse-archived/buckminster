@@ -8,8 +8,7 @@
 
 package org.eclipse.buckminster.ui.adapters;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Collection;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
@@ -18,12 +17,12 @@ import org.eclipse.buckminster.ui.Messages;
 public class DependenciesDataNode extends BasicTreeParentDataNode
 {
 
-	public DependenciesDataNode(Map<String, ComponentRequest> dependencies)
+	public DependenciesDataNode(Collection<ComponentRequest> dependencies)
 	{
 		super(Messages.dependencies);
-		for(Entry<String, ComponentRequest> d : dependencies.entrySet())
+		for(ComponentRequest d : dependencies)
 		{
-			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getKey(), d.getValue(),
+			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getViewName(), d,
 					ComponentReference.Mode.OUT)));
 		}
 	}

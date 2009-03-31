@@ -75,11 +75,6 @@ public class Group extends TopLevelAttribute implements IGroup
 		return newPathGroups.toArray(new PathGroup[newPathGroups.size()]);
 	}
 
-	protected static String getPrereqKey(String componentName, String attributeName)
-	{
-		return componentName + ':' + attributeName;
-	}
-
 	private static void addPathGroup(HashMap<IPath, ArrayList<IPath>> bld, IPath newBase, IPath currentBase, IPath path)
 	{
 		IPath base;

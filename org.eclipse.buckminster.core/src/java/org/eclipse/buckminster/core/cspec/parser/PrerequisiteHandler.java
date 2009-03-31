@@ -26,8 +26,6 @@ public class PrerequisiteHandler extends CSpecElementHandler
 {
 	public static final String TAG = Prerequisite.TAG;
 
-	private String m_component;
-
 	public PrerequisiteHandler(AbstractHandler parent)
 	{
 		super(parent);
@@ -36,12 +34,10 @@ public class PrerequisiteHandler extends CSpecElementHandler
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
-		m_component = null;
 		super.handleAttributes(attrs);
 		PrerequisiteBuilder builder = (PrerequisiteBuilder)this.getBuilder();
-		if(m_component == null)
-			m_component = getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT);
-		builder.setComponentName(m_component);
+		builder.setComponentName(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT));
+		builder.setComponentType(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT_TYPE));
 		builder.setContributor(getOptionalBooleanValue(attrs, Prerequisite.ATTR_CONTRIBUTOR, true));
 		builder.setOptional(getOptionalBooleanValue(attrs, Prerequisite.ATTR_OPTIONAL, false));
 		builder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -784,7 +785,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		try
 		{
-			Map<String, ComponentRequestBuilder> dependeciesMap = m_cspec.getDependencies();
+			Map<String, ComponentRequestBuilder> dependeciesMap = m_cspec.getDependencyMap();
 
 			if(dependeciesMap != null)
 			{
@@ -1144,10 +1145,10 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			}
 
 			m_dependencyBuilders.clear();
-			Map<String, ComponentRequestBuilder> dependenciesMap = m_cspec.getDependencies();
-			if(dependenciesMap != null)
+			Collection<ComponentRequestBuilder> dependencies = m_cspec.getDependencies();
+			if(dependencies != null)
 			{
-				ComponentRequestBuilder[] builders = dependenciesMap.values().toArray(new ComponentRequestBuilder[0]);
+				ComponentRequestBuilder[] builders = dependencies.toArray(new ComponentRequestBuilder[0]);
 				Arrays.sort(builders, CSpecEditorUtils.getComponentComparator());
 				for(ComponentRequestBuilder dependency : builders)
 				{

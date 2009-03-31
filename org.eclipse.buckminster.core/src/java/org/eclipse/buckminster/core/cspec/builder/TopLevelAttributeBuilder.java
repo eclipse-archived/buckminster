@@ -25,9 +25,10 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		super(cspecBuilder);
 	}
 
-	public final void addExternalPrerequisite(String name, String attr) throws PrerequisiteAlreadyDefinedException
+	public final void addExternalPrerequisite(String name, String type, String attr)
+			throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(name, attr, null, null));
+		addPrerequisite(createPrerequisite(name, type, attr, null, null));
 	}
 
 	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException
@@ -37,18 +38,18 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 
 	public final void addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(null, attr, null, null));
+		addPrerequisite(createPrerequisite(null, null, attr, null, null));
 	}
 
 	public final void addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(null, attr, alias, null));
+		addPrerequisite(createPrerequisite(null, null, attr, alias, null));
 	}
 
 	public final void addLocalPrerequisite(String attr, String alias, Filter filter)
 			throws PrerequisiteAlreadyDefinedException
 	{
-		addPrerequisite(createPrerequisite(null, attr, alias, filter));
+		addPrerequisite(createPrerequisite(null, null, attr, alias, filter));
 	}
 
 	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException
@@ -99,10 +100,11 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		m_public = flag;
 	}
 
-	private PrerequisiteBuilder createPrerequisite(String component, String name, String alias, Filter filter)
+	private PrerequisiteBuilder createPrerequisite(String component, String type, String name, String alias, Filter filter)
 	{
 		PrerequisiteBuilder bld = createPrerequisiteBuilder();
 		bld.setComponentName(component);
+		bld.setComponentType(type);
 		bld.setName(name);
 		bld.setAlias(alias);
 		bld.setFilter(filter);

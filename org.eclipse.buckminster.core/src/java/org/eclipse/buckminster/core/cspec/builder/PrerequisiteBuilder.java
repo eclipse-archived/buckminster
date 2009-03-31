@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
@@ -23,6 +24,8 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	private final AttributeBuilder m_attributeBuilder;
 
 	private String m_component;
+
+	private String m_componentType;
 
 	private boolean m_contributor = true;
 
@@ -46,6 +49,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		super.clear();
 		m_alias = null;
 		m_component = null;
+		m_componentType = null;
 		m_contributor = true;
 		m_optional = false;
 		m_excludePattern = null;
@@ -78,6 +82,11 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return m_component;
 	}
 
+	public String getComponentType()
+	{
+		return m_componentType;
+	}
+
 	public Pattern getExcludePattern()
 	{
 		return m_excludePattern;
@@ -98,6 +107,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		super.initFrom(prerequisite.getName());
 		m_alias = prerequisite.getAlias();
 		m_component = prerequisite.getComponentName();
+		m_componentType = prerequisite.getComponentType();
 		m_optional = prerequisite.isOptional();
 		m_contributor = prerequisite.isContributor();
 		m_excludePattern = prerequisite.getExcludePattern();
@@ -135,6 +145,11 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		m_component = component;
 	}
 
+	public void setComponentType(String type)
+	{
+		m_componentType = type;
+	}
+
 	public void setContributor(boolean contributor)
 	{
 		m_contributor = contributor;
@@ -165,6 +180,22 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	{
 		if(m_component == null)
 			return getName();
-		return m_component + '#' + getName();
+
+		StringBuilder bld = new StringBuilder();
+		bld.append(m_component);
+		if(m_componentType != null)
+		{
+			bld.append(':');
+			bld.append(m_componentType);
+		}
+		bld.append('#');
+		bld.append(getName());
+		return bld.toString();
+	}
+
+	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies)
+	{
+		if(m_componentType != null && dependencies.containsKey(m_component))
+			m_componentType = null;
 	}
 }

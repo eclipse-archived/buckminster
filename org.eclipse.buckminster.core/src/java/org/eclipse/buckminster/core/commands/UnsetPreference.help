@@ -2,7 +2,7 @@ Unsets the value of a preference.
 
 usage: unsetpreference
        [{ -? | --help }]
-       <name>
+       <name> [ <name> ... ]
  -?
 --help
   Show this help text

@@ -603,12 +603,15 @@ public class CSpecFromSource extends CSpecGenerator
 
 			String component = dependency.getName();
 			boolean optional = pluginImport.isOptional();
-			addExternalPrerequisite(fullClean, component, ATTRIBUTE_FULL_CLEAN, optional);
-			addExternalPrerequisite(bundleJars, component, ATTRIBUTE_BUNDLE_JARS, optional);
-			addExternalPrerequisite(getAttributeBuildRequirements(), component, ATTRIBUTE_JAVA_BINARIES, optional);
+			addExternalPrerequisite(fullClean, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN, optional);
+			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS, optional);
+			addExternalPrerequisite(getAttributeBuildRequirements(), component, IComponentType.OSGI_BUNDLE,
+					ATTRIBUTE_JAVA_BINARIES, optional);
 			if(pluginImport.isReexported())
-				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, optional);
-			addExternalPrerequisite(productConfigExports, component, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, optional);
+				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES,
+						optional);
+			addExternalPrerequisite(productConfigExports, component, IComponentType.OSGI_BUNDLE,
+					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, optional);
 		}
 	}
 
@@ -629,16 +632,6 @@ public class CSpecFromSource extends CSpecGenerator
 	protected String getPropertyFileName()
 	{
 		return PLUGIN_PROPERTIES_FILE;
-	}
-
-	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
-			throws CoreException
-	{
-		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
-		pqBld.setComponentName(component);
-		pqBld.setName(name);
-		pqBld.setOptional(optional);
-		group.addPrerequisite(pqBld);
 	}
 
 	private IPath asProjectRelativeFolder(IPath classpathEntryPath, IPath[] projectRootReplacement)

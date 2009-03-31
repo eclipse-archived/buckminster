@@ -215,8 +215,8 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		try
 		{
 			IPerformManager performManager = CorePlugin.getPerformManager();
-			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), generatorNode
-					.getAttribute(), new ModelCache());
+			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), null,
+					generatorNode.getAttribute(), new ModelCache());
 			if(generatorAttribute != null)
 			{
 				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);

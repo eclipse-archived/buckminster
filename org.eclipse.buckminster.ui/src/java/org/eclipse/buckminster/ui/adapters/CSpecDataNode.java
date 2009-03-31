@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.ui.adapters;
 
-import java.util.Map;
+import java.util.Collection;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -20,7 +20,7 @@ public class CSpecDataNode extends BasicTreeParentDataNode
 	public CSpecDataNode(CSpec data)
 	{
 		super(data);
-		Map<String, ComponentRequest> dependencies = data.getDependencies();
+		Collection<ComponentRequest> dependencies = data.getDependencies();
 		if(dependencies != null && dependencies.size() > 0)
 			addChild(new DependenciesDataNode(dependencies));
 	}

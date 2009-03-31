@@ -339,11 +339,11 @@ public class MavenComponentType extends AbstractComponentType
 		try
 		{
 			cspec.addDependency(depBld);
-			archives.addExternalPrerequisite(componentName, WellKnownExports.JAVA_BINARIES);
+			archives.addExternalPrerequisite(componentName, ID, WellKnownExports.JAVA_BINARIES);
 		}
 		catch(DependencyAlreadyDefinedException e)
 		{
-			ComponentRequestBuilder oldDep = cspec.getDependency(depBld.getName());
+			ComponentRequestBuilder oldDep = cspec.getRequiredDependency(depBld.getName(), depBld.getComponentTypeID());
 			if(!Trivial.equalsAllowNull(vd, oldDep.getVersionRange()))
 				MavenPlugin.getLogger().warning(e.getMessage());
 		}

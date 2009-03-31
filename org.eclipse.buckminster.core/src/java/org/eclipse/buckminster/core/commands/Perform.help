@@ -23,7 +23,7 @@ usage: perform
 --maxwarnings
   Give the number of warnings acceptable. If the number of warnings are higher,
   treat as error and exit with 1.
-  Default is infite warnings.
+  Default is infinite warnings.
  -F
 --forced
   Force all actions regardless of timestamps

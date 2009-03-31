@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.model;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,15 +80,16 @@ public class CSpecExtension
 	{
 		for(String removedDep : m_removedDependencies)
 		{
-			cspecBuilder.getRequiredDependency(removedDep);
+			cspecBuilder.getRequiredDependency(removedDep, null);
 			cspecBuilder.removeDependency(removedDep);
 		}
 
 		for(AlterDependency alterDep : m_alteredDependencies.values())
-			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName()));
+			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName(), alterDep
+					.getComponentTypeID()));
 
-		Map<String, ? extends IComponentRequest> addedDeps = m_base.getDependencies();
-		for(IComponentRequest addedDep : addedDeps.values())
+		Collection<? extends IComponentRequest> addedDeps = m_base.getDependencies();
+		for(IComponentRequest addedDep : addedDeps)
 			cspecBuilder.addDependency(addedDep);
 
 		Map<String, ? extends IGenerator> addedGenerators = m_base.getGenerators();

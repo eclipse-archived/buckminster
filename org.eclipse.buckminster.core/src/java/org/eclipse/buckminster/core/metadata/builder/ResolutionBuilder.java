@@ -24,6 +24,7 @@ import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.IFileInfo;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Thomas Hallgren
@@ -225,7 +226,7 @@ public class ResolutionBuilder implements IResolution
 		return new VersionMatch(m_cspec.getVersion(), m_branchOrTag, m_revision, m_timestamp, m_artifactInfo);
 	}
 
-	public void initFrom(IResolution resolution)
+	public void initFrom(IResolution resolution) throws CoreException
 	{
 		clear();
 		m_attributes.addAll(resolution.getAttributes());

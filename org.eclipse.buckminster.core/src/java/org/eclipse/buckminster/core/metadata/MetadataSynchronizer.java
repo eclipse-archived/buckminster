@@ -141,8 +141,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 							if(s_default != null && project.isAccessible())
 								CorePlugin.getLogger().error(
 										e,
-										NLS.bind(Messages.Project_refresh_on_0_failed_1, project
-												.getName(), e.getMessage()));
+										NLS.bind(Messages.Project_refresh_on_0_failed_1, project.getName(), e
+												.getMessage()));
 						}
 					}
 				}
@@ -168,6 +168,63 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(cidStr != null)
 				resource.setPersistentProperty(WorkspaceInfo.PPKEY_COMPONENT_ID, null);
 			return true;
+		}
+	}
+
+	static class WorkspaceCatchUpJob extends Job
+	{
+		public WorkspaceCatchUpJob()
+		{
+			super(Messages.Buckminster_workspace_catch_up);
+
+			// We need very high prio on this since we wait
+			// for it to complete during plug-in activation
+			//
+			setPriority(Job.INTERACTIVE);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor)
+		{
+			monitor.beginTask(Messages.Refreshing_project_meta_data, 1000);
+			try
+			{
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				wsRoot.accept(new ResetVisitor());
+				MonitorUtils.worked(monitor, 50);
+
+				IProject[] projects = wsRoot.getProjects();
+				MonitorUtils.worked(monitor, 50);
+
+				// Re-resolve all projects
+				//
+				if(projects.length > 0)
+				{
+					int ticksPerRefresh = 900 / projects.length;
+					for(IProject project : projects)
+					{
+						try
+						{
+							refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
+						}
+						catch(Throwable e)
+						{
+							CorePlugin.getLogger().warning(e,
+									NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
+						}
+					}
+				}
+			}
+			catch(Throwable e)
+			{
+				CorePlugin.getLogger()
+						.warning(e, NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
+			}
+			finally
+			{
+				monitor.done();
+			}
+			return Status.OK_STATUS;
 		}
 	}
 
@@ -233,65 +290,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				}
 			}
 			return true;
-		}
-	}
-
-	static class WorkspaceCatchUpJob extends Job
-	{
-		public WorkspaceCatchUpJob()
-		{
-			super(Messages.Buckminster_workspace_catch_up);
-
-			// We need very high prio on this since we wait
-			// for it to complete during plug-in activation
-			//
-			setPriority(Job.INTERACTIVE);
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor)
-		{
-			monitor.beginTask(Messages.Refreshing_project_meta_data, 1000);
-			try
-			{
-				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-				wsRoot.accept(new ResetVisitor());
-				MonitorUtils.worked(monitor, 50);
-
-				IProject[] projects = wsRoot.getProjects();
-				MonitorUtils.worked(monitor, 50);
-
-				// Re-resolve all projects
-				//
-				if(projects.length > 0)
-				{
-					int ticksPerRefresh = 900 / projects.length;
-					for(IProject project : projects)
-					{
-						try
-						{
-							refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
-						}
-						catch(Throwable e)
-						{
-							CorePlugin.getLogger().warning(
-									e,
-									NLS.bind(Messages.Problem_during_meta_data_refresh_0, e
-											.getMessage()));
-						}
-					}
-				}
-			}
-			catch(Throwable e)
-			{
-				CorePlugin.getLogger().warning(e,
-						NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
-			}
-			finally
-			{
-				monitor.done();
-			}
-			return Status.OK_STATUS;
 		}
 	}
 
@@ -432,7 +430,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	private static void updateProjectReferences(IProject project, ICSpecData cspec, IProgressMonitor monitor)
 			throws CoreException
 	{
-		Collection<? extends IComponentRequest> crefs = cspec.getDependencies().values();
+		Collection<? extends IComponentRequest> crefs = cspec.getDependencies();
 		if(crefs.size() == 0)
 		{
 			// No use continuing. Project doesn't have any references.
@@ -466,8 +464,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				IProject refdProj = (IProject)resource;
 				if(!refdProj.isOpen())
 				{
-					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1,
-							project.getName(), cref.getName()));
+					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1, project.getName(), cref
+							.getName()));
 				}
 				else if(!oldSet.contains(refdProj.getName()))
 				{
@@ -493,8 +491,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			if(logger.isDebugEnabled())
 			{
 				StringBuilder bld = new StringBuilder();
-				bld.append(NLS.bind(Messages.Project_0_now_has_dynamic_dependencies_to, project
-						.getName()));
+				bld.append(NLS.bind(Messages.Project_0_now_has_dynamic_dependencies_to, project.getName()));
 				for(IProject ref : refs)
 				{
 					bld.append(' ');
@@ -515,57 +512,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 	private final Set<IProject> m_projectsNeedingUpdate = new HashSet<IProject>();
 
 	private final Set<IPath> m_removedEntries = new HashSet<IPath>();
-
-	synchronized IProject getNextProjectNeedingUpdate()
-	{
-		if(m_projectsNeedingUpdate.isEmpty())
-			return null;
-		IProject entry = m_projectsNeedingUpdate.iterator().next();
-		m_projectsNeedingUpdate.remove(entry);
-		return entry;
-	}
-
-	synchronized IPath getNextRemovedEntry()
-	{
-		if(m_removedEntries.isEmpty())
-			return null;
-		IPath entry = m_removedEntries.iterator().next();
-		m_removedEntries.remove(entry);
-		return entry;
-	}
-
-	private boolean isCSpecSource(IResource resource, IPath path)
-	{
-		String pathStr = path.toPortableString();
-		for(Pattern pattern : m_cspecSources.values())
-		{
-			Matcher m = pattern.matcher(pathStr);
-			if(m.matches())
-				return true;
-		}
-		IProject project = resource.getProject();
-		if(project == null)
-			return false;
-
-		ProjectScope scope = new ProjectScope(project);
-		IEclipsePreferences prefs = scope.getNode(CorePlugin.getID());
-
-		String tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEC_FILE,
-				CorePlugin.CSPEC_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-
-		tmp = AbstractResolutionBuilder
-				.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-
-		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-
-		return false;
-	}
 
 	public void registerCSpecSource(String path)
 	{
@@ -679,5 +625,56 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				m_currentRefreshJob.schedule();
 			}
 		}
+	}
+
+	synchronized IProject getNextProjectNeedingUpdate()
+	{
+		if(m_projectsNeedingUpdate.isEmpty())
+			return null;
+		IProject entry = m_projectsNeedingUpdate.iterator().next();
+		m_projectsNeedingUpdate.remove(entry);
+		return entry;
+	}
+
+	synchronized IPath getNextRemovedEntry()
+	{
+		if(m_removedEntries.isEmpty())
+			return null;
+		IPath entry = m_removedEntries.iterator().next();
+		m_removedEntries.remove(entry);
+		return entry;
+	}
+
+	private boolean isCSpecSource(IResource resource, IPath path)
+	{
+		String pathStr = path.toPortableString();
+		for(Pattern pattern : m_cspecSources.values())
+		{
+			Matcher m = pattern.matcher(pathStr);
+			if(m.matches())
+				return true;
+		}
+		IProject project = resource.getProject();
+		if(project == null)
+			return false;
+
+		ProjectScope scope = new ProjectScope(project);
+		IEclipsePreferences prefs = scope.getNode(CorePlugin.getID());
+
+		String tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEC_FILE,
+				CorePlugin.CSPEC_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		tmp = AbstractResolutionBuilder
+				.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE);
+		if(path.equals(Path.fromPortableString(tmp)))
+			return true;
+
+		return false;
 	}
 }

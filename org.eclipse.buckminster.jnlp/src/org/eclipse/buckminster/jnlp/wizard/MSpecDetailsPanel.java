@@ -235,9 +235,9 @@ public class MSpecDetailsPanel implements IUnresolvedNodeHandler
 				smartList.add(Messages.requested_name_with_colon + m_request.getName());
 				smartList.add(Messages.requested_metadata_extractor_with_colon
 						+ MaterializationUtils.getHumanReadableComponentType(m_request.getComponentTypeID()));
-				smartList.add(Messages.requested_version_with_colon + (m_request.getVersionDesignator() == null
+				smartList.add(Messages.requested_version_with_colon + (m_request.getVersionRange() == null
 						? Messages.any
-						: m_request.getVersionDesignator()));
+						: m_request.getVersionRange()));
 			}
 
 			return smartList.toString("\n"); //$NON-NLS-1$

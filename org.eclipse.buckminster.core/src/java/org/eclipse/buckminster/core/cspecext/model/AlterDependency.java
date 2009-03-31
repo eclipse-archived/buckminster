@@ -28,6 +28,11 @@ public class AlterDependency
 		dep.setVersionRange(CSpecExtension.overrideCheckNull(m_base.getVersionRange(), dep.getVersionRange()));
 	}
 
+	public String getComponentTypeID()
+	{
+		return m_base.getComponentTypeID();
+	}
+
 	public String getName()
 	{
 		return m_base.getName();

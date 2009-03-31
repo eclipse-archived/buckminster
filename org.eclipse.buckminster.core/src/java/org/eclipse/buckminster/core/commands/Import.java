@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
@@ -181,7 +182,19 @@ public class Import extends WorkspaceInitCommand
 			BillOfMaterials bom;
 			if(cquery != null)
 			{
-				IResolver resolver = new MainResolver(new ResolutionContext(cquery));
+				ResolutionContext ctx = new ResolutionContext(cquery);
+				if(mspec != null)
+				{
+					// Add mspec properties but don't let them override
+					//
+					for(Map.Entry<String, String> entry : mspec.getProperties().entrySet())
+					{
+						String key = entry.getKey();
+						if(!ctx.containsKey(key))
+							ctx.put(key, entry.getValue());
+					}
+				}
+				IResolver resolver = new MainResolver(ctx);
 				resolver.getContext().setContinueOnError(true);
 				bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 50));
 			}

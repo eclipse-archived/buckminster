@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -229,16 +228,6 @@ public class CSpecFromBinary extends CSpecGenerator
 		return PLUGIN_PROPERTIES_FILE;
 	}
 
-	private void addExternalPrerequisite(GroupBuilder group, String component, String name, boolean optional)
-			throws CoreException
-	{
-		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
-		pqBld.setComponentName(component);
-		pqBld.setName(name);
-		pqBld.setOptional(optional);
-		group.addPrerequisite(pqBld);
-	}
-
 	private void addImports() throws CoreException
 	{
 		IPluginModelBase model = m_plugin.getPluginModel();
@@ -290,9 +279,10 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 
 			String component = dependency.getName();
-			addExternalPrerequisite(bundleJars, component, ATTRIBUTE_BUNDLE_JARS, false);
+			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS, false);
 			if(pluginImport.isReexported())
-				addExternalPrerequisite(reExports, component, ATTRIBUTE_JAVA_BINARIES, false);
+				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES,
+						false);
 		}
 	}
 

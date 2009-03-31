@@ -207,7 +207,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				featuresOnSite.add(res);
 			}
 
-			for(ComponentRequest dep : res.getCSpec().getDependencies().values())
+			for(ComponentRequest dep : res.getCSpec().getDependencies())
 			{
 				if(!IComponentType.OSGI_BUNDLE.equals(dep.getComponentTypeID()))
 					continue;
@@ -445,7 +445,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		List<Resolution> includedFeatures = new ArrayList<Resolution>();
 
 		for(Resolution res : features)
-			for(ComponentRequest dep : res.getCSpec().getDependencies().values())
+			for(ComponentRequest dep : res.getCSpec().getDependencies())
 				if(IComponentType.ECLIPSE_FEATURE.equals(dep.getComponentTypeID()))
 					for(Resolution featureRes : features)
 						if(dep.designates(featureRes.getComponentIdentifier()))

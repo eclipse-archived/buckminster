@@ -187,11 +187,13 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 
 			cspec.addDependency(dep);
-			featureRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_FEATURE_JARS);
-			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
+			featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_SOURCE_FEATURE_JARS);
+			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
 		}
 	}
 
@@ -236,12 +238,15 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 
 			cspec.addDependency(dep);
-			featureRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FEATURE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_FEATURE_JARS);
-			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_JARS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_SOURCE_FEATURE_JARS);
+			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
+			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 
@@ -294,10 +299,12 @@ public class CSpecFromSource extends CSpecGenerator
 			if(!addDependency(dep))
 				continue;
 
-			bundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
-			fullClean.addExternalPrerequisite(dep.getName(), ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep.getName(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
+			fullClean.addExternalPrerequisite(dep.getName(), IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN);
+			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 

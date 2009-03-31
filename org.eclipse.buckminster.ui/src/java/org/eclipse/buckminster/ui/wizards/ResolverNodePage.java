@@ -229,7 +229,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			if(isResolved)
 			{
 				ICSpecData cspec = resolution.getCSpec();
-				m_dependenciesTable.setInput(cspec.getDependencies().values());
+				m_dependenciesTable.setInput(cspec.getDependencies());
 				m_detailGroup.setText(NLS.bind(Messages.dependencies_in_0, node.getViewName()));
 			}
 			else
