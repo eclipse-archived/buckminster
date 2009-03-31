@@ -7,9 +7,6 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
@@ -62,10 +59,10 @@ public class P2VersionFinder extends AbstractVersionFinder
 			//
 			return null;
 
-		IVersionDesignator designator = request.getVersionDesignator();
+		VersionRange designator = request.getVersionRange();
 		if(designator != null)
 		{
-			if(!designator.getVersion().getType().getId().equals(IVersionType.OSGI))
+			if(!designator.getMinimum().isOSGiCompatible())
 				//
 				// We only deal with OSGi versions
 				//
@@ -165,7 +162,6 @@ public class P2VersionFinder extends AbstractVersionFinder
 				return null;
 		}
 
-		return new VersionMatch(VersionFactory.OSGiType.fromString(best.getVersion().toString()), null, -1, null,
-				wanted.toString());
+		return new VersionMatch(best.getVersion(), null, -1, null, wanted.toString());
 	}
 }

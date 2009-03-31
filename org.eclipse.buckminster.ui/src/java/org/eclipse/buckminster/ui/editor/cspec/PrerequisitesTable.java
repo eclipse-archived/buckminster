@@ -216,7 +216,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		{
 			ComponentRequestBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
 			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder
-					.getVersionDesignator());
+					.getVersionRange());
 
 			TreeSet<String> prereqAttributes = new TreeSet<String>();
 			try

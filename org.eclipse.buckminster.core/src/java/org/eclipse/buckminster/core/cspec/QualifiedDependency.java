@@ -14,10 +14,11 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
+@SuppressWarnings("restriction")
 public class QualifiedDependency
 {
 	private final ComponentRequest m_request;
@@ -37,7 +38,7 @@ public class QualifiedDependency
 
 		boolean change = false;
 		ComponentRequest request = m_request;
-		IVersionDesignator dsg = advice.getVersionOverride();
+		VersionRange dsg = advice.getVersionOverride();
 		if(dsg != null)
 		{
 			change = true;

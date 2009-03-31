@@ -23,14 +23,15 @@ import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+@SuppressWarnings("restriction")
 public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IAdvisorNode
 {
 	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
@@ -105,7 +106,7 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 
 	private final boolean m_useWorkspace;
 
-	private final IVersionDesignator m_versionOverride;
+	private final VersionRange m_versionOverride;
 
 	private final boolean m_useRemoteResolution;
 
@@ -144,78 +145,9 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		m_properties = ExpandingProperties.createUnmodifiableProperties(bld.getProperties());
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
-		if(m_overlayFolder != null)
-			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, m_overlayFolder.toString());
-		if(m_componentTypeID != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
-		if(m_mutableLevel != MutableLevel.INDIFFERENT)
-			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, m_mutableLevel.name());
-		if(m_sourceLevel != SourceLevel.INDIFFERENT)
-			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, m_sourceLevel.name());
-		if(m_skipComponent)
-			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true"); //$NON-NLS-1$
-		if(m_allowCircularDependency)
-			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true"); //$NON-NLS-1$
-		if(!m_systemDiscovery)
-			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false"); //$NON-NLS-1$
-		if(!m_useMaterialization)
-			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false"); //$NON-NLS-1$
-		if(!m_useRemoteResolution)
-			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false"); //$NON-NLS-1$
-		if(!m_useTargetPlatform)
-			Utils.addAttribute(attrs, ATTR_USE_TARGET_PLATFORM, "false"); //$NON-NLS-1$
-		if(!m_useWorkspace)
-			Utils.addAttribute(attrs, ATTR_USE_WORKSPACE, "false"); //$NON-NLS-1$
-
-		if(m_versionOverride != null)
-		{
-			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, m_versionOverride.toString());
-			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE_TYPE, m_versionOverride.getVersion().getType().getId());
-		}
-		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
-		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
-		if(m_prune)
-			Utils.addAttribute(attrs, ATTR_PRUNE, "true"); //$NON-NLS-1$
-
-		tmp = VersionSelector.toString(m_branchTagPath);
-		if(tmp != null)
-			Utils.addAttribute(attrs, ATTR_BRANCH_TAG_PATH, tmp);
-
-		if(!Arrays.equals(m_resolutionPrio, DEFAULT_RESOLUTION_PRIO))
-		{
-			StringBuilder bld = new StringBuilder();
-			bld.append(m_resolutionPrio[0]);
-			for(int idx = 1; idx < m_resolutionPrio.length; ++idx)
-			{
-				bld.append(',');
-				bld.append(m_resolutionPrio[idx]);
-			}
-			Utils.addAttribute(attrs, ATTR_RESOLUTION_PRIO, bld.toString());
-		}
-
-		if(m_revision != -1)
-			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
-
-		if(m_timestamp != null)
-			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
-	}
-
 	public boolean allowCircularDependency()
 	{
 		return m_allowCircularDependency;
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
 	}
 
 	public final List<String> getAttributes()
@@ -283,7 +215,7 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		return m_timestamp;
 	}
 
-	public final IVersionDesignator getVersionOverride()
+	public final VersionRange getVersionOverride()
 	{
 		return m_versionOverride;
 	}
@@ -321,5 +253,71 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 	public final boolean skipComponent()
 	{
 		return m_skipComponent;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
+		if(m_overlayFolder != null)
+			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, m_overlayFolder.toString());
+		if(m_componentTypeID != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
+		if(m_mutableLevel != MutableLevel.INDIFFERENT)
+			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, m_mutableLevel.name());
+		if(m_sourceLevel != SourceLevel.INDIFFERENT)
+			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, m_sourceLevel.name());
+		if(m_skipComponent)
+			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true"); //$NON-NLS-1$
+		if(m_allowCircularDependency)
+			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true"); //$NON-NLS-1$
+		if(!m_systemDiscovery)
+			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false"); //$NON-NLS-1$
+		if(!m_useMaterialization)
+			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false"); //$NON-NLS-1$
+		if(!m_useRemoteResolution)
+			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false"); //$NON-NLS-1$
+		if(!m_useTargetPlatform)
+			Utils.addAttribute(attrs, ATTR_USE_TARGET_PLATFORM, "false"); //$NON-NLS-1$
+		if(!m_useWorkspace)
+			Utils.addAttribute(attrs, ATTR_USE_WORKSPACE, "false"); //$NON-NLS-1$
+
+		if(m_versionOverride != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, m_versionOverride.toString());
+		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
+		if(m_prune)
+			Utils.addAttribute(attrs, ATTR_PRUNE, "true"); //$NON-NLS-1$
+
+		tmp = VersionSelector.toString(m_branchTagPath);
+		if(tmp != null)
+			Utils.addAttribute(attrs, ATTR_BRANCH_TAG_PATH, tmp);
+
+		if(!Arrays.equals(m_resolutionPrio, DEFAULT_RESOLUTION_PRIO))
+		{
+			StringBuilder bld = new StringBuilder();
+			bld.append(m_resolutionPrio[0]);
+			for(int idx = 1; idx < m_resolutionPrio.length; ++idx)
+			{
+				bld.append(',');
+				bld.append(m_resolutionPrio[idx]);
+			}
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_PRIO, bld.toString());
+		}
+
+		if(m_revision != -1)
+			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
+
+		if(m_timestamp != null)
+			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
 	}
 }

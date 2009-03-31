@@ -19,11 +19,14 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 {
 	protected static class RevisionEntry
@@ -221,7 +224,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		monitor.beginTask(null, top * 10);
 		NodeQuery query = getQuery();
 		VersionSelector[] branchTagPath = query.getBranchTagPath();
-		IVersionDesignator versionDesignator = query.getVersionDesignator();
+		VersionRange versionRange = query.getVersionRange();
 		long revision = query.getRevision();
 		Date timestamp = query.getTimestamp();
 		VersionMatch best = null;
@@ -262,7 +265,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				continue;
 			}
 
-			IVersion version;
+			Version version;
 			VersionMatch match = null;
 			if(vConverter != null)
 			{
@@ -311,12 +314,12 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				}
 			}
 
-			if(!(versionDesignator == null || versionDesignator.designates(version)))
+			if(!(versionRange == null || versionRange.isIncluded(version)))
 			{
 				// Discriminated by our designator
 				//
 				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(Messages.Not_designated_by_0,
-						versionDesignator));
+						versionRange));
 				continue;
 			}
 
@@ -353,7 +356,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 						//
 						break;
 				}
-				else if(versionDesignator != null && versionDesignator.isExplicit())
+				else if(versionRange != null && versionRange.getMinimum().equals(versionRange.getMaximum()))
 				{
 					// Explicit hit on a version converted tag or branch. This will do just fine.
 					//
@@ -399,7 +402,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				}
 			}
 
-			IVersion version = null;
+			Version version = null;
 			try
 			{
 				version = getVersionFromArtifacts(null, MonitorUtils.subMonitor(monitor, 50));
@@ -412,8 +415,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 				return null;
 			}
 
-			IVersionDesignator versionDesignator = query.getVersionDesignator();
-			if(!(versionDesignator == null || versionDesignator.designates(version)))
+			VersionRange versionDesignator = query.getVersionRange();
+			if(!(versionDesignator == null || versionDesignator.isIncluded(version)))
 			{
 				// Discriminated by our designator
 				//

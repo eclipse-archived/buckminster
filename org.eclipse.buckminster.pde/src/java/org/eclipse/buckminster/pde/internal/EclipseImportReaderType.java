@@ -46,9 +46,8 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -70,6 +69,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -281,7 +281,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, IVersion version,
+	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, Version version,
 			String subDir) throws MalformedURLException, CoreException
 	{
 		if(remoteLocation.getPath().endsWith(".jar")) //$NON-NLS-1$
@@ -292,8 +292,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, cctx))
 			{
 				VersionedIdentifier vid = entry.getVersionedIdentifier();
-				if(name.equals(vid.getIdentifier())
-						&& version.equalsUnqualified(VersionFactory.OSGiType.coerce(vid.getVersion())))
+				if(!name.equals(vid.getIdentifier()))
+					continue;
+
+				PluginVersionIdentifier pvi = vid.getVersion();
+				Version pv = (pvi == null)
+						? null
+						: Version.parseVersion(pvi.toString());
+				if(VersionHelper.equalsUnqualified(version, pv))
 					return entry.getRemoteLocation();
 			}
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_0_in_map_1, name, remoteLocation));
@@ -579,12 +585,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(mdr == null)
 			return null;
 
-		IVersion bv = providerMatch.getVersionMatch().getVersion();
+		Version bv = providerMatch.getVersionMatch().getVersion();
 		if(bv == null)
 			return null;
-
-		Version v = Version.parseVersion(bv.toString());
-		VersionRange vr = new VersionRange(v, true, v, true);
+		VersionRange vr = new VersionRange(bv, true, bv, true);
 
 		IComponentRequest cr = query.getComponentRequest();
 		String name = cr.getName();

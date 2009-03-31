@@ -15,13 +15,12 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.internal.p2.publisher.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.pde.core.IModelChangedEvent;
 import org.eclipse.pde.core.IModelChangedListener;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -91,12 +90,12 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		if(versionStr == null)
 			return;
 
-		IVersion version;
+		Version version;
 		try
 		{
-			version = VersionFactory.OSGiType.fromString(versionStr);
+			version = Version.parseVersion(versionStr);
 		}
-		catch(VersionSyntaxException e)
+		catch(IllegalArgumentException e)
 		{
 			return;
 		}
@@ -104,7 +103,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		if(versionStr.endsWith(PROPERTY_QUALIFIER))
 		{
 			ComponentIdentifier ci = new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version);
-			IVersion newVersion = replaceQualifier(ci, deps);
+			Version newVersion = replaceQualifier(ci, deps);
 			if(newVersion != null && !version.equals(newVersion))
 			{
 				String newVersionStr = newVersion.toString();
@@ -160,6 +159,6 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			bld.append(suffix);
 			qualifier = bld.toString();
 		}
-		feature.setVersion(version.replaceQualifier(qualifier).toString());
+		feature.setVersion(VersionHelper.replaceQualifier(version, qualifier).toString());
 	}
 }

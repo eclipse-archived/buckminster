@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.p4.headless.feature"
       label="Buckminster - Perforce support for headless operation"
-      version="1.0.0.qualifier"
+      version="1.0.350.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">

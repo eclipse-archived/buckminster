@@ -24,7 +24,7 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.LocalReaderType;
-import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -266,7 +266,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 					MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
 			cspecBuilder.setComponentTypeID(getComponentTypeID());
-			cspecBuilder.setVersion(pluginBase.getVersion(), IVersionType.OSGI);
+			cspecBuilder.setVersion(VersionHelper.parseVersion(pluginBase.getVersion()));
 			if(forResolutionAidOnly)
 				return;
 

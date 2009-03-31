@@ -15,10 +15,9 @@ import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.TargetPlatform;
@@ -44,12 +43,11 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		IPluginModelBase[] pluginModels = pdeCore.getModelManager().getActiveModels();
 		ArrayList<ComponentIdentifier> bld = new ArrayList<ComponentIdentifier>(featureModels.length
 				+ pluginModels.length);
-		IVersionType osgiType = VersionFactory.OSGiType;
 
 		for(IFeatureModel featureModel : featureModels)
 		{
 			IFeature feature = featureModel.getFeature();
-			IVersion version = osgiType.fromString(feature.getVersion());
+			Version version = VersionHelper.parseVersion(feature.getVersion());
 			bld.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version));
 		}
 		for(IPluginModelBase pluginModel : pluginModels)
@@ -57,7 +55,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 			BundleDescription desc = pluginModel.getBundleDescription();
 			if(desc != null)
 			{
-				IVersion version = osgiType.coerce(desc.getVersion());
+				Version version = Version.fromOSGiVersion(desc.getVersion());
 				bld.add(new ComponentIdentifier(desc.getSymbolicName(), IComponentType.OSGI_BUNDLE, version));
 			}
 		}

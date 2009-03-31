@@ -24,16 +24,18 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.version.IQualifierGenerator;
-import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  * 
  */
+@SuppressWarnings("restriction")
 public class VersionQualifierTask
 {
 	public static final String GENERATOR_PREFIX = "generator:"; //$NON-NLS-1$
@@ -94,7 +96,7 @@ public class VersionQualifierTask
 
 	public boolean isUsingGenerator(ComponentIdentifier ci)
 	{
-		IVersion version = ci.getVersion();
+		Version version = ci.getVersion();
 		if(version == null)
 			return false;
 
@@ -106,9 +108,9 @@ public class VersionQualifierTask
 		return newQualifier != null && newQualifier.startsWith(GENERATOR_PREFIX);
 	}
 
-	public IVersion replaceQualifier(ComponentIdentifier ci, List<ComponentIdentifier> deps)
+	public Version replaceQualifier(ComponentIdentifier ci, List<ComponentIdentifier> deps)
 	{
-		IVersion version = ci.getVersion();
+		Version version = ci.getVersion();
 		if(version == null)
 			return version;
 
@@ -121,7 +123,7 @@ public class VersionQualifierTask
 
 		String newQualifier = getQualifierReplacement(ci);
 		if(newQualifier == null)
-			return version.replaceQualifier(null);
+			return VersionHelper.replaceQualifier(version, null);
 
 		if(newQualifier.startsWith(GENERATOR_PREFIX))
 		{
@@ -140,7 +142,7 @@ public class VersionQualifierTask
 		{
 			newQualifier = qualifier.replaceFirst(QUALIFIER_SUFFIX, newQualifier);
 			if(!qualifier.equals(newQualifier))
-				version = version.replaceQualifier(newQualifier);
+				version = VersionHelper.replaceQualifier(version, newQualifier);
 		}
 		return version;
 	}

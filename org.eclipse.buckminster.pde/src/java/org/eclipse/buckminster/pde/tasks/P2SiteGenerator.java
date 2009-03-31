@@ -31,8 +31,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -53,6 +52,7 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.repository.IRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.spi.p2.artifact.repository.SimpleArtifactRepositoryFactory;
@@ -196,9 +196,10 @@ public class P2SiteGenerator extends AbstractActor
 
 	private static File getExeFeatureFileIfReferenced(String featureId, String featureVersion) throws CoreException
 	{
-		IVersionDesignator vd = null;
-		if(featureVersion != null && featureVersion.length() > 0 && !"0.0.0".equals(featureVersion)) //$NON-NLS-1$
-			vd = VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.fromString(featureVersion));
+		Version v = VersionHelper.parseVersion(featureVersion);
+		VersionRange vd = null;
+		if(v != null)
+			vd = VersionHelper.exactRange(v);
 		IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(featureId, vd, null);
 		File eff = null;
 		if(feature != null)

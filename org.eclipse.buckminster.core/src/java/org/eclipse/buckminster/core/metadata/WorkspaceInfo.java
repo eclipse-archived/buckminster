@@ -26,7 +26,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
-import org.eclipse.buckminster.core.internal.version.VersionDesignator;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer.WorkspaceCatchUpJob;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -36,8 +35,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
@@ -51,10 +49,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class WorkspaceInfo
 {
 	/**
@@ -182,8 +183,8 @@ public class WorkspaceInfo
 				int cmp = o1.getName().compareTo(o2.getName());
 				if(cmp == 0)
 				{
-					IVersion v1 = o1.getVersion();
-					IVersion v2 = o2.getVersion();
+					Version v1 = o1.getVersion();
+					Version v2 = o2.getVersion();
 					if(v1 == null)
 						cmp = v2 == null
 								? 0
@@ -421,10 +422,8 @@ public class WorkspaceInfo
 			}
 		}
 
-		IVersion v = wanted.getVersion();
-		IVersionDesignator vd = (v == null)
-				? null
-				: VersionDesignator.explicit(v);
+		Version v = wanted.getVersion();
+		VersionRange vd = VersionHelper.exactRange(v);
 		try
 		{
 			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
@@ -740,15 +739,9 @@ public class WorkspaceInfo
 					}
 				}
 
-				boolean versionEqual = false;
-				IVersion currVersion = ci.getVersion();
-				IVersion prevVersion = prevRes.getComponentIdentifier().getVersion();
-				if(currVersion == null)
-					versionEqual = (prevVersion == null);
-				else if(prevVersion != null)
-					versionEqual = currVersion.equalsUnqualified(prevVersion);
-
-				if(versionEqual)
+				Version currVersion = ci.getVersion();
+				Version prevVersion = prevRes.getComponentIdentifier().getVersion();
+				if(VersionHelper.equalsUnqualified(currVersion, prevVersion))
 				{
 					// Discriminate using timestamp
 					//

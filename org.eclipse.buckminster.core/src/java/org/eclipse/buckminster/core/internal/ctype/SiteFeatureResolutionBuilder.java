@@ -32,14 +32,16 @@ import org.eclipse.buckminster.core.reader.SiteFeatureReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverNode;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IIncludedFeatureReference;
@@ -48,6 +50,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 {
 	private static ResolverNode getResolverNode(Map<ComponentName, ResolverNode> nodes, RMContext context,
@@ -80,11 +83,8 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 	{
 		IComponentReader reader = readerHandle[0];
 		if(!(reader instanceof SiteFeatureReader))
-			throw BuckminsterException
-					.fromMessage(NLS
-							.bind(
-									Messages._0_resolution_builder_can_only_work_with_a_site_feature_reader,
-									getId()));
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages._0_resolution_builder_can_only_work_with_a_site_feature_reader, getId()));
 
 		monitor.beginTask(null, 100);
 		try
@@ -109,6 +109,12 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		{
 			monitor.done();
 		}
+	}
+
+	@Override
+	public String getComponentTypeID()
+	{
+		return IComponentType.ECLIPSE_SITE_FEATURE;
 	}
 
 	private ResolverNode buildCSpecFromSiteFeature(IComponentReader reader, Map<ComponentName, ResolverNode> nodes,
@@ -144,13 +150,14 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 			{
 				IIncludedFeatureReference ref = refs[idx];
 				VersionedIdentifier vid = ref.getVersionedIdentifier();
-				IVersion version = VersionFactory.OSGiType.coerce(vid.getVersion());
+				PluginVersionIdentifier pvi = vid.getVersion();
+				Version version = (pvi == null)
+						? null
+						: VersionFormat.OSGI_FORMAT.parse(pvi.toString());
 				ComponentRequestBuilder bld = cspecBld.createDependencyBuilder();
 				bld.setName(vid.getIdentifier());
 				bld.setComponentTypeID(getComponentTypeID());
-				bld.setVersionDesignator((version == null)
-						? null
-						: VersionFactory.createExplicitDesignator(version));
+				bld.setVersionRange(VersionHelper.exactRange(version));
 				bld.setFilter(FilterUtils.createFilter(ref.getOS(), ref.getWS(), ref.getOSArch(), ref.getName()));
 				cspecBld.addDependency(bld);
 				matches[idx] = new VersionMatch(version, null, -1, null, null);
@@ -183,19 +190,16 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		return node;
 	}
 
-	@Override
-	public String getComponentTypeID()
-	{
-		return IComponentType.ECLIPSE_SITE_FEATURE;
-	}
-
 	private CSpecBuilder getCSpecBuilder(IFeature siteFeature)
 	{
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		VersionedIdentifier vi = siteFeature.getVersionedIdentifier();
 		cspecBld.setName(vi.getIdentifier());
 		cspecBld.setComponentTypeID(getComponentTypeID());
-		cspecBld.setVersion(VersionFactory.OSGiType.coerce(vi.getVersion()));
+		PluginVersionIdentifier pvi = vi.getVersion();
+		cspecBld.setVersion(pvi == null
+				? null
+				: VersionFormat.OSGI_FORMAT.parse(pvi.toString()));
 		return cspecBld;
 	}
 }

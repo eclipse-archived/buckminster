@@ -10,18 +10,18 @@
 package org.eclipse.buckminster.core.internal.version;
 
 import org.eclipse.buckminster.core.version.AbstractConverter;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class TagConverter extends AbstractConverter
 {
-	public VersionSelector createSelector(IVersion version) throws CoreException
+	public VersionSelector createSelector(Version version) throws CoreException
 	{
 		if(version == null)
 			return null;
@@ -32,21 +32,21 @@ public class TagConverter extends AbstractConverter
 				: VersionSelector.tag(selectorComponent);
 	}
 
-	public IVersion createVersion(VersionSelector versionSelector) throws CoreException
+	public Version createVersion(VersionSelector versionSelector) throws CoreException
 	{
 		return versionSelector == null
 				? null
 				: createVersionFromSelectorComponent(versionSelector.getName());
 	}
 
-	@Override
-	protected IVersionType getDefaultVersionType()
-	{
-		return VersionFactory.OSGiType;
-	}
-
 	public int getSelectorType()
 	{
 		return VersionSelector.TAG;
+	}
+
+	@Override
+	protected VersionFormat getDefaultVersionFormat()
+	{
+		return VersionFormat.OSGI_FORMAT;
 	}
 }

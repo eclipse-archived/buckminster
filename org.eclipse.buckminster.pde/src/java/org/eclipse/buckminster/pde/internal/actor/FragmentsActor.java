@@ -28,7 +28,7 @@ import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -89,8 +89,8 @@ public class FragmentsActor extends AbstractActor
 				//
 				continue;
 
-			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionFactory
-					.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion())));
+			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper
+					.exactRange(fragment.getVersion()));
 
 			String filterStr = fragment.getPlatformFilter();
 			if(filterStr != null)
@@ -172,8 +172,8 @@ public class FragmentsActor extends AbstractActor
 					//
 					continue;
 
-				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE,
-						VersionFactory.createExplicitDesignator(VersionFactory.OSGiType.coerce(fragment.getVersion())));
+				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper
+						.exactRange(fragment.getVersion()));
 
 				String filterStr = fragment.getPlatformFilter();
 				if(filterStr != null)

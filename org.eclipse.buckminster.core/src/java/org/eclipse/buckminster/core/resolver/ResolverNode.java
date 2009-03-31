@@ -31,9 +31,10 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
+@SuppressWarnings("restriction")
 public class ResolverNode
 {
 	private static final ResolverNode[] s_noChildren = new ResolverNode[0];
@@ -68,12 +69,12 @@ public class ResolverNode
 			//
 			return;
 
-		IVersionDesignator newVd = query.getVersionDesignator();
+		VersionRange newVd = query.getVersionRange();
 		if(m_resolution != null)
 		{
 			// Re-resolve might be necessary
 			//
-			if((newVd == null || newVd.designates(m_resolution.getVersion()))
+			if((newVd == null || newVd.isIncluded(m_resolution.getVersion()))
 					&& m_query.getQualifiedDependency().hasAllAttributes(query.getRequiredAttributes()))
 			{
 				// Nope, the resolution is still valid for this new query
@@ -91,11 +92,6 @@ public class ResolverNode
 		m_children = s_noChildren;
 		m_query = query;
 		m_invalidateRun = true;
-	}
-
-	synchronized void clearInvalidationFlag()
-	{
-		m_invalidateRun = false;
 	}
 
 	public BOMNode collectNodes(Map<UUID, BOMNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop)
@@ -185,34 +181,9 @@ public class ResolverNode
 		return node;
 	}
 
-	NodeQuery getQuery()
-	{
-		return m_query;
-	}
-
-	String getTagInfo()
-	{
-		return m_tagInfo;
-	}
-
-	boolean isInvalidated()
-	{
-		return m_invalidateRun;
-	}
-
 	public boolean isResolved()
 	{
 		return m_resolution != null;
-	}
-
-	void setGeneratorNode(GeneratorNode generatorNode)
-	{
-		m_generatorNode = generatorNode;
-	}
-
-	void setQuery(NodeQuery query)
-	{
-		m_query = query;
 	}
 
 	public synchronized void setResolution(Resolution resolution, ResolverNode[] children)
@@ -250,5 +221,35 @@ public class ResolverNode
 		if(context != originalContext)
 			m_query = context.getNodeQuery(m_query.getQualifiedDependency());
 		return context;
+	}
+
+	synchronized void clearInvalidationFlag()
+	{
+		m_invalidateRun = false;
+	}
+
+	NodeQuery getQuery()
+	{
+		return m_query;
+	}
+
+	String getTagInfo()
+	{
+		return m_tagInfo;
+	}
+
+	boolean isInvalidated()
+	{
+		return m_invalidateRun;
+	}
+
+	void setGeneratorNode(GeneratorNode generatorNode)
+	{
+		m_generatorNode = generatorNode;
+	}
+
+	void setQuery(NodeQuery query)
+	{
+		m_query = query;
 	}
 }

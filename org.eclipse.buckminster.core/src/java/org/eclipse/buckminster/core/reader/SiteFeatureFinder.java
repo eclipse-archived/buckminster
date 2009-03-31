@@ -12,11 +12,12 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
@@ -24,6 +25,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class SiteFeatureFinder extends AbstractVersionFinder
 {
 	private final ISite m_site;
@@ -41,18 +43,22 @@ public class SiteFeatureFinder extends AbstractVersionFinder
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
 		String name = m_request.getName();
-		IVersion bestFit = null;
+		Version bestFit = null;
 		for(ISiteFeatureReference featureRef : m_site.getRawFeatureReferences())
 		{
-			VersionedIdentifier versionAndId = featureRef.getVersionedIdentifier();
+			VersionedIdentifier vi = featureRef.getVersionedIdentifier();
 
-			if(!name.equals(versionAndId.getIdentifier()))
+			if(!name.equals(vi.getIdentifier()))
 				continue;
 
-			IVersion version;
+			PluginVersionIdentifier pvi = vi.getVersion();
+			if(pvi == null)
+				continue;
+
+			Version version;
 			try
 			{
-				version = VersionFactory.OSGiType.coerce(versionAndId.getVersion());
+				version = VersionHelper.parseVersion(pvi.toString());
 			}
 			catch(Exception e)
 			{

@@ -18,10 +18,12 @@ import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractVersionFinder implements IVersionFinder
 {
 	private final Provider m_provider;
@@ -70,14 +72,6 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 		return m_query;
 	}
 
-	protected IVersion getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor)
-			throws CoreException
-	{
-		VersionMatch match = new VersionMatch(null, branchOrTag, m_query.getRevision(), m_query.getTimestamp(), null);
-		ProviderMatch rInfo = new ProviderMatch(m_provider, m_componentType, match, m_query);
-		return m_componentType.getComponentVersion(rInfo, monitor);
-	}
-
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
 	{
 		return m_query.logDecision(decisionType, args);
@@ -86,5 +80,13 @@ public abstract class AbstractVersionFinder implements IVersionFinder
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
 	{
 		return m_query.logDecision(decisionType, args);
+	}
+
+	protected Version getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor)
+			throws CoreException
+	{
+		VersionMatch match = new VersionMatch(null, branchOrTag, m_query.getRevision(), m_query.getTimestamp(), null);
+		ProviderMatch rInfo = new ProviderMatch(m_provider, m_componentType, match, m_query);
+		return m_componentType.getComponentVersion(rInfo, monitor);
 	}
 }

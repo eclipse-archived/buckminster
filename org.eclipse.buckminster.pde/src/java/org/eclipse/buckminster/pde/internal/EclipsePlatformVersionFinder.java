@@ -16,14 +16,14 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
@@ -64,20 +64,20 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder
 
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
 	{
-		IVersion v = null;
+		Version v = null;
 		NodeQuery query = getQuery();
-		IVersionDesignator dsg = query.getVersionDesignator();
+		VersionRange dsg = query.getVersionRange();
 		if(m_type == InstalledType.PLUGIN)
 		{
 			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(m_componentName, dsg, query);
 			if(plugin != null)
-				v = VersionFactory.OSGiType.coerce(plugin.getBundleDescription().getVersion());
+				v = Version.fromOSGiVersion(plugin.getBundleDescription().getVersion());
 		}
 		else
 		{
 			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(m_componentName, dsg, query);
 			if(feature != null)
-				v = VersionFactory.OSGiType.fromString(feature.getFeature().getVersion());
+				v = VersionHelper.parseVersion(feature.getFeature().getVersion());
 		}
 		return (v == null)
 				? null

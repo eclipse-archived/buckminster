@@ -36,10 +36,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.OSGiVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jarprocessor.JarProcessorActor;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
@@ -51,6 +48,7 @@ import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.pde.tasks.P2SiteGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -62,6 +60,7 @@ import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
@@ -141,7 +140,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
-		if(version == null || version.length() == 0 || version.equals("0.0.0")) //$NON-NLS-1$
+		version = Trivial.trim(version);
+		if(version == null || version.equals("0.0.0")) //$NON-NLS-1$
 			return null;
 
 		char c = version.charAt(0);
@@ -151,10 +151,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			//
 			return version;
 
-		OSGiVersion v = (OSGiVersion)VersionFactory.OSGiType.fromString(version);
+		Version v = Version.parseVersion(version);
 		boolean qualifierTag = "qualifier".equals(v.getQualifier()); //$NON-NLS-1$
 		if(qualifierTag)
-			v = (OSGiVersion)v.replaceQualifier(null);
+			v = VersionHelper.replaceQualifier(v, null);
 
 		StringBuilder vbld = new StringBuilder();
 		switch(pdeMatchRule)
@@ -275,7 +275,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		IFragment fragment = fragmentModel.getFragment();
 		ComponentRequestBuilder bundleHostDep = m_cspecBuilder.createDependencyBuilder();
 		bundleHostDep.setName(fragment.getPluginId());
-		bundleHostDep.setVersionDesignator(fragment.getPluginVersion(), IVersionType.OSGI);
+		bundleHostDep
+				.setVersionRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, fragment.getPluginVersion()));
 		bundleHostDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
 		try
 		{
@@ -391,13 +392,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
 			Filter filter) throws CoreException
 	{
-		if(versionDesignator != null && (versionDesignator.length() == 0 || versionDesignator.equals("0.0.0"))) //$NON-NLS-1$
+		versionDesignator = Trivial.trim(versionDesignator);
+		if(versionDesignator != null && versionDesignator.equals("0.0.0")) //$NON-NLS-1$
 			versionDesignator = null;
 
 		ComponentRequestBuilder bld = getCSpec().createDependencyBuilder();
 		bld.setName(name);
 		bld.setComponentTypeID(componentType);
-		bld.setVersionDesignator(versionDesignator, IVersionType.OSGI);
+		bld.setVersionRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, versionDesignator));
 		bld.setFilter(filter);
 		return bld;
 	}
@@ -629,7 +631,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				if(launcherFeature != null)
 				{
 					IFeature feature = launcherFeature.getFeature();
-					IVersion version = VersionFactory.OSGiType.fromString(feature.getVersion());
+					Version version = Version.parseVersion(feature.getVersion());
 					ComponentRequestBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE,
 							version.toString(), IMatchRules.PERFECT, null);
 

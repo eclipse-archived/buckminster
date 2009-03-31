@@ -32,10 +32,8 @@ import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -43,6 +41,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -65,11 +65,11 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 	 */
 	class PluginFilter implements FilenameFilter
 	{
-		private final ArrayList<IVersion> m_collector;
+		private final ArrayList<Version> m_collector;
 
 		private final Pattern m_pattern;
 
-		PluginFilter(String componentName, ArrayList<IVersion> collector)
+		PluginFilter(String componentName, ArrayList<Version> collector)
 		{
 			m_pattern = Pattern.compile('^' + Pattern.quote(componentName) + "_(.*?)(?:\\.jar)?$"); //$NON-NLS-1$
 			m_collector = collector;
@@ -82,10 +82,10 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 				return false;
 			try
 			{
-				m_collector.add(VersionFactory.OSGiType.fromString(m.group(1)));
+				m_collector.add(Version.parseVersion(m.group(1)));
 				return true;
 			}
-			catch(CoreException e)
+			catch(IllegalArgumentException e)
 			{
 				return false;
 			}
@@ -312,15 +312,15 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		return EclipsePlatformReaderType.getBestPlugin(m_componentName, getDesiredVersion(), null);
 	}
 
-	private IVersionDesignator getDesiredVersion()
+	private VersionRange getDesiredVersion()
 	{
-		IVersionDesignator desiredVersion = null;
+		VersionRange desiredVersion = null;
 		ProviderMatch vsMatch = getProviderMatch();
 		if(vsMatch != null)
 		{
-			IVersion version = vsMatch.getVersionMatch().getVersion();
+			Version version = vsMatch.getVersionMatch().getVersion();
 			if(version != null)
-				desiredVersion = VersionFactory.createExplicitDesignator(version);
+				desiredVersion = (VersionRange)VersionHelper.exactRange(version);
 		}
 		return desiredVersion;
 	}

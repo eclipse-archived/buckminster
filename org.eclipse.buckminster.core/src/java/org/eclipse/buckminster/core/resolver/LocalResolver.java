@@ -51,7 +51,6 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -84,7 +83,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 	public static final Provider INSTALLED_FEATURE_PROVIDER;
 	static
 	{
-		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", VersionFactory.OSGiType, //$NON-NLS-1$
+		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", null, //$NON-NLS-1$
 				new BidirectionalTransformer[0]);
 		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
 				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${" //$NON-NLS-1$

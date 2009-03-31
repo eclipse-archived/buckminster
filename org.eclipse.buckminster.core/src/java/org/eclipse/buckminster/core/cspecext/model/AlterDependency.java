@@ -25,8 +25,7 @@ public class AlterDependency
 	public void alterDependency(ComponentRequestBuilder dep)
 	{
 		dep.setComponentTypeID(CSpecExtension.overrideCheckNull(m_base.getComponentTypeID(), dep.getComponentTypeID()));
-		dep.setVersionDesignator(CSpecExtension.overrideCheckNull(m_base.getVersionDesignator(), dep
-				.getVersionDesignator()));
+		dep.setVersionRange(CSpecExtension.overrideCheckNull(m_base.getVersionRange(), dep.getVersionRange()));
 	}
 
 	public String getName()

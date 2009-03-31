@@ -26,12 +26,12 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
+@SuppressWarnings("restriction")
 public class CSpecBuilderTestCase extends TestCase
 {
 	public void testSaxGenerator() throws Exception
@@ -42,19 +42,19 @@ public class CSpecBuilderTestCase extends TestCase
 
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		cspecBld.setName("my.test.project"); //$NON-NLS-1$
-		cspecBld.setVersion(VersionFactory.OSGiType.fromString("1.2.3")); //$NON-NLS-1$
+		cspecBld.setVersion(Version.parseVersion("1.2.3")); //$NON-NLS-1$
 		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", //$NON-NLS-1$ //$NON-NLS-2$
-				IVersionType.OSGI, null);
+				VersionType.OSGI, null);
 		cspecBld.addDependency(c1);
 		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null, null, null)); //$NON-NLS-1$
 		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", //$NON-NLS-1$ //$NON-NLS-2$
-				IVersionType.OSGI, null));
-		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", IVersionType.OSGI, null)); //$NON-NLS-1$ //$NON-NLS-2$
+				VersionType.OSGI, null));
+		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", VersionType.OSGI, null)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		CSpec c = cspecBld.createCSpec();
 
 		ComponentRequest request = new ComponentRequest("test", null, null); //$NON-NLS-1$
-		IVersion vs = VersionFactory.OSGiType.fromString("1.0.0"); //$NON-NLS-1$
+		Version vs = Version.parseVersion("1.0.0"); //$NON-NLS-1$
 		VersionMatch fixed = new VersionMatch(vs, null, -1, new Date(), null);
 		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, //$NON-NLS-1$
 				"svn://foo.bar.com/foobar", null); //$NON-NLS-1$

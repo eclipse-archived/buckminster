@@ -40,7 +40,6 @@ import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -51,6 +50,7 @@ import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -59,6 +59,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, IComponentQuery
 {
 	public static final String ATTR_PROPERTIES = "properties"; //$NON-NLS-1$
@@ -216,8 +217,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		String expName = ExpandingProperties.expand(properties, name, 0);
 		return name.equals(expName)
 				? m_rootRequest
-				: new ComponentRequest(expName, m_rootRequest.getComponentTypeID(), m_rootRequest
-						.getVersionDesignator());
+				: new ComponentRequest(expName, m_rootRequest.getComponentTypeID(), m_rootRequest.getVersionRange());
 	}
 
 	public synchronized Map<String, String> getGlobalProperties()
@@ -417,7 +417,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 				: node.getTimestamp();
 	}
 
-	public IVersionDesignator getVersionOverride(ComponentName cName)
+	public VersionRange getVersionOverride(ComponentName cName)
 	{
 		IAdvisorNode node = getMatchingNode(cName);
 		return node == null

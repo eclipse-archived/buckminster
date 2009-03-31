@@ -12,19 +12,20 @@ import java.util.Map;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentName;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * A Component Identifier is something that uniquely identifies a component.
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class ComponentIdentifier extends ComponentName implements IComponentIdentifier
 {
-	private final IVersion m_version;
+	private final Version m_version;
 
 	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
@@ -32,7 +33,7 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 
 	public static ComponentIdentifier parse(String componentIdentifierStr) throws CoreException
 	{
-		IVersion version = null;
+		Version version = null;
 		int verIdx = componentIdentifierStr.indexOf('$');
 		if(verIdx >= 0)
 		{
@@ -45,8 +46,10 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 			{
 				versionType = versionStr.substring(typeIdx + 1);
 				versionStr = versionStr.substring(0, typeIdx);
+				version = VersionHelper.createVersion(versionType, versionStr);
 			}
-			version = VersionFactory.createVersion(versionType, versionStr);
+			else
+				version = VersionHelper.parseVersion(versionStr);
 		}
 
 		String componentType = null;
@@ -60,12 +63,13 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 		return new ComponentIdentifier(componentIdentifierStr, componentType, version);
 	}
 
-	public ComponentIdentifier(String name, String componentTypeID, IVersion version)
+	public ComponentIdentifier(String name, String componentTypeID, Version version)
 	{
 		super(name, componentTypeID);
 		m_version = version;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(IComponentName o)
 	{
@@ -97,14 +101,11 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 	{
 		Map<String, String> p = super.getProperties();
 		if(m_version != null)
-		{
 			p.put(KeyConstants.COMPONENT_VERSION, m_version.toString());
-			p.put(KeyConstants.VERSION_TYPE, m_version.getType().getId());
-		}
 		return p;
 	}
 
-	public final IVersion getVersion()
+	public final Version getVersion()
 	{
 		return m_version;
 	}
@@ -154,9 +155,7 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 		if(m_version != null)
 		{
 			bld.append('$');
-			m_version.toString(bld);
-			bld.append('#');
-			bld.append(m_version.getType().getId());
+			bld.append(VersionHelper.getHumanReadable(m_version));
 		}
 	}
 }

@@ -22,13 +22,11 @@ import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleException;
@@ -38,6 +36,7 @@ import org.osgi.framework.Constants;
  * @author Thomas Hallgren
  * 
  */
+@SuppressWarnings("restriction")
 public class BundleConsolidator extends VersionConsolidator
 {
 	private final byte[] m_bytes;
@@ -70,7 +69,7 @@ public class BundleConsolidator extends VersionConsolidator
 		Attributes a = manifest.getMainAttributes();
 		String symbolicName = a.getValue(Constants.BUNDLE_SYMBOLICNAME);
 		String id = null;
-		IVersion newVersion = null;
+		Version newVersion = null;
 		boolean changed = false;
 		if(symbolicName != null)
 		{
@@ -89,7 +88,7 @@ public class BundleConsolidator extends VersionConsolidator
 			{
 				try
 				{
-					IVersion version = VersionFactory.OSGiType.fromString(versionStr);
+					Version version = Version.parseVersion(versionStr);
 					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
 					newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier> emptyList());
 
@@ -99,7 +98,7 @@ public class BundleConsolidator extends VersionConsolidator
 						changed = true;
 					}
 				}
-				catch(VersionSyntaxException e)
+				catch(IllegalArgumentException e)
 				{
 				}
 			}
@@ -137,7 +136,7 @@ public class BundleConsolidator extends VersionConsolidator
 	 *            The (new) version of the bundle. May be null.
 	 * @return Whether the method has changed the manifest or not.
 	 */
-	protected boolean treatManifest(Manifest manifest, String symbolicName, IVersion version)
+	protected boolean treatManifest(Manifest manifest, String symbolicName, Version version)
 	{
 		// empty default implementation
 		return false;

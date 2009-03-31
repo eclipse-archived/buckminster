@@ -21,7 +21,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
@@ -71,7 +71,7 @@ public class CSpecFromSource extends CSpecGenerator
 	{
 		CSpecBuilder cspec = getCSpec();
 		cspec.setName(m_feature.getId());
-		cspec.setVersion(m_feature.getVersion(), IVersionType.OSGI);
+		cspec.setVersion(VersionHelper.parseVersion(m_feature.getVersion()));
 		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
 		cspec.setFilter(FilterUtils.createFilter(m_feature.getOS(), m_feature.getWS(), m_feature.getArch(), m_feature
 				.getNL()));

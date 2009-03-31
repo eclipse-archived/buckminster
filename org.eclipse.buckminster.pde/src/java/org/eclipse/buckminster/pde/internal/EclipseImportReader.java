@@ -22,7 +22,6 @@ import java.util.zip.ZipFile;
 import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -37,6 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.IModel;
@@ -58,7 +58,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		super(readerType, rInfo);
 		m_base = EclipseImportBase.obtain(rInfo.getNodeQuery(), rInfo.getRepositoryURI());
 
-		IVersion version = rInfo.getVersionMatch().getVersion();
+		Version version = rInfo.getVersionMatch().getVersion();
 		m_model = m_base.isFeature()
 				? getFeatureModel(version, new NullProgressMonitor())
 				: getPluginModel(version, new NullProgressMonitor());
@@ -142,7 +142,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		}
 	}
 
-	IPluginModelBase getPluginModel(IVersion version, IProgressMonitor monitor) throws CoreException
+	IPluginModelBase getPluginModel(Version version, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, m_base.isLocal()
 				? 1000
@@ -178,7 +178,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				m_base.getType() == PluginImportOperation.IMPORT_BINARY);
 	}
 
-	private IFeatureModel getFeatureModel(IVersion version, IProgressMonitor monitor) throws CoreException
+	private IFeatureModel getFeatureModel(Version version, IProgressMonitor monitor) throws CoreException
 	{
 		IFeatureModel model = null;
 		monitor.beginTask(null, m_base.isLocal()
@@ -237,7 +237,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 
 		// Model is now local, so reset it.
 		//
-		IVersion version = ri.getVersionMatch().getVersion();
+		Version version = ri.getVersionMatch().getVersion();
 		IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 50);
 		m_model = isPlugin
 				? getPluginModel(version, subMon)

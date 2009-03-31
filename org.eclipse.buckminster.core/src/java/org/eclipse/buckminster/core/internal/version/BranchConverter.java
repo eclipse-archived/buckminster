@@ -10,18 +10,19 @@
 package org.eclipse.buckminster.core.internal.version;
 
 import org.eclipse.buckminster.core.version.AbstractConverter;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.FormatException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class BranchConverter extends AbstractConverter
 {
-	public VersionSelector createSelector(IVersion version) throws CoreException
+	public VersionSelector createSelector(Version version) throws CoreException
 	{
 		if(version == null)
 			return null;
@@ -32,7 +33,7 @@ public class BranchConverter extends AbstractConverter
 				: VersionSelector.branch(selectorComponent);
 	}
 
-	public IVersion createVersion(VersionSelector versionSelector) throws CoreException
+	public Version createVersion(VersionSelector versionSelector) throws CoreException
 	{
 		if(versionSelector == null)
 			return null;
@@ -44,14 +45,21 @@ public class BranchConverter extends AbstractConverter
 		return createVersionFromSelectorComponent(name);
 	}
 
-	@Override
-	protected IVersionType getDefaultVersionType()
-	{
-		return VersionFactory.StringType;
-	}
-
 	public int getSelectorType()
 	{
 		return VersionSelector.BRANCH;
+	}
+
+	@Override
+	protected VersionFormat getDefaultVersionFormat()
+	{
+		try
+		{
+			return VersionFormat.compile("S"); //$NON-NLS-1$
+		}
+		catch(FormatException e)
+		{
+			return null;
+		}
 	}
 }

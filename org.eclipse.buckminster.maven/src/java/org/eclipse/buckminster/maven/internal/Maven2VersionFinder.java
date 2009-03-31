@@ -23,11 +23,8 @@ import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
@@ -36,6 +33,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,6 +45,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class Maven2VersionFinder extends MavenVersionFinder
 {
 	public static IPath getDefaultLocalRepoPath()
@@ -174,16 +175,14 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	List<VersionMatch> getComponentVersions(IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query = getQuery();
-		IVersionDesignator designator = query.getVersionDesignator();
-		if(designator == null)
-			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0"); //$NON-NLS-1$
-		else
+		VersionRange range = query.getVersionRange();
+		if(range != null)
 		{
-			if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
+			if(range.getFormat().equals(VersionFormat.OSGI_FORMAT))
 				//
 				// Convert the OSGi version to a Triplet version instead.
 				//
-				designator = VersionFactory.createDesignator(VersionFactory.TripletType, designator.toString());
+				range = VersionHelper.createRange(MavenComponentType.getTripletFormat(), range.toString());
 		}
 
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
@@ -196,7 +195,6 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		IConnectContext cctx = getConnectContext();
 
 		LocalCache lc = getReaderType().getLocalCache();
-		IVersionDesignator versionDesignator = query.getVersionDesignator();
 		monitor.beginTask(null, 2000);
 		try
 		{
@@ -228,18 +226,18 @@ public class Maven2VersionFinder extends MavenVersionFinder
 					}
 				}
 
-				IVersion version;
-				if(versionDesignator == null)
+				Version version;
+				if(range == null)
 					version = MavenComponentType.createVersion(v);
 				else
 				{
 					try
 					{
-						version = versionDesignator.getVersion().getType().fromString(v);
-						if(!versionDesignator.designates(version))
+						version = range.getFormat().parse(v);
+						if(!range.isIncluded(version))
 							continue;
 					}
-					catch(VersionSyntaxException e)
+					catch(IllegalArgumentException e)
 					{
 						continue;
 					}
@@ -250,7 +248,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 				pbld.append('/');
 				pbld.append(getMapEntry().getArtifactId());
 				pbld.append('-');
-				pbld.append(version);
+				pbld.append(VersionHelper.getOriginal(version));
 				pbld.append(".jar"); //$NON-NLS-1$
 				versions.add(new VersionMatch(version, null, -1, null, pbld.toString()));
 			}

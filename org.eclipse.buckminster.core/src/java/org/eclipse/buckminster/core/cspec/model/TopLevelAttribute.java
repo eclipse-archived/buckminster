@@ -20,11 +20,12 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
-import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -32,6 +33,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public abstract class TopLevelAttribute extends Attribute implements Cloneable
 {
 	public final static String PROPERTY_PREFIX = "buckminster."; //$NON-NLS-1$
@@ -72,11 +74,11 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		StringBuilder bld = new StringBuilder();
 
 		bld.append(cspec.getName());
-		IVersion version = cspec.getVersion();
+		Version version = cspec.getVersion();
 		if(version != null)
 		{
 			bld.append('_');
-			bld.append(version.replaceQualifier(null));
+			bld.append(VersionHelper.replaceQualifier(version, null));
 		}
 		String ctype = cspec.getComponentTypeID();
 		if(!IComponentType.UNKNOWN.equals(ctype))

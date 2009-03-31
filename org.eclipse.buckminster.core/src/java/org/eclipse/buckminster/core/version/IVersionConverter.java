@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * Converts a <code>VersionSelector</code> of type <code>PLAIN</code> to something that can be understood by a source
@@ -19,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public interface IVersionConverter extends IBuckminsterExtension
 {
 	static final String TAG = "tag"; //$NON-NLS-1$
@@ -36,7 +38,7 @@ public interface IVersionConverter extends IBuckminsterExtension
 	 * @throws CoreException
 	 *             if the conversion cannot be performed.
 	 */
-	VersionSelector createSelector(IVersion version) throws CoreException;
+	VersionSelector createSelector(Version version) throws CoreException;
 
 	/**
 	 * Converts the <code>branchOrTag</code> into a <code>IVersion</code>. This is the reverse of
@@ -48,7 +50,7 @@ public interface IVersionConverter extends IBuckminsterExtension
 	 * @throws CoreException
 	 *             if the conversion cannot be performed.
 	 */
-	IVersion createVersion(VersionSelector branchOrTag) throws CoreException;
+	Version createVersion(VersionSelector branchOrTag) throws CoreException;
 
 	/**
 	 * Returns the type of the selectors that this converter will produce. Can be either {@link VersionSelector#TAG} or
@@ -57,11 +59,4 @@ public interface IVersionConverter extends IBuckminsterExtension
 	 * @return The type of the produced selectors
 	 */
 	int getSelectorType();
-
-	/**
-	 * Returns the type of the versions that this converter will produce
-	 * 
-	 * @return The type of the produced versions
-	 */
-	IVersionType getVersionType();
 }

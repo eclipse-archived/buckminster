@@ -14,7 +14,6 @@ import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.ui.utils.UiUtils;
@@ -28,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -40,6 +40,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Henrik Lindberg
  * 
  */
+@SuppressWarnings("restriction")
 public class BuckminsterLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider
 {
 	private Image m_projectImage;
@@ -162,7 +163,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(type, StyledString.DECORATIONS_STYLER);
 			}
-			IVersion version = r.getVersion();
+			Version version = r.getVersion();
 			if(version != null)
 			{
 				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
@@ -180,10 +181,10 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(req.getComponentTypeID(), StyledString.DECORATIONS_STYLER);
 			}
-			if(req.getVersionDesignator() != null)
+			if(req.getVersionRange() != null)
 			{
 				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
-				bld.append(req.getVersionDesignator().toString(), StyledString.DECORATIONS_STYLER);
+				bld.append(req.getVersionRange().toString(), StyledString.DECORATIONS_STYLER);
 			}
 			return bld;
 		}

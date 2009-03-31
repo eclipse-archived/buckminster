@@ -36,8 +36,8 @@ import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -62,6 +62,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -101,6 +102,7 @@ import org.eclipse.ui.part.EditorPart;
  * @author Karel Brezina
  * 
  */
+@SuppressWarnings("restriction")
 public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 {
 	@SuppressWarnings("unchecked")
@@ -737,8 +739,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		try
 		{
-			m_cspec.setVersion(UiUtils.trimmedValue(m_versionString), m_versionType.getItem(m_versionType
-					.getSelectionIndex()));
+			m_cspec.setVersion(VersionHelper.createVersion(m_versionType.getItem(m_versionType.getSelectionIndex()),
+					UiUtils.trimmedValue(m_versionString)));
 		}
 		catch(CoreException e)
 		{
@@ -1054,7 +1056,11 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		m_versionType = UiUtils.createGridCombo(versionGroup, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
-		String[] versionTypes = CorePlugin.getDefault().getExtensionIds(CorePlugin.VERSION_TYPES_POINT);
+		List<VersionType> knownTypes = VersionHelper.getKnownTypes();
+		int idx = knownTypes.size();
+		String[] versionTypes = new String[idx];
+		while(--idx >= 0)
+			versionTypes[idx] = knownTypes.get(idx).getId();
 
 		m_versionType.setItems(versionTypes);
 		m_versionType.select(m_versionType.indexOf("OSGi")); //$NON-NLS-1$
@@ -1090,16 +1096,16 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		{
 			m_componentName.setText(TextUtils.notNullString(m_cspec.getName()));
 			m_componentType.select(m_componentType.indexOf(TextUtils.notNullString(m_cspec.getComponentTypeID())));
-			IVersion version = m_cspec.getVersion();
+			Version version = m_cspec.getVersion();
 			if(version == null)
 			{
 				m_versionString.setText(""); //$NON-NLS-1$
-				m_versionType.select(m_versionType.indexOf(IVersionType.OSGI));
+				m_versionType.select(m_versionType.indexOf(VersionType.OSGI));
 			}
 			else
 			{
 				m_versionString.setText(TextUtils.notNullString(version));
-				m_versionType.select(m_versionType.indexOf(version.getType().getId()));
+				m_versionType.select(m_versionType.indexOf(VersionHelper.getVersionType(version.getFormat()).getId()));
 			}
 
 			m_actionBuilders.clear();

@@ -53,7 +53,6 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.UUIDKeyed;
@@ -61,6 +60,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -68,6 +68,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 {
 	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
@@ -509,7 +510,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		return getTagInfo(m_componentIdentifier, m_projectInfo, parentInfo);
 	}
 
-	public IVersion getVersion()
+	public Version getVersion()
 	{
 		return m_componentIdentifier.getVersion();
 	}
@@ -729,12 +730,9 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		if(ctypeID != null)
 			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, ctypeID);
 
-		IVersion version = m_componentIdentifier.getVersion();
+		Version version = m_componentIdentifier.getVersion();
 		if(version != null)
-		{
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
-		}
 
 		if(m_projectInfo != null)
 			Utils.addAttribute(attrs, ATTR_PROJECT_INFO, m_projectInfo.toString());

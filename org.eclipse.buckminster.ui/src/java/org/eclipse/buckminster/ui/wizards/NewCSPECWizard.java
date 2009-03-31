@@ -14,17 +14,16 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.buckminster.ui.Messages;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.ui.INewWizard;
 import org.xml.sax.SAXException;
 
+@SuppressWarnings("restriction")
 public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 {
 	private final String INIT_COMPONENT_TYPE = "buckminster"; //$NON-NLS-1$
 
 	private final String INIT_VERSION_STRING = "1.0.0"; //$NON-NLS-1$
-
-	private final String INIT_VERSION_TYPE = "OSGi"; //$NON-NLS-1$
 
 	public NewCSPECWizard()
 	{
@@ -58,15 +57,7 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 		CSpecBuilder builder = new CSpecBuilder();
 		builder.setName(name);
 		builder.setComponentTypeID(INIT_COMPONENT_TYPE);
-
-		try
-		{
-			builder.setVersion(INIT_VERSION_STRING, INIT_VERSION_TYPE);
-		}
-		catch(CoreException e)
-		{
-			// initial version won't be set
-		}
+		builder.setVersion(Version.parseVersion(INIT_VERSION_STRING));
 
 		CSpec cspec = new CSpec(builder);
 

@@ -19,15 +19,15 @@ import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
@@ -51,8 +51,7 @@ public class SiteFeatureReaderType extends CatalogReaderType
 	{
 		String[] ctypeIDs = provider.getComponentTypeIDs();
 		if(!(ctypeIDs.length == 1 && IComponentType.ECLIPSE_SITE_FEATURE.equals(ctypeIDs[0])))
-			throw BuckminsterException
-					.fromMessage(Messages.Site_reader_can_only_be_used_with_site_feature);
+			throw BuckminsterException.fromMessage(Messages.Site_reader_can_only_be_used_with_site_feature);
 	}
 
 	public static synchronized ISite getSite(String siteURLStr, IProgressMonitor monitor) throws CoreException
@@ -107,12 +106,18 @@ public class SiteFeatureReaderType extends CatalogReaderType
 
 	private static boolean isEqual(ComponentIdentifier ci, VersionedIdentifier vi)
 	{
-		if(ci.getName().equals(vi.getIdentifier()))
-		{
-			IVersion version = ci.getVersion();
-			return (version == null || version.equals(VersionFactory.OSGiType.coerce(vi.getVersion())));
-		}
-		return false;
+		if(!ci.getName().equals(vi.getIdentifier()))
+			return false;
+
+		Version version = ci.getVersion();
+		PluginVersionIdentifier pvi = vi.getVersion();
+		if(version == null)
+			return pvi == null;
+
+		if(pvi == null)
+			return false;
+
+		return version.equals(Version.parseVersion(pvi.toString()));
 	}
 
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException

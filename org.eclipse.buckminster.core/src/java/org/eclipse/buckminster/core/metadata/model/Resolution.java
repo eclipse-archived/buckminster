@@ -30,8 +30,6 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
@@ -41,6 +39,8 @@ import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -48,6 +48,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 {
 	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
@@ -154,25 +155,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_unpack = unpack;
 	}
 
-	public Resolution(IVersion version, Resolution old)
-	{
-		m_cspec = old.getCSpec();
-		m_opml = old.getOPML();
-		m_request = old.getRequest();
-		m_attributes = old.getAttributes();
-		m_persistentId = old.getPersistentId();
-		m_provider = old.getProvider();
-		m_componentTypeId = old.getComponentTypeId();
-		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
-		m_materializable = old.isMaterializable();
-		m_repository = old.getRepository();
-		m_remoteName = old.getRemoteName();
-		m_contentType = old.getContentType();
-		m_lastModified = old.getLastModified();
-		m_size = old.getSize();
-		m_unpack = old.isUnpack();
-	}
-
 	public Resolution(ResolutionBuilder bld)
 	{
 		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
@@ -190,6 +172,25 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_size = bld.getSize();
 		m_versionMatch = bld.getVersionMatch();
 		m_unpack = bld.isUnpack();
+	}
+
+	public Resolution(Version version, Resolution old)
+	{
+		m_cspec = old.getCSpec();
+		m_opml = old.getOPML();
+		m_request = old.getRequest();
+		m_attributes = old.getAttributes();
+		m_persistentId = old.getPersistentId();
+		m_provider = old.getProvider();
+		m_componentTypeId = old.getComponentTypeId();
+		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
+		m_materializable = old.isMaterializable();
+		m_repository = old.getRepository();
+		m_remoteName = old.getRemoteName();
+		m_contentType = old.getContentType();
+		m_lastModified = old.getLastModified();
+		m_size = old.getSize();
+		m_unpack = old.isUnpack();
 	}
 
 	@Override
@@ -395,7 +396,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return the version used when retrieving the spec.
 	 */
-	public final IVersion getVersion()
+	public final Version getVersion()
 	{
 		return m_versionMatch.getVersion();
 	}
@@ -405,9 +406,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return The original (unresolved) version designator
 	 */
-	public final IVersionDesignator getVersionDesignator() throws CoreException
+	public final VersionRange getVersionDesignator() throws CoreException
 	{
-		return m_request.getVersionDesignator();
+		return m_request.getVersionRange();
 	}
 
 	public VersionMatch getVersionMatch()
@@ -434,10 +435,10 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		if(componentType != null && !componentType.equals(m_request.getComponentTypeID()))
 			return false;
 
-		IVersionDesignator vd = request.getVersionDesignator();
+		VersionRange vd = request.getVersionRange();
 		return vd == null
 				? true
-				: vd.designates(getVersion());
+				: vd.isIncluded(getVersion());
 	}
 
 	/**

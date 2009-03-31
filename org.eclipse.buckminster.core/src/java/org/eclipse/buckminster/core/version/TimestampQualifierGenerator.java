@@ -26,6 +26,7 @@ import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.IPath;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static final String FORMAT_PROPERTY = "generator.lastModified.format"; //$NON-NLS-1$
@@ -72,10 +74,10 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		return dt;
 	}
 
-	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
+	public Version generateQualifier(IActionContext context, ComponentIdentifier cid,
 			List<ComponentIdentifier> dependencies) throws CoreException
 	{
-		IVersion currentVersion = cid.getVersion();
+		Version currentVersion = cid.getVersion();
 		if(currentVersion == null)
 			return null;
 
@@ -101,7 +103,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 
 			for(IComponentIdentifier dependency : dependencies)
 			{
-				IVersion depVer = dependency.getVersion();
+				Version depVer = dependency.getVersion();
 				if(depVer == null)
 					continue;
 
@@ -136,7 +138,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				if(depLastMod != null && depLastMod.compareTo(lastMod) > 0)
 					lastMod = depLastMod;
 			}
-			return currentVersion.replaceQualifier(mf.format(lastMod));
+			return VersionHelper.replaceQualifier(currentVersion, mf.format(lastMod));
 		}
 		catch(MissingComponentException e)
 		{

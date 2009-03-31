@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
@@ -25,8 +24,7 @@ import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -76,11 +74,6 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		return ch;
 	}
 
-	AdvisorNodeBuilder getAdvisorNodeBuilder()
-	{
-		return m_builder;
-	}
-
 	@Override
 	public Map<String, String> getProperties()
 	{
@@ -114,20 +107,14 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_SOURCE_LEVEL);
 		if(tmp != null)
 			m_builder.setSourceLevel(SourceLevel.valueOf(tmp));
-
-		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_VERSION_OVERRIDE);
-		if(tmp != null)
+		try
 		{
-			try
-			{
-				String vtStr = getOptionalStringValue(attrs, AdvisorNode.ATTR_VERSION_OVERRIDE_TYPE);
-				IVersionType vt = CorePlugin.getDefault().getVersionType(vtStr);
-				m_builder.setVersionOverride(VersionFactory.createDesignator(vt, tmp));
-			}
-			catch(CoreException e)
-			{
-				throw new SAXParseException(e.toString(), this.getDocumentLocator());
-			}
+			m_builder.setVersionOverride(VersionHelper.parseVersionRangeAttributes(attrs,
+					AdvisorNode.ATTR_VERSION_OVERRIDE, AdvisorNode.ATTR_VERSION_OVERRIDE_TYPE));
+		}
+		catch(CoreException e)
+		{
+			throw new SAXParseException(e.toString(), this.getDocumentLocator());
 		}
 
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_BRANCH_TAG_PATH);
@@ -196,7 +183,8 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 					prios[idx++] = Integer.parseInt(tokens.nextToken());
 				}
 				if(idx != max)
-					throw new SAXParseException(Messages.Incorrect_number_of_resolution_priorites, this.getDocumentLocator());
+					throw new SAXParseException(Messages.Incorrect_number_of_resolution_priorites, this
+							.getDocumentLocator());
 			}
 			catch(NumberFormatException e)
 			{
@@ -232,5 +220,10 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 			logAttributeDeprecation(TAG, "spacePath", "property buckminster.spacePath="); //$NON-NLS-1$ //$NON-NLS-2$
 			getProperties().put("buckminster.spacepath", spacePath); //$NON-NLS-1$
 		}
+	}
+
+	AdvisorNodeBuilder getAdvisorNodeBuilder()
+	{
+		return m_builder;
 	}
 }

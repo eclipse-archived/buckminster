@@ -15,12 +15,11 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -28,6 +27,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class MaterializationHandler extends ExtensionAwareHandler
 {
 	public static final String TAG = Materialization.TAG;
@@ -67,26 +67,18 @@ public class MaterializationHandler extends ExtensionAwareHandler
 		else
 		{
 			String ctype = getComponentType(attrs);
-			IVersion version = null;
-
-			String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
-			if(tmp != null)
+			Version version = null;
+			try
 			{
-				String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
-				if(type == null)
-					type = IVersionType.OSGI;
-				try
-				{
-					version = VersionFactory.createVersion(type, tmp);
-				}
-				catch(CoreException e)
-				{
-					throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-				}
+				version = VersionHelper.parseVersionAttributes(attrs);
+			}
+			catch(CoreException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 			cid = new ComponentIdentifier(name, ctype, version);
 		}
-		m_materialization = new Materialization(Path.fromPortableString(this.getStringValue(attrs,
+		m_materialization = new Materialization(Path.fromPortableString(getStringValue(attrs,
 				Materialization.ATTR_LOCATION)), cid);
 	}
 }

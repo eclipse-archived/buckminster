@@ -45,10 +45,8 @@ import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.site.ISiteFeatureConverter;
 import org.eclipse.buckminster.core.site.SaxableSite;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
@@ -61,6 +59,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -74,7 +74,6 @@ import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.core.model.ArchiveReferenceModel;
 import org.eclipse.update.internal.core.ExtendedSite;
-import org.osgi.framework.Version;
 
 /**
  * A Reader type that knows about features and plugins that are part of an Eclipse installation.
@@ -88,11 +87,10 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 
 	private static final String TEMP_FEATURE_VERSION = "'0.1.0.'yyyyMMddHHmmss"; //$NON-NLS-1$
 
-	public static IFeatureModel getBestFeature(String componentName, IVersionDesignator versionDesignator,
-			NodeQuery query)
+	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query)
 	{
 		IFeatureModel candidate = null;
-		IVersion candidateVersion = null;
+		Version candidateVersion = null;
 		for(IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName))
 		{
 			IFeature feature = model.getFeature();
@@ -104,8 +102,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				continue;
 			}
 
-			IVersion v = VersionFactory.OSGiType.coerce(ov);
-			if(!(versionDesignator == null || versionDesignator.designates(v)))
+			Version v = VersionHelper.parseVersion(ov);
+			if(!(versionDesignator == null || versionDesignator.isIncluded(v)))
 			{
 				if(query != null)
 					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0,
@@ -122,11 +120,10 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		return candidate;
 	}
 
-	public static IPluginModelBase getBestPlugin(String componentName, IVersionDesignator versionDesignator,
-			NodeQuery query)
+	public static IPluginModelBase getBestPlugin(String componentName, VersionRange versionDesignator, NodeQuery query)
 	{
 		IPluginModelBase candidate = null;
-		IVersion candidateVersion = null;
+		Version candidateVersion = null;
 		for(IPluginModelBase model : PluginRegistry.getActiveModels())
 		{
 			BundleDescription desc = model.getBundleDescription();
@@ -136,7 +133,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			if(!desc.getSymbolicName().equals(componentName))
 				continue;
 
-			Version ov = desc.getVersion();
+			org.osgi.framework.Version ov = desc.getVersion();
 			if(ov == null)
 			{
 				if(candidate == null && versionDesignator == null)
@@ -144,8 +141,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 				continue;
 			}
 
-			IVersion v = VersionFactory.OSGiType.coerce(ov);
-			if(!(versionDesignator == null || versionDesignator.designates(v)))
+			Version v = Version.fromOSGiVersion(ov);
+			if(!(versionDesignator == null || versionDesignator.isIncluded(v)))
 			{
 				if(query != null)
 					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0,
@@ -217,7 +214,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 
 				// A feature reference is always explicit
 				//
-				IVersionDesignator vd = dep.getVersionDesignator();
+				VersionRange vd = dep.getVersionRange();
 				if(vd == null)
 				{
 					CorePlugin.getLogger().warning(
@@ -225,7 +222,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 									res.getComponentIdentifier(), siteURL }));
 					continue;
 				}
-				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd.getVersion()));
+				pluginNames.add(new ComponentIdentifier(dep.getName(), IComponentType.OSGI_BUNDLE, vd.getMinimum()));
 			}
 		}
 
@@ -260,7 +257,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		{
 			ComponentIdentifier ci = res.getComponentIdentifier();
 			String id = ci.getName();
-			IVersion v = ci.getVersion();
+			Version v = ci.getVersion();
 			String vStr = (v == null)
 					? "0.0.0" //$NON-NLS-1$
 					: v.toString();
@@ -363,10 +360,10 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(siteFolder.toURI().toURL()
 							.toString()), null, null, null, false, false, null, null);
 
-			IVersion version = VersionFactory.OSGiType.fromString(generatedFeature.getVersion());
+			Version version = VersionHelper.parseVersion(generatedFeature.getVersion());
 			VersionMatch vm = new VersionMatch(version, null, -1, null, null);
-			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(),
-					VersionFactory.createExplicitDesignator(version));
+			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(), VersionHelper
+					.exactRange(version));
 			NodeQuery nq = new NodeQuery(context, cr, null);
 			ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, vm, nq);
 			BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
@@ -389,10 +386,10 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	@Override
 	public IPath getFixedLocation(Resolution cr)
 	{
-		IVersion version = cr.getVersion();
-		IVersionDesignator vd = version == null
+		Version version = cr.getVersion();
+		VersionRange vd = version == null
 				? null
-				: VersionFactory.createExplicitDesignator(version);
+				: VersionHelper.exactRange(version);
 		String location;
 		ComponentRequest rq = cr.getRequest();
 		if(IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID()))

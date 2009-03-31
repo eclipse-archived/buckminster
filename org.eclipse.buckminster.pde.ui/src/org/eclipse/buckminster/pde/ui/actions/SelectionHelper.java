@@ -15,15 +15,13 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
-import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 
@@ -31,6 +29,7 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
  * @author Thomas Hallgren
  * 
  */
+@SuppressWarnings("restriction")
 public abstract class SelectionHelper
 {
 	public static CSpec selectionChanged(ISelection selection)
@@ -65,31 +64,15 @@ public abstract class SelectionHelper
 
 	private static Resolution getResolution(BundleSpecification spec) throws CoreException
 	{
-		IVersionDesignator vd = null;
-		VersionRange vr = spec.getVersionRange();
-		if(vr != null)
-		{
-			String vrs = vr.toString();
-			if(!"0.0.0".equals(vrs)) //$NON-NLS-1$
-			{
-				try
-				{
-					vd = VersionFactory.createDesignator(VersionFactory.OSGiType, vrs);
-				}
-				catch(VersionSyntaxException e)
-				{
-					return null;
-				}
-			}
-		}
-		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE, vd);
+		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE, VersionRange
+				.fromOSGiVersionRange(spec.getVersionRange()));
 		return WorkspaceInfo.getResolution(cr, false);
 	}
 
 	private static Resolution getResolution(IPluginBase base) throws CoreException
 	{
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE,
-				VersionFactory.OSGiType.coerce(base.getVersion())));
+		return WorkspaceInfo.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE, Version
+				.parseVersion(base.getVersion())));
 	}
 
 	private static Resolution getResolution(IPluginModelBase model) throws CoreException
@@ -99,6 +82,6 @@ public abstract class SelectionHelper
 			return null;
 
 		return WorkspaceInfo.getResolution(new ComponentIdentifier(bundleDesc.getSymbolicName(),
-				IComponentType.OSGI_BUNDLE, VersionFactory.OSGiType.coerce(bundleDesc.getVersion())));
+				IComponentType.OSGI_BUNDLE, Version.fromOSGiVersion(bundleDesc.getVersion())));
 	}
 }

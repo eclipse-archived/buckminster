@@ -38,8 +38,6 @@ import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.download.DownloadManager;
@@ -55,6 +53,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -62,6 +62,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class ResourceMap extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "rmap"; //$NON-NLS-1$
@@ -324,17 +325,17 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 					// Assert that the cspec can handle required actions and
 					// exports
 					//
-					IVersion version = cspec.getVersion();
-					IVersionDesignator versionDesignator = query.getVersionDesignator();
-					if(versionDesignator != null && provider.getVersionConverterDesc() == null)
+					Version version = cspec.getVersion();
+					VersionRange range = query.getVersionRange();
+					if(range != null && provider.getVersionConverterDesc() == null)
 					{
 						// A missing version converter means that the actual version check is deferred
 						// and later performed on the retreived CSpec. Later is now ...
 						//
-						if(!versionDesignator.designates(version))
+						if(!range.isIncluded(version))
 						{
 							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED,
-									version, NLS.bind(Messages.Not_designated_by_0, versionDesignator));
+									version, NLS.bind(Messages.Not_designated_by_0, range));
 							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
 									.toString(), null));

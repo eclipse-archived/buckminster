@@ -20,10 +20,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -31,6 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -41,6 +41,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class MavenVersionFinder extends AbstractVersionFinder
 {
 	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" }; //$NON-NLS-1$ //$NON-NLS-2$
@@ -84,8 +85,8 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		if(b == null)
 			return a;
 
-		IVersion av = a.getVersion();
-		IVersion bv = b.getVersion();
+		Version av = a.getVersion();
+		Version bv = b.getVersion();
 		VersionMatch selected;
 		VersionMatch rejected;
 
@@ -105,52 +106,16 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		}
 		else
 		{
-			IVersionType at = av.getType();
-			IVersionType bt = bv.getType();
-			if(at.isComparableTo(bt))
+			msgFormat = Messages._0_is_a_better_match;
+			if(getQuery().compare(a, b) > 0)
 			{
-				msgFormat = Messages._0_is_a_better_match;
-				if(getQuery().compare(a, b) > 0)
-				{
-					rejected = b;
-					selected = a;
-				}
-				else
-				{
-					rejected = a;
-					selected = b;
-				}
+				rejected = b;
+				selected = a;
 			}
 			else
 			{
-				// We only deal with triplets, timestamps, and snapshots here. The
-				// order of precedence is triplet, timestamp, snapshot
-				//
-				msgFormat = Messages.only_0_is_a_triplet;
-				if(at.equals(VersionFactory.TripletType))
-				{
-					rejected = b;
-					selected = a;
-				}
-				else if(bt.equals(VersionFactory.TripletType))
-				{
-					rejected = a;
-					selected = b;
-				}
-				else
-				{
-					msgFormat = Messages.timestamp_0_is_more_strict;
-					if(at.equals(VersionFactory.TimestampType))
-					{
-						rejected = b;
-						selected = a;
-					}
-					else
-					{
-						selected = a;
-						rejected = b;
-					}
-				}
+				rejected = a;
+				selected = b;
 			}
 		}
 		logDecision(ResolverDecisionType.MATCH_REJECTED, rejected, NLS.bind(msgFormat, selected));
@@ -166,22 +131,22 @@ public class MavenVersionFinder extends AbstractVersionFinder
 	List<VersionMatch> getComponentVersions(IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query = getQuery();
-		IVersionDesignator designator = query.getVersionDesignator();
-		if(designator == null)
-			designator = VersionFactory.createDesignator(VersionFactory.TripletType, "0.0.0"); //$NON-NLS-1$
+		VersionRange range = query.getVersionRange();
+		if(range == null)
+			range = new VersionRange(Version.MIN_VERSION, true, Version.MAX_VERSION, true);
 		else
 		{
-			if(designator.getVersion().getType().equals(VersionFactory.OSGiType))
+			if(range.getFormat().equals(VersionFormat.OSGI_FORMAT))
 				//
 				// Convert the OSGi version to a Triplet version instead.
 				//
-				designator = VersionFactory.createDesignator(VersionFactory.TripletType, designator.toString());
+				range = VersionHelper.createRange(MavenComponentType.getTripletFormat(), range.toString());
 		}
 
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
 		String artifact = m_mapEntry.getArtifactId() + '-';
 		int artifactLen = artifact.length();
-		for(URL url : getFileList(designator, monitor))
+		for(URL url : getFileList(range, monitor))
 		{
 			IPath path = Path.fromPortableString(url.getPath());
 			int segCnt = path.segmentCount();
@@ -227,7 +192,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		return m_uri;
 	}
 
-	private URL[] createFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	private URL[] createFileList(VersionRange designator, IProgressMonitor monitor) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
 		m_readerType.appendFolder(pbld, m_uri.getPath());
@@ -237,7 +202,7 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		return URLCatalogReaderType.list(jarsURL, getConnectContext(), monitor);
 	}
 
-	private URL[] getFileList(IVersionDesignator designator, IProgressMonitor monitor) throws CoreException
+	private URL[] getFileList(VersionRange designator, IProgressMonitor monitor) throws CoreException
 	{
 		if(m_fileList == null)
 			m_fileList = createFileList(designator, monitor);

@@ -18,7 +18,6 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
@@ -26,6 +25,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -34,6 +34,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class SearchPath extends AbstractSaxableElement
 {
 	public static final String TAG = "searchPath"; //$NON-NLS-1$
@@ -91,7 +92,7 @@ public class SearchPath extends AbstractSaxableElement
 		try
 		{
 			ProviderMatch bestMatch = null;
-			IVersionDesignator desiredVersion = query.getVersionDesignator();
+			VersionRange desiredVersion = query.getVersionRange();
 
 			for(Provider provider : m_providers)
 			{
@@ -111,8 +112,9 @@ public class SearchPath extends AbstractSaxableElement
 				ProviderScore score = match.getProviderScore();
 
 				if((score.ordinal() >= ProviderScore.FAIR.ordinal() && IReaderType.LOCAL.equals(readerType))
-						|| (score.ordinal() >= ProviderScore.GOOD.ordinal() && desiredVersion != null && desiredVersion
-								.isIdeal(match.getVersionMatch().getVersion())))
+						|| (score.ordinal() >= ProviderScore.GOOD.ordinal() && desiredVersion != null
+								&& desiredVersion.getMinimum().equals(match.getVersionMatch().getVersion()) && desiredVersion
+								.getMinimum().equals(desiredVersion.getMaximum())))
 				{
 					// No use continuing the search. It won't get better
 					// than this.

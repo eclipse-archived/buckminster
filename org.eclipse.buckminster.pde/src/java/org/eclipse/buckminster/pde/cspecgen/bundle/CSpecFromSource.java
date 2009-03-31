@@ -33,7 +33,6 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.ProjectDescReader;
-import org.eclipse.buckminster.core.version.OSGiVersion;
 import org.eclipse.buckminster.jdt.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
@@ -48,6 +47,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.pde.core.build.IBuild;
@@ -325,7 +325,7 @@ public class CSpecFromSource extends CSpecGenerator
 		IPath manifestFolder = resolveLink(new Path(IPDEBuildConstants.MANIFEST_FOLDER).append(MANIFEST), null)
 				.removeLastSegments(1).addTrailingSeparator();
 		AttributeBuilder manifest = null;
-		OSGiVersion version = (OSGiVersion)cspec.getVersion();
+		Version version = cspec.getVersion();
 		String versionQualifier = version.getQualifier();
 		boolean versionExpansion = versionQualifier != null
 				? versionQualifier.startsWith("qualifier") //$NON-NLS-1$

@@ -10,23 +10,21 @@ package org.eclipse.buckminster.core.cspec.builder;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class ComponentRequestBuilder implements IComponentRequest
 {
 	private String m_name;
 
 	private String m_componentType;
 
-	private IVersionDesignator m_versionDesignator;
+	private VersionRange m_versionRange;
 
 	private Filter m_filter;
 
@@ -34,7 +32,7 @@ public class ComponentRequestBuilder implements IComponentRequest
 	{
 		m_name = null;
 		m_componentType = null;
-		m_versionDesignator = null;
+		m_versionRange = null;
 		m_filter = null;
 	}
 
@@ -47,7 +45,7 @@ public class ComponentRequestBuilder implements IComponentRequest
 	{
 		return Trivial.equalsAllowNull(getName(), id.getName())
 				&& (m_componentType == null || m_componentType.equals(id.getComponentTypeID()))
-				&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
+				&& (m_versionRange == null || m_versionRange.isIncluded(id.getVersion()));
 	}
 
 	public String getComponentTypeID()
@@ -65,30 +63,16 @@ public class ComponentRequestBuilder implements IComponentRequest
 		return m_name;
 	}
 
-	public IVersionDesignator getVersionDesignator()
+	public VersionRange getVersionRange()
 	{
-		return m_versionDesignator;
-	}
-
-	public String getVersionDesignatorString()
-	{
-		return m_versionDesignator == null
-				? null
-				: m_versionDesignator.toString();
-	}
-
-	public IVersionType getVersionType()
-	{
-		return m_versionDesignator == null
-				? null
-				: m_versionDesignator.getVersion().getType();
+		return m_versionRange;
 	}
 
 	public void initFrom(IComponentRequest request)
 	{
 		m_name = request.getName();
 		m_componentType = request.getComponentTypeID();
-		m_versionDesignator = request.getVersionDesignator();
+		m_versionRange = request.getVersionRange();
 		m_filter = request.getFilter();
 	}
 
@@ -107,16 +91,8 @@ public class ComponentRequestBuilder implements IComponentRequest
 		m_name = name;
 	}
 
-	public void setVersionDesignator(IVersionDesignator designator)
+	public void setVersionRange(VersionRange versionRange)
 	{
-		m_versionDesignator = designator;
-	}
-
-	public void setVersionDesignator(String designatorStr, String versionType) throws CoreException
-	{
-		if(designatorStr == null)
-			m_versionDesignator = null;
-		else
-			m_versionDesignator = VersionFactory.createDesignator(versionType, designatorStr);
+		m_versionRange = versionRange;
 	}
 }

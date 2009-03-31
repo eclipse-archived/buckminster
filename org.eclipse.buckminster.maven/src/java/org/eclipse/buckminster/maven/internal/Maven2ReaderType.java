@@ -13,6 +13,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -61,7 +62,7 @@ public class Maven2ReaderType extends MavenReaderType
 		{
 			pbld.append(artifactID);
 			pbld.append('-');
-			pbld.append(vm.getVersion());
+			pbld.append(VersionHelper.getOriginal(vm.getVersion()));
 			pbld.append(extension);
 		}
 	}

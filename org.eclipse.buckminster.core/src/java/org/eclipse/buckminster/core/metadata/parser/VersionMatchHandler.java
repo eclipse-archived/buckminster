@@ -9,13 +9,13 @@ package org.eclipse.buckminster.core.metadata.parser;
 
 import java.util.Date;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.core.version.IVersion;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -23,6 +23,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 class VersionMatchHandler extends ExtensionAwareHandler
 {
 	public static final String TAG = VersionMatch.TAG;
@@ -34,26 +35,14 @@ class VersionMatchHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
-	VersionMatch getVersionMatch()
-	{
-		return m_versionMatch;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		try
 		{
-			IVersion version = null;
-			String tmp = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION);
-			if(tmp != null)
-			{
-				String vt = getOptionalStringValue(attrs, VersionMatch.ATTR_VERSION_TYPE);
-				version = CorePlugin.getDefault().getVersionType(vt).fromString(tmp);
-			}
-
+			Version version = VersionHelper.parseVersionAttributes(attrs);
 			VersionSelector branchOrTag = null;
-			tmp = getOptionalStringValue(attrs, VersionMatch.ATTR_BRANCH_OR_TAG);
+			String tmp = getOptionalStringValue(attrs, VersionMatch.ATTR_BRANCH_OR_TAG);
 			if(tmp != null)
 				branchOrTag = VersionSelector.fromString(tmp);
 
@@ -71,5 +60,10 @@ class VersionMatchHandler extends ExtensionAwareHandler
 		{
 			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 		}
+	}
+
+	VersionMatch getVersionMatch()
+	{
+		return m_versionMatch;
 	}
 }

@@ -35,9 +35,7 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
@@ -56,6 +54,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -134,7 +134,7 @@ public class PDEMapProvider extends Provider
 				return null;
 
 			Map<String, String> properties = tv.getProperties();
-			IVersion v = null;
+			Version v = null;
 			String tag = properties.get("tag"); //$NON-NLS-1$
 			VersionSelector vs = (tag == null)
 					? null
@@ -147,8 +147,8 @@ public class PDEMapProvider extends Provider
 				// for.
 				//
 				v = vc.createVersion(vs);
-				IVersionDesignator vd = query.getVersionDesignator();
-				if(!(vd == null || vd.designates(v)))
+				VersionRange vd = query.getVersionRange();
+				if(!(vd == null || vd.isIncluded(v)))
 					return null;
 			}
 
@@ -276,7 +276,7 @@ public class PDEMapProvider extends Provider
 		ComponentRequest wanted = query.getComponentRequest();
 		String name = wanted.getName();
 		String ctype = wanted.getComponentTypeID();
-		IVersionDesignator vd = wanted.getVersionDesignator();
+		VersionRange vd = wanted.getVersionRange();
 
 		IComponentIdentifier candidate = null;
 		MapFileEntry candidateEntry = null;
@@ -285,10 +285,10 @@ public class PDEMapProvider extends Provider
 			ComponentIdentifier cn = entry.getKey();
 			if(cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID()))
 			{
-				IVersion v = cn.getVersion();
+				Version v = cn.getVersion();
 				if(vd != null)
 				{
-					if(!(v == null || vd.designates(v)))
+					if(!(v == null || vd.isIncluded(v)))
 						continue;
 				}
 

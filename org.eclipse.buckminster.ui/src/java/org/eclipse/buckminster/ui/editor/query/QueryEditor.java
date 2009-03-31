@@ -35,7 +35,6 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -65,6 +64,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -120,6 +120,7 @@ import org.eclipse.ui.part.EditorPart;
  * @author Karel Brezina
  * 
  */
+@SuppressWarnings("restriction")
 public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 {
 	class AdvisorNodeLabelProvider extends LabelProvider implements ITableLabelProvider
@@ -1511,7 +1512,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 			m_timestamp.setText(timestamp == null
 					? "" : m_timestampFormat.format(timestamp)); //$NON-NLS-1$
 
-			IVersionDesignator vs = node.getVersionOverride();
+			VersionRange vs = node.getVersionOverride();
 			boolean enableOverride = (vs != null);
 			m_enableOverride.setSelection(enableOverride);
 			m_versionOverride.setEnabled(enableOverride);
@@ -1540,7 +1541,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 			ComponentRequest request = m_componentQuery.getRootRequest();
 			m_componentName.setText(TextUtils.notNullString(request.getName()));
 			m_componentType.select(m_componentType.indexOf(TextUtils.notNullString(request.getComponentTypeID())));
-			m_versionDesignator.refreshValues(request.getVersionDesignator());
+			m_versionDesignator.refreshValues(request.getVersionRange());
 
 			String string = TextUtils.notNullString(m_componentQuery.getPropertiesURL());
 			m_propertyURL.setText(string);
@@ -1666,7 +1667,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		node.setAllowCircularDependency(m_allowCircular.getSelection());
 
 		boolean override = m_enableOverride.getSelection();
-		IVersionDesignator versionOverride = null;
+		VersionRange versionOverride = null;
 		if(override)
 			try
 			{

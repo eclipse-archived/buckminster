@@ -39,10 +39,8 @@ import org.eclipse.buckminster.core.reader.RemoteFile;
 import org.eclipse.buckminster.core.reader.RemoteFileCache;
 import org.eclipse.buckminster.core.version.IQualifierGenerator;
 import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.MissingMaterializerException;
 import org.eclipse.buckminster.core.version.MissingVersionConverterException;
-import org.eclipse.buckminster.core.version.MissingVersionTypeException;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -101,8 +99,6 @@ public class CorePlugin extends LogAwarePlugin
 	public static final String QUALIFIER_GENERATOR_POINT = CORE_NAMESPACE + ".qualifierGenerators"; //$NON-NLS-1$
 
 	public static final String READER_TYPE_POINT = CORE_NAMESPACE + ".readerTypes"; //$NON-NLS-1$
-
-	public static final String VERSION_TYPES_POINT = CORE_NAMESPACE + ".versionTypes"; //$NON-NLS-1$
 
 	public static final String VERSION_CONVERTERS_POINT = CORE_NAMESPACE + ".versionConverters"; //$NON-NLS-1$
 
@@ -504,17 +500,6 @@ public class CorePlugin extends LogAwarePlugin
 		if(vc != null)
 			return vc;
 		throw new MissingVersionConverterException(versionConverter);
-	}
-
-	public IVersionType getVersionType(String versionType) throws CoreException
-	{
-		if(versionType == null)
-			versionType = IVersionType.OSGI;
-
-		IVersionType vm = getExecutableExtension(IVersionType.class, VERSION_TYPES_POINT, versionType, true);
-		if(vm != null)
-			return vm;
-		throw new MissingVersionTypeException(versionType);
 	}
 
 	/**

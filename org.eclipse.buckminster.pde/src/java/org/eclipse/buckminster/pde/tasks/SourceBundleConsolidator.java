@@ -4,12 +4,13 @@ import java.io.File;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.osgi.framework.Constants;
 
+@SuppressWarnings("restriction")
 public class SourceBundleConsolidator extends BundleConsolidator
 {
 	public SourceBundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier)
@@ -24,7 +25,7 @@ public class SourceBundleConsolidator extends BundleConsolidator
 	 * org.eclipse.core.filebuffers;version="3.5.0.N200
 	 */
 	@Override
-	protected boolean treatManifest(Manifest manifest, String symbolicName, IVersion version)
+	protected boolean treatManifest(Manifest manifest, String symbolicName, Version version)
 	{
 		if(symbolicName == null || version == null)
 		{

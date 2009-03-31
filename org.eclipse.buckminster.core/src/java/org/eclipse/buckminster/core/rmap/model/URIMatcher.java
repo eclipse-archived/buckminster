@@ -31,11 +31,7 @@ import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
@@ -47,6 +43,9 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -54,12 +53,15 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  * 
  */
+@SuppressWarnings("restriction")
 public class URIMatcher extends RxAssembly
 {
 	@SuppressWarnings("hiding")
 	public static final String TAG = "matcher"; //$NON-NLS-1$
 
 	public static final String ATTR_BASE = "base"; //$NON-NLS-1$
+
+	public static final String ATTR_VERSION_FORMAT = "versionFormat"; //$NON-NLS-1$
 
 	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
@@ -93,18 +95,18 @@ public class URIMatcher extends RxAssembly
 
 	private final String m_base;
 
-	private final IVersionType m_versionType;
+	private final VersionFormat m_versionFormat;
 
 	private final String m_componentType;
 
-	public URIMatcher(List<RxPart> parts, String base, IVersionType versionType, String componentType)
+	public URIMatcher(List<RxPart> parts, String base, VersionFormat versionFormat, String componentType)
 			throws CoreException, PatternSyntaxException
 	{
 		super(parts);
 		m_base = base;
-		m_versionType = versionType == null
-				? VersionFactory.OSGiType
-				: versionType;
+		m_versionFormat = versionFormat == null
+				? VersionFormat.OSGI_FORMAT
+				: versionFormat;
 		m_componentType = componentType;
 	}
 
@@ -118,7 +120,16 @@ public class URIMatcher extends RxAssembly
 		bld.setName(matchMap.get(COMPONENT_NAME_PARAM));
 		String tmp = matchMap.get(COMPONENT_VERSION_PARAM);
 		if(tmp != null)
-			bld.setVersion(m_versionType.fromString(tmp));
+		{
+			try
+			{
+				bld.setVersion(m_versionFormat.parse(tmp));
+			}
+			catch(IllegalArgumentException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
 
 		IComponentType ctype = pm.getComponentType();
 		bld.setComponentTypeID(ctype.getId());
@@ -190,21 +201,21 @@ public class URIMatcher extends RxAssembly
 				continue;
 			}
 
-			IVersion version = null;
+			Version version = null;
 			String tmp = matchMap.get(COMPONENT_VERSION_PARAM);
 			if(tmp != null)
 			{
 				try
 				{
-					version = m_versionType.fromString(tmp);
-					IVersionDesignator vd = cq.getVersionDesignator();
-					if(!(vd == null || vd.designates(version)))
+					version = m_versionFormat.parse(tmp);
+					VersionRange vd = cq.getVersionRange();
+					if(!(vd == null || vd.isIncluded(version)))
 					{
 						logger.debug("URI version %s is not designated by %s", version, vd); //$NON-NLS-1$
 						continue;
 					}
 				}
-				catch(CoreException e)
+				catch(IllegalArgumentException e)
 				{
 					logger.warning(e, e.getMessage());
 					continue;
@@ -277,9 +288,9 @@ public class URIMatcher extends RxAssembly
 		return pm;
 	}
 
-	public IVersionType getVersionType()
+	public VersionFormat getVersionType()
 	{
-		return m_versionType;
+		return m_versionFormat;
 	}
 
 	@Override
@@ -287,7 +298,7 @@ public class URIMatcher extends RxAssembly
 	{
 		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_BASE, m_base);
-		if(m_versionType != VersionFactory.OSGiType)
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
+		if(!m_versionFormat.equals(VersionFormat.OSGI_FORMAT))
+			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, m_versionFormat.toString());
 	}
 }

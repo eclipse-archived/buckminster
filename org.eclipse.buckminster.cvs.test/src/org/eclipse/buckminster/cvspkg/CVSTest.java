@@ -35,7 +35,6 @@ import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.cvspkg.internal.CVSSession;
 import org.eclipse.buckminster.cvspkg.internal.FileSystemCopier;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -48,6 +47,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
@@ -170,15 +170,13 @@ public class CVSTest extends TestCase
 	{
 		CorePlugin plugin = CorePlugin.getDefault();
 		IReaderType rd = plugin.getReaderType("cvs");
-		VersionConverterDesc vd = new VersionConverterDesc("tag", VersionFactory.OSGiType,
-				new BidirectionalTransformer[] {
-						new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"),
-								"$1.$2.$3.$4", Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"),
-								"REL$1_$2_$3$4"),
-						new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3",
-								Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
-						new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3", Pattern
-								.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
+		VersionConverterDesc vd = new VersionConverterDesc("tag", null, new BidirectionalTransformer[] {
+				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"), "$1.$2.$3.$4",
+						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3$4"),
+				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3", Pattern
+						.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
+				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3", Pattern
+						.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
 
 		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
 		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
@@ -187,7 +185,7 @@ public class CVSTest extends TestCase
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
 		rqBld.setName("pgsql");
-		rqBld.setVersionDesignator("[8.0.0,8.0.4]", null);
+		rqBld.setVersionRange(new VersionRange("[8.0.0,8.0.4]"));
 		cq.setResourceMapURL(getClass().getResource("test.rmap").toString());
 		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
 		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(),

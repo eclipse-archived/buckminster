@@ -25,12 +25,10 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.build.IFetchFactory;
 import org.eclipse.pde.internal.build.FetchTaskFactoriesRegistry;
@@ -117,14 +115,14 @@ public class MapFile
 			}
 
 			String vstr = m.group(3);
-			IVersion version;
+			Version version;
 			try
 			{
 				version = vstr == null
 						? null
-						: VersionFactory.OSGiType.fromString(vstr);
+						: Version.parseVersion(vstr);
 			}
-			catch(VersionSyntaxException e)
+			catch(IllegalArgumentException e)
 			{
 				// Version is corrupt. Skip this line
 				//
@@ -164,9 +162,9 @@ public class MapFile
 					{
 						try
 						{
-							version = VersionFactory.OSGiType.fromString(vcName, identifier.length() + 1, new int[1]);
+							version = Version.parseVersion(vcName.substring(identifier.length() + 1));
 						}
-						catch(VersionSyntaxException e)
+						catch(IllegalArgumentException e)
 						{
 							// Ignore. For some reason this version was not a
 							// valid OSGi version

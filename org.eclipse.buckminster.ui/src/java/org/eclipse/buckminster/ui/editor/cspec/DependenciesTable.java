@@ -14,7 +14,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
@@ -28,6 +27,7 @@ import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
 import org.eclipse.buckminster.ui.general.editor.simple.WidgetWrapper;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -41,6 +41,7 @@ import org.osgi.framework.InvalidSyntaxException;
  * @author Karel Brezina
  * 
  */
+@SuppressWarnings("restriction")
 public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 {
 	class FilterValidator implements IValidator
@@ -188,7 +189,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 		array[0] = t.getName();
 		array[1] = t.getComponentTypeID();
-		array[2] = t.getVersionDesignator();
+		array[2] = t.getVersionRange();
 		array[3] = t.getFilter();
 
 		return array;
@@ -198,7 +199,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 	{
 		builder.setName(TextUtils.notEmptyString((String)args[0]));
 		builder.setComponentTypeID(TextUtils.notEmptyString((String)args[1]));
-		builder.setVersionDesignator((IVersionDesignator)args[2]);
+		builder.setVersionRange((VersionRange)args[2]);
 		builder.setFilter((Filter)args[3]);
 	}
 
@@ -252,7 +253,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 	private VersionDesignator getVersionDesignator(Composite parent, final int idx, Object value)
 	{
 		final VersionDesignator designator = new VersionDesignator(parent);
-		designator.refreshValues((IVersionDesignator)value);
+		designator.refreshValues((VersionRange)value);
 
 		designator.setData(value);
 
@@ -263,7 +264,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 			{
 				try
 				{
-					IVersionDesignator designatorValue = designator.getDirectVersionDesignator();
+					VersionRange designatorValue = designator.getDirectVersionDesignator();
 					designator.setData(designatorValue);
 				}
 				catch(CoreException e1)

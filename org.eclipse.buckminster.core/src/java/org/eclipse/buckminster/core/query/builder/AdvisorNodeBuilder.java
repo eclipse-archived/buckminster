@@ -20,10 +20,11 @@ import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
+@SuppressWarnings("restriction")
 public class AdvisorNodeBuilder implements IAdvisorNode
 {
 	private boolean m_allowCircularDependency;
@@ -66,7 +67,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 
 	private boolean m_useRemoteResolution;
 
-	private IVersionDesignator m_versionOverride;
+	private VersionRange m_versionOverride;
 
 	public AdvisorNodeBuilder()
 	{
@@ -186,7 +187,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		return m_timestamp;
 	}
 
-	public IVersionDesignator getVersionOverride()
+	public VersionRange getVersionOverride()
 	{
 		return m_versionOverride;
 	}
@@ -345,7 +346,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_useWorkspace = useProject;
 	}
 
-	public void setVersionOverride(IVersionDesignator versionOverride)
+	public void setVersionOverride(VersionRange versionOverride)
 	{
 		m_versionOverride = versionOverride;
 	}

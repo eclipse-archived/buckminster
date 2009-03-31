@@ -11,6 +11,7 @@ import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -47,8 +48,7 @@ public class ComponentRequestHandler extends ExtensionAwareHandler
 		m_builder.setComponentTypeID(getComponentType(attrs));
 		try
 		{
-			m_builder.setVersionDesignator(getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR),
-					getOptionalStringValue(attrs, ComponentRequest.ATTR_VERSION_TYPE));
+			m_builder.setVersionRange(VersionHelper.parseVersionRangeAttributes(attrs));
 		}
 		catch(CoreException e)
 		{

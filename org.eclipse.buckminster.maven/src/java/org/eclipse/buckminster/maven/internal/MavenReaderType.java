@@ -24,9 +24,8 @@ import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -35,10 +34,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class MavenReaderType extends URLCatalogReaderType
 {
 	static void appendMavenVersionName(StringBuilder bld, VersionMatch vm) throws CoreException
@@ -63,16 +64,16 @@ public class MavenReaderType extends URLCatalogReaderType
 			bld.append('-');
 		}
 
-		IVersion version = vm.getVersion();
+		Version version = vm.getVersion();
 		if(version != null)
-			bld.append(version);
+			bld.append(VersionHelper.getOriginal(version));
 
 		Date timestamp = vm.getTimestamp();
 		if(timestamp != null)
 		{
 			if(version != null)
 				bld.append('-');
-			bld.append(VersionFactory.TimestampType.coerce(timestamp));
+			bld.append(VersionHelper.toTimestampString(timestamp));
 		}
 	}
 

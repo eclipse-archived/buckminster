@@ -28,8 +28,6 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -42,11 +40,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractComponentType extends AbstractExtension implements IComponentType
 {
 	static class MetaFile implements IMetaFile
@@ -146,7 +147,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 	private Pattern m_substituteNamePattern;
 
-	public IVersion getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
+	public Version getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		BOMNode node = getResolution(rInfo, true, monitor);
 		return node.getResolution().getComponentIdentifier().getVersion();
@@ -184,8 +185,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 		if(repFrom == null || repTo == null)
 			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.Component_type_0_defines_desiredNamePattern_but_no_substitution,
-					getId()));
+					Messages.Component_type_0_defines_desiredNamePattern_but_no_substitution, getId()));
 
 		Matcher matcher = repFrom.matcher(componentName);
 		if(matcher.matches())
@@ -202,28 +202,6 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return m_relativeLocation;
 	}
 
-	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor)
-			throws CoreException
-	{
-		monitor.beginTask(null, 2000);
-		IComponentReader[] reader = new IComponentReader[1];
-		try
-		{
-			reader[0] = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
-			ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
-			String componentType = request.getComponentTypeID();
-			if(componentType != null && !getId().equals(componentType))
-				throw new ComponentTypeMismatchException(request.getName(), componentType, getId());
-
-			IResolutionBuilder builder = getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 800));
-			return builder.build(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));
-		}
-		finally
-		{
-			IOUtils.close(reader[0]);
-		}
-	}
-
 	public final BOMNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
 	{
 		return getResolution(rInfo, false, monitor);
@@ -234,7 +212,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return m_substituteNamePattern;
 	}
 
-	public IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator)
+	public VersionRange getTypeSpecificDesignator(VersionRange designator)
 	{
 		return designator;
 	}
@@ -346,5 +324,27 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		m_metaFiles = (metaFiles == null)
 				? s_noMetaFiles
 				: metaFiles.toArray(new IMetaFile[metaFiles.size()]);
+	}
+
+	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor)
+			throws CoreException
+	{
+		monitor.beginTask(null, 2000);
+		IComponentReader[] reader = new IComponentReader[1];
+		try
+		{
+			reader[0] = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
+			ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
+			String componentType = request.getComponentTypeID();
+			if(componentType != null && !getId().equals(componentType))
+				throw new ComponentTypeMismatchException(request.getName(), componentType, getId());
+
+			IResolutionBuilder builder = getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 800));
+			return builder.build(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));
+		}
+		finally
+		{
+			IOUtils.close(reader[0]);
+		}
 	}
 }

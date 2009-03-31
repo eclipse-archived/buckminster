@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.maven.internal.LocalCache;
 import org.eclipse.buckminster.maven.internal.Maven2VersionFinder;
 import org.eclipse.buckminster.maven.internal.MavenComponentType;
@@ -22,19 +21,21 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.osgi.framework.BundleContext;
 import org.w3c.dom.Document;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class MavenPlugin extends LogAwarePlugin
 {
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.maven"; //$NON-NLS-1$
 
 	private static MavenPlugin s_plugin;
 
-	public static IVersion createVersion(String versionStr) throws CoreException
+	public static Version createVersion(String versionStr) throws CoreException
 	{
 		return MavenComponentType.createVersion(versionStr);
 	}

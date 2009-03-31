@@ -9,10 +9,11 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.editor;
 
-import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Widget;
 
+@SuppressWarnings("restriction")
 public class VersionDesignatorEvent extends TypedEvent
 {
 	private static final long serialVersionUID = 3880730801886666166L;
@@ -25,7 +26,7 @@ public class VersionDesignatorEvent extends TypedEvent
 		this.data = d;
 	}
 
-	public IVersionDesignator getVersionDesignator()
+	public VersionRange getVersionDesignator()
 	{
 		return ((VersionDesignator)this.getSource()).getVersionDesignator();
 	}

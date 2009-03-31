@@ -12,15 +12,16 @@ package org.eclipse.buckminster.core.rmap.parser;
 
 import java.util.ArrayList;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
-import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.FormatException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -28,13 +29,14 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class VersionConverterHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
 	static final String TAG = VersionConverterDesc.TAG;
 
 	private String m_type;
 
-	private IVersionType m_versionType;
+	private VersionFormat m_versionFormat;
 
 	private final BidirectionalTransformerHandler m_transformerHandler = new BidirectionalTransformerHandler(this);
 
@@ -64,7 +66,7 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 
 	public VersionConverterDesc getVersionConverter()
 	{
-		return new VersionConverterDesc(m_type, m_versionType, m_transformers
+		return new VersionConverterDesc(m_type, m_versionFormat, m_transformers
 				.toArray(new BidirectionalTransformer[m_transformers.size()]));
 	}
 
@@ -72,22 +74,32 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_type = this.getStringValue(attrs, VersionConverterDesc.ATTR_TYPE);
-		String tmp = getOptionalStringValue(attrs, VersionConverterDesc.ATTR_VERSION_TYPE);
-		if(tmp == null)
-			//
-			// Let the converter choose a default type
-			//
-			m_versionType = null;
-		else
+		String tmp = getOptionalStringValue(attrs, VersionConverterDesc.ATTR_VERSION_FORMAT);
+		if(tmp != null)
 		{
 			try
 			{
-				m_versionType = CorePlugin.getDefault().getVersionType(tmp);
+				m_versionFormat = VersionFormat.compile(tmp);
 			}
-			catch(CoreException e)
+			catch(FormatException e)
 			{
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
+		}
+		else
+		{
+			tmp = getOptionalStringValue(attrs, VersionConverterDesc.ATTR_VERSION_TYPE);
+			if(tmp == null)
+				m_versionFormat = null;
+			else
+				try
+				{
+					m_versionFormat = VersionHelper.getVersionType(tmp).getFormat();
+				}
+				catch(CoreException e)
+				{
+					throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+				}
 		}
 		m_transformers.clear();
 	}

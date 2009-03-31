@@ -12,12 +12,14 @@ import java.util.List;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public interface IQualifierGenerator
 {
-	IVersion generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies)
+	Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies)
 			throws CoreException;
 }

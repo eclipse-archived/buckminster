@@ -10,9 +10,9 @@ package org.eclipse.buckminster.core.cspec.parser;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -123,8 +123,7 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 
 		try
 		{
-			m_builder.setVersion(getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION),
-					getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE));
+			m_builder.setVersion(VersionHelper.parseVersionAttributes(attrs));
 		}
 		catch(CoreException e)
 		{

@@ -16,12 +16,12 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
 /**
  * A IComponentType knows how to find dependency information in the components that it represents, often in combination
@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @see org.eclipse.buckminster.core.CorePlugin#getComponentType(String)
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public interface IComponentType extends IBuckminsterExtension
 {
 	public static final String OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
@@ -70,7 +71,7 @@ public interface IComponentType extends IBuckminsterExtension
 	 * @return the component version or <code>null</code> if not applicable
 	 * @throws CoreException
 	 */
-	IVersion getComponentVersion(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
+	Version getComponentVersion(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * A regular expression that should match the name of the component. The project name will be subject to name
@@ -148,7 +149,7 @@ public interface IComponentType extends IBuckminsterExtension
 	 * 
 	 * @return The converted designator
 	 */
-	IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator);
+	VersionRange getTypeSpecificDesignator(VersionRange designator);
 
 	/**
 	 * Returns true if the component type can find all required meta files under the given <code>path</code>.

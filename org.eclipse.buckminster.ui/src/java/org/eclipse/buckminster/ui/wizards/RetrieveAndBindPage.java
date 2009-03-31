@@ -31,7 +31,6 @@ import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -45,6 +44,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -86,6 +86,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  * @author Kenneth Olwing
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class RetrieveAndBindPage extends AbstractQueryPage
 {
 	class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider
@@ -163,8 +164,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			int result = o1.getRequest().getViewName().compareTo(o2.getRequest().getViewName());
 			if(result == 0)
 			{
-				IVersion vsA = o1.getVersion();
-				IVersion vsB = o2.getVersion();
+				Version vsA = o1.getVersion();
+				Version vsB = o2.getVersion();
 				if(vsA != null)
 					result = (vsB == null)
 							? 1

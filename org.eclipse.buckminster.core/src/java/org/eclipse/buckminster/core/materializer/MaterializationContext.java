@@ -26,17 +26,18 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class MaterializationContext extends RMContext
 {
 	private final BillOfMaterials m_bom;
@@ -150,11 +151,11 @@ public class MaterializationContext extends RMContext
 			// No filename is available, let's use a name built from <componentname>_<version>
 			//
 			StringBuilder nameBld = new StringBuilder(ci.getName());
-			IVersion version = ci.getVersion();
+			Version version = ci.getVersion();
 			if(version != null)
 			{
 				nameBld.append('_');
-				version.toString(nameBld);
+				nameBld.append(version);
 			}
 			nameBld.append(".dat"); //$NON-NLS-1$
 			leaf = Path.fromPortableString(nameBld.toString());

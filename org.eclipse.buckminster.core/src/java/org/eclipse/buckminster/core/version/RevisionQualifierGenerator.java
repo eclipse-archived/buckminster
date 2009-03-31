@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * This class will generate qualifiers based on component revisions. The revision is obtained using the same @
@@ -29,16 +30,17 @@ import org.eclipse.core.runtime.IPath;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static String FORMAT_PROPERTY = "generator.lastRevision.format"; //$NON-NLS-1$
 
 	public static String DEFAULT_FORMAT = "r{0,number,##################}"; //$NON-NLS-1$
 
-	public IVersion generateQualifier(IActionContext context, ComponentIdentifier cid,
+	public Version generateQualifier(IActionContext context, ComponentIdentifier cid,
 			List<ComponentIdentifier> dependencies) throws CoreException
 	{
-		IVersion currentVersion = cid.getVersion();
+		Version currentVersion = cid.getVersion();
 		if(currentVersion == null)
 			return null;
 
@@ -61,7 +63,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 			MessageFormat mf = new MessageFormat(format);
 			for(IComponentIdentifier dependency : dependencies)
 			{
-				IVersion depVer = dependency.getVersion();
+				Version depVer = dependency.getVersion();
 				if(depVer == null)
 					continue;
 
@@ -79,7 +81,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 				{
 				}
 			}
-			return currentVersion.replaceQualifier(mf.format(new Object[] { new Long(revision) }));
+			return VersionHelper.replaceQualifier(currentVersion, mf.format(new Object[] { new Long(revision) }));
 		}
 		catch(MissingComponentException e)
 		{

@@ -19,8 +19,6 @@ public interface KeyConstants
 
 	public static final String VERSION_DESIGNATOR = "buckminster.version.designator"; //$NON-NLS-1$
 
-	public static final String VERSION_TYPE = "buckminster.version.type"; //$NON-NLS-1$
-
 	public static final String COMPONENT_VERSION = "buckminster.version"; //$NON-NLS-1$
 
 	public static final String MUTABLERULE = "buckminster.rule.mutable"; //$NON-NLS-1$

@@ -23,13 +23,14 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class CSpecExtension
 {
 	public static final String TAG = "cspecExtension"; //$NON-NLS-1$
@@ -143,7 +144,7 @@ public class CSpecExtension
 	 */
 	public void alterTopElement(CSpecBuilder bld) throws CoreException
 	{
-		IVersion extVersion = m_base.getVersion();
+		Version extVersion = m_base.getVersion();
 		if(extVersion != null)
 			bld.setVersion(extVersion);
 

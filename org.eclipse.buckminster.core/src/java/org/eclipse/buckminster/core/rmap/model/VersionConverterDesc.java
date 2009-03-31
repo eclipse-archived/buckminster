@@ -12,19 +12,22 @@ package org.eclipse.buckminster.core.rmap.model;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.IVersionConverter;
-import org.eclipse.buckminster.core.version.IVersionType;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+@SuppressWarnings("restriction")
 public class VersionConverterDesc extends AbstractSaxableElement
 {
 	public static final String TAG = "versionConverter"; //$NON-NLS-1$
 
 	public static final String ATTR_TYPE = "type"; //$NON-NLS-1$
+
+	public static final String ATTR_VERSION_FORMAT = "versionFormat"; //$NON-NLS-1$
 
 	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
@@ -32,28 +35,13 @@ public class VersionConverterDesc extends AbstractSaxableElement
 
 	private final BidirectionalTransformer[] m_transformers;
 
-	private final IVersionType m_versionType;
+	private final VersionFormat m_versionFormat;
 
-	public VersionConverterDesc(String type, IVersionType versionType, BidirectionalTransformer[] transformers)
+	public VersionConverterDesc(String type, VersionFormat versionFormat, BidirectionalTransformer[] transformers)
 	{
 		m_type = type;
 		m_transformers = transformers;
-		m_versionType = versionType;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_TYPE, m_type);
-		if(m_versionType != null)
-			Utils.addAttribute(attrs, ATTR_VERSION_TYPE, m_versionType.getId());
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(BidirectionalTransformer transformer : m_transformers)
-			transformer.toSax(handler, namespace, prefix, transformer.getDefaultTag());
+		m_versionFormat = versionFormat;
 	}
 
 	public String getDefaultTag()
@@ -75,7 +63,22 @@ public class VersionConverterDesc extends AbstractSaxableElement
 	{
 		AbstractConverter vct = (AbstractConverter)CorePlugin.getDefault().getVersionConverter(m_type);
 		vct.setTransformers(m_transformers);
-		vct.setVersionType(m_versionType);
+		vct.setVersionFormat(m_versionFormat);
 		return vct;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_TYPE, m_type);
+		if(m_versionFormat != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, m_versionFormat.toString());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		for(BidirectionalTransformer transformer : m_transformers)
+			transformer.toSax(handler, namespace, prefix, transformer.getDefaultTag());
 	}
 }

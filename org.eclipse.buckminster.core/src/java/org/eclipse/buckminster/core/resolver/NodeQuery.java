@@ -30,12 +30,13 @@ import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -44,6 +45,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 {
 	private final RMContext m_context;
@@ -356,17 +358,17 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 * 
 	 * @return A version selector or <code>null</code>.
 	 */
-	public IVersionDesignator getVersionDesignator()
+	public VersionRange getVersionRange()
 	{
 		ComponentRequest request = getComponentRequest();
-		IVersionDesignator vds = getComponentQuery().getVersionOverride(request);
+		VersionRange vds = getComponentQuery().getVersionOverride(request);
 		if(vds == null)
-			vds = request.getVersionDesignator();
+			vds = request.getVersionRange();
 		if(vds == null)
 			return vds;
 
 		IComponentType ctype = getComponentType();
-		if(ctype == null && IVersionType.TRIPLET.equals(vds.getVersion().getType().getId()))
+		if(ctype == null && VersionHelper.getVersionType(vds.getMinimum().getFormat()).equals(VersionType.TRIPLET))
 		{
 			try
 			{
@@ -396,7 +398,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 *            the space path resolver to use when expanding the space path.
 	 * @return true if the given values matches this query
 	 */
-	public boolean isMatch(IVersion version, VersionSelector branchOrTag)
+	public boolean isMatch(Version version, VersionSelector branchOrTag)
 	{
 		VersionSelector[] branchTagPath = getBranchTagPath();
 		if(branchTagPath.length > 0)
@@ -414,11 +416,11 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			}
 		}
 
-		IVersionDesignator designator = getVersionDesignator();
-		if(designator != null && !designator.designates(version))
+		VersionRange versionRange = getVersionRange();
+		if(versionRange != null && !versionRange.isIncluded(version))
 		{
 			logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(Messages.Not_designated_by_0,
-					designator));
+					versionRange));
 			return false;
 		}
 		return true;
@@ -553,17 +555,17 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	{
 		// Compare the versions.
 		//
-		IVersion v1 = vm1.getVersion();
-		IVersion v2 = vm2.getVersion();
-		IVersionDesignator vd = getVersionDesignator();
+		Version v1 = vm1.getVersion();
+		Version v2 = vm2.getVersion();
+		VersionRange vd = getVersionRange();
 
 		if(vd != null)
 		{
 			// Only consider designated versions
 			//
-			if(v1 != null && !vd.designates(v1))
+			if(v1 != null && !vd.isIncluded(v1))
 				v1 = null;
-			if(v2 != null && !vd.designates(v2))
+			if(v2 != null && !vd.isIncluded(v2))
 				v2 = null;
 		}
 
@@ -578,16 +580,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			if(v2 == null)
 				cmp = 1; // Consider v2 to be less
 			else
-			{
-				// When the versions are of different type (this
-				// can only happen when no versionDesignator was
-				// present to discriminate above) we will consider
-				// them equal so that they don't affect the
-				// outcome.
-				//
-				if(v1.getType().isComparableTo(v2.getType()))
-					cmp = v1.compareTo(v2);
-			}
+				cmp = v1.compareTo(v2);
 		}
 		return cmp;
 	}

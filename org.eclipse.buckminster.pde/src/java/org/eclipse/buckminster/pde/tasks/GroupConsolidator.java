@@ -23,8 +23,6 @@ import java.util.jar.JarFile;
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.version.VersionFactory;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -231,7 +229,6 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 
 	static void addVersion(Map<String, Version[]> versionMap, String id, String versionStr)
-			throws VersionSyntaxException
 	{
 		if(versionStr == null)
 			return;
@@ -557,8 +554,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	{
 		Version version = findBestVersion(m_featureVersions, id, "feature", ref.getId(), ref.getVersion()); //$NON-NLS-1$
 		if(version != null)
-			return new ComponentIdentifier(ref.getId(), IComponentType.ECLIPSE_FEATURE, VersionFactory.OSGiType
-					.fromString(version.toString()));
+			return new ComponentIdentifier(ref.getId(), IComponentType.ECLIPSE_FEATURE, version);
 		return null;
 	}
 
@@ -566,8 +562,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	{
 		Version version = findBestVersion(m_pluginVersions, id, "plugin", ref.getId(), ref.getVersion()); //$NON-NLS-1$
 		if(version != null)
-			return new ComponentIdentifier(ref.getId(), IComponentType.OSGI_BUNDLE, VersionFactory.OSGiType
-					.fromString(version.toString()));
+			return new ComponentIdentifier(ref.getId(), IComponentType.OSGI_BUNDLE, version);
 		return null;
 	}
 }

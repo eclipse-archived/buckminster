@@ -5,10 +5,11 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
+@SuppressWarnings("restriction")
 public interface ICSpecData extends IAdaptable
 {
 	IAttribute getAttribute(String name);
@@ -35,5 +36,5 @@ public interface ICSpecData extends IAdaptable
 
 	String getShortDesc();
 
-	IVersion getVersion();
+	Version getVersion();
 }

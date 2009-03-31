@@ -15,11 +15,11 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -27,6 +27,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class Materialization extends UUIDKeyed implements IUUIDPersisted
 {
 	public static final String TAG = "materialization"; //$NON-NLS-1$
@@ -45,23 +46,6 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 			throw new NullPointerException();
 		m_componentLocation = destination;
 		m_componentIdentifier = componentIdentifier;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
-		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
-		String tmp = m_componentIdentifier.getComponentTypeID();
-		if(tmp != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
-
-		IVersion version = m_componentIdentifier.getVersion();
-		if(version != null)
-		{
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION_TYPE, version.getType().getId());
-		}
 	}
 
 	public ComponentIdentifier getComponentIdentifier()
@@ -127,5 +111,19 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 		receiver.startDocument();
 		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		receiver.endDocument();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
+		String tmp = m_componentIdentifier.getComponentTypeID();
+		if(tmp != null)
+			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
+
+		Version version = m_componentIdentifier.getVersion();
+		if(version != null)
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
 	}
 }

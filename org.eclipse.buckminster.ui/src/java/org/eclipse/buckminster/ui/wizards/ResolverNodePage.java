@@ -20,8 +20,8 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.IResolution;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -29,7 +29,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.SaveRunnable;
@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -77,6 +78,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  * @author Kenneth Olwing
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class ResolverNodePage extends AbstractQueryPage
 {
 	class RequestLabelProvider extends LabelProvider implements ITableLabelProvider
@@ -96,9 +98,9 @@ public class ResolverNodePage extends AbstractQueryPage
 				lbl = rq.getName();
 				break;
 			case 1:
-				IVersionDesignator vd = rq.getVersionDesignator();
+				VersionRange vd = rq.getVersionRange();
 				lbl = vd == null
-						? "" : vd.toString(); //$NON-NLS-1$
+						? "" : VersionHelper.getHumanReadable(vd); //$NON-NLS-1$
 				break;
 			default:
 				lbl = rq.getComponentTypeID();

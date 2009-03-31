@@ -9,9 +9,10 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
+@SuppressWarnings("restriction")
 public interface IAdvisorNode
 {
 
@@ -47,7 +48,7 @@ public interface IAdvisorNode
 
 	Date getTimestamp();
 
-	IVersionDesignator getVersionOverride();
+	VersionRange getVersionOverride();
 
 	boolean isPrune();
 

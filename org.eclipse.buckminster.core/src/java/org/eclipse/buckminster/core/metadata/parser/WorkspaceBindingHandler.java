@@ -17,13 +17,12 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -31,6 +30,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class WorkspaceBindingHandler extends PropertyManagerHandler
 {
 	public static final String TAG = WorkspaceBinding.TAG;
@@ -62,34 +62,20 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 		return m_properties;
 	}
 
-	WorkspaceBinding getWorkspaceBinding() throws SAXException
-	{
-		return new WorkspaceBinding(m_location, m_cid, m_resolutionId, m_wsRoot, m_wsRelativePath, m_properties,
-				m_timestamp);
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
 		String name = getStringValue(attrs, NamedElement.ATTR_NAME);
 		String ctype = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
-		IVersion version = null;
-
-		String tmp = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
-		if(tmp != null)
+		Version version;
+		try
 		{
-			String type = getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
-			if(type == null)
-				type = IVersionType.OSGI;
-			try
-			{
-				version = VersionFactory.createVersion(type, tmp);
-			}
-			catch(CoreException e)
-			{
-				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-			}
+			version = VersionHelper.parseVersionAttributes(attrs);
+		}
+		catch(CoreException e)
+		{
+			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
 		m_properties = null;
 		m_cid = new ComponentIdentifier(name, ctype, version);
@@ -98,5 +84,11 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler
 		m_wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));
 		m_timestamp = getLongValue(attrs, WorkspaceBinding.ATTR_TIMESTAMP);
 		m_resolutionId = UUID.fromString(this.getStringValue(attrs, WorkspaceBinding.ATTR_RESOLUTION_ID));
+	}
+
+	WorkspaceBinding getWorkspaceBinding() throws SAXException
+	{
+		return new WorkspaceBinding(m_location, m_cid, m_resolutionId, m_wsRoot, m_wsRelativePath, m_properties,
+				m_timestamp);
 	}
 }

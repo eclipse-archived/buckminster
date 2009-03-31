@@ -28,7 +28,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.SiteFeatureReaderType;
 import org.eclipse.buckminster.core.site.ISiteFeatureConverter;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -37,7 +37,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IIncludedFeatureReference;
 import org.eclipse.update.core.IPluginEntry;
@@ -50,6 +52,7 @@ import org.eclipse.update.core.VersionedIdentifier;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 abstract class AbstractSiteMaterializer extends AbstractMaterializer
 {
 	@SuppressWarnings("serial")
@@ -105,8 +108,12 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		for(IIncludedFeatureReference ref : refs)
 		{
 			VersionedIdentifier vi = ref.getVersionedIdentifier();
+			PluginVersionIdentifier pvi = vi.getVersion();
+			Version version = (pvi == null)
+					? null
+					: VersionHelper.parseVersion(pvi.toString());
 			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE,
-					VersionFactory.OSGiType.coerce(vi.getVersion()));
+					version);
 			if(components.add(ci))
 			{
 				IFeature incFeature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
@@ -117,8 +124,11 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		for(IPluginEntry plugin : feature.getRawPluginEntries())
 		{
 			VersionedIdentifier vi = plugin.getVersionedIdentifier();
-			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.OSGI_BUNDLE,
-					VersionFactory.OSGiType.coerce(vi.getVersion()));
+			PluginVersionIdentifier pvi = vi.getVersion();
+			Version version = (pvi == null)
+					? null
+					: VersionHelper.parseVersion(pvi.toString());
+			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.OSGI_BUNDLE, version);
 			components.add(ci);
 		}
 		monitor.done();
@@ -154,8 +164,7 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 			}
 			catch(CoreException e)
 			{
-				throw BuckminsterException
-						.fromMessage(Messages.Unable_to_install_plugins_from_update_site_PDE_missing);
+				throw BuckminsterException.fromMessage(Messages.Unable_to_install_plugins_from_update_site_PDE_missing);
 			}
 			File tempSite = FileUtils.createTempFolder("bmsite", "tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 			siteFeatures.addAll(((ISiteFeatureConverter)pdeReaderType).convertToSiteFeatures(context, tempSite,
@@ -199,8 +208,12 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		for(ISiteFeatureReference ref : refs)
 		{
 			VersionedIdentifier vi = ref.getVersionedIdentifier();
+			PluginVersionIdentifier pvi = vi.getVersion();
+			Version version = (pvi == null)
+					? null
+					: VersionHelper.parseVersion(pvi.toString());
 			ComponentIdentifier ci = new ComponentIdentifier(vi.getIdentifier(), IComponentType.ECLIPSE_FEATURE,
-					VersionFactory.OSGiType.coerce(vi.getVersion()));
+					version);
 			if(components.add(ci))
 			{
 				IFeature feature = ref.getFeature(MonitorUtils.subMonitor(monitor, 50));
@@ -220,6 +233,59 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 	public boolean canWorkInParallel()
 	{
 		return false;
+	}
+
+	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
+			IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 100);
+		Set<ComponentIdentifier> allInstalled = new HashSet<ComponentIdentifier>();
+		Set<ComponentIdentifier> installDelta = null;
+		try
+		{
+			Map<IPath, Map<String, FeaturesPerSite>> sites = new HashMap<IPath, Map<String, FeaturesPerSite>>();
+
+			IProgressMonitor siteCollectorMon = MonitorUtils.subMonitor(monitor, 50);
+			siteCollectorMon.beginTask(null, resolutions.size() * 100);
+			try
+			{
+				collectSites(context, resolutions, sites, siteCollectorMon);
+			}
+			finally
+			{
+				siteCollectorMon.done();
+			}
+
+			installDelta = installFeatures(context, allInstalled, sites, MonitorUtils.subMonitor(monitor, 50));
+
+			// Not supposed to be further perused
+			//
+			return Collections.emptyList();
+		}
+		finally
+		{
+			MaterializationStatistics statistics = context.getMaterializationStatistics();
+			StorageManager sm = StorageManager.getDefault();
+			for(Resolution res : resolutions)
+			{
+				ComponentIdentifier ci = res.getComponentIdentifier();
+				if(!allInstalled.contains(ci))
+				{
+					statistics.addFailed(ci);
+					continue;
+				}
+				IPath installLocation = context.getInstallLocation(res);
+				Materialization mat = new Materialization(installLocation, ci);
+				res.store(sm);
+				mat.store(sm);
+
+				if(installDelta != null && installDelta.contains(ci))
+					statistics.addReplaced(ci);
+				else
+					statistics.addKept(ci);
+			}
+			monitor.done();
+		}
 	}
 
 	protected abstract ISite getDestinationSite(MaterializationContext context, IPath destination,
@@ -299,59 +365,6 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		}
 		finally
 		{
-			monitor.done();
-		}
-	}
-
-	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
-		Set<ComponentIdentifier> allInstalled = new HashSet<ComponentIdentifier>();
-		Set<ComponentIdentifier> installDelta = null;
-		try
-		{
-			Map<IPath, Map<String, FeaturesPerSite>> sites = new HashMap<IPath, Map<String, FeaturesPerSite>>();
-
-			IProgressMonitor siteCollectorMon = MonitorUtils.subMonitor(monitor, 50);
-			siteCollectorMon.beginTask(null, resolutions.size() * 100);
-			try
-			{
-				collectSites(context, resolutions, sites, siteCollectorMon);
-			}
-			finally
-			{
-				siteCollectorMon.done();
-			}
-
-			installDelta = installFeatures(context, allInstalled, sites, MonitorUtils.subMonitor(monitor, 50));
-
-			// Not supposed to be further perused
-			//
-			return Collections.emptyList();
-		}
-		finally
-		{
-			MaterializationStatistics statistics = context.getMaterializationStatistics();
-			StorageManager sm = StorageManager.getDefault();
-			for(Resolution res : resolutions)
-			{
-				ComponentIdentifier ci = res.getComponentIdentifier();
-				if(!allInstalled.contains(ci))
-				{
-					statistics.addFailed(ci);
-					continue;
-				}
-				IPath installLocation = context.getInstallLocation(res);
-				Materialization mat = new Materialization(installLocation, ci);
-				res.store(sm);
-				mat.store(sm);
-
-				if(installDelta != null && installDelta.contains(ci))
-					statistics.addReplaced(ci);
-				else
-					statistics.addKept(ci);
-			}
 			monitor.done();
 		}
 	}

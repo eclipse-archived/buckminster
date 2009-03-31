@@ -26,10 +26,6 @@ import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -66,7 +62,7 @@ public class CSpecBuilder implements ICSpecData
 
 	private String m_shortDesc;
 
-	private IVersion m_version;
+	private Version m_version;
 
 	private Filter m_filter;
 
@@ -87,10 +83,7 @@ public class CSpecBuilder implements ICSpecData
 			setComponentTypeID(IComponentType.OSGI_BUNDLE);
 
 		setName(name);
-
-		Version v = iu.getVersion();
-		if(v != null)
-			setVersion(v.toString(), IVersionType.OSGI);
+		setVersion(iu.getVersion());
 
 		String filterStr = iu.getFilter();
 		if(filterStr != null)
@@ -134,10 +127,7 @@ public class CSpecBuilder implements ICSpecData
 			ComponentRequestBuilder crb = new ComponentRequestBuilder();
 			crb.setName(name);
 			crb.setComponentTypeID(ctype);
-
-			VersionRange vr = cap.getRange();
-			if(vr != null)
-				crb.setVersionDesignator(vr.toString(), IVersionType.OSGI);
+			crb.setVersionRange(cap.getRange());
 
 			filterStr = cap.getFilter();
 			if(filterStr != null)
@@ -210,15 +200,15 @@ public class CSpecBuilder implements ICSpecData
 			return true;
 		}
 
-		IVersionDesignator vd = old.getVersionDesignator();
-		IVersionDesignator nvd = dependency.getVersionDesignator();
+		VersionRange vd = old.getVersionRange();
+		VersionRange nvd = dependency.getVersionRange();
 		if(vd == null)
 			vd = nvd;
 		else
 		{
 			if(nvd != null)
 			{
-				vd = vd.merge(nvd);
+				vd = vd.intersect(nvd);
 				if(vd == null)
 					//
 					// Version ranges were not possible to merge, i.e. no intersection
@@ -246,10 +236,10 @@ public class CSpecBuilder implements ICSpecData
 			}
 		}
 
-		if(vd == old.getVersionDesignator() && fl == old.getFilter())
+		if(vd == old.getVersionRange() && fl == old.getFilter())
 			return false;
 
-		old.setVersionDesignator(vd);
+		old.setVersionRange(vd);
 		old.setFilter(fl);
 		return false;
 	}
@@ -487,7 +477,7 @@ public class CSpecBuilder implements ICSpecData
 		return CSpec.getTagInfo(getComponentIdentifier(), m_projectInfo, parentInfo);
 	}
 
-	public IVersion getVersion()
+	public Version getVersion()
 	{
 		return m_version;
 	}
@@ -589,33 +579,8 @@ public class CSpecBuilder implements ICSpecData
 		m_shortDesc = shortDesc;
 	}
 
-	public void setVersion(IVersion version)
+	public void setVersion(Version version)
 	{
 		m_version = version;
 	}
-
-	public void setVersion(String versionString, String versionTypeId) throws CoreException
-	{
-		if(versionString == null)
-		{
-			m_version = null;
-			return;
-		}
-
-		versionString = versionString.trim();
-		if(versionString.length() == 0)
-		{
-			m_version = null;
-			return;
-		}
-
-		if(versionTypeId != null)
-		{
-			versionTypeId = versionTypeId.trim();
-			if(versionTypeId.length() == 0)
-				versionTypeId = null;
-		}
-		m_version = VersionFactory.createVersion(versionTypeId, versionString);
-	}
-
 }

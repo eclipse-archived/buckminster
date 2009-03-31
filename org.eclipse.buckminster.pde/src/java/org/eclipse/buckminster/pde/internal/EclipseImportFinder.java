@@ -23,8 +23,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -35,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -78,7 +78,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	{
 		synchronized(ctxUserCache)
 		{
-			Map<String, IPluginEntry[]> cache = (Map<String, IPluginEntry[]>)ctxUserCache.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
+			Map<String, IPluginEntry[]> cache = (Map<String, IPluginEntry[]>)ctxUserCache
+					.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
 			if(cache == null)
 			{
 				cache = Collections.synchronizedMap(new HashMap<String, IPluginEntry[]>());
@@ -152,10 +153,10 @@ public class EclipseImportFinder extends AbstractVersionFinder
 
 	private VersionMatch getBestLocalFeatureVersion(IProgressMonitor monitor) throws CoreException
 	{
-		IVersion bestFit = null;
+		Version bestFit = null;
 		for(IFeatureModel model : m_base.getFeatureModels(m_readerType, monitor))
 		{
-			IVersion version = VersionFactory.OSGiType.fromString(model.getFeature().getVersion());
+			Version version = VersionHelper.parseVersion(model.getFeature().getVersion());
 			if(getQuery().isMatch(version, null) && (bestFit == null || version.compareTo(bestFit) > 0))
 				bestFit = version;
 		}
@@ -166,10 +167,10 @@ public class EclipseImportFinder extends AbstractVersionFinder
 
 	private VersionMatch getBestLocalPluginVersion(IProgressMonitor monitor) throws CoreException
 	{
-		IVersion bestFit = null;
+		Version bestFit = null;
 		for(IPluginModelBase model : m_base.getPluginModels(m_readerType, monitor))
 		{
-			IVersion version = VersionFactory.OSGiType.fromString(model.getBundleDescription().getVersion().toString());
+			Version version = Version.fromOSGiVersion(model.getBundleDescription().getVersion());
 			if(getQuery().isMatch(version, null))
 			{
 				if(bestFit == null)
@@ -197,7 +198,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	@SuppressWarnings("deprecation")
 	private VersionMatch getBestRemoteFeatureVersion(IProgressMonitor monitor) throws CoreException
 	{
-		IVersion bestFit = null;
+		Version bestFit = null;
 		monitor.beginTask(null, 100);
 		monitor.subTask(Messages.fetching_remote_feature_references);
 		try
@@ -208,8 +209,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					continue;
 
 				IFeature feature = model.getFeature(MonitorUtils.subMonitor(monitor, 5));
-				IVersion version = VersionFactory.OSGiType.fromString(feature.getVersionedIdentifier().getVersion()
-						.toString());
+				Version version = VersionHelper.parseVersion(feature.getVersionedIdentifier().getVersion().toString());
 				if(getQuery().isMatch(version, null))
 				{
 					if(bestFit == null)
@@ -235,7 +235,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	@SuppressWarnings("deprecation")
 	private VersionMatch getBestRemotePluginVersion(IProgressMonitor monitor) throws CoreException
 	{
-		IVersion bestFit = null;
+		Version bestFit = null;
 
 		String cname = m_base.getComponentName();
 		for(IPluginEntry model : getSitePluginEntries(m_base.getRemoteLocation(), getConnectContext(), m_query, monitor))
@@ -243,8 +243,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 			if(!model.getVersionedIdentifier().getIdentifier().equals(cname))
 				continue;
 
-			IVersion version = VersionFactory.OSGiType.fromString(model.getVersionedIdentifier().getVersion()
-					.toString());
+			Version version = VersionHelper.parseVersion(model.getVersionedIdentifier().getVersion().toString());
 			if(getQuery().isMatch(version, null))
 			{
 				if(bestFit == null)

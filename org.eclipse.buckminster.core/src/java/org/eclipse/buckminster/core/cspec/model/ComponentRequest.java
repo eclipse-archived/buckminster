@@ -13,14 +13,12 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.IVersionType;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -31,6 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author thhal
  */
+@SuppressWarnings("restriction")
 public class ComponentRequest extends ComponentName implements IComponentRequest
 {
 	@SuppressWarnings("hiding")
@@ -42,39 +41,36 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
-	private final IVersionDesignator m_versionDesignator;
+	private final VersionRange m_versionRange;
 
 	private final Filter m_filter;
 
 	public ComponentRequest(ComponentRequestBuilder bld)
 	{
 		super(bld.getName(), bld.getComponentTypeID());
-		m_versionDesignator = bld.getVersionDesignator();
+		m_versionRange = bld.getVersionRange();
 		m_filter = bld.getFilter();
 	}
 
-	public ComponentRequest(String name, String componentType, IVersionDesignator versionDesignator)
-	{
-		super(name, componentType);
-		m_versionDesignator = versionDesignator;
-		m_filter = null;
-	}
-
-	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId)
+	public ComponentRequest(String name, String componentType, String versionRangeStr, String versionTypeId)
 			throws CoreException
 	{
-		this(name, componentType, versionDesignatorStr, versionTypeId, null);
+		this(name, componentType, versionRangeStr, versionTypeId, null);
 	}
 
-	public ComponentRequest(String name, String componentType, String versionDesignatorStr, String versionTypeId,
+	public ComponentRequest(String name, String componentType, String versionRangeStr, String versionTypeId,
 			Filter filter) throws CoreException
 	{
 		super(name, componentType);
-		IVersionDesignator versionDesignator = null;
-		if(versionDesignatorStr != null)
-			versionDesignator = VersionFactory.createDesignator(versionTypeId, versionDesignatorStr);
-		m_versionDesignator = versionDesignator;
+		m_versionRange = VersionHelper.createRange(versionTypeId, versionRangeStr);
 		m_filter = filter;
+	}
+
+	public ComponentRequest(String name, String componentType, VersionRange versionRange)
+	{
+		super(name, componentType);
+		m_versionRange = versionRange;
+		m_filter = null;
 	}
 
 	public void appendViewName(StringBuilder bld)
@@ -94,7 +90,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	{
 		return Trivial.equalsAllowNull(getName(), id.getName())
 				&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))
-				&& (m_versionDesignator == null || m_versionDesignator.designates(id.getVersion()));
+				&& (m_versionRange == null || m_versionRange.isIncluded(id.getVersion()));
 	}
 
 	/**
@@ -106,8 +102,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		if(o == this)
 			return true;
 
-		return super.equals(o)
-				&& Trivial.equalsAllowNull(m_versionDesignator, ((ComponentRequest)o).m_versionDesignator)
+		return super.equals(o) && Trivial.equalsAllowNull(m_versionRange, ((ComponentRequest)o).m_versionRange)
 				&& Trivial.equalsAllowNull(m_filter, ((ComponentRequest)o).m_filter);
 	}
 
@@ -126,17 +121,14 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public Map<String, String> getProperties()
 	{
 		Map<String, String> p = super.getProperties();
-		if(m_versionDesignator != null)
-		{
-			p.put(KeyConstants.VERSION_DESIGNATOR, m_versionDesignator.toString());
-			p.put(KeyConstants.VERSION_TYPE, m_versionDesignator.getVersion().getType().getId());
-		}
+		if(m_versionRange != null)
+			p.put(KeyConstants.VERSION_DESIGNATOR, m_versionRange.toString());
 		return p;
 	}
 
-	public IVersionDesignator getVersionDesignator()
+	public VersionRange getVersionRange()
 	{
-		return m_versionDesignator;
+		return m_versionRange;
 	}
 
 	public String getViewName()
@@ -153,9 +145,9 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public int hashCode()
 	{
 		int hash = super.hashCode();
-		hash = 31 * hash + (m_versionDesignator == null
+		hash = 31 * hash + (m_versionRange == null
 				? 0
-				: m_versionDesignator.hashCode());
+				: m_versionRange.hashCode());
 		return 31 * hash + (m_filter == null
 				? 0
 				: m_filter.hashCode());
@@ -178,8 +170,8 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		else if(thatCType != null && !thisCType.equals(thatCType))
 			throw new ComponentRequestConflictException(this, that);
 
-		IVersionDesignator thisVD = getVersionDesignator();
-		IVersionDesignator thatVD = that.getVersionDesignator();
+		VersionRange thisVD = getVersionRange();
+		VersionRange thatVD = that.getVersionRange();
 		if(thisVD == null)
 			return thatVD == null
 					? this
@@ -188,7 +180,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		if(thatVD == null)
 			return this;
 
-		IVersionDesignator mergedVD = thisVD.merge(thatVD);
+		VersionRange mergedVD = thisVD.intersect(thatVD);
 		if(mergedVD == thisVD)
 			return this;
 
@@ -208,12 +200,10 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public void toString(StringBuilder bld)
 	{
 		super.toString(bld);
-		if(m_versionDesignator != null)
+		if(m_versionRange != null)
 		{
 			bld.append('/');
-			bld.append(m_versionDesignator);
-			bld.append('#');
-			bld.append(m_versionDesignator.getVersion().getType().getId());
+			bld.append(VersionHelper.getHumanReadable(m_versionRange));
 		}
 		if(m_filter != null)
 			bld.append(m_filter);
@@ -223,17 +213,8 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	protected void addAttributes(AttributesImpl attrs)
 	{
 		super.addAttributes(attrs);
-		if(m_versionDesignator != null)
-		{
-			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionDesignator.toString());
-			IVersion version = m_versionDesignator.getVersion();
-			if(version != null)
-			{
-				IVersionType vt = version.getType();
-				if(vt != null)
-					Utils.addAttribute(attrs, ATTR_VERSION_TYPE, vt.getId());
-			}
-		}
+		if(m_versionRange != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_DESIGNATOR, m_versionRange.toString());
 		if(m_filter != null)
 			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 	}

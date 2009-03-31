@@ -11,15 +11,18 @@
 package org.eclipse.buckminster.ui.editor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.simple.Widgetin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -40,6 +43,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class VersionDesignator extends Widgetin
 {
 	enum DesignatorType
@@ -53,13 +57,12 @@ public class VersionDesignator extends Widgetin
 			}
 
 			@Override
-			IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
-					throws CoreException
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
-				String tmp = UiUtils.trimmedValue(version);
+				Version tmp = VersionHelper.createVersion(versionType, UiUtils.trimmedValue(version));
 				return (tmp == null)
 						? null
-						: VersionFactory.createExplicitDesignator(versionType, tmp);
+						: VersionHelper.exactRange(tmp);
 			}
 		},
 		GREATER_OR_EQUAL
@@ -71,13 +74,12 @@ public class VersionDesignator extends Widgetin
 			}
 
 			@Override
-			IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
-					throws CoreException
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
-				String tmp = UiUtils.trimmedValue(version);
+				Version tmp = VersionHelper.createVersion(versionType, UiUtils.trimmedValue(version));
 				return (tmp == null)
 						? null
-						: VersionFactory.createDesignator(versionType, tmp);
+						: VersionHelper.greaterOrEqualRange(tmp);
 			}
 		},
 		RANGE_IE
@@ -89,8 +91,7 @@ public class VersionDesignator extends Widgetin
 			}
 
 			@Override
-			IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
-					throws CoreException
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
 				return createRange(from, to, versionType, '[', ')');
 			}
@@ -104,8 +105,7 @@ public class VersionDesignator extends Widgetin
 			}
 
 			@Override
-			IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
-					throws CoreException
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
 				return createRange(from, to, versionType, '[', ']');
 			}
@@ -119,8 +119,7 @@ public class VersionDesignator extends Widgetin
 			}
 
 			@Override
-			IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
-					throws CoreException
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
 				return createRange(from, to, versionType, '(', ')');
 			}
@@ -134,8 +133,7 @@ public class VersionDesignator extends Widgetin
 			}
 
 			@Override
-			IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
-					throws CoreException
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
 				return createRange(from, to, versionType, '(', ']');
 			}
@@ -151,17 +149,18 @@ public class VersionDesignator extends Widgetin
 			return strings;
 		}
 
-		private static IVersionDesignator createRange(Text from, Text to, String versionType, char start, char end)
+		private static VersionRange createRange(Text from, Text to, String versionType, char start, char end)
 				throws CoreException
 		{
 			String tmp = UiUtils.trimmedValue(from);
 			String tmp2 = UiUtils.trimmedValue(to);
-			return (tmp == null || tmp2 == null)
-					? null
-					: VersionFactory.createDesignator(versionType, start + tmp + ',' + tmp2 + end);
+			if(tmp == null || tmp2 == null)
+				return null;
+
+			return VersionHelper.createRange(versionType, start + tmp + ',' + tmp2 + end);
 		}
 
-		abstract IVersionDesignator createDesignator(String versionType, Text version, Text from, Text to)
+		abstract VersionRange createDesignator(String versionType, Text version, Text from, Text to)
 				throws CoreException;
 	}
 
@@ -237,7 +236,11 @@ public class VersionDesignator extends Widgetin
 		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
 				| SWT.SIMPLE);
 
-		String[] versionTypes = CorePlugin.getDefault().getExtensionIds(CorePlugin.VERSION_TYPES_POINT);
+		List<VersionType> knownTypes = VersionHelper.getKnownTypes();
+		int idx = knownTypes.size();
+		String[] versionTypes = new String[idx];
+		while(--idx >= 0)
+			versionTypes[idx] = knownTypes.get(idx).getId();
 
 		m_versionType.setItems(versionTypes);
 		m_versionType.select(m_versionType.indexOf("OSGi")); //$NON-NLS-1$
@@ -253,7 +256,7 @@ public class VersionDesignator extends Widgetin
 			m_listeners.add(listener);
 	}
 
-	public IVersionDesignator getDirectVersionDesignator() throws CoreException
+	public VersionRange getDirectVersionDesignator() throws CoreException
 	{
 		int vdIndex = m_versionDsType.getSelectionIndex();
 		if(vdIndex < 0)
@@ -268,7 +271,7 @@ public class VersionDesignator extends Widgetin
 		return m_parentComposite.getDisplay();
 	}
 
-	public IVersionDesignator getVersionDesignator()
+	public VersionRange getVersionDesignator()
 	{
 		try
 		{
@@ -302,30 +305,35 @@ public class VersionDesignator extends Widgetin
 				: m_versionType.getItem(vtIndex);
 	}
 
-	public void refreshValues(IVersionDesignator versionDesignator)
+	public void refreshValues(VersionRange versionDesignator)
 	{
 		if(versionDesignator != null)
 		{
 			DesignatorType dsType;
-			if(versionDesignator.isExplicit())
+			if(versionDesignator.getMinimum().equals(versionDesignator.getMaximum()))
 				dsType = DesignatorType.EQUALS;
-			else if(!versionDesignator.hasUpperBound())
-				dsType = DesignatorType.GREATER_OR_EQUAL;
-			else if(versionDesignator.includesLowerBound())
-				dsType = versionDesignator.includesUpperBound()
-						? DesignatorType.RANGE_II
-						: DesignatorType.RANGE_IE;
 			else
-				dsType = versionDesignator.includesUpperBound()
-						? DesignatorType.RANGE_EI
-						: DesignatorType.RANGE_EE;
+			{
+				String vds = versionDesignator.toString();
+				if(!(vds.startsWith("[") || vds.startsWith("(") || vds.startsWith("raw:[") || vds.startsWith("raw:(")))
+					dsType = DesignatorType.GREATER_OR_EQUAL;
+				else if(versionDesignator.getIncludeMinimum())
+					dsType = versionDesignator.getIncludeMaximum()
+							? DesignatorType.RANGE_II
+							: DesignatorType.RANGE_IE;
+				else
+					dsType = versionDesignator.getIncludeMaximum()
+							? DesignatorType.RANGE_EI
+							: DesignatorType.RANGE_EE;
+			}
 			m_versionDsType.select(dsType.ordinal());
 			dsTypeIndexChanged(dsType.ordinal());
 
-			String version = versionDesignator.getVersion().toString();
+			String version = versionDesignator.getMinimum().toString();
 			m_fromVersion.setText(version);
-			m_toVersion.setText(TextUtils.notNullString(versionDesignator.getToVersion()));
-			m_versionType.select(m_versionType.indexOf(versionDesignator.getVersion().getType().getId()));
+			m_toVersion.setText(TextUtils.notNullString(versionDesignator.getMaximum()));
+			m_versionType.select(m_versionType.indexOf(VersionHelper.getVersionType(versionDesignator.getFormat())
+					.getId()));
 		}
 		else
 		{

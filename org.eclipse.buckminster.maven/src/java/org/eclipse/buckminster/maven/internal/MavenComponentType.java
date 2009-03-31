@@ -29,12 +29,10 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionDesignator;
-import org.eclipse.buckminster.core.version.TripletVersion;
-import org.eclipse.buckminster.core.version.VersionFactory;
+import org.eclipse.buckminster.core.version.MissingVersionTypeException;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionSyntaxException;
+import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.maven.MavenPlugin;
 import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -44,6 +42,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,6 +56,7 @@ import org.w3c.dom.Node;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("restriction")
 public class MavenComponentType extends AbstractComponentType
 {
 	public static final String ID = "maven"; //$NON-NLS-1$
@@ -69,7 +71,7 @@ public class MavenComponentType extends AbstractComponentType
 			"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
 					"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
 
-	public static IVersion createVersion(String versionStr) throws CoreException
+	public static Version createVersion(String versionStr) throws CoreException
 	{
 		versionStr = TextUtils.notEmptyTrimmedString(versionStr);
 		if(versionStr == null)
@@ -77,15 +79,15 @@ public class MavenComponentType extends AbstractComponentType
 
 		Matcher m = s_timestampPattern.matcher(versionStr);
 		if(m.matches())
-			return VersionFactory.TimestampType.coerce(createTimestamp(m.group(1), m.group(2)));
+			return VersionHelper.getVersionType(VersionType.TIMESTAMP).getFormat().parse(versionStr);
 
 		try
 		{
-			return VersionFactory.TripletType.fromString(versionStr);
+			return getTripletFormat().parse(versionStr);
 		}
-		catch(VersionSyntaxException e)
+		catch(IllegalArgumentException e)
 		{
-			return VersionFactory.StringType.fromString(versionStr);
+			return VersionHelper.getVersionType(VersionType.STRING).getFormat().parse(versionStr);
 		}
 	}
 
@@ -174,7 +176,18 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	static IVersionDesignator createVersionDesignator(String versionStr) throws CoreException
+	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
+	{
+		Version version = createVersion(versionStr);
+		if(version == null)
+			//
+			// No version at all. Treat as if it was an unversioned SNAPSHOT
+			//
+			return VersionMatch.DEFAULT;
+		return new VersionMatch(version, null, -1, null, typeInfo);
+	}
+
+	static VersionRange createVersionRange(String versionStr) throws CoreException
 	{
 		if(versionStr == null || versionStr.length() == 0)
 			return null;
@@ -185,38 +198,39 @@ public class MavenComponentType extends AbstractComponentType
 			if(leadIn == '[' && versionStr.endsWith(",)")) //$NON-NLS-1$
 			{
 				versionStr = versionStr.substring(1, versionStr.length() - 2);
-				IVersion version = createVersion(versionStr);
+				Version version = createVersion(versionStr);
 				return (version == null)
 						? null
-						: VersionFactory.createGTEqualDesignator(version);
+						: VersionHelper.greaterOrEqualRange(version);
 			}
-			return VersionFactory.createDesignator(VersionFactory.TripletType, versionStr);
+			return VersionHelper.createRange(getTripletFormat(), versionStr);
 		}
 
-		IVersion version = createVersion(versionStr);
+		Version version = createVersion(versionStr);
 		if(version == null)
 			return null;
 
-		return VersionFactory.createExplicitDesignator(version);
+		return VersionHelper.exactRange(version);
 	}
 
-	static VersionMatch createVersionMatch(String versionStr, String typeInfo) throws CoreException
+	static VersionFormat getTripletFormat()
 	{
-		IVersion version = createVersion(versionStr);
-		if(version == null)
-			//
-			// No version at all. Treat as if it was an unversioned SNAPSHOT
-			//
-			return VersionMatch.DEFAULT;
-		return new VersionMatch(version, null, -1, null, typeInfo);
+		try
+		{
+			return VersionHelper.getVersionType(VersionType.TRIPLET).getFormat();
+		}
+		catch(MissingVersionTypeException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
-	static boolean isSnapshotVersion(IVersion version)
+	static boolean isSnapshotVersion(Version version)
 	{
 		return version != null && version.toString().endsWith("SNAPSHOT"); //$NON-NLS-1$
 	}
 
-	static IVersion stripFromSnapshot(IVersion version)
+	static Version stripFromSnapshot(Version version)
 	{
 		if(version == null)
 			return null;
@@ -231,9 +245,9 @@ public class MavenComponentType extends AbstractComponentType
 		}
 		try
 		{
-			return version.getType().fromString(vstr);
+			return version.getFormat().parse(vstr);
 		}
-		catch(VersionSyntaxException e)
+		catch(IllegalArgumentException e)
 		{
 			return version;
 		}
@@ -317,10 +331,10 @@ public class MavenComponentType extends AbstractComponentType
 		depBld.setName(componentName);
 		depBld.setComponentTypeID(ID);
 
-		IVersionDesignator vd = query.getVersionOverride(adviceKey);
+		VersionRange vd = query.getVersionOverride(adviceKey);
 		if(vd == null)
-			vd = createVersionDesignator(versionStr);
-		depBld.setVersionDesignator(vd);
+			vd = createVersionRange(versionStr);
+		depBld.setVersionRange(vd);
 
 		try
 		{
@@ -330,7 +344,7 @@ public class MavenComponentType extends AbstractComponentType
 		catch(DependencyAlreadyDefinedException e)
 		{
 			ComponentRequestBuilder oldDep = cspec.getDependency(depBld.getName());
-			if(!Trivial.equalsAllowNull(vd, oldDep.getVersionDesignator()))
+			if(!Trivial.equalsAllowNull(vd, oldDep.getVersionRange()))
 				MavenPlugin.getLogger().warning(e.getMessage());
 		}
 	}
@@ -417,35 +431,35 @@ public class MavenComponentType extends AbstractComponentType
 	}
 
 	@Override
-	public IVersionDesignator getTypeSpecificDesignator(IVersionDesignator designator)
+	public VersionRange getTypeSpecificDesignator(VersionRange range)
 	{
-		if(designator == null)
+		if(range == null)
 			return null;
 
-		IVersion low = designator.getVersion();
-		IVersion high = designator.getToVersion();
+		Version low = range.getMinimum();
+		Version high = range.getMaximum();
 		boolean lowIsSnapshot = isSnapshotVersion(low);
 		boolean highIsSnapshot = (high != null && isSnapshotVersion(high));
 		if(!(lowIsSnapshot || highIsSnapshot))
-			return designator;
+			return range;
 
 		low = stripFromSnapshot(low);
 		if(high != null)
 			high = stripFromSnapshot(high);
 
-		if(!(low instanceof TripletVersion))
+		if(!low.isOSGiCompatible())
 			//
 			// We cannot apply advanced semantics here so we just
 			// strip the SNAPSHOT part and hope for the best.
 			//
-			return VersionFactory.createRangeDesignator(low, designator.includesLowerBound(), high, designator
-					.includesUpperBound());
+			return new VersionRange(low, range.getIncludeMinimum(), high, range.getIncludeMaximum());
 
 		StringBuilder bld = new StringBuilder();
-		TripletVersion lowTriplet = (TripletVersion)low;
+		bld.append(getTripletFormat());
+		bld.append('/');
 		if(lowIsSnapshot)
 		{
-			if(high == null || designator.includesLowerBound())
+			if(high == null || range.getIncludeMinimum())
 			{
 				// [1.2.4-SNAPSHOT -> (1.2.3
 				// >=1.2.4-SNAPSHOT -> (1.2.3
@@ -459,17 +473,18 @@ public class MavenComponentType extends AbstractComponentType
 				// The >= calls for a very high limit. We get to that later.
 				//
 				bld.append('(');
-				int major = lowTriplet.getMajor();
-				if(lowTriplet.hasMinor())
+				int major = low.getMajor();
+				int minor = low.getMinor();
+				int micro = low.getMicro();
+				if(minor > 0 || micro > 0)
 				{
 					bld.append(major);
 					bld.append('.');
-					int minor = lowTriplet.getMinor();
-					if(lowTriplet.hasMicro())
+					if(micro > 0)
 					{
 						bld.append(minor);
 						bld.append('.');
-						bld.append(lowTriplet.getMicro() - 1);
+						bld.append(micro - 1);
 					}
 					else
 						bld.append(minor - 1);
@@ -487,7 +502,7 @@ public class MavenComponentType extends AbstractComponentType
 				// in essence, is the same as starting from, and including, the 1.2.4 release
 				//
 				bld.append('[');
-				bld.append(lowTriplet);
+				bld.append(low);
 			}
 		}
 		else
@@ -496,13 +511,13 @@ public class MavenComponentType extends AbstractComponentType
 			// have any semantics to apply
 			//
 			bld.append('[');
-			bld.append(lowTriplet);
+			bld.append(low);
 		}
 
 		bld.append(',');
-		if(designator.isExplicit())
+		if(range.getMinimum().equals(range.getMaximum()))
 		{
-			low.toString(bld);
+			bld.append(low);
 			bld.append(']');
 		}
 		else
@@ -516,7 +531,7 @@ public class MavenComponentType extends AbstractComponentType
 			}
 			else
 			{
-				if(designator.includesUpperBound())
+				if(range.getIncludeMaximum())
 				{
 					// 1.2.3.SNAPSHOT] -> 1.2.3]
 					// 
@@ -537,18 +552,18 @@ public class MavenComponentType extends AbstractComponentType
 						// lower. Instead, we include all up to the
 						// 1.2.2 release
 						//
-						TripletVersion highTriplet = (TripletVersion)high;
-						int major = highTriplet.getMajor();
-						if(highTriplet.hasMinor())
+						int major = high.getMajor();
+						int minor = high.getMinor();
+						int micro = high.getMicro();
+						if(minor > 0 || micro > 0)
 						{
 							bld.append(major);
 							bld.append('.');
-							int minor = highTriplet.getMinor();
-							if(highTriplet.hasMicro())
+							if(micro > 0)
 							{
 								bld.append(minor);
 								bld.append('.');
-								bld.append(highTriplet.getMicro() - 1);
+								bld.append(micro - 1);
 							}
 							else
 								bld.append(minor - 1);
@@ -567,11 +582,11 @@ public class MavenComponentType extends AbstractComponentType
 		}
 		try
 		{
-			return VersionFactory.createDesignator(low.getType(), bld.toString());
+			return new VersionRange(bld.toString());
 		}
-		catch(VersionSyntaxException e)
+		catch(IllegalArgumentException e)
 		{
-			return designator;
+			return range;
 		}
 	}
 }

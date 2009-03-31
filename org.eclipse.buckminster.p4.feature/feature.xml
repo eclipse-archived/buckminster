@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.p4.feature"
       label="Buckminster - Perforce support"
-      version="1.0.0.qualifier"
+      version="1.0.350.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">

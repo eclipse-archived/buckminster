@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.buckminster.core">
+<schema targetNamespace="org.eclipse.buckminster.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.buckminster.core" id="versionTypes" name="%VersionTypes"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="versionType" minOccurs="1" maxOccurs="unbounded"/>
@@ -51,14 +56,11 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="class" type="string" use="required">
+         <attribute name="format" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The version format according to the P2 Omni Version specification
                </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.buckminster.core.version.IVersionType"/>
-               </appInfo>
             </annotation>
          </attribute>
       </complexType>

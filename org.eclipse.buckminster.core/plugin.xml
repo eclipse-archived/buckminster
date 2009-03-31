@@ -72,16 +72,20 @@
 	</extension>
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType
-			class="org.eclipse.buckminster.core.internal.version.OSGiVersionType"
-			id="OSGi" />
+          class="org.eclipse.buckminster.core.internal.version.OSGiVersionType"
+          format="n[.n=0;[.n=0;[.S=[A-Za-z0-9_-];]]]"
+          id="OSGi"/>
 		<versionType
-			class="org.eclipse.buckminster.core.internal.version.StringVersionType"
-			id="String" />
+        class="org.eclipse.buckminster.core.internal.version.StringVersionType"
+        format="S"
+        id="String"/>
 		<versionType
-			class="org.eclipse.buckminster.core.internal.version.TimestampVersionType"
-			id="Timestamp" />
+        class="org.eclipse.buckminster.core.internal.version.TimestampVersionType"
+        format="S=[0-9];={8};[.S=[0-9];={6};=&apos;000000&apos;;]"
+        id="Timestamp"/>
   <versionType
         class="org.eclipse.buckminster.core.internal.version.TripletVersionType"
+        format="n[.n=0;[.n=0;]][d?S=M;]"
         id="Triplet"/>
 	</extension>
 	<!-- Declare known readerTypes -->
