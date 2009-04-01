@@ -15,8 +15,8 @@ import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.version.IVersion;
-import org.eclipse.buckminster.core.version.IVersionType;
+import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * @author Thomas Hallgren
@@ -50,8 +50,7 @@ public class VersionQualifier extends Task
 			if(m_property == null)
 				throw new BuildException("Missing attribute property", getLocation());
 
-			IVersionType vt = CorePlugin.getDefault().getVersionType(m_versionType);
-			IVersion v = vt.fromString(m_version);
+			Version v = VersionHelper.createVersion(m_versionType, m_version);
 			ComponentIdentifier cid = new ComponentIdentifier(m_componentName, m_componentType, v);
 			VersionQualifierTask vq = new VersionQualifierTask(m_propertiesFile, m_qualifier);
 			v = vq.replaceQualifier(cid, Collections.<ComponentIdentifier>emptyList());

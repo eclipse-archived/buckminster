@@ -12,8 +12,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.core.version.IVersion;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
  * Finds the version of a component known to Buckminster.
@@ -40,7 +40,7 @@ public class ComponentVersion extends Task
 		try
 		{
 			ComponentRequest rq = new ComponentRequest(m_name, m_componentType, m_versionDesignator, m_designatorType);
-			IVersion version = WorkspaceInfo.getResolution(rq, false).getComponentIdentifier().getVersion();
+			Version version = WorkspaceInfo.getResolution(rq, false).getComponentIdentifier().getVersion();
 			if(version != null)
 				getProject().setNewProperty(m_property, version.toString());
 		}
