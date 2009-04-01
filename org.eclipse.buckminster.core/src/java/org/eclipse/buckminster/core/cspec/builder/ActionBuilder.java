@@ -251,13 +251,6 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		m_assignConsoleSupport = assignConsoleSupport;
 	}
 
-	@Override
-	public void setName(String name)
-	{
-		super.setName(name);
-		m_prerequisitesBuilder.setName(name);
-	}
-
 	public void setPrerequisites(Group prerequisites)
 	{
 		m_prerequisitesBuilder.initFrom(prerequisites);
