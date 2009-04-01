@@ -107,13 +107,18 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <requires>
-      <import plugin="org.eclipse.buckminster.core" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.buckminster.runtime" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.team.core" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.team.svn.core" version="0.7.7" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.core" version="1.1.340" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.4.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ecf" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.buckminster.subversion" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.sax" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="com.ibm.icu.base"/>
    </requires>
 
    <plugin
