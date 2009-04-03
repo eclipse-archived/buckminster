@@ -54,6 +54,5 @@
 
 		<!-- This app can do without the P2 profile and cache -->
 		<delete dir="${destination}/p2"/>
-		<delete file="${destination}/artifacts.xml"/>
 	</target>
 </project>
