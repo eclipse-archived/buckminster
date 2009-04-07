@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.galileo.builder.BuildModel.Configuration;
+import org.eclipse.amalgam.releng.build.Config;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -57,7 +58,7 @@ public class RepositoryVerifier
 			roots = profile.query(query, roots, new NullProgressMonitor());
 
 		if(roots.size() <= 0)
-			throw BuckminsterException.fromMessage("Feature %s not found", iuName);
+			throw BuckminsterException.fromMessage("Feature %s not found", iuName); //$NON-NLS-1$
 
 		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
 	}
@@ -75,21 +76,22 @@ public class RepositoryVerifier
 		m_version = version;
 	}
 
-	public void run(List<Configuration> configs, IProgressMonitor monitor) throws CoreException
+	public void run(List<Config> configs, IProgressMonitor monitor) throws CoreException
 	{
-		System.out.println("Starting planner verification");
+		Logger log = Buckminster.getLogger();
+		log.info("Starting planner verification"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
 		Buckminster bucky = Buckminster.getDefault();
-		String profileId = "GalileoTest";
+		String profileId = "GalileoTest"; //$NON-NLS-1$
 		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		IPlanner planner = bucky.getService(IPlanner.class);
 		MonitorUtils.begin(monitor, 10);
 		try
 		{
 			Map<String, String> props = new HashMap<String, String>();
-			props.put(IProfile.PROP_FLAVOR, "tooling");
-			props.put(IProfile.PROP_ENVIRONMENTS, "osgi.ws=gtk,osgi.os=linux,osgi.arch=x86_64");
+			props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
+			// props.put(IProfile.PROP_ENVIRONMENTS, "osgi.ws=gtk,osgi.os=linux,osgi.arch=x86_64");
 
 			profileRegistry.addProfile(profileId, props);
 			IProfile profile = profileRegistry.getProfile(profileId);
@@ -114,6 +116,6 @@ public class RepositoryVerifier
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
 		}
-		System.out.println("Done. Took " + (System.currentTimeMillis() - now) + " ms");
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 	}
 }

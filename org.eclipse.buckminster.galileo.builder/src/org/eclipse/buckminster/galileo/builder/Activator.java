@@ -27,6 +27,14 @@ public class Activator extends Plugin
 	// The shared instance
 	private static Activator plugin;
 
+	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
+
+	public static final String PLATFORM_REPO_NAME = "Platform Repository"; //$NON-NLS-1$
+
+	public static final String PLATFORM_REPO_FOLDER = "generated-platform"; //$NON-NLS-1$
+
+	public static final String CATEGORY_REPO_FOLDER = "generated-contribution"; //$NON-NLS-1$
+
 	/**
 	 * Returns the shared instance
 	 * 
@@ -36,14 +44,6 @@ public class Activator extends Plugin
 	{
 		return plugin;
 	}
-
-	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
-
-	public static final String PLATFORM_REPO_NAME = "Platform Repository";
-
-	public static final String PLATFORM_REPO_FOLDER = "generated-platform"; //$NON-NLS-1$
-
-	public static final String CATEGORY_REPO_FOLDER = "generated-contribution";
 
 	/**
 	 * The constructor

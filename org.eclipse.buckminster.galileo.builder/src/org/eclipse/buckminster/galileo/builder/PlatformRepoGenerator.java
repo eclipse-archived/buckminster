@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,13 +29,6 @@ public class PlatformRepoGenerator
 
 	private final File m_targetPlatformLocation;
 
-	private static final String PROP_TARGET_PLATFORM_URI = "target.platform.uri"; //$NON-NLS-1$
-
-	private static final String[][] PLATFORM_MAPPING_RULES = { //
-	{ "(& (classifier=osgi.bundle))", "${target.platform.uri}plugins/${id}_${version}.jar" }, //$NON-NLS-1$//$NON-NLS-2$
-			{ "(& (classifier=binary))", "${target.platform.uri}binary/${id}_${version}" }, //$NON-NLS-1$ //$NON-NLS-2$
-			{ "(& (classifier=org.eclipse.update.feature))", "${target.platform.uri}features/${id}_${version}.jar" } }; //$NON-NLS-1$//$NON-NLS-2$
-
 	public PlatformRepoGenerator(File repoLocation, File targetPlatformLocation)
 	{
 		m_repoLocation = repoLocation;
@@ -43,7 +37,8 @@ public class PlatformRepoGenerator
 
 	public void run(IProgressMonitor monitor) throws CoreException
 	{
-		System.out.println("Starting generation of platform repository");
+		Logger log = Buckminster.getLogger();
+		log.info("Starting generation of platform repository"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
 		File extraLocation = new File(m_repoLocation, Activator.PLATFORM_REPO_FOLDER);
@@ -76,13 +71,13 @@ public class PlatformRepoGenerator
 		{
 			bucky.ungetService(mdrMgr);
 		}
-		System.out.println("Done. Took " + (System.currentTimeMillis() - now) + " ms");
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 	}
 
 	private IPublisherAction[] createActions()
 	{
-		return new IPublisherAction[] { new JREAction(new File(System.getProperty("java.home"))),
-				new FeaturesAction(new File[] { new File(m_targetPlatformLocation, "features") }),
-				new BundlesAction(new File[] { new File(m_targetPlatformLocation, "plugins") }) };
+		return new IPublisherAction[] { new JREAction(new File(System.getProperty("java.home"))), //$NON-NLS-1$
+				new FeaturesAction(new File[] { new File(m_targetPlatformLocation, "features") }), //$NON-NLS-1$
+				new BundlesAction(new File[] { new File(m_targetPlatformLocation, "plugins") }) }; //$NON-NLS-1$
 	}
 }

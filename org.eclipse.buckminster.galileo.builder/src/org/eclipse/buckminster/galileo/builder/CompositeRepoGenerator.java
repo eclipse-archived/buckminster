@@ -3,16 +3,17 @@ package org.eclipse.buckminster.galileo.builder;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.galileo.builder.BuildModel.Contribution;
-import org.eclipse.buckminster.galileo.builder.BuildModel.Repository;
+import org.eclipse.amalgam.releng.build.Build;
+import org.eclipse.amalgam.releng.build.Contribution;
+import org.eclipse.amalgam.releng.build.Repository;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
@@ -40,10 +41,10 @@ public class CompositeRepoGenerator
 		m_name = name;
 	}
 
-	public void run(BuildModel buildModel, IProgressMonitor monitor) throws CoreException
+	public void run(Build buildModel, IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
-		log.info("Starting generation of composite repository");
+		log.info("Starting generation of composite repository"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
 		FileUtils.deleteAll(m_location);
@@ -65,12 +66,12 @@ public class CompositeRepoGenerator
 				+ " artifacts", Activator.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 		bucky.ungetService(arMgr);
 
-		List<Contribution> contribs = buildModel.getContributions();
+		EList<Contribution> contribs = buildModel.getContributions();
 		MonitorUtils.begin(monitor, contribs.size() * 100);
 		for(Contribution contrib : contribs)
 		{
 			IProgressMonitor contribMonitor = MonitorUtils.subMonitor(monitor, 100);
-			List<Repository> repos = contrib.getRepositories();
+			EList<Repository> repos = contrib.getRepositories();
 			MonitorUtils.begin(contribMonitor, repos.size() * 200);
 			for(Repository repo : repos)
 			{
@@ -78,22 +79,22 @@ public class CompositeRepoGenerator
 				{
 					URI location = mangleLocation(repo.getLocation());
 
-					log.info("Adding child meta-data repository %s", location);
+					log.info("Adding child meta-data repository %s", location); //$NON-NLS-1$
 					mdrMgr.loadRepository(location, MonitorUtils.subMonitor(contribMonitor, 100));
 					mdr.addChild(location);
 
-					log.info("Adding child artifact repository %s", location);
+					log.info("Adding child artifact repository %s", location); //$NON-NLS-1$
 					arMgr.loadRepository(location, MonitorUtils.subMonitor(contribMonitor, 100));
 					ar.addChild(location);
 				}
 				catch(Exception e)
 				{
-					log.error(e, "Failed to read repository at: %s", repo.getLocation());
+					log.error(e, "Failed to read repository at: %s", repo.getLocation()); //$NON-NLS-1$
 				}
 			}
 			MonitorUtils.done(contribMonitor);
 		}
 		MonitorUtils.done(monitor);
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 	}
 }

@@ -5,10 +5,13 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
@@ -34,9 +37,10 @@ public class ExtraRepoGenerator
 		m_name = name;
 	}
 
-	public void run(BuildModel bm) throws CoreException
+	public void run(Build bm, IProgressMonitor monitor) throws CoreException
 	{
-		System.out.println("Starting generation of categories");
+		Logger log = Buckminster.getLogger();
+		log.info("Starting generation of categories"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
 		File extraLocation = new File(m_location, Activator.CATEGORY_REPO_FOLDER);
@@ -49,6 +53,7 @@ public class ExtraRepoGenerator
 
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+		MonitorUtils.begin(monitor, 100);
 		try
 		{
 			mdrMgr.removeRepository(locationURI);
@@ -60,16 +65,16 @@ public class ExtraRepoGenerator
 					m_name + " artifacts", Activator.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 
 			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(globalLocation,
-					new NullProgressMonitor());
+					MonitorUtils.subMonitor(monitor, 5));
 			CompositeArtifactRepository globalAr = (CompositeArtifactRepository)arMgr.loadRepository(globalLocation,
-					new NullProgressMonitor());
+					MonitorUtils.subMonitor(monitor, 5));
 
 			PublisherInfo info = new PublisherInfo();
 			info.setArtifactRepository(ar);
 			info.setArtifactOptions(IPublisherInfo.A_PUBLISH | IPublisherInfo.A_INDEX);
 			info.setMetadataRepository(mdr);
 			Publisher publisher = new Publisher(info);
-			IStatus result = publisher.publish(createActions(bm, mdr, globalMdr), new NullProgressMonitor());
+			IStatus result = publisher.publish(createActions(bm, mdr, globalMdr), MonitorUtils.subMonitor(monitor, 90));
 			if(result.getSeverity() == IStatus.ERROR)
 				throw new CoreException(result);
 
@@ -80,11 +85,12 @@ public class ExtraRepoGenerator
 		{
 			bucky.ungetService(mdrMgr);
 			bucky.ungetService(arMgr);
+			MonitorUtils.done(monitor);
 		}
-		System.out.println("Done. Took " + (System.currentTimeMillis() - now) + " ms");
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 	}
 
-	private IPublisherAction[] createActions(BuildModel bm, IMetadataRepository mdr, IMetadataRepository globalMdr)
+	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr)
 	{
 		return new IPublisherAction[] { new GalileoFeatureAction(bm, mdr), new CategoriesAction(bm, globalMdr) };
 	}

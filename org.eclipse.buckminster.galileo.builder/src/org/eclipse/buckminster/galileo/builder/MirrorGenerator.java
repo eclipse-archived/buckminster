@@ -85,7 +85,7 @@ public class MirrorGenerator
 			if(result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
 			{
 				throw BuckminsterException.fromMessage(result.getException(),
-						"Unable to mirror artifact %s from repository %s: %s", descriptor.getArtifactKey(),
+						"Unable to mirror artifact %s from repository %s: %s", descriptor.getArtifactKey(), //$NON-NLS-1$
 						source.getLocation(), result.getMessage());
 			}
 		}
@@ -139,7 +139,7 @@ public class MirrorGenerator
 	public void run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
-		log.info("Starting mirror generation");
+		log.info("Starting mirror generation"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
 		URI destURI = m_dest.toURI();
@@ -177,11 +177,11 @@ public class MirrorGenerator
 				if(childURI.equals(categoryRepoURI))
 					continue;
 
-				log.info("Mirroring artifacts from from %s", childURI);
+				log.info("Mirroring artifacts from from %s", childURI); //$NON-NLS-1$
 				IArtifactRepository child = arMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
 				mirror(child, destAr, MonitorUtils.subMonitor(childMonitor, 99));
 			}
-			log.info("Done mirroring artifacts");
+			log.info("Done mirroring artifacts"); //$NON-NLS-1$
 			childMonitor.done();
 
 			// Step 2. Mirror the composite but don't include platform nor categories. We
@@ -203,11 +203,11 @@ public class MirrorGenerator
 				if(childURI.equals(platformRepoURI) || childURI.equals(categoryRepoURI))
 					continue;
 
-				log.info("Mirroring meta-data from from %s", childURI);
+				log.info("Mirroring meta-data from from %s", childURI); //$NON-NLS-1$
 				IMetadataRepository child = mdrMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
 				mirror(ALL_BUT_CATEGORIES, child, destMdr, MonitorUtils.subMonitor(childMonitor, 99));
 			}
-			log.info("Done mirroring meta-data");
+			log.info("Done mirroring meta-data"); //$NON-NLS-1$
 			childMonitor.done();
 
 			// Step 3. Mirror the generated categories but don't include the
@@ -222,6 +222,6 @@ public class MirrorGenerator
 			bucky.ungetService(arMgr);
 			MonitorUtils.done(monitor);
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 	}
 }
