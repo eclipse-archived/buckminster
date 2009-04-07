@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="Buckminster Java Web Start P2 Installer" id="org.eclipse.buckminster.jnlp.p2.product" application="org.eclipse.buckminster.jnlp.p2.application" useFeatures="true">
-
+<product name="Buckminster Java Web Start P2 Installer" id="org.eclipse.buckminster.jnlp.p2.product" application="org.eclipse.buckminster.jnlp.p2.application" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
       <linux>/org.eclipse.buckminster.jnlp.p2.product/config.ini</linux>
@@ -16,14 +15,12 @@
 
    <windowImages/>
 
-
    <launcher name="_removethisfile">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -34,5 +31,9 @@
    <features>
       <feature id="org.eclipse.buckminster.jnlp.p2.product" version="1.1.0.qualifier"/>
    </features>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="4" />
+   </configurations>
 
 </product>
