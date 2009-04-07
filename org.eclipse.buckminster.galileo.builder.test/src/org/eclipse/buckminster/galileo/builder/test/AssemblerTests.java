@@ -107,7 +107,7 @@ public class AssemblerTests extends TestCase
 	{
 		CompositeRepoGenerator repoGenerator = new CompositeRepoGenerator(m_repoLocation,
 				"Galileo Composite Repository");
-		repoGenerator.run(m_buildModel);
+		repoGenerator.run(m_buildModel, new NullProgressMonitor());
 
 	}
 
