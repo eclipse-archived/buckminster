@@ -8,6 +8,10 @@
 ****************************************************************-->
 
 <project name="org.eclipse.buckminster" basedir="..">
+	<tstamp>
+		<format property="build.timestamp" pattern="yyyyMMddHHmmss" timezone="UTC" />
+	</tstamp>
+	
 	<property name="sp:site.output" location="${buckminster.output}/site"/>
 	<property name="sp:product.output" location="${buckminster.output}/product"/>
 
@@ -16,214 +20,11 @@
 		<delete dir="${sp:site.output}" failonerror="false" quiet="false"/>
 	</target>
 
-	<target name="wrap.jnlp">
-		<property name="jar.exploded" location="${buckminster.temp}/plaftmp"/>
-		<property name="product.package" location="${jar.exploded}/org/eclipse/buckminster/jnlp/product"/>
-		<property name="product.jnlp" location="${sp:product.output}/product.jnlp"/>
-
-		<mkdir dir="${sp:product.output}"/>
-		<tstamp>
-			<format property="timestamp" timezone="UTC" pattern="'TS:' yyyy-MM-dd HH:mm:ss'Z'"/>
-		</tstamp>
-
-		<echo message="${timestamp}" file="${product.jnlp}"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-<jnlp codebase="$$$$codebase" href="$$$$name">
-	<information>
-		<title>Buckminster JNLP bootstrap</title>
-		<vendor>eclipse.org</vendor>
-	</information>
-	<security>
-		<all-permissions/>
-	</security>
-	<resources>
-		<package name="org.eclipse.buckminster.jnlp.product.ProductInstaller" part="product"/>
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/product.jar"/>
-	</resources>]]></echo>
-
-		<buckminster.valuefileset id="installer.classes" value="${fs:installer.classes}"/>
-		<buckminster.valuefileset id="installer.zip" value="${fs:installer.zip}"/>
-		<pathconvert property="installer.zip">
-			<path>
-				<fileset refid="installer.zip"/>
-			</path>
-		</pathconvert>
-
-		<!--Create the OS/Arch agnostic.package -->
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/product.zip">
-			<zipfileset src="${installer.zip}">
-				<exclude name="**/*.jar"/>
-				<exclude name="**/launcher"/>
-				<exclude name="**/*cairo*"/>
-				<exclude name="**/*.win32.*"/>
-				<exclude name="**/*.linux.*"/>
-				<exclude name="**/*.aix.*"/>
-				<exclude name="**/*.solaris.*"/>
-				<exclude name="**/*.x86_64_*"/>
-				<exclude name="**/*.macosx_*"/>
-				<exclude name="**/*.sparc_*"/>
-				<exclude name="**/*.ppc_*"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/product.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/product.jar"/>
-
-		<!--Create OS specific packages. os and arch names picked from
-			http://lopica.sourceforge.net/os.html
-		-->
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.win32.x86*"/>
-				<exclude name="**/*.jar"/>
-				<exclude name="**/*.x86_64_*"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.windows.x86.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="Windows" arch="x86">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.windows.x86.jar"/>
-	</resources>]]></echo>
-
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.linux.x86*"/>
-				<exclude name="**/*.jar"/>
-				<exclude name="**/*.x86_64_*"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.linux.x86.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="Linux" arch="i386">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.linux.x86.jar"/>
-	</resources>]]></echo>
-
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.linux.x86_64*"/>
-				<exclude name="**/*.jar"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.linux.x86_64.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="Linux" arch="x86_64">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.linux.x86_64.jar"/>
-	</resources>]]></echo>
-
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.linux.ppc*"/>
-				<exclude name="**/*.jar"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.linux.ppc.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="Linux" arch="ppc">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.linux.ppc.jar"/>
-	</resources>]]></echo>
-
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.macosx*"/>
-				<exclude name="**/*.jar"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.macosx.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="Mac OS X">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.macosx.jar"/>
-	</resources>]]></echo>
-
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.solaris.sparc*"/>
-				<exclude name="**/*.jar"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.solaris.sparc.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="Solaris" arch="sparc">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.solaris.sparc.jar"/>
-	</resources>]]></echo>
-
-		<delete dir="${jar.exploded}"/>
-		<mkdir dir="${product.package}"/>
-		<copy todir="${jar.exploded}">
-			<fileset refid="installer.classes"/>
-		</copy>
-		<zip destfile="${product.package}/platform.zip">
-			<zipfileset src="${installer.zip}">
-				<include name="**/*.aix.ppc*"/>
-				<exclude name="**/*.jar"/>
-			</zipfileset>
-		</zip>
-		<checksum file="${product.package}/platform.zip"/>
-		<jar basedir="${jar.exploded}" destfile="${sp:product.output}/platform.aix.ppc.jar"/>
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<resources os="AIX" arch="Power">
-		<jar part="product" download="lazy" href="$$$$randomPool.buckminster/installer/platform.aix.ppc.jar"/>
-	</resources>]]></echo>
-
-		<echo file="${product.jnlp}" append="true"><![CDATA[
-	<component-desc/>
-</jnlp>
-]]></echo>
-	</target>
-	
-    <!-- Writes revisions of the buckminster projects to the build.properties file
+    <!-- Writes properties to the build.properties file
     -->
-    <target name="write.jnlp.revision.0">
-        <available classname="org.eclipse.buckminster.ant.taskdefs.ResourceLocation" property="got.buckminster.tasks"/>
-    </target>
-    <target name="write.jnlp.revision.1" if="got.buckminster.tasks">
-    	<condition property="jnlp.project.name" value="org.eclipse.buckminster.jnlp.p2" else="org.eclipse.buckminster.jnlp">
-    		<istrue value="${buckminster.jnlp.p2}"/>
-    	</condition>
-    	<buckminster.resourceLocation property="jnlp.project.root" path="${jnlp.project.name}" />
-        <buckminster.lastRevision property="jnlp.revision" readerType="svn" workingCopy="${jnlp.project.root}" />
+    <target name="write.jnlp.build.properties" >
 		<concat destfile="${buckminster.temp}/exploded/build.properties" append="false"># generated file, do NOT edit
-project.name.0=${jnlp.project.name}
-project.revision.0=${jnlp.revision}
+build.timestamp=${build.timestamp}
 		</concat>
     </target>
 
@@ -232,12 +33,12 @@ project.revision.0=${jnlp.revision}
 		<mkdir dir="${buckminster.temp}/exploded"/>
 	</target>
 		
-	<target name="zip.jnlp" depends="create.exploded.folder, write.jnlp.revision.0, write.jnlp.revision.1">
-		<buckminster.valuefileset id="product.jars" value="${fs:product.jars}"/>
+	<target name="zip.jnlp" depends="create.exploded.folder, write.jnlp.build.properties">
 		<buckminster.valuefileset id="bootstrap.jar" value="${fs:bootstrap.jar}"/>
+		<buckminster.valuefileset id="director.zip" value="${fs:director.zip}"/>
 		<copy todir="${buckminster.temp}/exploded">
-			<fileset refid="product.jars"/>
 			<fileset refid="bootstrap.jar"/>
+			<fileset refid="director.zip"/>
 		</copy>
 		
 		<dirname file="${sp:product.output}" property="output.dir"/>
