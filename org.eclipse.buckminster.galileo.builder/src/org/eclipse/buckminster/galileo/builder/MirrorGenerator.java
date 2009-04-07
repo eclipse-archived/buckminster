@@ -29,6 +29,7 @@ import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.eclipse.equinox.internal.provisional.p2.repository.ICompositeRepository;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
+import org.eclipse.equinox.p2.publisher.Publisher;
 
 @SuppressWarnings("restriction")
 public class MirrorGenerator
@@ -141,8 +142,6 @@ public class MirrorGenerator
 		log.info("Starting mirror generation");
 		long now = System.currentTimeMillis();
 
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 		URI destURI = m_dest.toURI();
 
 		URI categoryRepoURI = URI.create(m_source + Activator.CATEGORY_REPO_FOLDER);
@@ -159,6 +158,10 @@ public class MirrorGenerator
 			mdrMgr.removeRepository(destURI);
 
 			arMgr.removeRepository(destURI);
+
+			Map<String, String> properties = new HashMap<String, String>();
+			properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
+			properties.put(Publisher.PUBLISH_PACK_FILES_AS_SIBLINGS, Boolean.toString(true));
 			IArtifactRepository destAr = arMgr.createRepository(destURI,
 					m_destName + " artifacts", Activator.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 
@@ -186,6 +189,9 @@ public class MirrorGenerator
 			// failure
 			//
 			IMetadataRepository sourceMdr = mdrMgr.loadRepository(m_source, MonitorUtils.subMonitor(monitor, 1));
+
+			properties = new HashMap<String, String>();
+			properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 			IMetadataRepository destMdr = mdrMgr.createRepository(destURI, m_destName, Activator.SIMPLE_METADATA_TYPE,
 					properties);
 

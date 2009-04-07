@@ -3,12 +3,16 @@ package org.eclipse.buckminster.galileo.builder;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.galileo.builder.BuildModel.Contribution;
 import org.eclipse.buckminster.galileo.builder.BuildModel.Repository;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
@@ -36,9 +40,10 @@ public class CompositeRepoGenerator
 		m_name = name;
 	}
 
-	public void run(BuildModel buildModel) throws CoreException
+	public void run(BuildModel buildModel, IProgressMonitor monitor) throws CoreException
 	{
-		System.out.println("Starting generation of composite repository");
+		Logger log = Buckminster.getLogger();
+		log.info("Starting generation of composite repository");
 		long now = System.currentTimeMillis();
 
 		FileUtils.deleteAll(m_location);
@@ -60,13 +65,35 @@ public class CompositeRepoGenerator
 				+ " artifacts", Activator.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 		bucky.ungetService(arMgr);
 
-		for(Contribution contrib : buildModel.getContributions())
-			for(Repository repo : contrib.getRepositories())
+		List<Contribution> contribs = buildModel.getContributions();
+		MonitorUtils.begin(monitor, contribs.size() * 100);
+		for(Contribution contrib : contribs)
+		{
+			IProgressMonitor contribMonitor = MonitorUtils.subMonitor(monitor, 100);
+			List<Repository> repos = contrib.getRepositories();
+			MonitorUtils.begin(contribMonitor, repos.size() * 200);
+			for(Repository repo : repos)
 			{
-				URI location = mangleLocation(repo.getLocation());
-				mdr.addChild(location);
-				ar.addChild(location);
+				try
+				{
+					URI location = mangleLocation(repo.getLocation());
+
+					log.info("Adding child meta-data repository %s", location);
+					mdrMgr.loadRepository(location, MonitorUtils.subMonitor(contribMonitor, 100));
+					mdr.addChild(location);
+
+					log.info("Adding child artifact repository %s", location);
+					arMgr.loadRepository(location, MonitorUtils.subMonitor(contribMonitor, 100));
+					ar.addChild(location);
+				}
+				catch(Exception e)
+				{
+					log.error(e, "Failed to read repository at: %s", repo.getLocation());
+				}
 			}
-		System.out.println("Done. Took " + (System.currentTimeMillis() - now) + " ms");
+			MonitorUtils.done(contribMonitor);
+		}
+		MonitorUtils.done(monitor);
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 }

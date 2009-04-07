@@ -53,4 +53,27 @@ public abstract class ElementBased
 	{
 		return Trivial.trim(m_element.getAttribute(attrName));
 	}
+
+	protected <T extends ElementBased> T getIndexed(String attributeName, List<T> all)
+	{
+		String v = getAttribute(attributeName);
+		if(v != null)
+		{
+			int lastDot = v.lastIndexOf('.');
+			if(lastDot >= 0)
+			{
+				try
+				{
+					return all.get(Integer.parseInt(v.substring(lastDot + 1)));
+				}
+				catch(IndexOutOfBoundsException e)
+				{
+				}
+				catch(NumberFormatException e)
+				{
+				}
+			}
+		}
+		return null;
+	}
 }

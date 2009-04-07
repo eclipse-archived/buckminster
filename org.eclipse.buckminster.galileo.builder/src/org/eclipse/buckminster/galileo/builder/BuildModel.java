@@ -56,11 +56,34 @@ public class BuildModel extends ElementBased
 		}
 	}
 
+	public static class Contact extends ElementBased
+	{
+		public Contact(Element element)
+		{
+			super(element);
+		}
+
+		public String getEmail()
+		{
+			return getAttribute("email"); //$NON-NLS-1$
+		}
+
+		public String getName()
+		{
+			return getAttribute("name"); //$NON-NLS-1$
+		}
+	}
+
 	public static class Contribution extends ElementBased
 	{
 		public Contribution(Element element)
 		{
 			super(element);
+		}
+
+		public List<Contact> getContacts() throws CoreException
+		{
+			return createElementBasedList(Contact.class, "contacts"); //$NON-NLS-1$
 		}
 
 		public List<Feature> getFeatures() throws CoreException
@@ -83,29 +106,10 @@ public class BuildModel extends ElementBased
 
 		public List<Category> getCategories(List<Category> allCategories) throws CoreException
 		{
-			// We cannot really resolve the links so we just use brute force
-
-			String category = getAttribute("category"); // Shouldn't this be plural? //$NON-NLS-1$
-			if(category != null)
-			{
-				int lastDot = category.lastIndexOf('.');
-				if(lastDot >= 0)
-				{
-					try
-					{
-						int index = Integer.parseInt(category.substring(lastDot + 1));
-						if(index >= 0)
-						{
-							if(index < allCategories.size())
-								return Collections.singletonList(allCategories.get(index));
-						}
-					}
-					catch(NumberFormatException e)
-					{
-					}
-				}
-			}
-			return Collections.emptyList();
+			Category cat = getIndexed("category", allCategories); //$NON-NLS-1$
+			return cat == null
+					? Collections.<Category> emptyList()
+					: Collections.singletonList(cat);
 		}
 
 		public String getId()
@@ -116,6 +120,14 @@ public class BuildModel extends ElementBased
 		public Version getVersion()
 		{
 			return Version.parseVersion(getAttribute("version")); //$NON-NLS-1$
+		}
+	}
+
+	public static class Platform extends ElementBased
+	{
+		public Platform(Element element)
+		{
+			super(element);
 		}
 	}
 
@@ -165,6 +177,26 @@ public class BuildModel extends ElementBased
 		super(element);
 	}
 
+	public Platform getBase(List<Platform> allPlatforms)
+	{
+		return getIndexed("base", allPlatforms); //$NON-NLS-1$
+	}
+
+	public Platform getBuilder(List<Platform> allPlatforms)
+	{
+		return getIndexed("builder", allPlatforms); //$NON-NLS-1$
+	}
+
+	public String getBuilderURL()
+	{
+		return getAttribute("builderURL"); //$NON-NLS-1$
+	}
+
+	public String getBuildRoot()
+	{
+		return getAttribute("buildRoot"); //$NON-NLS-1$
+	}
+
 	public List<Category> getCategories() throws CoreException
 	{
 		return createElementBasedList(Category.class, "categories"); //$NON-NLS-1$
@@ -180,8 +212,41 @@ public class BuildModel extends ElementBased
 		return createElementBasedList(Contribution.class, "contributions"); //$NON-NLS-1$
 	}
 
+	public String getDate()
+	{
+		return getAttribute("date"); //$NON-NLS-1$
+	}
+
+	public String getLabel()
+	{
+		return getAttribute("label"); //$NON-NLS-1$
+	}
+
+	public String getLaunchVM()
+	{
+		return getAttribute("launchVM"); //$NON-NLS-1$
+	}
+
 	public Promotion getPromotion() throws CoreException
 	{
 		return createElementBasedSingleton(Promotion.class, "promotion"); //$NON-NLS-1$
+	}
+
+	public String getTime()
+	{
+		return getAttribute("time"); //$NON-NLS-1$
+	}
+
+	public String getType()
+	{
+		return getAttribute("type"); //$NON-NLS-1$
+	}
+
+	public boolean isSendMail()
+	{
+		String sendMail = getAttribute("sendMail"); //$NON-NLS-1$
+		return sendMail == null
+				? false
+				: Boolean.parseBoolean(sendMail);
 	}
 }
