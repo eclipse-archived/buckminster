@@ -24,15 +24,27 @@
                 <cs:attribute name="buckminster.clean" component="org.eclipse.equinox.p2.director.product"/>
             </cs:prerequisites>
         </cs:public>
-        <cs:public name="local.sign.jnlp" actor="ant">
+        <cs:public name="collect.jnlp" actor="ant">
             <cs:actorProperties>
-                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
-                <cs:property key="targets" value="local.sign.jars"/>
+                <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="collect.jnlp"/>
             </cs:actorProperties>
             <cs:prerequisites>
-                <cs:attribute name="zip.jnlp" alias="requirement"/>
+                <cs:attribute name="sign.jnlp" alias="jnlp-package-p2.zip"/>
+                <cs:attribute name="site.p2.zip" alias="materializator.site.p2.zip" component="org.eclipse.buckminster.jnlp.p2.product"/>
             </cs:prerequisites>
-            <cs:products alias="product.output" base="${buckminster.output}/jnlp.ls/" upToDatePolicy="MAPPER"/>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.c/" upToDatePolicy="MAPPER"/>
+        </cs:public>
+        <cs:public name="collect.local.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="collect.jnlp"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="local.sign.jnlp" alias="jnlp-package-p2.zip"/>
+                <cs:attribute name="site.p2.zip" alias="materializator.site.p2.zip" component="org.eclipse.buckminster.jnlp.p2.product"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.c/" upToDatePolicy="MAPPER"/>
         </cs:public>
         <cs:public name="publish.jnlp" actor="ant">
             <cs:actorProperties>
@@ -40,7 +52,7 @@
                 <cs:property key="targets" value="ftp.publish"/>
             </cs:actorProperties>
             <cs:prerequisites>
-                <cs:attribute name="sign.jnlp" alias="requirement"/>
+                <cs:attribute name="collect.jnlp" alias="requirement"/>
                 <cs:attribute name="java.binaries" alias="commons-net.classpath" component="commons-net"/>
             </cs:prerequisites>
         </cs:public>
@@ -50,11 +62,21 @@
                 <cs:property key="targets" value="ftp.publish"/>
             </cs:actorProperties>
             <cs:prerequisites>
-                <cs:attribute name="local.sign.jnlp" alias="requirement"/>
+                <cs:attribute name="collect.local.jnlp" alias="requirement"/>
                 <cs:attribute name="java.binaries" alias="commons-net.classpath" component="commons-net"/>
             </cs:prerequisites>
         </cs:public>
-        <cs:public name="sign.jnlp" actor="ant">
+        <cs:private name="local.sign.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="local.sign.jars"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="zip.jnlp" alias="requirement"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.ls/" upToDatePolicy="MAPPER"/>
+        </cs:private>
+        <cs:private name="sign.jnlp" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
                 <cs:property key="targets" value="sign.jars"/>
@@ -63,7 +85,7 @@
                 <cs:attribute name="zip.jnlp" alias="requirement"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.s/" upToDatePolicy="MAPPER"/>
-        </cs:public>
+        </cs:private>
         <cs:private name="zip.jnlp" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFile" value="make/build.xml"/>
