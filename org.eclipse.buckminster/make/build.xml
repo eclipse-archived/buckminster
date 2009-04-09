@@ -23,7 +23,7 @@
     <!-- Writes properties to the build.properties file
     -->
     <target name="write.jnlp.build.properties" >
-		<concat destfile="${buckminster.temp}/exploded/build.properties" append="false"># generated file, do NOT edit
+		<concat destfile="${buckminster.temp}/exploded/director.build.properties" append="false"># generated file, do NOT edit
 build.timestamp=${build.timestamp}
 		</concat>
     </target>
@@ -41,6 +41,8 @@ build.timestamp=${build.timestamp}
 			<fileset refid="director.zip"/>
 		</copy>
 		
+		<checksum file="${buckminster.temp}/exploded/director.zip"/>
+
 		<dirname file="${sp:product.output}" property="output.dir"/>
 		<mkdir dir="${output.dir}"/>
 		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
@@ -53,7 +55,7 @@ build.timestamp=${build.timestamp}
 		
 	<target name="collect.jnlp" depends="create.temp.folder">
 		<buckminster.valuefileset id="jnlp-package-p2.zip" value="${fs:jnlp-package-p2.zip}"/>
-		<buckminster.valuefileset id="materializator.site.p2.zip" value="${fs:materializator.site.p2.zip}"/>
+		<buckminster.valuefileset id="materializator.p2site.zip" value="${fs:materializator.p2site.zip}"/>
 
 		<property name="output.dir" location="${sp:product.output}" />
 		<mkdir dir="${output.dir}"/>
@@ -63,11 +65,11 @@ build.timestamp=${build.timestamp}
 		</copy>
 
 		<copy todir="${buckminster.temp}/temp">
-			<fileset refid="materializator.site.p2.zip" />
+			<fileset refid="materializator.p2site.zip" />
 		</copy>
-		<copy tofile="${output.dir}/materializator.site.p2.zip">
+		<copy tofile="${output.dir}/materializator.p2site.zip">
 			<fileset dir="${buckminster.temp}/temp" includes="**/org.eclipse.buckminster.jnlp.p2.product*.zip" />
-		</copy>	
+		</copy>
 	</target>
 
 </project>
