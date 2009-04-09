@@ -16,7 +16,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 
 public class AssemblerTests extends TestCase
 {
-	static private final String EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
+	static private final String EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup";
 
 	public static Test suite() throws Exception
 	{
@@ -36,18 +36,16 @@ public class AssemblerTests extends TestCase
 			bucky.ungetService(packageAdmin);
 		}
 
-		File baseLocation = new File("/home/thhal/tmp/galileo.test/tmp");
-		Builder b = new Builder(new File(
-				"/home/thhal/workspaces/galileo-build/org.eclipse.galileo.build/out/build/galileo/galileo.build"),
-				baseLocation);
+		Builder b = new Builder(
+				new File("/home/thhal/workspaces/galileo-build/org.eclipse.galileo.build/galileo.build"));
 
-		TestSuite suite = new TestSuite("Tests for org.eclipse.buckminster.galileo.assembler"); //$NON-NLS-1$
-		File targetRepoLocation = new File("/home/thhal/tmp/galileo.test/repo");
-		suite.addTest(new AssemblerTests("testCompositeGenerator", b, tpLocation, targetRepoLocation));
-		suite.addTest(new AssemblerTests("testPlatformRepoGenerator", b, tpLocation, targetRepoLocation));
-		suite.addTest(new AssemblerTests("testExtraRepoGenerator", b, tpLocation, targetRepoLocation));
-		suite.addTest(new AssemblerTests("testRepositoryVerifier", b, tpLocation, targetRepoLocation));
-		suite.addTest(new AssemblerTests("testMirroring", b, tpLocation, targetRepoLocation));
+		TestSuite suite = new TestSuite("Tests for org.eclipse.buckminster.galileo.assembler");
+		suite.addTest(new AssemblerTests("testTransformation", b, tpLocation));
+		suite.addTest(new AssemblerTests("testCompositeGenerator", b, tpLocation));
+		suite.addTest(new AssemblerTests("testPlatformRepoGenerator", b, tpLocation));
+		suite.addTest(new AssemblerTests("testExtraRepoGenerator", b, tpLocation));
+		suite.addTest(new AssemblerTests("testRepositoryVerifier", b, tpLocation));
+		// suite.addTest(new AssemblerTests("testMirroring", b, tpLocation));
 		return suite;
 	}
 
@@ -80,14 +78,11 @@ public class AssemblerTests extends TestCase
 
 	private final File m_targetPlatformLocation;
 
-	private final File m_targetRepoLocation;
-
-	public AssemblerTests(String testName, Builder builder, File targetPlatformLocation, File targetRepoLocation)
+	public AssemblerTests(String testName, Builder builder, File targetPlatformLocation)
 	{
 		super(testName);
 		m_builder = builder;
 		m_targetPlatformLocation = targetPlatformLocation;
-		m_targetRepoLocation = targetRepoLocation;
 	}
 
 	public void testCompositeGenerator() throws Exception
@@ -102,7 +97,7 @@ public class AssemblerTests extends TestCase
 
 	public void testMirroring() throws Exception
 	{
-		m_builder.runMirroring(new NullProgressMonitor(), m_targetRepoLocation);
+		m_builder.runMirroring(new NullProgressMonitor());
 	}
 
 	public void testPlatformRepoGenerator() throws Exception
@@ -113,5 +108,10 @@ public class AssemblerTests extends TestCase
 	public void testRepositoryVerifier() throws Exception
 	{
 		m_builder.runRepositoryVerifier(new NullProgressMonitor());
+	}
+
+	public void testTransformation() throws Exception
+	{
+		m_builder.runTransformation();
 	}
 }

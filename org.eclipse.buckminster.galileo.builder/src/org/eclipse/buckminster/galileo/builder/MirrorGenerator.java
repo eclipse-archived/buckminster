@@ -4,8 +4,10 @@ import java.io.File;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -34,19 +36,21 @@ import org.eclipse.equinox.p2.publisher.Publisher;
 @SuppressWarnings("restriction")
 public class MirrorGenerator
 {
-	private static final Query ALL_BUT_CATEGORIES = new MatchQuery()
+	private static class IncludesQuery extends MatchQuery
 	{
+		private final Set<IInstallableUnit> m_unitsToInclude;
+
+		public IncludesQuery(Set<IInstallableUnit> unitsToInclude)
+		{
+			m_unitsToInclude = unitsToInclude;
+		}
+
 		@Override
 		public boolean isMatch(Object candidate)
 		{
-			if(candidate instanceof IInstallableUnit)
-			{
-				IInstallableUnit iu = (IInstallableUnit)candidate;
-				return !Boolean.parseBoolean(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY));
-			}
-			return true;
+			return m_unitsToInclude.contains(candidate);
 		}
-	};
+	}
 
 	private static final Query ONLY_CATEGORIES = new MatchQuery()
 	{
@@ -91,12 +95,16 @@ public class MirrorGenerator
 		}
 	}
 
-	private static void mirror(IArtifactRepository source, IArtifactRepository dest, IProgressMonitor monitor)
+	private static void mirror(IArtifactRepository source, IArtifactRepository dest, Set<IArtifactKey> keysToInstall,
+			IProgressMonitor monitor)
 	{
 		IArtifactKey[] keys = source.getArtifactKeys();
 		MonitorUtils.begin(monitor, keys.length * 100);
 		for(IArtifactKey key : keys)
 		{
+			if(!keysToInstall.contains(key))
+				continue;
+
 			IArtifactDescriptor[] aDescs = source.getArtifactDescriptors(key);
 			IProgressMonitor keyMon = MonitorUtils.subMonitor(monitor, 100);
 			MonitorUtils.begin(keyMon, aDescs.length);
@@ -125,27 +133,30 @@ public class MirrorGenerator
 
 	private final URI m_source;
 
+	private final URI m_categoryRepo;
+
+	private final URI m_targetPlatformRepo;
+
 	private final File m_dest;
 
 	private final String m_destName;
 
-	public MirrorGenerator(URI source, File dest, String destName)
+	public MirrorGenerator(URI source, URI categoryRepo, URI targetPlatformRepo, File dest, String destName)
 	{
 		m_source = source;
+		m_categoryRepo = categoryRepo;
+		m_targetPlatformRepo = targetPlatformRepo;
 		m_dest = dest;
 		m_destName = destName;
 	}
 
-	public void run(IProgressMonitor monitor) throws CoreException
+	public void run(Set<IInstallableUnit> unitsToInstall, IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
 		log.info("Starting mirror generation"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
-		URI destURI = m_dest.toURI();
-
-		URI categoryRepoURI = URI.create(m_source + Activator.CATEGORY_REPO_FOLDER);
-		URI platformRepoURI = URI.create(m_source + Activator.PLATFORM_REPO_FOLDER);
+		URI destURI = Builder.createURI(m_dest);
 
 		Buckminster bucky = Buckminster.getDefault();
 
@@ -172,14 +183,20 @@ public class MirrorGenerator
 			List<URI> children = getCompositeChildren(sourceAr);
 			IProgressMonitor childMonitor = MonitorUtils.subMonitor(monitor, 89);
 			MonitorUtils.begin(childMonitor, children.size() * 100);
+
+			HashSet<IArtifactKey> keysToInstall = new HashSet<IArtifactKey>(unitsToInstall.size());
+			for(IInstallableUnit iu : unitsToInstall)
+				for(IArtifactKey key : iu.getArtifacts())
+					keysToInstall.add(key);
+
 			for(URI childURI : children)
 			{
-				if(childURI.equals(categoryRepoURI))
+				if(childURI.equals(m_categoryRepo))
 					continue;
 
 				log.info("Mirroring artifacts from from %s", childURI); //$NON-NLS-1$
 				IArtifactRepository child = arMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
-				mirror(child, destAr, MonitorUtils.subMonitor(childMonitor, 99));
+				mirror(child, destAr, keysToInstall, MonitorUtils.subMonitor(childMonitor, 99));
 			}
 			log.info("Done mirroring artifacts"); //$NON-NLS-1$
 			childMonitor.done();
@@ -200,20 +217,20 @@ public class MirrorGenerator
 			MonitorUtils.begin(childMonitor, children.size() * 100);
 			for(URI childURI : children)
 			{
-				if(childURI.equals(platformRepoURI) || childURI.equals(categoryRepoURI))
+				if(childURI.equals(m_targetPlatformRepo) || childURI.equals(m_categoryRepo))
 					continue;
 
 				log.info("Mirroring meta-data from from %s", childURI); //$NON-NLS-1$
 				IMetadataRepository child = mdrMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
-				mirror(ALL_BUT_CATEGORIES, child, destMdr, MonitorUtils.subMonitor(childMonitor, 99));
+				mirror(new IncludesQuery(unitsToInstall), child, destMdr, MonitorUtils.subMonitor(childMonitor, 99));
 			}
 			log.info("Done mirroring meta-data"); //$NON-NLS-1$
 			childMonitor.done();
 
 			// Step 3. Mirror the generated categories but don't include the
 			// generated 'include all' feature
-			IMetadataRepository categoryRepo = mdrMgr.loadRepository(categoryRepoURI, MonitorUtils.subMonitor(monitor,
-					1));
+			IMetadataRepository categoryRepo = mdrMgr.loadRepository(m_categoryRepo,
+					MonitorUtils.subMonitor(monitor, 1));
 			mirror(ONLY_CATEGORIES, categoryRepo, destMdr, MonitorUtils.subMonitor(monitor, 1));
 		}
 		finally

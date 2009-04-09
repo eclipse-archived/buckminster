@@ -35,17 +35,17 @@ public class PlatformRepoGenerator
 		m_targetPlatformLocation = targetPlatformLocation;
 	}
 
-	public void run(IProgressMonitor monitor) throws CoreException
+	public URI run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
 		log.info("Starting generation of platform repository"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
-		File extraLocation = new File(m_repoLocation, Activator.PLATFORM_REPO_FOLDER);
-		FileUtils.deleteAll(extraLocation);
+		File targetPlatformRepoLocation = new File(m_repoLocation, Activator.PLATFORM_REPO_FOLDER);
+		FileUtils.deleteAll(targetPlatformRepoLocation);
 
 		Map<String, String> properties = new HashMap<String, String>();
-		URI locationURI = extraLocation.toURI();
+		URI locationURI = Builder.createURI(targetPlatformRepoLocation);
 		Buckminster bucky = Buckminster.getDefault();
 
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
@@ -56,7 +56,7 @@ public class PlatformRepoGenerator
 					Activator.SIMPLE_METADATA_TYPE, properties);
 
 			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(
-					m_repoLocation.toURI(), new NullProgressMonitor());
+					Builder.createURI(m_repoLocation), new NullProgressMonitor());
 
 			PublisherInfo info = new PublisherInfo();
 			info.setMetadataRepository(mdr);
@@ -72,6 +72,7 @@ public class PlatformRepoGenerator
 			bucky.ungetService(mdrMgr);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
+		return locationURI;
 	}
 
 	private IPublisherAction[] createActions()

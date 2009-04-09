@@ -1,0 +1,18 @@
+modeltype BUILD uses "http://www.eclipse.org/amalgam/2008/build";
+
+transformation processbuild(in inBuild : BUILD, out outBuild : BUILD);
+
+configuration property date : String;
+configuration property time : String;
+
+main() {
+	inBuild.rootObjects()[Build].map toBuild();
+}
+
+mapping build::Build::toBuild() : build::Build@outBuild {
+	init {
+		result := self.deepclone().oclAsType(Build);
+	}
+	date := this.date;
+	time := this.time;
+}

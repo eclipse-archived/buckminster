@@ -25,19 +25,19 @@ import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
 
 @SuppressWarnings("restriction")
-public class ExtraRepoGenerator
+public class CategoryRepoGenerator
 {
 	private final File m_location;
 
 	private final String m_name;
 
-	public ExtraRepoGenerator(File location, String name)
+	public CategoryRepoGenerator(File location, String name)
 	{
 		m_location = location;
 		m_name = name;
 	}
 
-	public void run(Build bm, IProgressMonitor monitor) throws CoreException
+	public URI run(Build bm, IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
 		log.info("Starting generation of categories"); //$NON-NLS-1$
@@ -47,8 +47,8 @@ public class ExtraRepoGenerator
 		FileUtils.deleteAll(extraLocation);
 
 		Map<String, String> properties = new HashMap<String, String>();
-		URI globalLocation = m_location.toURI();
-		URI locationURI = extraLocation.toURI();
+		URI globalLocation = Builder.createURI(m_location);
+		URI locationURI = Builder.createURI(extraLocation);
 		Buckminster bucky = Buckminster.getDefault();
 
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
@@ -88,6 +88,7 @@ public class ExtraRepoGenerator
 			MonitorUtils.done(monitor);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
+		return locationURI;
 	}
 
 	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr)

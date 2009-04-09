@@ -51,7 +51,7 @@ public class CompositeRepoGenerator
 
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
-		URI locationURI = m_location.toURI();
+		URI locationURI = Builder.createURI(m_location);
 		Buckminster bucky = Buckminster.getDefault();
 
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);

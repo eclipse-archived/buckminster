@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
@@ -187,9 +186,6 @@ public class CategoriesAction extends AbstractPublisherAction
 			collector = publisherInfo.getMetadataRepository().query(query, collector, null);
 		if(collector.size() == 0 && publisherInfo.getContextMetadataRepository() != null)
 			collector = publisherInfo.getContextMetadataRepository().query(query, collector, null);
-		if(collector.size() == 0)
-			collector = ProvisioningHelper.getProfile("SDKProfile").query(query, collector, monitor); //$NON-NLS-1$
-
 		if(collector.size() == 1)
 			return (IInstallableUnit)collector.iterator().next();
 		throw BuckminsterException.fromMessage("Unable to find feature %s/%s using composite repository", name, version); //$NON-NLS-1$
