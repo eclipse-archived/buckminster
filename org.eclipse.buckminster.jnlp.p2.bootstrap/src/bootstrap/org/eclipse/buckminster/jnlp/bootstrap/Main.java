@@ -20,7 +20,6 @@ import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CO
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_RESOURCE_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_SITE_ROOT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_HELP_URL;
@@ -31,7 +30,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,14 +52,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCache;
-import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheAdapter;
-import org.eclipse.buckminster.jnlp.cache.SimpleJNLPCacheSecurityManager;
-import org.eclipse.buckminster.jnlp.cache.Utils;
 import org.w3c.dom.DOMException;
 
 /**
@@ -73,12 +69,19 @@ import org.w3c.dom.DOMException;
  */
 public class Main
 {
-	// The package of the product.zip must correspond with the package declaration
-	// in the product.jnlp file.
-	//
-	private static final String PRODUCT_INSTALLER_CLASS = "org.eclipse.buckminster.jnlp.product.ProductInstaller"; //$NON-NLS-1$
+	private static final String PROP_CONFIG_URL = "configURL";
 
-	// private static final String PRODUCT = "product";
+	private static final String PROP_EXTRA = "extra";
+
+	private static final String PROP_DIRECTOR_ARCHIVE_URL = "directorArchiveURL";
+
+	private static final String PROP_DIRECTOR_BUILD_PROPERTIES_URL = "directorBuildPropertiesURL";
+
+	private static final String PROP_AR_URL = "arURL";
+
+	private static final String PROP_MR_URL = "mrURL";
+
+	private static final String PROP_ROOT_IU = "rootIU";
 
 	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot"; //$NON-NLS-1$
 
@@ -110,11 +113,68 @@ public class Main
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
 
+	private static final String INSTALLER_FOLDER_NAME = "installer";
+
 	private static String s_basePathUrl = null;
+
+	/**
+	 * This method prepares argument with proxy information which will be passed to the application. Notice that there
+	 * arguments don't set system properties, they are supposed to be parsed in the application to set up the proxy
+	 * rules internally.
+	 * 
+	 * The algorithm of getting proxy information is not ideal since the proxy selector might use non-trivial rules.
+	 * However, we don't know which proxy selector implementation will handle our requests and there is no way of
+	 * retrieving all the proxy rules.
+	 * 
+	 * Let's keep it simple - we try to use dummy addresses for the most common protocols. This will guarantee that we
+	 * inherit most probable browser proxy settings.
+	 * 
+	 * If the rules are not guessed optimally, there should be an option in the launched application to override
+	 * automatic proxy discovery with user's own rules, with the possibility to persist the settings in the application
+	 * installation directory.
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	private static List<String> getProxySettings() throws URISyntaxException
+	{
+		List<String> args = new ArrayList<String>();
+		ProxySelector proxySelector = ProxySelector.getDefault();
+
+		for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"), //$NON-NLS-1$ //$NON-NLS-2$
+				new URI("ftp://dummy.host.com") }) //$NON-NLS-1$
+		{
+			List<Proxy> proxies = proxySelector.select(uri);
+			String protocol = uri.getScheme();
+
+			for(Proxy proxy : proxies)
+			{
+				if(Proxy.NO_PROXY.equals(proxy))
+					break;
+
+				SocketAddress address = proxy.address();
+				if(address instanceof InetSocketAddress)
+				{
+					InetSocketAddress iaddr = (InetSocketAddress)address;
+					args.add("-D" + protocol + ".proxyHost"); //$NON-NLS-1$ //$NON-NLS-2$
+					args.add(iaddr.getHostName());
+					args.add("-D" + protocol + ".proxyPort"); //$NON-NLS-1$ //$NON-NLS-2$
+					args.add("" + iaddr.getPort()); //$NON-NLS-1$
+					args.add("-D" + protocol + ".nonProxyHosts"); //$NON-NLS-1$ //$NON-NLS-2$
+					args.add("localhost|127.0.0.1"); //$NON-NLS-1$
+					break;
+				}
+			}
+		}
+
+		return args;
+	}
 
 	private File m_applicationData;
 
 	private File m_installLocation;
+
+	private String m_installerFolderName;
 
 	private String m_errorURL = ERROR_HELP_URL;
 
@@ -129,20 +189,6 @@ public class Main
 	private Image m_splashImageBoot = null;
 
 	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$"); //$NON-NLS-1$
-
-	public static void close(Closeable closeable)
-	{
-		if(closeable != null)
-		{
-			try
-			{
-				closeable.close();
-			}
-			catch(IOException e)
-			{
-			}
-		}
-	}
 
 	public static boolean isAix()
 	{
@@ -304,6 +350,33 @@ public class Main
 		launch(args, false);
 	}
 
+	private static String findJavaExe() throws JNLPException
+	{
+		String javaHome = System.getProperty("java.home"); //$NON-NLS-1$
+		if(javaHome == null)
+		{
+			throw new JNLPException(
+					Messages.getString("system_property_0_is_not_set", "java.home"), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages
+							.getString("set_the_system_property_which_should_point_to_java_home_directory_and_try_again"), //$NON-NLS-1$
+					ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
+		}
+
+		File javaBin = new File(javaHome, "bin"); //$NON-NLS-1$
+		File javaExe = new File(javaBin, isWindows()
+				? "javaw.exe" //$NON-NLS-1$
+				: "java"); //$NON-NLS-1$
+
+		if(!javaExe.exists())
+		{
+			throw new JNLPException(
+					Messages.getString("unable_to_locate_java_runtime"), Messages.getString("check_java_installation_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
+					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
+		}
+
+		return javaExe.toString();
+	}
+
 	private static String getStackTrace(Throwable e)
 	{
 		StringWriter sw = new StringWriter();
@@ -339,13 +412,13 @@ public class Main
 
 	private Image m_windowIconImage = null;
 
-	public File findEclipseLauncher(String applicationFolder) throws JNLPException
+	public String findEclipseLauncher(String applicationFolder) throws JNLPException
 	{
 		// Eclipse 3.3 no longer have a startup.jar in the root. Instead, they have a
 		// org.eclipse.equinox.launcher_xxxx.jar file under plugins. Let's find
 		// it.
 		//
-		File siteRoot = new File(getInstallLocation(), applicationFolder);
+		File siteRoot = new File(applicationFolder);
 		if(!siteRoot.isDirectory())
 		{
 			throw new JNLPException(
@@ -396,7 +469,7 @@ public class Main
 		else
 			launcher = new File(pluginsDir, found);
 
-		return launcher;
+		return launcher.toString();
 	}
 
 	public synchronized File getApplicationDataLocation() throws JNLPException
@@ -424,11 +497,6 @@ public class Main
 			}
 		}
 		return m_applicationData;
-	}
-
-	public File getCacheLocation() throws JNLPException
-	{
-		return new File(getInstallLocation(), "cache"); //$NON-NLS-1$
 	}
 
 	public synchronized File getInstallLocation() throws JNLPException
@@ -467,49 +535,34 @@ public class Main
 		return getInstallLocation().getAbsolutePath();
 	}
 
-	public void startProduct(String applicationFolder, String[] args, long popupAfter) throws JNLPException
+	public void startDirector(String applicationFolder, Map<String, String> inputArgMap, List<String> proxySettings)
+			throws JNLPException
 	{
-		File launcherFile = findEclipseLauncher(applicationFolder);
-		String javaHome = System.getProperty("java.home"); //$NON-NLS-1$
-		if(javaHome == null)
-		{
-			throw new JNLPException(
-					Messages.getString("system_property_0_is_not_set", "java.home"), //$NON-NLS-1$ //$NON-NLS-2$
-					Messages
-							.getString("set_the_system_property_which_should_point_to_java_home_directory_and_try_again"), //$NON-NLS-1$
-					ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
-		}
-
-		File javaBin = new File(javaHome, "bin"); //$NON-NLS-1$
-		File javaExe = new File(javaBin, isWindows()
-				? "javaw.exe" //$NON-NLS-1$
-				: "java"); //$NON-NLS-1$
-
-		if(!javaExe.exists())
-		{
-			throw new JNLPException(
-					Messages.getString("unable_to_locate_java_runtime"), Messages.getString("check_java_installation_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
-					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
-		}
+		String launcherFile = findEclipseLauncher(applicationFolder);
+		String javaExe = findJavaExe();
 
 		ArrayList<String> allArgs = new ArrayList<String>();
-		allArgs.add(javaExe.toString());
-		allArgs.addAll(parseExtraArgs(args));
-		allArgs.add("-Xmx512m"); //$NON-NLS-1$
+		allArgs.add(javaExe);
 		allArgs.add("-jar"); //$NON-NLS-1$
-		allArgs.add(launcherFile.toString());
-
-		String wsDir = getWorkspaceDir();
-		if(wsDir != null)
-		{
-			allArgs.add("-data"); //$NON-NLS-1$
-			allArgs.add(wsDir);
-		}
-		// application is set in config.ini
-		// allArgs.add("-application"); //$NON-NLS-1$
-		// allArgs.add("org.eclipse.buckminster.jnlp.application"); //$NON-NLS-1$
-		for(String arg : args)
-			allArgs.add(arg);
+		allArgs.add(launcherFile);
+		allArgs.add("director");
+		allArgs.add("-ar");
+		allArgs.add(inputArgMap.get(PROP_AR_URL));
+		allArgs.add("-mr");
+		allArgs.add(inputArgMap.get(PROP_MR_URL));
+		allArgs.add("-dest");
+		allArgs.add(getInstallerFolderName());
+		allArgs.add("-bundlepool");
+		allArgs.add(getInstallerFolderName());
+		allArgs.add("-profile");
+		allArgs.add("P2-materializer");
+		allArgs.add("-installIU");
+		allArgs.add(inputArgMap.get(PROP_ROOT_IU));
+		allArgs.add("-vmargs");
+		allArgs.add("-Xmx512m"); //$NON-NLS-1$
+		allArgs.add("-Declipse.p2.data.area=");
+		allArgs.add(getInstallerFolderName() + "/p2");
+		allArgs.addAll(proxySettings);
 
 		try
 		{
@@ -522,28 +575,106 @@ public class Main
 					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
 		}
 
+		allArgs.add("-consoleLog"); //$NON-NLS-1$
+
+		Runtime runtime = Runtime.getRuntime();
+		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
+				.intValue());
+		m_tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
+				.intValue());
+
+		try
+		{
+			m_process = runtime.exec(allArgs.toArray(new String[allArgs.size()]));
+			InputStream is = m_process.getInputStream();
+			InputStream eis = m_process.getErrorStream();
+			final BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			final BufferedReader erd = new BufferedReader(new InputStreamReader(eis));
+
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					String line;
+					try
+					{
+						while((line = rd.readLine()) != null)
+							m_tailOut.writeLine(line);
+					}
+					catch(IOException e)
+					{
+						System.err
+								.println(Messages
+										.getString("error_reading_from_JNLP_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
+					}
+					finally
+					{
+						Utils.close(rd);
+					}
+				}
+			}.start();
+
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					String line;
+					try
+					{
+						while((line = erd.readLine()) != null)
+							m_tailErr.writeLine(line);
+					}
+					catch(IOException e)
+					{
+						System.err
+								.println(Messages.getString("error_reading_from_JNLP_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
+					}
+					finally
+					{
+						Utils.close(erd);
+					}
+				}
+			}.start();
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException(
+					Messages.getString("can_not_run_materializer_wizard"), Messages.getString("check_your_system_permissions_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
+					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
+		}
+	}
+
+	public void startProduct(String applicationFolder, Map<String, String> inputArgMap, List<String> proxySettings,
+			int startupTime) throws JNLPException
+	{
+		ArrayList<String> allArgs = new ArrayList<String>();
+		allArgs.add(applicationFolder + "/eclipse"); //$NON-NLS-1$
+		allArgs.add("-consoleLog"); //$NON-NLS-1$
+
+		String wsDir = getWorkspaceDir();
+		if(wsDir != null)
+		{
+			allArgs.add("-data"); //$NON-NLS-1$
+			allArgs.add(wsDir);
+		}
+		allArgs.add("-configURL"); //$NON-NLS-1$
+		allArgs.add(inputArgMap.get(PROP_CONFIG_URL));
+
 		final String syncString = "sync info: application launched"; //$NON-NLS-1$
 		allArgs.add("-syncString"); //$NON-NLS-1$
 		allArgs.add(syncString);
 
-		allArgs.add("-consoleLog"); //$NON-NLS-1$
+		long popupAfter = (new Date()).getTime() + startupTime;
 
 		allArgs.add("-popupAfter"); //$NON-NLS-1$
 		allArgs.add("" + popupAfter); //$NON-NLS-1$
 
-		allArgs.add("-ws"); //$NON-NLS-1$
-
-		if(isWindows())
-			allArgs.add("win32"); //$NON-NLS-1$
-		else if(isAix())
-			allArgs.add("motif"); //$NON-NLS-1$
-		else if(isMaxOSx())
-		{
-			allArgs.add("carbon"); //$NON-NLS-1$
-			allArgs.add("-XstartOnFirstThread"); //$NON-NLS-1$
-		}
-		else
-			allArgs.add("gtk"); //$NON-NLS-1$
+		allArgs.add("-vmargs");
+		allArgs.add("-Xmx512m"); //$NON-NLS-1$		
+		allArgs.addAll(proxySettings);
+		allArgs.addAll(parseExtraArgs(inputArgMap.get(PROP_EXTRA)));
 
 		Runtime runtime = Runtime.getRuntime();
 		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
@@ -582,7 +713,7 @@ public class Main
 					}
 					finally
 					{
-						close(rd);
+						Utils.close(rd);
 					}
 				}
 			}.start();
@@ -605,7 +736,7 @@ public class Main
 					}
 					finally
 					{
-						close(erd);
+						Utils.close(erd);
 					}
 				}
 			}.start();
@@ -622,18 +753,19 @@ public class Main
 	{
 		try
 		{
-			Properties props = parseArguments(args);
+			Map<String, String> inputArgMap = loadInputMap(args);
+			Properties configProps = loadConfigProperties(inputArgMap);
 
-			s_basePathUrl = props.getProperty(PROP_BASE_PATH_URL);
+			s_basePathUrl = configProps.getProperty(PROP_BASE_PATH_URL);
 
-			String tmp = props.getProperty(PROP_ERROR_URL);
+			String tmp = configProps.getProperty(PROP_ERROR_URL);
 
 			if(tmp != null)
 			{
 				m_errorURL = tmp;
 			}
 
-			tmp = props.getProperty(PROP_SERVICE_AVAILABLE);
+			tmp = configProps.getProperty(PROP_SERVICE_AVAILABLE);
 
 			boolean serviceAvailable = true;
 
@@ -642,7 +774,7 @@ public class Main
 				serviceAvailable = false;
 			}
 
-			String serviceMessage = props.getProperty(PROP_SERVICE_MESSAGE);
+			String serviceMessage = configProps.getProperty(PROP_SERVICE_MESSAGE);
 
 			if(!serviceAvailable || (serviceMessage != null && serviceMessage.length() > 0))
 			{
@@ -654,10 +786,9 @@ public class Main
 				}
 			}
 
-			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
-			byte[] splashImageBootData = loadData(props.getProperty(PROP_SPLASH_IMAGE_BOOT));
-			byte[] splashImageData = loadData(props.getProperty(PROP_SPLASH_IMAGE));
-			byte[] windowIconData = loadData(props.getProperty(PROP_WINDOW_ICON));
+			byte[] splashImageBootData = loadData(configProps.getProperty(PROP_SPLASH_IMAGE_BOOT));
+			byte[] splashImageData = loadData(configProps.getProperty(PROP_SPLASH_IMAGE));
+			byte[] windowIconData = loadData(configProps.getProperty(PROP_WINDOW_ICON));
 
 			m_splashImageBoot = splashImageBootData != null
 					? Toolkit.getDefaultToolkit().createImage(splashImageBootData)
@@ -672,18 +803,6 @@ public class Main
 					: null;
 
 			final ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
-			SimpleJNLPCache cache = new SimpleJNLPCache(getCacheLocation());
-			if(splashImageBootData != null || splashImageData != null)
-			{
-				cache.addListener(new SimpleJNLPCacheAdapter()
-				{
-					@Override
-					public void updateStarted(URL jnlp)
-					{
-						SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
-					}
-				});
-			}
 
 			/*
 			 * // Uncomment to get two testloops of progress - do not use in production // test loop - uncomment to test
@@ -704,69 +823,52 @@ public class Main
 			 * JNLPException("Can not download materialization wizard", "Check disk space, system permissions, internet
 			 * connection and try again", ERROR_CODE_DOWNLOAD_EXCEPTION, e); }
 			 */
-			String jnlpString = getJnlpRef(args);
-			URL url;
-			try
-			{
-				url = new URL(jnlpString);
-			}
-			catch(MalformedURLException e)
-			{
-				throw new JNLPException(Messages.getString(
-						"unable_to_create_a_URL_from_0_colon_1", jnlpString, e.getMessage()), //$NON-NLS-1$
-						Messages.getString("report_to_vendor"), ERROR_CODE_PROPERTY_IO_EXCEPTION, e); //$NON-NLS-1$
-			}
 
-			boolean productUpdated = cache.registerJNLP(url, monitor);
+			DirectorInstaller installer = new DirectorInstaller(getInstallLocation());
 
-			IProductInstaller installer;
+			if(!SplashWindow.splashIsUp())
+			{
+				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
+			}
 
 			try
 			{
-				// Class<?> installerClass = Class.forName(PRODUCT_INSTALLER_CLASS);
-				Class<?> installerClass = cache.getClassLoader().loadClass(PRODUCT_INSTALLER_CLASS);
-				installer = (IProductInstaller)installerClass.newInstance();
+				installer.installDirector(inputArgMap.get(PROP_DIRECTOR_ARCHIVE_URL), inputArgMap
+						.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL), monitor);
 			}
-			catch(Exception e)
+			catch(OperationCanceledException e)
 			{
-				throw new JNLPException(Messages.getString("can_not_find_materialization_wizard_resource"), //$NON-NLS-1$
-						Messages.getString("report_the_error_and_try_later"), ERROR_CODE_RESOURCE_EXCEPTION, e); //$NON-NLS-1$
+				installer.removeDirector();
+				throw e;
 			}
-
-			if(productUpdated || !installer.isInstalled(getInstallLocation()))
+			catch(CorruptedFileException e)
 			{
-				if(!SplashWindow.splashIsUp())
-				{
-					SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
-				}
-
-				try
-				{
-					installer.installProduct(this, monitor);
-				}
-				catch(OperationCanceledException e)
-				{
-					for(String installFolder : installer.getInstallFolders())
-					{
-						Utils.deleteRecursive(new File(getInstallLocation(), installFolder));
-					}
-					throw e;
-				}
-				catch(CorruptedFileException e)
-				{
-					cache.removeLatest();
-
-					throw new JNLPException(
-							Messages.getString("the_downloaded_materialization_wizard_a_contains_corrupted_file"), //$NON-NLS-1$
-							Messages.getString("trigger_the_materialization_again"), ERROR_CODE_CORRUPTED_FILE_EXCEPTION); //$NON-NLS-1$
-				}
+				throw new JNLPException(Messages.getString("director_application_contains_a_corrupted_file"), //$NON-NLS-1$
+						Messages.getString("trigger_the_materialization_again"), ERROR_CODE_CORRUPTED_FILE_EXCEPTION); //$NON-NLS-1$
 			}
+
 			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
 			// in the clipboard.
 			// ClipboardService clipservice = (ClipboardService)ServiceManager.lookup("javax.jnlp.ClipboardService");
 			// StringSelection ss = new StringSelection(SplashWindow.getDebugString());
 			// clipservice.setContents(ss);
-			startProduct(installer.getApplicationFolder(), args, (new Date()).getTime() + startupTime);
+
+			List<String> proxySettings;
+			try
+			{
+				proxySettings = getProxySettings();
+			}
+			catch(URISyntaxException e)
+			{
+				throw new JNLPException(
+						Messages.getString("unable_to_detect_proxy_settings"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
+						ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
+			}
+
+			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
+
+			startDirector(installer.getDirectorFolder().toString(), inputArgMap, proxySettings);
+			startProduct(getInstallerFolderName(), inputArgMap, proxySettings, startupTime);
 			try
 			{
 				// Two seconds to start, with progressbar. The time is an
@@ -862,80 +964,14 @@ public class Main
 		return m_errorURL;
 	}
 
-	private String getJnlpRef(String[] args) throws JNLPException
+	private String getInstallerFolderName() throws JNLPException
 	{
-		for(int idx = 0; idx < args.length; ++idx)
+		if(m_installerFolderName == null)
 		{
-			if("-productJNLP".equals(args[idx])) //$NON-NLS-1$
-			{
-				if(++idx < args.length)
-				{
-					String arg = args[idx];
-					if(arg != null && arg.trim().length() > 0)
-					{
-						return arg;
-					}
-				}
-				break;
-			}
+			m_installerFolderName = getInstallLocation().toString() + "/" + INSTALLER_FOLDER_NAME;
 		}
 
-		throw new JNLPException(Messages
-				.getString("missing_required_argument_productJNLP_URL_to_product_JNLP_descriptor"), //$NON-NLS-1$
-				Messages.getString("report_the_error_and_try_later"), ERROR_CODE_MISSING_ARGUMENT_EXCEPTION); //$NON-NLS-1$
-	}
-
-	/**
-	 * This method prepares argument with proxy information which will be passed to the application. Notice that there
-	 * arguments don't set system properties, they are supposed to be parsed in the application to set up the proxy
-	 * rules internally.
-	 * 
-	 * The algorithm of getting proxy information is not ideal since the proxy selector might use non-trivial rules.
-	 * However, we don't know which proxy selector implementation will handle our requests and there is no way of
-	 * retrieving all the proxy rules.
-	 * 
-	 * Let's keep it simple - we try to use dummy addresses for the most common protocols. This will guarantee that we
-	 * inherit most probable browser proxy settings.
-	 * 
-	 * If the rules are not guessed optimally, there should be an option in the launched application to override
-	 * automatic proxy discovery with user's own rules, with the possibility to persist the settings in the application
-	 * installation directory.
-	 * 
-	 * @return
-	 * @throws URISyntaxException
-	 */
-	private List<String> getProxySettings() throws URISyntaxException
-	{
-		List<String> args = new ArrayList<String>();
-		ProxySelector proxySelector = ProxySelector.getDefault();
-
-		for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"), //$NON-NLS-1$ //$NON-NLS-2$
-				new URI("ftp://dummy.host.com") }) //$NON-NLS-1$
-		{
-			List<Proxy> proxies = proxySelector.select(uri);
-			String protocol = uri.getScheme();
-
-			for(Proxy proxy : proxies)
-			{
-				if(Proxy.NO_PROXY.equals(proxy))
-					break;
-
-				SocketAddress address = proxy.address();
-				if(address instanceof InetSocketAddress)
-				{
-					InetSocketAddress iaddr = (InetSocketAddress)address;
-					args.add("-" + protocol + ".proxyHost"); //$NON-NLS-1$ //$NON-NLS-2$
-					args.add(iaddr.getHostName());
-					args.add("-" + protocol + ".proxyPort"); //$NON-NLS-1$ //$NON-NLS-2$
-					args.add("" + iaddr.getPort()); //$NON-NLS-1$
-					args.add("-" + protocol + ".nonProxyHosts"); //$NON-NLS-1$ //$NON-NLS-2$
-					args.add("localhost|127.0.0.1"); //$NON-NLS-1$
-					break;
-				}
-			}
-		}
-
-		return args;
+		return m_installerFolderName;
 	}
 
 	private Image getWindowIconImage()
@@ -943,59 +979,11 @@ public class Main
 		return m_windowIconImage;
 	}
 
-	private byte[] loadData(String url) throws JNLPException
+	private Properties loadConfigProperties(Map<String, String> inputArgMap) throws JNLPException
 	{
-		byte[] data = null;
-		if(url != null)
-		{
-			InputStream is = null;
-			try
-			{
-				is = new URL(url).openStream();
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] buf = new byte[0x1000];
-				int count;
-				while((count = is.read(buf)) > 0)
-					os.write(buf, 0, count);
-				data = os.toByteArray();
+		String configURL = inputArgMap.get(PROP_CONFIG_URL);
 
-			}
-			catch(IOException e)
-			{
-				throw new JNLPException(
-						Messages.getString("unable_to_read_a_splash_screen_or_window_icon_image"), //$NON-NLS-1$
-						Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_REMOTE_IO_EXCEPTION, e); //$NON-NLS-1$
-			}
-			finally
-			{
-				close(is);
-			}
-		}
-
-		return data;
-	}
-
-	private Properties parseArguments(String[] args) throws JNLPException
-	{
-		int urlIdx = -1;
-		for(int idx = 0; idx < args.length; ++idx)
-		{
-			if("-configURL".equals(args[idx])) //$NON-NLS-1$
-			{
-				if(++idx < args.length)
-				{
-					String arg = args[idx];
-					if(arg != null && arg.trim().length() > 0)
-					{
-						urlIdx = idx;
-						break;
-					}
-				}
-				break;
-			}
-		}
-
-		if(urlIdx == -1)
+		if(configURL == null)
 		{
 			throw new JNLPException(Messages.getString("missing_required_argument_configURL_URL_to_config_properties"), //$NON-NLS-1$
 					Messages.getString("report_the_error_and_try_later"), ERROR_CODE_MISSING_ARGUMENT_EXCEPTION); //$NON-NLS-1$
@@ -1009,7 +997,7 @@ public class Main
 
 			try
 			{
-				propertiesURL = new URL(args[urlIdx].trim());
+				propertiesURL = new URL(configURL.trim());
 			}
 			catch(MalformedURLException e)
 			{
@@ -1079,7 +1067,7 @@ public class Main
 				//
 				try
 				{
-					args[urlIdx] = localProps.toURI().toURL().toExternalForm();
+					inputArgMap.put(PROP_CONFIG_URL, localProps.toURI().toURL().toExternalForm());
 				}
 				catch(MalformedURLException e)
 				{
@@ -1115,9 +1103,52 @@ public class Main
 		}
 		finally
 		{
-			close(propStream);
-			close(localStream);
+			Utils.close(propStream);
+			Utils.close(localStream);
 		}
+	}
+
+	private byte[] loadData(String url) throws JNLPException
+	{
+		byte[] data = null;
+		if(url != null)
+		{
+			InputStream is = null;
+			try
+			{
+				is = new URL(url).openStream();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				byte[] buf = new byte[0x1000];
+				int count;
+				while((count = is.read(buf)) > 0)
+					os.write(buf, 0, count);
+				data = os.toByteArray();
+
+			}
+			catch(IOException e)
+			{
+				throw new JNLPException(
+						Messages.getString("unable_to_read_a_splash_screen_or_window_icon_image"), //$NON-NLS-1$
+						Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_REMOTE_IO_EXCEPTION, e); //$NON-NLS-1$
+			}
+			finally
+			{
+				Utils.close(is);
+			}
+		}
+
+		return data;
+	}
+
+	private Map<String, String> loadInputMap(String[] args)
+	{
+		Map<String, String> prop = new HashMap<String, String>();
+		for(int i = 0; i < (args.length / 2); i++)
+		{
+			prop.put(args[2 * i].replaceAll("^-", ""), args[2 * i + 1]);
+		}
+
+		return prop;
 	}
 
 	/**
@@ -1127,22 +1158,13 @@ public class Main
 	 * @param args
 	 * @return
 	 */
-	private List<String> parseExtraArgs(String[] args)
+	private List<String> parseExtraArgs(String extraArgsString)
 	{
-		for(int i = 0; i < args.length; i++)
+		if(extraArgsString != null && !"null".equals(extraArgsString)) //$NON-NLS-1$
 		{
-			if("-extra".equals(args[i])) //$NON-NLS-1$
-			{
-				String extraArgsString = args[++i];
-				if(extraArgsString != null && !"null".equals(extraArgsString)) //$NON-NLS-1$
-				{
-					String[] extraArgs = extraArgsString.split(" "); //$NON-NLS-1$
+			String[] extraArgs = extraArgsString.split(" "); //$NON-NLS-1$
 
-					return Arrays.asList(extraArgs);
-				}
-
-				break;
-			}
+			return Arrays.asList(extraArgs);
 		}
 
 		return Collections.emptyList();

@@ -13,7 +13,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.buckminster.jnlp.cache.JNLPResource;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
