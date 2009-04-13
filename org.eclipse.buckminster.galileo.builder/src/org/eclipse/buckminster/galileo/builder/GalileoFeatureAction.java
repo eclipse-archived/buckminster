@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.eclipse.amalgam.releng.build.Build;
+import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +23,9 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -30,21 +33,24 @@ import org.eclipse.equinox.p2.publisher.IPublisherResult;
 @SuppressWarnings("restriction")
 public class GalileoFeatureAction extends AbstractPublisherAction
 {
-	private final Build m_build;
+	private final Build build;
 
-	private final IMetadataRepository m_mdr;
+	private final IMetadataRepository mdr;
 
-	public GalileoFeatureAction(Build build, IMetadataRepository mdr)
+	private final IMetadataRepository globalMdr;
+
+	public GalileoFeatureAction(Build build, IMetadataRepository globalMdr, IMetadataRepository mdr)
 	{
-		m_build = build;
-		m_mdr = mdr;
+		this.build = build;
+		this.globalMdr = globalMdr;
+		this.mdr = mdr;
 	}
 
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
 		Feature galileoFeature = null;
-		for(Contribution contrib : m_build.getContributions())
+		for(Contribution contrib : build.getContributions())
 			for(Feature feature : contrib.getFeatures())
 				if("org.eclipse.galileo".equals(feature.getId())) //$NON-NLS-1$
 				{
@@ -66,7 +72,8 @@ public class GalileoFeatureAction extends AbstractPublisherAction
 		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(featureGroupId, featureVersion)));
 
 		ArrayList<IRequiredCapability> required = new ArrayList<IRequiredCapability>();
-		for(Contribution contrib : m_build.getContributions())
+		for(Contribution contrib : build.getContributions())
+		{
 			for(Feature feature : contrib.getFeatures())
 			{
 				String requiredId = feature.getId();
@@ -81,8 +88,30 @@ public class GalileoFeatureAction extends AbstractPublisherAction
 				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, requiredId,
 						range, null, false, false));
 			}
+			for(Bundle bundle : contrib.getBundles())
+			{
+				IInstallableUnit bundleIU = getIU(bundle.getId(), bundle.getVersion());
+				Version v = bundleIU.getVersion();
+				VersionRange range = new VersionRange(v, true, v, true);
+				String filter = bundleIU.getFilter();
+				required.add(MetadataFactory.createRequiredCapability(Builder.NAMESPACE_OSGI_BUNDLE, bundleIU.getId(),
+						range, filter, false, false));
+			}
+		}
 		iu.addRequiredCapabilities(required);
-		m_mdr.addInstallableUnits(new IInstallableUnit[] { MetadataFactory.createInstallableUnit(iu) });
+		mdr.addInstallableUnits(new IInstallableUnit[] { MetadataFactory.createInstallableUnit(iu) });
 		return Status.OK_STATUS;
+	}
+
+	private IInstallableUnit getIU(String id, String version)
+	{
+		InstallableUnitQuery query = version == null
+				? new InstallableUnitQuery(id)
+				: new InstallableUnitQuery(id, new Version(version));
+		Collector c = globalMdr.query(query, new Collector(), null);
+		IInstallableUnit[] result = (IInstallableUnit[])c.toArray(IInstallableUnit.class);
+		return result.length > 0
+				? result[0]
+				: null;
 	}
 }

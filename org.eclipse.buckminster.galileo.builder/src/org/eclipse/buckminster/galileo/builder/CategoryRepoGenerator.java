@@ -25,22 +25,24 @@ import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
 
 @SuppressWarnings("restriction")
-public class CategoryRepoGenerator
+public class CategoryRepoGenerator extends BuilderPhase
 {
 	private final File m_location;
 
 	private final String m_name;
 
-	public CategoryRepoGenerator(File location, String name)
+	public CategoryRepoGenerator(Builder builder, File location, String name)
 	{
+		super(builder);
 		m_location = location;
 		m_name = name;
 	}
 
-	public URI run(Build bm, IProgressMonitor monitor) throws CoreException
+	@Override
+	public void run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
-		log.info("Starting generation of categories"); //$NON-NLS-1$
+		log.info("Starting generation of categories");
 		long now = System.currentTimeMillis();
 
 		File extraLocation = new File(m_location, Activator.CATEGORY_REPO_FOLDER);
@@ -74,7 +76,8 @@ public class CategoryRepoGenerator
 			info.setArtifactOptions(IPublisherInfo.A_PUBLISH | IPublisherInfo.A_INDEX);
 			info.setMetadataRepository(mdr);
 			Publisher publisher = new Publisher(info);
-			IStatus result = publisher.publish(createActions(bm, mdr, globalMdr), MonitorUtils.subMonitor(monitor, 90));
+			IStatus result = publisher.publish(createActions(getBuilder().getBuild(), mdr, globalMdr),
+					MonitorUtils.subMonitor(monitor, 90));
 			if(result.getSeverity() == IStatus.ERROR)
 				throw new CoreException(result);
 
@@ -87,12 +90,13 @@ public class CategoryRepoGenerator
 			bucky.ungetService(arMgr);
 			MonitorUtils.done(monitor);
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
-		return locationURI;
+		getBuilder().setCategoriesRepo(locationURI);
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 
 	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr)
 	{
-		return new IPublisherAction[] { new GalileoFeatureAction(bm, mdr), new CategoriesAction(bm, globalMdr) };
+		return new IPublisherAction[] { new GalileoFeatureAction(bm, globalMdr, mdr),
+				new CategoriesAction(bm, globalMdr) };
 	}
 }

@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.galileo.builder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.amalgam.releng.build.ARCH;
+import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Config;
+import org.eclipse.amalgam.releng.build.Contribution;
+import org.eclipse.amalgam.releng.build.Feature;
 import org.eclipse.amalgam.releng.build.OS;
 import org.eclipse.amalgam.releng.build.WS;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -20,17 +24,24 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
+import org.eclipse.equinox.internal.p2.director.Explanation;
+import org.eclipse.equinox.internal.p2.director.Explanation.HardRequirement;
+import org.eclipse.equinox.internal.p2.director.Explanation.MissingIU;
+import org.eclipse.equinox.internal.p2.director.Explanation.Singleton;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.director.IPlanner;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
 import org.eclipse.equinox.internal.provisional.p2.director.ProvisioningPlan;
+import org.eclipse.equinox.internal.provisional.p2.director.RequestStatus;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.engine.InstallableUnitOperand;
 import org.eclipse.equinox.internal.provisional.p2.engine.Operand;
 import org.eclipse.equinox.internal.provisional.p2.engine.ProvisioningContext;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
@@ -41,7 +52,7 @@ import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 @SuppressWarnings("restriction")
-public class RepositoryVerifier
+public class RepositoryVerifier extends BuilderPhase
 {
 	static ProvisioningContext createContext(URI site)
 	{
@@ -124,35 +135,40 @@ public class RepositoryVerifier
 		return bld.toString();
 	}
 
-	private final String m_id;
-
-	private final Version m_version;
-
-	private final URI m_repoLocation;
-
-	private final URI m_tpRepoLocation;
-
-	public RepositoryVerifier(URI repoLocation, URI tpRepoLocation, String id, Version version)
+	@SuppressWarnings("unchecked")
+	private static Set<Explanation> getExplanations(RequestStatus requestStatus)
 	{
-		m_id = id;
-		m_repoLocation = repoLocation;
-		m_tpRepoLocation = tpRepoLocation;
-		m_version = version;
+		return requestStatus.getExplanations();
 	}
 
-	public Set<IInstallableUnit> run(List<Config> configs, IProgressMonitor monitor) throws CoreException
+	private final String id;
+
+	private final Version version;
+
+	public RepositoryVerifier(Builder builder, String id, Version version)
+	{
+		super(builder);
+		this.id = id;
+		this.version = version;
+	}
+
+	@Override
+	public void run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
 		log.info("Starting planner verification"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
-		Buckminster bucky = Buckminster.getDefault();
 		String profilePrefix = "GalileoTest_"; //$NON-NLS-1$
-		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
-		IPlanner planner = bucky.getService(IPlanner.class);
 		final HashSet<IInstallableUnit> unitsToInstall = new HashSet<IInstallableUnit>();
 
+		List<Config> configs = getBuilder().getBuild().getConfigs();
 		MonitorUtils.begin(monitor, configs.size() * 100);
+		Buckminster bucky = Buckminster.getDefault();
+		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
+		IPlanner planner = bucky.getService(IPlanner.class);
+		boolean update = getBuilder().isUpdate();
+		URI repoLocation = getBuilder().getGlobalRepoURI();
 		try
 		{
 			for(Config config : configs)
@@ -164,10 +180,15 @@ public class RepositoryVerifier
 				props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
 				props.put(IProfile.PROP_ENVIRONMENTS, configEnvString(config));
 
-				profileRegistry.addProfile(profileId, props);
-				IProfile profile = profileRegistry.getProfile(profileId);
-				IInstallableUnit[] rootArr = getRootIUs(m_repoLocation, profile, m_id, m_version,
-						MonitorUtils.subMonitor(monitor, 10));
+				IProfile profile = null;
+				if(update)
+					profile = profileRegistry.getProfile(profileId);
+
+				if(profile == null)
+					profile = profileRegistry.addProfile(profileId, props);
+
+				IInstallableUnit[] rootArr = getRootIUs(repoLocation, profile, id, version, MonitorUtils.subMonitor(
+						monitor, 10));
 
 				// Add as root IU's to a request
 				ProfileChangeRequest request = new ProfileChangeRequest(profile);
@@ -175,8 +196,15 @@ public class RepositoryVerifier
 					request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU,
 							Boolean.TRUE.toString());
 				request.addInstallableUnits(rootArr);
-				ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(m_repoLocation),
+				ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation),
 						MonitorUtils.subMonitor(monitor, 90));
+
+				IStatus status = plan.getStatus();
+				if(status.getSeverity() == IStatus.ERROR)
+				{
+					sendEmails(plan.getRequestStatus());
+					throw new CoreException(status);
+				}
 
 				Operand[] ops = plan.getOperands();
 				for(Operand op : ops)
@@ -189,11 +217,11 @@ public class RepositoryVerifier
 					if(iu != null)
 						unitsToInstall.add(iu);
 				}
-
-				IStatus status = plan.getStatus();
-				if(status.getSeverity() == IStatus.ERROR)
-					throw new CoreException(status);
 			}
+		}
+		catch(RuntimeException e)
+		{
+			throw BuckminsterException.wrap(e);
 		}
 		finally
 		{
@@ -207,9 +235,10 @@ public class RepositoryVerifier
 		{
 			// Filter out everything that is included in the target platform
 			//
-			log.info("Found %d units to install. Now pruning using target platform", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
+			log.info(
+					"Found %d units to install. Now pruning using target platform", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
 			IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-			IMetadataRepository tpRepo = mdrMgr.loadRepository(m_tpRepoLocation, null);
+			IMetadataRepository tpRepo = mdrMgr.loadRepository(getBuilder().getTargetPlatformRepo(), null);
 			tpRepo.query(new MatchQuery()
 			{
 				@Override
@@ -219,8 +248,160 @@ public class RepositoryVerifier
 					return false;
 				}
 			}, new Collector(), null);
+			bucky.ungetService(mdrMgr);
 			log.info("%d units remain after pruning", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
 		}
-		return unitsToInstall;
+		getBuilder().setUnitsToInstall(unitsToInstall);
+	}
+
+	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions,
+			IRequiredCapability prq)
+	{
+		boolean contribsFound = false;
+		for(Explanation explanation : explanations)
+		{
+			if(explanation instanceof Singleton)
+			{
+				if(contribsFound)
+					// All explicit contributions for Singletons are added at top level. We just
+					// want to find out if this Singleton is the leaf problem here, not add anything
+					continue;
+
+				for(IInstallableUnit iu : ((Singleton)explanation).ius)
+				{
+					for(IProvidedCapability pc : iu.getProvidedCapabilities())
+						if(pc.satisfies(prq))
+						{
+							// A singleton is always a leaf problem. Add contributions
+							// if we can find any
+							Contribution contrib = findContribution(iu.getId());
+							if(contrib == null)
+								continue;
+							contribsFound = true;
+						}
+				}
+				continue;
+			}
+
+			IInstallableUnit iu;
+			IRequiredCapability crq;
+			if(explanation instanceof HardRequirement)
+			{
+				HardRequirement hrq = (HardRequirement)explanation;
+				iu = hrq.iu;
+				crq = hrq.req;
+			}
+			else if(explanation instanceof MissingIU)
+			{
+				MissingIU miu = (MissingIU)explanation;
+				iu = miu.iu;
+				crq = miu.req;
+			}
+			else
+				continue;
+
+			for(IProvidedCapability pc : iu.getProvidedCapabilities())
+				if(pc.satisfies(prq))
+				{
+					// This IU would have fulfilled the failing request but it has
+					// apparent problems of its own.
+					if(addLeafmostContributions(explanations, contributions, crq))
+					{
+						contribsFound = true;
+						continue;
+					}
+
+					Contribution contrib = findContribution(iu, crq);
+					if(contrib == null)
+						continue;
+					contributions.put(contrib.getLabel(), contrib);
+					continue;
+				}
+		}
+		return contribsFound;
+	}
+
+	private Contribution findContribution(IInstallableUnit iu, IRequiredCapability rq)
+	{
+		Contribution contrib = null;
+		if(Builder.NAMESPACE_OSGI_BUNDLE.equals(rq.getNamespace())
+				|| IInstallableUnit.NAMESPACE_IU_ID.equals(rq.getNamespace()))
+			contrib = findContribution(rq.getName());
+
+		if(contrib == null)
+			// Not found, try the owner of the requirement
+			contrib = findContribution(iu.getId());
+		return contrib;
+	}
+
+	private Contribution findContribution(String componentId)
+	{
+		for(Contribution contrib : getBuilder().getBuild().getContributions())
+		{
+			for(Feature feature : contrib.getFeatures())
+				if(feature.getId().equals(componentId))
+					return contrib;
+			for(Bundle bundle : contrib.getBundles())
+				if(bundle.getId().equals(componentId))
+					return contrib;
+		}
+		return null;
+	}
+
+	private void sendEmails(RequestStatus requestStatus)
+	{
+		Builder builder = getBuilder();
+		if(!builder.getBuild().isSendmail())
+			return;
+
+		ArrayList<String> errors = new ArrayList<String>();
+		Set<Explanation> explanations = getExplanations(requestStatus);
+		Map<String, Contribution> contribs = new HashMap<String, Contribution>();
+		for(Explanation explanation : explanations)
+		{
+			errors.add(explanation.toString());
+			if(explanation instanceof Singleton)
+			{
+				// A singleton is always a leaf problem. Add contributions
+				// if we can find any. They are all culprits
+				for(IInstallableUnit iu : ((Singleton)explanation).ius)
+				{
+					Contribution contrib = findContribution(iu.getId());
+					if(contrib == null)
+						continue;
+					contribs.put(contrib.getLabel(), contrib);
+				}
+				continue;
+			}
+
+			IInstallableUnit iu;
+			IRequiredCapability crq;
+			if(explanation instanceof HardRequirement)
+			{
+				HardRequirement hrq = (HardRequirement)explanation;
+				iu = hrq.iu;
+				crq = hrq.req;
+			}
+			else if(explanation instanceof MissingIU)
+			{
+				MissingIU miu = (MissingIU)explanation;
+				iu = miu.iu;
+				crq = miu.req;
+			}
+			else
+				continue;
+
+			// Find the leafmost contributions for the problem. We don't want to blame
+			// consuming contributors
+			if(!addLeafmostContributions(explanations, contribs, crq))
+			{
+				Contribution contrib = findContribution(iu, crq);
+				if(contrib == null)
+					continue;
+				contribs.put(contrib.getLabel(), contrib);
+			}
+		}
+		for(Contribution contrib : contribs.values())
+			builder.sendEmail(contrib, errors);
 	}
 }

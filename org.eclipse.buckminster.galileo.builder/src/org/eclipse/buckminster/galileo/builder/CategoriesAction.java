@@ -55,18 +55,42 @@ public class CategoriesAction extends AbstractPublisherAction
 		m_globalRepo = globalRepo;
 	}
 
-	/**
-	 * Creates an IU corresponding to an update site category
-	 * 
-	 * @param category
-	 *            The category descriptor
-	 * @param featureIUs
-	 *            The IUs of the features that belong to the category
-	 * @param parentCategory
-	 *            The parent category, or <code>null</code>
-	 * @return an IU representing the category
-	 */
-	public IInstallableUnit createCategoryIU(Category category, Set<IInstallableUnit> featureIUs,
+	@Override
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
+	{
+		Map<Category, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<Category, Set<IInstallableUnit>>();
+		try
+		{
+			for(Contribution contrib : m_build.getContributions())
+			{
+				for(Feature feature : contrib.getFeatures())
+				{
+					Category category = feature.getCategory();
+					if(category != null)
+					{
+						IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo,
+								monitor);
+
+						Set<IInstallableUnit> featureIUs = categoriesToFeatureIUs.get(category);
+						if(featureIUs == null)
+						{
+							featureIUs = new HashSet<IInstallableUnit>();
+							categoriesToFeatureIUs.put(category, featureIUs);
+						}
+						featureIUs.add(featureIU);
+					}
+				}
+			}
+		}
+		catch(CoreException e)
+		{
+			return e.getStatus();
+		}
+		generateCategoryIUs(categoriesToFeatureIUs, results);
+		return Status.OK_STATUS;
+	}
+
+	private IInstallableUnit createCategoryIU(Category category, Set<IInstallableUnit> featureIUs,
 			IInstallableUnit parentCategory)
 	{
 		InstallableUnitDescription cat = new MetadataFactory.InstallableUnitDescription();
@@ -103,49 +127,6 @@ public class CategoriesAction extends AbstractPublisherAction
 		return MetadataFactory.createInstallableUnit(cat);
 	}
 
-	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
-		Map<Category, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<Category, Set<IInstallableUnit>>();
-		try
-		{
-			for(Contribution contrib : m_build.getContributions())
-			{
-				for(Feature feature : contrib.getFeatures())
-				{
-					Category category = feature.getCategory();
-					if(category != null)
-					{
-						IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo,
-								monitor);
-
-						Set<IInstallableUnit> featureIUs = categoriesToFeatureIUs.get(category);
-						if(featureIUs == null)
-						{
-							featureIUs = new HashSet<IInstallableUnit>();
-							categoriesToFeatureIUs.put(category, featureIUs);
-						}
-						featureIUs.add(featureIU);
-					}
-				}
-			}
-		}
-		catch(CoreException e)
-		{
-			return e.getStatus();
-		}
-		generateCategoryIUs(categoriesToFeatureIUs, results);
-		return Status.OK_STATUS;
-	}
-
-	/**
-	 * Generates IUs corresponding to update site categories.
-	 * 
-	 * @param categoriesToFeatures
-	 *            Map of Category ->Set (Feature IUs in that category).
-	 * @param result
-	 *            The generator result being built
-	 */
 	private void generateCategoryIUs(Map<Category, Set<IInstallableUnit>> categoriesToFeatures, IPublisherResult result)
 	{
 		for(Map.Entry<Category, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
@@ -188,6 +169,6 @@ public class CategoriesAction extends AbstractPublisherAction
 			collector = publisherInfo.getContextMetadataRepository().query(query, collector, null);
 		if(collector.size() == 1)
 			return (IInstallableUnit)collector.iterator().next();
-		throw BuckminsterException.fromMessage("Unable to find feature %s/%s using composite repository", name, version); //$NON-NLS-1$
+		throw BuckminsterException.fromMessage("Unable to find feature %s/%s using composite repository", name, version);
 	}
 }

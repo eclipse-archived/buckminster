@@ -23,25 +23,27 @@ import org.eclipse.equinox.p2.publisher.eclipse.BundlesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction;
 
 @SuppressWarnings("restriction")
-public class PlatformRepoGenerator
+public class PlatformRepoGenerator extends BuilderPhase
 {
-	private final File m_repoLocation;
+	private final File repoLocation;
 
-	private final File m_targetPlatformLocation;
+	private final File targetPlatformLocation;
 
-	public PlatformRepoGenerator(File repoLocation, File targetPlatformLocation)
+	public PlatformRepoGenerator(Builder builder, File repoLocation, File targetPlatformLocation)
 	{
-		m_repoLocation = repoLocation;
-		m_targetPlatformLocation = targetPlatformLocation;
+		super(builder);
+		this.repoLocation = repoLocation;
+		this.targetPlatformLocation = targetPlatformLocation;
 	}
 
-	public URI run(IProgressMonitor monitor) throws CoreException
+	@Override
+	public void run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
-		log.info("Starting generation of platform repository"); //$NON-NLS-1$
+		log.info("Starting generation of platform repository");
 		long now = System.currentTimeMillis();
 
-		File targetPlatformRepoLocation = new File(m_repoLocation, Activator.PLATFORM_REPO_FOLDER);
+		File targetPlatformRepoLocation = new File(repoLocation, Activator.PLATFORM_REPO_FOLDER);
 		FileUtils.deleteAll(targetPlatformRepoLocation);
 
 		Map<String, String> properties = new HashMap<String, String>();
@@ -56,7 +58,7 @@ public class PlatformRepoGenerator
 					Activator.SIMPLE_METADATA_TYPE, properties);
 
 			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(
-					Builder.createURI(m_repoLocation), new NullProgressMonitor());
+					repoLocation.toURI(), new NullProgressMonitor());
 
 			PublisherInfo info = new PublisherInfo();
 			info.setMetadataRepository(mdr);
@@ -71,14 +73,14 @@ public class PlatformRepoGenerator
 		{
 			bucky.ungetService(mdrMgr);
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
-		return locationURI;
+		getBuilder().setTargetPlatformRepo(locationURI);
+		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 
 	private IPublisherAction[] createActions()
 	{
 		return new IPublisherAction[] { new JREAction(new File(System.getProperty("java.home"))), //$NON-NLS-1$
-				new FeaturesAction(new File[] { new File(m_targetPlatformLocation, "features") }), //$NON-NLS-1$
-				new BundlesAction(new File[] { new File(m_targetPlatformLocation, "plugins") }) }; //$NON-NLS-1$
+				new FeaturesAction(new File[] { new File(targetPlatformLocation, "features") }), //$NON-NLS-1$
+				new BundlesAction(new File[] { new File(targetPlatformLocation, "plugins") }) }; //$NON-NLS-1$
 	}
 }
