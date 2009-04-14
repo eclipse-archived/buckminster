@@ -68,11 +68,13 @@ public class Builder implements IApplication
 {
 	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
-	static private final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup";
+	static private final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
 
-	static private final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer";
+	static private final String CORE_BUNDLE = "org.eclipse.equinox.p2.core"; //$NON-NLS-1$
 
-	static private final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite";
+	static private final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
+
+	static private final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite"; //$NON-NLS-1$
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd"); //$NON-NLS-1$
 
@@ -89,6 +91,8 @@ public class Builder implements IApplication
 		DATE_FORMAT.setTimeZone(utc);
 		TIME_FORMAT.setTimeZone(utc);
 	}
+
+	private static final String PROP_P2_DATA_AREA = "eclipse.p2.data.area";
 
 	/**
 	 * Creates a repository location without the trailing slash that will be added if the standard
@@ -171,6 +175,15 @@ public class Builder implements IApplication
 		if(bundle == null)
 			return false;
 		bundle.start(Bundle.START_TRANSIENT);
+		return true;
+	}
+
+	private static boolean stopBundle(PackageAdmin packageAdmin, String bundleName) throws BundleException
+	{
+		Bundle bundle = getBundle(packageAdmin, bundleName);
+		if(bundle == null || bundle.getState() != Bundle.ACTIVE)
+			return false;
+		bundle.stop(Bundle.STOP_TRANSIENT);
 		return true;
 	}
 
@@ -268,12 +281,20 @@ public class Builder implements IApplication
 				? 100
 				: 1100);
 
+		runTransformation();
 		Buckminster bucky = Buckminster.getDefault();
 		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
 		try
 		{
+			stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
+			stopBundle(packageAdmin, CORE_BUNDLE);
+
+			System.setProperty(PROP_P2_DATA_AREA, new File(buildRoot, "p2").toString());
+
 			if(!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
 				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
+			if(!startEarly(packageAdmin, CORE_BUNDLE))
+				throw BuckminsterException.fromMessage("Missing bundle %s", CORE_BUNDLE);
 			if(!startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP))
 				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
 			if(!startEarly(packageAdmin, BUNDLE_UPDATESITE))
@@ -299,7 +320,6 @@ public class Builder implements IApplication
 
 		try
 		{
-			runTransformation();
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
 			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
 			runPlatformRepoGenerator();
