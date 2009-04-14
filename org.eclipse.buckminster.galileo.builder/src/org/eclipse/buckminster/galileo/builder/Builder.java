@@ -70,7 +70,7 @@ public class Builder implements IApplication
 
 	static private final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup";
 
-	static private final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.profiler.filetransfer";
+	static private final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer";
 
 	static private final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite";
 
@@ -165,22 +165,6 @@ public class Builder implements IApplication
 		}
 	}
 
-	private static InternetAddress mockCCRecipient() throws UnsupportedEncodingException
-	{
-		InternetAddress mock = new InternetAddress();
-		mock.setAddress("thomas@tada.se");
-		mock.setPersonal("Thomas Hallgren (Tada)");
-		return mock;
-	}
-
-	private static List<InternetAddress> mockRecipients() throws UnsupportedEncodingException
-	{
-		InternetAddress mock = new InternetAddress();
-		mock.setAddress("thomas.hallgren@cloudsmith.com");
-		mock.setPersonal("Thomas Hallgren (Cloudsmith)");
-		return Collections.singletonList(mock);
-	}
-
 	private static boolean startEarly(PackageAdmin packageAdmin, String bundleName) throws BundleException
 	{
 		Bundle bundle = getBundle(packageAdmin, bundleName);
@@ -193,6 +177,12 @@ public class Builder implements IApplication
 	private File buildModelLocation;
 
 	private boolean update;
+
+	private boolean production;
+
+	private String mockEmailTo;
+
+	private String mockEmailCC;
 
 	private boolean verifyOnly;
 
@@ -252,6 +242,11 @@ public class Builder implements IApplication
 		return unitsToInstall;
 	}
 
+	public boolean isProduction()
+	{
+		return production;
+	}
+
 	public boolean isUpdate()
 	{
 		return update;
@@ -306,8 +301,8 @@ public class Builder implements IApplication
 		{
 			runTransformation();
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
-			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 3));
-			runPlatformRepoGenerator(MonitorUtils.subMonitor(monitor, 7));
+			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
+			runPlatformRepoGenerator();
 			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
 			if(!verifyOnly)
 				runMirroring(MonitorUtils.subMonitor(monitor, 1000));
@@ -320,6 +315,10 @@ public class Builder implements IApplication
 
 	public void sendEmail(Contribution contrib, List<String> errors)
 	{
+		boolean useMock = (mockEmailTo != null);
+		if(!(production || useMock) && build.isSendmail())
+			return;
+
 		Logger log = Buckminster.getLogger();
 		try
 		{
@@ -327,7 +326,6 @@ public class Builder implements IApplication
 			for(Contact contact : contrib.getContacts())
 				toList.add(contactToAddress(contact));
 
-			boolean useMock = true;
 			StringBuilder msgBld = new StringBuilder();
 			msgBld.append("The following error");
 			if(errors.size() > 1)
@@ -361,13 +359,19 @@ public class Builder implements IApplication
 			InternetAddress buildMaster = contactToAddress(build.getBuildmaster());
 			msg.setFrom(buildMaster);
 
-			List<InternetAddress> recipients = useMock
-					? mockRecipients()
-					: toList;
-			msg.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[recipients.size()]));
-			msg.setRecipient(RecipientType.CC, useMock
-					? mockCCRecipient()
-					: buildMaster);
+			if(useMock)
+			{
+				List<InternetAddress> recipients = mockRecipients();
+				msg.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[recipients.size()]));
+				InternetAddress ccRecipient = mockCCRecipient();
+				if(ccRecipient != null)
+					msg.setRecipient(RecipientType.CC, ccRecipient);
+			}
+			else
+			{
+				msg.setRecipients(RecipientType.TO, toList.toArray(new InternetAddress[toList.size()]));
+				msg.setRecipient(RecipientType.CC, buildMaster);
+			}
 
 			msg.setText(msgBld.toString());
 			msg.setSubject(String.format("%s build failed", build.getLabel()));
@@ -409,7 +413,7 @@ public class Builder implements IApplication
 
 	public void setBuildID(String buildId)
 	{
-		buildID = buildId;
+		this.buildID = buildId;
 	}
 
 	public void setBuildModelLocation(File buildModelLocation)
@@ -417,9 +421,29 @@ public class Builder implements IApplication
 		this.buildModelLocation = buildModelLocation;
 	}
 
+	public void setBuildRoot(File buildRoot)
+	{
+		this.buildRoot = buildRoot;
+	}
+
 	public void setCategoriesRepo(URI categoriesRepo)
 	{
 		this.categoriesRepo = categoriesRepo;
+	}
+
+	public void setMockEmailCC(String mockEmailCc)
+	{
+		this.mockEmailCC = mockEmailCc;
+	}
+
+	public void setMockEmailTo(String mockEmailTo)
+	{
+		this.mockEmailTo = mockEmailTo;
+	}
+
+	public void setProduction(boolean production)
+	{
+		this.production = production;
 	}
 
 	public void setTargetPlatformRepo(URI targetPlatformRepo)
@@ -468,6 +492,28 @@ public class Builder implements IApplication
 		}
 	}
 
+	private InternetAddress mockCCRecipient() throws UnsupportedEncodingException
+	{
+		InternetAddress mock = null;
+		if(mockEmailCC != null)
+		{
+			mock = new InternetAddress();
+			mock.setAddress(mockEmailCC);
+		}
+		return mock;
+	}
+
+	private List<InternetAddress> mockRecipients() throws UnsupportedEncodingException
+	{
+		if(mockEmailTo != null)
+		{
+			InternetAddress mock = new InternetAddress();
+			mock.setAddress(mockEmailTo);
+			return Collections.singletonList(mock);
+		}
+		return Collections.emptyList();
+	}
+
 	private void parseCommandLineArgs(String[] args)
 	{
 		int top = args.length;
@@ -484,6 +530,25 @@ public class Builder implements IApplication
 				setUpdate(true);
 				continue;
 			}
+			if("-production".equalsIgnoreCase(arg))
+			{
+				setProduction(true);
+				continue;
+			}
+			if("-mockEmailTo".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-mockEmailTo requires an argument");
+				setMockEmailTo(args[idx]);
+				continue;
+			}
+			if("-mockEmailCC".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-mockEmailCC requires an argument");
+				setMockEmailCC(args[idx]);
+				continue;
+			}
 			if("-buildModel".equalsIgnoreCase(arg))
 			{
 				if(++idx >= top)
@@ -494,11 +559,25 @@ public class Builder implements IApplication
 				setBuildModelLocation(buildModel);
 				continue;
 			}
+			if("-buildRoot".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-buildRoot requires an argument");
+				setBuildRoot(new File(args[idx]));
+				continue;
+			}
 			if("-buildId".equalsIgnoreCase(arg))
 			{
 				if(++idx >= top)
 					throw new IllegalArgumentException("-buildId requires an argument");
 				setBuildID(args[idx]);
+				continue;
+			}
+			if("-targetPlatformRepository".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-targetPlatformRepository requires an argument");
+				setTargetPlatformRepo(URI.create(args[idx]));
 				continue;
 			}
 			throw new IllegalArgumentException(String.format("Unknown option %s", arg));
@@ -560,8 +639,11 @@ public class Builder implements IApplication
 		mirrorGenerator.run(monitor);
 	}
 
-	private void runPlatformRepoGenerator(IProgressMonitor monitor) throws CoreException
+	private void runPlatformRepoGenerator() throws CoreException
 	{
+		if(targetPlatformRepo != null)
+			return;
+
 		for(Contribution contrib : build.getContributions())
 			if(TP_CONTRIBUTION_LABEL.equals(contrib.getLabel()))
 			{
@@ -632,11 +714,8 @@ public class Builder implements IApplication
 						Integer.valueOf(content.size()));
 
 			build = (Build)content.get(0);
-			buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
-			logOutput = new PrintStream(new FileOutputStream(new File(buildRoot, buildID + ".log.txt")));
-			Logger.setOutStream(logOutput);
-			Logger.setErrStream(logOutput);
-			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
+			if(buildRoot == null)
+				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
 			tempFolder = new File(buildRoot, "tmp"); //$NON-NLS-1$
 			if(tempFolder.exists())
@@ -651,6 +730,11 @@ public class Builder implements IApplication
 			tempFolder.mkdirs();
 			if(!tempFolder.exists())
 				throw BuckminsterException.fromMessage("Failed to create folder %s", tempFolder);
+
+			logOutput = new PrintStream(new FileOutputStream(new File(buildRoot, buildID + ".log.txt")));
+			Logger.setOutStream(logOutput);
+			Logger.setErrStream(logOutput);
+			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
 		}
 		catch(Exception e)
 		{
