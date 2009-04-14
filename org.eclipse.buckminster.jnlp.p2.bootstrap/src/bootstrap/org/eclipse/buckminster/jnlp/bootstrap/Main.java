@@ -10,6 +10,7 @@ package org.eclipse.buckminster.jnlp.bootstrap;
 
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_CORRUPTED_FILE_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
@@ -535,8 +536,8 @@ public class Main
 		return getInstallLocation().getAbsolutePath();
 	}
 
-	public void startDirector(String applicationFolder, Map<String, String> inputArgMap, List<String> proxySettings)
-			throws JNLPException
+	public void installProduct(String applicationFolder, Map<String, String> inputArgMap, List<String> proxySettings,
+			final ProgressFacade monitor) throws JNLPException
 	{
 		String launcherFile = findEclipseLauncher(applicationFolder);
 		String javaExe = findJavaExe();
@@ -575,19 +576,19 @@ public class Main
 					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
 		}
 
-		allArgs.add("-consoleLog"); //$NON-NLS-1$
+		//allArgs.add("-consoleLog"); //$NON-NLS-1$
 
 		Runtime runtime = Runtime.getRuntime();
-		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
-				.intValue());
-		m_tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
-				.intValue());
+		final TailLineBuffer tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES,
+				DEFAULT_MAX_CAPTURED_LINES).intValue());
+		final TailLineBuffer tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES,
+				DEFAULT_MAX_CAPTURED_LINES).intValue());
 
 		try
 		{
-			m_process = runtime.exec(allArgs.toArray(new String[allArgs.size()]));
-			InputStream is = m_process.getInputStream();
-			InputStream eis = m_process.getErrorStream();
+			final Process p2Installprocess = runtime.exec(allArgs.toArray(new String[allArgs.size()]));
+			InputStream is = p2Installprocess.getInputStream();
+			InputStream eis = p2Installprocess.getErrorStream();
 			final BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 			final BufferedReader erd = new BufferedReader(new InputStreamReader(eis));
 
@@ -600,13 +601,13 @@ public class Main
 					try
 					{
 						while((line = rd.readLine()) != null)
-							m_tailOut.writeLine(line);
+							tailOut.writeLine(line);
 					}
 					catch(IOException e)
 					{
 						System.err
 								.println(Messages
-										.getString("error_reading_from_JNLP_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
+										.getString("error_reading_from_director_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -624,12 +625,13 @@ public class Main
 					try
 					{
 						while((line = erd.readLine()) != null)
-							m_tailErr.writeLine(line);
+							tailErr.writeLine(line);
 					}
 					catch(IOException e)
 					{
 						System.err
-								.println(Messages.getString("error_reading_from_JNLP_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
+								.println(Messages
+										.getString("error_reading_from_director_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -637,12 +639,98 @@ public class Main
 					}
 				}
 			}.start();
+
+			final File pluginsFolder = new File(getInstallerFolderName(), "plugins");
+
+			Thread monitorThread = new Thread()
+			{
+				@Override
+				public void run()
+				{
+					int pluginsCount = 100;
+					try
+					{
+						monitor.setTask(Messages.getString("installing materialization wizard"), pluginsCount); //$NON-NLS-1$
+						int loopCounter = 0;
+						int lastBundleCount = 0;
+
+						while(true)
+						{
+							loopCounter++;
+
+							if(monitor.isCanceled())
+							{
+								p2Installprocess.destroy();
+								break;
+							}
+
+							int currentBundleCount = pluginsFolder.list() == null
+									? 0
+									: pluginsFolder.list().length;
+							monitor.taskIncrementalProgress(currentBundleCount - lastBundleCount);
+							lastBundleCount = currentBundleCount;
+
+							try
+							{
+								p2Installprocess.exitValue();
+								break;
+							}
+							catch(IllegalThreadStateException e)
+							{
+								// the process has not finished yet
+								Thread.sleep(250);
+							}
+						}
+					}
+					catch(InterruptedException e)
+					{
+					}
+					finally
+					{
+						monitor.taskDone();
+					}
+				}
+			};
+
+			monitorThread.start();
+
+			try
+			{
+				p2Installprocess.waitFor();
+				monitorThread.join();
+			}
+			catch(InterruptedException e)
+			{
+				throw new JNLPException(
+						Messages.getString("director_application_was_interrupted"), Messages.getString("try_again"), //$NON-NLS-1$ //$NON-NLS-2$
+						ERROR_CODE_DOWNLOAD_EXCEPTION, e);
+			}
+
+			if(p2Installprocess.exitValue() != 0)
+			{
+				if(monitor.isCanceled())
+					throw new JNLPException(
+							Messages.getString("director_application_was_interrupted"), Messages.getString("try_again"), //$NON-NLS-1$ //$NON-NLS-2$
+							ERROR_CODE_DOWNLOAD_EXCEPTION);
+
+				String capturedErrors = tailErr.getLinesAsString();
+				String capturedOutput = tailOut.getLinesAsString();
+
+				throw new JNLPException(
+						Messages.getString("materializer_was_not_installed_correctly") + "\nExit code: " + p2Installprocess.exitValue() //$NON-NLS-1$ //$NON-NLS-2$
+								+ (capturedErrors != null
+										? "\n" + Messages.getString("captured_errors_colon") + "\n" + capturedErrors //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+										: "") + (capturedOutput != null //$NON-NLS-1$
+										? "\n" + Messages.getString("captured_output_colon") + "\n" + capturedOutput //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+										: ""), Messages.getString("read_error_description_above"), //$NON-NLS-1$ //$NON-NLS-2$
+						ERROR_CODE_CORRUPTED_FILE_EXCEPTION);
+			}
 		}
 		catch(IOException e)
 		{
 			throw new JNLPException(
-					Messages.getString("can_not_run_materializer_wizard"), Messages.getString("check_your_system_permissions_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
-					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
+					Messages.getString("can_not_read_materialization_wizard_resource"), Messages.getString("check_your_internet_connection_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
+					ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 	}
 
@@ -651,7 +739,7 @@ public class Main
 	{
 		ArrayList<String> allArgs = new ArrayList<String>();
 		allArgs.add(applicationFolder + "/eclipse"); //$NON-NLS-1$
-		allArgs.add("-consoleLog"); //$NON-NLS-1$
+		//allArgs.add("-consoleLog"); //$NON-NLS-1$
 
 		String wsDir = getWorkspaceDir();
 		if(wsDir != null)
@@ -867,7 +955,7 @@ public class Main
 
 			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
 
-			startDirector(installer.getDirectorFolder().toString(), inputArgMap, proxySettings);
+			installProduct(installer.getDirectorFolder().toString(), inputArgMap, proxySettings, monitor);
 			startProduct(getInstallerFolderName(), inputArgMap, proxySettings, startupTime);
 			try
 			{

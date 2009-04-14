@@ -188,7 +188,7 @@ public class SplashWindow extends Frame
 			// {
 			// logProgress(0,s_instance.m_progress);
 			// }
-			if(percentageDone == 0 && s_instance.m_progress > 0 && s_instance.m_progress < 95)
+			if(percentageDone == 100 && s_instance.m_progress > 0 && s_instance.m_progress < 95)
 			{
 				// progress did not go to (close to) 100 before it went to 0
 				// set it to 100 first, and repaint, then wait, and continue.
