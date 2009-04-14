@@ -52,6 +52,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
+import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
+import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.m2m.internal.qvt.oml.common.launch.TargetUriData;
 import org.eclipse.m2m.internal.qvt.oml.emf.util.ModelContent;
@@ -297,12 +299,14 @@ public class Builder implements IApplication
 		runTransformation();
 		Buckminster bucky = Buckminster.getDefault();
 		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
+		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		try
 		{
 			stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
 			stopBundle(packageAdmin, CORE_BUNDLE);
 
-			System.setProperty(PROP_P2_DATA_AREA, new File(buildRoot, "p2").toString());
+			String p2DataArea = new File(buildRoot, "p2").toString();
+			System.setProperty(PROP_P2_DATA_AREA, p2DataArea);
 			System.setProperty(PROP_P2_PROFILE, PROFILE_ID);
 
 			if(!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
@@ -313,6 +317,22 @@ public class Builder implements IApplication
 				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
 			if(!startEarly(packageAdmin, BUNDLE_UPDATESITE))
 				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
+
+			IProfile profile = null;
+			if(update)
+				profile = profileRegistry.getProfile(PROFILE_ID);
+
+			if(profile == null)
+			{
+				String instArea = buildRoot.toString();
+				Map<String, String> props = new HashMap<String, String>();
+				props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
+				props.put(IProfile.PROP_NAME, build.getLabel());
+				props.put(IProfile.PROP_DESCRIPTION, String.format("Default profile during %s build", build.getLabel()));
+				props.put(IProfile.PROP_CACHE, instArea); //$NON-NLS-1$
+				props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
+				profile = profileRegistry.addProfile(PROFILE_ID, props);
+			}
 		}
 		catch(BundleException e)
 		{
