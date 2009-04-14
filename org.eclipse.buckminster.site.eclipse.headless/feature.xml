@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update url="http://download.eclipse.org/tools/buckminster/headless-3.5/"/>
+      <update url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/headless-3.5/&amp;protocol=http"/>
    </url>
 
    <includes
