@@ -317,7 +317,7 @@ public class Logger
 					logStream.format(msg, args);
 
 				logStream.println();
-				if(t != null && level == DEBUG)
+				if(t != null && s_consoleThreshold == DEBUG)
 					t.printStackTrace(logStream);
 				logStream.flush();
 			}
