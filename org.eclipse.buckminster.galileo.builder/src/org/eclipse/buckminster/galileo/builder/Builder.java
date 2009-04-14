@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.galileo.builder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -32,6 +33,7 @@ import org.eclipse.amalgam.releng.build.Promotion;
 import org.eclipse.amalgam.releng.build.Repository;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.NullOutputStream;
@@ -66,7 +68,11 @@ public class Builder implements IApplication
 {
 	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
-	static private final String EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup";
+	static private final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup";
+
+	static private final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.profiler.filetransfer";
+
+	static private final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite";
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd"); //$NON-NLS-1$
 
@@ -138,7 +144,7 @@ public class Builder implements IApplication
 
 	private static void getExceptionMessages(Throwable e, StringBuilder bld)
 	{
-		bld.append(e.getClass());
+		bld.append(e.getClass().getName());
 		bld.append(": ");
 		if(e.getMessage() != null)
 			bld.append(e.getMessage());
@@ -202,7 +208,9 @@ public class Builder implements IApplication
 
 	private Set<IInstallableUnit> unitsToInstall;
 
-	private String buildID = "no-buildId-assigned";
+	private String buildID;
+
+	private PrintStream logOutput;
 
 	public Build getBuild()
 	{
@@ -269,8 +277,12 @@ public class Builder implements IApplication
 		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
 		try
 		{
-			if(!startEarly(packageAdmin, EXEMPLARY_SETUP))
-				throw BuckminsterException.fromMessage("Missing bundle %s", EXEMPLARY_SETUP);
+			if(!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
+			if(!startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
+			if(!startEarly(packageAdmin, BUNDLE_UPDATESITE))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
 		}
 		catch(BundleException e)
 		{
@@ -279,6 +291,15 @@ public class Builder implements IApplication
 		finally
 		{
 			bucky.ungetService(packageAdmin);
+		}
+
+		if(buildModelLocation == null)
+			throw BuckminsterException.fromMessage("No buildmodel has been set");
+
+		if(buildID == null)
+		{
+			Date now = new Date();
+			buildID = "build-" + DATE_FORMAT.format(now) + TIME_FORMAT.format(now);
 		}
 
 		try
@@ -321,7 +342,6 @@ public class Builder implements IApplication
 			}
 			msgBld.append("Check the log file for more information: ");
 			msgBld.append(build.getBuilderURL());
-			msgBld.append('/');
 			msgBld.append(buildID);
 			msgBld.append(".log.txt\n");
 			if(useMock)
@@ -425,20 +445,64 @@ public class Builder implements IApplication
 	public Object start(IApplicationContext context) throws Exception
 	{
 		parseCommandLineArgs((String[])context.getArguments().get("application.args")); //$NON-NLS-1$
-		run(new NullProgressMonitor());
-		return Integer.valueOf(0);
+		try
+		{
+			run(new NullProgressMonitor());
+		}
+		catch(Exception e)
+		{
+			Buckminster.getLogger().error(e, e.getMessage());
+			return Integer.valueOf(1);
+		}
+		return IApplication.EXIT_OK;
 	}
 
 	public void stop()
 	{
-		// TODO Auto-generated method stub
-
+		if(logOutput != null)
+		{
+			Logger.setOutStream(System.out);
+			Logger.setErrStream(System.err);
+			IOUtils.close(logOutput);
+			logOutput = null;
+		}
 	}
 
-	private void parseCommandLineArgs(String[] strings)
+	private void parseCommandLineArgs(String[] args)
 	{
-		// TODO Auto-generated method stub
-
+		int top = args.length;
+		for(int idx = 0; idx < top; ++idx)
+		{
+			String arg = args[idx];
+			if("-verifyOnly".equalsIgnoreCase(arg))
+			{
+				setVerifyOnly(true);
+				continue;
+			}
+			if("-update".equalsIgnoreCase(arg))
+			{
+				setUpdate(true);
+				continue;
+			}
+			if("-buildModel".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-buildModel requires an argument");
+				File buildModel = new File(args[idx]);
+				if(!buildModel.canRead())
+					throw new IllegalArgumentException(String.format("Unable to read %s", buildModel));
+				setBuildModelLocation(buildModel);
+				continue;
+			}
+			if("-buildId".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-buildId requires an argument");
+				setBuildID(args[idx]);
+				continue;
+			}
+			throw new IllegalArgumentException(String.format("Unknown option %s", arg));
+		}
 	}
 
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException
@@ -538,10 +602,6 @@ public class Builder implements IApplication
 		targetPlatformRepo = null;
 		unitsToInstall = null;
 
-		Logger log = Buckminster.getLogger();
-		log.info("Starting build transformation. Source: %s", buildModelLocation);
-		long now = System.currentTimeMillis();
-
 		File generatedBuildModel = null;
 		try
 		{
@@ -573,6 +633,11 @@ public class Builder implements IApplication
 
 			build = (Build)content.get(0);
 			buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
+			logOutput = new PrintStream(new FileOutputStream(new File(buildRoot, buildID + ".log.txt")));
+			Logger.setOutStream(logOutput);
+			Logger.setErrStream(logOutput);
+			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
+
 			tempFolder = new File(buildRoot, "tmp"); //$NON-NLS-1$
 			if(tempFolder.exists())
 			{
@@ -596,6 +661,5 @@ public class Builder implements IApplication
 			if(generatedBuildModel != null)
 				generatedBuildModel.delete();
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 }
