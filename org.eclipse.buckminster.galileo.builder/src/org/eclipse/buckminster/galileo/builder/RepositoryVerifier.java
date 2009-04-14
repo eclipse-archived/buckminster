@@ -159,7 +159,7 @@ public class RepositoryVerifier extends BuilderPhase
 		log.info("Starting planner verification"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
-		String profilePrefix = "GalileoTest_"; //$NON-NLS-1$
+		String profilePrefix = Builder.PROFILE_ID + '_'; //$NON-NLS-1$
 		final HashSet<IInstallableUnit> unitsToInstall = new HashSet<IInstallableUnit>();
 
 		List<Config> configs = getBuilder().getBuild().getConfigs();

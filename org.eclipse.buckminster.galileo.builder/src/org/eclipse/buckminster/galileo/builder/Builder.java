@@ -68,19 +68,25 @@ public class Builder implements IApplication
 {
 	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
-	static private final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
+	public static final String PROFILE_ID = "GalileoTest";
 
-	static private final String CORE_BUNDLE = "org.eclipse.equinox.p2.core"; //$NON-NLS-1$
+	private static final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
 
-	static private final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
+	private static final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
 
-	static private final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite"; //$NON-NLS-1$
+	private static final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite"; //$NON-NLS-1$
+
+	private static final String CORE_BUNDLE = "org.eclipse.equinox.p2.core"; //$NON-NLS-1$
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd"); //$NON-NLS-1$
 
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HHmm"); //$NON-NLS-1$
+	private static final String PROP_P2_DATA_AREA = "eclipse.p2.data.area";
+
+	private static final String PROP_P2_PROFILE = "eclipse.p2.profile";
 
 	private static final Project PROPERTY_REPLACER = new Project();
+
+	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HHmm"); //$NON-NLS-1$
 
 	private static final String TP_CONTRIBUTION_LABEL = "Eclipse"; //$NON-NLS-1$
 
@@ -91,8 +97,6 @@ public class Builder implements IApplication
 		DATE_FORMAT.setTimeZone(utc);
 		TIME_FORMAT.setTimeZone(utc);
 	}
-
-	private static final String PROP_P2_DATA_AREA = "eclipse.p2.data.area";
 
 	/**
 	 * Creates a repository location without the trailing slash that will be added if the standard
@@ -187,33 +191,33 @@ public class Builder implements IApplication
 		return true;
 	}
 
-	private File buildModelLocation;
-
-	private boolean update;
-
-	private boolean production;
-
-	private String mockEmailTo;
-
-	private String mockEmailCC;
-
-	private boolean verifyOnly;
-
 	private Build build;
-
-	private File buildRoot;
-
-	private File tempFolder;
-
-	private URI categoriesRepo;
-
-	private URI targetPlatformRepo;
-
-	private Set<IInstallableUnit> unitsToInstall;
 
 	private String buildID;
 
+	private File buildModelLocation;
+
+	private File buildRoot;
+
+	private URI categoriesRepo;
+
 	private PrintStream logOutput;
+
+	private String mockEmailCC;
+
+	private String mockEmailTo;
+
+	private boolean production;
+
+	private URI targetPlatformRepo;
+
+	private File tempFolder;
+
+	private Set<IInstallableUnit> unitsToInstall;
+
+	private boolean update;
+
+	private boolean verifyOnly;
 
 	public Build getBuild()
 	{
@@ -281,6 +285,15 @@ public class Builder implements IApplication
 				? 100
 				: 1100);
 
+		if(buildModelLocation == null)
+			throw BuckminsterException.fromMessage("No buildmodel has been set");
+
+		if(buildID == null)
+		{
+			Date now = new Date();
+			buildID = "build-" + DATE_FORMAT.format(now) + TIME_FORMAT.format(now);
+		}
+
 		runTransformation();
 		Buckminster bucky = Buckminster.getDefault();
 		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
@@ -290,6 +303,7 @@ public class Builder implements IApplication
 			stopBundle(packageAdmin, CORE_BUNDLE);
 
 			System.setProperty(PROP_P2_DATA_AREA, new File(buildRoot, "p2").toString());
+			System.setProperty(PROP_P2_PROFILE, PROFILE_ID);
 
 			if(!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
 				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
@@ -307,15 +321,6 @@ public class Builder implements IApplication
 		finally
 		{
 			bucky.ungetService(packageAdmin);
-		}
-
-		if(buildModelLocation == null)
-			throw BuckminsterException.fromMessage("No buildmodel has been set");
-
-		if(buildID == null)
-		{
-			Date now = new Date();
-			buildID = "build-" + DATE_FORMAT.format(now) + TIME_FORMAT.format(now);
 		}
 
 		try
