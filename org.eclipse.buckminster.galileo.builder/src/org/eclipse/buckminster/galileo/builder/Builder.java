@@ -677,13 +677,6 @@ public class Builder implements IApplication
 	 */
 	private void runTransformation() throws CoreException
 	{
-		build = null;
-		buildRoot = null;
-		tempFolder = null;
-		categoriesRepo = null;
-		targetPlatformRepo = null;
-		unitsToInstall = null;
-
 		File generatedBuildModel = null;
 		try
 		{
