@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.buckminster.galileo.builder.feature"
+      label="Feature"
+      version="1.0.0.qualifier"
+      provider-name="Eclipse Buckminster">
+
+   <description url="http://www.example.com/description">
+      The Buckminster Galileo Builder is a general purpose P2 site assembler. It acts on a Amalgan releng Build Model.
+   </description>
+
+   <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
+      Copyright (c) 2009, Cloudsmith Inc.
+The code, documentation and other materials contained herein have been licensed under the Eclipse Public License - v 1.0 by the copyright holder listed above, as the Initial Contributor under such license. The text of such license is available at www.eclipse.org.
+   </copyright>
+
+   <license url="%licenseURL">%license</license>
+
+   <requires>
+      <import plugin="org.eclipse.osgi" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="equivalent"/>
+      <import plugin="com.ibm.icu" version="4.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="equivalent"/>
+      <import plugin="org.eclipse.debug.core" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.pde.core" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.200" match="equivalent"/>
+      <import plugin="org.eclipse.ui.externaltools" version="3.2.0" match="equivalent"/>
+      <import plugin="org.apache.ant" version="1.7.0" match="equivalent"/>
+      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.app" version="1.2.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.artifact.repository" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.console" version="1.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.director" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.metadata.repository" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.engine" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.metadata" version="1.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.repository" version="1.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.publisher" version="1.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.ecf" version="3.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.ecf.filetransfer" version="3.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.ecf.identity" version="3.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer" version="3.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.updatesite" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.p2.exemplarysetup" version="1.0.0" match="equivalent"/>
+   </requires>
+
+   <plugin
+         id="javax.activation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.mail"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.change"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.xmi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.m2m.qvt.oml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.m2m.qvt.oml.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.m2m.qvt.oml.cst.parser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.m2m.qvt.oml.ecore.imperativeocl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.m2m.qvt.oml.emf.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.m2m.qvt.oml.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ocl.ecore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.lpg.lpgjavaruntime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.amalgam.releng.build.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.amalgam.releng.product.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ocl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.galileo.builder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
