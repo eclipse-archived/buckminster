@@ -2,6 +2,7 @@ package org.eclipse.buckminster.galileo.builder;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -36,6 +37,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.MultiTeeOutputStream;
 import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -52,6 +54,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
@@ -71,6 +74,10 @@ public class Builder implements IApplication
 	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
 	public static final String PROFILE_ID = "GalileoTest";
+
+	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group";
+
+	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = new Version(1, 0, 0);
 
 	private static final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
 
@@ -203,7 +210,9 @@ public class Builder implements IApplication
 
 	private URI categoriesRepo;
 
-	private PrintStream logOutput;
+	private int logLevel = Logger.INFO;
+
+	private OutputStream logOutput;
 
 	private String mockEmailCC;
 
@@ -221,6 +230,30 @@ public class Builder implements IApplication
 
 	private boolean verifyOnly;
 
+	public static final String SIMPLE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID
+			+ ".simpleRepository"; //$NON-NLS-1$
+
+	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID
+			+ ".simpleRepository"; //$NON-NLS-1$
+
+	public static final String COMPOSITE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID
+			+ ".compositeRepository"; //$NON-NLS-1$
+
+	public static final String COMPOSITE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID
+			+ ".compositeRepository"; //$NON-NLS-1$
+
+	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
+
+	public static final String PLATFORM_REPO_NAME = "Platform Repository"; //$NON-NLS-1$
+
+	public static final String PLATFORM_REPO_FOLDER = "platform"; //$NON-NLS-1$
+
+	public static final String CATEGORY_REPO_FOLDER = "categories"; //$NON-NLS-1$
+
+	public static final String COMPOSITE_REPO_FOLDER = "composite"; //$NON-NLS-1$
+
+	public static final String MIRROR_REPO_FOLDER = "mirror"; //$NON-NLS-1$
+
 	public Build getBuild()
 	{
 		return build;
@@ -236,6 +269,11 @@ public class Builder implements IApplication
 		return buildModelLocation;
 	}
 
+	public File getBuildRoot()
+	{
+		return buildRoot;
+	}
+
 	public URI getCategoriesRepo()
 	{
 		return categoriesRepo;
@@ -246,8 +284,65 @@ public class Builder implements IApplication
 		return createURI(tempFolder);
 	}
 
-	public URI getTargetPlatformRepo()
+	public URI getMirrorsURI() throws CoreException
 	{
+		Promotion promotion = build.getPromotion();
+		if(promotion == null)
+			throw BuckminsterException.fromMessage("Missing required element <promition>");
+
+		URI mirrorsURI = URI.create(PROPERTY_REPLACER.replaceProperties(promotion.getBaseURL()));
+		String downloadDirectory = PROPERTY_REPLACER.replaceProperties(promotion.getDownloadDirectory());
+		if(downloadDirectory != null)
+		{
+			try
+			{
+				if(mirrorsURI.getPath().endsWith("/download.php")) //$NON-NLS-1$
+				{
+					String query = mirrorsURI.getQuery();
+					Map<String, String> params = (query == null)
+							? new HashMap<String, String>()
+							: URLUtils.queryAsParameters(query);
+					params.put("file", downloadDirectory); //$NON-NLS-1$
+					if(!params.containsKey("protocol")) //$NON-NLS-1$
+						params.put("protocol", "http"); //$NON-NLS-1$//$NON-NLS-2$
+					if(!params.containsKey("format")) //$NON-NLS-1$
+						params.put("format", "xml"); //$NON-NLS-1$//$NON-NLS-2$
+					mirrorsURI = new URI(mirrorsURI.getScheme(), mirrorsURI.getAuthority(), mirrorsURI.getPath(),
+							URLUtils.encodeFromQueryPairs(params), mirrorsURI.getFragment());
+				}
+				else
+					mirrorsURI = new URI(mirrorsURI.getScheme(), mirrorsURI.getHost(), mirrorsURI.getPath() + '/'
+							+ downloadDirectory, mirrorsURI.getFragment());
+			}
+			catch(URISyntaxException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
+		return mirrorsURI;
+	}
+
+	public URI getTargetPlatformRepo() throws CoreException
+	{
+		if(targetPlatformRepo != null)
+			return targetPlatformRepo;
+
+		for(Contribution contrib : build.getContributions())
+			if(TP_CONTRIBUTION_LABEL.equals(contrib.getLabel()))
+			{
+				List<Repository> repos = contrib.getRepositories();
+				if(repos.size() == 1)
+				{
+					targetPlatformRepo = URI.create(repos.get(0).getLocation());
+					break;
+				}
+			}
+
+		if(targetPlatformRepo == null)
+			throw BuckminsterException.fromMessage(
+					"The build requires that a contribution named '%s' and appoints one repository. This is where the build extracts the target platform", //$NON-NLS-1$
+					TP_CONTRIBUTION_LABEL);
+
 		return targetPlatformRepo;
 	}
 
@@ -348,7 +443,6 @@ public class Builder implements IApplication
 		{
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
 			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
-			runPlatformRepoGenerator();
 			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
 			if(!verifyOnly)
 				runMirroring(MonitorUtils.subMonitor(monitor, 1000));
@@ -477,6 +571,11 @@ public class Builder implements IApplication
 		this.categoriesRepo = categoriesRepo;
 	}
 
+	public void setLogLevel(int level)
+	{
+		logLevel = level;
+	}
+
 	public void setMockEmailCC(String mockEmailCc)
 	{
 		this.mockEmailCC = mockEmailCc;
@@ -595,6 +694,26 @@ public class Builder implements IApplication
 				setMockEmailCC(args[idx]);
 				continue;
 			}
+			if("-logLevel".equalsIgnoreCase(arg))
+			{
+				if(++idx >= top)
+					throw new IllegalArgumentException("-logLevel requires an argument");
+				String levelStr = args[idx];
+				int level;
+				if("debug".equalsIgnoreCase(levelStr))
+					level = Logger.DEBUG;
+				else if("info".equalsIgnoreCase(levelStr))
+					level = Logger.INFO;
+				else if("warning".equalsIgnoreCase(levelStr))
+					level = Logger.WARNING;
+				else if("error".equalsIgnoreCase(levelStr))
+					level = Logger.WARNING;
+				else
+					throw new IllegalArgumentException(String.format("%s is not a valid logLevel", levelStr));
+
+				setLogLevel(level);
+				continue;
+			}
 			if("-buildModel".equalsIgnoreCase(arg))
 			{
 				if(++idx >= top)
@@ -632,86 +751,25 @@ public class Builder implements IApplication
 
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException
 	{
-		CategoryRepoGenerator extraGenerator = new CategoryRepoGenerator(this, tempFolder, build.getLabel()
-				+ " Categories"); //$NON-NLS-1$
+		CategoryRepoGenerator extraGenerator = new CategoryRepoGenerator(this);
 		extraGenerator.run(monitor);
 	}
 
 	private void runCompositeGenerator(IProgressMonitor monitor) throws CoreException
 	{
-		CompositeRepoGenerator repoGenerator = new CompositeRepoGenerator(this, tempFolder, build.getLabel()
-				+ " Composite"); //$NON-NLS-1$
+		CompositeRepoGenerator repoGenerator = new CompositeRepoGenerator(this);
 		repoGenerator.run(monitor);
 	}
 
 	private void runMirroring(IProgressMonitor monitor) throws CoreException
 	{
-		Promotion promotion = build.getPromotion();
-		if(promotion == null)
-			throw BuckminsterException.fromMessage("Missing required element <promition>");
-
-		File uploadLocation = new File(PROPERTY_REPLACER.replaceProperties(promotion.getUploadDirectory()));
-		URI mirrorsURI = URI.create(PROPERTY_REPLACER.replaceProperties(promotion.getBaseURL()));
-		String downloadDirectory = PROPERTY_REPLACER.replaceProperties(promotion.getDownloadDirectory());
-		if(downloadDirectory != null)
-		{
-			try
-			{
-				if(mirrorsURI.getPath().endsWith("/download.php")) //$NON-NLS-1$
-				{
-					String query = mirrorsURI.getQuery();
-					Map<String, String> params = (query == null)
-							? new HashMap<String, String>()
-							: URLUtils.queryAsParameters(query);
-					params.put("file", downloadDirectory); //$NON-NLS-1$
-					if(!params.containsKey("protocol")) //$NON-NLS-1$
-						params.put("protocol", "http"); //$NON-NLS-1$//$NON-NLS-2$
-					if(!params.containsKey("format")) //$NON-NLS-1$
-						params.put("format", "xml"); //$NON-NLS-1$//$NON-NLS-2$
-					mirrorsURI = new URI(mirrorsURI.getScheme(), mirrorsURI.getAuthority(), mirrorsURI.getPath(),
-							URLUtils.encodeFromQueryPairs(params), mirrorsURI.getFragment());
-				}
-				else
-					mirrorsURI = new URI(mirrorsURI.getScheme(), mirrorsURI.getHost(), mirrorsURI.getPath() + '/'
-							+ downloadDirectory, mirrorsURI.getFragment());
-			}
-			catch(URISyntaxException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-		}
-
-		MirrorGenerator mirrorGenerator = new MirrorGenerator(this, mirrorsURI, uploadLocation);
+		MirrorGenerator mirrorGenerator = new MirrorGenerator(this);
 		mirrorGenerator.run(monitor);
-	}
-
-	private void runPlatformRepoGenerator() throws CoreException
-	{
-		if(targetPlatformRepo != null)
-			return;
-
-		for(Contribution contrib : build.getContributions())
-			if(TP_CONTRIBUTION_LABEL.equals(contrib.getLabel()))
-			{
-				List<Repository> repos = contrib.getRepositories();
-				if(repos.size() == 1)
-				{
-					targetPlatformRepo = URI.create(repos.get(0).getLocation());
-					return;
-				}
-			}
-		if(targetPlatformRepo == null)
-			throw BuckminsterException.fromMessage(
-					"The build requires that a contribution named '%s' and appoints one repository. This is where the build extracts the target platform", //$NON-NLS-1$
-					TP_CONTRIBUTION_LABEL);
 	}
 
 	private void runRepositoryVerifier(IProgressMonitor monitor) throws CoreException
 	{
-		if(targetPlatformRepo == null)
-			throw new IllegalStateException("Target Platform Repository has not been generated");
-
-		RepositoryVerifier ipt = new RepositoryVerifier(this, "org.eclipse.galileo", null); //$NON-NLS-1$
+		RepositoryVerifier ipt = new RepositoryVerifier(this);
 		ipt.run(monitor);
 	}
 
@@ -770,9 +828,12 @@ public class Builder implements IApplication
 			if(!tempFolder.exists())
 				throw BuckminsterException.fromMessage("Failed to create folder %s", tempFolder);
 
-			logOutput = new PrintStream(new FileOutputStream(new File(buildRoot, buildID + ".log.txt")));
-			Logger.setOutStream(logOutput);
-			Logger.setErrStream(logOutput);
+			logOutput = new FileOutputStream(new File(buildRoot, buildID + ".log.txt"));
+			MultiTeeOutputStream outMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.out });
+			MultiTeeOutputStream errMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.err });
+			Logger.setOutStream(new PrintStream(outMux));
+			Logger.setErrStream(new PrintStream(errMux));
+			Logger.setConsoleLevelThreshold(logLevel);
 			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
 		}
 		catch(Exception e)

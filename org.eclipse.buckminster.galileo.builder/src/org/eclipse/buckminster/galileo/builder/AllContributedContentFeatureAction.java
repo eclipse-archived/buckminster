@@ -31,7 +31,7 @@ import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 
 @SuppressWarnings("restriction")
-public class GalileoFeatureAction extends AbstractPublisherAction
+public class AllContributedContentFeatureAction extends AbstractPublisherAction
 {
 	private final Build build;
 
@@ -39,7 +39,7 @@ public class GalileoFeatureAction extends AbstractPublisherAction
 
 	private final IMetadataRepository globalMdr;
 
-	public GalileoFeatureAction(Build build, IMetadataRepository globalMdr, IMetadataRepository mdr)
+	public AllContributedContentFeatureAction(Build build, IMetadataRepository globalMdr, IMetadataRepository mdr)
 	{
 		this.build = build;
 		this.globalMdr = globalMdr;
@@ -49,27 +49,12 @@ public class GalileoFeatureAction extends AbstractPublisherAction
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
-		Feature galileoFeature = null;
-		for(Contribution contrib : build.getContributions())
-			for(Feature feature : contrib.getFeatures())
-				if("org.eclipse.galileo".equals(feature.getId())) //$NON-NLS-1$
-				{
-					galileoFeature = feature;
-					break;
-				}
-
-		if(galileoFeature == null)
-			// Not found, so do nothing
-			return Status.OK_STATUS;
-
 		InstallableUnitDescription iu = new MetadataFactory.InstallableUnitDescription();
-		String id = galileoFeature.getId();
-		String featureGroupId = id + Activator.FEATURE_GROUP_SUFFIX;
-		Version featureVersion = Version.parseVersion(galileoFeature.getVersion());
-		iu.setId(featureGroupId);
-		iu.setVersion(featureVersion);
+		iu.setId(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE);
+		iu.setVersion(Builder.ALL_CONTRIBUTED_CONTENT_VERSION);
 		iu.setProperty(IInstallableUnit.PROP_TYPE_GROUP, Boolean.TRUE.toString());
-		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(featureGroupId, featureVersion)));
+		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(
+				Builder.ALL_CONTRIBUTED_CONTENT_FEATURE, Builder.ALL_CONTRIBUTED_CONTENT_VERSION)));
 
 		ArrayList<IRequiredCapability> required = new ArrayList<IRequiredCapability>();
 		for(Contribution contrib : build.getContributions())
@@ -77,10 +62,10 @@ public class GalileoFeatureAction extends AbstractPublisherAction
 			for(Feature feature : contrib.getFeatures())
 			{
 				String requiredId = feature.getId();
-				if(requiredId.equals(galileoFeature.getId()))
+				if(requiredId.equals("org.eclipse.galileo"))
 					continue;
 
-				requiredId += Activator.FEATURE_GROUP_SUFFIX;
+				requiredId += Builder.FEATURE_GROUP_SUFFIX;
 				Version v = Version.parseVersion(feature.getVersion());
 				VersionRange range = null;
 				if(!Version.emptyVersion.equals(v))

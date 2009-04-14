@@ -54,36 +54,6 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
 @SuppressWarnings("restriction")
 public class RepositoryVerifier extends BuilderPhase
 {
-	static ProvisioningContext createContext(URI site)
-	{
-		URI[] repoLocations = new URI[] { site };
-		ProvisioningContext context = new ProvisioningContext(repoLocations);
-		context.setArtifactRepositories(repoLocations);
-		return context;
-	}
-
-	static IInstallableUnit[] getRootIUs(URI site, IProfile profile, String iuName, Version version,
-			IProgressMonitor monitor) throws CoreException
-	{
-		if(!iuName.endsWith(Activator.FEATURE_GROUP_SUFFIX))
-			iuName += Activator.FEATURE_GROUP_SUFFIX;
-
-		Query query = new InstallableUnitQuery(iuName, version == null
-				? VersionRange.emptyRange
-				: new VersionRange(version, true, version, true));
-
-		Collector roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { query,
-				new LatestIUVersionQuery() }), new Collector(), monitor);
-
-		if(roots.size() <= 0)
-			roots = profile.query(query, roots, new NullProgressMonitor());
-
-		if(roots.size() <= 0)
-			throw BuckminsterException.fromMessage("Feature %s not found", iuName); //$NON-NLS-1$
-
-		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
-	}
-
 	private static String configEnvString(Config config)
 	{
 		StringBuilder bld = new StringBuilder();
@@ -135,21 +105,39 @@ public class RepositoryVerifier extends BuilderPhase
 		return bld.toString();
 	}
 
+	private static ProvisioningContext createContext(URI site)
+	{
+		URI[] repoLocations = new URI[] { site };
+		ProvisioningContext context = new ProvisioningContext(repoLocations);
+		context.setArtifactRepositories(repoLocations);
+		return context;
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Set<Explanation> getExplanations(RequestStatus requestStatus)
 	{
 		return requestStatus.getExplanations();
 	}
 
-	private final String id;
+	private static IInstallableUnit[] getRootIUs(URI site, IProfile profile, String iuName, Version version,
+			IProgressMonitor monitor) throws CoreException
+	{
+		Query query = new InstallableUnitQuery(iuName, new VersionRange(version, true, version, true));
+		Collector roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { query,
+				new LatestIUVersionQuery() }), new Collector(), monitor);
 
-	private final Version version;
+		if(roots.size() <= 0)
+			roots = profile.query(query, roots, new NullProgressMonitor());
 
-	public RepositoryVerifier(Builder builder, String id, Version version)
+		if(roots.size() <= 0)
+			throw BuckminsterException.fromMessage("Feature %s not found", iuName); //$NON-NLS-1$
+
+		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
+	}
+
+	public RepositoryVerifier(Builder builder)
 	{
 		super(builder);
-		this.id = id;
-		this.version = version;
 	}
 
 	@Override
@@ -187,8 +175,8 @@ public class RepositoryVerifier extends BuilderPhase
 				if(profile == null)
 					profile = profileRegistry.addProfile(profileId, props);
 
-				IInstallableUnit[] rootArr = getRootIUs(repoLocation, profile, id, version, MonitorUtils.subMonitor(
-						monitor, 10));
+				IInstallableUnit[] rootArr = getRootIUs(repoLocation, profile, Builder.ALL_CONTRIBUTED_CONTENT_FEATURE,
+						Builder.ALL_CONTRIBUTED_CONTENT_VERSION, MonitorUtils.subMonitor(monitor, 10));
 
 				// Add as root IU's to a request
 				ProfileChangeRequest request = new ProfileChangeRequest(profile);

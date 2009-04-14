@@ -244,15 +244,9 @@ public class MirrorGenerator extends BuilderPhase
 		dest.addInstallableUnits((IInstallableUnit[])allIUs.toArray(IInstallableUnit.class));
 	}
 
-	private final File destination;
-
-	private final URI mirrors;
-
-	public MirrorGenerator(Builder builder, URI mirrors, File dest)
+	public MirrorGenerator(Builder builder)
 	{
 		super(builder);
-		this.destination = dest;
-		this.mirrors = mirrors;
 	}
 
 	@Override
@@ -262,6 +256,7 @@ public class MirrorGenerator extends BuilderPhase
 		log.info("Starting mirror generation");
 		long now = System.currentTimeMillis();
 
+		File destination = new File(getBuilder().getBuildRoot(), Builder.MIRROR_REPO_FOLDER);
 		URI destURI = Builder.createURI(destination);
 
 		Buckminster bucky = Buckminster.getDefault();
@@ -302,6 +297,7 @@ public class MirrorGenerator extends BuilderPhase
 				}
 			}
 
+			URI mirrors = getBuilder().getMirrorsURI();
 			if(destAr == null)
 			{
 				Map<String, String> properties = new HashMap<String, String>();
@@ -311,7 +307,7 @@ public class MirrorGenerator extends BuilderPhase
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
 				String label = getBuilder().getBuild().getLabel();
 				destAr = arMgr.createRepository(destURI,
-						label + " artifacts", Activator.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+						label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 			}
 
 			if(destMdr == null)
@@ -321,7 +317,7 @@ public class MirrorGenerator extends BuilderPhase
 				if(mirrors != null)
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
 				String label = getBuilder().getBuild().getLabel();
-				destMdr = mdrMgr.createRepository(destURI, label, Activator.SIMPLE_METADATA_TYPE, properties);
+				destMdr = mdrMgr.createRepository(destURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
 			}
 
 			// Step 1. Mirror all artifacts. This means copying a lot of data. We mirror

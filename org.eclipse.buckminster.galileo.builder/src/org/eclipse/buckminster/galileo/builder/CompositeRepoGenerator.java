@@ -50,15 +50,9 @@ public class CompositeRepoGenerator extends BuilderPhase
 		}
 	}
 
-	private final File m_location;
-
-	private final String m_name;
-
-	public CompositeRepoGenerator(Builder builder, File location, String name)
+	public CompositeRepoGenerator(Builder builder)
 	{
 		super(builder);
-		m_location = location;
-		m_name = name;
 	}
 
 	@Override
@@ -68,11 +62,13 @@ public class CompositeRepoGenerator extends BuilderPhase
 		log.info("Starting generation of composite repository");
 		long now = System.currentTimeMillis();
 
-		FileUtils.deleteAll(m_location);
+		String name = getBuilder().getBuild().getLabel() + " Composite";
+		File location = new File(getBuilder().getBuildRoot(), Builder.COMPOSITE_REPO_FOLDER);
+		FileUtils.deleteAll(location);
 
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
-		URI locationURI = Builder.createURI(m_location);
+		URI locationURI = Builder.createURI(location);
 		Build buildModel = getBuilder().getBuild();
 		List<Contribution> contribs = buildModel.getContributions();
 		MonitorUtils.begin(monitor, contribs.size() * 100);
@@ -81,13 +77,13 @@ public class CompositeRepoGenerator extends BuilderPhase
 		Buckminster bucky = Buckminster.getDefault();
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		mdrMgr.removeRepository(locationURI);
-		CompositeMetadataRepository mdr = (CompositeMetadataRepository)mdrMgr.createRepository(locationURI, m_name,
-				Activator.COMPOSITE_METADATA_TYPE, properties);
+		CompositeMetadataRepository mdr = (CompositeMetadataRepository)mdrMgr.createRepository(locationURI, name,
+				Builder.COMPOSITE_METADATA_TYPE, properties);
 
 		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
 		arMgr.removeRepository(locationURI);
-		CompositeArtifactRepository ar = (CompositeArtifactRepository)arMgr.createRepository(locationURI, m_name
-				+ " artifacts", Activator.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+		CompositeArtifactRepository ar = (CompositeArtifactRepository)arMgr.createRepository(locationURI, name
+				+ " artifacts", Builder.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 
 		for(Contribution contrib : contribs)
 		{
@@ -99,15 +95,15 @@ public class CompositeRepoGenerator extends BuilderPhase
 			{
 				try
 				{
-					URI location = URI.create(repo.getLocation());
+					URI childLocation = URI.create(repo.getLocation());
 
-					log.info("Adding child meta-data repository %s", location);
-					mdrMgr.loadRepository(location, MonitorUtils.subMonitor(contribMonitor, 100));
-					mdr.addChild(location);
+					log.info("Adding child meta-data repository %s", childLocation);
+					mdrMgr.loadRepository(childLocation, MonitorUtils.subMonitor(contribMonitor, 100));
+					mdr.addChild(childLocation);
 
-					log.info("Adding child artifact repository %s", location);
-					arMgr.loadRepository(location, MonitorUtils.subMonitor(contribMonitor, 100));
-					ar.addChild(location);
+					log.info("Adding child artifact repository %s", childLocation);
+					arMgr.loadRepository(childLocation, MonitorUtils.subMonitor(contribMonitor, 100));
+					ar.addChild(childLocation);
 				}
 				catch(Exception e)
 				{

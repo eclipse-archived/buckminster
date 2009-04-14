@@ -43,7 +43,7 @@ public class PlatformRepoGenerator extends BuilderPhase
 		log.info("Starting generation of platform repository");
 		long now = System.currentTimeMillis();
 
-		File targetPlatformRepoLocation = new File(repoLocation, Activator.PLATFORM_REPO_FOLDER);
+		File targetPlatformRepoLocation = new File(repoLocation, Builder.PLATFORM_REPO_FOLDER);
 		FileUtils.deleteAll(targetPlatformRepoLocation);
 
 		Map<String, String> properties = new HashMap<String, String>();
@@ -54,8 +54,8 @@ public class PlatformRepoGenerator extends BuilderPhase
 		try
 		{
 			mdrMgr.removeRepository(locationURI);
-			IMetadataRepository mdr = mdrMgr.createRepository(locationURI, Activator.PLATFORM_REPO_NAME,
-					Activator.SIMPLE_METADATA_TYPE, properties);
+			IMetadataRepository mdr = mdrMgr.createRepository(locationURI, Builder.PLATFORM_REPO_NAME,
+					Builder.SIMPLE_METADATA_TYPE, properties);
 
 			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(
 					repoLocation.toURI(), new NullProgressMonitor());

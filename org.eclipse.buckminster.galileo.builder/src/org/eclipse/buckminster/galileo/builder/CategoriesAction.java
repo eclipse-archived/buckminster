@@ -139,7 +139,7 @@ public class CategoriesAction extends AbstractPublisherAction
 		if(monitor.isCanceled())
 			throw new OperationCanceledException();
 
-		String id = name + Activator.FEATURE_GROUP_SUFFIX;
+		String id = name + Builder.FEATURE_GROUP_SUFFIX;
 		Query query = null;
 		Collector collector = null;
 		Version version = Version.parseVersion(versionStr);

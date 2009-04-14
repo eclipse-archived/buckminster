@@ -27,15 +27,9 @@ import org.eclipse.equinox.p2.publisher.PublisherInfo;
 @SuppressWarnings("restriction")
 public class CategoryRepoGenerator extends BuilderPhase
 {
-	private final File m_location;
-
-	private final String m_name;
-
-	public CategoryRepoGenerator(Builder builder, File location, String name)
+	public CategoryRepoGenerator(Builder builder)
 	{
 		super(builder);
-		m_location = location;
-		m_name = name;
 	}
 
 	@Override
@@ -45,12 +39,14 @@ public class CategoryRepoGenerator extends BuilderPhase
 		log.info("Starting generation of categories");
 		long now = System.currentTimeMillis();
 
-		File extraLocation = new File(m_location, Activator.CATEGORY_REPO_FOLDER);
-		FileUtils.deleteAll(extraLocation);
+		String name = getBuilder().getBuild().getLabel() + " Categories";
+		File globalLocation = new File(getBuilder().getBuildRoot(), Builder.COMPOSITE_REPO_FOLDER);
+		File location = new File(globalLocation, Builder.CATEGORY_REPO_FOLDER);
+		FileUtils.deleteAll(location);
 
 		Map<String, String> properties = new HashMap<String, String>();
-		URI globalLocation = Builder.createURI(m_location);
-		URI locationURI = Builder.createURI(extraLocation);
+		URI globalLocationURI = Builder.createURI(globalLocation);
+		URI locationURI = Builder.createURI(location);
 		Buckminster bucky = Buckminster.getDefault();
 
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
@@ -59,16 +55,16 @@ public class CategoryRepoGenerator extends BuilderPhase
 		try
 		{
 			mdrMgr.removeRepository(locationURI);
-			IMetadataRepository mdr = mdrMgr.createRepository(locationURI, m_name, Activator.SIMPLE_METADATA_TYPE,
+			IMetadataRepository mdr = mdrMgr.createRepository(locationURI, name, Builder.SIMPLE_METADATA_TYPE,
 					properties);
 
 			arMgr.removeRepository(locationURI);
 			IArtifactRepository ar = arMgr.createRepository(locationURI,
-					m_name + " artifacts", Activator.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+					name + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 
-			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(globalLocation,
-					MonitorUtils.subMonitor(monitor, 5));
-			CompositeArtifactRepository globalAr = (CompositeArtifactRepository)arMgr.loadRepository(globalLocation,
+			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(
+					globalLocationURI, MonitorUtils.subMonitor(monitor, 5));
+			CompositeArtifactRepository globalAr = (CompositeArtifactRepository)arMgr.loadRepository(globalLocationURI,
 					MonitorUtils.subMonitor(monitor, 5));
 
 			PublisherInfo info = new PublisherInfo();
@@ -96,7 +92,7 @@ public class CategoryRepoGenerator extends BuilderPhase
 
 	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr)
 	{
-		return new IPublisherAction[] { new GalileoFeatureAction(bm, globalMdr, mdr),
+		return new IPublisherAction[] { new AllContributedContentFeatureAction(bm, globalMdr, mdr),
 				new CategoriesAction(bm, globalMdr) };
 	}
 }

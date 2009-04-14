@@ -6,34 +6,13 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-@SuppressWarnings("restriction")
 public class Activator extends Plugin
 {
-	public static final String SIMPLE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID
-			+ ".simpleRepository"; //$NON-NLS-1$
-
-	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID
-			+ ".simpleRepository"; //$NON-NLS-1$
-
-	public static final String COMPOSITE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID
-			+ ".compositeRepository"; //$NON-NLS-1$
-
-	public static final String COMPOSITE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID
-			+ ".compositeRepository"; //$NON-NLS-1$
-
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.galileo.builder"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
-
-	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
-
-	public static final String PLATFORM_REPO_NAME = "Platform Repository"; //$NON-NLS-1$
-
-	public static final String PLATFORM_REPO_FOLDER = "generated-platform"; //$NON-NLS-1$
-
-	public static final String CATEGORY_REPO_FOLDER = "generated-contribution"; //$NON-NLS-1$
 
 	/**
 	 * Returns the shared instance
