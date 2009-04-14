@@ -53,10 +53,12 @@ public class SourceBundleConsolidator extends BundleConsolidator
 		if(src == null)
 			src = "."; //$NON-NLS-1$
 
+		String versionStr = version.toString();
 		attributes.putValue(Attributes.Name.MANIFEST_VERSION.toString(), manifestVersion);
 		attributes.putValue(Constants.BUNDLE_SYMBOLICNAME, symbolicName + ".source"); //$NON-NLS-1$
-		attributes.putValue(IPDEConstants.MANIFEST_HEADER_SOURCE_BUNDLE, symbolicName + ";roots=\"" + src + "\""); //$NON-NLS-1$//$NON-NLS-2$
-		attributes.putValue(Constants.BUNDLE_VERSION, version.toString());
+		attributes.putValue(IPDEConstants.MANIFEST_HEADER_SOURCE_BUNDLE, symbolicName
+				+ ";version=\"" + versionStr + "\";roots=\"" + src + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		attributes.putValue(Constants.BUNDLE_VERSION, versionStr);
 		attributes.putValue(Constants.BUNDLE_MANIFESTVERSION, bundleManifestVersion);
 		if(bundleName != null)
 			attributes.putValue(Constants.BUNDLE_NAME, bundleName);

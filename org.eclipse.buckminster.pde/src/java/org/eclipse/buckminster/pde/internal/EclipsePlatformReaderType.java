@@ -87,6 +87,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 
 	private static final String TEMP_FEATURE_VERSION = "'0.1.0.'yyyyMMddHHmmss"; //$NON-NLS-1$
 
+	private static final Map<String, IPluginModelBase[]> s_activeMap = new HashMap<String, IPluginModelBase[]>();
+
 	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query)
 	{
 		IFeatureModel candidate = null;
@@ -124,39 +126,62 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	{
 		IPluginModelBase candidate = null;
 		Version candidateVersion = null;
-		for(IPluginModelBase model : PluginRegistry.getActiveModels())
+		synchronized(s_activeMap)
 		{
-			BundleDescription desc = model.getBundleDescription();
-			if(desc == null)
-				continue;
-
-			if(!desc.getSymbolicName().equals(componentName))
-				continue;
-
-			org.osgi.framework.Version ov = desc.getVersion();
-			if(ov == null)
+			if(s_activeMap.isEmpty())
 			{
-				if(candidate == null && versionDesignator == null)
+				for(IPluginModelBase model : PluginRegistry.getActiveModels())
+				{
+					BundleDescription desc = model.getBundleDescription();
+					String id = desc.getSymbolicName();
+					IPluginModelBase[] mbArr = s_activeMap.get(id);
+					if(mbArr == null)
+						mbArr = new IPluginModelBase[] { model };
+					else
+					{
+						IPluginModelBase[] newArr = new IPluginModelBase[mbArr.length + 1];
+						System.arraycopy(mbArr, 0, newArr, 0, mbArr.length);
+						newArr[mbArr.length] = model;
+						mbArr = newArr;
+					}
+					s_activeMap.put(id, mbArr);
+				}
+			}
+			IPluginModelBase[] mbArr = s_activeMap.get(componentName);
+			if(mbArr == null)
+				return null;
+
+			for(IPluginModelBase model : mbArr)
+			{
+				BundleDescription desc = model.getBundleDescription();
+				if(desc == null)
+					continue;
+
+				org.osgi.framework.Version ov = desc.getVersion();
+				if(ov == null)
+				{
+					if(candidate == null && versionDesignator == null)
+						candidate = model;
+					continue;
+				}
+
+				Version v = Version.fromOSGiVersion(ov);
+				if(!(versionDesignator == null || versionDesignator.isIncluded(v)))
+				{
+					if(query != null)
+						query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(
+								Messages.not_designated_by_0, versionDesignator));
+					continue;
+				}
+
+				if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
+				{
 					candidate = model;
-				continue;
+					candidateVersion = v;
+				}
 			}
-
-			Version v = Version.fromOSGiVersion(ov);
-			if(!(versionDesignator == null || versionDesignator.isIncluded(v)))
-			{
-				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0,
-							versionDesignator));
-				continue;
-			}
-
-			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
-			{
-				candidate = model;
-				candidateVersion = v;
-			}
+			return candidate;
 		}
-		return candidate;
 	}
 
 	private static String getArtifactURLString(RMContext context, Resolution res) throws CoreException
@@ -165,8 +190,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		//
 		URI artifactURI = res.getArtifactURI(context);
 		if(artifactURI == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_obtain_URI_for_0, res
-					.getComponentIdentifier()));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_obtain_URI_for_0,
+					res.getComponentIdentifier()));
 		try
 		{
 			URL artifactURL = artifactURI.toURL();
@@ -174,8 +199,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		}
 		catch(MalformedURLException e)
 		{
-			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_obtain_URL_for_0, res
-					.getComponentIdentifier()));
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_obtain_URL_for_0,
+					res.getComponentIdentifier()));
 		}
 	}
 
@@ -239,8 +264,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			for(Resolution res : entry.getValue())
 			{
 				ProviderMatch orig = res.getProviderMatch(context);
-				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(), res
-						.getVersionDesignator()), null);
+				NodeQuery nq = new NodeQuery(context, new ComponentRequest(res.getName(), siteFeatureType.getId(),
+						res.getVersionDesignator()), null);
 				ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, orig.getVersionMatch(), nq);
 				BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
 				Resolution siteFeatureResolution = node.getResolution();
@@ -357,13 +382,13 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(
 					IComponentType.ECLIPSE_SITE_FEATURE);
 			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE,
-					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(siteFolder.toURI().toURL()
-							.toString()), null, null, null, false, false, null, null);
+					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(
+							siteFolder.toURI().toURL().toString()), null, null, null, false, false, null, null);
 
 			Version version = VersionHelper.parseVersion(generatedFeature.getVersion());
 			VersionMatch vm = new VersionMatch(version, null, -1, null, null);
-			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(), VersionHelper
-					.exactRange(version));
+			ComponentRequest cr = new ComponentRequest(generatedFeature.getId(), siteFeatureType.getId(),
+					VersionHelper.exactRange(version));
 			NodeQuery nq = new NodeQuery(context, cr, null);
 			ProviderMatch pm = new ProviderMatch(provider, siteFeatureType, vm, nq);
 			BOMNode node = siteFeatureType.getResolution(pm, new NullProgressMonitor());
