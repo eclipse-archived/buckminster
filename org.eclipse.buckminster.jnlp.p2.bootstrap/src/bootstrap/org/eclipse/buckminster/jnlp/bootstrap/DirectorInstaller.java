@@ -385,11 +385,13 @@ public class DirectorInstaller
 		Properties prop = new Properties();
 
 		URL propertiesURL = null;
+		InputStream is = null;
 
 		try
 		{
 			propertiesURL = new URL(urlString.trim());
-			prop.load(propertiesURL.openStream());
+			is = propertiesURL.openStream();
+			prop.load(is);
 		}
 		catch(MalformedURLException e)
 		{
@@ -402,6 +404,10 @@ public class DirectorInstaller
 			throw new JNLPException(
 					Messages.getString("can_not_read_properties"), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
+		}
+		finally
+		{
+			Utils.close(is);
 		}
 
 		return prop;
