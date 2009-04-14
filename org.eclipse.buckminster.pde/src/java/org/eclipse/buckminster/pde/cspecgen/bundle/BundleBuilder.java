@@ -78,6 +78,9 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 					return pluginModelBase;
 
 				String location = pluginModelBase.getInstallLocation();
+				if(location == null)
+					throw new MissingCSpecSourceException(reader.getProviderMatch());
+
 				if(s_platformPluginsFolder.isPrefixOf(Path.fromOSString(location)))
 					return pluginModelBase;
 
