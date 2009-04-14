@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.core.CorePlugin;
@@ -47,8 +49,6 @@ public class VersionQualifierTask
 	public static final String PROPERTY_NONE = "none"; //$NON-NLS-1$
 
 	private static final String QUALIFIER_REPLACEMENT_PREFIX = "qualifier.replacement."; //$NON-NLS-1$
-
-	private static final String MATCH_ALL = QUALIFIER_REPLACEMENT_PREFIX + '*';
 
 	private static final SimpleDateFormat s_dateFormat = new SimpleDateFormat("yyyyMMddHHmm"); //$NON-NLS-1$
 
@@ -156,7 +156,7 @@ public class VersionQualifierTask
 			{
 				// First we check to see if there is a match for a precise version
 				//
-				StringBuilder bld = new StringBuilder(QUALIFIER_REPLACEMENT_PREFIX);
+				StringBuilder bld = new StringBuilder();
 				bld.append(id.getName());
 				bld.append(',');
 				int lenWithId = bld.length();
@@ -165,17 +165,65 @@ public class VersionQualifierTask
 				//
 				String versionStr = id.getVersion().toString();
 				bld.append(versionStr, 0, versionStr.length() - QUALIFIER_SUFFIX.length() - 1);
-				newQualifier = (String)m_properties.get(bld.toString());
+				String idName = bld.toString();
 
-				if(newQualifier == null)
+				bld.setLength(lenWithId);
+				bld.append("0.0.0"); //$NON-NLS-1$
+				String idNameWithEmptyVersion = bld.toString();
+
+				int bestMatchLength = -1;
+				for(Map.Entry<String, ? extends Object> entry : m_properties.entrySet())
 				{
-					// If not found, then lookup for the id,0.0.0
-					//
-					bld.setLength(lenWithId);
-					bld.append("0.0.0"); //$NON-NLS-1$
-					newQualifier = (String)m_properties.get(bld.toString());
-					if(newQualifier == null)
-						newQualifier = (String)m_properties.get(MATCH_ALL);
+					String key = entry.getKey();
+					if(!key.startsWith(QUALIFIER_REPLACEMENT_PREFIX))
+						continue;
+
+					int idx = QUALIFIER_REPLACEMENT_PREFIX.length();
+					int top = key.length();
+					int exprLength = top - idx;
+					if(exprLength <= bestMatchLength)
+						continue;
+
+					StringBuilder matchBld = new StringBuilder();
+					matchBld.append('^');
+					while(idx < top)
+					{
+						char c = key.charAt(idx++);
+						switch(c)
+						{
+						case '?':
+							matchBld.append('.');
+							continue;
+						case '*':
+							matchBld.append(".*");
+							continue;
+						case '(':
+						case ')':
+						case '[':
+						case ']':
+						case '{':
+						case '}':
+						case '.':
+						case '$':
+						case '|':
+							matchBld.append('\\');
+							matchBld.append(c);
+							continue;
+						default:
+							matchBld.append(c);
+						}
+					}
+					matchBld.append('$');
+					Pattern pattern = Pattern.compile(matchBld.toString());
+					Matcher m = pattern.matcher(idName);
+					if(!m.matches())
+					{
+						m = pattern.matcher(idNameWithEmptyVersion);
+						if(!m.matches())
+							continue;
+					}
+					bestMatchLength = exprLength;
+					newQualifier = entry.getValue().toString();
 				}
 			}
 
