@@ -299,7 +299,6 @@ public class Builder implements IApplication
 		runTransformation();
 		Buckminster bucky = Buckminster.getDefault();
 		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
-		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		try
 		{
 			stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
@@ -319,6 +318,7 @@ public class Builder implements IApplication
 				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
 
 			IProfile profile = null;
+			IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 			if(update)
 				profile = profileRegistry.getProfile(PROFILE_ID);
 
@@ -333,6 +333,7 @@ public class Builder implements IApplication
 				props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
 				profile = profileRegistry.addProfile(PROFILE_ID, props);
 			}
+			bucky.ungetService(profileRegistry);
 		}
 		catch(BundleException e)
 		{
