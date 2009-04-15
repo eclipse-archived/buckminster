@@ -34,6 +34,7 @@
 
    <configurations>
       <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox" autoStart="true" startLevel="4" />
    </configurations>
 
 </product>
