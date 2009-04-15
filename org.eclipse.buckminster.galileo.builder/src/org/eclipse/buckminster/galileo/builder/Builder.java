@@ -114,18 +114,25 @@ public class Builder implements IApplication
 	 * @param repoLocation
 	 *            The location. Must be an absolute path.
 	 * @return The created URI.
-	 * @throws IllegalArgumentException
+	 * @throws CoreException
 	 *             if the argument is not an absolute path
 	 */
-	public static final URI createURI(File repoLocation)
+	public static final URI createURI(File repoLocation) throws CoreException
 	{
 		if(repoLocation != null)
 		{
 			IPath path = Path.fromOSString(repoLocation.getPath());
 			if(path.isAbsolute())
-				return URI.create("file:" + path.removeTrailingSeparator().toPortableString()); //$NON-NLS-1$
+				try
+				{
+					return new URI("file", null, path.removeTrailingSeparator().toPortableString(), null);
+				}
+				catch(URISyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
 		}
-		throw new IllegalArgumentException();
+		throw BuckminsterException.fromMessage("File %s is not an absolute path", repoLocation);
 	}
 
 	public static String getExceptionMessages(Throwable e)
@@ -222,8 +229,6 @@ public class Builder implements IApplication
 
 	private URI targetPlatformRepo;
 
-	private File tempFolder;
-
 	private Set<IInstallableUnit> unitsToInstall;
 
 	private boolean update;
@@ -279,9 +284,9 @@ public class Builder implements IApplication
 		return categoriesRepo;
 	}
 
-	public URI getGlobalRepoURI()
+	public URI getGlobalRepoURI() throws CoreException
 	{
-		return createURI(tempFolder);
+		return createURI(new File(buildRoot, COMPOSITE_REPO_FOLDER));
 	}
 
 	public URI getMirrorsURI() throws CoreException
@@ -344,11 +349,6 @@ public class Builder implements IApplication
 					TP_CONTRIBUTION_LABEL);
 
 		return targetPlatformRepo;
-	}
-
-	public File getTempFolder()
-	{
-		return tempFolder;
 	}
 
 	public Set<IInstallableUnit> getUnitsToInstall()
@@ -814,19 +814,18 @@ public class Builder implements IApplication
 			if(buildRoot == null)
 				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
-			tempFolder = new File(buildRoot, "tmp"); //$NON-NLS-1$
-			if(tempFolder.exists())
+			if(buildRoot.exists())
 			{
 				if(!update)
 				{
-					FileUtils.deleteAll(tempFolder);
-					if(tempFolder.exists())
-						throw BuckminsterException.fromMessage("Failed to delete folder %s", tempFolder);
+					FileUtils.deleteAll(buildRoot);
+					if(buildRoot.exists())
+						throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot);
 				}
 			}
-			tempFolder.mkdirs();
-			if(!tempFolder.exists())
-				throw BuckminsterException.fromMessage("Failed to create folder %s", tempFolder);
+			buildRoot.mkdirs();
+			if(!buildRoot.exists())
+				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
 
 			logOutput = new FileOutputStream(new File(buildRoot, buildID + ".log.txt"));
 			MultiTeeOutputStream outMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.out });
