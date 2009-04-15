@@ -322,8 +322,8 @@ public class CSpecFromSource extends CSpecGenerator
 		// The expansion will create a new copy in a different location. In case there is no
 		// expansion, we can use the original file.
 		//
-		IPath manifestFolder = resolveLink(new Path(IPDEBuildConstants.MANIFEST_FOLDER).append(MANIFEST), null)
-				.removeLastSegments(1).addTrailingSeparator();
+		IPath manifestFolder = resolveLink(new Path(IPDEBuildConstants.MANIFEST_FOLDER).append(MANIFEST), null).removeLastSegments(
+				1).addTrailingSeparator();
 		AttributeBuilder manifest = null;
 		Version version = cspec.getVersion();
 		String versionQualifier = version.getQualifier();
@@ -467,6 +467,13 @@ public class CSpecFromSource extends CSpecGenerator
 			}
 		}
 
+		if(ebSrcBld != null)
+		{
+			if(srcIncludesSource == null)
+				srcIncludesSource = cspec.addGroup(IBuildEntry.SRC_INCLUDES, false);
+			srcIncludesSource.addLocalPrerequisite(ebSrcBld);
+		}
+
 		if(simpleBundle)
 		{
 			// These products from the eclipse.build will contain the .class files for the bundle
@@ -479,8 +486,7 @@ public class CSpecFromSource extends CSpecGenerator
 		String jarName = m_plugin.getId() + '_' + m_plugin.getVersion() + ".jar"; //$NON-NLS-1$
 		IPath jarPath = Path.fromPortableString(jarName);
 		if(localReader
-				&& (getReader().exists(jarName, new NullProgressMonitor()) || getLinkDescriptions()
-						.containsKey(jarPath)))
+				&& (getReader().exists(jarName, new NullProgressMonitor()) || getLinkDescriptions().containsKey(jarPath)))
 		{
 			buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
 			buildPlugin.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
