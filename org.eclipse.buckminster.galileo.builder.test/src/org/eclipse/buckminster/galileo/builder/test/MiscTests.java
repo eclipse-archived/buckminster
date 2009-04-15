@@ -17,7 +17,6 @@ import org.eclipse.equinox.internal.provisional.p2.engine.IEngine;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.engine.ProvisioningContext;
-import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -84,13 +83,13 @@ public class MiscTests extends TestCase
 
 			if(!startEarly(packageAdmin, CORE_BUNDLE))
 			{
-				System.err.println(NLS.bind("Missing bundle {0}", EXEMPLARY_SETUP_BUNDLE));
+				System.err.format("Missing bundle %s%n", CORE_BUNDLE);
 				return;
 			}
 
 			if(!startEarly(packageAdmin, EXEMPLARY_SETUP_BUNDLE))
 			{
-				System.err.println(NLS.bind("Missing bundle {0}", EXEMPLARY_SETUP_BUNDLE));
+				System.err.format("Missing bundle %s%n", EXEMPLARY_SETUP_BUNDLE);
 				return;
 			}
 
