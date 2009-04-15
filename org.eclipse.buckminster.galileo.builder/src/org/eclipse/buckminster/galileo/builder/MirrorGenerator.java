@@ -41,20 +41,18 @@ import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 import org.eclipse.equinox.p2.publisher.Publisher;
 
 @SuppressWarnings("restriction")
-public class MirrorGenerator extends BuilderPhase
-{
+public class MirrorGenerator extends BuilderPhase {
 	/**
-	 * A request to restore the canonical form after a raw copy of the optimized form
+	 * A request to restore the canonical form after a raw copy of the optimized
+	 * form
 	 */
-	private static class CanonicalizeRequest extends MirrorRequest
-	{
+	private static class CanonicalizeRequest extends MirrorRequest {
 		private IArtifactDescriptor optimizedDescriptor;
 
 		private IArtifactDescriptor canonicalDescriptor;
 
 		public CanonicalizeRequest(IArtifactDescriptor optimizedDescriptor, IArtifactDescriptor canonicalDescriptor,
-				IArtifactRepository targetRepository)
-		{
+				IArtifactRepository targetRepository) {
 			super(canonicalDescriptor.getArtifactKey(), targetRepository, null, null);
 			this.optimizedDescriptor = optimizedDescriptor;
 			this.canonicalDescriptor = canonicalDescriptor;
@@ -62,64 +60,52 @@ public class MirrorGenerator extends BuilderPhase
 		}
 
 		@Override
-		public void perform(IProgressMonitor monitor)
-		{
+		public void perform(IProgressMonitor monitor) {
 			setResult(transfer(canonicalDescriptor, optimizedDescriptor, monitor));
 		}
 	}
 
-	private static class IncludesQuery extends MatchQuery
-	{
+	private static class IncludesQuery extends MatchQuery {
 		private final Set<IInstallableUnit> m_unitsToInclude;
 
-		public IncludesQuery(Set<IInstallableUnit> unitsToInclude)
-		{
+		public IncludesQuery(Set<IInstallableUnit> unitsToInclude) {
 			m_unitsToInclude = unitsToInclude;
 		}
 
 		@Override
-		public boolean isMatch(Object candidate)
-		{
+		public boolean isMatch(Object candidate) {
 			return m_unitsToInclude.contains(candidate);
 		}
 	}
 
-	private static final Query ONLY_CATEGORIES = new MatchQuery()
-	{
+	private static final Query ONLY_CATEGORIES = new MatchQuery() {
 		@Override
-		public boolean isMatch(Object candidate)
-		{
-			if(candidate instanceof IInstallableUnit)
-			{
-				IInstallableUnit iu = (IInstallableUnit)candidate;
+		public boolean isMatch(Object candidate) {
+			if (candidate instanceof IInstallableUnit) {
+				IInstallableUnit iu = (IInstallableUnit) candidate;
 				return Boolean.parseBoolean(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY));
 			}
 			return false;
 		}
 	};
 
-	private static IStatus constraintStatus(IStatus status)
-	{
-		return status.getSeverity() == IStatus.ERROR && status.getException() != null
-				? status
-				: null;
+	private static IStatus constraintStatus(IStatus status) {
+		return status.getSeverity() == IStatus.ERROR && status.getException() != null ? status : null;
 	}
 
-	private static IStatus extractDeeperRootCause(IStatus status)
-	{
-		if(status == null)
+	private static IStatus extractDeeperRootCause(IStatus status) {
+		if (status == null)
 			return null;
-		if(!status.isMultiStatus())
+		if (!status.isMultiStatus())
 			return constraintStatus(status);
 
-		IStatus[] children = ((MultiStatus)status).getChildren();
-		if(children == null)
+		IStatus[] children = ((MultiStatus) status).getChildren();
+		if (children == null)
 			return constraintStatus(status);
 
-		for(int i = 0; i < children.length; i++)
-		{
+		for (int i = 0; i < children.length; i++) {
 			IStatus deeper = extractDeeperRootCause(children[i]);
-			if(deeper != null)
+			if (deeper != null)
 				return deeper;
 		}
 
@@ -127,110 +113,91 @@ public class MirrorGenerator extends BuilderPhase
 	}
 
 	/**
-	 * Extract the root cause. The root cause is the first severe non-MultiStatus status containing an exception when
-	 * searching depth first otherwise null.
+	 * Extract the root cause. The root cause is the first severe
+	 * non-MultiStatus status containing an exception when searching depth first
+	 * otherwise null.
 	 * 
 	 * @param status
 	 * @return root cause
 	 */
-	private static IStatus extractRootCause(IStatus status)
-	{
+	private static IStatus extractRootCause(IStatus status) {
 		IStatus rootCause = extractDeeperRootCause(status);
-		return rootCause == null
-				? status
-				: rootCause;
+		return rootCause == null ? status : rootCause;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<URI> getCompositeChildren(IRepository repository)
-	{
-		return (repository instanceof ICompositeRepository)
-				? ((ICompositeRepository)repository).getChildren()
-				: Collections.emptyList();
+	private static List<URI> getCompositeChildren(IRepository repository) {
+		return (repository instanceof ICompositeRepository) ? ((ICompositeRepository) repository).getChildren() : Collections.emptyList();
 	}
 
-	private static void mirror(IArtifactRepository source, IArtifactRepository dest, IArtifactDescriptor descriptor,
-			IProgressMonitor monitor) throws CoreException
-	{
-		if(dest.contains(descriptor))
+	private static void mirror(IArtifactRepository source, IArtifactRepository dest, IArtifactDescriptor descriptor, IProgressMonitor monitor)
+			throws CoreException {
+		if (dest.contains(descriptor))
 			return;
 
 		RawMirrorRequest request = new RawMirrorRequest(descriptor, descriptor, dest);
 		request.setSourceRepository(source);
 		request.perform(monitor);
 		IStatus result = request.getResult();
-		if(result.getSeverity() == IStatus.ERROR)
-		{
-			if(result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
-			{
+		if (result.getSeverity() == IStatus.ERROR) {
+			if (result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS) {
 				dest.removeDescriptor(descriptor);
 				result = extractRootCause(result);
-				throw BuckminsterException.fromMessage(result.getException(),
-						"Unable to mirror artifact %s from repository %s: %s", descriptor.getArtifactKey(),
-						source.getLocation(), result.getMessage());
+				throw BuckminsterException.fromMessage(result.getException(), "Unable to mirror artifact %s from repository %s: %s", descriptor
+						.getArtifactKey(), source.getLocation(), result.getMessage());
 			}
 		}
 	}
 
-	private static void mirror(IArtifactRepository source, IArtifactRepository dest, Set<IArtifactKey> keysToInstall,
-			List<String> errors, IProgressMonitor monitor)
-	{
+	private static void mirror(IArtifactRepository source, IArtifactRepository dest, Set<IArtifactKey> keysToInstall, List<String> errors,
+			IProgressMonitor monitor) {
 		Logger log = Buckminster.getLogger();
 		boolean localSource = "file".equals(source.getLocation().getScheme()); //$NON-NLS-1$
 		IArtifactKey[] keys = source.getArtifactKeys();
 		MonitorUtils.begin(monitor, keys.length * 100);
-		for(IArtifactKey key : keys)
-		{
-			if(!keysToInstall.contains(key))
+		for (IArtifactKey key : keys) {
+			if (!keysToInstall.contains(key))
 				continue;
 
 			log.info("- mirroring artifact %s", key);
-			try
-			{
+			try {
 				IArtifactDescriptor[] aDescs = source.getArtifactDescriptors(key);
-				if(!localSource && aDescs.length == 2)
-				{
-					// Typically one that has no format and one that is packed. If so,
+				if (!localSource && aDescs.length == 2) {
+					// Typically one that has no format and one that is packed.
+					// If so,
 					// just copy the packed one.
 					//
 					IArtifactDescriptor optimized = null;
 					IArtifactDescriptor canonical = null;
-					for(IArtifactDescriptor desc : aDescs)
-					{
-						if(desc.getProperty(IArtifactDescriptor.FORMAT) == null)
+					for (IArtifactDescriptor desc : aDescs) {
+						if (desc.getProperty(IArtifactDescriptor.FORMAT) == null)
 							canonical = desc;
-						else if(ProcessingStepHandler.canProcess(desc))
+						else if (ProcessingStepHandler.canProcess(desc))
 							optimized = desc;
 					}
-					if(optimized != null)
-					{
+					if (optimized != null) {
 						mirror(source, dest, optimized, MonitorUtils.subMonitor(monitor, 90));
-						if(canonical != null)
-						{
-							// Restore the canonical form from the optimized one.
+						if (canonical != null) {
+							// Restore the canonical form from the optimized
+							// one.
 							CanonicalizeRequest request = new CanonicalizeRequest(optimized, canonical, dest);
 							request.perform(MonitorUtils.subMonitor(monitor, 90));
 							IStatus result = request.getResult();
-							if(result.getSeverity() == IStatus.ERROR)
-							{
-								if(result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
-								{
+							if (result.getSeverity() == IStatus.ERROR) {
+								if (result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS) {
 									dest.removeDescriptor(canonical);
 									result = extractRootCause(result);
 									throw BuckminsterException.fromMessage(result.getException(),
-											"Unable to unpack artifact %s in repository %s: %s", key,
-											dest.getLocation(), result.getMessage());
+											"Unable to unpack artifact %s in repository %s: %s", key, dest.getLocation(), result.getMessage());
 								}
 							}
 						}
 						continue;
 					}
 				}
-				for(IArtifactDescriptor desc : aDescs)
+				for (IArtifactDescriptor desc : aDescs)
 					mirror(source, dest, desc, MonitorUtils.subMonitor(monitor, 100 / aDescs.length));
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				errors.add(Builder.getExceptionMessages(e));
 				Buckminster.getLogger().error(e, e.getMessage());
 			}
@@ -238,20 +205,17 @@ public class MirrorGenerator extends BuilderPhase
 		MonitorUtils.done(monitor);
 	}
 
-	private static void mirror(Query filter, IQueryable source, IMetadataRepository dest, IProgressMonitor monitor)
-	{
+	private static void mirror(Query filter, IQueryable source, IMetadataRepository dest, IProgressMonitor monitor) {
 		Collector allIUs = source.query(filter, new Collector(), monitor);
-		dest.addInstallableUnits((IInstallableUnit[])allIUs.toArray(IInstallableUnit.class));
+		dest.addInstallableUnits((IInstallableUnit[]) allIUs.toArray(IInstallableUnit.class));
 	}
 
-	public MirrorGenerator(Builder builder)
-	{
+	public MirrorGenerator(Builder builder) {
 		super(builder);
 	}
 
 	@Override
-	public void run(IProgressMonitor monitor) throws CoreException
-	{
+	public void run(IProgressMonitor monitor) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info("Starting mirror generation");
 		long now = System.currentTimeMillis();
@@ -266,62 +230,51 @@ public class MirrorGenerator extends BuilderPhase
 		URI source = getBuilder().getGlobalRepoURI();
 		MonitorUtils.begin(monitor, 100);
 		boolean artifactErrors = false;
-		try
-		{
+		try {
 			boolean isUpdate = getBuilder().isUpdate();
 			IArtifactRepository destAr = null;
 			IMetadataRepository destMdr = null;
-			if(!isUpdate)
-			{
+			if (!isUpdate) {
 				FileUtils.deleteAll(destination);
 				mdrMgr.removeRepository(destURI);
 				arMgr.removeRepository(destURI);
 				MonitorUtils.worked(monitor, 2);
-			}
-			else
-			{
-				try
-				{
+			} else {
+				try {
 					destAr = arMgr.loadRepository(destURI, MonitorUtils.subMonitor(monitor, 1));
-				}
-				catch(ProvisionException e)
-				{
+				} catch (ProvisionException e) {
 				}
 
-				try
-				{
+				try {
 					destMdr = mdrMgr.loadRepository(destURI, MonitorUtils.subMonitor(monitor, 1));
-				}
-				catch(ProvisionException e)
-				{
+				} catch (ProvisionException e) {
 				}
 			}
 
 			URI mirrors = getBuilder().getMirrorsURI();
-			if(destAr == null)
-			{
+			if (destAr == null) {
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 				properties.put(Publisher.PUBLISH_PACK_FILES_AS_SIBLINGS, Boolean.toString(true));
-				if(mirrors != null)
+				if (mirrors != null)
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
 				String label = getBuilder().getBuild().getLabel();
-				destAr = arMgr.createRepository(destURI,
-						label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+				destAr = arMgr.createRepository(destURI, label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 			}
 
-			if(destMdr == null)
-			{
+			if (destMdr == null) {
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
-				if(mirrors != null)
+				if (mirrors != null)
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
 				String label = getBuilder().getBuild().getLabel();
 				destMdr = mdrMgr.createRepository(destURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
 			}
 
-			// Step 1. Mirror all artifacts. This means copying a lot of data. We mirror
-			// one repository at a time to get a more informative error in case of failure
+			// Step 1. Mirror all artifacts. This means copying a lot of data.
+			// We mirror
+			// one repository at a time to get a more informative error in case
+			// of failure
 			//
 			IArtifactRepository sourceAr = arMgr.loadRepository(source, MonitorUtils.subMonitor(monitor, 1));
 			List<URI> children = getCompositeChildren(sourceAr);
@@ -330,44 +283,39 @@ public class MirrorGenerator extends BuilderPhase
 
 			Set<IInstallableUnit> unitsToInstall = getBuilder().getUnitsToInstall();
 			HashSet<IArtifactKey> keysToInstall = new HashSet<IArtifactKey>(unitsToInstall.size());
-			for(IInstallableUnit iu : unitsToInstall)
-				for(IArtifactKey key : iu.getArtifacts())
+			for (IInstallableUnit iu : unitsToInstall)
+				for (IArtifactKey key : iu.getArtifacts())
 					keysToInstall.add(key);
 
 			URI categoryRepo = getBuilder().getCategoriesRepo();
 			URI targetPlatformRepo = getBuilder().getTargetPlatformRepo();
-			for(URI childURI : children)
-			{
-				if(childURI.equals(targetPlatformRepo) || childURI.equals(categoryRepo))
+			for (URI childURI : children) {
+				if (childURI.equals(targetPlatformRepo) || childURI.equals(categoryRepo))
 					continue;
 
 				log.info("Mirroring artifacts from from %s", childURI);
 				IArtifactRepository child = arMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
 				ArrayList<String> errors = new ArrayList<String>();
 				mirror(child, destAr, keysToInstall, errors, MonitorUtils.subMonitor(childMonitor, 99));
-				if(errors.size() > 0)
-				{
+				if (errors.size() > 0) {
 					artifactErrors = true;
 					String childStr = childURI.toString();
-					if(!childStr.endsWith("/"))
+					if (!childStr.endsWith("/"))
 						childStr += "/";
 
 					Contribution repoContributor = null;
-					outer: for(Contribution contrib : getBuilder().getBuild().getContributions())
-					{
-						for(Repository repo : contrib.getRepositories())
-						{
+					outer: for (Contribution contrib : getBuilder().getBuild().getContributions()) {
+						for (Repository repo : contrib.getRepositories()) {
 							String repoLoc = repo.getLocation();
-							if(!repoLoc.endsWith("/"))
+							if (!repoLoc.endsWith("/"))
 								repoLoc += "/";
-							if(repoLoc.equals(childStr))
-							{
+							if (repoLoc.equals(childStr)) {
 								repoContributor = contrib;
 								break outer;
 							}
 						}
 					}
-					if(repoContributor != null)
+					if (repoContributor != null)
 						getBuilder().sendEmail(repoContributor, errors);
 
 				}
@@ -375,8 +323,10 @@ public class MirrorGenerator extends BuilderPhase
 			log.info("Done mirroring artifacts");
 			childMonitor.done();
 
-			// Step 2. Mirror the composite but don't include platform nor categories. We
-			// mirror one repository at a time to get a more informative error in case of
+			// Step 2. Mirror the composite but don't include platform nor
+			// categories. We
+			// mirror one repository at a time to get a more informative error
+			// in case of
 			// failure
 			//
 			IMetadataRepository sourceMdr = mdrMgr.loadRepository(source, MonitorUtils.subMonitor(monitor, 1));
@@ -384,9 +334,8 @@ public class MirrorGenerator extends BuilderPhase
 			children = getCompositeChildren(sourceMdr);
 			childMonitor = MonitorUtils.subMonitor(monitor, 7);
 			MonitorUtils.begin(childMonitor, children.size() * 100);
-			for(URI childURI : children)
-			{
-				if(childURI.equals(targetPlatformRepo) || childURI.equals(categoryRepo))
+			for (URI childURI : children) {
+				if (childURI.equals(targetPlatformRepo) || childURI.equals(categoryRepo))
 					continue;
 
 				log.info("Mirroring meta-data from from %s", childURI);
@@ -398,18 +347,15 @@ public class MirrorGenerator extends BuilderPhase
 
 			// Step 3. Mirror the generated categories but don't include the
 			// generated 'include all' feature
-			IMetadataRepository categoryRepository = mdrMgr.loadRepository(categoryRepo, MonitorUtils.subMonitor(
-					monitor, 1));
+			IMetadataRepository categoryRepository = mdrMgr.loadRepository(categoryRepo, MonitorUtils.subMonitor(monitor, 1));
 			mirror(ONLY_CATEGORIES, categoryRepository, destMdr, MonitorUtils.subMonitor(monitor, 1));
-		}
-		finally
-		{
+		} finally {
 			bucky.ungetService(mdrMgr);
 			bucky.ungetService(arMgr);
 			MonitorUtils.done(monitor);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
-		if(artifactErrors)
+		if (artifactErrors)
 			throw BuckminsterException.fromMessage("Not all artifacts could be mirrored");
 	}
 }

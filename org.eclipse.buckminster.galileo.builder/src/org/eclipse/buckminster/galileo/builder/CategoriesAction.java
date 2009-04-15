@@ -43,40 +43,31 @@ import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 
 @SuppressWarnings("restriction")
-public class CategoriesAction extends AbstractPublisherAction
-{
-	private final Build m_build;
+public class CategoriesAction extends AbstractPublisherAction {
+	private final Build build;
 
-	private final IMetadataRepository m_globalRepo;
+	private final IMetadataRepository globalRepo;
 
-	public CategoriesAction(Build build, IMetadataRepository globalRepo)
-	{
-		m_build = build;
-		m_globalRepo = globalRepo;
+	public CategoriesAction(Build build, IMetadataRepository globalRepo) {
+		this.build = build;
+		this.globalRepo = globalRepo;
 	}
 
 	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		Map<Category, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<Category, Set<IInstallableUnit>>();
-		try
-		{
-			for(Contribution contrib : m_build.getContributions())
-			{
-				for(Feature feature : contrib.getFeatures())
-				{
-					if(feature.getId().equals(Builder.GALILEO_FEATURE))
+		try {
+			for (Contribution contrib : build.getContributions()) {
+				for (Feature feature : contrib.getFeatures()) {
+					if (feature.getId().equals(Builder.GALILEO_FEATURE))
 						continue;
 
 					Category category = feature.getCategory();
-					if(category != null)
-					{
-						IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo,
-								monitor);
+					if (category != null) {
+						IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo, monitor);
 
 						Set<IInstallableUnit> featureIUs = categoriesToFeatureIUs.get(category);
-						if(featureIUs == null)
-						{
+						if (featureIUs == null) {
 							featureIUs = new HashSet<IInstallableUnit>();
 							categoriesToFeatureIUs.put(category, featureIUs);
 						}
@@ -84,18 +75,14 @@ public class CategoriesAction extends AbstractPublisherAction
 					}
 				}
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			return e.getStatus();
 		}
 		generateCategoryIUs(categoriesToFeatureIUs, results);
 		return Status.OK_STATUS;
 	}
 
-	private IInstallableUnit createCategoryIU(Category category, Set<IInstallableUnit> featureIUs,
-			IInstallableUnit parentCategory)
-	{
+	private IInstallableUnit createCategoryIU(Category category, Set<IInstallableUnit> featureIUs, IInstallableUnit parentCategory) {
 		InstallableUnitDescription cat = new MetadataFactory.InstallableUnitDescription();
 		cat.setSingleton(true);
 		String categoryId = category.getName();
@@ -105,17 +92,16 @@ public class CategoriesAction extends AbstractPublisherAction
 		cat.setProperty(IInstallableUnit.PROP_DESCRIPTION, category.getDescription());
 
 		ArrayList<IRequiredCapability> reqsConfigurationUnits = new ArrayList<IRequiredCapability>(featureIUs.size());
-		for(IInstallableUnit iu : featureIUs)
-		{
+		for (IInstallableUnit iu : featureIUs) {
 			VersionRange range = new VersionRange(iu.getVersion(), true, iu.getVersion(), true);
-			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID,
-					iu.getId(), range, iu.getFilter(), false, false));
+			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, iu.getId(), range, iu.getFilter(),
+					false, false));
 		}
-		// note that update sites don't currently support nested categories, but it may be useful to add in the future
-		if(parentCategory != null)
-		{
-			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID,
-					parentCategory.getId(), VersionRange.emptyRange, parentCategory.getFilter(), false, false));
+		// note that update sites don't currently support nested categories, but
+		// it may be useful to add in the future
+		if (parentCategory != null) {
+			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, parentCategory.getId(),
+					VersionRange.emptyRange, parentCategory.getFilter(), false, false));
 		}
 		cat.setRequiredCapabilities(reqsConfigurationUnits.toArray(new IRequiredCapability[reqsConfigurationUnits.size()]));
 
@@ -130,48 +116,41 @@ public class CategoriesAction extends AbstractPublisherAction
 		return MetadataFactory.createInstallableUnit(cat);
 	}
 
-	private void generateCategoryIUs(Map<Category, Set<IInstallableUnit>> categoriesToFeatures, IPublisherResult result)
-	{
-		for(Map.Entry<Category, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
+	private void generateCategoryIUs(Map<Category, Set<IInstallableUnit>> categoriesToFeatures, IPublisherResult result) {
+		for (Map.Entry<Category, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
 			result.addIU(createCategoryIU(entry.getKey(), entry.getValue(), null), IPublisherResult.NON_ROOT);
 	}
 
-	private IInstallableUnit getFeatureIU(String name, String versionStr, IPublisherInfo publisherInfo,
-			IProgressMonitor monitor) throws CoreException
-	{
-		if(monitor.isCanceled())
+	private IInstallableUnit getFeatureIU(String name, String versionStr, IPublisherInfo publisherInfo, IProgressMonitor monitor)
+			throws CoreException {
+		if (monitor.isCanceled())
 			throw new OperationCanceledException();
 
 		String id = name + Builder.FEATURE_GROUP_SUFFIX;
 		Query query = null;
 		Collector collector = null;
 		Version version = Version.parseVersion(versionStr);
-		if(version.equals(Version.emptyVersion))
-		{
+		if (version.equals(Version.emptyVersion)) {
 			query = new CompositeQuery(new Query[] { new InstallableUnitQuery(id), new LatestIUVersionQuery() });
 			collector = new Collector();
-		}
-		else
-		{
+		} else {
 			query = new InstallableUnitQuery(id, version);
-			collector = new Collector()
-			{
+			collector = new Collector() {
 				@Override
-				public boolean accept(Object object)
-				{
+				public boolean accept(Object object) {
 					super.accept(object);
 					return false; // stop searching once we've found one
 				}
 			};
 		}
 
-		collector = m_globalRepo.query(query, collector, monitor);
-		if(collector.size() == 0)
+		collector = globalRepo.query(query, collector, monitor);
+		if (collector.size() == 0)
 			collector = publisherInfo.getMetadataRepository().query(query, collector, null);
-		if(collector.size() == 0 && publisherInfo.getContextMetadataRepository() != null)
+		if (collector.size() == 0 && publisherInfo.getContextMetadataRepository() != null)
 			collector = publisherInfo.getContextMetadataRepository().query(query, collector, null);
-		if(collector.size() == 1)
-			return (IInstallableUnit)collector.iterator().next();
+		if (collector.size() == 1)
+			return (IInstallableUnit) collector.iterator().next();
 		throw BuckminsterException.fromMessage("Unable to find feature %s/%s using composite repository", name, version);
 	}
 }

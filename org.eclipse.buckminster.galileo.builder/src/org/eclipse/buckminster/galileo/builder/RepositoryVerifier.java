@@ -52,29 +52,24 @@ import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 @SuppressWarnings("restriction")
-public class RepositoryVerifier extends BuilderPhase
-{
-	private static String configEnvString(Config config)
-	{
+public class RepositoryVerifier extends BuilderPhase {
+	private static String configEnvString(Config config) {
 		StringBuilder bld = new StringBuilder();
 		WS ws = config.getWs();
-		if(ws != null)
-		{
+		if (ws != null) {
 			bld.append("osgi.ws="); //$NON-NLS-1$
 			bld.append(ws.getLiteral());
 		}
 		OS os = config.getOs();
-		if(os != null)
-		{
-			if(bld.length() > 0)
+		if (os != null) {
+			if (bld.length() > 0)
 				bld.append(',');
 			bld.append("osgi.os="); //$NON-NLS-1$
 			bld.append(os.getLiteral());
 		}
 		ARCH arch = config.getArch();
-		if(arch != null)
-		{
-			if(bld.length() > 0)
+		if (arch != null) {
+			if (bld.length() > 0)
 				bld.append(',');
 			bld.append("osgi.arch="); //$NON-NLS-1$
 			bld.append(arch.getLiteral());
@@ -82,31 +77,27 @@ public class RepositoryVerifier extends BuilderPhase
 		return bld.toString();
 	}
 
-	private static String configNameString(Config config)
-	{
+	private static String configNameString(Config config) {
 		StringBuilder bld = new StringBuilder();
 		WS ws = config.getWs();
-		if(ws != null)
+		if (ws != null)
 			bld.append(ws.getLiteral());
 		OS os = config.getOs();
-		if(os != null)
-		{
-			if(bld.length() > 0)
+		if (os != null) {
+			if (bld.length() > 0)
 				bld.append('.');
 			bld.append(os.getLiteral());
 		}
 		ARCH arch = config.getArch();
-		if(arch != null)
-		{
-			if(bld.length() > 0)
+		if (arch != null) {
+			if (bld.length() > 0)
 				bld.append('.');
 			bld.append(arch.getLiteral());
 		}
 		return bld.toString();
 	}
 
-	private static ProvisioningContext createContext(URI site)
-	{
+	private static ProvisioningContext createContext(URI site) {
 		URI[] repoLocations = new URI[] { site };
 		ProvisioningContext context = new ProvisioningContext(repoLocations);
 		context.setArtifactRepositories(repoLocations);
@@ -114,35 +105,31 @@ public class RepositoryVerifier extends BuilderPhase
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Set<Explanation> getExplanations(RequestStatus requestStatus)
-	{
+	private static Set<Explanation> getExplanations(RequestStatus requestStatus) {
 		return requestStatus.getExplanations();
 	}
 
-	private static IInstallableUnit[] getRootIUs(URI site, IProfile profile, String iuName, Version version,
-			IProgressMonitor monitor) throws CoreException
-	{
+	private static IInstallableUnit[] getRootIUs(URI site, IProfile profile, String iuName, Version version, IProgressMonitor monitor)
+			throws CoreException {
 		Query query = new InstallableUnitQuery(iuName, new VersionRange(version, true, version, true));
-		Collector roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { query,
-				new LatestIUVersionQuery() }), new Collector(), monitor);
+		Collector roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { query, new LatestIUVersionQuery() }),
+				new Collector(), monitor);
 
-		if(roots.size() <= 0)
+		if (roots.size() <= 0)
 			roots = profile.query(query, roots, new NullProgressMonitor());
 
-		if(roots.size() <= 0)
+		if (roots.size() <= 0)
 			throw BuckminsterException.fromMessage("Feature %s not found", iuName); //$NON-NLS-1$
 
-		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
+		return (IInstallableUnit[]) roots.toArray(IInstallableUnit.class);
 	}
 
-	public RepositoryVerifier(Builder builder)
-	{
+	public RepositoryVerifier(Builder builder) {
 		super(builder);
 	}
 
 	@Override
-	public void run(IProgressMonitor monitor) throws CoreException
-	{
+	public void run(IProgressMonitor monitor) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info("Starting planner verification"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
@@ -157,10 +144,8 @@ public class RepositoryVerifier extends BuilderPhase
 		IPlanner planner = bucky.getService(IPlanner.class);
 		boolean update = getBuilder().isUpdate();
 		URI repoLocation = getBuilder().getGlobalRepoURI();
-		try
-		{
-			for(Config config : configs)
-			{
+		try {
+			for (Config config : configs) {
 				String configName = configNameString(config);
 				String profileId = profilePrefix + configName;
 				log.info("Verifying config: %s", configName); //$NON-NLS-1$
@@ -169,10 +154,10 @@ public class RepositoryVerifier extends BuilderPhase
 				props.put(IProfile.PROP_ENVIRONMENTS, configEnvString(config));
 
 				IProfile profile = null;
-				if(update)
+				if (update)
 					profile = profileRegistry.getProfile(profileId);
 
-				if(profile == null)
+				if (profile == null)
 					profile = profileRegistry.addProfile(profileId, props);
 
 				IInstallableUnit[] rootArr = getRootIUs(repoLocation, profile, Builder.ALL_CONTRIBUTED_CONTENT_FEATURE,
@@ -180,58 +165,46 @@ public class RepositoryVerifier extends BuilderPhase
 
 				// Add as root IU's to a request
 				ProfileChangeRequest request = new ProfileChangeRequest(profile);
-				for(IInstallableUnit rootIU : rootArr)
-					request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU,
-							Boolean.TRUE.toString());
+				for (IInstallableUnit rootIU : rootArr)
+					request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU, Boolean.TRUE.toString());
 				request.addInstallableUnits(rootArr);
-				ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation),
-						MonitorUtils.subMonitor(monitor, 90));
+				ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation), MonitorUtils.subMonitor(monitor, 90));
 
 				IStatus status = plan.getStatus();
-				if(status.getSeverity() == IStatus.ERROR)
-				{
+				if (status.getSeverity() == IStatus.ERROR) {
 					sendEmails(plan.getRequestStatus());
 					throw new CoreException(status);
 				}
 
 				Operand[] ops = plan.getOperands();
-				for(Operand op : ops)
-				{
-					if(!(op instanceof InstallableUnitOperand))
+				for (Operand op : ops) {
+					if (!(op instanceof InstallableUnitOperand))
 						continue;
 
-					InstallableUnitOperand iuOp = (InstallableUnitOperand)op;
+					InstallableUnitOperand iuOp = (InstallableUnitOperand) op;
 					IInstallableUnit iu = iuOp.second();
-					if(iu != null)
+					if (iu != null)
 						unitsToInstall.add(iu);
 				}
 			}
-		}
-		catch(RuntimeException e)
-		{
+		} catch (RuntimeException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			MonitorUtils.done(monitor);
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 
-		if(unitsToInstall.size() > 0)
-		{
+		if (unitsToInstall.size() > 0) {
 			// Filter out everything that is included in the target platform
 			//
-			log.info(
-					"Found %d units to install. Now pruning using target platform", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
+			log.info("Found %d units to install. Now pruning using target platform", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
 			IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 			IMetadataRepository tpRepo = mdrMgr.loadRepository(getBuilder().getTargetPlatformRepo(), null);
-			tpRepo.query(new MatchQuery()
-			{
+			tpRepo.query(new MatchQuery() {
 				@Override
-				public boolean isMatch(Object candidate)
-				{
+				public boolean isMatch(Object candidate) {
 					unitsToInstall.remove(candidate);
 					return false;
 				}
@@ -242,28 +215,25 @@ public class RepositoryVerifier extends BuilderPhase
 		getBuilder().setUnitsToInstall(unitsToInstall);
 	}
 
-	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions,
-			IRequiredCapability prq)
-	{
+	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions, IRequiredCapability prq) {
 		boolean contribsFound = false;
-		for(Explanation explanation : explanations)
-		{
-			if(explanation instanceof Singleton)
-			{
-				if(contribsFound)
-					// All explicit contributions for Singletons are added at top level. We just
-					// want to find out if this Singleton is the leaf problem here, not add anything
+		for (Explanation explanation : explanations) {
+			if (explanation instanceof Singleton) {
+				if (contribsFound)
+					// All explicit contributions for Singletons are added at
+					// top level. We just
+					// want to find out if this Singleton is the leaf problem
+					// here, not add anything
 					continue;
 
-				for(IInstallableUnit iu : ((Singleton)explanation).ius)
-				{
-					for(IProvidedCapability pc : iu.getProvidedCapabilities())
-						if(pc.satisfies(prq))
-						{
-							// A singleton is always a leaf problem. Add contributions
+				for (IInstallableUnit iu : ((Singleton) explanation).ius) {
+					for (IProvidedCapability pc : iu.getProvidedCapabilities())
+						if (pc.satisfies(prq)) {
+							// A singleton is always a leaf problem. Add
+							// contributions
 							// if we can find any
 							Contribution contrib = findContribution(iu.getId());
-							if(contrib == null)
+							if (contrib == null)
 								continue;
 							contribsFound = true;
 						}
@@ -273,34 +243,29 @@ public class RepositoryVerifier extends BuilderPhase
 
 			IInstallableUnit iu;
 			IRequiredCapability crq;
-			if(explanation instanceof HardRequirement)
-			{
-				HardRequirement hrq = (HardRequirement)explanation;
+			if (explanation instanceof HardRequirement) {
+				HardRequirement hrq = (HardRequirement) explanation;
 				iu = hrq.iu;
 				crq = hrq.req;
-			}
-			else if(explanation instanceof MissingIU)
-			{
-				MissingIU miu = (MissingIU)explanation;
+			} else if (explanation instanceof MissingIU) {
+				MissingIU miu = (MissingIU) explanation;
 				iu = miu.iu;
 				crq = miu.req;
-			}
-			else
+			} else
 				continue;
 
-			for(IProvidedCapability pc : iu.getProvidedCapabilities())
-				if(pc.satisfies(prq))
-				{
-					// This IU would have fulfilled the failing request but it has
+			for (IProvidedCapability pc : iu.getProvidedCapabilities())
+				if (pc.satisfies(prq)) {
+					// This IU would have fulfilled the failing request but it
+					// has
 					// apparent problems of its own.
-					if(addLeafmostContributions(explanations, contributions, crq))
-					{
+					if (addLeafmostContributions(explanations, contributions, crq)) {
 						contribsFound = true;
 						continue;
 					}
 
 					Contribution contrib = findContribution(iu, crq);
-					if(contrib == null)
+					if (contrib == null)
 						continue;
 					contributions.put(contrib.getLabel(), contrib);
 					continue;
@@ -309,53 +274,45 @@ public class RepositoryVerifier extends BuilderPhase
 		return contribsFound;
 	}
 
-	private Contribution findContribution(IInstallableUnit iu, IRequiredCapability rq)
-	{
+	private Contribution findContribution(IInstallableUnit iu, IRequiredCapability rq) {
 		Contribution contrib = null;
-		if(Builder.NAMESPACE_OSGI_BUNDLE.equals(rq.getNamespace())
-				|| IInstallableUnit.NAMESPACE_IU_ID.equals(rq.getNamespace()))
+		if (Builder.NAMESPACE_OSGI_BUNDLE.equals(rq.getNamespace()) || IInstallableUnit.NAMESPACE_IU_ID.equals(rq.getNamespace()))
 			contrib = findContribution(rq.getName());
 
-		if(contrib == null)
+		if (contrib == null)
 			// Not found, try the owner of the requirement
 			contrib = findContribution(iu.getId());
 		return contrib;
 	}
 
-	private Contribution findContribution(String componentId)
-	{
-		for(Contribution contrib : getBuilder().getBuild().getContributions())
-		{
-			for(Feature feature : contrib.getFeatures())
-				if(feature.getId().equals(componentId))
+	private Contribution findContribution(String componentId) {
+		for (Contribution contrib : getBuilder().getBuild().getContributions()) {
+			for (Feature feature : contrib.getFeatures())
+				if (feature.getId().equals(componentId))
 					return contrib;
-			for(Bundle bundle : contrib.getBundles())
-				if(bundle.getId().equals(componentId))
+			for (Bundle bundle : contrib.getBundles())
+				if (bundle.getId().equals(componentId))
 					return contrib;
 		}
 		return null;
 	}
 
-	private void sendEmails(RequestStatus requestStatus)
-	{
+	private void sendEmails(RequestStatus requestStatus) {
 		Builder builder = getBuilder();
-		if(!builder.getBuild().isSendmail())
+		if (!builder.getBuild().isSendmail())
 			return;
 
 		ArrayList<String> errors = new ArrayList<String>();
 		Set<Explanation> explanations = getExplanations(requestStatus);
 		Map<String, Contribution> contribs = new HashMap<String, Contribution>();
-		for(Explanation explanation : explanations)
-		{
+		for (Explanation explanation : explanations) {
 			errors.add(explanation.toString());
-			if(explanation instanceof Singleton)
-			{
+			if (explanation instanceof Singleton) {
 				// A singleton is always a leaf problem. Add contributions
 				// if we can find any. They are all culprits
-				for(IInstallableUnit iu : ((Singleton)explanation).ius)
-				{
+				for (IInstallableUnit iu : ((Singleton) explanation).ius) {
 					Contribution contrib = findContribution(iu.getId());
-					if(contrib == null)
+					if (contrib == null)
 						continue;
 					contribs.put(contrib.getLabel(), contrib);
 				}
@@ -364,32 +321,28 @@ public class RepositoryVerifier extends BuilderPhase
 
 			IInstallableUnit iu;
 			IRequiredCapability crq;
-			if(explanation instanceof HardRequirement)
-			{
-				HardRequirement hrq = (HardRequirement)explanation;
+			if (explanation instanceof HardRequirement) {
+				HardRequirement hrq = (HardRequirement) explanation;
 				iu = hrq.iu;
 				crq = hrq.req;
-			}
-			else if(explanation instanceof MissingIU)
-			{
-				MissingIU miu = (MissingIU)explanation;
+			} else if (explanation instanceof MissingIU) {
+				MissingIU miu = (MissingIU) explanation;
 				iu = miu.iu;
 				crq = miu.req;
-			}
-			else
+			} else
 				continue;
 
-			// Find the leafmost contributions for the problem. We don't want to blame
+			// Find the leafmost contributions for the problem. We don't want to
+			// blame
 			// consuming contributors
-			if(!addLeafmostContributions(explanations, contribs, crq))
-			{
+			if (!addLeafmostContributions(explanations, contribs, crq)) {
 				Contribution contrib = findContribution(iu, crq);
-				if(contrib == null)
+				if (contrib == null)
 					continue;
 				contribs.put(contrib.getLabel(), contrib);
 			}
 		}
-		for(Contribution contrib : contribs.values())
+		for (Contribution contrib : contribs.values())
 			builder.sendEmail(contrib, errors);
 	}
 }

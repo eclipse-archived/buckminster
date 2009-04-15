@@ -6,8 +6,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends Plugin
-{
+public class Activator extends Plugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.galileo.builder"; //$NON-NLS-1$
 
@@ -19,26 +18,24 @@ public class Activator extends Plugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static Activator getDefault()
-	{
+	public static Activator getDefault() {
 		return plugin;
 	}
 
 	/**
 	 * The constructor
 	 */
-	public Activator()
-	{
+	public Activator() {
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
@@ -46,11 +43,11 @@ public class Activator extends Plugin
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
+	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}

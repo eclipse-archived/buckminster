@@ -25,16 +25,13 @@ import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
 
 @SuppressWarnings("restriction")
-public class CategoryRepoGenerator extends BuilderPhase
-{
-	public CategoryRepoGenerator(Builder builder)
-	{
+public class CategoryRepoGenerator extends BuilderPhase {
+	public CategoryRepoGenerator(Builder builder) {
 		super(builder);
 	}
 
 	@Override
-	public void run(IProgressMonitor monitor) throws CoreException
-	{
+	public void run(IProgressMonitor monitor) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info("Starting generation of categories");
 		long now = System.currentTimeMillis();
@@ -52,36 +49,30 @@ public class CategoryRepoGenerator extends BuilderPhase
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
 		MonitorUtils.begin(monitor, 100);
-		try
-		{
+		try {
 			mdrMgr.removeRepository(locationURI);
-			IMetadataRepository mdr = mdrMgr.createRepository(locationURI, name, Builder.SIMPLE_METADATA_TYPE,
-					properties);
+			IMetadataRepository mdr = mdrMgr.createRepository(locationURI, name, Builder.SIMPLE_METADATA_TYPE, properties);
 
 			arMgr.removeRepository(locationURI);
-			IArtifactRepository ar = arMgr.createRepository(locationURI,
-					name + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+			IArtifactRepository ar = arMgr.createRepository(locationURI, name + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 
-			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository)mdrMgr.loadRepository(
-					globalLocationURI, MonitorUtils.subMonitor(monitor, 5));
-			CompositeArtifactRepository globalAr = (CompositeArtifactRepository)arMgr.loadRepository(globalLocationURI,
-					MonitorUtils.subMonitor(monitor, 5));
+			CompositeMetadataRepository globalMdr = (CompositeMetadataRepository) mdrMgr.loadRepository(globalLocationURI, MonitorUtils.subMonitor(
+					monitor, 5));
+			CompositeArtifactRepository globalAr = (CompositeArtifactRepository) arMgr.loadRepository(globalLocationURI, MonitorUtils.subMonitor(
+					monitor, 5));
 
 			PublisherInfo info = new PublisherInfo();
 			info.setArtifactRepository(ar);
 			info.setArtifactOptions(IPublisherInfo.A_PUBLISH | IPublisherInfo.A_INDEX);
 			info.setMetadataRepository(mdr);
 			Publisher publisher = new Publisher(info);
-			IStatus result = publisher.publish(createActions(getBuilder().getBuild(), mdr, globalMdr),
-					MonitorUtils.subMonitor(monitor, 90));
-			if(result.getSeverity() == IStatus.ERROR)
+			IStatus result = publisher.publish(createActions(getBuilder().getBuild(), mdr, globalMdr), MonitorUtils.subMonitor(monitor, 90));
+			if (result.getSeverity() == IStatus.ERROR)
 				throw new CoreException(result);
 
 			globalMdr.addChild(mdr.getLocation());
 			globalAr.addChild(ar.getLocation());
-		}
-		finally
-		{
+		} finally {
 			bucky.ungetService(mdrMgr);
 			bucky.ungetService(arMgr);
 			MonitorUtils.done(monitor);
@@ -90,9 +81,7 @@ public class CategoryRepoGenerator extends BuilderPhase
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 
-	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr)
-	{
-		return new IPublisherAction[] { new AllContributedContentFeatureAction(bm, globalMdr, mdr),
-				new CategoriesAction(bm, globalMdr) };
+	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr) {
+		return new IPublisherAction[] { new AllContributedContentFeatureAction(bm, globalMdr, mdr), new CategoriesAction(bm, globalMdr) };
 	}
 }

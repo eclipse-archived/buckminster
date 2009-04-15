@@ -31,56 +31,48 @@ import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 
 @SuppressWarnings("restriction")
-public class AllContributedContentFeatureAction extends AbstractPublisherAction
-{
+public class AllContributedContentFeatureAction extends AbstractPublisherAction {
 	private final Build build;
 
 	private final IMetadataRepository mdr;
 
 	private final IMetadataRepository globalMdr;
 
-	public AllContributedContentFeatureAction(Build build, IMetadataRepository globalMdr, IMetadataRepository mdr)
-	{
+	public AllContributedContentFeatureAction(Build build, IMetadataRepository globalMdr, IMetadataRepository mdr) {
 		this.build = build;
 		this.globalMdr = globalMdr;
 		this.mdr = mdr;
 	}
 
 	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		InstallableUnitDescription iu = new MetadataFactory.InstallableUnitDescription();
 		iu.setId(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE);
 		iu.setVersion(Builder.ALL_CONTRIBUTED_CONTENT_VERSION);
 		iu.setProperty(IInstallableUnit.PROP_TYPE_GROUP, Boolean.TRUE.toString());
-		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(
-				Builder.ALL_CONTRIBUTED_CONTENT_FEATURE, Builder.ALL_CONTRIBUTED_CONTENT_VERSION)));
+		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE,
+				Builder.ALL_CONTRIBUTED_CONTENT_VERSION)));
 
 		ArrayList<IRequiredCapability> required = new ArrayList<IRequiredCapability>();
-		for(Contribution contrib : build.getContributions())
-		{
-			for(Feature feature : contrib.getFeatures())
-			{
+		for (Contribution contrib : build.getContributions()) {
+			for (Feature feature : contrib.getFeatures()) {
 				String requiredId = feature.getId();
-				if(requiredId.equals(Builder.GALILEO_FEATURE))
+				if (requiredId.equals(Builder.GALILEO_FEATURE))
 					continue;
 
 				requiredId += Builder.FEATURE_GROUP_SUFFIX;
 				Version v = Version.parseVersion(feature.getVersion());
 				VersionRange range = null;
-				if(!Version.emptyVersion.equals(v))
+				if (!Version.emptyVersion.equals(v))
 					range = new VersionRange(v, true, v, true);
-				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, requiredId,
-						range, null, false, false));
+				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, requiredId, range, null, false, false));
 			}
-			for(Bundle bundle : contrib.getBundles())
-			{
+			for (Bundle bundle : contrib.getBundles()) {
 				IInstallableUnit bundleIU = getIU(bundle.getId(), bundle.getVersion());
 				Version v = bundleIU.getVersion();
 				VersionRange range = new VersionRange(v, true, v, true);
 				String filter = bundleIU.getFilter();
-				required.add(MetadataFactory.createRequiredCapability(Builder.NAMESPACE_OSGI_BUNDLE, bundleIU.getId(),
-						range, filter, false, false));
+				required.add(MetadataFactory.createRequiredCapability(Builder.NAMESPACE_OSGI_BUNDLE, bundleIU.getId(), range, filter, false, false));
 			}
 		}
 		iu.addRequiredCapabilities(required);
@@ -88,15 +80,10 @@ public class AllContributedContentFeatureAction extends AbstractPublisherAction
 		return Status.OK_STATUS;
 	}
 
-	private IInstallableUnit getIU(String id, String version)
-	{
-		InstallableUnitQuery query = version == null
-				? new InstallableUnitQuery(id)
-				: new InstallableUnitQuery(id, new Version(version));
+	private IInstallableUnit getIU(String id, String version) {
+		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
 		Collector c = globalMdr.query(query, new Collector(), null);
-		IInstallableUnit[] result = (IInstallableUnit[])c.toArray(IInstallableUnit.class);
-		return result.length > 0
-				? result[0]
-				: null;
+		IInstallableUnit[] result = (IInstallableUnit[]) c.toArray(IInstallableUnit.class);
+		return result.length > 0 ? result[0] : null;
 	}
 }

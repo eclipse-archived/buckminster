@@ -29,35 +29,28 @@ import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 @SuppressWarnings("restriction")
-public class CompositeRepoGenerator extends BuilderPhase
-{
-	private static void verifyIUExistence(IMetadataRepositoryManager mdrMgr, Repository repo, String id,
-			String version, List<String> errors) throws CoreException
-	{
-		if(repo == null)
+public class CompositeRepoGenerator extends BuilderPhase {
+	private static void verifyIUExistence(IMetadataRepositoryManager mdrMgr, Repository repo, String id, String version, List<String> errors)
+			throws CoreException {
+		if (repo == null)
 			return;
 
 		URI location = URI.create(repo.getLocation());
-		InstallableUnitQuery query = version == null
-				? new InstallableUnitQuery(id)
-				: new InstallableUnitQuery(id, new Version(version));
+		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
 
-		if(mdrMgr.loadRepository(location, null).query(query, new Collector(), null).isEmpty())
-		{
+		if (mdrMgr.loadRepository(location, null).query(query, new Collector(), null).isEmpty()) {
 			String msg = String.format("Unable to find %s/%s in repository %s", id, version, repo.getLocation());
 			errors.add(msg);
 			Buckminster.getLogger().error(msg);
 		}
 	}
 
-	public CompositeRepoGenerator(Builder builder)
-	{
+	public CompositeRepoGenerator(Builder builder) {
 		super(builder);
 	}
 
 	@Override
-	public void run(IProgressMonitor monitor) throws CoreException
-	{
+	public void run(IProgressMonitor monitor) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info("Starting generation of composite repository");
 		long now = System.currentTimeMillis();
@@ -77,24 +70,21 @@ public class CompositeRepoGenerator extends BuilderPhase
 		Buckminster bucky = Buckminster.getDefault();
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		mdrMgr.removeRepository(locationURI);
-		CompositeMetadataRepository mdr = (CompositeMetadataRepository)mdrMgr.createRepository(locationURI, name,
-				Builder.COMPOSITE_METADATA_TYPE, properties);
+		CompositeMetadataRepository mdr = (CompositeMetadataRepository) mdrMgr.createRepository(locationURI, name, Builder.COMPOSITE_METADATA_TYPE,
+				properties);
 
 		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
 		arMgr.removeRepository(locationURI);
-		CompositeArtifactRepository ar = (CompositeArtifactRepository)arMgr.createRepository(locationURI, name
-				+ " artifacts", Builder.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+		CompositeArtifactRepository ar = (CompositeArtifactRepository) arMgr.createRepository(locationURI,
+				name + " artifacts", Builder.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 
-		for(Contribution contrib : contribs)
-		{
+		for (Contribution contrib : contribs) {
 			IProgressMonitor contribMonitor = MonitorUtils.subMonitor(monitor, 100);
 			List<Repository> repos = contrib.getRepositories();
 			MonitorUtils.begin(contribMonitor, repos.size() * 200);
 			List<String> errors = new ArrayList<String>();
-			for(Repository repo : repos)
-			{
-				try
-				{
+			for (Repository repo : repos) {
+				try {
 					URI childLocation = URI.create(repo.getLocation());
 
 					log.info("Adding child meta-data repository %s", childLocation);
@@ -104,28 +94,25 @@ public class CompositeRepoGenerator extends BuilderPhase
 					log.info("Adding child artifact repository %s", childLocation);
 					arMgr.loadRepository(childLocation, MonitorUtils.subMonitor(contribMonitor, 100));
 					ar.addChild(childLocation);
-				}
-				catch(Exception e)
-				{
+				} catch (Exception e) {
 					String msg = Builder.getExceptionMessages(e);
 					errors.add(msg);
 					log.error(e, msg);
 				}
 			}
 
-			if(errors.size() == 0)
-			{
-				// Verify that all contributed features and bundles can be found in their respective
+			if (errors.size() == 0) {
+				// Verify that all contributed features and bundles can be found
+				// in their respective
 				// repository
-				for(Feature feature : contrib.getFeatures())
+				for (Feature feature : contrib.getFeatures())
 					verifyIUExistence(mdrMgr, feature.getRepo(), feature.getId() + ".feature.group", //$NON-NLS-1$
 							feature.getVersion(), errors);
-				for(Bundle bundle : contrib.getBundles())
+				for (Bundle bundle : contrib.getBundles())
 					verifyIUExistence(mdrMgr, bundle.getRepo(), bundle.getId(), bundle.getVersion(), errors);
 			}
 			MonitorUtils.done(contribMonitor);
-			if(!errors.isEmpty())
-			{
+			if (!errors.isEmpty()) {
 				getBuilder().sendEmail(contrib, errors);
 				errorsFound = true;
 			}
@@ -135,7 +122,7 @@ public class CompositeRepoGenerator extends BuilderPhase
 
 		MonitorUtils.done(monitor);
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
-		if(errorsFound)
+		if (errorsFound)
 			throw BuckminsterException.fromMessage("CompositeRepository generation was not succesful");
 	}
 }
