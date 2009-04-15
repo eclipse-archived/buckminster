@@ -7,7 +7,6 @@ import java.util.jar.Manifest;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.pde.core.build.IBuildEntry;
 import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
@@ -49,7 +48,7 @@ public class SourceBundleConsolidator extends BundleConsolidator
 
 		manifest.clear(); // Since we don't want all dependencies, exports, etc.
 
-		String src = (String)getProperties().get(IBuildEntry.SRC_INCLUDES);
+		String src = (String)getProperties().get("src.additionalRoots");
 		if(src == null)
 			src = "."; //$NON-NLS-1$
 
