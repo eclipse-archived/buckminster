@@ -73,8 +73,8 @@ public class CSpecFromSource extends CSpecGenerator
 		cspec.setName(m_feature.getId());
 		cspec.setVersion(VersionHelper.parseVersion(m_feature.getVersion()));
 		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
-		cspec.setFilter(FilterUtils.createFilter(m_feature.getOS(), m_feature.getWS(), m_feature.getArch(), m_feature
-				.getNL()));
+		cspec.setFilter(FilterUtils.createFilter(m_feature.getOS(), m_feature.getWS(), m_feature.getArch(),
+				m_feature.getNL()));
 
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
@@ -311,8 +311,8 @@ public class CSpecFromSource extends CSpecGenerator
 	ComponentRequestBuilder createDependency(IFeatureChild feature) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
-		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(), feature
-				.getMatch(), filter);
+		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(),
+				feature.getMatch(), filter);
 	}
 
 	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException
@@ -458,8 +458,8 @@ public class CSpecFromSource extends CSpecGenerator
 		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS, ALIAS_BUNDLES);
 		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS, ALIAS_FEATURES);
 		manifest.setProductAlias(ALIAS_OUTPUT);
-		manifest.setProductBase(OUTPUT_DIR_TEMP);
-		manifest.addProductPath(new Path("source." + FEATURE_FILE)); //$NON-NLS-1$
+		manifest.setProductBase(OUTPUT_DIR_TEMP.append("source")); //$NON-NLS-1$
+		manifest.addProductPath(new Path(FEATURE_FILE));
 	}
 
 	private void createSiteFeatureExportsAction() throws CoreException
