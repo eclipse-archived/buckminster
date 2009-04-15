@@ -676,7 +676,7 @@ public class Builder implements IApplication
 				setVerifyOnly(true);
 				continue;
 			}
-			if("-update".equalsIgnoreCase(arg))
+			if("-updateOnly".equalsIgnoreCase(arg))
 			{
 				setUpdate(true);
 				continue;
