@@ -131,13 +131,6 @@ public class Application implements IApplication
 							}
 						}
 					}
-					else if(arg.startsWith("-")
-							&& (arg.endsWith(".proxyHost") || arg.endsWith(".proxyPort") || arg
-									.endsWith(".nonProxyHosts")))
-					{
-						if(++idx < args.length)
-							System.setProperty(arg.substring(1), args[idx]);
-					}
 				}
 			}
 
