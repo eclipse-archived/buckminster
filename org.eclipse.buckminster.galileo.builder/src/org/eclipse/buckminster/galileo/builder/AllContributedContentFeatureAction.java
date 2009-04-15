@@ -62,7 +62,7 @@ public class AllContributedContentFeatureAction extends AbstractPublisherAction
 			for(Feature feature : contrib.getFeatures())
 			{
 				String requiredId = feature.getId();
-				if(requiredId.equals("org.eclipse.galileo"))
+				if(requiredId.equals(Builder.GALILEO_FEATURE))
 					continue;
 
 				requiredId += Builder.FEATURE_GROUP_SUFFIX;

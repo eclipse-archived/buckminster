@@ -73,11 +73,13 @@ public class Builder implements IApplication
 {
 	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
-	public static final String PROFILE_ID = "GalileoTest";
+	public static final String PROFILE_ID = "GalileoTest"; //$NON-NLS-1$
 
-	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group";
+	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group"; //$NON-NLS-1$
 
 	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = new Version(1, 0, 0);
+
+	public static final String GALILEO_FEATURE = "org.eclipse.galileo"; //$NON-NLS-1$
 
 	private static final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
 

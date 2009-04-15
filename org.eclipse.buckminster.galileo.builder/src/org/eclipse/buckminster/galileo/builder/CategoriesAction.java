@@ -65,6 +65,9 @@ public class CategoriesAction extends AbstractPublisherAction
 			{
 				for(Feature feature : contrib.getFeatures())
 				{
+					if(feature.getId().equals(Builder.GALILEO_FEATURE))
+						continue;
+
 					Category category = feature.getCategory();
 					if(category != null)
 					{
