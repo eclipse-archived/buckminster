@@ -174,7 +174,7 @@ public class CSpecFromSource extends CSpecGenerator
 			IPath cpePath = asProjectRelativeFolder(cpe.getPath(), projectRootReplacement);
 			ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE + '_' + cnt++, false,
 					WellKnownExports.JAVA_SOURCES, projectRootReplacement[0]);
-			ab.addPath(cpePath);
+			ab.setBase(cpePath);
 			if(ebSrcBld == null)
 				ebSrcBld = getGroupEclipseBuildSource(true);
 			ebSrcBld.addLocalPrerequisite(ab);
@@ -219,8 +219,10 @@ public class CSpecFromSource extends CSpecGenerator
 				eclipseBuildProducts.put(output, ab2);
 			}
 		}
+
+		AttributeBuilder buildSource = null;
 		if(ebSrcBld != null)
-			normalizeGroup(ebSrcBld);
+			buildSource = normalizeGroup(ebSrcBld);
 
 		// The classpath already contains all the re-exported stuff (it was
 		// added when the imports were added). Only thing missing is the
@@ -467,11 +469,11 @@ public class CSpecFromSource extends CSpecGenerator
 			}
 		}
 
-		if(ebSrcBld != null)
+		if(buildSource != null)
 		{
 			if(srcIncludesSource == null)
 				srcIncludesSource = cspec.addGroup(IBuildEntry.SRC_INCLUDES, false);
-			srcIncludesSource.addLocalPrerequisite(ebSrcBld);
+			srcIncludesSource.addLocalPrerequisite(buildSource);
 		}
 
 		if(simpleBundle)
@@ -540,8 +542,6 @@ public class CSpecFromSource extends CSpecGenerator
 
 		if(srcIncludesSource != null)
 		{
-			normalizeGroup(srcIncludesSource);
-
 			// Add Actions to create a source bundle jar
 
 			// this is for the source manifest
@@ -840,14 +840,14 @@ public class CSpecFromSource extends CSpecGenerator
 				: cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
 	}
 
-	private void normalizeGroup(GroupBuilder bld) throws CoreException
+	private AttributeBuilder normalizeGroup(GroupBuilder bld) throws CoreException
 	{
 		if(bld == null)
-			return;
+			return null;
 
 		List<PrerequisiteBuilder> preqs = bld.getPrerequisites();
 		if(preqs.size() == 0)
-			return;
+			return null;
 
 		boolean singleCanReplace = true;
 		CSpecBuilder cspec = getCSpec();
@@ -888,7 +888,9 @@ public class CSpecFromSource extends CSpecGenerator
 			cspec.removeAttribute(ab.getName());
 			ab.setName(name);
 			getCSpec().addAttribute(ab);
+			return ab;
 		}
+		return bld;
 	}
 
 	private IPath resolveLink(IPath path, IPath[] projectRootReplacement)
