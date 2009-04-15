@@ -114,11 +114,11 @@ public class RMContext extends ExpandingProperties<Object>
 			IStatus[] taggedChildren = new IStatus[idx];
 			while(--idx >= 0)
 				taggedChildren[idx] = addTagId(tagId, children[idx]);
-			return new MultiStatus(status.getPlugin(), status.getCode(), taggedChildren, addTagId(tagId, status
-					.getMessage()), status.getException());
+			return new MultiStatus(status.getPlugin(), status.getCode(), taggedChildren, addTagId(tagId,
+					status.getMessage()), status.getException());
 		}
-		return new Status(status.getSeverity(), status.getPlugin(), addTagId(tagId, status.getMessage()), status
-				.getException());
+		return new Status(status.getSeverity(), status.getPlugin(), addTagId(tagId, status.getMessage()),
+				status.getException());
 	}
 
 	private static String addTagId(String tagId, String msg)
@@ -152,6 +152,12 @@ public class RMContext extends ExpandingProperties<Object>
 		{
 			wrt.newLine();
 			formatStatus(wrt, indent + 2, child);
+		}
+		Throwable t = status.getException();
+		if(t instanceof CoreException)
+		{
+			wrt.newLine();
+			formatStatus(wrt, indent + 2, ((CoreException)t).getStatus());
 		}
 	}
 
