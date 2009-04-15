@@ -125,7 +125,11 @@ public class Builder implements IApplication
 			if(path.isAbsolute())
 				try
 				{
-					return new URI("file", null, path.removeTrailingSeparator().toPortableString(), null);
+					String pathStr = path.removeTrailingSeparator().toPortableString();
+					if(!pathStr.startsWith("/"))
+						// Path starts with a drive letter
+						pathStr = "/" + pathStr;
+					return new URI("file", null, pathStr, null);
 				}
 				catch(URISyntaxException e)
 				{
