@@ -55,7 +55,7 @@ build.timestamp=${build.timestamp}
 		
 	<target name="collect.jnlp" depends="create.temp.folder">
 		<buckminster.valuefileset id="jnlp-package-p2.zip" value="${fs:jnlp-package-p2.zip}"/>
-		<buckminster.valuefileset id="materializator.p2site.zip" value="${fs:materializator.p2site.zip}"/>
+		<buckminster.valuefileset id="materializer.p2site.zip" value="${fs:materializer.p2site.zip}"/>
 
 		<property name="output.dir" location="${sp:product.output}" />
 		<mkdir dir="${output.dir}"/>
@@ -65,9 +65,9 @@ build.timestamp=${build.timestamp}
 		</copy>
 
 		<copy todir="${buckminster.temp}/temp">
-			<fileset refid="materializator.p2site.zip" />
+			<fileset refid="materializer.p2site.zip" />
 		</copy>
-		<copy tofile="${output.dir}/materializator.p2site.zip">
+		<copy tofile="${output.dir}/materializer.p2site.zip">
 			<fileset dir="${buckminster.temp}/temp" includes="**/org.eclipse.buckminster.jnlp.p2.product*.zip" />
 		</copy>
 	</target>
