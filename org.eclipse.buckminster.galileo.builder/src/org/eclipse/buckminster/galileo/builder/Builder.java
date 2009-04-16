@@ -109,13 +109,6 @@ public class Builder implements IApplication {
 		TIME_FORMAT.setTimeZone(utc);
 	}
 
-	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
-		InternetAddress addr = new InternetAddress();
-		addr.setPersonal(contact.getName());
-		addr.setAddress(contact.getEmail());
-		return addr;
-	}
-
 	/**
 	 * Creates a repository location without the trailing slash that will be
 	 * added if the standard {@link java.io.File#toURI()} is used.
@@ -143,6 +136,19 @@ public class Builder implements IApplication {
 		throw BuckminsterException.fromMessage("File %s is not an absolute path", repoLocation);
 	}
 
+	public static String getExceptionMessages(Throwable e) {
+		StringBuilder bld = new StringBuilder();
+		getExceptionMessages(e, bld);
+		return bld.toString();
+	}
+
+	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
+		InternetAddress addr = new InternetAddress();
+		addr.setPersonal(contact.getName());
+		addr.setAddress(contact.getEmail());
+		return addr;
+	}
+
 	private static synchronized Bundle getBundle(PackageAdmin packageAdmin, String symbolicName) {
 		Bundle[] bundles = packageAdmin.getBundles(symbolicName, null);
 		if (bundles == null)
@@ -155,12 +161,6 @@ public class Builder implements IApplication {
 				return bundle;
 		}
 		return null;
-	}
-
-	public static String getExceptionMessages(Throwable e) {
-		StringBuilder bld = new StringBuilder();
-		getExceptionMessages(e, bld);
-		return bld.toString();
 	}
 
 	private static void getExceptionMessages(Throwable e, StringBuilder bld) {
@@ -257,6 +257,12 @@ public class Builder implements IApplication {
 
 	private String smtpPassword;
 
+	private String emailFrom;
+
+	private String emailFromName;
+
+	private String subjectPrefix;
+
 	public Build getBuild() {
 		return build;
 	}
@@ -349,6 +355,317 @@ public class Builder implements IApplication {
 		return verifyOnly;
 	}
 
+	/**
+	 * Run the build
+	 * 
+	 * @param monitor
+	 */
+	public Object run(IProgressMonitor monitor) {
+		MonitorUtils.begin(monitor, verifyOnly ? 100 : 1100);
+
+		try {
+			if (buildModelLocation == null)
+				throw BuckminsterException.fromMessage("No buildmodel has been set");
+
+			if (buildID == null) {
+				Date now = new Date();
+				buildID = "build-" + DATE_FORMAT.format(now) + TIME_FORMAT.format(now);
+			}
+
+			if (smtpHost == null)
+				smtpHost = "localhost";
+
+			if (smtpPort <= 0)
+				smtpPort = 25;
+
+			runTransformation();
+
+			if (subjectPrefix == null)
+				subjectPrefix = build.getLabel();
+
+			Buckminster bucky = Buckminster.getDefault();
+			PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
+			try {
+				stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
+				stopBundle(packageAdmin, CORE_BUNDLE);
+
+				String p2DataArea = new File(buildRoot, "p2").toString();
+				System.setProperty(PROP_P2_DATA_AREA, p2DataArea);
+				System.setProperty(PROP_P2_PROFILE, PROFILE_ID);
+
+				if (!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
+					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
+				if (!startEarly(packageAdmin, CORE_BUNDLE))
+					throw BuckminsterException.fromMessage("Missing bundle %s", CORE_BUNDLE);
+				if (!startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP))
+					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
+				if (!startEarly(packageAdmin, BUNDLE_UPDATESITE))
+					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
+
+				IProfile profile = null;
+				IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
+				if (update)
+					profile = profileRegistry.getProfile(PROFILE_ID);
+
+				if (profile == null) {
+					String instArea = buildRoot.toString();
+					Map<String, String> props = new HashMap<String, String>();
+					props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
+					props.put(IProfile.PROP_NAME, build.getLabel());
+					props.put(IProfile.PROP_DESCRIPTION, String.format("Default profile during %s build", build.getLabel()));
+					props.put(IProfile.PROP_CACHE, instArea); //$NON-NLS-1$
+					props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
+					profile = profileRegistry.addProfile(PROFILE_ID, props);
+				}
+				bucky.ungetService(profileRegistry);
+			} catch (BundleException e) {
+				throw BuckminsterException.wrap(e);
+			} finally {
+				bucky.ungetService(packageAdmin);
+			}
+
+			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
+			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
+			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
+			if (!verifyOnly)
+				runMirroring(MonitorUtils.subMonitor(monitor, 1000));
+		} catch (Throwable e) {
+			Buckminster.getLogger().error(e, "Build failed! Exception was %s", getExceptionMessages(e));
+			if (e instanceof Error)
+				throw (Error) e;
+			return Integer.valueOf(1);
+		} finally {
+			monitor.done();
+		}
+		return IApplication.EXIT_OK;
+	}
+
+	public void sendEmail(Contribution contrib, List<String> errors) {
+		boolean useMock = (mockEmailTo != null);
+		if (!(production || useMock) && build.isSendmail())
+			return;
+
+		Logger log = Buckminster.getLogger();
+		try {
+			InternetAddress buildMaster = contactToAddress(build.getBuildmaster());
+			InternetAddress emailFromAddr;
+			if (emailFrom != null) {
+				emailFromAddr = new InternetAddress();
+				emailFromAddr.setAddress(emailFrom);
+				if (emailFromName != null)
+					emailFromAddr.setPersonal(emailFromName);
+			} else
+				emailFromAddr = buildMaster;
+
+			List<InternetAddress> toList = new ArrayList<InternetAddress>();
+			for (Contact contact : contrib.getContacts())
+				toList.add(contactToAddress(contact));
+
+			StringBuilder msgBld = new StringBuilder();
+			msgBld.append("The following error");
+			if (errors.size() > 1)
+				msgBld.append('s');
+			msgBld.append(" occured when building ");
+			msgBld.append(build.getLabel());
+			msgBld.append(":\n\n");
+			for (String error : errors) {
+				msgBld.append(error);
+				msgBld.append("\n\n");
+			}
+			msgBld.append("Check the log file for more information: ");
+			msgBld.append(build.getBuilderURL());
+			msgBld.append(buildID);
+			msgBld.append(".log.txt\n");
+			if (useMock) {
+				msgBld.append("\nThis is a mock mail. Real recipients would have been:\n");
+				for (InternetAddress to : toList) {
+					msgBld.append("  ");
+					msgBld.append(to);
+					msgBld.append('\n');
+				}
+			}
+			String msgContent = msgBld.toString();
+			String subject = String.format("[%s] Failed for build %s", subjectPrefix, buildID);
+
+			msgBld.setLength(0);
+			msgBld.append("Sending email to: ");
+			for (InternetAddress to : toList) {
+				msgBld.append(to);
+				msgBld.append(',');
+			}
+			msgBld.append(buildMaster);
+			if (useMock) {
+				msgBld.append(" *** Using mock: ");
+				if (mockEmailTo != null) {
+					msgBld.append(mockEmailTo);
+					if (mockEmailCC != null) {
+						msgBld.append(',');
+						msgBld.append(mockEmailTo);
+					}
+				} else
+					msgBld.append(mockEmailCC);
+				msgBld.append(" ***");
+			}
+			log.info(msgBld.toString());
+			log.info("From: %s", emailFromAddr);
+			log.info("Subject: %s", subject);
+			log.info("Message content: %s", msgContent);
+
+			Properties props = new Properties();
+			Session session = Session.getDefaultInstance(props);
+			MimeMessage msg = new MimeMessage(session);
+			msg.setFrom(emailFromAddr);
+
+			if (useMock) {
+				List<InternetAddress> recipients = mockRecipients();
+				msg.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[recipients.size()]));
+				InternetAddress ccRecipient = mockCCRecipient();
+				if (ccRecipient != null)
+					msg.setRecipient(RecipientType.CC, ccRecipient);
+			} else {
+				msg.setRecipients(RecipientType.TO, toList.toArray(new InternetAddress[toList.size()]));
+				msg.setRecipient(RecipientType.CC, buildMaster);
+			}
+
+			msg.setText(msgContent);
+			msg.setSubject(subject);
+
+			// For some odd reason, the Geronimo SMTPTransport class chooses to
+			// output
+			// lots of completely meaningless output to System.out and there's
+			// absolutely
+			// no way to prevent that from happening.
+			PrintStream sysOut = System.out;
+			sysOut.flush();
+			System.setOut(new PrintStream(new NullOutputStream()));
+			try {
+				Transport transport = session.getTransport("smtp");
+				transport.connect(smtpHost, smtpPort, smtpUser, smtpPassword);
+				transport.sendMessage(msg, msg.getAllRecipients());
+				transport.close();
+			} finally {
+				System.setOut(sysOut);
+			}
+
+		} catch (MessagingException e) {
+			log.error(e, "Failed to send email: %s", e.getMessage());
+		} catch (UnsupportedEncodingException e) {
+			log.error(e, "Failed to send email: %s", e.getMessage());
+		}
+	}
+
+	public void setBuildID(String buildId) {
+		this.buildID = buildId;
+	}
+
+	public void setBuildModelLocation(File buildModelLocation) {
+		this.buildModelLocation = buildModelLocation;
+	}
+
+	public void setBuildRoot(File buildRoot) {
+		this.buildRoot = buildRoot;
+	}
+
+	public void setCategoriesRepo(URI categoriesRepo) {
+		this.categoriesRepo = categoriesRepo;
+	}
+
+	public void setEmailFrom(String emailFrom) {
+		this.emailFrom = emailFrom;
+	}
+
+	public void setEmailFromName(String emailFromName) {
+		this.emailFromName = emailFromName;
+	}
+
+	public void setLogLevel(int level) {
+		logLevel = level;
+	}
+
+	public void setMockEmailCC(String mockEmailCc) {
+		this.mockEmailCC = mockEmailCc;
+	}
+
+	public void setMockEmailTo(String mockEmailTo) {
+		this.mockEmailTo = mockEmailTo;
+	}
+
+	public void setProduction(boolean production) {
+		this.production = production;
+	}
+
+	public void setSmtpHost(String smtpHost) {
+		this.smtpHost = smtpHost;
+	}
+
+	public void setSmtpPassword(String smtpPassword) {
+		this.smtpPassword = smtpPassword;
+	}
+
+	public void setSmtpPort(int smtpPort) {
+		this.smtpPort = smtpPort;
+	}
+
+	public void setSmtpUser(String smtpUser) {
+		this.smtpUser = smtpUser;
+	}
+
+	public void setSubjectPrefix(String subjectPrefix) {
+		this.subjectPrefix = subjectPrefix;
+	}
+
+	public void setTargetPlatformRepo(URI targetPlatformRepo) {
+		this.targetPlatformRepo = targetPlatformRepo;
+	}
+
+	public void setUnitsToInstall(Set<IInstallableUnit> unitsToInstall) {
+		this.unitsToInstall = unitsToInstall;
+	}
+
+	public void setUpdate(boolean update) {
+		this.update = update;
+	}
+
+	public void setVerifyOnly(boolean verifyOnly) {
+		this.verifyOnly = verifyOnly;
+	}
+
+	public Object start(IApplicationContext context) throws Exception {
+
+		String[] args = (String[]) context.getArguments().get("application.args");
+		Logger log = Buckminster.getLogger();
+		StringBuilder msgBld = new StringBuilder();
+		msgBld.append("Running with arguments: ");
+		for (String arg : args) {
+			msgBld.append("  '");
+			msgBld.append(arg);
+			msgBld.append('\'');
+			msgBld.append(LINE_SEPARATOR);
+		}
+		String msg = msgBld.toString();
+		deferredLogMessages.add(msg);
+		try {
+			parseCommandLineArgs(args); //$NON-NLS-1$
+			log.debug(msg);
+		} catch (Exception e) {
+			// We use error level when the arguments are corrupt since the user
+			// didn't
+			// have a chance to set the debug level
+			log.info(msg);
+			return Integer.valueOf(1);
+		}
+		return run(new NullProgressMonitor());
+	}
+
+	public void stop() {
+		if (logOutput != null) {
+			Logger.setOutStream(System.out);
+			Logger.setErrStream(System.err);
+			IOUtils.close(logOutput);
+			logOutput = null;
+		}
+	}
+
 	private InternetAddress mockCCRecipient() throws UnsupportedEncodingException {
 		InternetAddress mock = null;
 		if (mockEmailCC != null) {
@@ -387,6 +704,24 @@ public class Builder implements IApplication {
 				if (++idx >= top)
 					throw new IllegalArgumentException("-mockEmailTo requires an argument");
 				setMockEmailTo(args[idx]);
+				continue;
+			}
+			if ("-subjectPrefix".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					throw new IllegalArgumentException("-subjectPrefix requires an argument");
+				setSubjectPrefix(args[idx]);
+				continue;
+			}
+			if ("-emailFrom".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					throw new IllegalArgumentException("-emailFrom requires an argument");
+				setEmailFrom(args[idx]);
+				continue;
+			}
+			if ("-emailFromName".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					throw new IllegalArgumentException("-emailFromName requires an argument");
+				setEmailFromName(args[idx]);
 				continue;
 			}
 			if ("-smtpHost".equalsIgnoreCase(arg)) {
@@ -478,87 +813,6 @@ public class Builder implements IApplication {
 		}
 	}
 
-	/**
-	 * Run the build
-	 * 
-	 * @param monitor
-	 */
-	public Object run(IProgressMonitor monitor) {
-		MonitorUtils.begin(monitor, verifyOnly ? 100 : 1100);
-
-		try {
-			if (buildModelLocation == null)
-				throw BuckminsterException.fromMessage("No buildmodel has been set");
-
-			if (buildID == null) {
-				Date now = new Date();
-				buildID = "build-" + DATE_FORMAT.format(now) + TIME_FORMAT.format(now);
-			}
-
-			if (smtpHost == null)
-				smtpHost = "localhost";
-
-			if (smtpPort <= 0)
-				smtpPort = 25;
-
-			runTransformation();
-			Buckminster bucky = Buckminster.getDefault();
-			PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
-			try {
-				stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
-				stopBundle(packageAdmin, CORE_BUNDLE);
-
-				String p2DataArea = new File(buildRoot, "p2").toString();
-				System.setProperty(PROP_P2_DATA_AREA, p2DataArea);
-				System.setProperty(PROP_P2_PROFILE, PROFILE_ID);
-
-				if (!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
-					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
-				if (!startEarly(packageAdmin, CORE_BUNDLE))
-					throw BuckminsterException.fromMessage("Missing bundle %s", CORE_BUNDLE);
-				if (!startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP))
-					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
-				if (!startEarly(packageAdmin, BUNDLE_UPDATESITE))
-					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
-
-				IProfile profile = null;
-				IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
-				if (update)
-					profile = profileRegistry.getProfile(PROFILE_ID);
-
-				if (profile == null) {
-					String instArea = buildRoot.toString();
-					Map<String, String> props = new HashMap<String, String>();
-					props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
-					props.put(IProfile.PROP_NAME, build.getLabel());
-					props.put(IProfile.PROP_DESCRIPTION, String.format("Default profile during %s build", build.getLabel()));
-					props.put(IProfile.PROP_CACHE, instArea); //$NON-NLS-1$
-					props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
-					profile = profileRegistry.addProfile(PROFILE_ID, props);
-				}
-				bucky.ungetService(profileRegistry);
-			} catch (BundleException e) {
-				throw BuckminsterException.wrap(e);
-			} finally {
-				bucky.ungetService(packageAdmin);
-			}
-
-			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
-			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
-			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
-			if (!verifyOnly)
-				runMirroring(MonitorUtils.subMonitor(monitor, 1000));
-		} catch (Throwable e) {
-			Buckminster.getLogger().error(e, "Build failed! Exception was %s", getExceptionMessages(e));
-			if (e instanceof Error)
-				throw (Error) e;
-			return Integer.valueOf(1);
-		} finally {
-			monitor.done();
-		}
-		return IApplication.EXIT_OK;
-	}
-
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException {
 		CategoryRepoGenerator extraGenerator = new CategoryRepoGenerator(this);
 		extraGenerator.run(monitor);
@@ -647,214 +901,6 @@ public class Builder implements IApplication {
 		} finally {
 			if (generatedBuildModel != null)
 				generatedBuildModel.delete();
-		}
-	}
-
-	public void sendEmail(Contribution contrib, List<String> errors) {
-		boolean useMock = (mockEmailTo != null);
-		if (!(production || useMock) && build.isSendmail())
-			return;
-
-		Logger log = Buckminster.getLogger();
-		try {
-			InternetAddress buildMaster = contactToAddress(build.getBuildmaster());
-			List<InternetAddress> toList = new ArrayList<InternetAddress>();
-			for (Contact contact : contrib.getContacts())
-				toList.add(contactToAddress(contact));
-
-			StringBuilder msgBld = new StringBuilder();
-			msgBld.append("The following error");
-			if (errors.size() > 1)
-				msgBld.append('s');
-			msgBld.append(" occured when building ");
-			msgBld.append(build.getLabel());
-			msgBld.append(":\n\n");
-			for (String error : errors) {
-				msgBld.append(error);
-				msgBld.append("\n\n");
-			}
-			msgBld.append("Check the log file for more information: ");
-			msgBld.append(build.getBuilderURL());
-			msgBld.append(buildID);
-			msgBld.append(".log.txt\n");
-			if (useMock) {
-				msgBld.append("\nThis is a mock mail. Real recipients would have been:\n");
-				for (InternetAddress to : toList) {
-					msgBld.append("  ");
-					msgBld.append(to);
-					msgBld.append('\n');
-				}
-			}
-			String msgContent = msgBld.toString();
-			String subject = String.format("%s build failed", build.getLabel());
-
-			msgBld.setLength(0);
-			msgBld.append("Sending email to: ");
-			for (InternetAddress to : toList) {
-				msgBld.append(to);
-				msgBld.append(',');
-			}
-			msgBld.append(buildMaster);
-			if(useMock)
-			{
-				msgBld.append(" *** Using mock: ");
-				if(mockEmailTo != null)
-				{
-					msgBld.append(mockEmailTo);
-					if(mockEmailCC != null)
-					{
-						msgBld.append(',');
-						msgBld.append(mockEmailTo);
-					}
-				}
-				else
-					msgBld.append(mockEmailCC);
-				msgBld.append(" ***");
-			}
-			log.info(msgBld.toString());
-			log.info("Subject: %s", subject);
-			log.info("Message content: %s", msgContent);
-
-			Properties props = new Properties();
-			Session session = Session.getDefaultInstance(props);
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(buildMaster);
-
-			if (useMock) {
-				List<InternetAddress> recipients = mockRecipients();
-				msg.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[recipients.size()]));
-				InternetAddress ccRecipient = mockCCRecipient();
-				if (ccRecipient != null)
-					msg.setRecipient(RecipientType.CC, ccRecipient);
-			} else {
-				msg.setRecipients(RecipientType.TO, toList.toArray(new InternetAddress[toList.size()]));
-				msg.setRecipient(RecipientType.CC, buildMaster);
-			}
-
-			msg.setText(msgContent);
-			msg.setSubject(subject);
-
-			// For some odd reason, the Geronimo SMTPTransport class chooses to
-			// output
-			// lots of completely meaningless output to System.out and there's
-			// absolutely
-			// no way to prevent that from happening.
-			PrintStream sysOut = System.out;
-			sysOut.flush();
-			System.setOut(new PrintStream(new NullOutputStream()));
-			try {
-				Transport transport = session.getTransport("smtp");
-				transport.connect(smtpHost, smtpPort, smtpUser, smtpPassword);
-				transport.sendMessage(msg, msg.getAllRecipients());
-				transport.close();
-			} finally {
-				System.setOut(sysOut);
-			}
-
-		} catch (MessagingException e) {
-			log.error(e, "Failed to send email: %s", e.getMessage());
-		} catch (UnsupportedEncodingException e) {
-			log.error(e, "Failed to send email: %s", e.getMessage());
-		}
-	}
-
-	public void setBuildID(String buildId) {
-		this.buildID = buildId;
-	}
-
-	public void setBuildModelLocation(File buildModelLocation) {
-		this.buildModelLocation = buildModelLocation;
-	}
-
-	public void setBuildRoot(File buildRoot) {
-		this.buildRoot = buildRoot;
-	}
-
-	public void setCategoriesRepo(URI categoriesRepo) {
-		this.categoriesRepo = categoriesRepo;
-	}
-
-	public void setLogLevel(int level) {
-		logLevel = level;
-	}
-
-	public void setMockEmailCC(String mockEmailCc) {
-		this.mockEmailCC = mockEmailCc;
-	}
-
-	public void setMockEmailTo(String mockEmailTo) {
-		this.mockEmailTo = mockEmailTo;
-	}
-
-	public void setProduction(boolean production) {
-		this.production = production;
-	}
-
-	public void setSmtpHost(String smtpHost) {
-		this.smtpHost = smtpHost;
-	}
-
-	public void setSmtpPassword(String smtpPassword) {
-		this.smtpPassword = smtpPassword;
-	}
-
-	public void setSmtpPort(int smtpPort) {
-		this.smtpPort = smtpPort;
-	}
-
-	public void setSmtpUser(String smtpUser) {
-		this.smtpUser = smtpUser;
-	}
-
-	public void setTargetPlatformRepo(URI targetPlatformRepo) {
-		this.targetPlatformRepo = targetPlatformRepo;
-	}
-
-	public void setUnitsToInstall(Set<IInstallableUnit> unitsToInstall) {
-		this.unitsToInstall = unitsToInstall;
-	}
-
-	public void setUpdate(boolean update) {
-		this.update = update;
-	}
-
-	public void setVerifyOnly(boolean verifyOnly) {
-		this.verifyOnly = verifyOnly;
-	}
-
-	public Object start(IApplicationContext context) throws Exception {
-
-		String[] args = (String[]) context.getArguments().get("application.args");
-		Logger log = Buckminster.getLogger();
-		StringBuilder msgBld = new StringBuilder();
-		msgBld.append("Running with arguments: ");
-		for (String arg : args) {
-			msgBld.append("  '");
-			msgBld.append(arg);
-			msgBld.append('\'');
-			msgBld.append(LINE_SEPARATOR);
-		}
-		String msg = msgBld.toString();
-		deferredLogMessages.add(msg);
-		try {
-			parseCommandLineArgs(args); //$NON-NLS-1$
-			log.debug(msg);
-		} catch (Exception e) {
-			// We use error level when the arguments are corrupt since the user
-			// didn't
-			// have a chance to set the debug level
-			log.info(msg);
-			return Integer.valueOf(1);
-		}
-		return run(new NullProgressMonitor());
-	}
-
-	public void stop() {
-		if (logOutput != null) {
-			Logger.setOutStream(System.out);
-			Logger.setErrStream(System.err);
-			IOUtils.close(logOutput);
-			logOutput = null;
 		}
 	}
 }
