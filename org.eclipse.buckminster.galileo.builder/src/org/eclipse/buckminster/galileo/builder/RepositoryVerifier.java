@@ -152,6 +152,7 @@ public class RepositoryVerifier extends BuilderPhase {
 				Map<String, String> props = new HashMap<String, String>();
 				props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
 				props.put(IProfile.PROP_ENVIRONMENTS, configEnvString(config));
+				props.put(IProfile.PROP_INSTALL_FEATURES, "true");
 
 				IProfile profile = null;
 				if (update)
