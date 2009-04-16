@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
@@ -21,6 +22,8 @@ import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -28,8 +31,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
+
 /**
- * @author kaja
+ * @author Karel Brezina
  * 
  */
 public class ErrorDialog extends JNLPDialog
@@ -77,18 +82,21 @@ public class ErrorDialog extends JNLPDialog
 
 		p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
 		tp.add("North", p); //$NON-NLS-1$
-		p.add(new Label(title));
+		Label titleLabel = new Label(title);
+		p.add(titleLabel);
 
-		Panel cp = new Panel(new BorderLayout(0, 5));
-		tp.add("Center", cp); //$NON-NLS-1$
+		Panel cp = new Panel();
+		cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
+		tp.add(cp); //$NON-NLS-1$
 
 		Panel pp = new Panel(new BorderLayout());
 		cp.add("North", pp); //$NON-NLS-1$
-		pp.add("North", new Label(Messages.getString("problem_with_colon"))); //$NON-NLS-1$ //$NON-NLS-2$
+		Label problemLabel = new Label(Messages.getString("problem_with_colon"));
+		pp.add("North", problemLabel); //$NON-NLS-1$ //$NON-NLS-2$
 
 		p = new Panel(new FlowLayout(FlowLayout.LEFT));
-		pp.add("South", p); //$NON-NLS-1$
-		TextArea ta = new TextArea(problem, 10, 70);
+		pp.add("Center", p); //$NON-NLS-1$
+		final TextArea ta = new TextArea(problem, 10, 70);
 		ta.setEditable(false);
 		ta.setFocusable(true);
 
@@ -119,16 +127,17 @@ public class ErrorDialog extends JNLPDialog
 		p.add(ta);
 
 		Panel sp = new Panel(new BorderLayout());
-		cp.add("South", sp); //$NON-NLS-1$
-		sp.add("North", new Label(Messages.getString("solution"))); //$NON-NLS-1$ //$NON-NLS-2$
+		cp.add(sp); //$NON-NLS-1$
+		Label solutionLabel = new Label(Messages.getString("solution"));
+		sp.add("North", solutionLabel); //$NON-NLS-1$ //$NON-NLS-2$
 
 		p = new Panel(new FlowLayout(FlowLayout.LEFT));
-		sp.add("South", p); //$NON-NLS-1$
-		ta = new TextArea(solution, 3, 70);
-		ta.setEditable(false);
-		ta.setFocusable(true);
+		sp.add("Center", p); //$NON-NLS-1$
+		final TextArea tb = new TextArea(solution, 3, 70);
+		tb.setEditable(false);
+		tb.setFocusable(true);
 
-		ta.addKeyListener(new KeyAdapter()
+		tb.addKeyListener(new KeyAdapter()
 		{
 
 			@Override
@@ -141,13 +150,21 @@ public class ErrorDialog extends JNLPDialog
 			}
 		});
 
-		p.add(ta);
+		p.add(tb);
 
-		if(helpURL != null)
+		final Label readMoreLabel;
+		final TextField tf;
+		if(helpURL == null)
+		{
+			readMoreLabel = null;
+			tf = null;
+		}
+		else
 		{
 			p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
-			p.add(new Label(Messages.getString("read_more_at_with_colon"))); //$NON-NLS-1$
-			final TextField tf = new TextField(helpURL, 55);
+			readMoreLabel = new Label(Messages.getString("read_more_at_with_colon"));
+			p.add(readMoreLabel); //$NON-NLS-1$
+			tf = new TextField(helpURL, 55);
 
 			tf.addKeyListener(new KeyAdapter()
 			{
@@ -207,11 +224,46 @@ public class ErrorDialog extends JNLPDialog
 
 		pack();
 
+		// set fonts - needs to be here, after pack() sets Font for the top container
+		titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+		problemLabel.setFont(problemLabel.getFont().deriveFont(Font.ITALIC));
+		solutionLabel.setFont(solutionLabel.getFont().deriveFont(Font.ITALIC));
+		if(readMoreLabel != null)
+			readMoreLabel.setFont(readMoreLabel.getFont().deriveFont(Font.ITALIC));
+
 		int width = Math.max(getWidth(), MIN_H_SIZE);
 		int height = Math.max(getHeight(), MIN_V_SIZE);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setBounds((screen.width - width) / 2, (screen.height - height) / 2, width, height);
+
+		addComponentListener(new ComponentListener()
+		{
+
+			public void componentHidden(ComponentEvent e)
+			{
+				// not needed
+			}
+
+			public void componentMoved(ComponentEvent e)
+			{
+				// not needed
+			}
+
+			// dynamic resizing
+			public void componentResized(ComponentEvent e)
+			{
+				ta.setSize(ta.getParent().getWidth() - 10, ta.getParent().getHeight() - 10);
+				tb.setSize(tb.getParent().getWidth() - 10, tb.getParent().getHeight() - 10);
+				if(tf != null)
+					tf.setSize(tf.getParent().getWidth() - readMoreLabel.getWidth() - 5, tf.getSize().height);
+			}
+
+			public void componentShown(ComponentEvent e)
+			{
+				// not needed
+			}
+		});
 	}
 }
