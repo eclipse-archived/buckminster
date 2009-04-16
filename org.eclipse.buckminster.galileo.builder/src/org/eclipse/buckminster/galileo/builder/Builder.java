@@ -80,6 +80,8 @@ public class Builder implements IApplication {
 
 	public static final String GALILEO_FEATURE = "org.eclipse.galileo"; //$NON-NLS-1$
 
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator"); //$NON-NLS-1$
+
 	private static final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
 
 	private static final String BUNDLE_EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
@@ -242,6 +244,10 @@ public class Builder implements IApplication {
 	public static final String COMPOSITE_REPO_FOLDER = "composite"; //$NON-NLS-1$
 
 	public static final String MIRROR_REPO_FOLDER = "mirror"; //$NON-NLS-1$
+
+	// A list of messages to be printed to the log file once we know which file
+	// that is.
+	private List<String> deferredLogMessages = new ArrayList<String>();
 
 	public Build getBuild() {
 		return build;
@@ -541,7 +547,31 @@ public class Builder implements IApplication {
 	}
 
 	public Object start(IApplicationContext context) throws Exception {
-		parseCommandLineArgs((String[]) context.getArguments().get("application.args")); //$NON-NLS-1$
+
+		String[] args = (String[]) context.getArguments().get("application.args");
+		Logger log = Buckminster.getLogger();
+		StringBuilder msgBld = new StringBuilder();
+		msgBld.append("Running with arguments: ");
+		for (String arg : args) {
+			msgBld.append("  '");
+			msgBld.append(arg);
+			msgBld.append('\'');
+			msgBld.append(LINE_SEPARATOR);
+		}
+		String msg = msgBld.toString();
+		deferredLogMessages.add(msg);
+		try
+		{
+			parseCommandLineArgs(args); //$NON-NLS-1$
+			log.debug(msg);
+		}
+		catch(Exception e)
+		{
+			// We use error level when the arguments are corrupt since the user didn't
+			// have a chance to set the debug level
+			log.info(msg);
+			return Integer.valueOf(1);
+		}
 		return run(new NullProgressMonitor());
 	}
 
@@ -646,7 +676,9 @@ public class Builder implements IApplication {
 				setTargetPlatformRepo(URI.create(args[idx]));
 				continue;
 			}
-			throw new IllegalArgumentException(String.format("Unknown option %s", arg));
+			String msg = String.format("Unknown option %s", arg);
+			Buckminster.getLogger().error(msg);
+			throw new IllegalArgumentException(msg);
 		}
 	}
 
@@ -720,6 +752,13 @@ public class Builder implements IApplication {
 				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
 
 			logOutput = new FileOutputStream(new File(buildRoot, buildID + ".log.txt"));
+
+			// Print deferred messages (logged before we knew what file to use)
+			PrintStream tmp = new PrintStream(logOutput);
+			for (String msg : deferredLogMessages)
+				tmp.println(msg);
+			tmp.flush();
+
 			MultiTeeOutputStream outMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.out });
 			MultiTeeOutputStream errMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.err });
 			Logger.setOutStream(new PrintStream(outMux));
