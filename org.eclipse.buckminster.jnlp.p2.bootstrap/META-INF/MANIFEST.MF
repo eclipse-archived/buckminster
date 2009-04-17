@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster P2 Materializer Starter
-Bundle-SymbolicName: org.eclipse.buckminster.jnlp.p2.bootstrap.temp;singleton:=true
+Bundle-SymbolicName: org.eclipse.buckminster.jnlp.p2.bootstrap;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
