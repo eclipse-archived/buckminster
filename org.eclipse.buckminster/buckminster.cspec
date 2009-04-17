@@ -4,11 +4,11 @@
         <cs:dependency name="commons-net"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.bootstrap" componentType="buckminster"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.product" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.director.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.testfragments.feature" componentType="eclipse.feature"/>
-        <cs:dependency name="org.eclipse.equinox.p2.director.product" componentType="eclipse.feature"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="clean" actor="ant">
@@ -17,11 +17,11 @@
             </cs:actorProperties>
             <cs:prerequisites>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.jnlp.p2.product"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.jnlp.p2.director.product"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.site.eclipse"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.site.eclipse.headless"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.site.external"/>
                 <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.testfragments.feature"/>
-                <cs:attribute name="buckminster.clean" component="org.eclipse.equinox.p2.director.product"/>
             </cs:prerequisites>
         </cs:public>
         <cs:public name="collect.jnlp" actor="ant">
@@ -93,7 +93,7 @@
             </cs:actorProperties>
             <cs:prerequisites>
                 <cs:attribute name="java.binary.archive" alias="bootstrap.jar" component="org.eclipse.buckminster.jnlp.p2.bootstrap"/>
-                <cs:attribute name="create.product.zip" alias="director.zip" component="org.eclipse.equinox.p2.director.product"/>
+                <cs:attribute name="create.product.zip" alias="director.zip" component="org.eclipse.buckminster.jnlp.p2.director.product"/>
             </cs:prerequisites>
             <cs:products alias="product.output" base="${buckminster.output}/jnlp.z/" fileCount="1" upToDatePolicy="COUNT">
                 <cs:path path="jnlp-package-p2.zip"/>
