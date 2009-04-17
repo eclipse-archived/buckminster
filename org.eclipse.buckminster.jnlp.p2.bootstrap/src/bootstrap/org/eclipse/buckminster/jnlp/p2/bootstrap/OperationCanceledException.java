@@ -1,4 +1,4 @@
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
 public class OperationCanceledException extends Exception
 {

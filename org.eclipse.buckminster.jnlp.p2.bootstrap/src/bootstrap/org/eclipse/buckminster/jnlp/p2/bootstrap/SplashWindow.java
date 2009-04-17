@@ -7,7 +7,7 @@
  *
  * This software is in the public domain.
  */
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
 import java.awt.Color;
 import java.awt.Cursor;

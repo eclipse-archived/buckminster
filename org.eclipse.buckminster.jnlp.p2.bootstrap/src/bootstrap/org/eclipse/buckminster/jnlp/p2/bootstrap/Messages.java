@@ -1,11 +1,11 @@
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages
 {
-	private static final String BUNDLE_NAME = "org.eclipse.buckminster.jnlp.bootstrap.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.buckminster.jnlp.p2.bootstrap.messages"; //$NON-NLS-1$
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

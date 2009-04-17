@@ -5,13 +5,13 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

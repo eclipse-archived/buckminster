@@ -6,8 +6,13 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +70,18 @@ public class Utils
 		return new BASE64Encoder().encode(md.digest(jnlp.toString().getBytes()));
 	}
 
+	public static Image createImage(byte[] imageData)
+	{
+		return imageData != null
+				? Toolkit.getDefaultToolkit().createImage(imageData)
+				: null;
+	}
+
+	public static Image createImage(String url) throws JNLPException
+	{
+		return createImage(loadData(url));
+	}
+
 	public static void deleteRecursive(File file) throws JNLPException
 	{
 		if(!file.exists())
@@ -117,6 +134,38 @@ public class Utils
 		return String.format("%d", timestamp); //$NON-NLS-1$
 	}
 
+	public static byte[] loadData(String url) throws JNLPException
+	{
+		byte[] data = null;
+		if(url != null)
+		{
+			InputStream is = null;
+			try
+			{
+				is = new URL(url).openStream();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				byte[] buf = new byte[0x1000];
+				int count;
+				while((count = is.read(buf)) > 0)
+					os.write(buf, 0, count);
+				data = os.toByteArray();
+
+			}
+			catch(IOException e)
+			{
+				throw new JNLPException(
+						Messages.getString("unable_to_read_a_splash_screen_or_window_icon_image"), //$NON-NLS-1$
+						Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_REMOTE_IO_EXCEPTION, e); //$NON-NLS-1$
+			}
+			finally
+			{
+				Utils.close(is);
+			}
+		}
+
+		return data;
+	}
+
 	/**
 	 * Copies specified input stream into the output stream and closes the input stream whil the output stream remains
 	 * open.
@@ -136,4 +185,5 @@ public class Utils
 		}
 		is.close();
 	}
+
 }

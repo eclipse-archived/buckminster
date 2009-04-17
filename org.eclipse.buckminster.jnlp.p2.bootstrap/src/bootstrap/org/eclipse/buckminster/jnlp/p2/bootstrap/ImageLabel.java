@@ -6,7 +6,7 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -15,7 +15,7 @@ import java.awt.Toolkit;
 import java.net.URL;
 
 /**
- * @author kaja
+ * @author Karel Brezina
  * 
  */
 class ImageLabel extends Label

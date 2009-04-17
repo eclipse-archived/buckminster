@@ -6,27 +6,26 @@
  * such license is available at www.eclipse.org.
  *****************************************************************************/
 
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_CORRUPTED_FILE_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_RUNTIME_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_CODE_SITE_ROOT_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.bootstrap.BootstrapConstants.ERROR_HELP_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_CORRUPTED_FILE_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_SITE_ROOT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_HELP_URL;
 
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -667,6 +666,12 @@ public class Main
 							int currentBundleCount = pluginsFolder.list() == null
 									? 0
 									: pluginsFolder.list().length;
+
+							// if(loopCounter > 120 && currentBundleCount == 0)
+							// {
+							// throw new JNLPException("", "", "");
+							// }
+
 							monitor.taskIncrementalProgress(currentBundleCount - lastBundleCount);
 							lastBundleCount = currentBundleCount;
 
@@ -874,21 +879,9 @@ public class Main
 				}
 			}
 
-			byte[] splashImageBootData = loadData(configProps.getProperty(PROP_SPLASH_IMAGE_BOOT));
-			byte[] splashImageData = loadData(configProps.getProperty(PROP_SPLASH_IMAGE));
-			byte[] windowIconData = loadData(configProps.getProperty(PROP_WINDOW_ICON));
-
-			m_splashImageBoot = splashImageBootData != null
-					? Toolkit.getDefaultToolkit().createImage(splashImageBootData)
-					: null;
-
-			m_splashImage = splashImageData != null
-					? Toolkit.getDefaultToolkit().createImage(splashImageData)
-					: null;
-
-			m_windowIconImage = windowIconData != null
-					? Toolkit.getDefaultToolkit().createImage(windowIconData)
-					: null;
+			m_splashImageBoot = Utils.createImage(configProps.getProperty(PROP_SPLASH_IMAGE_BOOT));
+			m_splashImage = Utils.createImage(configProps.getProperty(PROP_SPLASH_IMAGE));
+			m_windowIconImage = Utils.createImage(configProps.getProperty(PROP_WINDOW_ICON));
 
 			final ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 
@@ -962,7 +955,7 @@ public class Main
 				// Two seconds to start, with progressbar. The time is an
 				// estimate of course.
 				//
-				if(splashImageData != null)
+				if(m_splashImage != null)
 				{
 					// Switch splash screen
 					//
@@ -1194,38 +1187,6 @@ public class Main
 			Utils.close(propStream);
 			Utils.close(localStream);
 		}
-	}
-
-	private byte[] loadData(String url) throws JNLPException
-	{
-		byte[] data = null;
-		if(url != null)
-		{
-			InputStream is = null;
-			try
-			{
-				is = new URL(url).openStream();
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] buf = new byte[0x1000];
-				int count;
-				while((count = is.read(buf)) > 0)
-					os.write(buf, 0, count);
-				data = os.toByteArray();
-
-			}
-			catch(IOException e)
-			{
-				throw new JNLPException(
-						Messages.getString("unable_to_read_a_splash_screen_or_window_icon_image"), //$NON-NLS-1$
-						Messages.getString("check_your_internet_connection_and_try_again"), ERROR_CODE_REMOTE_IO_EXCEPTION, e); //$NON-NLS-1$
-			}
-			finally
-			{
-				Utils.close(is);
-			}
-		}
-
-		return data;
 	}
 
 	private Map<String, String> loadInputMap(String[] args)

@@ -1,10 +1,9 @@
 /**
  * 
  */
-package org.eclipse.buckminster.jnlp.bootstrap;
+package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
 import java.net.URL;
-
 
 public class ProgressFacade implements IDownloadMonitor // DownloadServiceListener
 {
