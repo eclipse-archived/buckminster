@@ -2,6 +2,7 @@ package org.eclipse.buckminster.galileo.builder;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -24,6 +25,9 @@ import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tools.ant.Project;
 import org.eclipse.amalgam.releng.build.Build;
@@ -39,6 +43,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.MultiTeeOutputStream;
 import org.eclipse.buckminster.runtime.NullOutputStream;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -58,6 +63,7 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.gmf.internal.xpand.ant.XpandFacade;
 import org.eclipse.m2m.internal.qvt.oml.common.launch.TargetUriData;
 import org.eclipse.m2m.internal.qvt.oml.emf.util.ModelContent;
 import org.eclipse.m2m.internal.qvt.oml.runtime.launch.QvtLaunchConfigurationDelegateBase;
@@ -67,6 +73,10 @@ import org.eclipse.m2m.internal.qvt.oml.runtime.project.QvtTransformation;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXParseException;
 
 @SuppressWarnings("restriction")
 public class Builder implements IApplication {
@@ -263,6 +273,16 @@ public class Builder implements IApplication {
 
 	private String subjectPrefix;
 
+	private ResourceSet resourceSet;
+
+	private String buildMasterEmail;
+
+	private String buildMasterName;
+
+	private String buildLabel;
+
+	private boolean sendmail = false;
+
 	public Build getBuild() {
 		return build;
 	}
@@ -378,10 +398,11 @@ public class Builder implements IApplication {
 			if (smtpPort <= 0)
 				smtpPort = 25;
 
-			runTransformation();
+			// Verify that all contributions can be parsed, i.e. contains
+			// well-formed XML
+			verifyContributions();
 
-			if (subjectPrefix == null)
-				subjectPrefix = build.getLabel();
+			runTransformation();
 
 			Buckminster bucky = Buckminster.getDefault();
 			PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
@@ -424,6 +445,7 @@ public class Builder implements IApplication {
 				bucky.ungetService(packageAdmin);
 			}
 
+			runTemplateExpansion(resourceSet, "build2page::Main", new File(buildRoot, "index.php"));
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
 			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
 			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
@@ -442,12 +464,14 @@ public class Builder implements IApplication {
 
 	public void sendEmail(Contribution contrib, List<String> errors) {
 		boolean useMock = (mockEmailTo != null);
-		if (!(production || useMock) && build.isSendmail())
+		if (!(production || useMock) && sendmail)
 			return;
 
 		Logger log = Buckminster.getLogger();
 		try {
-			InternetAddress buildMaster = contactToAddress(build.getBuildmaster());
+			InternetAddress buildMaster = new InternetAddress();
+			buildMaster.setAddress(buildMasterEmail);
+			buildMaster.setPersonal(buildMasterName);
 			InternetAddress emailFromAddr;
 			if (emailFrom != null) {
 				emailFromAddr = new InternetAddress();
@@ -458,24 +482,31 @@ public class Builder implements IApplication {
 				emailFromAddr = buildMaster;
 
 			List<InternetAddress> toList = new ArrayList<InternetAddress>();
-			for (Contact contact : contrib.getContacts())
-				toList.add(contactToAddress(contact));
+			if (contrib == null)
+				toList.add(buildMaster);
+			else
+				for (Contact contact : contrib.getContacts())
+					toList.add(contactToAddress(contact));
 
 			StringBuilder msgBld = new StringBuilder();
 			msgBld.append("The following error");
 			if (errors.size() > 1)
 				msgBld.append('s');
 			msgBld.append(" occured when building ");
-			msgBld.append(build.getLabel());
+			msgBld.append(buildLabel);
 			msgBld.append(":\n\n");
 			for (String error : errors) {
 				msgBld.append(error);
 				msgBld.append("\n\n");
 			}
-			msgBld.append("Check the log file for more information: ");
-			msgBld.append(build.getBuilderURL());
-			msgBld.append(buildID);
-			msgBld.append(".log.txt\n");
+
+			if (build != null) {
+				msgBld.append("Check the log file for more information: ");
+				msgBld.append(build.getBuilderURL());
+				msgBld.append(buildID);
+				msgBld.append(".log.txt\n");
+			}
+
 			if (useMock) {
 				msgBld.append("\nThis is a mock mail. Real recipients would have been:\n");
 				for (InternetAddress to : toList) {
@@ -485,6 +516,9 @@ public class Builder implements IApplication {
 				}
 			}
 			String msgContent = msgBld.toString();
+			if (subjectPrefix == null)
+				subjectPrefix = buildLabel;
+
 			String subject = String.format("[%s] Failed for build %s", subjectPrefix, buildID);
 
 			msgBld.setLength(0);
@@ -524,7 +558,8 @@ public class Builder implements IApplication {
 					msg.setRecipient(RecipientType.CC, ccRecipient);
 			} else {
 				msg.setRecipients(RecipientType.TO, toList.toArray(new InternetAddress[toList.size()]));
-				msg.setRecipient(RecipientType.CC, buildMaster);
+				if (contrib != null)
+					msg.setRecipient(RecipientType.CC, buildMaster);
 			}
 
 			msg.setText(msgContent);
@@ -833,6 +868,16 @@ public class Builder implements IApplication {
 		ipt.run(monitor);
 	}
 
+	private void runTemplateExpansion(ResourceSet rs, String name, File outFile) throws IOException {
+		XpandFacade xf = new XpandFacade(rs);
+		xf.addLocation("platform:/plugin/org.eclipse.buckminster.galileo.builder/templates/");
+		xf.addLocation("platform:/plugin/org.eclipse.amalgam.releng.builder/transformations/");
+		String result = xf.xpand(name, build);
+		FileOutputStream os = new FileOutputStream(outFile);
+		os.write(result.getBytes());
+		os.close();
+	}
+
 	/**
 	 * Runs the transformation and loads the model into memory
 	 * 
@@ -857,7 +902,7 @@ public class Builder implements IApplication {
 			QvtLaunchConfigurationDelegateBase.doLaunch(transf, inObjects, targetData, configuration, null);
 
 			// Load the Java model into memory
-			ResourceSet resourceSet = new ResourceSetImpl();
+			resourceSet = new ResourceSetImpl();
 			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
 					new XMIResourceFactoryImpl());
 			BuildPackage.eINSTANCE.eClass();
@@ -901,6 +946,78 @@ public class Builder implements IApplication {
 		} finally {
 			if (generatedBuildModel != null)
 				generatedBuildModel.delete();
+		}
+	}
+
+	private void verifyContributions() throws CoreException {
+		URI buildModelFolderURI = buildModelLocation.getParentFile().toURI();
+		DocumentBuilderFactory docBldFact = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBld;
+		try {
+			docBld = docBldFact.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+
+		Element masterBuild;
+		try {
+			Document doc = docBld.parse(buildModelLocation);
+			masterBuild = doc.getDocumentElement();
+			sendmail = "true".equalsIgnoreCase(masterBuild.getAttribute("sendmail"));
+			buildLabel = Trivial.trim(masterBuild.getAttribute("label"));
+		} catch (Exception e) {
+			String msg;
+			if (e instanceof SAXParseException)
+				msg = String.format("Unable to parse file: %s: Error at line %s: %s", buildModelLocation, Integer.valueOf(((SAXParseException) e)
+						.getLineNumber()), e.getMessage());
+			else
+				msg = String.format("Unable to parse file: %s: %s", buildModelLocation, e.getMessage());
+			throw BuckminsterException.fromMessage(msg);
+		}
+
+		List<File> contributionFiles = new ArrayList<File>();
+		for (Node child = masterBuild.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (!(child instanceof Element))
+				continue;
+
+			Element elem = (Element) child;
+			if ("contributions".equals(elem.getNodeName())) {
+				String attr = Trivial.trim(elem.getAttribute("href"));
+				if (attr == null)
+					continue;
+				if (attr.endsWith("#/"))
+					attr = attr.substring(0, attr.length() - 2);
+				URI uri = buildModelFolderURI.resolve(URI.create(attr));
+				contributionFiles.add(new File(uri));
+			}
+
+			if ("buildmaster".equals(elem.getNodeName())) {
+				buildMasterEmail = Trivial.trim(elem.getAttribute("email"));
+				buildMasterName = Trivial.trim(elem.getAttribute("name"));
+			}
+		}
+
+		List<String> errors = new ArrayList<String>();
+		for (File buildFile : contributionFiles) {
+			try {
+				docBld.parse(buildFile);
+			} catch (Exception e) {
+				String msg;
+				if (e instanceof SAXParseException)
+					msg = String.format("Unable to parse file: %s: Error at line %s: %s", buildFile, Integer.valueOf(((SAXParseException) e)
+							.getLineNumber()), e.getMessage());
+				else
+					msg = String.format("Unable to parse file: %s: %s", buildFile, e.getMessage());
+				Buckminster.getLogger().error(e, msg);
+				errors.add(msg);
+			} finally {
+				docBld.reset();
+			}
+		}
+
+		if (errors.size() > 0) {
+			sendEmail(null, errors);
+			throw BuckminsterException.fromMessage("Not all contributions could be parsed");
 		}
 	}
 }

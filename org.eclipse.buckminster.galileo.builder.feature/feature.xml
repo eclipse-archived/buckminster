@@ -177,6 +177,27 @@ This Agreement is governed by the laws of the State of New York and the intellec
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.gmf.xpand.ant"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gmf.xpand.qvtlibrary"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gmf.xpand"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.m2m.qvt.oml"
          download-size="0"
          install-size="0"
@@ -212,6 +233,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.m2m.qvt.oml.project"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.m2m.qvt.oml.runtime"
          download-size="0"
          install-size="0"
@@ -227,6 +255,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="net.sourceforge.lpg.lpgjavaruntime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.amalgam.releng.builder"
          download-size="0"
          install-size="0"
          version="0.0.0"
