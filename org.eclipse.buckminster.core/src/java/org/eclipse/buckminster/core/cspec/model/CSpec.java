@@ -125,30 +125,32 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 
 	public static String getTagInfo(IComponentIdentifier ci, URL projectInfoURL, String parentInfo)
 	{
-		String path = null;
-		String projectInfo = null;
-		if(parentInfo != null)
-		{
-			int pathIdx = parentInfo.indexOf("path: "); //$NON-NLS-1$
-			if(pathIdx >= 0)
-				path = String.format("%s -> %s", parentInfo.substring(pathIdx), ci); //$NON-NLS-1$
-
-			if(projectInfoURL == null && parentInfo.startsWith("project: ")) //$NON-NLS-1$
-				projectInfo = parentInfo.substring(0, pathIdx - 2);
-		}
-
+		StringBuilder bld = new StringBuilder();
 		if(projectInfoURL != null)
-			projectInfo = String.format("project: %s", projectInfoURL); //$NON-NLS-1$
-
-		if(path == null)
-			path = String.format("path: %s", ci.toString()); //$NON-NLS-1$
-
-		String tagInfo;
-		if(projectInfo == null)
-			tagInfo = path;
+		{
+			bld.append("project: "); //$NON-NLS-1$
+			bld.append(projectInfoURL);
+			bld.append(", path: "); //$NON-NLS-1$
+		}
+		else if(parentInfo != null && parentInfo.startsWith("project: ")) //$NON-NLS-1$
+		{
+			bld.append(parentInfo);
+			bld.append(", path: "); //$NON-NLS-1$
+		}
 		else
-			tagInfo = String.format("%s, %s", projectInfo, path); //$NON-NLS-1$
-		return tagInfo;
+			bld.append("path: "); //$NON-NLS-1$
+
+		int pathIdx = parentInfo == null
+				? -1
+				: parentInfo.indexOf("path: "); //$NON-NLS-1$
+
+		if(pathIdx >= 0)
+		{
+			bld.append(parentInfo, pathIdx + 6, parentInfo.length());
+			bld.append(" -> "); //$NON-NLS-1$
+		}
+		bld.append(ci);
+		return bld.toString();
 	}
 
 	private final Map<String, Attribute> m_attributes;
@@ -202,8 +204,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 					// The parent folder will be the base since the component itself
 					// is a file.
 					//
-					meGroup = new PathGroup(me.removeLastSegments(1).addTrailingSeparator(), new IPath[] { new Path(me
-							.lastSegment()) });
+					meGroup = new PathGroup(me.removeLastSegments(1).addTrailingSeparator(), new IPath[] { new Path(
+							me.lastSegment()) });
 
 				return new PathGroup[] { meGroup };
 			}
@@ -251,8 +253,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			if(top == 1)
 			{
 				ComponentRequestBuilder bld = dependencies.values().iterator().next();
-				map = Collections
-						.unmodifiableMap(Collections.singletonMap(bld.getName(), bld.createComponentRequest()));
+				map = Collections.unmodifiableMap(Collections.singletonMap(bld.getName(), bld.createComponentRequest()));
 			}
 			else
 			{
@@ -619,8 +620,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 			{
 				String component = generator.getComponent();
 				if(component == null)
-					addReferencedDependencies(referencedDeps, referencedAttrs, getRequiredAttribute(generator
-							.getAttribute()), null);
+					addReferencedDependencies(referencedDeps, referencedAttrs,
+							getRequiredAttribute(generator.getAttribute()), null);
 				else
 					referencedDeps.add(getDependency(component, null));
 			}
