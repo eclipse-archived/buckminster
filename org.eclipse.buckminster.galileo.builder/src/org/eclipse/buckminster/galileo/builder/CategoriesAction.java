@@ -62,16 +62,17 @@ public class CategoriesAction extends AbstractPublisherAction {
 					if (feature.getId().equals(Builder.GALILEO_FEATURE))
 						continue;
 
-					Category category = feature.getCategory();
-					if (category != null) {
-						IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo, monitor);
+					for (Category category : feature.getCategory()) {
+						if (category != null) {
+							IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo, monitor);
 
-						Set<IInstallableUnit> featureIUs = categoriesToFeatureIUs.get(category);
-						if (featureIUs == null) {
-							featureIUs = new HashSet<IInstallableUnit>();
-							categoriesToFeatureIUs.put(category, featureIUs);
+							Set<IInstallableUnit> featureIUs = categoriesToFeatureIUs.get(category);
+							if (featureIUs == null) {
+								featureIUs = new HashSet<IInstallableUnit>();
+								categoriesToFeatureIUs.put(category, featureIUs);
+							}
+							featureIUs.add(featureIU);
 						}
-						featureIUs.add(featureIU);
 					}
 				}
 			}
