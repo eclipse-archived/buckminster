@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentName;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -48,12 +49,13 @@ public class MaterializationContext extends RMContext
 
 	private boolean m_rebootNeeded = false;
 
+	private boolean m_tagsInitialized = false;
+
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec)
 	{
 		super(mspec.getProperties());
 		m_bom = bom;
 		m_materializationSpec = mspec;
-		addTagInfosFromBom();
 	}
 
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec, RMContext context)
@@ -226,8 +228,8 @@ public class MaterializationContext extends RMContext
 			nodeLocation = node.getWorkspaceLocation();
 			if(nodeLocation != null)
 			{
-				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci), nodeLocation
-						.toOSString(), 0));
+				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci),
+						nodeLocation.toOSString(), 0));
 				IPath tmp = expand(nodeLocation);
 				if(tmp.isAbsolute())
 					return tmp;
@@ -277,21 +279,23 @@ public class MaterializationContext extends RMContext
 		m_rebootNeeded = flag;
 	}
 
-	private void addTagInfosFromBom()
+	private void addTagInfosFromBom(IComponentRequest request)
 	{
-		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom);
+		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom, request);
 	}
 
-	private void addTagInfosFromNode(String tagInfo, BOMNode node)
+	private void addTagInfosFromNode(String tagInfo, BOMNode node, IComponentRequest request)
 	{
 		Resolution res = node.getResolution();
 		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
 			return;
 
 		addTagInfo(node.getRequest(), tagInfo);
+		if(node.getRequest().equals(request))
+			return;
 		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
 		for(BOMNode child : node.getChildren())
-			addTagInfosFromNode(childTagInfo, child);
+			addTagInfosFromNode(childTagInfo, child, request);
 	}
 
 	private IPath expand(IPath path)
@@ -334,5 +338,21 @@ public class MaterializationContext extends RMContext
 		if(location == null)
 			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
 		return location;
+	}
+
+	@Override
+	protected void initializeAllTagInfos()
+	{
+		if(!m_tagsInitialized)
+		{
+			addTagInfosFromBom(null);
+			m_tagsInitialized = true;
+		}
+	}
+
+	@Override
+	protected void initializeTagInfo(IComponentRequest request)
+	{
+		addTagInfosFromBom(request);
 	}
 }

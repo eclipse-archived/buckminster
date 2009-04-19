@@ -163,8 +163,6 @@ public class RMContext extends ExpandingProperties<Object>
 
 	private int m_tagInfoSquenceNumber = 0;
 
-	private final Map<String, TagInfo> m_knownTagInfos = new HashMap<String, TagInfo>();
-
 	private final Map<QualifiedDependency, NodeQuery> m_nodeQueries = new HashMap<QualifiedDependency, NodeQuery>();
 
 	private final Map<String, String[]> m_filterAttributeUsageMap = new HashMap<String, String[]>();
@@ -298,12 +296,7 @@ public class RMContext extends ExpandingProperties<Object>
 		TagInfo tagInfo = m_tagInfos.get(request);
 		if(tagInfo == null)
 		{
-			tagInfo = m_knownTagInfos.get(info);
-			if(tagInfo == null)
-			{
-				tagInfo = new TagInfo(info);
-				m_knownTagInfos.put(info, tagInfo);
-			}
+			tagInfo = new TagInfo(info);
 			m_tagInfos.put(request, tagInfo);
 		}
 	}
@@ -421,6 +414,7 @@ public class RMContext extends ExpandingProperties<Object>
 
 	public synchronized Map<ComponentRequest, TagInfo> getTagInfos()
 	{
+		initializeAllTagInfos();
 		return m_tagInfos;
 	}
 
@@ -477,6 +471,7 @@ public class RMContext extends ExpandingProperties<Object>
 			return;
 
 		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
+		// do NOT call initializeAllTagInfos() here. it won't produce any used tags.
 		for(TagInfo tagInfo : m_tagInfos.values())
 			if(tagInfo.isUsed())
 				sorted.put(tagInfo.getTagId(), tagInfo);
@@ -505,11 +500,30 @@ public class RMContext extends ExpandingProperties<Object>
 	private synchronized String getTagId(IComponentRequest request)
 	{
 		TagInfo tagInfo = m_tagInfos.get(request);
+		if(tagInfo == null)
+			initializeTagInfo(request);
+		tagInfo = m_tagInfos.get(request);
 		if(tagInfo != null)
 		{
 			tagInfo.setUsed();
 			return tagInfo.getTagId();
 		}
 		return "0000"; //$NON-NLS-1$
+	}
+
+	/**
+	 * Override in subclasses to perform lazy initialization of tag infos.
+	 */
+	protected void initializeAllTagInfos()
+	{
+		// nothing to to here. must be overriden by subclasses
+	}
+
+	/**
+	 * Override in subclasses to perform lazy initialization of tag info.
+	 */
+	protected void initializeTagInfo(IComponentRequest request)
+	{
+		// nothing to to here. must be overriden by subclasses
 	}
 }
