@@ -126,29 +126,30 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 	public static String getTagInfo(IComponentIdentifier ci, URL projectInfoURL, String parentInfo)
 	{
 		StringBuilder bld = new StringBuilder();
+
 		if(projectInfoURL != null)
 		{
 			bld.append("project: "); //$NON-NLS-1$
 			bld.append(projectInfoURL);
-			bld.append(", path: "); //$NON-NLS-1$
+			bld.append(", "); //$NON-NLS-1$
 		}
-		else if(parentInfo != null && parentInfo.startsWith("project: ")) //$NON-NLS-1$
+
+		if(parentInfo != null)
 		{
-			bld.append(parentInfo);
-			bld.append(", path: "); //$NON-NLS-1$
+			int pathIdx = parentInfo.indexOf("path: "); //$NON-NLS-1$
+			if(projectInfoURL == null && parentInfo.startsWith("project: ")) //$NON-NLS-1$
+				bld.append(parentInfo);
+			else if(pathIdx >= 0)
+				bld.append(parentInfo, pathIdx, parentInfo.length());
+
+			if(pathIdx >= 0)
+				bld.append(" -> "); //$NON-NLS-1$
+			else
+				bld.append(", path: "); //$NON-NLS-1$
 		}
 		else
 			bld.append("path: "); //$NON-NLS-1$
 
-		int pathIdx = parentInfo == null
-				? -1
-				: parentInfo.indexOf("path: "); //$NON-NLS-1$
-
-		if(pathIdx >= 0)
-		{
-			bld.append(parentInfo, pathIdx + 6, parentInfo.length());
-			bld.append(" -> "); //$NON-NLS-1$
-		}
 		bld.append(ci);
 		return bld.toString();
 	}
