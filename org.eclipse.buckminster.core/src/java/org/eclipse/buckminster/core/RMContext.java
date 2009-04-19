@@ -464,6 +464,29 @@ public class RMContext extends ExpandingProperties<Object>
 		m_silentStatus = flag;
 	}
 
+	protected synchronized boolean hasTagInfo(IComponentRequest request)
+	{
+		// This method is called during TagInfo initialization. Do not
+		// initialize here.
+		return m_tagInfos.containsKey(request);
+	}
+
+	/**
+	 * Override in subclasses to perform lazy initialization of tag infos.
+	 */
+	protected void initializeAllTagInfos()
+	{
+		// nothing to to here. must be overriden by subclasses
+	}
+
+	/**
+	 * Override in subclasses to perform lazy initialization of tag info.
+	 */
+	protected void initializeTagInfo(IComponentRequest request)
+	{
+		// nothing to to here. must be overriden by subclasses
+	}
+
 	private void emitTagInfos()
 	{
 		Logger logger = CorePlugin.getLogger();
@@ -509,21 +532,5 @@ public class RMContext extends ExpandingProperties<Object>
 			return tagInfo.getTagId();
 		}
 		return "0000"; //$NON-NLS-1$
-	}
-
-	/**
-	 * Override in subclasses to perform lazy initialization of tag infos.
-	 */
-	protected void initializeAllTagInfos()
-	{
-		// nothing to to here. must be overriden by subclasses
-	}
-
-	/**
-	 * Override in subclasses to perform lazy initialization of tag info.
-	 */
-	protected void initializeTagInfo(IComponentRequest request)
-	{
-		// nothing to to here. must be overriden by subclasses
 	}
 }
