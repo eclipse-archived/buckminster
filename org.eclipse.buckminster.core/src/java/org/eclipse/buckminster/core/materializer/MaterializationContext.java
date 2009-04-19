@@ -8,7 +8,9 @@
 
 package org.eclipse.buckminster.core.materializer;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
@@ -279,13 +281,32 @@ public class MaterializationContext extends RMContext
 		m_rebootNeeded = flag;
 	}
 
-	private void addTagInfosFromBom(IComponentRequest request)
+	@Override
+	protected void initializeAllTagInfos()
 	{
-		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom, request);
+		if(!m_tagsInitialized)
+		{
+			addTagInfosFromBom(null);
+			m_tagsInitialized = true;
+		}
 	}
 
-	private void addTagInfosFromNode(String tagInfo, BOMNode node, IComponentRequest request)
+	@Override
+	protected void initializeTagInfo(IComponentRequest request)
 	{
+		addTagInfosFromBom(request);
+	}
+
+	private void addTagInfosFromBom(IComponentRequest request)
+	{
+		addTagInfosFromNode(m_bom.getQuery().getTagInfo(), m_bom, request, new HashSet<BOMNode>());
+	}
+
+	private void addTagInfosFromNode(String tagInfo, BOMNode node, IComponentRequest request, Set<BOMNode> seen)
+	{
+		if(!seen.add(node))
+			return;
+
 		Resolution res = node.getResolution();
 		if(res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
 			return;
@@ -295,7 +316,7 @@ public class MaterializationContext extends RMContext
 			return;
 		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
 		for(BOMNode child : node.getChildren())
-			addTagInfosFromNode(childTagInfo, child, request);
+			addTagInfosFromNode(childTagInfo, child, request, seen);
 	}
 
 	private IPath expand(IPath path)
@@ -338,21 +359,5 @@ public class MaterializationContext extends RMContext
 		if(location == null)
 			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
 		return location;
-	}
-
-	@Override
-	protected void initializeAllTagInfos()
-	{
-		if(!m_tagsInitialized)
-		{
-			addTagInfosFromBom(null);
-			m_tagsInitialized = true;
-		}
-	}
-
-	@Override
-	protected void initializeTagInfo(IComponentRequest request)
-	{
-		addTagInfosFromBom(request);
 	}
 }
