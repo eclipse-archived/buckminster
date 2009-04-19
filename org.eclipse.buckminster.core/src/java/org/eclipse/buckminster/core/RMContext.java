@@ -56,7 +56,7 @@ public class RMContext extends ExpandingProperties<Object>
 {
 	public class TagInfo
 	{
-		private final String m_tagId;
+		private final int m_tagId;
 
 		private final String m_infoString;
 
@@ -64,13 +64,15 @@ public class RMContext extends ExpandingProperties<Object>
 
 		private TagInfo(String infoString)
 		{
-			m_tagId = String.format("%04d", new Integer(++m_tagInfoSquenceNumber)); //$NON-NLS-1$
+			m_tagId = ++m_tagInfoSquenceNumber;
 			m_infoString = infoString;
 		}
 
 		public String getTagId()
 		{
-			return m_tagId;
+			StringBuilder bld = new StringBuilder();
+			addTagId(bld);
+			return bld.toString();
 		}
 
 		public boolean isUsed()
@@ -86,7 +88,21 @@ public class RMContext extends ExpandingProperties<Object>
 		@Override
 		public String toString()
 		{
-			return "TAG-ID " + m_tagId + " = " + m_infoString; //$NON-NLS-1$ //$NON-NLS-2$
+			StringBuilder bld = new StringBuilder();
+			bld.append("TAG-ID "); //$NON-NLS-1$
+			addTagId(bld);
+			bld.append(" = "); //$NON-NLS-1$
+			bld.append(m_infoString);
+			return bld.toString();
+		}
+
+		private void addTagId(StringBuilder bld)
+		{
+			String tagIdStr = Integer.toString(m_tagId);
+			int len = tagIdStr.length();
+			bld.append("0000"); //$NON-NLS-1$
+			bld.setLength(bld.length() - len);
+			bld.append(tagIdStr);
 		}
 	}
 
