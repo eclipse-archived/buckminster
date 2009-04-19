@@ -34,7 +34,6 @@ import org.eclipse.buckminster.core.cspec.IActionArtifact;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.IGroup;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
@@ -123,7 +122,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		return aSet;
 	}
 
-	public static String getTagInfo(IComponentIdentifier ci, URL projectInfoURL, String parentInfo)
+	public static String getTagInfo(ComponentIdentifier ci, URL projectInfoURL, String parentInfo)
 	{
 		StringBuilder bld = new StringBuilder();
 
@@ -149,8 +148,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		}
 		else
 			bld.append("path: "); //$NON-NLS-1$
-
-		bld.append(ci);
+		ci.toString(bld);
 		return bld.toString();
 	}
 
