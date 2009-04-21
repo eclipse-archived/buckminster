@@ -8,22 +8,42 @@
 
 package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.APP_LAUNCHED_SYNC_STRING;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_MAX_CAPTURED_LINES;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_STARTUP_TIME;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_STARTUP_TIMEOUT;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_CORRUPTED_FILE_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_DIRECTORY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_DOWNLOAD_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_DIRECTOR_NOT_STARTED_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_SITE_ROOT_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_HELP_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.INSTALLER_FOLDER_NAME;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_AR_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_BASE_PATH_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_CONFIG_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_DIRECTOR_ARCHIVE_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_DIRECTOR_BUILD_PROPERTIES_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_ERROR_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_EXTRA;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_MAX_CAPTURED_LINES;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_MR_URL;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_ROOT_IU;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SERVICE_AVAILABLE;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SERVICE_MESSAGE;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SPLASH_IMAGE;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SPLASH_IMAGE_BOOT;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIME;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIMEOUT;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_WINDOW_ICON;
 
 import java.awt.Image;
 import java.io.BufferedInputStream;
@@ -39,21 +59,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -69,106 +78,7 @@ import org.w3c.dom.DOMException;
  */
 public class Main
 {
-	private static final String PROP_CONFIG_URL = "configURL";
-
-	private static final String PROP_EXTRA = "extra";
-
-	private static final String PROP_DIRECTOR_ARCHIVE_URL = "directorArchiveURL";
-
-	private static final String PROP_DIRECTOR_BUILD_PROPERTIES_URL = "directorBuildPropertiesURL";
-
-	private static final String PROP_AR_URL = "arURL";
-
-	private static final String PROP_MR_URL = "mrURL";
-
-	private static final String PROP_ROOT_IU = "rootIU";
-
-	public static final String PROP_SPLASH_IMAGE_BOOT = "splashImageBoot"; //$NON-NLS-1$
-
-	public static final String PROP_SPLASH_IMAGE = "splashImage"; //$NON-NLS-1$
-
-	public static final String PROP_WINDOW_ICON = "windowIcon"; //$NON-NLS-1$
-
-	public static final String PROP_SERVICE_AVAILABLE = "serviceAvailable"; //$NON-NLS-1$
-
-	public static final String PROP_SERVICE_MESSAGE = "serviceMessage"; //$NON-NLS-1$
-
-	public static final String PROP_MAX_CAPTURED_LINES = "maxErrorLines"; //$NON-NLS-1$
-
-	public static final int DEFAULT_MAX_CAPTURED_LINES = 1000;
-
-	public static final String PROP_ERROR_URL = "errorURL"; //$NON-NLS-1$
-
-	public static final String PROP_STARTUP_TIME = "startupTime"; //$NON-NLS-1$
-
-	public static final int DEFAULT_STARTUP_TIME = 4000;
-
-	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout"; //$NON-NLS-1$
-
-	public static final String PROP_BASE_PATH_URL = "basePathURL"; //$NON-NLS-1$
-
-	public static final String REPORT_ERROR_VIEW = "feedback.seam"; //$NON-NLS-1$
-
-	public static final String REPORT_ERROR_PREFIX = "Materializator-"; //$NON-NLS-1$
-
-	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
-
-	private static final String INSTALLER_FOLDER_NAME = "installer";
-
-	private static String s_basePathUrl = null;
-
-	/**
-	 * This method prepares argument with proxy information which will be passed to the application. Notice that there
-	 * arguments don't set system properties, they are supposed to be parsed in the application to set up the proxy
-	 * rules internally.
-	 * 
-	 * The algorithm of getting proxy information is not ideal since the proxy selector might use non-trivial rules.
-	 * However, we don't know which proxy selector implementation will handle our requests and there is no way of
-	 * retrieving all the proxy rules.
-	 * 
-	 * Let's keep it simple - we try to use dummy addresses for the most common protocols. This will guarantee that we
-	 * inherit most probable browser proxy settings.
-	 * 
-	 * If the rules are not guessed optimally, there should be an option in the launched application to override
-	 * automatic proxy discovery with user's own rules, with the possibility to persist the settings in the application
-	 * installation directory.
-	 * 
-	 * @return
-	 * @throws URISyntaxException
-	 */
-	private static List<String> getProxySettings() throws URISyntaxException
-	{
-		List<String> args = new ArrayList<String>();
-		ProxySelector proxySelector = ProxySelector.getDefault();
-
-		for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"), //$NON-NLS-1$ //$NON-NLS-2$
-				new URI("ftp://dummy.host.com") }) //$NON-NLS-1$
-		{
-			List<Proxy> proxies = proxySelector.select(uri);
-			String protocol = uri.getScheme();
-
-			for(Proxy proxy : proxies)
-			{
-				if(Proxy.NO_PROXY.equals(proxy))
-					break;
-
-				SocketAddress address = proxy.address();
-				if(address instanceof InetSocketAddress)
-				{
-					InetSocketAddress iaddr = (InetSocketAddress)address;
-					args.add("-D" + protocol + ".proxyHost"); //$NON-NLS-1$ //$NON-NLS-2$
-					args.add(iaddr.getHostName());
-					args.add("-D" + protocol + ".proxyPort"); //$NON-NLS-1$ //$NON-NLS-2$
-					args.add("" + iaddr.getPort()); //$NON-NLS-1$
-					args.add("-D" + protocol + ".nonProxyHosts"); //$NON-NLS-1$ //$NON-NLS-2$
-					args.add("localhost|127.0.0.1"); //$NON-NLS-1$
-					break;
-				}
-			}
-		}
-
-		return args;
-	}
+	private static String s_basePathURL = null;
 
 	private File m_applicationData;
 
@@ -178,7 +88,7 @@ public class Main
 
 	private String m_errorURL = ERROR_HELP_URL;
 
-	private boolean m_jnlpProductStarted = false;
+	private boolean m_directorStarted = false;
 
 	private Process m_process = null;
 
@@ -291,7 +201,7 @@ public class Main
 				}
 
 				new ErrorDialog(main.getWindowIconImage(),
-						Messages.getString("materializer_can_not_be_started"), problem, e.getSolution(), //$NON-NLS-1$
+						Messages.getString("materializer_can_not_be_installed"), problem, e.getSolution(), //$NON-NLS-1$
 						main.getErrorURL() == null
 								? null
 								: main.getErrorURL() + "?errorCode=" + errorCode).open(); //$NON-NLS-1$
@@ -309,7 +219,7 @@ public class Main
 				problem += "\n\n" + Messages.getString("stack_trace_colon") + "\n" + getStackTrace(t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				new ErrorDialog(main.getWindowIconImage(),
-						Messages.getString("materializer_can_not_be_started"), problem, //$NON-NLS-1$
+						Messages.getString("materializer_can_not_be_installed"), problem, //$NON-NLS-1$
 						Messages.getString("check_your_java_installation_and_try_again"), main.getErrorURL() == null //$NON-NLS-1$
 								? null
 								: main.getErrorURL() + "?errorCode=" + errorCode).open(); //$NON-NLS-1$
@@ -328,7 +238,7 @@ public class Main
 
 			try
 			{
-				reportToServer(errorCode);
+				Utils.reportToServer(s_basePathURL, errorCode);
 			}
 			catch(IOException e)
 			{
@@ -385,27 +295,6 @@ public class Main
 		pw.close();
 
 		return sw.toString();
-	}
-
-	private static void reportToServer(String errorCode) throws IOException
-	{
-		if(s_basePathUrl == null)
-			return;
-
-		String javaVersion = URLEncoder.encode(System.getProperty("java.version"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
-		String javaVendor = URLEncoder.encode(System.getProperty("java.vendor"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
-
-		String string = s_basePathUrl + REPORT_ERROR_VIEW + "?errorCode=" + REPORT_ERROR_PREFIX + errorCode + //$NON-NLS-1$
-				"&javaVersion=" + javaVersion + "&javaVendor=" + javaVendor; //$NON-NLS-1$ //$NON-NLS-2$
-		URL feedbackURL = new URL(string);
-		// ping feedback view to report it to apache log
-		InputStream is = feedbackURL.openStream();
-
-		byte[] copyBuf = new byte[8192];
-		while(is.read(copyBuf) > 0)
-			;
-
-		is.close();
 	}
 
 	private Image m_splashImage = null;
@@ -529,14 +418,8 @@ public class Main
 		return m_installLocation;
 	}
 
-	public String getWorkspaceDir() throws JNLPException
-	{
-		// have the workspace location the same as the product installation
-		return getInstallLocation().getAbsolutePath();
-	}
-
-	public void installProduct(String applicationFolder, Map<String, String> inputArgMap, List<String> proxySettings,
-			final ProgressFacade monitor) throws JNLPException
+	public void installProduct(String applicationFolder, Map<String, String> inputArgMap, final ProgressFacade monitor)
+			throws JNLPException
 	{
 		String launcherFile = findEclipseLauncher(applicationFolder);
 		String javaExe = findJavaExe();
@@ -558,216 +441,17 @@ public class Main
 		allArgs.add("P2-materializer");
 		allArgs.add("-installIU");
 		allArgs.add(inputArgMap.get(PROP_ROOT_IU));
+		allArgs.add("-configURL"); //$NON-NLS-1$
+		allArgs.add(inputArgMap.get(PROP_CONFIG_URL));
+		allArgs.add("-extra"); //$NON-NLS-1$
+		allArgs.add(inputArgMap.get(PROP_EXTRA));
 		allArgs.add("-vmargs");
 		allArgs.add("-Xmx512m"); //$NON-NLS-1$
 		allArgs.add("-Declipse.p2.data.area=");
 		allArgs.add(getInstallerFolderName() + "/p2");
-		allArgs.addAll(proxySettings);
-
-		try
-		{
-			allArgs.addAll(getProxySettings());
-		}
-		catch(URISyntaxException e)
-		{
-			throw new JNLPException(
-					Messages.getString("unable_to_detect_proxy_settings"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
-					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
-		}
+		allArgs.addAll(Utils.getProxySettings());
 
 		//allArgs.add("-consoleLog"); //$NON-NLS-1$
-
-		Runtime runtime = Runtime.getRuntime();
-		final TailLineBuffer tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES,
-				DEFAULT_MAX_CAPTURED_LINES).intValue());
-		final TailLineBuffer tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES,
-				DEFAULT_MAX_CAPTURED_LINES).intValue());
-
-		try
-		{
-			final Process p2Installprocess = runtime.exec(allArgs.toArray(new String[allArgs.size()]));
-			InputStream is = p2Installprocess.getInputStream();
-			InputStream eis = p2Installprocess.getErrorStream();
-			final BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			final BufferedReader erd = new BufferedReader(new InputStreamReader(eis));
-
-			new Thread()
-			{
-				@Override
-				public void run()
-				{
-					String line;
-					try
-					{
-						while((line = rd.readLine()) != null)
-							tailOut.writeLine(line);
-					}
-					catch(IOException e)
-					{
-						System.err
-								.println(Messages
-										.getString("error_reading_from_director_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
-					}
-					finally
-					{
-						Utils.close(rd);
-					}
-				}
-			}.start();
-
-			new Thread()
-			{
-				@Override
-				public void run()
-				{
-					String line;
-					try
-					{
-						while((line = erd.readLine()) != null)
-							tailErr.writeLine(line);
-					}
-					catch(IOException e)
-					{
-						System.err
-								.println(Messages
-										.getString("error_reading_from_director_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
-					}
-					finally
-					{
-						Utils.close(erd);
-					}
-				}
-			}.start();
-
-			final File pluginsFolder = new File(getInstallerFolderName(), "plugins");
-
-			Thread monitorThread = new Thread()
-			{
-				@Override
-				public void run()
-				{
-					int pluginsCount = 100;
-					try
-					{
-						monitor.setTask(Messages.getString("installing materialization wizard"), pluginsCount); //$NON-NLS-1$
-						int loopCounter = 0;
-						int lastBundleCount = 0;
-
-						while(true)
-						{
-							loopCounter++;
-
-							if(monitor.isCanceled())
-							{
-								p2Installprocess.destroy();
-								break;
-							}
-
-							int currentBundleCount = pluginsFolder.list() == null
-									? 0
-									: pluginsFolder.list().length;
-
-							// if(loopCounter > 120 && currentBundleCount == 0)
-							// {
-							// throw new JNLPException("", "", "");
-							// }
-
-							monitor.taskIncrementalProgress(currentBundleCount - lastBundleCount);
-							lastBundleCount = currentBundleCount;
-
-							try
-							{
-								p2Installprocess.exitValue();
-								break;
-							}
-							catch(IllegalThreadStateException e)
-							{
-								// the process has not finished yet
-								Thread.sleep(250);
-							}
-						}
-					}
-					catch(InterruptedException e)
-					{
-					}
-					finally
-					{
-						monitor.taskDone();
-					}
-				}
-			};
-
-			monitorThread.start();
-
-			try
-			{
-				p2Installprocess.waitFor();
-				monitorThread.join();
-			}
-			catch(InterruptedException e)
-			{
-				throw new JNLPException(
-						Messages.getString("director_application_was_interrupted"), Messages.getString("try_again"), //$NON-NLS-1$ //$NON-NLS-2$
-						ERROR_CODE_DOWNLOAD_EXCEPTION, e);
-			}
-
-			if(p2Installprocess.exitValue() != 0)
-			{
-				if(monitor.isCanceled())
-					throw new JNLPException(
-							Messages.getString("director_application_was_interrupted"), Messages.getString("try_again"), //$NON-NLS-1$ //$NON-NLS-2$
-							ERROR_CODE_DOWNLOAD_EXCEPTION);
-
-				String capturedErrors = tailErr.getLinesAsString();
-				String capturedOutput = tailOut.getLinesAsString();
-
-				throw new JNLPException(
-						Messages.getString("materializer_was_not_installed_correctly") + "\nExit code: " + p2Installprocess.exitValue() //$NON-NLS-1$ //$NON-NLS-2$
-								+ (capturedErrors != null
-										? "\n" + Messages.getString("captured_errors_colon") + "\n" + capturedErrors //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-										: "") + (capturedOutput != null //$NON-NLS-1$
-										? "\n" + Messages.getString("captured_output_colon") + "\n" + capturedOutput //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-										: ""), Messages.getString("read_error_description_above"), //$NON-NLS-1$ //$NON-NLS-2$
-						ERROR_CODE_CORRUPTED_FILE_EXCEPTION);
-			}
-		}
-		catch(IOException e)
-		{
-			throw new JNLPException(
-					Messages.getString("can_not_read_materialization_wizard_resource"), Messages.getString("check_your_internet_connection_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
-					ERROR_CODE_REMOTE_IO_EXCEPTION, e);
-		}
-	}
-
-	public void startProduct(String applicationFolder, Map<String, String> inputArgMap, List<String> proxySettings,
-			int startupTime) throws JNLPException
-	{
-		ArrayList<String> allArgs = new ArrayList<String>();
-		allArgs.add(applicationFolder + "/eclipse"); //$NON-NLS-1$
-		//allArgs.add("-consoleLog"); //$NON-NLS-1$
-
-		String wsDir = getWorkspaceDir();
-		if(wsDir != null)
-		{
-			allArgs.add("-data"); //$NON-NLS-1$
-			allArgs.add(wsDir);
-		}
-		allArgs.add("-configURL"); //$NON-NLS-1$
-		allArgs.add(inputArgMap.get(PROP_CONFIG_URL));
-
-		final String syncString = "sync info: application launched"; //$NON-NLS-1$
-		allArgs.add("-syncString"); //$NON-NLS-1$
-		allArgs.add(syncString);
-
-		long popupAfter = (new Date()).getTime() + startupTime;
-
-		allArgs.add("-popupAfter"); //$NON-NLS-1$
-		allArgs.add("" + popupAfter); //$NON-NLS-1$
-
-		allArgs.add("-vmargs");
-		allArgs.add("-Xmx512m"); //$NON-NLS-1$		
-		allArgs.addAll(proxySettings);
-		allArgs.addAll(parseExtraArgs(inputArgMap.get(PROP_EXTRA)));
 
 		Runtime runtime = Runtime.getRuntime();
 		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
@@ -793,8 +477,8 @@ public class Main
 					{
 						while((line = rd.readLine()) != null)
 						{
-							if(syncString.equals(line))
-								m_jnlpProductStarted = true;
+							if(APP_LAUNCHED_SYNC_STRING.equals(line))
+								m_directorStarted = true;
 							m_tailOut.writeLine(line);
 						}
 					}
@@ -802,7 +486,7 @@ public class Main
 					{
 						System.err
 								.println(Messages
-										.getString("error_reading_from_JNLP_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
+										.getString("error_reading_from_director_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -825,7 +509,8 @@ public class Main
 					catch(IOException e)
 					{
 						System.err
-								.println(Messages.getString("error_reading_from_JNLP_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
+								.println(Messages
+										.getString("error_reading_from_director_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -837,8 +522,8 @@ public class Main
 		catch(IOException e)
 		{
 			throw new JNLPException(
-					Messages.getString("can_not_run_materializer_wizard"), Messages.getString("check_your_system_permissions_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
-					ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION, e);
+					Messages.getString("can_not_read_materialization_wizard_resource"), Messages.getString("check_your_internet_connection_and_try_again"), //$NON-NLS-1$ //$NON-NLS-2$
+					ERROR_CODE_REMOTE_IO_EXCEPTION, e);
 		}
 	}
 
@@ -849,7 +534,7 @@ public class Main
 			Map<String, String> inputArgMap = loadInputMap(args);
 			Properties configProps = loadConfigProperties(inputArgMap);
 
-			s_basePathUrl = configProps.getProperty(PROP_BASE_PATH_URL);
+			s_basePathURL = configProps.getProperty(PROP_BASE_PATH_URL);
 
 			String tmp = configProps.getProperty(PROP_ERROR_URL);
 
@@ -934,40 +619,17 @@ public class Main
 			// StringSelection ss = new StringSelection(SplashWindow.getDebugString());
 			// clipservice.setContents(ss);
 
-			List<String> proxySettings;
-			try
-			{
-				proxySettings = getProxySettings();
-			}
-			catch(URISyntaxException e)
-			{
-				throw new JNLPException(
-						Messages.getString("unable_to_detect_proxy_settings"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
-						ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
-			}
-
 			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
 
-			installProduct(installer.getDirectorFolder().toString(), inputArgMap, proxySettings, monitor);
-			startProduct(getInstallerFolderName(), inputArgMap, proxySettings, startupTime);
+			installProduct(installer.getDirectorFolder().toString(), inputArgMap, monitor);
 			try
 			{
-				// Two seconds to start, with progressbar. The time is an
+				// Four seconds to start, with progressbar. The time is an
 				// estimate of course.
-				//
-				if(m_splashImage != null)
-				{
-					// Switch splash screen
-					//
-					if(!SplashWindow.splashIsUp())
-						SplashWindow.splash(null, m_splashImage, m_windowIconImage);
-					else
-						SplashWindow.setSplashImage(SplashWindow.SPLASH_IMAGE_ID);
-				}
 
 				startupTime /= 100;
-				monitor.setTask(Messages.getString("starting"), startupTime); //$NON-NLS-1$
-				while(--startupTime >= 0 && !m_jnlpProductStarted)
+				monitor.setTask(Messages.getString("starting director application"), startupTime); //$NON-NLS-1$
+				while(--startupTime >= 0 && !m_directorStarted)
 				{
 					monitor.checkCanceled();
 					Thread.sleep(100);
@@ -984,7 +646,7 @@ public class Main
 				if(m_process != null)
 				{
 					int startupTimeOut = Integer.getInteger(PROP_STARTUP_TIMEOUT, DEFAULT_STARTUP_TIMEOUT).intValue() / 100;
-					while(--startupTimeOut >= 0 && !m_jnlpProductStarted)
+					while(--startupTimeOut >= 0 && !m_directorStarted)
 						try
 						{
 							monitor.checkCanceled();
@@ -999,7 +661,7 @@ public class Main
 						}
 				}
 
-				if(!m_jnlpProductStarted)
+				if(!m_directorStarted)
 				{
 					if(processTerminated)
 					{
@@ -1007,19 +669,19 @@ public class Main
 						String capturedOutput = m_tailOut.getLinesAsString();
 
 						throw new JNLPException(
-								Messages.getString("unable_to_launch_materializer_colon") + "\nExit code: " + processExitValue //$NON-NLS-1$ //$NON-NLS-2$
+								Messages.getString("unable_to_launch_director_application_colon") + "\nExit code: " + processExitValue //$NON-NLS-1$ //$NON-NLS-2$
 										+ (capturedErrors != null
 												? "\n"	+ Messages.getString("captured_errors_colon") + "\n" + capturedErrors //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 												: "") + (capturedOutput != null //$NON-NLS-1$
 												? "\n"	+ Messages.getString("captured_output_colon") + "\n" + capturedOutput //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 												: ""), Messages.getString("read_error_description_above"), //$NON-NLS-1$ //$NON-NLS-2$
-								ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
+								ERROR_CODE_DIRECTOR_NOT_STARTED_EXCEPTION);
 					}
 
 					m_process.destroy();
-					throw new JNLPException(Messages.getString("unable_to_launch_materializer_within_timeout"), //$NON-NLS-1$
+					throw new JNLPException(Messages.getString("unable_to_launch_director_application_within_timeout"), //$NON-NLS-1$
 							Messages.getString("check_your_machine_might_be_too_slow_or_too_busy"), //$NON-NLS-1$
-							ERROR_CODE_LAUNCHER_NOT_STARTED_EXCEPTION);
+							ERROR_CODE_DIRECTOR_NOT_STARTED_EXCEPTION);
 				}
 			}
 			catch(InterruptedException e)
@@ -1199,24 +861,4 @@ public class Main
 
 		return prop;
 	}
-
-	/**
-	 * Converts a single -extra string parameter into a list of parameters. Parameters are delimited by space. Example:
-	 * -extra "-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y"
-	 * 
-	 * @param args
-	 * @return
-	 */
-	private List<String> parseExtraArgs(String extraArgsString)
-	{
-		if(extraArgsString != null && !"null".equals(extraArgsString)) //$NON-NLS-1$
-		{
-			String[] extraArgs = extraArgsString.split(" "); //$NON-NLS-1$
-
-			return Arrays.asList(extraArgs);
-		}
-
-		return Collections.emptyList();
-	}
-
 }

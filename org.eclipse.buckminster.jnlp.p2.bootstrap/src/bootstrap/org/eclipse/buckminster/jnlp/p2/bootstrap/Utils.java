@@ -8,7 +8,10 @@
 
 package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.REPORT_ERROR_PREFIX;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.REPORT_ERROR_VIEW;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -18,10 +21,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import sun.misc.BASE64Encoder;
 
@@ -134,6 +148,70 @@ public class Utils
 		return String.format("%d", timestamp); //$NON-NLS-1$
 	}
 
+	/**
+	 * This method prepares argument with proxy information which will be passed to the application. Notice that there
+	 * arguments don't set system properties, they are supposed to be parsed in the application to set up the proxy
+	 * rules internally.
+	 * 
+	 * The algorithm of getting proxy information is not ideal since the proxy selector might use non-trivial rules.
+	 * However, we don't know which proxy selector implementation will handle our requests and there is no way of
+	 * retrieving all the proxy rules.
+	 * 
+	 * Let's keep it simple - we try to use dummy addresses for the most common protocols. This will guarantee that we
+	 * inherit most probable browser proxy settings.
+	 * 
+	 * If the rules are not guessed optimally, there should be an option in the launched application to override
+	 * automatic proxy discovery with user's own rules, with the possibility to persist the settings in the application
+	 * installation directory.
+	 * 
+	 * @return
+	 * @throws JNLPException
+	 * @throws URISyntaxException
+	 */
+	public static List<String> getProxySettings() throws JNLPException
+	{
+		List<String> args;
+		try
+		{
+			args = new ArrayList<String>();
+			ProxySelector proxySelector = ProxySelector.getDefault();
+
+			for(URI uri : new URI[] { new URI("http://dummy.host.com"), new URI("https://dummy.host.com"), //$NON-NLS-1$ //$NON-NLS-2$
+					new URI("ftp://dummy.host.com") }) //$NON-NLS-1$
+			{
+				List<Proxy> proxies = proxySelector.select(uri);
+				String protocol = uri.getScheme();
+
+				for(Proxy proxy : proxies)
+				{
+					if(Proxy.NO_PROXY.equals(proxy))
+						break;
+
+					SocketAddress address = proxy.address();
+					if(address instanceof InetSocketAddress)
+					{
+						InetSocketAddress iaddr = (InetSocketAddress)address;
+						args.add("-D" + protocol + ".proxyHost"); //$NON-NLS-1$ //$NON-NLS-2$
+						args.add(iaddr.getHostName());
+						args.add("-D" + protocol + ".proxyPort"); //$NON-NLS-1$ //$NON-NLS-2$
+						args.add("" + iaddr.getPort()); //$NON-NLS-1$
+						args.add("-D" + protocol + ".nonProxyHosts"); //$NON-NLS-1$ //$NON-NLS-2$
+						args.add("localhost|127.0.0.1"); //$NON-NLS-1$
+						break;
+					}
+				}
+			}
+		}
+		catch(URISyntaxException e)
+		{
+			throw new JNLPException(
+					Messages.getString("unable_to_detect_proxy_settings"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
+					ERROR_CODE_JAVA_RUNTIME_EXCEPTION);
+		}
+
+		return args;
+	}
+
 	public static byte[] loadData(String url) throws JNLPException
 	{
 		byte[] data = null;
@@ -167,6 +245,46 @@ public class Utils
 	}
 
 	/**
+	 * Converts a single -extra string parameter into a list of parameters. Parameters are delimited by space. Example:
+	 * -extra "-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y"
+	 * 
+	 * @param args
+	 * @return
+	 */
+	public static List<String> parseExtraArgs(String extraArgsString)
+	{
+		if(extraArgsString != null && !"null".equals(extraArgsString)) //$NON-NLS-1$
+		{
+			String[] extraArgs = extraArgsString.split(" "); //$NON-NLS-1$
+
+			return Arrays.asList(extraArgs);
+		}
+
+		return Collections.emptyList();
+	}
+
+	public static void reportToServer(String basePathURL, String errorCode) throws IOException
+	{
+		if(basePathURL == null)
+			return;
+
+		String javaVersion = URLEncoder.encode(System.getProperty("java.version"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+		String javaVendor = URLEncoder.encode(System.getProperty("java.vendor"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+
+		String string = basePathURL + REPORT_ERROR_VIEW + "?errorCode=" + REPORT_ERROR_PREFIX + errorCode + //$NON-NLS-1$
+				"&javaVersion=" + javaVersion + "&javaVendor=" + javaVendor; //$NON-NLS-1$ //$NON-NLS-2$
+		URL feedbackURL = new URL(string);
+		// ping feedback view to report it to apache log
+		InputStream is = feedbackURL.openStream();
+
+		byte[] copyBuf = new byte[8192];
+		while(is.read(copyBuf) > 0)
+			;
+
+		is.close();
+	}
+
+	/**
 	 * Copies specified input stream into the output stream and closes the input stream whil the output stream remains
 	 * open.
 	 * 
@@ -185,5 +303,4 @@ public class Utils
 		}
 		is.close();
 	}
-
 }
