@@ -22,10 +22,7 @@ import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepo
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 @SuppressWarnings("restriction")
@@ -36,9 +33,7 @@ public class CompositeRepoGenerator extends BuilderPhase {
 			return;
 
 		URI location = URI.create(repo.getLocation());
-		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
-
-		if (mdrMgr.loadRepository(location, null).query(query, new Collector(), null).isEmpty()) {
+		if (Builder.getIU(mdrMgr.loadRepository(location, null), id, version) == null) {
 			String msg = String.format("Unable to find %s/%s in repository %s", id, version, repo.getLocation());
 			errors.add(msg);
 			Buckminster.getLogger().error(msg);

@@ -10,10 +10,10 @@ package org.eclipse.buckminster.galileo.builder;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,23 +23,21 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 
 @SuppressWarnings("restriction")
 public class AllContributedContentFeatureAction extends AbstractPublisherAction {
-	private final Build build;
+	private final Builder builder;
 
 	private final IMetadataRepository mdr;
 
 	private final IMetadataRepository globalMdr;
 
-	public AllContributedContentFeatureAction(Build build, IMetadataRepository globalMdr, IMetadataRepository mdr) {
-		this.build = build;
+	public AllContributedContentFeatureAction(Builder builder, IMetadataRepository globalMdr, IMetadataRepository mdr) {
+		this.builder = builder;
 		this.globalMdr = globalMdr;
 		this.mdr = mdr;
 	}
@@ -50,15 +48,42 @@ public class AllContributedContentFeatureAction extends AbstractPublisherAction 
 		iu.setId(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE);
 		iu.setVersion(Builder.ALL_CONTRIBUTED_CONTENT_VERSION);
 		iu.setProperty(IInstallableUnit.PROP_TYPE_GROUP, Boolean.TRUE.toString());
-		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE,
-				Builder.ALL_CONTRIBUTED_CONTENT_VERSION)));
+		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(iu.getId(), iu.getVersion())));
 
+		Feature globalCapabilitiesFeature;
+		try {
+			globalCapabilitiesFeature = builder.getGlobalCapabilitiesFeature();
+		} catch (CoreException e) {
+			return e.getStatus();
+		}
+
+		boolean skipGlobalCapFeature = false;
 		ArrayList<IRequiredCapability> required = new ArrayList<IRequiredCapability>();
-		for (Contribution contrib : build.getContributions()) {
+		if (globalCapabilitiesFeature != null) {
+			// Did we extend this one? If we did, we have a new copy in the
+			// non-global mdr that should be used instead of the global one
+			IInstallableUnit gcapIU = Builder.getIU(mdr, globalCapabilitiesFeature.getId() + Builder.FEATURE_GROUP_SUFFIX, globalCapabilitiesFeature
+					.getVersion());
+			if (gcapIU != null) {
+				Version v = gcapIU.getVersion();
+				VersionRange range = null;
+				if (!Version.emptyVersion.equals(v))
+					range = new VersionRange(v, true, v, true);
+				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, gcapIU.getId(), range, null, false, false));
+				skipGlobalCapFeature = true;
+			}
+		}
+
+		for (Contribution contrib : builder.getBuild().getContributions()) {
 			for (Feature feature : contrib.getFeatures()) {
 				String requiredId = feature.getId();
-				if (requiredId.equals(Builder.GALILEO_FEATURE))
+				if (builder.skipFeature(contrib, feature))
 					continue;
+
+				if (globalCapabilitiesFeature != null && globalCapabilitiesFeature.getId().equals(feature.getId())) {
+					if (skipGlobalCapFeature || feature.getRepo() == null)
+						continue;
+				}
 
 				requiredId += Builder.FEATURE_GROUP_SUFFIX;
 				Version v = Version.parseVersion(feature.getVersion());
@@ -68,7 +93,7 @@ public class AllContributedContentFeatureAction extends AbstractPublisherAction 
 				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, requiredId, range, null, false, false));
 			}
 			for (Bundle bundle : contrib.getBundles()) {
-				IInstallableUnit bundleIU = getIU(bundle.getId(), bundle.getVersion());
+				IInstallableUnit bundleIU = Builder.getIU(globalMdr, bundle.getId(), bundle.getVersion());
 				Version v = bundleIU.getVersion();
 				VersionRange range = new VersionRange(v, true, v, true);
 				String filter = bundleIU.getFilter();
@@ -78,12 +103,5 @@ public class AllContributedContentFeatureAction extends AbstractPublisherAction 
 		iu.addRequiredCapabilities(required);
 		mdr.addInstallableUnits(new IInstallableUnit[] { MetadataFactory.createInstallableUnit(iu) });
 		return Status.OK_STATUS;
-	}
-
-	private IInstallableUnit getIU(String id, String version) {
-		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
-		Collector c = globalMdr.query(query, new Collector(), null);
-		IInstallableUnit[] result = (IInstallableUnit[]) c.toArray(IInstallableUnit.class);
-		return result.length > 0 ? result[0] : null;
 	}
 }

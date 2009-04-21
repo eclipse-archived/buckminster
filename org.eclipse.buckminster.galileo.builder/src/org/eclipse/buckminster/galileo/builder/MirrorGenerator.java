@@ -42,6 +42,13 @@ import org.eclipse.equinox.p2.publisher.Publisher;
 
 @SuppressWarnings("restriction")
 public class MirrorGenerator extends BuilderPhase {
+	private static class AllButAllContributedFeature extends MatchQuery {
+		@Override
+		public boolean isMatch(Object candidate) {
+			return !(candidate instanceof IInstallableUnit && Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(((IInstallableUnit) candidate).getId()));
+		}
+	}
+
 	/**
 	 * A request to restore the canonical form after a raw copy of the optimized
 	 * form
@@ -66,28 +73,17 @@ public class MirrorGenerator extends BuilderPhase {
 	}
 
 	private static class IncludesQuery extends MatchQuery {
-		private final Set<IInstallableUnit> m_unitsToInclude;
+		private final Set<IInstallableUnit> unitsToInclude;
 
 		public IncludesQuery(Set<IInstallableUnit> unitsToInclude) {
-			m_unitsToInclude = unitsToInclude;
+			this.unitsToInclude = unitsToInclude;
 		}
 
 		@Override
 		public boolean isMatch(Object candidate) {
-			return m_unitsToInclude.contains(candidate);
+			return unitsToInclude.contains(candidate);
 		}
 	}
-
-	private static final Query ONLY_CATEGORIES = new MatchQuery() {
-		@Override
-		public boolean isMatch(Object candidate) {
-			if (candidate instanceof IInstallableUnit) {
-				IInstallableUnit iu = (IInstallableUnit) candidate;
-				return Boolean.parseBoolean(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY));
-			}
-			return false;
-		}
-	};
 
 	private static IStatus constraintStatus(IStatus status) {
 		return status.getSeverity() == IStatus.ERROR && status.getException() != null ? status : null;
@@ -345,10 +341,10 @@ public class MirrorGenerator extends BuilderPhase {
 			log.info("Done mirroring meta-data");
 			childMonitor.done();
 
-			// Step 3. Mirror the generated categories but don't include the
+			// Step 3. Mirror generated content but don't include the
 			// generated 'include all' feature
 			IMetadataRepository categoryRepository = mdrMgr.loadRepository(categoryRepo, MonitorUtils.subMonitor(monitor, 1));
-			mirror(ONLY_CATEGORIES, categoryRepository, destMdr, MonitorUtils.subMonitor(monitor, 1));
+			mirror(new AllButAllContributedFeature(), categoryRepository, destMdr, MonitorUtils.subMonitor(monitor, 1));
 		} finally {
 			bucky.ungetService(mdrMgr);
 			bucky.ungetService(arMgr);

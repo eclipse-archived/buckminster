@@ -34,6 +34,7 @@ import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.amalgam.releng.build.BuildPackage;
 import org.eclipse.amalgam.releng.build.Contact;
 import org.eclipse.amalgam.releng.build.Contribution;
+import org.eclipse.amalgam.releng.build.Feature;
 import org.eclipse.amalgam.releng.build.Promotion;
 import org.eclipse.amalgam.releng.build.Repository;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -63,6 +64,9 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.gmf.internal.xpand.ant.XpandFacade;
 import org.eclipse.m2m.internal.qvt.oml.common.launch.TargetUriData;
 import org.eclipse.m2m.internal.qvt.oml.emf.util.ModelContent;
@@ -80,17 +84,35 @@ import org.xml.sax.SAXParseException;
 
 @SuppressWarnings("restriction")
 public class Builder implements IApplication {
-	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
-
-	public static final String PROFILE_ID = "GalileoTest"; //$NON-NLS-1$
-
 	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group"; //$NON-NLS-1$
 
 	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = new Version(1, 0, 0);
 
-	public static final String GALILEO_FEATURE = "org.eclipse.galileo"; //$NON-NLS-1$
+	public static final String CATEGORY_REPO_FOLDER = "categories"; //$NON-NLS-1$
+
+	public static final String COMPOSITE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
+
+	public static final String COMPOSITE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
+
+	public static final String COMPOSITE_REPO_FOLDER = "composite"; //$NON-NLS-1$
 
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator"); //$NON-NLS-1$
+
+	public static final String MIRROR_REPO_FOLDER = "mirror"; //$NON-NLS-1$
+
+	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
+
+	public static final String PLATFORM_REPO_FOLDER = "platform"; //$NON-NLS-1$
+
+	public static final String PLATFORM_REPO_NAME = "Platform Repository"; //$NON-NLS-1$
+
+	public static final String PROFILE_ID = "GalileoTest"; //$NON-NLS-1$
+
+	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
+
+	public static final String SIMPLE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
+
+	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
 
 	private static final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
 
@@ -102,9 +124,9 @@ public class Builder implements IApplication {
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd"); //$NON-NLS-1$
 
-	private static final String PROP_P2_DATA_AREA = "eclipse.p2.data.area";
+	private static final String PROP_P2_DATA_AREA = "eclipse.p2.data.area"; //$NON-NLS-1$
 
-	private static final String PROP_P2_PROFILE = "eclipse.p2.profile";
+	private static final String PROP_P2_PROFILE = "eclipse.p2.profile"; //$NON-NLS-1$
 
 	private static final Project PROPERTY_REPLACER = new Project();
 
@@ -137,8 +159,8 @@ public class Builder implements IApplication {
 					String pathStr = path.removeTrailingSeparator().toPortableString();
 					if (!pathStr.startsWith("/"))
 						// Path starts with a drive letter
-						pathStr = "/" + pathStr;
-					return new URI("file", null, pathStr, null);
+						pathStr = "/" + pathStr; //$NON-NLS-1$
+					return new URI("file", null, pathStr, null); //$NON-NLS-1$
 				} catch (URISyntaxException e) {
 					throw BuckminsterException.wrap(e);
 				}
@@ -150,6 +172,17 @@ public class Builder implements IApplication {
 		StringBuilder bld = new StringBuilder();
 		getExceptionMessages(e, bld);
 		return bld.toString();
+	}
+
+	public static IInstallableUnit getIU(IMetadataRepository mdr, String id, String version) {
+		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
+		Collector c = mdr.query(query, new Collector(), null);
+		IInstallableUnit[] result = (IInstallableUnit[]) c.toArray(IInstallableUnit.class);
+		return result.length > 0 ? result[0] : null;
+	}
+
+	public static boolean isCapabilitiesFeature(Contribution contrib, Feature feature) {
+		return feature.getId().endsWith(".capabilities") && contrib.getRepositories().size() > 0 && feature.getCategory().size() == 0;
 	}
 
 	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
@@ -191,6 +224,10 @@ public class Builder implements IApplication {
 		}
 	}
 
+	private static void requiresArgument(String opt) {
+		throw new IllegalArgumentException("Option " + opt + " requires an argument");
+	}
+
 	private static boolean startEarly(PackageAdmin packageAdmin, String bundleName) throws BundleException {
 		Bundle bundle = getBundle(packageAdmin, bundleName);
 		if (bundle == null)
@@ -211,11 +248,27 @@ public class Builder implements IApplication {
 
 	private String buildID;
 
+	private String buildLabel;
+
+	private String buildMasterEmail;
+
+	private String buildMasterName;
+
 	private File buildModelLocation;
 
 	private File buildRoot;
 
+	private String capabilitiesContribution;
+
 	private URI categoriesRepo;
+
+	// A list of messages to be printed to the log file once we know which file
+	// that is.
+	private List<String> deferredLogMessages = new ArrayList<String>();
+
+	private String emailFrom;
+
+	private String emailFromName;
 
 	private int logLevel = Logger.INFO;
 
@@ -227,6 +280,20 @@ public class Builder implements IApplication {
 
 	private boolean production;
 
+	private ResourceSet resourceSet;
+
+	private boolean sendmail = false;
+
+	private String smtpHost;
+
+	private String smtpPassword;
+
+	private int smtpPort;
+
+	private String smtpUser;
+
+	private String subjectPrefix;
+
 	private URI targetPlatformRepo;
 
 	private Set<IInstallableUnit> unitsToInstall;
@@ -234,54 +301,6 @@ public class Builder implements IApplication {
 	private boolean update;
 
 	private boolean verifyOnly;
-
-	public static final String SIMPLE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
-
-	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
-
-	public static final String COMPOSITE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
-
-	public static final String COMPOSITE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
-
-	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
-
-	public static final String PLATFORM_REPO_NAME = "Platform Repository"; //$NON-NLS-1$
-
-	public static final String PLATFORM_REPO_FOLDER = "platform"; //$NON-NLS-1$
-
-	public static final String CATEGORY_REPO_FOLDER = "categories"; //$NON-NLS-1$
-
-	public static final String COMPOSITE_REPO_FOLDER = "composite"; //$NON-NLS-1$
-
-	public static final String MIRROR_REPO_FOLDER = "mirror"; //$NON-NLS-1$
-
-	// A list of messages to be printed to the log file once we know which file
-	// that is.
-	private List<String> deferredLogMessages = new ArrayList<String>();
-
-	private String smtpHost;
-
-	private int smtpPort;
-
-	private String smtpUser;
-
-	private String smtpPassword;
-
-	private String emailFrom;
-
-	private String emailFromName;
-
-	private String subjectPrefix;
-
-	private ResourceSet resourceSet;
-
-	private String buildMasterEmail;
-
-	private String buildMasterName;
-
-	private String buildLabel;
-
-	private boolean sendmail = false;
 
 	public Build getBuild() {
 		return build;
@@ -299,8 +318,35 @@ public class Builder implements IApplication {
 		return buildRoot;
 	}
 
+	public String getCapabilitiesContribution() {
+		return capabilitiesContribution;
+	}
+
 	public URI getCategoriesRepo() {
 		return categoriesRepo;
+	}
+
+	public Feature getGlobalCapabilitiesFeature() throws CoreException {
+		if (capabilitiesContribution == null)
+			// Nothing to do here
+			return null;
+
+		Feature capabilitiesFeature = null;
+		List<Contribution> contributions = build.getContributions();
+		for (Contribution contrib : contributions) {
+			if (!capabilitiesContribution.equals(contrib.getLabel()))
+				continue;
+			List<Feature> features = contrib.getFeatures();
+			if (features.size() == 1) {
+				capabilitiesFeature = features.get(0);
+				break;
+			}
+			throw BuckminsterException.fromMessage("The capability contribution %s does not have exactly one feature", capabilitiesContribution);
+		}
+
+		if (capabilitiesFeature == null)
+			throw BuckminsterException.fromMessage("Unable to find capability contribution %s in the build model", capabilitiesContribution);
+		return capabilitiesFeature;
 	}
 
 	public URI getGlobalRepoURI() throws CoreException {
@@ -601,6 +647,10 @@ public class Builder implements IApplication {
 		this.buildRoot = buildRoot;
 	}
 
+	public void setCapabilitiesContribution(String capabilitiesContribution) {
+		this.capabilitiesContribution = capabilitiesContribution;
+	}
+
 	public void setCategoriesRepo(URI categoriesRepo) {
 		this.categoriesRepo = categoriesRepo;
 	}
@@ -663,6 +713,25 @@ public class Builder implements IApplication {
 
 	public void setVerifyOnly(boolean verifyOnly) {
 		this.verifyOnly = verifyOnly;
+	}
+
+	public boolean skipFeature(Contribution contrib, Feature feature) {
+		if (isCapabilitiesFeature(contrib, feature))
+			return true;
+
+		// Special hack. Don't include the org.eclipse.galileo feature unless
+		// it's the appointed global capabilitiesContribution or if it
+		// provides a repository (in which case it's built
+		// elsewhere)
+		if (!"org.eclipse.galileo".equals(feature.getId()))
+			return false;
+
+		if (contrib.getRepositories().size() > 0)
+			// It resides in a repository of its own. Don't skip
+			return false;
+
+		// Only keep if it's the capabilitiesContribution feature
+		return !(capabilitiesContribution != null && capabilitiesContribution.equals(contrib.getLabel()));
 	}
 
 	public Object start(IApplicationContext context) throws Exception {
@@ -737,68 +806,68 @@ public class Builder implements IApplication {
 			}
 			if ("-mockEmailTo".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-mockEmailTo requires an argument");
+					requiresArgument(arg);
 				setMockEmailTo(args[idx]);
 				continue;
 			}
 			if ("-subjectPrefix".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-subjectPrefix requires an argument");
+					requiresArgument(arg);
 				setSubjectPrefix(args[idx]);
 				continue;
 			}
 			if ("-emailFrom".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-emailFrom requires an argument");
+					requiresArgument(arg);
 				setEmailFrom(args[idx]);
 				continue;
 			}
 			if ("-emailFromName".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-emailFromName requires an argument");
+					requiresArgument(arg);
 				setEmailFromName(args[idx]);
 				continue;
 			}
 			if ("-smtpHost".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-smtpHost requires an argument");
+					requiresArgument(arg);
 				setSmtpHost(args[idx]);
 				continue;
 			}
 			if ("-smtpPort".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-smtpPort requires an argument");
+					requiresArgument(arg);
 				int portNumber = 0;
 				try {
 					portNumber = Integer.parseInt(args[idx]);
 				} catch (NumberFormatException e) {
 				}
 				if (portNumber <= 0)
-					throw new IllegalArgumentException("-smtpPort must be a positive integer");
+					requiresArgument(arg);
 				setSmtpPort(portNumber);
 				continue;
 			}
 			if ("-smtpUser".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-smtpUser requires an argument");
+					requiresArgument(arg);
 				setSmtpUser(args[idx]);
 				continue;
 			}
 			if ("-smtpPassword".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-smtpPassword requires an argument");
+					requiresArgument(arg);
 				setSmtpPassword(args[idx]);
 				continue;
 			}
 			if ("-mockEmailCC".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-mockEmailCC requires an argument");
+					requiresArgument(arg);
 				setMockEmailCC(args[idx]);
 				continue;
 			}
 			if ("-logLevel".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-logLevel requires an argument");
+					requiresArgument(arg);
 				String levelStr = args[idx];
 				int level;
 				if ("debug".equalsIgnoreCase(levelStr))
@@ -817,7 +886,7 @@ public class Builder implements IApplication {
 			}
 			if ("-buildModel".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-buildModel requires an argument");
+					requiresArgument(arg);
 				File buildModel = new File(args[idx]);
 				if (!buildModel.canRead())
 					throw new IllegalArgumentException(String.format("Unable to read %s", buildModel));
@@ -826,19 +895,25 @@ public class Builder implements IApplication {
 			}
 			if ("-buildRoot".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-buildRoot requires an argument");
+					requiresArgument(arg);
 				setBuildRoot(new File(args[idx]));
 				continue;
 			}
 			if ("-buildId".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-buildId requires an argument");
+					requiresArgument(arg);
 				setBuildID(args[idx]);
+				continue;
+			}
+			if ("-capabilitiesContribution".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setCapabilitiesContribution(args[idx]);
 				continue;
 			}
 			if ("-targetPlatformRepository".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
-					throw new IllegalArgumentException("-targetPlatformRepository requires an argument");
+					requiresArgument(arg);
 				setTargetPlatformRepo(URI.create(args[idx]));
 				continue;
 			}

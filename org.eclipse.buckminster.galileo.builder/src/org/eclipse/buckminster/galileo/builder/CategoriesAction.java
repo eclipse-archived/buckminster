@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.amalgam.releng.build.Category;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
@@ -44,12 +43,12 @@ import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 
 @SuppressWarnings("restriction")
 public class CategoriesAction extends AbstractPublisherAction {
-	private final Build build;
+	private final Builder builder;
 
 	private final IMetadataRepository globalRepo;
 
-	public CategoriesAction(Build build, IMetadataRepository globalRepo) {
-		this.build = build;
+	public CategoriesAction(Builder builder, IMetadataRepository globalRepo) {
+		this.builder = builder;
 		this.globalRepo = globalRepo;
 	}
 
@@ -57,11 +56,10 @@ public class CategoriesAction extends AbstractPublisherAction {
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		Map<Category, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<Category, Set<IInstallableUnit>>();
 		try {
-			for (Contribution contrib : build.getContributions()) {
+			for (Contribution contrib : builder.getBuild().getContributions()) {
 				for (Feature feature : contrib.getFeatures()) {
-					if (feature.getId().equals(Builder.GALILEO_FEATURE))
+					if (builder.skipFeature(contrib, feature))
 						continue;
-
 					for (Category category : feature.getCategory()) {
 						if (category != null) {
 							IInstallableUnit featureIU = getFeatureIU(feature.getId(), feature.getVersion(), publisherInfo, monitor);

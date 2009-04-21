@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -66,7 +65,7 @@ public class CategoryRepoGenerator extends BuilderPhase {
 			info.setArtifactOptions(IPublisherInfo.A_PUBLISH | IPublisherInfo.A_INDEX);
 			info.setMetadataRepository(mdr);
 			Publisher publisher = new Publisher(info);
-			IStatus result = publisher.publish(createActions(getBuilder().getBuild(), mdr, globalMdr), MonitorUtils.subMonitor(monitor, 90));
+			IStatus result = publisher.publish(createActions(mdr, globalMdr), MonitorUtils.subMonitor(monitor, 90));
 			if (result.getSeverity() == IStatus.ERROR)
 				throw new CoreException(result);
 
@@ -81,7 +80,8 @@ public class CategoryRepoGenerator extends BuilderPhase {
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 
-	private IPublisherAction[] createActions(Build bm, IMetadataRepository mdr, IMetadataRepository globalMdr) {
-		return new IPublisherAction[] { new AllContributedContentFeatureAction(bm, globalMdr, mdr), new CategoriesAction(bm, globalMdr) };
+	private IPublisherAction[] createActions(IMetadataRepository mdr, IMetadataRepository globalMdr) {
+		return new IPublisherAction[] { new AllContributedCapabilitiesFeatureAction(getBuilder(), globalMdr, mdr),
+				new AllContributedContentFeatureAction(getBuilder(), globalMdr, mdr), new CategoriesAction(getBuilder(), globalMdr) };
 	}
 }
