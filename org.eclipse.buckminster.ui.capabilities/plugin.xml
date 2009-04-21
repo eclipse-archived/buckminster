@@ -13,5 +13,13 @@
           activityId="org.eclipse.buckminster.activity"
           pattern="org\.eclipse\.buckminster\..*/.*">
     </activityPatternBinding>
+    <category
+          description="%activity.cat.buckminster.desc"
+          id="org.eclipse.buckminster.Category"
+          name="%activity.cat.buckminster">
+    </category>
+	<categoryActivityBinding activityId="org.eclipse.buckminster.activity"
+		categoryId="org.eclipse.buckminster.Category">
+	</categoryActivityBinding>
 	</extension>
 </plugin>
