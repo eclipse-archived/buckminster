@@ -45,4 +45,8 @@
          id="org.eclipse.buckminster.subversive.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.buckminster.ui.capabilities.feature"
+         version="0.0.0"/>
+
 </feature>
