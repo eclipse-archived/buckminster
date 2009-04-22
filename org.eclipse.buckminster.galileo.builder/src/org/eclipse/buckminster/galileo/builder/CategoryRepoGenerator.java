@@ -36,12 +36,12 @@ public class CategoryRepoGenerator extends BuilderPhase {
 		long now = System.currentTimeMillis();
 
 		String name = getBuilder().getBuild().getLabel() + " Categories";
-		File globalLocation = new File(getBuilder().getBuildRoot(), Builder.COMPOSITE_REPO_FOLDER);
-		File location = new File(globalLocation, Builder.CATEGORY_REPO_FOLDER);
+		File globalLocation = new File(getBuilder().getBuildRoot(), Builder.REPO_FOLDER_INTERIM);
+		File location = new File(globalLocation, Builder.REPO_FOLDER_CATEGORIES);
 		FileUtils.deleteAll(location);
 
 		Map<String, String> properties = new HashMap<String, String>();
-		URI globalLocationURI = Builder.createURI(globalLocation);
+		URI globalLocationURI = getBuilder().getGlobalRepoURI();
 		URI locationURI = Builder.createURI(location);
 		Buckminster bucky = Buckminster.getDefault();
 
@@ -81,7 +81,7 @@ public class CategoryRepoGenerator extends BuilderPhase {
 	}
 
 	private IPublisherAction[] createActions(IMetadataRepository mdr, IMetadataRepository globalMdr) {
-		return new IPublisherAction[] { new AllContributedCapabilitiesFeatureAction(getBuilder(), globalMdr, mdr),
-				new AllContributedContentFeatureAction(getBuilder(), globalMdr, mdr), new CategoriesAction(getBuilder(), globalMdr) };
+		return new IPublisherAction[] { new AllContributedCapabilitiesAction(getBuilder(), globalMdr, mdr),
+				new AllContributedContentAction(getBuilder(), globalMdr, mdr), new CategoriesAction(getBuilder(), globalMdr) };
 	}
 }

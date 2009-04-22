@@ -13,7 +13,6 @@ import java.util.Collections;
 import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -28,15 +27,21 @@ import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 
+/**
+ * This action creates the feature that contains all features and bundles that
+ * are listed in the build contributions.
+ * 
+ * @see Builder#ALL_CONTRIBUTED_CONTENT_FEATURE
+ */
 @SuppressWarnings("restriction")
-public class AllContributedContentFeatureAction extends AbstractPublisherAction {
+public class AllContributedContentAction extends AbstractPublisherAction {
 	private final Builder builder;
 
 	private final IMetadataRepository mdr;
 
 	private final IMetadataRepository globalMdr;
 
-	public AllContributedContentFeatureAction(Builder builder, IMetadataRepository globalMdr, IMetadataRepository mdr) {
+	public AllContributedContentAction(Builder builder, IMetadataRepository globalMdr, IMetadataRepository mdr) {
 		this.builder = builder;
 		this.globalMdr = globalMdr;
 		this.mdr = mdr;
@@ -50,38 +55,32 @@ public class AllContributedContentFeatureAction extends AbstractPublisherAction 
 		iu.setProperty(IInstallableUnit.PROP_TYPE_GROUP, Boolean.TRUE.toString());
 		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(iu.getId(), iu.getVersion())));
 
-		Feature globalCapabilitiesFeature;
-		try {
-			globalCapabilitiesFeature = builder.getGlobalCapabilitiesFeature();
-		} catch (CoreException e) {
-			return e.getStatus();
-		}
+		Feature brandingFeature = builder.getBrandingFeature();
 
-		boolean skipGlobalCapFeature = false;
+		boolean skipBrandingFeature = false;
 		ArrayList<IRequiredCapability> required = new ArrayList<IRequiredCapability>();
-		if (globalCapabilitiesFeature != null) {
+		if (brandingFeature != null) {
 			// Did we extend this one? If we did, we have a new copy in the
 			// non-global mdr that should be used instead of the global one
-			IInstallableUnit gcapIU = Builder.getIU(mdr, globalCapabilitiesFeature.getId() + Builder.FEATURE_GROUP_SUFFIX, globalCapabilitiesFeature
-					.getVersion());
+			IInstallableUnit gcapIU = Builder.getIU(mdr, brandingFeature.getId() + Builder.FEATURE_GROUP_SUFFIX, brandingFeature.getVersion());
 			if (gcapIU != null) {
 				Version v = gcapIU.getVersion();
 				VersionRange range = null;
 				if (!Version.emptyVersion.equals(v))
 					range = new VersionRange(v, true, v, true);
 				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, gcapIU.getId(), range, null, false, false));
-				skipGlobalCapFeature = true;
+				skipBrandingFeature = true;
 			}
 		}
 
 		for (Contribution contrib : builder.getBuild().getContributions()) {
 			for (Feature feature : contrib.getFeatures()) {
 				String requiredId = feature.getId();
-				if (builder.skipFeature(contrib, feature))
+				if (Builder.skipFeature(feature, true))
 					continue;
 
-				if (globalCapabilitiesFeature != null && globalCapabilitiesFeature.getId().equals(feature.getId())) {
-					if (skipGlobalCapFeature || feature.getRepo() == null)
+				if (brandingFeature != null && brandingFeature.getId().equals(feature.getId())) {
+					if (skipBrandingFeature || feature.getRepo() == null)
 						continue;
 				}
 

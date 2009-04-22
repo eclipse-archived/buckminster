@@ -51,7 +51,7 @@ public class CompositeRepoGenerator extends BuilderPhase {
 		long now = System.currentTimeMillis();
 
 		String name = getBuilder().getBuild().getLabel() + " Composite";
-		File location = new File(getBuilder().getBuildRoot(), Builder.COMPOSITE_REPO_FOLDER);
+		File location = new File(getBuilder().getBuildRoot(), Builder.REPO_FOLDER_INTERIM);
 		FileUtils.deleteAll(location);
 
 		Map<String, String> properties = new HashMap<String, String>();

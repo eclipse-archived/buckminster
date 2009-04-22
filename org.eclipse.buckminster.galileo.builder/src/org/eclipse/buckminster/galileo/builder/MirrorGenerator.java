@@ -20,9 +20,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.artifact.repository.MirrorRequest;
 import org.eclipse.equinox.internal.p2.artifact.repository.RawMirrorRequest;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
+import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
@@ -216,8 +218,11 @@ public class MirrorGenerator extends BuilderPhase {
 		log.info("Starting mirror generation");
 		long now = System.currentTimeMillis();
 
-		File destination = new File(getBuilder().getBuildRoot(), Builder.MIRROR_REPO_FOLDER);
-		URI destURI = Builder.createURI(destination);
+		File destination = new File(getBuilder().getBuildRoot(), Builder.REPO_FOLDER_FINAL);
+		URI finalURI = Builder.createURI(destination);
+
+		File mirrorDestination = destination;
+		URI mirrorURI = finalURI;
 
 		Buckminster bucky = Buckminster.getDefault();
 
@@ -228,43 +233,49 @@ public class MirrorGenerator extends BuilderPhase {
 		boolean artifactErrors = false;
 		try {
 			boolean isUpdate = getBuilder().isUpdate();
-			IArtifactRepository destAr = null;
-			IMetadataRepository destMdr = null;
+			URI[] trustedRepos = getBuilder().getTrustedContributionRepos();
+			if (trustedRepos.length > 0) {
+				mirrorDestination = new File(destination, Builder.REPO_FOLDER_MIRROR);
+				mirrorURI = Builder.createURI(mirrorDestination);
+			}
+
+			IArtifactRepository mirrorAr = null;
+			IMetadataRepository mirrorMdr = null;
 			if (!isUpdate) {
 				FileUtils.deleteAll(destination);
-				mdrMgr.removeRepository(destURI);
-				arMgr.removeRepository(destURI);
+				mdrMgr.removeRepository(mirrorURI);
+				arMgr.removeRepository(mirrorURI);
 				MonitorUtils.worked(monitor, 2);
 			} else {
 				try {
-					destAr = arMgr.loadRepository(destURI, MonitorUtils.subMonitor(monitor, 1));
+					mirrorAr = arMgr.loadRepository(mirrorURI, MonitorUtils.subMonitor(monitor, 1));
 				} catch (ProvisionException e) {
 				}
 
 				try {
-					destMdr = mdrMgr.loadRepository(destURI, MonitorUtils.subMonitor(monitor, 1));
+					mirrorMdr = mdrMgr.loadRepository(mirrorURI, MonitorUtils.subMonitor(monitor, 1));
 				} catch (ProvisionException e) {
 				}
 			}
 
 			URI mirrors = getBuilder().getMirrorsURI();
-			if (destAr == null) {
+			if (mirrorAr == null) {
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 				properties.put(Publisher.PUBLISH_PACK_FILES_AS_SIBLINGS, Boolean.toString(true));
 				if (mirrors != null)
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
 				String label = getBuilder().getBuild().getLabel();
-				destAr = arMgr.createRepository(destURI, label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+				mirrorAr = arMgr.createRepository(mirrorURI, label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 			}
 
-			if (destMdr == null) {
+			if (mirrorMdr == null) {
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 				if (mirrors != null)
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
 				String label = getBuilder().getBuild().getLabel();
-				destMdr = mdrMgr.createRepository(destURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
+				mirrorMdr = mdrMgr.createRepository(mirrorURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
 			}
 
 			// Step 1. Mirror all artifacts. This means copying a lot of data.
@@ -284,15 +295,18 @@ public class MirrorGenerator extends BuilderPhase {
 					keysToInstall.add(key);
 
 			URI categoryRepo = getBuilder().getCategoriesRepo();
-			URI targetPlatformRepo = getBuilder().getTargetPlatformRepo();
-			for (URI childURI : children) {
-				if (childURI.equals(targetPlatformRepo) || childURI.equals(categoryRepo))
+			allRepos: for (URI childURI : children) {
+				if (childURI.equals(categoryRepo))
 					continue;
+
+				for (URI trustedRepo : trustedRepos)
+					if (childURI.equals(trustedRepo))
+						continue allRepos;
 
 				log.info("Mirroring artifacts from from %s", childURI);
 				IArtifactRepository child = arMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
 				ArrayList<String> errors = new ArrayList<String>();
-				mirror(child, destAr, keysToInstall, errors, MonitorUtils.subMonitor(childMonitor, 99));
+				mirror(child, mirrorAr, keysToInstall, errors, MonitorUtils.subMonitor(childMonitor, 99));
 				if (errors.size() > 0) {
 					artifactErrors = true;
 					String childStr = childURI.toString();
@@ -330,21 +344,50 @@ public class MirrorGenerator extends BuilderPhase {
 			children = getCompositeChildren(sourceMdr);
 			childMonitor = MonitorUtils.subMonitor(monitor, 7);
 			MonitorUtils.begin(childMonitor, children.size() * 100);
-			for (URI childURI : children) {
-				if (childURI.equals(targetPlatformRepo) || childURI.equals(categoryRepo))
+			allRepos: for (URI childURI : children) {
+				if (childURI.equals(categoryRepo))
 					continue;
+
+				for (URI trustedRepo : trustedRepos)
+					if (childURI.equals(trustedRepo))
+						continue allRepos;
 
 				log.info("Mirroring meta-data from from %s", childURI);
 				IMetadataRepository child = mdrMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
-				mirror(new IncludesQuery(unitsToInstall), child, destMdr, MonitorUtils.subMonitor(childMonitor, 99));
+				mirror(new IncludesQuery(unitsToInstall), child, mirrorMdr, MonitorUtils.subMonitor(childMonitor, 99));
 			}
-			log.info("Done mirroring meta-data");
 			childMonitor.done();
 
 			// Step 3. Mirror generated content but don't include the
 			// generated 'include all' feature
+			log.info("Mirroring meta-data from from %s", categoryRepo);
 			IMetadataRepository categoryRepository = mdrMgr.loadRepository(categoryRepo, MonitorUtils.subMonitor(monitor, 1));
-			mirror(new AllButAllContributedFeature(), categoryRepository, destMdr, MonitorUtils.subMonitor(monitor, 1));
+			mirror(new AllButAllContributedFeature(), categoryRepository, mirrorMdr, MonitorUtils.subMonitor(monitor, 1));
+			log.info("Done mirroring meta-data");
+
+			if (trustedRepos.length > 0) {
+				// Set up the final composite repositories
+				log.info("Building final composites at %s", finalURI);
+				Map<String, String> properties = new HashMap<String, String>();
+				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
+
+				String name = getBuilder().getBuild().getLabel();
+				mdrMgr.removeRepository(finalURI);
+				CompositeMetadataRepository compositeMdr = (CompositeMetadataRepository) mdrMgr.createRepository(finalURI, name,
+						Builder.COMPOSITE_METADATA_TYPE, properties);
+
+				arMgr.removeRepository(finalURI);
+				CompositeArtifactRepository compositeAr = (CompositeArtifactRepository) arMgr.createRepository(finalURI,
+						name + " artifacts", Builder.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
+
+				for (URI trustedURI : trustedRepos) {
+					compositeMdr.addChild(trustedURI);
+					compositeAr.addChild(trustedURI);
+				}
+				compositeMdr.addChild(mirrorURI.relativize(finalURI));
+				compositeAr.addChild(mirrorURI.relativize(finalURI));
+				log.info("Done building final composite");
+			}
 		} finally {
 			bucky.ungetService(mdrMgr);
 			bucky.ungetService(arMgr);

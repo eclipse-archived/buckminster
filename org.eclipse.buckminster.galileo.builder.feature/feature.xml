@@ -15,7 +15,7 @@ The code, documentation and other materials contained herein have been licensed 
    </copyright>
 
    <license url="%licenseURL">
-       Eclipse Public License - v 1.0
+      Eclipse Public License - v 1.0
 
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLIC LICENSE (&quot;AGREEMENT&quot;). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT&apos;S ACCEPTANCE OF THIS AGREEMENT.
 
@@ -104,10 +104,10 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <requires>
+      <import plugin="com.ibm.icu" version="4.0.0" match="equivalent"/>
       <import plugin="org.eclipse.osgi" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.core.resources" version="3.5.0" match="equivalent"/>
-      <import plugin="com.ibm.icu" version="4.0.0" match="equivalent"/>
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="equivalent"/>
       <import plugin="org.eclipse.debug.core" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.pde.core" version="3.5.0" match="equivalent"/>
@@ -115,7 +115,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.core.variables" version="3.2.200" match="equivalent"/>
       <import plugin="org.eclipse.ui.externaltools" version="3.2.0" match="equivalent"/>
       <import plugin="org.apache.ant" version="1.7.0" match="equivalent"/>
-      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="equivalent"/>
       <import plugin="org.eclipse.equinox.app" version="1.2.0" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.artifact.repository" version="1.0.100" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.console" version="1.0.0" match="equivalent"/>
@@ -132,6 +131,19 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.ecf.provider.filetransfer" version="3.0.0" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.updatesite" version="1.0.100" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.exemplarysetup" version="1.0.0" match="equivalent"/>
+      <import plugin="org.eclipse.jface.text" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.text" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.core.jobs" version="3.4.100" match="equivalent"/>
+      <import plugin="org.eclipse.core.net" version="1.2.0" match="equivalent"/>
+      <import plugin="org.eclipse.update.core" version="3.2.300" match="equivalent"/>
+      <import plugin="org.eclipse.team.core" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.team.cvs.core" version="3.3.200" match="equivalent"/>
+      <import plugin="org.eclipse.pde.build" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.jdt.core" version="3.5.0" match="equivalent"/>
+      <import plugin="org.eclipse.equinox.frameworkadmin" version="1.0.100" match="equivalent"/>
+      <import plugin="org.eclipse.ant.core" version="3.2.100" match="equivalent"/>
    </requires>
 
    <plugin
@@ -297,6 +309,81 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="org.eclipse.buckminster.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.cmdline"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.cvs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.download"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.generic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.jdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.buckminster.opml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.osgi.filter"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.pde"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.buckminster.sax"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.jarprocessor"
          download-size="0"
          install-size="0"
          version="0.0.0"

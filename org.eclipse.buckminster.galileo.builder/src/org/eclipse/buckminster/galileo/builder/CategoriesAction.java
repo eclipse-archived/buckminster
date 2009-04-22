@@ -58,7 +58,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 		try {
 			for (Contribution contrib : builder.getBuild().getContributions()) {
 				for (Feature feature : contrib.getFeatures()) {
-					if (builder.skipFeature(contrib, feature))
+					if (Builder.skipFeature(feature, false))
 						continue;
 					for (Category category : feature.getCategory()) {
 						if (category != null) {

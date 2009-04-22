@@ -184,7 +184,7 @@ public class RepositoryVerifier extends BuilderPhase {
 
 					InstallableUnitOperand iuOp = (InstallableUnitOperand) op;
 					IInstallableUnit iu = iuOp.second();
-					if (iu != null)
+					if (iu != null && !Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(iu.getId()))
 						unitsToInstall.add(iu);
 				}
 			}
@@ -196,20 +196,24 @@ public class RepositoryVerifier extends BuilderPhase {
 			bucky.ungetService(planner);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
+		log.info("Found %d units to install", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
 
-		if (unitsToInstall.size() > 0) {
+		URI[] trustedURIs = getBuilder().getTrustedContributionRepos();
+		if (trustedURIs.length > 0 && unitsToInstall.size() > 0) {
 			// Filter out everything that is included in the target platform
 			//
-			log.info("Found %d units to install. Now pruning using target platform", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
+			log.info("Pruning using trusted contributed repositories", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
 			IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-			IMetadataRepository tpRepo = mdrMgr.loadRepository(getBuilder().getTargetPlatformRepo(), null);
-			tpRepo.query(new MatchQuery() {
-				@Override
-				public boolean isMatch(Object candidate) {
-					unitsToInstall.remove(candidate);
-					return false;
-				}
-			}, new Collector(), null);
+			for (URI trusted : trustedURIs) {
+				IMetadataRepository trustedRepo = mdrMgr.loadRepository(trusted, null);
+				trustedRepo.query(new MatchQuery() {
+					@Override
+					public boolean isMatch(Object candidate) {
+						unitsToInstall.remove(candidate);
+						return false;
+					}
+				}, new Collector(), null);
+			}
 			bucky.ungetService(mdrMgr);
 			log.info("%d units remain after pruning", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
 		}

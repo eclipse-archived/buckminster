@@ -88,29 +88,29 @@ public class Builder implements IApplication {
 
 	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = new Version(1, 0, 0);
 
-	public static final String CATEGORY_REPO_FOLDER = "categories"; //$NON-NLS-1$
-
 	public static final String COMPOSITE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
 
 	public static final String COMPOSITE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
 
-	public static final String COMPOSITE_REPO_FOLDER = "composite"; //$NON-NLS-1$
-
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator"); //$NON-NLS-1$
-
-	public static final String MIRROR_REPO_FOLDER = "mirror"; //$NON-NLS-1$
 
 	public static final String NAMESPACE_OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
-	public static final String PLATFORM_REPO_FOLDER = "platform"; //$NON-NLS-1$
-
-	public static final String PLATFORM_REPO_NAME = "Platform Repository"; //$NON-NLS-1$
-
 	public static final String PROFILE_ID = "GalileoTest"; //$NON-NLS-1$
+
+	public static final String REPO_FOLDER_CATEGORIES = "categories"; //$NON-NLS-1$
+
+	public static final String REPO_FOLDER_FINAL = "final"; //$NON-NLS-1$
+
+	public static final String REPO_FOLDER_INTERIM = "interim"; //$NON-NLS-1$
+
+	public static final String REPO_FOLDER_MIRROR = "mirror"; //$NON-NLS-1$
 
 	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
 
 	public static final String SIMPLE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
+
+	public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmm"); //$NON-NLS-1$
 
 	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
 
@@ -132,13 +132,14 @@ public class Builder implements IApplication {
 
 	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HHmm"); //$NON-NLS-1$
 
-	private static final String TP_CONTRIBUTION_LABEL = "Eclipse"; //$NON-NLS-1$
+	private final List<String> trustedContributions = new ArrayList<String>();
 
 	static {
 		TimeZone utc = TimeZone.getTimeZone("UTC"); //$NON-NLS-1$
 		PROPERTY_REPLACER.initProperties();
 		DATE_FORMAT.setTimeZone(utc);
 		TIME_FORMAT.setTimeZone(utc);
+		TIMESTAMP_FORMAT.setTimeZone(utc);
 	}
 
 	/**
@@ -181,8 +182,24 @@ public class Builder implements IApplication {
 		return result.length > 0 ? result[0] : null;
 	}
 
-	public static boolean isCapabilitiesFeature(Contribution contrib, Feature feature) {
-		return feature.getId().endsWith(".capabilities") && contrib.getRepositories().size() > 0 && feature.getCategory().size() == 0;
+	public static boolean isCapabilitiesBundle(org.eclipse.amalgam.releng.build.Bundle bundle) {
+		String id = bundle.getId();
+		return id.endsWith(".capabilities") && bundle.getRepo() != null;
+	}
+
+	public static boolean isCapabilitiesFeature(Feature feature) {
+		String id = feature.getId();
+		return (id.endsWith(".capabilities") || id.endsWith(".capabilities.feature")) && feature.getRepo() != null
+				&& feature.getCategory().size() == 0;
+	}
+
+	public static boolean skipFeature(Feature feature, boolean logSkipped) {
+		if (feature.getRepo() == null) {
+			if (logSkipped)
+				Buckminster.getLogger().warning("Skipping feature %s/%s since it has no repository", feature.getId(), feature.getVersion());
+			return true;
+		}
+		return isCapabilitiesFeature(feature);
 	}
 
 	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
@@ -258,7 +275,9 @@ public class Builder implements IApplication {
 
 	private File buildRoot;
 
-	private String capabilitiesContribution;
+	private String brandingContribution;
+
+	private Feature brandingFeature;
 
 	private URI categoriesRepo;
 
@@ -294,13 +313,17 @@ public class Builder implements IApplication {
 
 	private String subjectPrefix;
 
-	private URI targetPlatformRepo;
-
 	private Set<IInstallableUnit> unitsToInstall;
 
 	private boolean update;
 
 	private boolean verifyOnly;
+
+	private URI[] trustedContributionRepos;
+
+	public Feature getBrandingFeature() {
+		return brandingFeature;
+	}
 
 	public Build getBuild() {
 		return build;
@@ -318,39 +341,12 @@ public class Builder implements IApplication {
 		return buildRoot;
 	}
 
-	public String getCapabilitiesContribution() {
-		return capabilitiesContribution;
-	}
-
 	public URI getCategoriesRepo() {
 		return categoriesRepo;
 	}
 
-	public Feature getGlobalCapabilitiesFeature() throws CoreException {
-		if (capabilitiesContribution == null)
-			// Nothing to do here
-			return null;
-
-		Feature capabilitiesFeature = null;
-		List<Contribution> contributions = build.getContributions();
-		for (Contribution contrib : contributions) {
-			if (!capabilitiesContribution.equals(contrib.getLabel()))
-				continue;
-			List<Feature> features = contrib.getFeatures();
-			if (features.size() == 1) {
-				capabilitiesFeature = features.get(0);
-				break;
-			}
-			throw BuckminsterException.fromMessage("The capability contribution %s does not have exactly one feature", capabilitiesContribution);
-		}
-
-		if (capabilitiesFeature == null)
-			throw BuckminsterException.fromMessage("Unable to find capability contribution %s in the build model", capabilitiesContribution);
-		return capabilitiesFeature;
-	}
-
 	public URI getGlobalRepoURI() throws CoreException {
-		return createURI(new File(buildRoot, COMPOSITE_REPO_FOLDER));
+		return createURI(new File(buildRoot, REPO_FOLDER_INTERIM));
 	}
 
 	public URI getMirrorsURI() throws CoreException {
@@ -383,26 +379,8 @@ public class Builder implements IApplication {
 		return mirrorsURI;
 	}
 
-	public URI getTargetPlatformRepo() throws CoreException {
-		if (targetPlatformRepo != null)
-			return targetPlatformRepo;
-
-		for (Contribution contrib : build.getContributions())
-			if (TP_CONTRIBUTION_LABEL.equals(contrib.getLabel())) {
-				List<Repository> repos = contrib.getRepositories();
-				if (repos.size() == 1) {
-					targetPlatformRepo = URI.create(repos.get(0).getLocation());
-					break;
-				}
-			}
-
-		if (targetPlatformRepo == null)
-			throw BuckminsterException
-					.fromMessage(
-							"The build requires that a contribution named '%s' and appoints one repository. This is where the build extracts the target platform", //$NON-NLS-1$
-							TP_CONTRIBUTION_LABEL);
-
-		return targetPlatformRepo;
+	public URI[] getTrustedContributionRepos() {
+		return trustedContributionRepos;
 	}
 
 	public Set<IInstallableUnit> getUnitsToInstall() {
@@ -427,7 +405,7 @@ public class Builder implements IApplication {
 	 * @param monitor
 	 */
 	public Object run(IProgressMonitor monitor) {
-		MonitorUtils.begin(monitor, verifyOnly ? 100 : 1100);
+		MonitorUtils.begin(monitor, verifyOnly ? 200 : 1100);
 
 		try {
 			if (buildModelLocation == null)
@@ -449,6 +427,41 @@ public class Builder implements IApplication {
 			verifyContributions();
 
 			runTransformation();
+			List<Contribution> contributions = build.getContributions();
+
+			if (brandingContribution != null) {
+				brandingFeature = null;
+				for (Contribution contrib : contributions) {
+					if (!brandingContribution.equals(contrib.getLabel()))
+						continue;
+					List<Feature> features = contrib.getFeatures();
+					if (features.size() == 1) {
+						brandingFeature = features.get(0);
+						break;
+					}
+					throw BuckminsterException.fromMessage("The capability contribution %s does not have exactly one feature", brandingContribution);
+				}
+
+				if (brandingFeature == null)
+					throw BuckminsterException.fromMessage("Unable to find capability contribution %s in the build model", brandingContribution);
+			}
+
+			if (trustedContributions.size() > 0) {
+				ArrayList<URI> allRepos = new ArrayList<URI>(trustedContributions.size());
+				for (String trusted : trustedContributions) {
+					Contribution tc = null;
+					for (Contribution contrib : contributions)
+						if (trusted.equals(contrib.getLabel())) {
+							tc = contrib;
+							break;
+						}
+					if (tc == null)
+						throw BuckminsterException.fromMessage("Unable to find capability contribution %s in the build model", trusted);
+					for (Repository repo : tc.getRepositories())
+						allRepos.add(URI.create(repo.getLocation()));
+				}
+				trustedContributionRepos = allRepos.toArray(new URI[allRepos.size()]);
+			}
 
 			Buckminster bucky = Buckminster.getDefault();
 			PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
@@ -493,10 +506,11 @@ public class Builder implements IApplication {
 
 			runTemplateExpansion(resourceSet, "build2page::Main", new File(buildRoot, "index.php"));
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
+			runBrandingFeatureBuild(MonitorUtils.subMonitor(monitor, 100));
 			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
 			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
 			if (!verifyOnly)
-				runMirroring(MonitorUtils.subMonitor(monitor, 1000));
+				runMirroring(MonitorUtils.subMonitor(monitor, 900));
 		} catch (Throwable e) {
 			Buckminster.getLogger().error(e, "Build failed! Exception was %s", getExceptionMessages(e));
 			if (e instanceof Error)
@@ -635,6 +649,10 @@ public class Builder implements IApplication {
 		}
 	}
 
+	public void setBrandingContribution(String brandingContribution) {
+		this.brandingContribution = brandingContribution;
+	}
+
 	public void setBuildID(String buildId) {
 		this.buildID = buildId;
 	}
@@ -645,10 +663,6 @@ public class Builder implements IApplication {
 
 	public void setBuildRoot(File buildRoot) {
 		this.buildRoot = buildRoot;
-	}
-
-	public void setCapabilitiesContribution(String capabilitiesContribution) {
-		this.capabilitiesContribution = capabilitiesContribution;
 	}
 
 	public void setCategoriesRepo(URI categoriesRepo) {
@@ -699,8 +713,18 @@ public class Builder implements IApplication {
 		this.subjectPrefix = subjectPrefix;
 	}
 
-	public void setTargetPlatformRepo(URI targetPlatformRepo) {
-		this.targetPlatformRepo = targetPlatformRepo;
+	public void setTrustedContributions(String trustedContribs) {
+		int idx = trustedContribs.indexOf(',');
+		while (idx > 0) {
+			String tc = Trivial.trim(trustedContribs.substring(0, idx));
+			if (tc != null)
+				trustedContributions.add(tc);
+			trustedContribs = trustedContribs.substring(idx + 1);
+			idx = trustedContribs.indexOf(',');
+		}
+		trustedContribs = Trivial.trim(trustedContribs);
+		if (trustedContribs != null)
+			trustedContributions.add(trustedContribs);
 	}
 
 	public void setUnitsToInstall(Set<IInstallableUnit> unitsToInstall) {
@@ -713,25 +737,6 @@ public class Builder implements IApplication {
 
 	public void setVerifyOnly(boolean verifyOnly) {
 		this.verifyOnly = verifyOnly;
-	}
-
-	public boolean skipFeature(Contribution contrib, Feature feature) {
-		if (isCapabilitiesFeature(contrib, feature))
-			return true;
-
-		// Special hack. Don't include the org.eclipse.galileo feature unless
-		// it's the appointed global capabilitiesContribution or if it
-		// provides a repository (in which case it's built
-		// elsewhere)
-		if (!"org.eclipse.galileo".equals(feature.getId()))
-			return false;
-
-		if (contrib.getRepositories().size() > 0)
-			// It resides in a repository of its own. Don't skip
-			return false;
-
-		// Only keep if it's the capabilitiesContribution feature
-		return !(capabilitiesContribution != null && capabilitiesContribution.equals(contrib.getLabel()));
 	}
 
 	public Object start(IApplicationContext context) throws Exception {
@@ -905,22 +910,29 @@ public class Builder implements IApplication {
 				setBuildID(args[idx]);
 				continue;
 			}
-			if ("-capabilitiesContribution".equalsIgnoreCase(arg)) {
+			if ("-brandingContribution".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
 					requiresArgument(arg);
-				setCapabilitiesContribution(args[idx]);
+				setBrandingContribution(args[idx]);
 				continue;
 			}
-			if ("-targetPlatformRepository".equalsIgnoreCase(arg)) {
+			if ("-trustedContributions".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
 					requiresArgument(arg);
-				setTargetPlatformRepo(URI.create(args[idx]));
+				setTrustedContributions(args[idx]);
 				continue;
 			}
 			String msg = String.format("Unknown option %s", arg);
 			Buckminster.getLogger().error(msg);
 			throw new IllegalArgumentException(msg);
 		}
+	}
+
+	private void runBrandingFeatureBuild(IProgressMonitor monitor) throws CoreException {
+		if (brandingFeature == null)
+			return;
+		BrandingFeatureCompiler brandingFeatureCompiler = new BrandingFeatureCompiler(this, brandingFeature);
+		brandingFeatureCompiler.run(monitor);
 	}
 
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException {
