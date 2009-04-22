@@ -363,6 +363,8 @@ public class CSpecFromSource extends CSpecGenerator
 		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_SITE_FEATURES, TASK_COPY_GROUP, false);
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_JAR, null, INCLUDE_TOP_FILTER);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JAR, null, INCLUDE_TOP_FILTER);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
 		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));

@@ -32,7 +32,8 @@ Require-Bundle: org.eclipse.buckminster.jdt;bundle-version="1.0.0",
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-BundleShape: dir
-Export-Package: org.eclipse.buckminster.pde.cspecgen,
+Export-Package: org.eclipse.buckminster.pde,
+ org.eclipse.buckminster.pde.cspecgen,
  org.eclipse.buckminster.pde.cspecgen.bundle,
  org.eclipse.buckminster.pde.cspecgen.feature,
  org.eclipse.buckminster.pde.mapfile,

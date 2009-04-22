@@ -90,8 +90,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site"); //$NON-NLS-1$
 
-	public static final IPath OUTPUT_DIR_SITE_P2 = OUTPUT_DIR.append("site.p2"); //$NON-NLS-1$
-
 	public static final IPath OUTPUT_DIR_SITE_REPACKED = OUTPUT_DIR.append("site.repacked"); //$NON-NLS-1$
 
 	public static final IPath OUTPUT_DIR_SITE_PACKED = OUTPUT_DIR.append("site.packed"); //$NON-NLS-1$
@@ -120,18 +118,20 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final Filter SIGNING_ENABLED_AND_PACK_DISABLED;
 
+	public static final Filter INCLUDE_TOP_FILTER;
+
 	static
 	{
 		try
 		{
 			SOURCE_FILTER = FilterFactory.newInstance("(!(cbi.include.source=false))"); //$NON-NLS-1$
+			INCLUDE_TOP_FILTER = FilterFactory.newInstance("(site.include.top=true)"); //$NON-NLS-1$
 			SIGNING_ENABLED = FilterFactory.newInstance("(site.signing=true)"); //$NON-NLS-1$
 			SIGNING_DISABLED = FilterFactory.newInstance("(!(site.signing=true))"); //$NON-NLS-1$
 			PACK_ENABLED = FilterFactory.newInstance("(site.pack200=true)"); //$NON-NLS-1$
 			PACK_DISABLED = FilterFactory.newInstance("(!(site.pack200=true))"); //$NON-NLS-1$
 			SIGNING_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(!(site.signing=true)))"); //$NON-NLS-1$
-			SIGNING_ENABLED_AND_PACK_DISABLED = FilterFactory
-					.newInstance("(&(!(site.pack200=true))(site.signing=true))"); //$NON-NLS-1$
+			SIGNING_ENABLED_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(site.signing=true))"); //$NON-NLS-1$
 		}
 		catch(InvalidSyntaxException e)
 		{
@@ -276,8 +276,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		IFragment fragment = fragmentModel.getFragment();
 		ComponentRequestBuilder bundleHostDep = m_cspecBuilder.createDependencyBuilder();
 		bundleHostDep.setName(fragment.getPluginId());
-		bundleHostDep
-				.setVersionRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, fragment.getPluginVersion()));
+		bundleHostDep.setVersionRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, fragment.getPluginVersion()));
 		bundleHostDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
 		try
 		{
@@ -358,8 +357,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		monitor.beginTask(null, 2000);
 		try
 		{
-			List<FileHandle> productConfigs = m_reader.getRootFiles(PRODUCT_CONFIGURATION_FILE_PATTERN, MonitorUtils
-					.subMonitor(monitor, 500));
+			List<FileHandle> productConfigs = m_reader.getRootFiles(PRODUCT_CONFIGURATION_FILE_PATTERN,
+					MonitorUtils.subMonitor(monitor, 500));
 			if(productConfigs.size() == 0)
 				return false;
 
@@ -397,8 +396,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected ComponentRequestBuilder createDependency(IPluginReference pluginReference, String category)
 			throws CoreException
 	{
-		return createDependency(pluginReference.getId(), category, pluginReference.getVersion(), pluginReference
-				.getMatch(), null);
+		return createDependency(pluginReference.getId(), category, pluginReference.getVersion(),
+				pluginReference.getMatch(), null);
 	}
 
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
@@ -442,7 +441,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				SIGNING_ENABLED_AND_PACK_DISABLED);
 		siteBuilder.addLocalPrerequisite(siteDefiningAttribute, P2SiteGenerator.ALIAS_SITE_DEFINER);
 		siteBuilder.addLocalPrerequisite(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, P2SiteGenerator.ALIAS_PRODUCT_CONFIGS);
-		siteBuilder.setProductBase(OUTPUT_DIR_SITE_P2);
+		siteBuilder.setProductBase(IPDEConstants.OUTPUT_DIR_SITE_P2);
 	}
 
 	protected void createSitePackAction(String rawSiteAttribute) throws CoreException
@@ -650,7 +649,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					// Ensure that a dependency exists to the executable feature.
 					//
 					if(addDependency(dep))
-						featureExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_EXPORTS);
+						featureExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
+								ATTRIBUTE_FEATURE_EXPORTS);
 				}
 			}
 			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);

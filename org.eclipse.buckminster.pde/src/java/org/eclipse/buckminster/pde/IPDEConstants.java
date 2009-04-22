@@ -270,4 +270,6 @@ public interface IPDEConstants
 	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
 
 	static final String TOP_FOLDER_SUFFIX = ".topfolder"; //$NON-NLS-1$
+
+	public static final IPath OUTPUT_DIR_SITE_P2 = OUTPUT_DIR.append("site.p2"); //$NON-NLS-1$
 }
