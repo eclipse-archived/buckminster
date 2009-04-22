@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.commands;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class Build extends WorkspaceCommand
@@ -34,7 +35,7 @@ public class Build extends WorkspaceCommand
 
 	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
 
-	public static int build(IProgressMonitor monitor, boolean clean) throws Exception
+	public static IMarker[] build(IProgressMonitor monitor, boolean clean) throws Exception
 	{
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot wsRoot = ws.getRoot();
@@ -93,34 +94,26 @@ public class Build extends WorkspaceCommand
 				//
 				ws.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
 			}
-
-			if(top == 0)
-				return 0;
-
-			Map<Long, IMarker> problems = new TreeMap<Long, IMarker>();
-			while(--top >= 0)
+			Arrays.sort(markers, new Comparator<IMarker>()
 			{
-				IMarker marker = markers[top];
-				problems.put(Long.valueOf(marker.getCreationTime()), marker);
-			}
-
-			int exitValue = 0;
-			for(IMarker problem : problems.values())
-			{
-				switch(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO))
+				public int compare(IMarker a, IMarker b)
 				{
-				case IMarker.SEVERITY_ERROR:
-					exitValue = 1;
-					System.err.println(formatMarkerMessage("Error", problem)); //$NON-NLS-1$
-					break;
-				case IMarker.SEVERITY_WARNING:
-					System.err.println(formatMarkerMessage("Warning", problem)); //$NON-NLS-1$
-					break;
-				case IMarker.SEVERITY_INFO:
-					System.out.println(formatMarkerMessage("Info", problem)); //$NON-NLS-1$
+					try
+					{
+						long diff = a.getCreationTime() - b.getCreationTime();
+						return diff > 0
+								? 1
+								: (diff < 0
+										? -1
+										: 0);
+					}
+					catch(CoreException e)
+					{
+						return 0;
+					}
 				}
-			}
-			return exitValue;
+			});
+			return markers;
 		}
 		finally
 		{
@@ -128,7 +121,7 @@ public class Build extends WorkspaceCommand
 		}
 	}
 
-	private static String formatMarkerMessage(String type, IMarker problem)
+	public static String formatMarkerMessage(String type, IMarker problem)
 	{
 		StringBuilder bld = new StringBuilder();
 		bld.append(type);
@@ -172,7 +165,23 @@ public class Build extends WorkspaceCommand
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
-		return build(monitor, m_clean);
+		int exitValue = 0;
+		for(IMarker problem : build(monitor, m_clean))
+		{
+			switch(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO))
+			{
+			case IMarker.SEVERITY_ERROR:
+				exitValue = 1;
+				System.err.println(formatMarkerMessage("Error", problem)); //$NON-NLS-1$
+				break;
+			case IMarker.SEVERITY_WARNING:
+				System.err.println(formatMarkerMessage("Warning", problem)); //$NON-NLS-1$
+				break;
+			case IMarker.SEVERITY_INFO:
+				System.out.println(formatMarkerMessage("Info", problem)); //$NON-NLS-1$
+			}
+		}
+		return exitValue;
 	}
 
 }
