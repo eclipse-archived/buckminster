@@ -877,8 +877,8 @@ public class Application implements IApplication
 					new ErrorDialog(
 							getWindowIconImage(),
 							title,
-							"An unexpected error occured",
-							"This could be because of intermittend network problems. Please try again, and if the problem persists, please report the problem",
+							"An unexpected error occured.\n\nThis could be because of intermittend network problems.",
+							"Please try again, and if the problem persists, please report the problem",
 							getErrorURL() + "?errorCode=" + BootstrapConstants.ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION)
 							.open();
 					
