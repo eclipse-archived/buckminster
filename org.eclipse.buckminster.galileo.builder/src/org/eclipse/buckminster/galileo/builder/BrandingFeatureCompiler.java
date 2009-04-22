@@ -50,6 +50,9 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -210,18 +213,27 @@ public class BrandingFeatureCompiler extends BuilderPhase {
 	private void populateWorkspace(IProgressMonitor monitor) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info("Populating workspace");
+		MonitorUtils.begin(monitor, 100);
 		long now = System.currentTimeMillis();
+
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		IWorkspaceDescription wsDesc = ws.getDescription();
+		wsDesc.setAutoBuilding(false);
+		wsDesc.setSnapshotInterval(Long.MAX_VALUE);
+		ws.setDescription(wsDesc);
+		ws.save(true, MonitorUtils.subMonitor(monitor, 5));
 
 		ComponentQuery query = createQuery();
 		ResolutionContext ctx = new ResolutionContext(query);
 		IResolver resolver = new MainResolver(ctx);
-		BillOfMaterials bom = resolver.resolve(monitor);
+		BillOfMaterials bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 95));
 		MaterializationSpecBuilder mspecBld = new MaterializationSpecBuilder();
 		mspecBld.setName(bom.getViewName());
 		mspecBld.setMaterializerID(IMaterializer.WORKSPACE);
 		bom.addMaterializationNodes(mspecBld);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspecBld.createMaterializationSpec());
 		MaterializationJob.run(matCtx, true);
+		MonitorUtils.done(monitor);
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}
 }
