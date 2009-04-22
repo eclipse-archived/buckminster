@@ -384,8 +384,8 @@ public class MirrorGenerator extends BuilderPhase {
 					compositeMdr.addChild(trustedURI);
 					compositeAr.addChild(trustedURI);
 				}
-				compositeMdr.addChild(mirrorURI.relativize(finalURI));
-				compositeAr.addChild(mirrorURI.relativize(finalURI));
+				compositeMdr.addChild(finalURI.relativize(mirrorURI));
+				compositeAr.addChild(finalURI.relativize(mirrorURI));
 				log.info("Done building final composite");
 			}
 		} finally {
