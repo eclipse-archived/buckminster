@@ -22,6 +22,8 @@ public interface BootstrapConstants
 
 	public static final int DEFAULT_STARTUP_TIMEOUT = 60000;
 
+	public static final int SPLASH_WINDOW_DELAY = 4000;
+
 	public static final String ERROR_CODE_ARTIFACT_SAX_EXCEPTION = "ArtifactSAXException"; //$NON-NLS-1$
 
 	public static final String ERROR_CODE_CORRUPTED_FILE_EXCEPTION = "CorruptedFileException"; //$NON-NLS-1$

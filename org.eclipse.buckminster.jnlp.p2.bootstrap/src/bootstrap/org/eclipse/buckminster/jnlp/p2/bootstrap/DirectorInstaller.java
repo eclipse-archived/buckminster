@@ -123,15 +123,12 @@ public class DirectorInstaller
 
 	private File m_directorFolder;
 
-	private boolean m_installed;
-
 	private Unpacker m_unpacker;
 
 	public DirectorInstaller(File installLocation)
 	{
 		m_installLocation = installLocation;
 		m_directorFolder = new File(m_installLocation, DIRECTOR_FOLDER_NAME);
-		m_installed = false;
 	}
 
 	public File getDirectorFolder()
@@ -156,28 +153,6 @@ public class DirectorInstaller
 
 		try
 		{
-			Properties remoteBuildProp = loadProperties(directorBuildPropertiesURL);
-			File directorBuildPropertiesFile = new File(m_directorFolder, DIRECTOR_BUILD_PROPERTIES_FILE_NAME);
-
-			if(m_directorFolder.exists())
-			{
-				if(directorBuildPropertiesFile.exists())
-				{
-					Properties localBuildProp = loadProperties(directorBuildPropertiesFile.toURI().toString());
-
-					String remoteTimestamp = (String)remoteBuildProp.get(PROP_BUILD_TIMESTAMP);
-					String localTimestamp = (String)localBuildProp.get(PROP_BUILD_TIMESTAMP);
-
-					if(remoteTimestamp != null && localTimestamp != null
-							&& remoteTimestamp.compareTo(localTimestamp) <= 0)
-					{
-						// local director is up-to-date
-						m_installed = true;
-						return;
-					}
-				}
-			}
-
 			removeDirector();
 			monitor.taskIncrementalProgress(10);
 
@@ -187,6 +162,7 @@ public class DirectorInstaller
 			// copy director.build.properties file
 			try
 			{
+				File directorBuildPropertiesFile = new File(m_directorFolder, DIRECTOR_BUILD_PROPERTIES_FILE_NAME);
 				directorBuildPropertiesFile.createNewFile();
 
 				InputStream is = new URL(directorBuildPropertiesURL).openStream();
@@ -207,8 +183,6 @@ public class DirectorInstaller
 						Messages.getString("can_not_create_a_new_file"), //$NON-NLS-1$
 						Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 			}
-
-			m_installed = true;
 		}
 		finally
 		{
@@ -216,9 +190,29 @@ public class DirectorInstaller
 		}
 	}
 
-	public boolean isInstalled()
+	public boolean isLatestDirectorInstalled(String remoteDirectorBuildPropertiesURL) throws JNLPException
 	{
-		return m_installed;
+		Properties remoteBuildProp = loadProperties(remoteDirectorBuildPropertiesURL);
+		File directorBuildPropertiesFile = new File(m_directorFolder, DIRECTOR_BUILD_PROPERTIES_FILE_NAME);
+
+		if(m_directorFolder.exists())
+		{
+			if(directorBuildPropertiesFile.exists())
+			{
+				Properties localBuildProp = loadProperties(directorBuildPropertiesFile.toURI().toString());
+
+				String remoteTimestamp = (String)remoteBuildProp.get(PROP_BUILD_TIMESTAMP);
+				String localTimestamp = (String)localBuildProp.get(PROP_BUILD_TIMESTAMP);
+
+				if(remoteTimestamp != null && localTimestamp != null && remoteTimestamp.compareTo(localTimestamp) <= 0)
+				{
+					// local director is up-to-date
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public void removeDirector() throws JNLPException

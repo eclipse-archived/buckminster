@@ -78,6 +78,8 @@ public class SplashWindow extends Frame
 	 */
 	private static ProgressFacade s_listener;
 
+	private static Thread s_showSplashThread = null;
+
 	public static final int SPLASH_IMAGE_BOOT_ID = 0;
 
 	public static final int SPLASH_IMAGE_ID = 1;
@@ -105,6 +107,9 @@ public class SplashWindow extends Frame
 	 */
 	public static void disposeSplash()
 	{
+		if(s_showSplashThread != null)
+			s_showSplashThread.interrupt();
+
 		// s_debugInfo.append("Disposed; ");
 		if(s_instance != null)
 		{
@@ -114,6 +119,12 @@ public class SplashWindow extends Frame
 			s_instance = null;
 			s_listener = null;
 		}
+	}
+
+	// doesn't wait for splash time-out
+	public static void forceShowSplash()
+	{
+		s_instance.setVisible(true);
 	}
 
 	public static String getDebugString()
@@ -230,36 +241,60 @@ public class SplashWindow extends Frame
 	 */
 	public static void splash(Image splashImageBoot, Image splashImage, Image windowIconImage)
 	{
+		splash(splashImageBoot, splashImage, windowIconImage, 0);
+	}
+
+	public static void splash(Image splashImageBoot, Image splashImage, Image windowIconImage, final int showTimeout)
+	{
 		// s_debugInfo.append("Splash; ");
 		if(s_instance == null && splashImage != null)
 		{
 			// Create the splash image
 			s_instance = new SplashWindow(splashImageBoot, splashImage, windowIconImage);
 
-			// Show the window.
-			s_instance.setVisible(true);
+			s_instance.setVisible(false);
 
-			// Note: To make sure the user gets a chance to see the
-			// splash window we wait until its paint method has been
-			// called at least once by the AWT event dispatcher thread.
-			// If more than one processor is available, we don't wait,
-			// and maximize CPU throughput instead.
-			if(!EventQueue.isDispatchThread() && Runtime.getRuntime().availableProcessors() == 1)
+			// don't show fast progress
+			s_showSplashThread = new Thread()
 			{
-				synchronized(s_instance)
+				@Override
+				public void run()
 				{
-					while(!s_instance.m_paintCalled)
+					try
 					{
-						try
+						Thread.sleep(showTimeout);
+
+						// Show the window.
+						s_instance.setVisible(true);
+
+						// Note: To make sure the user gets a chance to see the
+						// splash window we wait until its paint method has been
+						// called at least once by the AWT event dispatcher thread.
+						// If more than one processor is available, we don't wait,
+						// and maximize CPU throughput instead.
+						if(!EventQueue.isDispatchThread() && Runtime.getRuntime().availableProcessors() == 1)
 						{
-							s_instance.wait();
-						}
-						catch(InterruptedException e)
-						{
+							synchronized(s_instance)
+							{
+								while(!s_instance.m_paintCalled)
+								{
+									try
+									{
+										s_instance.wait();
+									}
+									catch(InterruptedException e)
+									{
+									}
+								}
+							}
 						}
 					}
+					catch(InterruptedException e)
+					{
+					}
 				}
-			}
+			};
+			s_showSplashThread.start();
 		}
 	}
 

@@ -44,6 +44,7 @@ import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIME;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIMEOUT;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_WINDOW_ICON;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.SPLASH_WINDOW_DELAY;
 
 import java.awt.Image;
 import java.io.BufferedInputStream;
@@ -418,8 +419,7 @@ public class Main
 		return m_installLocation;
 	}
 
-	public void installProduct(String applicationFolder, Map<String, String> inputArgMap, final ProgressFacade monitor)
-			throws JNLPException
+	public void startDirector(String applicationFolder, Map<String, String> inputArgMap) throws JNLPException
 	{
 		String launcherFile = findEclipseLauncher(applicationFolder);
 		String javaExe = findJavaExe();
@@ -443,8 +443,12 @@ public class Main
 		allArgs.add(inputArgMap.get(PROP_ROOT_IU));
 		allArgs.add("-configURL"); //$NON-NLS-1$
 		allArgs.add(inputArgMap.get(PROP_CONFIG_URL));
-		allArgs.add("-extra"); //$NON-NLS-1$
-		allArgs.add(inputArgMap.get(PROP_EXTRA));
+		String extraArgs = inputArgMap.get(PROP_EXTRA);
+		if(extraArgs != null)
+		{
+			allArgs.add("-extra"); //$NON-NLS-1$
+			allArgs.add(extraArgs);
+		}
 		allArgs.add("-vmargs");
 		allArgs.add("-Xmx512m"); //$NON-NLS-1$
 		allArgs.add("-Declipse.p2.data.area=");
@@ -590,27 +594,31 @@ public class Main
 			 * connection and try again", ERROR_CODE_DOWNLOAD_EXCEPTION, e); }
 			 */
 
-			DirectorInstaller installer = new DirectorInstaller(getInstallLocation());
-
 			if(!SplashWindow.splashIsUp())
 			{
-				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage);
+				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage, SPLASH_WINDOW_DELAY);
 			}
 
-			try
+			DirectorInstaller installer = new DirectorInstaller(getInstallLocation());
+
+			if(!installer.isLatestDirectorInstalled(inputArgMap.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL)))
 			{
-				installer.installDirector(inputArgMap.get(PROP_DIRECTOR_ARCHIVE_URL), inputArgMap
-						.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL), monitor);
-			}
-			catch(OperationCanceledException e)
-			{
-				installer.removeDirector();
-				throw e;
-			}
-			catch(CorruptedFileException e)
-			{
-				throw new JNLPException(Messages.getString("director_application_contains_a_corrupted_file"), //$NON-NLS-1$
-						Messages.getString("trigger_the_materialization_again"), ERROR_CODE_CORRUPTED_FILE_EXCEPTION); //$NON-NLS-1$
+				try
+				{
+					installer.installDirector(inputArgMap.get(PROP_DIRECTOR_ARCHIVE_URL), inputArgMap
+							.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL), monitor);
+				}
+				catch(OperationCanceledException e)
+				{
+					installer.removeDirector();
+					throw e;
+				}
+				catch(CorruptedFileException e)
+				{
+					throw new JNLPException(
+							Messages.getString("director_application_contains_a_corrupted_file"), //$NON-NLS-1$
+							Messages.getString("trigger_the_materialization_again"), ERROR_CODE_CORRUPTED_FILE_EXCEPTION); //$NON-NLS-1$
+				}
 			}
 
 			// NOTE: keep this to enable debugging - uncomment in splash window too. Stores the debug data
@@ -621,7 +629,7 @@ public class Main
 
 			int startupTime = Integer.getInteger(PROP_STARTUP_TIME, DEFAULT_STARTUP_TIME).intValue();
 
-			installProduct(installer.getDirectorFolder().toString(), inputArgMap, monitor);
+			startDirector(installer.getDirectorFolder().toString(), inputArgMap);
 			try
 			{
 				// Four seconds to start, with progressbar. The time is an
