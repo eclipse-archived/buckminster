@@ -666,7 +666,7 @@ public class Application implements IApplication
 	{
 		if(!SplashWindow.splashIsUp())
 		{
-			SplashWindow.splash(getSplashImageBoot(), getSplashImage(), getWindowIconImage());
+			SplashWindow.splash(getSplashImageBoot(), getSplashImage(), getWindowIconImage(), BootstrapConstants.SPLASH_WINDOW_DELAY);
 		}
 	}
 	
@@ -1001,6 +1001,7 @@ public class Application implements IApplication
 			if(!SplashWindow.splashIsUp())
 				SplashWindow.splash(null, getSplashImage(), getWindowIconImage());
 			else
+				SplashWindow.forceShowSplash();
 				SplashWindow.setSplashImage(SplashWindow.SPLASH_IMAGE_ID);
 
 			try
