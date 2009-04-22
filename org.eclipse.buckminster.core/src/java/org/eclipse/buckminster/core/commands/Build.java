@@ -34,49 +34,7 @@ public class Build extends WorkspaceCommand
 
 	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
 
-	// set if a clean build is requested
-	//
-	private boolean m_clean = false;
-
-	private String formatMarkerMessage(String type, IMarker problem)
-	{
-		StringBuilder bld = new StringBuilder();
-		bld.append(type);
-		bld.append(": file "); //$NON-NLS-1$
-		bld.append(problem.getResource().getLocation().toOSString());
-		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
-		if(line > 0)
-		{
-			bld.append(", line "); //$NON-NLS-1$
-			bld.append(line);
-		}
-		bld.append(": "); //$NON-NLS-1$
-		bld.append(problem.getAttribute(IMarker.MESSAGE, "")); //$NON-NLS-1$
-		return bld.toString();
-	}
-
-	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
-		appendHere.add(s_cleanDescriptor);
-	}
-
-	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(s_cleanDescriptor))
-			m_clean = true;
-	}
-
-	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length > 0)
-			throw new UsageException(Messages.Too_many_arguments);
-	}
-
-	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
+	public static int build(IProgressMonitor monitor, boolean clean) throws Exception
 	{
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot wsRoot = ws.getRoot();
@@ -84,7 +42,7 @@ public class Build extends WorkspaceCommand
 
 		try
 		{
-			monitor.beginTask(null, projs.length * (m_clean
+			monitor.beginTask(null, projs.length * (clean
 					? 8
 					: 6));
 
@@ -92,7 +50,7 @@ public class Build extends WorkspaceCommand
 			//
 			wsRoot.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, projs.length));
 
-			if(m_clean)
+			if(clean)
 				//
 				// Clean first if requested
 				//
@@ -168,6 +126,53 @@ public class Build extends WorkspaceCommand
 		{
 			monitor.done();
 		}
+	}
+
+	private static String formatMarkerMessage(String type, IMarker problem)
+	{
+		StringBuilder bld = new StringBuilder();
+		bld.append(type);
+		bld.append(": file "); //$NON-NLS-1$
+		bld.append(problem.getResource().getLocation().toOSString());
+		int line = problem.getAttribute(IMarker.LINE_NUMBER, -1);
+		if(line > 0)
+		{
+			bld.append(", line "); //$NON-NLS-1$
+			bld.append(line);
+		}
+		bld.append(": "); //$NON-NLS-1$
+		bld.append(problem.getAttribute(IMarker.MESSAGE, "")); //$NON-NLS-1$
+		return bld.toString();
+	}
+
+	// set if a clean build is requested
+	//
+	private boolean m_clean = false;
+
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
+	{
+		appendHere.add(s_cleanDescriptor);
+	}
+
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(s_cleanDescriptor))
+			m_clean = true;
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		if(unparsed.length > 0)
+			throw new UsageException(Messages.Too_many_arguments);
+	}
+
+	@Override
+	protected int internalRun(IProgressMonitor monitor) throws Exception
+	{
+		return build(monitor, m_clean);
 	}
 
 }

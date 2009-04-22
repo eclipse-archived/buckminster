@@ -619,6 +619,19 @@ public class WorkspaceInfo
 		return res;
 	}
 
+	public static void runWorkspaceCatchUpJob()
+	{
+		WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
+		catchUpJob.schedule();
+		try
+		{
+			catchUpJob.join();
+		}
+		catch(InterruptedException e)
+		{
+		}
+	}
+
 	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException
 	{
 		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier.toString());
@@ -645,16 +658,7 @@ public class WorkspaceInfo
 				return;
 			s_hasBeenActivated = true;
 		}
-
-		WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
-		catchUpJob.schedule();
-		try
-		{
-			catchUpJob.join();
-		}
-		catch(InterruptedException e)
-		{
-		}
+		runWorkspaceCatchUpJob();
 	}
 
 	private static IProject extractProject(IResource[] resources)
@@ -757,10 +761,8 @@ public class WorkspaceInfo
 					duplicates = new ArrayList<TimestampedKey>();
 				duplicates.add(prevTsKey);
 
-				CorePlugin
-						.getLogger()
-						.debug(
-								"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
+				CorePlugin.getLogger().debug(
+						"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
 				continue;
 			}
 
