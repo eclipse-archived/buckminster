@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.AbstractRemoteReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.imports.FeatureImportOperation;
@@ -58,14 +59,18 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		super(readerType, rInfo);
 		m_base = EclipseImportBase.obtain(rInfo.getNodeQuery(), rInfo.getRepositoryURI());
 
-		Version version = rInfo.getVersionMatch().getVersion();
-		m_model = m_base.isFeature()
-				? getFeatureModel(version, new NullProgressMonitor())
-				: getPluginModel(version, new NullProgressMonitor());
+		VersionMatch vm = rInfo.getVersionMatch();
+		if(vm.getArtifactInfo() == null)
+		{
+			Version version = rInfo.getVersionMatch().getVersion();
+			m_model = m_base.isFeature()
+					? getFeatureModel(version, new NullProgressMonitor())
+					: getPluginModel(version, new NullProgressMonitor());
 
-		if(m_model == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_model_for_0, m_base
-					.getComponentName()));
+			if(m_model == null)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_model_for_0,
+						m_base.getComponentName()));
+		}
 	}
 
 	public IInstallableUnit getCachedInstallableUnit() throws CoreException
@@ -78,11 +83,10 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		monitor.beginTask(null, 1000);
 		try
 		{
-			boolean isPlugin = m_model instanceof IPluginModelBase;
-			localize(isPlugin, MonitorUtils.subMonitor(monitor, 800));
-			IWorkspaceRunnable job = isPlugin
-					? getPluginImportJob((IPluginModelBase)m_model, destination)
-					: getFeatureImportJob((IFeatureModel)m_model, destination);
+			localize(!m_base.isFeature(), MonitorUtils.subMonitor(monitor, 800));
+			IWorkspaceRunnable job = m_base.isFeature()
+					? getFeatureImportJob((IFeatureModel)m_model, destination)
+					: getPluginImportJob((IPluginModelBase)m_model, destination);
 			ResourcesPlugin.getWorkspace().run(job, MonitorUtils.subMonitor(monitor, 200));
 		}
 		finally
@@ -224,7 +228,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 
 	private void localize(boolean isPlugin, IProgressMonitor monitor) throws CoreException
 	{
-		if(m_base.isLocal())
+		if(m_base.isLocal() && getProviderMatch().getVersionMatch().getArtifactInfo() == null)
 		{
 			MonitorUtils.complete(monitor);
 			return;
@@ -243,8 +247,8 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				? getPluginModel(version, subMon)
 				: getFeatureModel(version, subMon);
 		if(m_model == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_localized_model_for_0, m_base
-					.getComponentName()));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_localized_model_for_0,
+					m_base.getComponentName()));
 		monitor.done();
 	}
 }

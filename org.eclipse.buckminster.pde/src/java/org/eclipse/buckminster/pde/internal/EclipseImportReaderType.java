@@ -242,8 +242,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor)
 			throws CoreException
 	{
-		IArtifactRepositoryManager manager = (IArtifactRepositoryManager)ServiceHelper.getService(PDEPlugin
-				.getContext(), IArtifactRepositoryManager.class.getName());
+		IArtifactRepositoryManager manager = (IArtifactRepositoryManager)ServiceHelper.getService(
+				PDEPlugin.getContext(), IArtifactRepositoryManager.class.getName());
 		if(manager == null)
 			throw new IllegalStateException("No metadata repository manager found"); //$NON-NLS-1$
 
@@ -383,8 +383,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	{
 		synchronized(ctxUserCache)
 		{
-			Map<String, IMetadataRepository> cache = (Map<String, IMetadataRepository>)ctxUserCache
-					.get(CACHE_KEY_MDR_CACHE);
+			Map<String, IMetadataRepository> cache = (Map<String, IMetadataRepository>)ctxUserCache.get(CACHE_KEY_MDR_CACHE);
 			if(cache == null)
 			{
 				cache = Collections.synchronizedMap(new HashMap<String, IMetadataRepository>());
@@ -422,8 +421,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 					? FEATURES_FOLDER
 					: PLUGINS_FOLDER;
 
-			return createRemoteComponentURL(siteURL, null, resolution.getName(), resolution.getVersion(), subDir)
-					.toURI();
+			return createRemoteComponentURL(siteURL, null, resolution.getName(), resolution.getVersion(), subDir).toURI();
 		}
 		catch(MalformedURLException e)
 		{
@@ -662,7 +660,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	{
 		NodeQuery query = rInfo.getNodeQuery();
 		EclipseImportBase base = EclipseImportBase.obtain(query, rInfo.getRepositoryURI());
-		if(base.isLocal())
+		if(base.isLocal() && rInfo.getVersionMatch().getArtifactInfo() == null)
 			return base;
 
 		// Synchronize on base, it uses a lightweight pattern so only
@@ -730,7 +728,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				Key remoteKey = base.getKey();
 
 				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base //$NON-NLS-1$
-						.getQuery(), name).toString());
+				.getQuery(), name).toString());
 
 				File destDir = null;
 				boolean unpack = true;
