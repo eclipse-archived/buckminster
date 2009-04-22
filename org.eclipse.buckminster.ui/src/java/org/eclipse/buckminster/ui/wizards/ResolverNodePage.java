@@ -147,8 +147,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		m_greenDotImage = UiPlugin.getImageDescriptor("images/green_dot_16x16.bmp").createImage(); //$NON-NLS-1$
 		m_yellowDotImage = UiPlugin.getImageDescriptor("images/yellow_dot_16x16.bmp").createImage(); //$NON-NLS-1$
 		m_grayDotImage = UiPlugin.getImageDescriptor("images/gray_dot_16x16.bmp").createImage(); //$NON-NLS-1$
-		m_grayDotWithRedExclamationImage = UiPlugin
-				.getImageDescriptor("images/gray_dot_with_red_exclamation_16x16.bmp").createImage(); //$NON-NLS-1$
+		m_grayDotWithRedExclamationImage = UiPlugin.getImageDescriptor("images/gray_dot_with_red_exclamation_16x16.bmp").createImage(); //$NON-NLS-1$
 
 		setDescription(Messages.resolution_tree);
 	}
@@ -421,8 +420,11 @@ public class ResolverNodePage extends AbstractQueryPage
 				nci = nc.intValue();
 
 			m_masterDups.put(ci, new Integer(1 + nci));
-			for(BOMNode child : getSortedChildren(node))
-				countDuplicates(node, child, mspec);
+			if(nci == 0)
+			{
+				for(BOMNode child : getSortedChildren(node))
+					countDuplicates(node, child, mspec);
+			}
 		}
 	}
 
