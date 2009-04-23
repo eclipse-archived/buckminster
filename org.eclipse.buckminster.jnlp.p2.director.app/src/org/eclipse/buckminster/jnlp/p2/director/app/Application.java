@@ -617,19 +617,10 @@ public class Application implements IApplication
 		return IApplication.EXIT_OK;
 	}
 
-	private void loadConfigProperties(String[] args) throws JNLPException
+	private void loadConfigProperties(String configURL) throws JNLPException
 	{
 		if(m_configProps != null)
 			return;
-
-		String configURL = null;
-
-		for(int i = 0; i < args.length; i++)
-			if("-configURL".equalsIgnoreCase(args[i])) //$NON-NLS-1$
-			{
-				configURL = args[++i];
-				break;
-			}
 
 		m_configProps = new Properties();
 
@@ -662,11 +653,11 @@ public class Application implements IApplication
 		}
 	}
 
-	private void startSplash() throws JNLPException
+	private void startSplash(boolean forceSplashVisible) throws JNLPException
 	{
-		if(!SplashWindow.splashIsUp())
+		if(!SplashWindow.isSplashUp())
 		{
-			SplashWindow.splash(getSplashImageBoot(), getSplashImage(), getWindowIconImage(), BootstrapConstants.SPLASH_WINDOW_DELAY);
+			SplashWindow.splash(getSplashImageBoot(), getSplashImage(), getWindowIconImage(), forceSplashVisible ? 0 : BootstrapConstants.SPLASH_WINDOW_DELAY);
 		}
 	}
 	
@@ -804,10 +795,15 @@ public class Application implements IApplication
 			// tell jnlp.p2.bootstrap that the director app is started
 			System.out.println(BootstrapConstants.APP_LAUNCHED_SYNC_STRING);
 
-			loadConfigProperties((String[])context.getArguments().get("application.args"));
+			String[] args = (String[])context.getArguments().get("application.args");
+			
+			String configURL = readArgs(args, "-configURL");
+			loadConfigProperties(configURL);
 
 			monitor = new JNLPProgressMonitor();
-			startSplash();
+			
+			boolean forceSplashVisible = "true".equals(readArgs(args, "-forceSplash"));
+			startSplash(forceSplashVisible);
 			
 			m_packageAdminRef = Activator.getContext().getServiceReference(PackageAdmin.class.getName());
 			setPackageAdmin((PackageAdmin)Activator.getContext().getService(m_packageAdminRef));
@@ -829,7 +825,7 @@ public class Application implements IApplication
 				return EXIT_ERROR;
 			}
 
-			result = run((String[])context.getArguments().get("application.args"), monitor);
+			result = run(args, monitor);
 
 			productInstalled = result == IApplication.EXIT_OK;
 			
@@ -897,6 +893,18 @@ public class Application implements IApplication
 		}
 
 		return result;
+	}
+
+	private String readArgs(String[] args, String key)
+	{
+		if(key == null)
+			return null;
+		
+		for(int i = 0; i < args.length; i++)		
+			if(key.equals(args[i]))
+				return args[++i];
+
+		return null;
 	}
 
 	private void startProduct(IProgressMonitor monitor) throws JNLPException
@@ -998,7 +1006,7 @@ public class Application implements IApplication
 
 		try
 		{
-			if(!SplashWindow.splashIsUp())
+			if(!SplashWindow.isSplashUp())
 				SplashWindow.splash(null, getSplashImage(), getWindowIconImage());
 			else
 				SplashWindow.forceShowSplash();
