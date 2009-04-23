@@ -127,7 +127,9 @@ public class BrandingFeatureCompiler extends BuilderPhase {
 		Attribute attr = cspec.getRequiredAttribute(IPDEConstants.ATTRIBUTE_SITE_P2);
 		IPerformManager pm = CorePlugin.getPerformManager();
 		Map<String, Object> props = new HashMap<String, Object>();
-		props.put(KeyConstants.ACTION_OUTPUT_ROOT, new File(getBuilder().getBuildRoot(), "branding").toString());
+		File actionOutputRoot = new File(getBuilder().getBuildRoot(), "branding");
+		props.put(KeyConstants.ACTION_OUTPUT_ROOT, actionOutputRoot.toString());
+		props.put(KeyConstants.ACTION_TEMP_ROOT, new File(actionOutputRoot, "build.tmp").toString());
 		props.put("qualifier.replacement.*", "generator:lastModified");
 		props.put("generator.lastModified.format", "'v'yyyyMMdd-HHmm");
 		props.put("site.pack200", "true");
