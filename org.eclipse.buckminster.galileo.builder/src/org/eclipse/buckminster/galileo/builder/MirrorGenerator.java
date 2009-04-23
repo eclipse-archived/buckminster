@@ -365,6 +365,9 @@ public class MirrorGenerator extends BuilderPhase {
 			mirror(new AllButAllContributedFeature(), categoryRepository, mirrorMdr, MonitorUtils.subMonitor(monitor, 1));
 			log.info("Done mirroring meta-data");
 
+			FileUtils.deleteAll(new File(destination, "compositeContent.jar"));
+			FileUtils.deleteAll(new File(destination, "compositeArtifacts.jar"));
+
 			if (trustedRepos.length > 0) {
 				// Set up the final composite repositories
 				log.info("Building final composites at %s", finalURI);
