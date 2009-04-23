@@ -86,7 +86,7 @@
 		<li class="tabstart">&#160;&#160;&#160;</li>
 		<li><a href="http://download.eclipse.org/modeling/amalgam/downloads/index.php" target="_self">Amalgam Downloads</a></li>
 		<li class="tabstartselected">&#160;&#160;&#160;</li>
-		<li><a class="tabselected">«label» Build «displayVersion(self)»</a></li>
+		<li><a class="tabselected">«label» Build «date»-«time»</a></li>
 	</ul>
 </div>
 «ENDDEFINE»
@@ -131,7 +131,7 @@
 		<table BORDER=0 CELLSPACING=5 CELLPADDING=2 WIDTH="100%" > 
 			<tr> 
 			  <td> 
-				<p><b><font face="Verdana" size="+3">«label» Build: «displayVersion(self)»</font></b><br> 
+				<p><b><font face="Verdana" size="+3">«label» Build «date»-«time»</font></b><br> 
 				These downloads are provided under the <a href="http://www.eclipse.org/legal/epl/notice.html">
 				<b>Eclipse Foundation Software User Agreement</b></a>.</p>
 			  </td>
@@ -146,7 +146,7 @@
 		</table>
 		<table align="left" BORDER=0 CELLSPACING=5 CELLPADDING=2 WIDTH="100%">
 			<tr>
-			  <td colspan="2"><div class="homeitem3col"><h3><a name="«label»">«label» build «displayVersion(self)»</a></h3></div></td>
+			  <td colspan="2"><div class="homeitem3col"><h3><a name="«label»">«label» build «date»-«time»</a></h3></div></td>
 			</tr>
 «EXPAND requirements FOR self»
 «EXPAND contacts FOR self»
