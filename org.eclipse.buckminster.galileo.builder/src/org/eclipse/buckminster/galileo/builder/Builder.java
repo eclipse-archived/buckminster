@@ -773,8 +773,8 @@ public class Builder implements IApplication {
 			if (buildRoot == null)
 				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
-			if (buildRoot.exists()) {
-				if (!update) {
+			if (!update) {
+				if (buildRoot.exists()) {
 					File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
 							.getURL()));
 					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
@@ -785,9 +785,9 @@ public class Builder implements IApplication {
 						if (buildRoot.exists())
 							throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
 					}
-					IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-					wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
 				}
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
 			}
 			buildRoot.mkdirs();
 			if (!buildRoot.exists())
