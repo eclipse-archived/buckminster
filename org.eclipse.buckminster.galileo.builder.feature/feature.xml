@@ -111,9 +111,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="equivalent"/>
       <import plugin="org.eclipse.debug.core" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.pde.core" version="3.5.0" match="equivalent"/>
-      <import plugin="org.eclipse.ui" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.core.variables" version="3.2.200" match="equivalent"/>
-      <import plugin="org.eclipse.ui.externaltools" version="3.2.0" match="equivalent"/>
       <import plugin="org.apache.ant" version="1.7.0" match="equivalent"/>
       <import plugin="org.eclipse.equinox.app" version="1.2.0" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.artifact.repository" version="1.0.100" match="equivalent"/>
