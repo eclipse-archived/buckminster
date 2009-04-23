@@ -774,9 +774,9 @@ public class Builder implements IApplication {
 				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
 			if (!update) {
+				File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
+						.getURL()));
 				if (buildRoot.exists()) {
-					File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
-							.getURL()));
 					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
 					if (Path.fromOSString(buildRoot.getAbsolutePath()).isPrefixOf(wsPath))
 						deleteAllButWorkspace(buildRoot, wsPath);
@@ -788,6 +788,7 @@ public class Builder implements IApplication {
 				}
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 				wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
+				FileUtils.deleteAll(new File(wsLocation, ".metadata/.plugins/org.eclipse.buckminster.core"));
 			}
 			buildRoot.mkdirs();
 			if (!buildRoot.exists())
