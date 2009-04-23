@@ -140,6 +140,11 @@ public class SplashWindow extends Frame
 		return s_listener;
 	}
 
+	public static boolean isSplashVisible()
+	{
+		return s_instance != null && s_instance.isVisible();
+	}
+
 	/*
 	 * public static void main(String[] args) throws Exception { byte[] splashImageBootData =
 	 * loadData("http://cs-web1.mainloop.net:8080/cssite/img/splash.cloudpowered.png"); byte[] windowIconData =
@@ -298,7 +303,7 @@ public class SplashWindow extends Frame
 		}
 	}
 
-	public static boolean splashIsUp()
+	public static boolean isSplashUp()
 	{
 		return s_instance != null;
 	}

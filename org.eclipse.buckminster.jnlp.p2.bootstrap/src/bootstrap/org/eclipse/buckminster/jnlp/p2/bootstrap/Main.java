@@ -449,6 +449,11 @@ public class Main
 			allArgs.add("-extra"); //$NON-NLS-1$
 			allArgs.add(extraArgs);
 		}
+		if(SplashWindow.isSplashVisible())
+		{
+			allArgs.add("-forceSplash");
+			allArgs.add("true");
+		}
 		allArgs.add("-vmargs");
 		allArgs.add("-Xmx512m"); //$NON-NLS-1$
 		allArgs.add("-Declipse.p2.data.area=");
@@ -594,7 +599,7 @@ public class Main
 			 * connection and try again", ERROR_CODE_DOWNLOAD_EXCEPTION, e); }
 			 */
 
-			if(!SplashWindow.splashIsUp())
+			if(!SplashWindow.isSplashUp())
 			{
 				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage, SPLASH_WINDOW_DELAY);
 			}
