@@ -47,6 +47,7 @@ import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -135,27 +136,6 @@ public class Builder implements IApplication {
 	private static final Project PROPERTY_REPLACER = new Project();
 
 	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HHmm"); //$NON-NLS-1$
-
-	private static void cleanAllButWorkspaceMetadata(File folderToClean, IPath wsMeta) throws CoreException {
-		File[] children = folderToClean.listFiles();
-		if (children == null)
-			return;
-
-		for (File child : children) {
-			IPath childPath = Path.fromOSString(child.getAbsolutePath());
-			if (childPath.isPrefixOf(wsMeta)) {
-				if (!childPath.equals(wsMeta))
-					cleanAllButWorkspaceMetadata(child, wsMeta);
-				continue;
-			}
-			FileUtils.deleteAll(child);
-			if (child.exists())
-				throw BuckminsterException.fromMessage("Failed to delete folder %s", child.getAbsolutePath());
-		}
-		// Refresh meta-data since it's likely that we have removed some
-		// projects
-		ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-	}
 
 	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
 		InternetAddress addr = new InternetAddress();
@@ -777,16 +757,17 @@ public class Builder implements IApplication {
 
 			if (buildRoot.exists()) {
 				if (!update) {
-					File wsRoot = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
+					File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
 							.getURL()));
-					IPath wsPath = Path.fromOSString(new File(wsRoot, ".metadata").getAbsolutePath());
-					if (Path.fromOSString(buildRoot.getAbsolutePath()).isPrefixOf(wsPath)) {
-						cleanAllButWorkspaceMetadata(buildRoot, wsPath);
-					} else {
-						FileUtils.deleteAll(buildRoot);
-						if (buildRoot.exists())
-							throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
-					}
+					IPath brPath = Path.fromOSString(buildRoot.getAbsolutePath());
+					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
+					if (brPath.isPrefixOf(wsPath))
+						throw BuckminsterException.fromMessage("Place the workspace %s under the buildroot %s is not allowed", wsPath, brPath);
+					FileUtils.deleteAll(buildRoot);
+					if (buildRoot.exists())
+						throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
+					IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+					wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
 				}
 			}
 			buildRoot.mkdirs();
