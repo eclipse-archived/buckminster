@@ -137,6 +137,34 @@ public class Builder implements IApplication {
 
 	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HHmm"); //$NON-NLS-1$
 
+	public static IInstallableUnit getIU(IMetadataRepository mdr, String id, String version) {
+		version = Trivial.trim(version);
+		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
+		Collector c = mdr.query(query, new Collector(), null);
+		IInstallableUnit[] result = (IInstallableUnit[]) c.toArray(IInstallableUnit.class);
+		return result.length > 0 ? result[0] : null;
+	}
+
+	public static boolean isCapabilitiesBundle(org.eclipse.amalgam.releng.build.Bundle bundle) {
+		String id = bundle.getId();
+		return id.endsWith(".capabilities") && bundle.getRepo() != null;
+	}
+
+	public static boolean isCapabilitiesFeature(Feature feature) {
+		String id = feature.getId();
+		return (id.endsWith(".capabilities") || id.endsWith(".capabilities.feature")) && feature.getRepo() != null
+				&& feature.getCategory().size() == 0;
+	}
+
+	public static boolean skipFeature(Feature feature, boolean logSkipped) {
+		if (feature.getRepo() == null) {
+			if (logSkipped)
+				Buckminster.getLogger().warning("Skipping feature %s/%s since it has no repository", feature.getId(), feature.getVersion());
+			return true;
+		}
+		return isCapabilitiesFeature(feature);
+	}
+
 	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
 		InternetAddress addr = new InternetAddress();
 		addr.setPersonal(contact.getName());
@@ -194,35 +222,8 @@ public class Builder implements IApplication {
 		}
 	}
 
-	public static IInstallableUnit getIU(IMetadataRepository mdr, String id, String version) {
-		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
-		Collector c = mdr.query(query, new Collector(), null);
-		IInstallableUnit[] result = (IInstallableUnit[]) c.toArray(IInstallableUnit.class);
-		return result.length > 0 ? result[0] : null;
-	}
-
-	public static boolean isCapabilitiesBundle(org.eclipse.amalgam.releng.build.Bundle bundle) {
-		String id = bundle.getId();
-		return id.endsWith(".capabilities") && bundle.getRepo() != null;
-	}
-
-	public static boolean isCapabilitiesFeature(Feature feature) {
-		String id = feature.getId();
-		return (id.endsWith(".capabilities") || id.endsWith(".capabilities.feature")) && feature.getRepo() != null
-				&& feature.getCategory().size() == 0;
-	}
-
 	private static void requiresArgument(String opt) {
 		throw new IllegalArgumentException("Option " + opt + " requires an argument");
-	}
-
-	public static boolean skipFeature(Feature feature, boolean logSkipped) {
-		if (feature.getRepo() == null) {
-			if (logSkipped)
-				Buckminster.getLogger().warning("Skipping feature %s/%s since it has no repository", feature.getId(), feature.getVersion());
-			return true;
-		}
-		return isCapabilitiesFeature(feature);
 	}
 
 	private static boolean startEarly(PackageAdmin packageAdmin, String bundleName) throws BundleException {
@@ -422,159 +423,6 @@ public class Builder implements IApplication {
 		return verifyOnly;
 	}
 
-	private InternetAddress mockCCRecipient() throws UnsupportedEncodingException {
-		InternetAddress mock = null;
-		if (mockEmailCC != null) {
-			mock = new InternetAddress();
-			mock.setAddress(mockEmailCC);
-		}
-		return mock;
-	}
-
-	private List<InternetAddress> mockRecipients() throws UnsupportedEncodingException {
-		if (mockEmailTo != null) {
-			InternetAddress mock = new InternetAddress();
-			mock.setAddress(mockEmailTo);
-			return Collections.singletonList(mock);
-		}
-		return Collections.emptyList();
-	}
-
-	private void parseCommandLineArgs(String[] args) {
-		int top = args.length;
-		for (int idx = 0; idx < top; ++idx) {
-			String arg = args[idx];
-			if ("-verifyOnly".equalsIgnoreCase(arg)) {
-				setVerifyOnly(true);
-				continue;
-			}
-			if ("-updateOnly".equalsIgnoreCase(arg)) {
-				setUpdate(true);
-				continue;
-			}
-			if ("-production".equalsIgnoreCase(arg)) {
-				setProduction(true);
-				continue;
-			}
-			if ("-mockEmailTo".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setMockEmailTo(args[idx]);
-				continue;
-			}
-			if ("-subjectPrefix".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSubjectPrefix(args[idx]);
-				continue;
-			}
-			if ("-emailFrom".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setEmailFrom(args[idx]);
-				continue;
-			}
-			if ("-emailFromName".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setEmailFromName(args[idx]);
-				continue;
-			}
-			if ("-smtpHost".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSmtpHost(args[idx]);
-				continue;
-			}
-			if ("-smtpPort".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				int portNumber = 0;
-				try {
-					portNumber = Integer.parseInt(args[idx]);
-				} catch (NumberFormatException e) {
-				}
-				if (portNumber <= 0)
-					requiresArgument(arg);
-				setSmtpPort(portNumber);
-				continue;
-			}
-			if ("-smtpUser".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSmtpUser(args[idx]);
-				continue;
-			}
-			if ("-smtpPassword".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSmtpPassword(args[idx]);
-				continue;
-			}
-			if ("-mockEmailCC".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setMockEmailCC(args[idx]);
-				continue;
-			}
-			if ("-logLevel".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				String levelStr = args[idx];
-				int level;
-				if ("debug".equalsIgnoreCase(levelStr))
-					level = Logger.DEBUG;
-				else if ("info".equalsIgnoreCase(levelStr))
-					level = Logger.INFO;
-				else if ("warning".equalsIgnoreCase(levelStr))
-					level = Logger.WARNING;
-				else if ("error".equalsIgnoreCase(levelStr))
-					level = Logger.WARNING;
-				else
-					throw new IllegalArgumentException(String.format("%s is not a valid logLevel", levelStr));
-
-				setLogLevel(level);
-				continue;
-			}
-			if ("-buildModel".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				File buildModel = new File(args[idx]);
-				if (!buildModel.canRead())
-					throw new IllegalArgumentException(String.format("Unable to read %s", buildModel));
-				setBuildModelLocation(buildModel);
-				continue;
-			}
-			if ("-buildRoot".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setBuildRoot(new File(args[idx]));
-				continue;
-			}
-			if ("-buildId".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setBuildID(args[idx]);
-				continue;
-			}
-			if ("-brandingContribution".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setBrandingContribution(args[idx]);
-				continue;
-			}
-			if ("-trustedContributions".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setTrustedContributions(args[idx]);
-				continue;
-			}
-			String msg = String.format("Unknown option %s", arg);
-			Buckminster.getLogger().error(msg);
-			throw new IllegalArgumentException(msg);
-		}
-	}
-
 	/**
 	 * Run the build
 	 * 
@@ -697,124 +545,6 @@ public class Builder implements IApplication {
 			monitor.done();
 		}
 		return IApplication.EXIT_OK;
-	}
-
-	private void runBrandingFeatureBuild(IProgressMonitor monitor) throws CoreException {
-		if (brandingFeature == null)
-			return;
-		BrandingFeatureCompiler brandingFeatureCompiler = new BrandingFeatureCompiler(this, brandingFeature);
-		brandingFeatureCompiler.run(monitor);
-	}
-
-	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException {
-		CategoryRepoGenerator extraGenerator = new CategoryRepoGenerator(this);
-		extraGenerator.run(monitor);
-	}
-
-	private void runCompositeGenerator(IProgressMonitor monitor) throws CoreException {
-		CompositeRepoGenerator repoGenerator = new CompositeRepoGenerator(this);
-		repoGenerator.run(monitor);
-	}
-
-	private void runMirroring(IProgressMonitor monitor) throws CoreException {
-		MirrorGenerator mirrorGenerator = new MirrorGenerator(this);
-		mirrorGenerator.run(monitor);
-	}
-
-	private void runRepositoryVerifier(IProgressMonitor monitor) throws CoreException {
-		RepositoryVerifier ipt = new RepositoryVerifier(this);
-		ipt.run(monitor);
-	}
-
-	private void runTemplateExpansion(ResourceSet rs, String name, File outFile) throws IOException {
-		XpandFacade xf = new XpandFacade(rs);
-		xf.addLocation("platform:/plugin/org.eclipse.buckminster.galileo.builder/templates/");
-		xf.addLocation("platform:/plugin/org.eclipse.amalgam.releng.builder/transformations/");
-		String result = xf.xpand(name, build);
-		FileOutputStream os = new FileOutputStream(outFile);
-		os.write(result.getBytes());
-		os.close();
-	}
-
-	/**
-	 * Runs the transformation and loads the model into memory
-	 * 
-	 * @throws CoreException
-	 *             If something goes wrong with during the process
-	 */
-	private void runTransformation() throws CoreException {
-		File generatedBuildModel = null;
-		try {
-			// Transform the model, i.e. collect all contributions and create
-			// one single build model file
-			Date today = new Date();
-			Map<String, Object> configuration = new HashMap<String, Object>();
-			configuration.put("date", DATE_FORMAT.format(today)); //$NON-NLS-1$
-			configuration.put("time", TIME_FORMAT.format(today)); //$NON-NLS-1$
-			QvtTransformation transf = new QvtInterpretedTransformation(new DeployedQvtModule('/' + Activator.PLUGIN_ID + "/build.qvto")); //$NON-NLS-1$
-			List<ModelContent> inObjects = Collections.singletonList(transf.loadInput(org.eclipse.emf.common.util.URI
-					.createFileURI(buildModelLocation.getAbsolutePath())));
-			generatedBuildModel = File.createTempFile("buildModel_", ".tmp"); //$NON-NLS-1$//$NON-NLS-2$
-
-			List<TargetUriData> targetData = Collections.singletonList(new TargetUriData(createURI(generatedBuildModel).toString()));
-			QvtLaunchConfigurationDelegateBase.doLaunch(transf, inObjects, targetData, configuration, null);
-
-			// Load the Java model into memory
-			resourceSet = new ResourceSetImpl();
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-					new XMIResourceFactoryImpl());
-			BuildPackage.eINSTANCE.eClass();
-			org.eclipse.emf.common.util.URI fileURI = org.eclipse.emf.common.util.URI.createFileURI(generatedBuildModel.getAbsolutePath());
-			Resource resource = resourceSet.getResource(fileURI, true);
-			EList<EObject> content = resource.getContents();
-			if (content.size() != 1)
-				throw BuckminsterException.fromMessage("ECore Resource did not contain one resource. It had %d", Integer.valueOf(content.size()));
-
-			build = (Build) content.get(0);
-			if (buildRoot == null)
-				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
-
-			if (!update) {
-				File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
-						.getURL()));
-				if (buildRoot.exists()) {
-					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
-					if (Path.fromOSString(buildRoot.getAbsolutePath()).isPrefixOf(wsPath))
-						deleteAllButWorkspace(buildRoot, wsPath);
-					else {
-						FileUtils.deleteAll(buildRoot);
-						if (buildRoot.exists())
-							throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
-					}
-				}
-				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-				wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
-				FileUtils.deleteAll(new File(wsLocation, ".metadata/.plugins/org.eclipse.buckminster.core"));
-			}
-			buildRoot.mkdirs();
-			if (!buildRoot.exists())
-				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
-
-			logOutput = new FileOutputStream(new File(buildRoot, buildID + ".log.txt"));
-
-			// Print deferred messages (logged before we knew what file to use)
-			PrintStream tmp = new PrintStream(logOutput);
-			for (String msg : deferredLogMessages)
-				tmp.println(msg);
-			tmp.flush();
-
-			MultiTeeOutputStream outMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.out });
-			MultiTeeOutputStream errMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.err });
-			Logger.setOutStream(new PrintStream(outMux));
-			Logger.setErrStream(new PrintStream(errMux));
-			Logger.setConsoleLevelThreshold(logLevel);
-			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
-		} catch (Exception e) {
-			throw BuckminsterException.wrap(e);
-		} finally {
-			if (generatedBuildModel != null)
-				generatedBuildModel.delete();
-		}
 	}
 
 	public void sendEmail(Contribution contrib, List<String> errors) {
@@ -1067,6 +797,277 @@ public class Builder implements IApplication {
 			Logger.setErrStream(System.err);
 			IOUtils.close(logOutput);
 			logOutput = null;
+		}
+	}
+
+	private InternetAddress mockCCRecipient() throws UnsupportedEncodingException {
+		InternetAddress mock = null;
+		if (mockEmailCC != null) {
+			mock = new InternetAddress();
+			mock.setAddress(mockEmailCC);
+		}
+		return mock;
+	}
+
+	private List<InternetAddress> mockRecipients() throws UnsupportedEncodingException {
+		if (mockEmailTo != null) {
+			InternetAddress mock = new InternetAddress();
+			mock.setAddress(mockEmailTo);
+			return Collections.singletonList(mock);
+		}
+		return Collections.emptyList();
+	}
+
+	private void parseCommandLineArgs(String[] args) {
+		int top = args.length;
+		for (int idx = 0; idx < top; ++idx) {
+			String arg = args[idx];
+			if ("-verifyOnly".equalsIgnoreCase(arg)) {
+				setVerifyOnly(true);
+				continue;
+			}
+			if ("-updateOnly".equalsIgnoreCase(arg)) {
+				setUpdate(true);
+				continue;
+			}
+			if ("-production".equalsIgnoreCase(arg)) {
+				setProduction(true);
+				continue;
+			}
+			if ("-mockEmailTo".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setMockEmailTo(args[idx]);
+				continue;
+			}
+			if ("-subjectPrefix".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setSubjectPrefix(args[idx]);
+				continue;
+			}
+			if ("-emailFrom".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setEmailFrom(args[idx]);
+				continue;
+			}
+			if ("-emailFromName".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setEmailFromName(args[idx]);
+				continue;
+			}
+			if ("-smtpHost".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setSmtpHost(args[idx]);
+				continue;
+			}
+			if ("-smtpPort".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				int portNumber = 0;
+				try {
+					portNumber = Integer.parseInt(args[idx]);
+				} catch (NumberFormatException e) {
+				}
+				if (portNumber <= 0)
+					requiresArgument(arg);
+				setSmtpPort(portNumber);
+				continue;
+			}
+			if ("-smtpUser".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setSmtpUser(args[idx]);
+				continue;
+			}
+			if ("-smtpPassword".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setSmtpPassword(args[idx]);
+				continue;
+			}
+			if ("-mockEmailCC".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setMockEmailCC(args[idx]);
+				continue;
+			}
+			if ("-logLevel".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				String levelStr = args[idx];
+				int level;
+				if ("debug".equalsIgnoreCase(levelStr))
+					level = Logger.DEBUG;
+				else if ("info".equalsIgnoreCase(levelStr))
+					level = Logger.INFO;
+				else if ("warning".equalsIgnoreCase(levelStr))
+					level = Logger.WARNING;
+				else if ("error".equalsIgnoreCase(levelStr))
+					level = Logger.WARNING;
+				else
+					throw new IllegalArgumentException(String.format("%s is not a valid logLevel", levelStr));
+
+				setLogLevel(level);
+				continue;
+			}
+			if ("-buildModel".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				File buildModel = new File(args[idx]);
+				if (!buildModel.canRead())
+					throw new IllegalArgumentException(String.format("Unable to read %s", buildModel));
+				setBuildModelLocation(buildModel);
+				continue;
+			}
+			if ("-buildRoot".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setBuildRoot(new File(args[idx]));
+				continue;
+			}
+			if ("-buildId".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setBuildID(args[idx]);
+				continue;
+			}
+			if ("-brandingContribution".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setBrandingContribution(args[idx]);
+				continue;
+			}
+			if ("-trustedContributions".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setTrustedContributions(args[idx]);
+				continue;
+			}
+			String msg = String.format("Unknown option %s", arg);
+			Buckminster.getLogger().error(msg);
+			throw new IllegalArgumentException(msg);
+		}
+	}
+
+	private void runBrandingFeatureBuild(IProgressMonitor monitor) throws CoreException {
+		if (brandingFeature == null)
+			return;
+		BrandingFeatureCompiler brandingFeatureCompiler = new BrandingFeatureCompiler(this, brandingFeature);
+		brandingFeatureCompiler.run(monitor);
+	}
+
+	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException {
+		CategoryRepoGenerator extraGenerator = new CategoryRepoGenerator(this);
+		extraGenerator.run(monitor);
+	}
+
+	private void runCompositeGenerator(IProgressMonitor monitor) throws CoreException {
+		CompositeRepoGenerator repoGenerator = new CompositeRepoGenerator(this);
+		repoGenerator.run(monitor);
+	}
+
+	private void runMirroring(IProgressMonitor monitor) throws CoreException {
+		MirrorGenerator mirrorGenerator = new MirrorGenerator(this);
+		mirrorGenerator.run(monitor);
+	}
+
+	private void runRepositoryVerifier(IProgressMonitor monitor) throws CoreException {
+		RepositoryVerifier ipt = new RepositoryVerifier(this);
+		ipt.run(monitor);
+	}
+
+	private void runTemplateExpansion(ResourceSet rs, String name, File outFile) throws IOException {
+		XpandFacade xf = new XpandFacade(rs);
+		xf.addLocation("platform:/plugin/org.eclipse.buckminster.galileo.builder/templates/");
+		xf.addLocation("platform:/plugin/org.eclipse.amalgam.releng.builder/transformations/");
+		String result = xf.xpand(name, build);
+		FileOutputStream os = new FileOutputStream(outFile);
+		os.write(result.getBytes());
+		os.close();
+	}
+
+	/**
+	 * Runs the transformation and loads the model into memory
+	 * 
+	 * @throws CoreException
+	 *             If something goes wrong with during the process
+	 */
+	private void runTransformation() throws CoreException {
+		File generatedBuildModel = null;
+		try {
+			// Transform the model, i.e. collect all contributions and create
+			// one single build model file
+			Date today = new Date();
+			Map<String, Object> configuration = new HashMap<String, Object>();
+			configuration.put("date", DATE_FORMAT.format(today)); //$NON-NLS-1$
+			configuration.put("time", TIME_FORMAT.format(today)); //$NON-NLS-1$
+			QvtTransformation transf = new QvtInterpretedTransformation(new DeployedQvtModule('/' + Activator.PLUGIN_ID + "/build.qvto")); //$NON-NLS-1$
+			List<ModelContent> inObjects = Collections.singletonList(transf.loadInput(org.eclipse.emf.common.util.URI
+					.createFileURI(buildModelLocation.getAbsolutePath())));
+			generatedBuildModel = File.createTempFile("buildModel_", ".tmp"); //$NON-NLS-1$//$NON-NLS-2$
+
+			List<TargetUriData> targetData = Collections.singletonList(new TargetUriData(createURI(generatedBuildModel).toString()));
+			QvtLaunchConfigurationDelegateBase.doLaunch(transf, inObjects, targetData, configuration, null);
+
+			// Load the Java model into memory
+			resourceSet = new ResourceSetImpl();
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
+					new XMIResourceFactoryImpl());
+			BuildPackage.eINSTANCE.eClass();
+			org.eclipse.emf.common.util.URI fileURI = org.eclipse.emf.common.util.URI.createFileURI(generatedBuildModel.getAbsolutePath());
+			Resource resource = resourceSet.getResource(fileURI, true);
+			EList<EObject> content = resource.getContents();
+			if (content.size() != 1)
+				throw BuckminsterException.fromMessage("ECore Resource did not contain one resource. It had %d", Integer.valueOf(content.size()));
+
+			build = (Build) content.get(0);
+			if (buildRoot == null)
+				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
+
+			if (!update) {
+				File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
+						.getURL()));
+				if (buildRoot.exists()) {
+					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
+					if (Path.fromOSString(buildRoot.getAbsolutePath()).isPrefixOf(wsPath))
+						deleteAllButWorkspace(buildRoot, wsPath);
+					else {
+						FileUtils.deleteAll(buildRoot);
+						if (buildRoot.exists())
+							throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
+					}
+				}
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
+				FileUtils.deleteAll(new File(wsLocation, ".metadata/.plugins/org.eclipse.buckminster.core"));
+			}
+			buildRoot.mkdirs();
+			if (!buildRoot.exists())
+				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
+
+			logOutput = new FileOutputStream(new File(buildRoot, buildID + ".log.txt"));
+
+			// Print deferred messages (logged before we knew what file to use)
+			PrintStream tmp = new PrintStream(logOutput);
+			for (String msg : deferredLogMessages)
+				tmp.println(msg);
+			tmp.flush();
+
+			MultiTeeOutputStream outMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.out });
+			MultiTeeOutputStream errMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.err });
+			Logger.setOutStream(new PrintStream(outMux));
+			Logger.setErrStream(new PrintStream(errMux));
+			Logger.setConsoleLevelThreshold(logLevel);
+			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
+		} catch (Exception e) {
+			throw BuckminsterException.wrap(e);
+		} finally {
+			if (generatedBuildModel != null)
+				generatedBuildModel.delete();
 		}
 	}
 

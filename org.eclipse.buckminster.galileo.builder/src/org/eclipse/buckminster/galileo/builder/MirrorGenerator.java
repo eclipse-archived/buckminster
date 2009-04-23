@@ -180,10 +180,18 @@ public class MirrorGenerator extends BuilderPhase {
 							optimized = desc;
 					}
 					if (optimized != null) {
+						if (canonical != null && !"osgi.bundle".equals(key.getClassifier())) {
+							// Optimized won't work. See bug 273519
+							mirror(source, dest, canonical, MonitorUtils.subMonitor(monitor, 90));
+							continue;
+						}
+
+						log.debug("    copying optimized (packed) artifact");
 						mirror(source, dest, optimized, MonitorUtils.subMonitor(monitor, 90));
 						if (canonical != null) {
 							// Restore the canonical form from the optimized
 							// one.
+							log.debug("    restoring canonical artifact", key);
 							CanonicalizeRequest request = new CanonicalizeRequest(optimized, canonical, dest);
 							request.perform(MonitorUtils.subMonitor(monitor, 90));
 							IStatus result = request.getResult();
