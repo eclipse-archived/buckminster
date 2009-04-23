@@ -637,7 +637,8 @@ public class Builder implements IApplication {
 						allRepos.add(URI.create(repo.getLocation()));
 				}
 				trustedContributionRepos = allRepos.toArray(new URI[allRepos.size()]);
-			}
+			} else
+				trustedContributionRepos = new URI[0];
 
 			Buckminster bucky = Buckminster.getDefault();
 			PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
