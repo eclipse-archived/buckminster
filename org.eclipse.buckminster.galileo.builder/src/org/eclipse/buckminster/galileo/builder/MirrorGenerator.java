@@ -107,6 +107,12 @@ public class MirrorGenerator extends BuilderPhase {
 				return deeper;
 		}
 
+		Throwable t = status.getException();
+		if (t instanceof CoreException) {
+			IStatus deeper = extractDeeperRootCause(((CoreException) t).getStatus());
+			if (deeper != null)
+				return deeper;
+		}
 		return constraintStatus(status);
 	}
 
