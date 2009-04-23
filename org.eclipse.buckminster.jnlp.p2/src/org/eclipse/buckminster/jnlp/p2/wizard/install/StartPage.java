@@ -144,7 +144,8 @@ public class StartPage extends InstallWizardPage
 	protected void beforeDisplaySetup()
 	{
 		m_artifactNameText.setText(getInstallWizard().getArtifactName());
-		m_artifactVersionText.setText(getInstallWizard().getCSpecVersion().getOriginal());
+		String original = getInstallWizard().getCSpecVersion().getOriginal();
+		m_artifactVersionText.setText(original != null ? original : getInstallWizard().getCSpecVersion().toString());
 		m_artifactDescriptionText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDescription()));
 		m_artifactDocumentationText.setText(UiUtils.getNotNullString(getInstallWizard().getArtifactDocumentation()));
 		m_publisherInfoText.setText(getInstallWizard().getBrandingString());
