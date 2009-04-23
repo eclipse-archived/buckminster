@@ -144,6 +144,24 @@ public class Builder implements IApplication {
 		return addr;
 	}
 
+	private static void deleteAllButWorkspace(File folder, IPath wsPath) throws CoreException {
+		File[] children = folder.listFiles();
+		if (children == null)
+			return;
+
+		for (File child : children) {
+			IPath childPath = Path.fromOSString(child.getAbsolutePath());
+			if (childPath.isPrefixOf(wsPath)) {
+				if (!childPath.equals(wsPath))
+					deleteAllButWorkspace(child, wsPath);
+				continue;
+			}
+			FileUtils.deleteAll(child);
+			if (child.exists())
+				throw BuckminsterException.fromMessage("Failed to delete folder %s", childPath);
+		}
+	}
+
 	private static synchronized Bundle getBundle(PackageAdmin packageAdmin, String symbolicName) {
 		Bundle[] bundles = packageAdmin.getBundles(symbolicName, null);
 		if (bundles == null)
@@ -759,13 +777,14 @@ public class Builder implements IApplication {
 				if (!update) {
 					File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
 							.getURL()));
-					IPath brPath = Path.fromOSString(buildRoot.getAbsolutePath());
 					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
-					if (brPath.isPrefixOf(wsPath))
-						throw BuckminsterException.fromMessage("Place the workspace %s under the buildroot %s is not allowed", wsPath, brPath);
-					FileUtils.deleteAll(buildRoot);
-					if (buildRoot.exists())
-						throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
+					if (Path.fromOSString(buildRoot.getAbsolutePath()).isPrefixOf(wsPath))
+						deleteAllButWorkspace(buildRoot, wsPath);
+					else {
+						FileUtils.deleteAll(buildRoot);
+						if (buildRoot.exists())
+							throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
+					}
 					IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 					wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
 				}
