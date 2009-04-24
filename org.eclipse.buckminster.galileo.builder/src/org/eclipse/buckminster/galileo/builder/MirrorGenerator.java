@@ -258,7 +258,7 @@ public class MirrorGenerator extends BuilderPhase {
 			IProgressMonitor childMonitor = MonitorUtils.subMonitor(monitor, 88);
 			MonitorUtils.begin(childMonitor, children.size() * 100);
 
-			Set<IInstallableUnit> unitsToInstall = getBuilder().getUnitsToInstall();
+			Set<IInstallableUnit> unitsToInstall = getBuilder().getUnitsToAggregate();
 			HashSet<IArtifactKey> keysToInstall = new HashSet<IArtifactKey>(unitsToInstall.size());
 			for (IInstallableUnit iu : unitsToInstall)
 				for (IArtifactKey key : iu.getArtifacts())
@@ -313,7 +313,7 @@ public class MirrorGenerator extends BuilderPhase {
 
 			children = getCompositeChildren(sourceMdr);
 			childMonitor = MonitorUtils.subMonitor(monitor, 7);
-			MonitorUtils.begin(childMonitor, children.size() * 100);
+			MonitorUtils.begin(childMonitor, (1 + children.size()) * 100);
 			for (URI childURI : children) {
 				if (childURI.equals(categoryRepo))
 					continue;
@@ -321,6 +321,15 @@ public class MirrorGenerator extends BuilderPhase {
 				log.info("Mirroring meta-data from from %s", childURI);
 				IMetadataRepository child = mdrMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
 				mirror(new IncludesQuery(unitsToInstall), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
+			}
+
+			Set<IInstallableUnit> trustedUnits = getBuilder().getTrustedUnits();
+			if (trustedUnits.size() > 0) {
+				for (URI trustedRepo : trustedRepos) {
+					log.info("Mirroring meta-data from from %s", trustedRepo);
+					IMetadataRepository child = mdrMgr.loadRepository(trustedRepo, MonitorUtils.subMonitor(childMonitor, 1));
+					mirror(new IncludesQuery(trustedUnits), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
+				}
 			}
 			childMonitor.done();
 

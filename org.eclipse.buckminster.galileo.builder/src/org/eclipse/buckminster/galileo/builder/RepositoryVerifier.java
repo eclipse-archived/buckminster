@@ -135,7 +135,8 @@ public class RepositoryVerifier extends BuilderPhase {
 		long now = System.currentTimeMillis();
 
 		String profilePrefix = Builder.PROFILE_ID + '_'; //$NON-NLS-1$
-		final HashSet<IInstallableUnit> unitsToInstall = new HashSet<IInstallableUnit>();
+		final HashSet<IInstallableUnit> unitsToAggregate = new HashSet<IInstallableUnit>();
+		final HashSet<IInstallableUnit> trustedUnits = new HashSet<IInstallableUnit>();
 
 		List<Config> configs = getBuilder().getBuild().getConfigs();
 		MonitorUtils.begin(monitor, configs.size() * 100);
@@ -185,7 +186,7 @@ public class RepositoryVerifier extends BuilderPhase {
 					InstallableUnitOperand iuOp = (InstallableUnitOperand) op;
 					IInstallableUnit iu = iuOp.second();
 					if (iu != null && !Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(iu.getId()))
-						unitsToInstall.add(iu);
+						unitsToAggregate.add(iu);
 				}
 			}
 		} catch (RuntimeException e) {
@@ -196,28 +197,30 @@ public class RepositoryVerifier extends BuilderPhase {
 			bucky.ungetService(planner);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
-		log.info("Found %d units to install", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
+		log.info("Found %d units to install", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 
 		URI[] trustedURIs = getBuilder().getTrustedContributionRepos();
-		if (trustedURIs.length > 0 && unitsToInstall.size() > 0) {
+		if (trustedURIs.length > 0 && unitsToAggregate.size() > 0) {
 			// Filter out everything that is included in the target platform
 			//
-			log.info("Pruning using trusted contributed repositories", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
+			log.info("Pruning using trusted contributed repositories", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 			IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 			for (URI trusted : trustedURIs) {
 				IMetadataRepository trustedRepo = mdrMgr.loadRepository(trusted, null);
 				trustedRepo.query(new MatchQuery() {
 					@Override
 					public boolean isMatch(Object candidate) {
-						unitsToInstall.remove(candidate);
+						if (unitsToAggregate.remove(candidate))
+							trustedUnits.add((IInstallableUnit) candidate);
 						return false;
 					}
 				}, new Collector(), null);
 			}
 			bucky.ungetService(mdrMgr);
-			log.info("%d units remain after pruning", Integer.valueOf(unitsToInstall.size())); //$NON-NLS-1$
+			log.info("%d units remain after pruning", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 		}
-		getBuilder().setUnitsToInstall(unitsToInstall);
+		getBuilder().setUnitsToAggregate(unitsToAggregate);
+		getBuilder().setTrustedUnits(trustedUnits);
 	}
 
 	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions, IRequiredCapability prq) {

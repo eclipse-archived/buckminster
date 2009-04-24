@@ -360,7 +360,9 @@ public class Builder implements IApplication {
 
 	private String subjectPrefix;
 
-	private Set<IInstallableUnit> unitsToInstall;
+	private Set<IInstallableUnit> unitsToAggregate;
+
+	private Set<IInstallableUnit> trustedUnits;
 
 	private boolean update = false;
 
@@ -440,8 +442,12 @@ public class Builder implements IApplication {
 		return trustedContributionRepos;
 	}
 
-	public Set<IInstallableUnit> getUnitsToInstall() {
-		return unitsToInstall;
+	public Set<IInstallableUnit> getTrustedUnits() {
+		return trustedUnits;
+	}
+
+	public Set<IInstallableUnit> getUnitsToAggregate() {
+		return unitsToAggregate;
 	}
 
 	public boolean isBrandingBuild() {
@@ -803,8 +809,12 @@ public class Builder implements IApplication {
 			trustedContributions.add(trustedContribs);
 	}
 
-	public void setUnitsToInstall(Set<IInstallableUnit> unitsToInstall) {
-		this.unitsToInstall = unitsToInstall;
+	public void setTrustedUnits(Set<IInstallableUnit> trustedUnits) {
+		this.trustedUnits = trustedUnits;
+	}
+
+	public void setUnitsToAggregate(Set<IInstallableUnit> unitsToAggregate) {
+		this.unitsToAggregate = unitsToAggregate;
 	}
 
 	public void setUpdate(boolean update) {
