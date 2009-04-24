@@ -59,7 +59,7 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 
 		boolean skipBrandingFeature = false;
 		ArrayList<IRequiredCapability> required = new ArrayList<IRequiredCapability>();
-		if (brandingFeature != null) {
+		if (brandingFeature != null && builder.isBrandingBuild()) {
 			// Did we extend this one? If we did, we have a new copy in the
 			// non-global mdr that should be used instead of the global one
 			IInstallableUnit gcapIU = Builder.getIU(mdr, brandingFeature.getId() + Builder.FEATURE_GROUP_SUFFIX, brandingFeature.getVersion());
@@ -73,10 +73,12 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 			}
 		}
 
+		boolean errorsFound = false;
 		for (Contribution contrib : builder.getBuild().getContributions()) {
+			ArrayList<String> errors = new ArrayList<String>();
 			for (Feature feature : contrib.getFeatures()) {
 				String requiredId = feature.getId();
-				if (Builder.skipFeature(feature, true))
+				if (builder.skipFeature(feature, errors))
 					continue;
 
 				if (brandingFeature != null && brandingFeature.getId().equals(feature.getId())) {
@@ -98,7 +100,14 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 				String filter = bundleIU.getFilter();
 				required.add(MetadataFactory.createRequiredCapability(Builder.NAMESPACE_OSGI_BUNDLE, bundleIU.getId(), range, filter, false, false));
 			}
+			if (errors.size() > 0) {
+				errorsFound = true;
+				builder.sendEmail(contrib, errors);
+			}
 		}
+		if (errorsFound)
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Features without repositories");
+
 		iu.addRequiredCapabilities(required);
 		mdr.addInstallableUnits(new IInstallableUnit[] { MetadataFactory.createInstallableUnit(iu) });
 		return Status.OK_STATUS;

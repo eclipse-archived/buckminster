@@ -63,7 +63,7 @@ public class AllContributedCapabilitiesAction extends AbstractPublisherAction {
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		Logger log = Buckminster.getLogger();
 		Feature brandingFeature = builder.getBrandingFeature();
-		if (brandingFeature == null)
+		if (brandingFeature == null || !builder.isBrandingBuild())
 			return Status.OK_STATUS;
 
 		Build build = builder.getBuild();

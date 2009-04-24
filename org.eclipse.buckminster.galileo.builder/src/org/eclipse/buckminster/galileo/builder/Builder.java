@@ -50,12 +50,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -89,6 +87,36 @@ import org.xml.sax.SAXParseException;
 
 @SuppressWarnings("restriction")
 public class Builder implements IApplication {
+
+	public static enum PackedStrategy {
+		/**
+		 * If the source contains packed artifacts, copy and store only the
+		 * them. This is the default strategy.
+		 */
+		COPY,
+
+		/**
+		 * Same as {@link #COPY} but unpack and then discard the unpacked.
+		 */
+		VERIFY,
+
+		/**
+		 * Same as {@link #COPY} but unpack and store as sibling.
+		 */
+		UNPACK_AS_SIBLING,
+
+		/**
+		 * Use the packed artifacts for the transfer but only store the unpacked
+		 * artifact.
+		 */
+		UNPACK,
+
+		/**
+		 * Don't consider packed artifacts at all.
+		 */
+		SKIP
+	}
+
 	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group"; //$NON-NLS-1$
 
 	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = new Version(1, 0, 0);
@@ -109,7 +137,7 @@ public class Builder implements IApplication {
 
 	public static final String REPO_FOLDER_INTERIM = "interim"; //$NON-NLS-1$
 
-	public static final String REPO_FOLDER_MIRROR = "mirror"; //$NON-NLS-1$
+	public static final String REPO_FOLDER_AGGREGATE = "aggregate"; //$NON-NLS-1$
 
 	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
 
@@ -154,15 +182,6 @@ public class Builder implements IApplication {
 		String id = feature.getId();
 		return (id.endsWith(".capabilities") || id.endsWith(".capabilities.feature")) && feature.getRepo() != null
 				&& feature.getCategory().size() == 0;
-	}
-
-	public static boolean skipFeature(Feature feature, boolean logSkipped) {
-		if (feature.getRepo() == null) {
-			if (logSkipped)
-				Buckminster.getLogger().warning("Skipping feature %s/%s since it has no repository", feature.getId(), feature.getVersion());
-			return true;
-		}
-		return isCapabilitiesFeature(feature);
 	}
 
 	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
@@ -321,7 +340,11 @@ public class Builder implements IApplication {
 
 	private String mockEmailTo;
 
-	private boolean production;
+	private boolean brandingBuild = true;
+
+	private boolean production = false;
+
+	private PackedStrategy packedStrategy = PackedStrategy.COPY;
 
 	private ResourceSet resourceSet;
 
@@ -339,9 +362,9 @@ public class Builder implements IApplication {
 
 	private Set<IInstallableUnit> unitsToInstall;
 
-	private boolean update;
+	private boolean update = false;
 
-	private boolean verifyOnly;
+	private boolean verifyOnly = false;
 
 	private URI[] trustedContributionRepos;
 
@@ -373,7 +396,7 @@ public class Builder implements IApplication {
 		return createURI(new File(buildRoot, REPO_FOLDER_INTERIM));
 	}
 
-	public URI getMirrorsURI() throws CoreException {
+	public URI getMirrorsURI(boolean aggregate) throws CoreException {
 		Promotion promotion = build.getPromotion();
 		if (promotion == null)
 			throw BuckminsterException.fromMessage("Missing required element <promition>");
@@ -386,6 +409,12 @@ public class Builder implements IApplication {
 				{
 					String query = mirrorsURI.getQuery();
 					Map<String, String> params = (query == null) ? new HashMap<String, String>() : URLUtils.queryAsParameters(query);
+					if (aggregate) {
+						if (downloadDirectory.endsWith("/"))
+							downloadDirectory += (REPO_FOLDER_AGGREGATE + '/');
+						else
+							downloadDirectory += ('/' + REPO_FOLDER_AGGREGATE);
+					}
 					params.put("file", downloadDirectory); //$NON-NLS-1$
 					if (!params.containsKey("protocol")) //$NON-NLS-1$
 						params.put("protocol", "http"); //$NON-NLS-1$//$NON-NLS-2$
@@ -403,12 +432,20 @@ public class Builder implements IApplication {
 		return mirrorsURI;
 	}
 
+	public PackedStrategy getPackedStrategy() {
+		return packedStrategy;
+	}
+
 	public URI[] getTrustedContributionRepos() {
 		return trustedContributionRepos;
 	}
 
 	public Set<IInstallableUnit> getUnitsToInstall() {
 		return unitsToInstall;
+	}
+
+	public boolean isBrandingBuild() {
+		return brandingBuild;
 	}
 
 	public boolean isProduction() {
@@ -445,6 +482,12 @@ public class Builder implements IApplication {
 
 			if (smtpPort <= 0)
 				smtpPort = 25;
+
+			if (!update) {
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				FileUtils.deleteAll(new File(wsRoot.getLocation().toOSString(), ".metadata/.plugins/org.eclipse.buckminster.core"));
+				wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
+			}
 
 			// Verify that all contributions can be parsed, i.e. contains
 			// well-formed XML
@@ -674,6 +717,10 @@ public class Builder implements IApplication {
 		}
 	}
 
+	public void setBrandingBuild(boolean brandingBuild) {
+		this.brandingBuild = brandingBuild;
+	}
+
 	public void setBrandingContribution(String brandingContribution) {
 		this.brandingContribution = brandingContribution;
 	}
@@ -712,6 +759,10 @@ public class Builder implements IApplication {
 
 	public void setMockEmailTo(String mockEmailTo) {
 		this.mockEmailTo = mockEmailTo;
+	}
+
+	public void setPackedStrategy(PackedStrategy packedStrategy) {
+		this.packedStrategy = packedStrategy;
 	}
 
 	public void setProduction(boolean production) {
@@ -762,6 +813,20 @@ public class Builder implements IApplication {
 
 	public void setVerifyOnly(boolean verifyOnly) {
 		this.verifyOnly = verifyOnly;
+	}
+
+	public boolean skipFeature(Feature feature, List<String> errors) {
+		if (feature.getRepo() == null) {
+			if (brandingFeature != feature) {
+				if (errors != null) {
+					String error = String.format("Skipping feature %s/%s since it has no repository", feature.getId(), feature.getVersion());
+					errors.add(error);
+					Buckminster.getLogger().error(error);
+				}
+			}
+			return true;
+		}
+		return isCapabilitiesFeature(feature);
 	}
 
 	public Object start(IApplicationContext context) throws Exception {
@@ -844,6 +909,27 @@ public class Builder implements IApplication {
 				if (++idx >= top)
 					requiresArgument(arg);
 				setSubjectPrefix(args[idx]);
+				continue;
+			}
+			if ("-packedStrategy".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				String strategyStr = args[idx];
+				PackedStrategy strategy;
+				if ("copy".equalsIgnoreCase(strategyStr))
+					strategy = PackedStrategy.COPY;
+				else if ("verify".equalsIgnoreCase(strategyStr))
+					strategy = PackedStrategy.VERIFY;
+				else if ("unpackAsSibling".equalsIgnoreCase(strategyStr))
+					strategy = PackedStrategy.UNPACK_AS_SIBLING;
+				else if ("unpack".equalsIgnoreCase(strategyStr))
+					strategy = PackedStrategy.UNPACK;
+				else if ("skip".equalsIgnoreCase(strategyStr))
+					strategy = PackedStrategy.SKIP;
+				else
+					throw new IllegalArgumentException(String.format("%s is not a valid packed strategy", strategyStr));
+
+				setPackedStrategy(strategy);
 				continue;
 			}
 			if ("-emailFrom".equalsIgnoreCase(arg)) {
@@ -941,6 +1027,10 @@ public class Builder implements IApplication {
 				setBrandingContribution(args[idx]);
 				continue;
 			}
+			if ("-noBrandingBuild".equalsIgnoreCase(arg)) {
+				setBrandingBuild(false);
+				continue;
+			}
 			if ("-trustedContributions".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
 					requiresArgument(arg);
@@ -1029,10 +1119,8 @@ public class Builder implements IApplication {
 				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
 			if (!update) {
-				File wsLocation = org.eclipse.buckminster.core.helpers.FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation()
-						.getURL()));
 				if (buildRoot.exists()) {
-					IPath wsPath = Path.fromOSString(wsLocation.getAbsolutePath());
+					IPath wsPath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 					if (Path.fromOSString(buildRoot.getAbsolutePath()).isPrefixOf(wsPath))
 						deleteAllButWorkspace(buildRoot, wsPath);
 					else {
@@ -1041,9 +1129,6 @@ public class Builder implements IApplication {
 							throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
 					}
 				}
-				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-				wsRoot.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, new NullProgressMonitor());
-				FileUtils.deleteAll(new File(wsLocation, ".metadata/.plugins/org.eclipse.buckminster.core"));
 			}
 			buildRoot.mkdirs();
 			if (!buildRoot.exists())
