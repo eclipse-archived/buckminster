@@ -579,6 +579,7 @@ public class Builder implements IApplication {
 			}
 
 			runTemplateExpansion(resourceSet, "build2page::Main", new File(buildRoot, "index.php"));
+			runTemplateExpansion(resourceSet, "build2xml::Main", new File(buildRoot, "index.xml"));
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
 			runBrandingFeatureBuild(MonitorUtils.subMonitor(monitor, 100));
 			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
