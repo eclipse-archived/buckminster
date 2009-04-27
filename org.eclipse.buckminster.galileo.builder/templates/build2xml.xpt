@@ -83,7 +83,7 @@ http://download.eclipse.org«promotion.downloadDirectory»«IF promotion.downloa
 «IF contribution.contacts->size() > 0»
   <team team=«contribution.label»">
 «FOREACH contribution.contacts AS contact»
-  <contact name="«contact.name»" email="«contact.email->replaceAll('@','!AT!')»" />
+  <contact name="«contact.name»" email="«contact.email.replace('@','-AT-')»" />
 «ENDFOREACH»
   </team>
 «ENDIF»
