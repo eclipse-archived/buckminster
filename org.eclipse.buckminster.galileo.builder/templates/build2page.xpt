@@ -1,45 +1,45 @@
-«IMPORT 'http://www.eclipse.org/amalgam/2008/build'»
-«IMPORT 'http://www.eclipse.org/emf/2002/Ecore'»
+Â«IMPORT 'http://www.eclipse.org/amalgam/2008/build'Â»
+Â«IMPORT 'http://www.eclipse.org/emf/2002/Ecore'Â»
 
-«EXTENSION util»
-«EXTENSION xpt::StringOperations»
+Â«EXTENSION utilÂ»
+Â«EXTENSION xpt::StringOperationsÂ»
 
-«DEFINE Main FOR build::Build-»
+Â«DEFINE Main FOR build::Build-Â»
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-«EXPAND head FOR self»
-«EXPAND body FOR self»
+Â«EXPAND head FOR selfÂ»
+Â«EXPAND body FOR selfÂ»
 </html>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE head FOR build::Build»
+Â«DEFINE head FOR build::BuildÂ»
 <head>
-	<title>«label» downloads</title>
+	<title>Â«labelÂ» downloads</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<meta name="author" content="Eclipse Foundation, Inc." />
 	<link rel="stylesheet" type="text/css" href="/eclipse/eclipse.org-common/stylesheets/visual.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/eclipse/eclipse.org-common/stylesheets/layout.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/eclipse/eclipse.org-common/stylesheets/print.css" media="print" />
-«EXPAND script FOR self»
+Â«EXPAND script FOR selfÂ»
 </head>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE body FOR build::Build»
+Â«DEFINE body FOR build::BuildÂ»
 <body>
-«EXPAND header FOR self»
-«EXPAND topnav FOR self»
+Â«EXPAND header FOR selfÂ»
+Â«EXPAND topnav FOR selfÂ»
 <div id="topnavsep"></div>
-«EXPAND leftcol FOR self»
-«EXPAND rightcolumn FOR self»
+Â«EXPAND leftcol FOR selfÂ»
+Â«EXPAND rightcolumn FOR selfÂ»
 <div id="container"
-«EXPAND midcolumn FOR self»
+Â«EXPAND midcolumn FOR selfÂ»
 </div>
 <p><br/></p>
-«EXPAND footer FOR self»
+Â«EXPAND footer FOR selfÂ»
 </body>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE header FOR build::Build»
+Â«DEFINE header FOR build::BuildÂ»
 <div id="header">
 	<a href="http://www.eclipse.org/"><img src="/eclipse/eclipse.org-common/stylesheets/header_logo.gif" width="163" height="68" border="0" alt="Eclipse Logo" class="logo" /></a>
 	<div id="searchbar">
@@ -60,9 +60,9 @@
 		<li><a href="http://www.eclipse.org/legal/">Legal</a></li>
 	</ul>
 </div>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE script FOR build::Build»
+Â«DEFINE script FOR build::BuildÂ»
 	<script type="text/javascript">
 		sfHover = function() {
 			var sfEls = document.getElementById("leftnav").getElementsByTagName("LI");
@@ -77,24 +77,24 @@
 		}
 		if (window.attachEvent) window.attachEvent("onload", sfHover);
 	</script>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE topnav FOR build::Build»
+Â«DEFINE topnav FOR build::BuildÂ»
 <div id="topnav">
 	<ul>
 		<li><a href="http://www.eclipse.org/modeling/amalgam" target="_self">Amalgam Homepage</a></li>
 		<li class="tabstart">&#160;&#160;&#160;</li>
 		<li><a href="http://download.eclipse.org/modeling/amalgam/downloads/index.php" target="_self">Amalgam Downloads</a></li>
 		<li class="tabstartselected">&#160;&#160;&#160;</li>
-		<li><a class="tabselected">«label» Build «date»-«time»</a></li>
+		<li><a class="tabselected">Â«labelÂ» Build Â«dateÂ»-Â«timeÂ»</a></li>
 	</ul>
 </div>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE leftcol FOR build::Build»
+Â«DEFINE leftcol FOR build::BuildÂ»
 <div id="leftcol">
 	<ul id="leftnav">
-	<li><a href="#«label»">«label»</a></li>
+	<li><a href="#Â«labelÂ»">Â«labelÂ»</a></li>
 	 
 	  </li>
 	  <li style="background-image: url(/eclipse/eclipse.org-common/stylesheets/leftnav_fade.jpg); background-repeat: repeat-x; border-style: none;">
@@ -102,20 +102,20 @@
 	  </li>
 	</ul>
 </div>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE rightcolumn FOR build::Build»
+Â«DEFINE rightcolumn FOR build::BuildÂ»
 <div id="rightcolumn">
-«IF promotion.incubating = true-»
+Â«IF promotion.incubating = true-Â»
 	<br/>
 	<div class="sideitem">
 	   <h6>Incubation</h6>
-	   <p>«label» is currently in the <a href="http://www.eclipse.org/projects/dev_process/validation-phase.php">Validation (Incubation) Phase</a>.</p> 
+	   <p>Â«labelÂ» is currently in the <a href="http://www.eclipse.org/projects/dev_process/validation-phase.php">Validation (Incubation) Phase</a>.</p> 
 	   <div align="center"><a href="http://www.eclipse.org/projects/what-is-incubation.php"><img 
 	        align="center" src="http://www.eclipse.org/images/egg-incubation.png" border="0"/></a>
 	   </div>
 	</div>
-«ENDIF»
+Â«ENDIFÂ»
 	<br/>
 	<div class="sideitem">
 		<h3>Related Links</h3>
@@ -124,14 +124,14 @@
 			</ul>
 	</div>
 </div>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE midcolumn FOR build::Build»
+Â«DEFINE midcolumn FOR build::BuildÂ»
 	<div id="midcolumn">
 		<table BORDER=0 CELLSPACING=5 CELLPADDING=2 WIDTH="100%" > 
 			<tr> 
 			  <td> 
-				<p><b><font face="Verdana" size="+3">«label» Build «date»-«time»</font></b><br> 
+				<p><b><font face="Verdana" size="+3">Â«labelÂ» Build Â«dateÂ»-Â«timeÂ»</font></b><br> 
 				These downloads are provided under the <a href="http://www.eclipse.org/legal/epl/notice.html">
 				<b>Eclipse Foundation Software User Agreement</b></a>.</p>
 			  </td>
@@ -140,22 +140,22 @@
 				<td width="75%">
 		   			The page provides access to the various sections of this build along with details
 					relating to its results.  Note that in addition to the product archives available from 
-					this page, this build of the «label» may be installed using p2 by pointing to this «EXPAND repoURL FOR self».
+					this page, this build of the Â«labelÂ» may be installed using p2 by pointing to this Â«EXPAND repoURL FOR selfÂ».
 				</td>
 			</tr>
 		</table>
 		<table align="left" BORDER=0 CELLSPACING=5 CELLPADDING=2 WIDTH="100%">
 			<tr>
-			  <td colspan="2"><div class="homeitem3col"><h3><a name="«label»">«label» build «date»-«time»</a></h3></div></td>
+			  <td colspan="2"><div class="homeitem3col"><h3><a name="Â«labelÂ»">Â«labelÂ» build Â«dateÂ»-Â«timeÂ»</a></h3></div></td>
 			</tr>
-«EXPAND requirements FOR self»
-«EXPAND contacts FOR self»
+Â«EXPAND requirements FOR selfÂ»
+Â«EXPAND contacts FOR selfÂ»
 		</table>
 	  	<hr class="clearer" />
 	</div>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE footer FOR build::Build»
+Â«DEFINE footer FOR build::BuildÂ»
 <div id="footer">
 	<ul id="footernav">
 		<li class="first"><a href="http://www.eclipse.org">Home</a></li>
@@ -164,61 +164,61 @@
 	</ul>
 	<p>Copyright &copy; 2008 The Eclipse Foundation. All Rights Reserved</p>
 </div>
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE repoURL FOR build::Build-»
-<a href="http://download.eclipse.org«promotion.downloadDirectory»«IF promotion.downloadDirectory.xpandEndsWith('drops/')»«buildLabel(self)»/«ENDIF»">URL</a>
-«ENDDEFINE»
+Â«DEFINE repoURL FOR build::Build-Â»
+<a href="http://download.eclipse.orgÂ«promotion.downloadDirectoryÂ»Â«IF promotion.downloadDirectory.xpandEndsWith('drops/')Â»Â«buildLabel(self)Â»/Â«ENDIFÂ»">URL</a>
+Â«ENDDEFINEÂ»
 
-«DEFINE downloadImage FOR build::Build-»
+Â«DEFINE downloadImage FOR build::Build-Â»
 <img align="top" src="http://www.eclipse.org/modeling/images/modeling_about.png">
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE requirements FOR build::Build»
+Â«DEFINE requirements FOR build::BuildÂ»
 			<tr>
 			  <td colspan="2"><div class="homeitem3col"><h3>Installed Features</h3></div></td>
 			</tr>
 			<tr>
-«FOREACH categories AS category»
-				<td colspan="2">«category.name»</td>
+Â«FOREACH categories AS categoryÂ»
+				<td colspan="2">Â«category.nameÂ»</td>
 			</tr>
-«FOREACH category.features->select(f | not f.repo.location.oclIsUndefined()) AS feature-»
+Â«FOREACH category.features->select(f | not f.repo.location.oclIsUndefined()) AS feature-Â»
 			<tr>
-	  			<td><a href="«feature.repo.location»features/«feature.id»_«feature.version».jar">«feature.id»_«feature.version»</a></td><td><a href="«feature.repo.location»">«feature.repo.label»</a></td>
+	  			<td><a href="Â«feature.repo.locationÂ»features/Â«feature.idÂ»_Â«feature.versionÂ».jar">Â«feature.idÂ»_Â«feature.versionÂ»</a></td><td><a href="Â«feature.repo.locationÂ»">Â«feature.repo.labelÂ»</a></td>
 	  		</tr>
-«ENDFOREACH»
-«ENDFOREACH»
+Â«ENDFOREACHÂ»
+Â«ENDFOREACHÂ»
 			<tr>
 				<td colspan="2">Uncategorized</td>
 			</tr>
-«FOREACH contributions.features->select(f | not f.repo.location.oclIsUndefined())->asSet()->symmetricDifference(categories.features->select(f | not f.repo.location.oclIsUndefined())->asSet()) AS feature-»
+Â«FOREACH contributions.features->select(f | not f.repo.location.oclIsUndefined())->asSet()->symmetricDifference(categories.features->select(f | not f.repo.location.oclIsUndefined())->asSet()) AS feature-Â»
 			<tr>
-	  			<td><a href="«feature.repo.location»features/«feature.id»_«feature.version».jar">«feature.id»_«feature.version»</a></td><td><a href="«feature.repo.location»">«feature.repo.label»</a></td>
+	  			<td><a href="Â«feature.repo.locationÂ»features/Â«feature.idÂ»_Â«feature.versionÂ».jar">Â«feature.idÂ»_Â«feature.versionÂ»</a></td><td><a href="Â«feature.repo.locationÂ»">Â«feature.repo.labelÂ»</a></td>
 	  		</tr>
-«ENDFOREACH»
+Â«ENDFOREACHÂ»
 			<tr>
 			  <td colspan="2"><div class="homeitem3col"><h3>Installed Bundles</h3></div></td>
 			</tr>
-«FOREACH contributions.bundles->select(b | not b.repo.location.oclIsUndefined()) AS bundle-»
+Â«FOREACH contributions.bundles->select(b | not b.repo.location.oclIsUndefined()) AS bundle-Â»
 			<tr>
-	  			<td><a href="«bundle.repo.location»features/«bundle.id»_«bundle.version».jar">«bundle.id»_«bundle.version»</a></td><td><a href="«bundle.repo.location»">«bundle.repo.label»</a></td>
+	  			<td><a href="Â«bundle.repo.locationÂ»features/Â«bundle.idÂ»_Â«bundle.versionÂ».jar">Â«bundle.idÂ»_Â«bundle.versionÂ»</a></td><td><a href="Â«bundle.repo.locationÂ»">Â«bundle.repo.labelÂ»</a></td>
 	  		</tr>
-«ENDFOREACH»
+Â«ENDFOREACHÂ»
 		
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
-«DEFINE contacts FOR build::Build»
+Â«DEFINE contacts FOR build::BuildÂ»
 			<tr>
 			  <td colspan="2"><div class="homeitem3col"><h3>Contribution Contacts</h3></div></td>
 			</tr>
-«FOREACH contributions AS contribution»
-«IF contribution.contacts->size() > 0»
-			<tr><td colspan="2">«contribution.label»</td></tr>
-«FOREACH contribution.contacts AS contact»
-			<tr><td/><td><a href="mailto:«contact.email»">«contact.name»</a></td></tr>
-«ENDFOREACH»
-«ENDIF»
-«ENDFOREACH»
+Â«FOREACH contributions AS contributionÂ»
+Â«IF contribution.contacts->size() > 0Â»
+			<tr><td colspan="2">Â«contribution.labelÂ»</td></tr>
+Â«FOREACH contribution.contacts AS contactÂ»
+			<tr><td/><td><a href="mailto:Â«contact.emailÂ»">Â«contact.nameÂ»</a></td></tr>
+Â«ENDFOREACHÂ»
+Â«ENDIFÂ»
+Â«ENDFOREACHÂ»
 
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
