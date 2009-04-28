@@ -101,6 +101,16 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return m_product.getLauncherName();
 	}
 
+	public String getLicenseText()
+	{
+		return m_product.getLicenseText();
+	}
+
+	public String getLicenseURL()
+	{
+		return m_product.getLicenseURL();
+	}
+
 	public File getLocation()
 	{
 		return m_product.getLocation();
