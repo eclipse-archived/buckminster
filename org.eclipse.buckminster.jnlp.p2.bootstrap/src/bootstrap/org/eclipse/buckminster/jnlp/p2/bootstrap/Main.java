@@ -362,7 +362,7 @@ public class Main
 		return launcher.toString();
 	}
 
-	public synchronized File getApplicationDataLocation() throws JNLPException
+	public synchronized File getApplicationDataLocation()
 	{
 		if(m_applicationData == null)
 		{

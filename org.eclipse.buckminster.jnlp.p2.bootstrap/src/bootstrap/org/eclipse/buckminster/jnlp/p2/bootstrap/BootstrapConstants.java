@@ -28,6 +28,8 @@ public interface BootstrapConstants
 
 	public static final String ERROR_CODE_CORRUPTED_FILE_EXCEPTION = "CorruptedFileException"; //$NON-NLS-1$
 
+	public static final String ERROR_CODE_DEFAULT_BROWSER_NOT_AVAILABLE_EXCEPTION = "DefaultBrowserNotAvailableException"; //$NON-NLS-1$
+
 	public static final String ERROR_CODE_DIRECTOR_NOT_STARTED_EXCEPTION = "DirectorNotStartedException"; //$NON-NLS-1$
 
 	public static final String ERROR_CODE_DIRECTORY_EXCEPTION = "DirectoryException"; //$NON-NLS-1$

@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.jnlp.p2.bootstrap;
 
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_DEFAULT_BROWSER_NOT_AVAILABLE_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.REPORT_ERROR_PREFIX;
@@ -282,6 +283,54 @@ public class Utils
 			;
 
 		is.close();
+	}
+
+	/**
+	 * Opens url in a default browser
+	 * 
+	 * @param url
+	 * @throws JNLPException
+	 */
+	// from Java 1.6 use java.awt.Desktop.getDesktop().browse(URI)
+	public static void showInBrowser(String url) throws JNLPException
+	{
+		String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
+		Runtime rt = Runtime.getRuntime();
+		try
+		{
+			if(os.indexOf("win") >= 0) //$NON-NLS-1$
+			{
+				String[] cmd = new String[4];
+				cmd[0] = "cmd.exe"; //$NON-NLS-1$
+				cmd[1] = "/C"; //$NON-NLS-1$
+				cmd[2] = "start"; //$NON-NLS-1$
+				cmd[3] = url;
+				rt.exec(cmd);
+			}
+			else if(os.indexOf("mac") >= 0) //$NON-NLS-1$
+			{
+				rt.exec("open " + url); //$NON-NLS-1$
+			}
+			else
+			{
+				// prioritized 'guess' of users' preference
+				String[] browsers = { "epiphany", "firefox", "mozilla", "konqueror", "netscape", "opera", "chrome" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+
+				StringBuffer cmd = new StringBuffer();
+				for(int i = 0; i < browsers.length; i++)
+					cmd.append((i == 0
+							? "" //$NON-NLS-1$
+							: " || ") + browsers[i] + " \"" + url + "\" "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+				rt.exec(new String[] { "sh", "-c", cmd.toString() }); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
+		catch(IOException e)
+		{
+			throw new JNLPException(
+					Messages.getString("cannot_open_default_web_browser"), Messages.getString("your_web_browser_is_not_properly_installed"), ERROR_CODE_DEFAULT_BROWSER_NOT_AVAILABLE_EXCEPTION, e); //$NON-NLS-1$ //$NON-NLS-2$
+
+		}
 	}
 
 	/**
