@@ -15,17 +15,14 @@ package org.eclipse.buckminster.jnlp.p2.director.app;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.APP_LAUNCHED_SYNC_STRING;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_MAX_CAPTURED_LINES;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_STARTUP_TIME;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_JAVA_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_CONFIG_URL;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_EXTRA;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_MAX_CAPTURED_LINES;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIME;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SUPPORT_EMAIL;
 
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,10 +36,8 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants;
-import org.eclipse.buckminster.jnlp.p2.bootstrap.DirectorInstaller;
 import org.eclipse.buckminster.jnlp.p2.bootstrap.ErrorDialog;
 import org.eclipse.buckminster.jnlp.p2.bootstrap.JNLPException;
-import org.eclipse.buckminster.jnlp.p2.bootstrap.ProgressFacade;
 import org.eclipse.buckminster.jnlp.p2.bootstrap.SplashWindow;
 import org.eclipse.buckminster.jnlp.p2.bootstrap.TailLineBuffer;
 import org.eclipse.buckminster.jnlp.p2.bootstrap.Utils;
@@ -854,36 +849,39 @@ public class Application implements IApplication
 					title = "Materialization wizard cannot be installed";
 				
 				String errorCode;
+				String problem;
+				String solution;
+				Throwable throwableToReport;
+				
 				if(exception instanceof JNLPException)
 				{
 					JNLPException jnlpException = (JNLPException)exception;
-					
-					new ErrorDialog(
-							getWindowIconImage(),
-							title,
-							jnlpException.getMessage(),
-							jnlpException.getSolution(),
-							getErrorURL() + "?errorCode=" + jnlpException.getErrorCode())
-							.open();
-					
 					errorCode = jnlpException.getErrorCode();
+					problem = jnlpException.getProblem();
+					solution = jnlpException.getSolution();
+					throwableToReport = jnlpException.isReportable() ? exception : null;
 				}
 				else
 				{
-					new ErrorDialog(
-							getWindowIconImage(),
-							title,
-							"An unexpected error occured.\n\nThis could be because of intermittend network problems.",
-							"Please try again, and if the problem persists, please report the problem",
-							getErrorURL() + "?errorCode=" + BootstrapConstants.ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION)
-							.open();
-					
 					errorCode = BootstrapConstants.ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION;
+					problem = "An unexpected error occured.\n\nThis could be because of intermittend network problems.";
+					solution = "Try again, and if the problem persists, please report the problem";
+					throwableToReport = exception;
 				}
-				
+								
+				new ErrorDialog(
+						getWindowIconImage(),
+						title,
+						problem,
+						solution,
+						(String)m_configProps.get(PROP_SUPPORT_EMAIL),
+						"Cannot launch materializer",
+						throwableToReport)
+						.open();
+
 				try
 				{
-					Utils.reportToServer((String)m_configProps.get(BootstrapConstants.PROP_BASE_PATH_URL), errorCode);
+					Utils.reportToServer((String)m_configProps.get(BootstrapConstants.PROP_BASE_PATH_URL), errorCode, exception);
 				}
 				catch(IOException e)
 				{
