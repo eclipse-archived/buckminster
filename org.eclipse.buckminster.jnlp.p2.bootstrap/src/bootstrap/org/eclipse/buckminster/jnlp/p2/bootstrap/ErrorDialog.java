@@ -18,7 +18,6 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.SystemColor;
 import java.awt.TextArea;
-import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,11 +48,14 @@ public class ErrorDialog extends JNLPDialog
 
 	private static final int MIN_V_SIZE = 200;
 
-	private Button m_okButton;
+	private Button m_reportButton;
+
+	private Button m_cancelButton;
 
 	private boolean m_focusRepaired = false;
 
-	public ErrorDialog(Image windowIconImage, String title, String problem, String solution, String helpURL)
+	public ErrorDialog(final Image windowIconImage, String title, String problem, String solution,
+			final String errorEmailRecipient, final String errorEmailSubject, final Throwable throwable)
 	{
 		super(windowIconImage, ERROR_TITLE);
 
@@ -105,9 +107,9 @@ public class ErrorDialog extends JNLPDialog
 			@Override
 			public void focusGained(FocusEvent e)
 			{
-				if(!m_focusRepaired) // OK button should be focused first
+				if(!m_focusRepaired) // Cancel button should be focused first
 				{
-					m_okButton.requestFocus();
+					m_cancelButton.requestFocus();
 				}
 			}
 		});
@@ -152,43 +154,37 @@ public class ErrorDialog extends JNLPDialog
 
 		p.add(tb);
 
-		final Label readMoreLabel;
-		final TextField tf;
-		if(helpURL == null)
-		{
-			readMoreLabel = null;
-			tf = null;
-		}
-		else
-		{
-			p = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 15));
-			readMoreLabel = new Label(Messages.getString("read_more_at_with_colon"));
-			p.add(readMoreLabel); //$NON-NLS-1$
-			tf = new TextField(helpURL, 55);
+		p = new Panel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
 
-			tf.addKeyListener(new KeyAdapter()
+		if(errorEmailRecipient != null && throwable != null)
+		{
+			m_reportButton = new Button(Messages.getString("report")); //$NON-NLS-1$
+			m_reportButton.setPreferredSize(new Dimension(73, 20));
+			m_reportButton.addActionListener(new ActionListener()
 			{
 
-				@Override
-				public void keyPressed(KeyEvent e)
+				public void actionPerformed(ActionEvent e)
 				{
-					if(e.getKeyCode() == KeyEvent.VK_ENTER)
+					try
 					{
-						finish();
+						Utils.emailException(errorEmailRecipient, errorEmailSubject, throwable);
+					}
+					catch(JNLPException e1)
+					{
+						new ErrorDialog(
+								windowIconImage,
+								Messages.getString("error_cannot_be_reported"), Messages.getString("cannot_open_default_email_client"), //$NON-NLS-1$
+								Messages.getString("your_email_client_is_not_properly_installed"), null, null, null).open(); //$NON-NLS-1$
 					}
 				}
 			});
-
-			tf.setEditable(false);
-			p.add(tf);
-			tp.add("South", p); //$NON-NLS-1$
+			p.add(m_reportButton);
 		}
 
-		p = new Panel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
-		m_okButton = new Button(Messages.getString("ok")); //$NON-NLS-1$
-		m_okButton.setPreferredSize(new Dimension(73, 20));
+		m_cancelButton = new Button(Messages.getString("cancel")); //$NON-NLS-1$
+		m_cancelButton.setPreferredSize(new Dimension(73, 20));
 
-		m_okButton.addFocusListener(new FocusAdapter()
+		m_cancelButton.addFocusListener(new FocusAdapter()
 		{
 
 			@Override
@@ -198,7 +194,7 @@ public class ErrorDialog extends JNLPDialog
 			}
 		});
 
-		m_okButton.addActionListener(new ActionListener()
+		m_cancelButton.addActionListener(new ActionListener()
 		{
 
 			public void actionPerformed(ActionEvent e)
@@ -207,7 +203,7 @@ public class ErrorDialog extends JNLPDialog
 			}
 		});
 
-		m_okButton.addKeyListener(new KeyAdapter()
+		m_cancelButton.addKeyListener(new KeyAdapter()
 		{
 
 			@Override
@@ -219,7 +215,7 @@ public class ErrorDialog extends JNLPDialog
 				}
 			}
 		});
-		p.add(m_okButton);
+		p.add(m_cancelButton);
 		add("South", p); //$NON-NLS-1$
 
 		pack();
@@ -228,8 +224,6 @@ public class ErrorDialog extends JNLPDialog
 		titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
 		problemLabel.setFont(problemLabel.getFont().deriveFont(Font.ITALIC));
 		solutionLabel.setFont(solutionLabel.getFont().deriveFont(Font.ITALIC));
-		if(readMoreLabel != null)
-			readMoreLabel.setFont(readMoreLabel.getFont().deriveFont(Font.ITALIC));
 
 		int width = Math.max(getWidth(), MIN_H_SIZE);
 		int height = Math.max(getHeight(), MIN_V_SIZE);
@@ -256,8 +250,6 @@ public class ErrorDialog extends JNLPDialog
 			{
 				ta.setSize(ta.getParent().getWidth() - 10, ta.getParent().getHeight() - 10);
 				tb.setSize(tb.getParent().getWidth() - 10, tb.getParent().getHeight() - 10);
-				if(tf != null)
-					tf.setSize(tf.getParent().getWidth() - readMoreLabel.getWidth() - 5, tf.getSize().height);
 			}
 
 			public void componentShown(ComponentEvent e)

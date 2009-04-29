@@ -12,7 +12,7 @@ import java.awt.Frame;
 import java.awt.Image;
 
 /**
- * @author kaja
+ * @author Karel Brezina
  * 
  */
 public class JNLPDialog extends Frame

@@ -25,14 +25,12 @@ import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_RUNTIME_EXCEPTION;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_SITE_ROOT_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_HELP_URL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.INSTALLER_FOLDER_NAME;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_AR_URL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_BASE_PATH_URL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_CONFIG_URL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_DIRECTOR_ARCHIVE_URL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_DIRECTOR_BUILD_PROPERTIES_URL;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_ERROR_URL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_EXTRA;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_MAX_CAPTURED_LINES;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_MR_URL;
@@ -43,6 +41,7 @@ import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SPLASH_IMAGE_BOOT;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIME;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIMEOUT;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SUPPORT_EMAIL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_WINDOW_ICON;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.SPLASH_WINDOW_DELAY;
 
@@ -58,8 +57,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -81,43 +78,6 @@ public class Main
 {
 	private static String s_basePathURL = null;
 
-	private File m_applicationData;
-
-	private File m_installLocation;
-
-	private String m_installerFolderName;
-
-	private String m_errorURL = ERROR_HELP_URL;
-
-	private boolean m_directorStarted = false;
-
-	private Process m_process = null;
-
-	private TailLineBuffer m_tailOut = null;
-
-	private TailLineBuffer m_tailErr = null;
-
-	private Image m_splashImageBoot = null;
-
-	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$"); //$NON-NLS-1$
-
-	public static boolean isAix()
-	{
-		return isOs("aix"); //$NON-NLS-1$
-	}
-
-	public static boolean isMaxOSx()
-	{
-		return isOs("mac os x"); //$NON-NLS-1$
-	}
-
-	public static boolean isOs(String osName)
-	{
-		String os = System.getProperty("os.name"); //$NON-NLS-1$
-		return os != null && os.length() >= osName.length()
-				&& osName.equalsIgnoreCase(os.substring(0, osName.length()));
-	}
-
 	public static boolean isWindows()
 	{
 		return isOs("windows"); //$NON-NLS-1$
@@ -125,6 +85,8 @@ public class Main
 
 	public static void launch(final String[] args, boolean fromApplet)
 	{
+		final Map<String, String> inputArgMap = loadInputMap(args);
+
 		final Main main = new Main();
 		try
 		{
@@ -149,7 +111,7 @@ public class Main
 				{
 					try
 					{
-						main.run(args);
+						main.run(inputArgMap);
 					}
 					catch(Throwable t)
 					{
@@ -188,43 +150,35 @@ public class Main
 		}
 		catch(Throwable t)
 		{
+			String supportEmail = main.getConfigProperties() == null
+					? null
+					: (String)main.getConfigProperties().get(PROP_SUPPORT_EMAIL);
 			String errorCode;
+			String problem;
+			String solution;
+			Throwable throwableToReport;
 
 			if(t instanceof JNLPException)
 			{
 				JNLPException e = (JNLPException)t;
-				String problem = e.getMessage();
 				errorCode = e.getErrorCode();
-
-				if(e.getCause() != null)
-				{
-					problem += "\n\n" + Messages.getString("stack_trace_colon") + "\n" + getStackTrace(e.getCause()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				}
-
-				new ErrorDialog(main.getWindowIconImage(),
-						Messages.getString("materializer_can_not_be_installed"), problem, e.getSolution(), //$NON-NLS-1$
-						main.getErrorURL() == null
-								? null
-								: main.getErrorURL() + "?errorCode=" + errorCode).open(); //$NON-NLS-1$
+				problem = e.getProblem();
+				solution = e.getSolution();
+				throwableToReport = e.isReportable()
+						? t
+						: null;
 			}
 			else
 			{
-				String problem = t.getMessage();
 				errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
-
-				if(problem == null)
-				{
-					problem = Messages.getString("unknown_runtime_exception"); //$NON-NLS-1$
-				}
-
-				problem += "\n\n" + Messages.getString("stack_trace_colon") + "\n" + getStackTrace(t); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-				new ErrorDialog(main.getWindowIconImage(),
-						Messages.getString("materializer_can_not_be_installed"), problem, //$NON-NLS-1$
-						Messages.getString("check_your_java_installation_and_try_again"), main.getErrorURL() == null //$NON-NLS-1$
-								? null
-								: main.getErrorURL() + "?errorCode=" + errorCode).open(); //$NON-NLS-1$
+				problem = Messages.getString("unknown_runtime_exception"); //$NON-NLS-1$
+				solution = Messages.getString("report_the_problem"); //$NON-NLS-1$
+				throwableToReport = t;
 			}
+
+			new ErrorDialog(
+					main.getWindowIconImage(),
+					Messages.getString("materializer_can_not_be_installed"), problem, solution, supportEmail, Messages.getString("cannot_launch_materializer"), throwableToReport).open(); //$NON-NLS-1$
 
 			try
 			{
@@ -239,7 +193,7 @@ public class Main
 
 			try
 			{
-				Utils.reportToServer(s_basePathURL, errorCode);
+				Utils.reportToServer(s_basePathURL, errorCode, t);
 			}
 			catch(IOException e)
 			{
@@ -268,8 +222,7 @@ public class Main
 		{
 			throw new JNLPException(
 					Messages.getString("system_property_0_is_not_set", "java.home"), //$NON-NLS-1$ //$NON-NLS-2$
-					Messages
-							.getString("set_the_system_property_which_should_point_to_java_home_directory_and_try_again"), //$NON-NLS-1$
+					Messages.getString("set_the_system_property_which_should_point_to_java_home_directory_and_try_again"), //$NON-NLS-1$
 					ERROR_CODE_JAVA_HOME_NOT_SET_EXCEPTION);
 		}
 
@@ -288,14 +241,52 @@ public class Main
 		return javaExe.toString();
 	}
 
-	private static String getStackTrace(Throwable e)
+	private static Map<String, String> loadInputMap(String[] args)
 	{
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
-		pw.close();
+		Map<String, String> prop = new HashMap<String, String>();
+		for(int i = 0; i < (args.length / 2); i++)
+		{
+			prop.put(args[2 * i].replaceAll("^-", ""), args[2 * i + 1]);
+		}
 
-		return sw.toString();
+		return prop;
+	}
+
+	private File m_applicationData;
+
+	private File m_installLocation;
+
+	private String m_installerFolderName;
+
+	private boolean m_directorStarted = false;
+
+	private Process m_process = null;
+
+	private TailLineBuffer m_tailOut = null;
+
+	private TailLineBuffer m_tailErr = null;
+
+	private Image m_splashImageBoot = null;
+
+	private Properties m_configProps = null;
+
+	private static final Pattern s_launcherPattern = Pattern.compile("^org\\.eclipse\\.equinox\\.launcher_(.+)\\.jar$"); //$NON-NLS-1$
+
+	public static boolean isAix()
+	{
+		return isOs("aix"); //$NON-NLS-1$
+	}
+
+	public static boolean isMaxOSx()
+	{
+		return isOs("mac os x"); //$NON-NLS-1$
+	}
+
+	public static boolean isOs(String osName)
+	{
+		String os = System.getProperty("os.name"); //$NON-NLS-1$
+		return os != null && os.length() >= osName.length()
+				&& osName.equalsIgnoreCase(os.substring(0, osName.length()));
 	}
 
 	private Image m_splashImage = null;
@@ -389,6 +380,11 @@ public class Main
 		return m_applicationData;
 	}
 
+	public Properties getConfigProperties()
+	{
+		return m_configProps;
+	}
+
 	public synchronized File getInstallLocation() throws JNLPException
 	{
 		if(m_installLocation == null)
@@ -463,10 +459,10 @@ public class Main
 		//allArgs.add("-consoleLog"); //$NON-NLS-1$
 
 		Runtime runtime = Runtime.getRuntime();
-		m_tailOut = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
-				.intValue());
-		m_tailErr = new TailLineBuffer(Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES)
-				.intValue());
+		m_tailOut = new TailLineBuffer(
+				Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
+		m_tailErr = new TailLineBuffer(
+				Integer.getInteger(PROP_MAX_CAPTURED_LINES, DEFAULT_MAX_CAPTURED_LINES).intValue());
 
 		try
 		{
@@ -493,9 +489,7 @@ public class Main
 					}
 					catch(IOException e)
 					{
-						System.err
-								.println(Messages
-										.getString("error_reading_from_director_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
+						System.err.println(Messages.getString("error_reading_from_director_application_standard_output_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -517,9 +511,7 @@ public class Main
 					}
 					catch(IOException e)
 					{
-						System.err
-								.println(Messages
-										.getString("error_reading_from_director_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
+						System.err.println(Messages.getString("error_reading_from_director_application_standard_error_colon") + e.getMessage()); //$NON-NLS-1$
 					}
 					finally
 					{
@@ -536,23 +528,15 @@ public class Main
 		}
 	}
 
-	void run(String[] args) throws JNLPException, DOMException, OperationCanceledException
+	void run(Map<String, String> inputArgMap) throws JNLPException, DOMException, OperationCanceledException
 	{
 		try
 		{
-			Map<String, String> inputArgMap = loadInputMap(args);
-			Properties configProps = loadConfigProperties(inputArgMap);
+			m_configProps = loadConfigProperties(inputArgMap);
 
-			s_basePathURL = configProps.getProperty(PROP_BASE_PATH_URL);
+			s_basePathURL = m_configProps.getProperty(PROP_BASE_PATH_URL);
 
-			String tmp = configProps.getProperty(PROP_ERROR_URL);
-
-			if(tmp != null)
-			{
-				m_errorURL = tmp;
-			}
-
-			tmp = configProps.getProperty(PROP_SERVICE_AVAILABLE);
+			String tmp = m_configProps.getProperty(PROP_SERVICE_AVAILABLE);
 
 			boolean serviceAvailable = true;
 
@@ -561,7 +545,7 @@ public class Main
 				serviceAvailable = false;
 			}
 
-			String serviceMessage = configProps.getProperty(PROP_SERVICE_MESSAGE);
+			String serviceMessage = m_configProps.getProperty(PROP_SERVICE_MESSAGE);
 
 			if(!serviceAvailable || (serviceMessage != null && serviceMessage.length() > 0))
 			{
@@ -573,9 +557,9 @@ public class Main
 				}
 			}
 
-			m_splashImageBoot = Utils.createImage(configProps.getProperty(PROP_SPLASH_IMAGE_BOOT));
-			m_splashImage = Utils.createImage(configProps.getProperty(PROP_SPLASH_IMAGE));
-			m_windowIconImage = Utils.createImage(configProps.getProperty(PROP_WINDOW_ICON));
+			m_splashImageBoot = Utils.createImage(m_configProps.getProperty(PROP_SPLASH_IMAGE_BOOT));
+			m_splashImage = Utils.createImage(m_configProps.getProperty(PROP_SPLASH_IMAGE));
+			m_windowIconImage = Utils.createImage(m_configProps.getProperty(PROP_WINDOW_ICON));
 
 			final ProgressFacade monitor = SplashWindow.getDownloadServiceListener();
 
@@ -610,8 +594,8 @@ public class Main
 			{
 				try
 				{
-					installer.installDirector(inputArgMap.get(PROP_DIRECTOR_ARCHIVE_URL), inputArgMap
-							.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL), monitor);
+					installer.installDirector(inputArgMap.get(PROP_DIRECTOR_ARCHIVE_URL),
+							inputArgMap.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL), monitor);
 				}
 				catch(OperationCanceledException e)
 				{
@@ -713,11 +697,6 @@ public class Main
 		{
 			SplashWindow.disposeSplash();
 		}
-	}
-
-	private String getErrorURL()
-	{
-		return m_errorURL;
 	}
 
 	private String getInstallerFolderName() throws JNLPException
@@ -862,16 +841,5 @@ public class Main
 			Utils.close(propStream);
 			Utils.close(localStream);
 		}
-	}
-
-	private Map<String, String> loadInputMap(String[] args)
-	{
-		Map<String, String> prop = new HashMap<String, String>();
-		for(int i = 0; i < (args.length / 2); i++)
-		{
-			prop.put(args[2 * i].replaceAll("^-", ""), args[2 * i + 1]);
-		}
-
-		return prop;
 	}
 }

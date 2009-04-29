@@ -106,6 +106,8 @@ public interface BootstrapConstants
 
 	public static final String PROP_STARTUP_TIMEOUT = "startupTimeout"; //$NON-NLS-1$
 
+	public static final String PROP_SUPPORT_EMAIL = "supportEmail"; //$NON-NLS-1$
+
 	public static final String PROP_WINDOW_ICON = "windowIcon"; //$NON-NLS-1$
 
 	public static final String REPORT_ERROR_PREFIX = "Materializator-"; //$NON-NLS-1$

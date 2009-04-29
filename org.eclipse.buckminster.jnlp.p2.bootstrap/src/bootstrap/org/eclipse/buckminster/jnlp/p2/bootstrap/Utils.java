@@ -22,6 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -47,6 +50,10 @@ import sun.misc.BASE64Encoder;
  */
 public class Utils
 {
+	public static String UTF_8 = "UTF-8"; //$NON-NLS-1$
+
+	public static String NEW_LINE_SEPARATOR = "\n"; //$NON-NLS-1$
+
 	public static void close(Closeable closeable)
 	{
 		if(closeable != null)
@@ -59,6 +66,47 @@ public class Utils
 			{
 			}
 		}
+	}
+
+	public static String createExceptionMessage(Throwable throwable)
+	{
+		String[] systemProps = { "os.name", "os.arch", "user.country", "java.vendor", "java.version" };
+
+		StringBuilder messageBuilder = new StringBuilder();
+		messageBuilder.append(Messages.getString("environment_colon"));
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+
+		for(String prop : systemProps)
+		{
+			messageBuilder.append(prop);
+			messageBuilder.append("=");
+			messageBuilder.append(System.getProperty(prop));
+			messageBuilder.append(NEW_LINE_SEPARATOR);
+		}
+
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+		messageBuilder.append(Messages.getString("stack_trace_colon"));
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+
+		StringWriter stackTrace = new StringWriter();
+		PrintWriter stackTraceWriter = null;
+		try
+		{
+			stackTraceWriter = new PrintWriter(stackTrace);
+			throwable.printStackTrace(stackTraceWriter);
+		}
+		finally
+		{
+			if(stackTraceWriter != null)
+			{
+				stackTraceWriter.flush();
+				stackTraceWriter.close();
+			}
+		}
+
+		messageBuilder.append(stackTrace);
+
+		return messageBuilder.toString();
 	}
 
 	/**
@@ -97,6 +145,19 @@ public class Utils
 		return createImage(loadData(url));
 	}
 
+	public static String createMailtoURL(String to, String subject, String body)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("mailto:");
+		sb.append(mailtoEncode(to));
+		sb.append("?subject=");
+		sb.append(mailtoEncode(subject));
+		sb.append("&body=");
+		sb.append(mailtoEncode(body));
+
+		return sb.toString();
+	}
+
 	public static void deleteRecursive(File file) throws JNLPException
 	{
 		if(!file.exists())
@@ -125,6 +186,13 @@ public class Utils
 					Messages.getString("unable_to_delete") + file.getAbsolutePath() + ": " + e.getMessage(), //$NON-NLS-1$ //$NON-NLS-2$
 					Messages.getString("check_file_permissions"), BootstrapConstants.ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
 		}
+	}
+
+	public static void emailException(String recipient, String subject, Throwable throwable) throws JNLPException
+	{
+		String mailtoURL = createMailtoURL(recipient, subject, createExceptionMessage(throwable));
+
+		showInBrowser(mailtoURL);
 	}
 
 	/**
@@ -245,6 +313,22 @@ public class Utils
 		return data;
 	}
 
+	public static String mailtoEncode(String input)
+	{
+		String output;
+
+		try
+		{
+			output = URLEncoder.encode(input, UTF_8);
+		}
+		catch(UnsupportedEncodingException e)
+		{
+			throw new RuntimeException(e);
+		}
+
+		return output.replace("+", "%20");
+	}
+
 	/**
 	 * Converts a single -extra string parameter into a list of parameters. Parameters are delimited by space. Example:
 	 * -extra "-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y"
@@ -264,16 +348,13 @@ public class Utils
 		return Collections.emptyList();
 	}
 
-	public static void reportToServer(String basePathURL, String errorCode) throws IOException
+	public static void reportToServer(String basePathURL, String errorCode, Throwable throwable) throws IOException
 	{
 		if(basePathURL == null)
 			return;
 
-		String javaVersion = URLEncoder.encode(System.getProperty("java.version"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
-		String javaVendor = URLEncoder.encode(System.getProperty("java.vendor"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
-
 		String string = basePathURL + REPORT_ERROR_VIEW + "?errorCode=" + REPORT_ERROR_PREFIX + errorCode + //$NON-NLS-1$
-				"&javaVersion=" + javaVersion + "&javaVendor=" + javaVendor; //$NON-NLS-1$ //$NON-NLS-2$
+				"&errorMessage=" + createExceptionMessage(throwable); //$NON-NLS-1$
 		URL feedbackURL = new URL(string);
 		// ping feedback view to report it to apache log
 		InputStream is = feedbackURL.openStream();
@@ -300,11 +381,12 @@ public class Utils
 		{
 			if(os.indexOf("win") >= 0) //$NON-NLS-1$
 			{
-				String[] cmd = new String[4];
-				cmd[0] = "cmd.exe"; //$NON-NLS-1$
-				cmd[1] = "/C"; //$NON-NLS-1$
-				cmd[2] = "start"; //$NON-NLS-1$
-				cmd[3] = url;
+				// alternative command: cmd.exe /C start <url> - however, it doesn't like '&' in url
+				String[] cmd = new String[3];
+				cmd[0] = "rundll32"; //$NON-NLS-1$
+				cmd[1] = "url.dll,FileProtocolHandler"; //$NON-NLS-1$
+				cmd[2] = url;
+
 				rt.exec(cmd);
 			}
 			else if(os.indexOf("mac") >= 0) //$NON-NLS-1$

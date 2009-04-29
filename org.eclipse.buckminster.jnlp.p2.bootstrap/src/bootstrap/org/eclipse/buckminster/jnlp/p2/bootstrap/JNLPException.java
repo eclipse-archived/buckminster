@@ -20,16 +20,29 @@ public class JNLPException extends Exception
 
 	private String m_errorCode;
 
+	private boolean m_reportable;
+
 	public JNLPException(String message, String solution, String errorCode)
 	{
 		this(message, solution, errorCode, null);
 	}
 
+	public JNLPException(String message, String solution, String errorCode, boolean reportable)
+	{
+		this(message, solution, errorCode, null, reportable);
+	}
+
 	public JNLPException(String message, String solution, String errorCode, Throwable cause)
+	{
+		this(message, solution, errorCode, cause, true);
+	}
+
+	public JNLPException(String message, String solution, String errorCode, Throwable cause, boolean reportable)
 	{
 		super(message, cause);
 		m_solution = solution;
 		m_errorCode = errorCode;
+		m_reportable = reportable;
 	}
 
 	public String getErrorCode()
@@ -37,8 +50,18 @@ public class JNLPException extends Exception
 		return m_errorCode;
 	}
 
+	public String getProblem()
+	{
+		return getMessage();
+	}
+
 	public String getSolution()
 	{
 		return m_solution;
+	}
+
+	public boolean isReportable()
+	{
+		return m_reportable;
 	}
 }
