@@ -70,7 +70,7 @@ public class JNLPResource
 		catch(Exception e)
 		{
 			throw new JNLPException(
-					Messages.getString("unable_to_read_JNLP_file_colon") + e.getMessage(), Messages.getString("report_problem_to_distro_vendor"), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("can_not_read_materialization_wizard_resource"), Messages.getString("try_again_and_if_the_problem_persists_please_report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
 					BootstrapConstants.ERROR_CODE_JNLP_SAX_EXCEPTION, e);
 		}
 	}

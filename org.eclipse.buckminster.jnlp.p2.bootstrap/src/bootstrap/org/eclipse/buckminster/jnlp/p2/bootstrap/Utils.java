@@ -114,9 +114,8 @@ public class Utils
 	 * 
 	 * @param jnlp
 	 * @return
-	 * @throws JNLPException
 	 */
-	public static String createHash(URL jnlp) throws JNLPException
+	public static String createHash(URL jnlp)
 	{
 		MessageDigest md;
 
@@ -126,8 +125,7 @@ public class Utils
 		}
 		catch(NoSuchAlgorithmException e)
 		{
-			throw new JNLPException(e.getMessage(), Messages.getString("report_problem_to_distro_vendor"), //$NON-NLS-1$
-					BootstrapConstants.ERROR_CODE_JNLP_SAX_EXCEPTION, e);
+			throw new RuntimeException(e);
 		}
 
 		return new BASE64Encoder().encode(md.digest(jnlp.toString().getBytes()));

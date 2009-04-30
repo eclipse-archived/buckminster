@@ -181,7 +181,7 @@ public class DirectorInstaller
 			{
 				throw new JNLPException(
 						Messages.getString("can_not_create_a_new_file"), //$NON-NLS-1$
-						Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
+						Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e, false); //$NON-NLS-1$
 			}
 		}
 		finally
@@ -249,7 +249,7 @@ public class DirectorInstaller
 			if(!zipEntry.getName().startsWith(getDirectorFolderName()))
 			{
 				throw new JNLPException(
-						Messages.getString("materializer_error"), Messages.getString("director_application_is_probably_corrupted_report_the_error"), ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION); //$NON-NLS-1$ //$NON-NLS-2$
+						Messages.getString("director_application_is_probably_corrupted"), Messages.getString("report_the_problem"), ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			String name = osAdjustName(zipEntry.getName());
@@ -276,7 +276,7 @@ public class DirectorInstaller
 						throw new JNLPException(
 								Messages.getString("can_not_create_file_colon") + file.toString(), //$NON-NLS-1$
 								Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, //$NON-NLS-1$
-								e);
+								e, false);
 					}
 					try
 					{
@@ -289,7 +289,7 @@ public class DirectorInstaller
 							throw new JNLPException(
 									Messages.getString("can_not_unzip_and_save_to_file_colon") + file.toString(), //$NON-NLS-1$
 									Messages.getString("check_disk_space_system_permissions_and_try_again"), //$NON-NLS-1$
-									ERROR_CODE_FILE_IO_EXCEPTION, e);
+									ERROR_CODE_FILE_IO_EXCEPTION, e, false);
 						}
 						monitor.taskIncrementalProgress(1);
 					}
@@ -312,7 +312,7 @@ public class DirectorInstaller
 						throw new JNLPException(
 								Messages.getString("can_not_save_to_file_colon") + file.toString(), //$NON-NLS-1$
 								Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, //$NON-NLS-1$
-								e);
+								e, false);
 					}
 				}
 
@@ -390,13 +390,13 @@ public class DirectorInstaller
 		catch(MalformedURLException e)
 		{
 			throw new JNLPException(
-					Messages.getString("can_not_read_URL_to_properties"), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("can_not_read_URL_to_properties"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 		}
 		catch(IOException e)
 		{
 			throw new JNLPException(
-					Messages.getString("can_not_read_properties"), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("can_not_read_materialization_properties"), Messages.getString("try_again_and_if_the_problem_persists_please_report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_PROPERTY_IO_EXCEPTION, e);
 		}
 		finally

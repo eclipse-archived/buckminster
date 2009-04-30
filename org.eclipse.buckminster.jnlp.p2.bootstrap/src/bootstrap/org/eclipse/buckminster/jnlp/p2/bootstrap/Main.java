@@ -171,8 +171,8 @@ public class Main
 			else
 			{
 				errorCode = ERROR_CODE_RUNTIME_EXCEPTION;
-				problem = Messages.getString("unknown_runtime_exception"); //$NON-NLS-1$
-				solution = Messages.getString("report_the_problem"); //$NON-NLS-1$
+				problem = Messages.getString("an_unexpected_error_occurred_this_could_be_because_of_intermittent_network_problems"); //$NON-NLS-1$
+				solution = Messages.getString("try_again_and_if_the_problem_persists_please_report_the_problem"); //$NON-NLS-1$
 				throwableToReport = t;
 			}
 
@@ -312,7 +312,7 @@ public class Main
 		if(names == null)
 		{
 			throw new JNLPException(
-					Messages.getString("_0_is_not_a_directory", pluginsDir), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("director_application_is_probably_corrupted"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
 					ERROR_CODE_DIRECTORY_EXCEPTION);
 		}
 
@@ -341,10 +341,8 @@ public class Main
 			launcher = new File(siteRoot, "startup.jar"); //$NON-NLS-1$
 			if(!launcher.exists())
 			{
-				throw new JNLPException(
-						Messages.getString("can_not_find_file_colon") + pluginsDir //$NON-NLS-1$
-								+ "org.eclipse.equinox.launcher_<version>.jar", //$NON-NLS-1$
-						Messages.getString("clear_your_java_cache_browser_cache_and_try_again"), ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION); //$NON-NLS-1$
+				throw new JNLPException(Messages.getString("director_application_is_probably_corrupted"), //$NON-NLS-1$
+						Messages.getString("report_the_problem"), ERROR_CODE_LAUNCHER_NOT_FOUND_EXCEPTION); //$NON-NLS-1$
 			}
 		}
 		else
@@ -720,8 +718,8 @@ public class Main
 
 		if(configURL == null)
 		{
-			throw new JNLPException(Messages.getString("missing_required_argument_configURL_URL_to_config_properties"), //$NON-NLS-1$
-					Messages.getString("report_the_error_and_try_later"), ERROR_CODE_MISSING_ARGUMENT_EXCEPTION); //$NON-NLS-1$
+			throw new JNLPException(Messages.getString("director_application_is_probably_corrupted"), //$NON-NLS-1$
+					Messages.getString("report_the_problem"), ERROR_CODE_MISSING_ARGUMENT_EXCEPTION); //$NON-NLS-1$
 		}
 
 		InputStream propStream = null;
@@ -737,7 +735,7 @@ public class Main
 			catch(MalformedURLException e)
 			{
 				throw new JNLPException(
-						Messages.getString("can_not_read_URL_to_config_properties"), Messages.getString("report_the_error_and_try_later"), //$NON-NLS-1$ //$NON-NLS-2$
+						Messages.getString("director_application_is_probably_corrupted"), Messages.getString("report_the_problem"), //$NON-NLS-1$ //$NON-NLS-2$
 						ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
 			if(!"file".equals(propertiesURL)) //$NON-NLS-1$
@@ -771,7 +769,7 @@ public class Main
 				if(!(localTemp.exists() || localTemp.mkdirs()))
 					throw new JNLPException(
 							Messages.getString("unable_to_create_directory") + localTemp, //$NON-NLS-1$
-							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION); //$NON-NLS-1$
+							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, false); //$NON-NLS-1$
 
 				File localProps;
 				try
@@ -782,7 +780,7 @@ public class Main
 				{
 					throw new JNLPException(
 							Messages.getString("can_not_create_a_temp_file"), //$NON-NLS-1$
-							Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
+							Messages.getString("check_disk_space_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e, false); //$NON-NLS-1$
 				}
 				try
 				{
@@ -793,7 +791,7 @@ public class Main
 				{
 					throw new JNLPException(
 							Messages.getString("can_not_write_to_a_temp_file"), //$NON-NLS-1$
-							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e); //$NON-NLS-1$
+							Messages.getString("check_your_system_permissions_and_try_again"), ERROR_CODE_FILE_IO_EXCEPTION, e, false); //$NON-NLS-1$
 				}
 
 				// Replace the configURL option value in the argument array with a pointer
