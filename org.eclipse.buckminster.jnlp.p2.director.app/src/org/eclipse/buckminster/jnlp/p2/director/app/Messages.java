@@ -38,7 +38,7 @@ public class Messages extends NLS {
 	public static String Ignored_repo;
 
 	public static String cannot_read_URL_to_configuration_properties;
-	public static String report_the_error_and_try_later;
+	public static String report_the_problem;
 	public static String cannot_read_configuration_properties;
 	public static String check_your_system_permissions_internet_connection_and_try_again;
 

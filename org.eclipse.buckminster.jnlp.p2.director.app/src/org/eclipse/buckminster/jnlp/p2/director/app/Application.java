@@ -633,7 +633,7 @@ public class Application implements IApplication
 			catch(MalformedURLException e)
 			{
 				throw new JNLPException(Messages.cannot_read_URL_to_configuration_properties,
-						Messages.report_the_error_and_try_later, ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
+						Messages.report_the_problem, ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION, e);
 			}
 			catch(IOException e)
 			{
@@ -864,8 +864,8 @@ public class Application implements IApplication
 				else
 				{
 					errorCode = BootstrapConstants.ERROR_CODE_MATERIALIZER_INSTALL_EXCEPTION;
-					problem = "An unexpected error occured.\n\nThis could be because of intermittend network problems.";
-					solution = "Try again, and if the problem persists, please report the problem";
+					problem = "An unexpected error occurred.\n\nThis could be because of intermittent network problems.";
+					solution = "Try again, and if the problem persists, please report the problem.";
 					throwableToReport = exception;
 				}
 								
