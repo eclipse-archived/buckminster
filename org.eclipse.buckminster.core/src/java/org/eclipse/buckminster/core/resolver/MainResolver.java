@@ -58,8 +58,8 @@ public class MainResolver implements IResolver
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query = m_context.getNodeQuery(request);
-		BillOfMaterials bom = BillOfMaterials.create(new UnresolvedNode(query.getQualifiedDependency()), m_context
-				.getComponentQuery());
+		BillOfMaterials bom = BillOfMaterials.create(new UnresolvedNode(query.getQualifiedDependency()),
+				m_context.getComponentQuery());
 		return resolveRemaining(bom, monitor);
 	}
 
@@ -82,96 +82,99 @@ public class MainResolver implements IResolver
 			//
 			IResolverFactory factory = resolverFactories[0];
 			logDecision(ResolverDecisionType.USING_RESOLVER, factory.getId());
-			return factory.createResolver(m_context).resolveRemaining(bom, monitor);
+			bom = factory.createResolver(m_context).resolveRemaining(bom, monitor);
 		}
-
-		monitor.beginTask(null, numFactories * 100);
-
-		// Since all factories but the last should continue on error
-		// we must save our status here. The last factory should use
-		// our status always since it must fail if we are setup to
-		// fail.
-		//
-		boolean continueOnError = m_context.isContinueOnError();
-		boolean silentStatus = m_context.isSilentStatus();
-		m_context.setContinueOnError(true);
-		m_context.setSilentStatus(true);
-		try
+		else
 		{
-			IResolver[] resolvers = new IResolver[numFactories];
-			for(int idx = 0; idx < numFactories; ++idx)
-				resolvers[idx] = resolverFactories[idx].createResolver(m_context);
 
-			for(int iteration = 0; iteration < MAX_ITERATIONS; ++iteration)
+			monitor.beginTask(null, numFactories * 100);
+
+			// Since all factories but the last should continue on error
+			// we must save our status here. The last factory should use
+			// our status always since it must fail if we are setup to
+			// fail.
+			//
+			boolean continueOnError = m_context.isContinueOnError();
+			boolean silentStatus = m_context.isSilentStatus();
+			m_context.setContinueOnError(true);
+			m_context.setSilentStatus(true);
+			try
 			{
-				BillOfMaterials bomAtIterationStart = bom;
+				IResolver[] resolvers = new IResolver[numFactories];
 				for(int idx = 0; idx < numFactories; ++idx)
+					resolvers[idx] = resolverFactories[idx].createResolver(m_context);
+
+				for(int iteration = 0; iteration < MAX_ITERATIONS; ++iteration)
 				{
-					IResolver resolver = resolvers[idx];
-					logDecision(ResolverDecisionType.USING_RESOLVER, resolverFactories[idx].getId());
-					resolver.setRecursiveResolve(m_recursiveResolve);
-					BillOfMaterials newBom = resolver.resolveRemaining(bom, MonitorUtils.subMonitor(monitor, 100));
-					if(bom.contentEqual(newBom))
-						continue;
-
-					if(idx == 0)
-						//
-						// There is no reason to reiterate if the only iteration that changed
-						// the bom was the first.
-						//
-						bomAtIterationStart = bom;
-
-					bom = newBom;
-					if(!m_recursiveResolve || bom.isFullyResolved())
+					BillOfMaterials bomAtIterationStart = bom;
+					for(int idx = 0; idx < numFactories; ++idx)
 					{
-						// Something happened with the BOM so we consider ourselves done here
+						IResolver resolver = resolvers[idx];
+						logDecision(ResolverDecisionType.USING_RESOLVER, resolverFactories[idx].getId());
+						resolver.setRecursiveResolve(m_recursiveResolve);
+						BillOfMaterials newBom = resolver.resolveRemaining(bom, MonitorUtils.subMonitor(monitor, 100));
+						if(bom.contentEqual(newBom))
+							continue;
+
+						if(idx == 0)
+							//
+							// There is no reason to reiterate if the only iteration that changed
+							// the bom was the first.
+							//
+							bomAtIterationStart = bom;
+
+						bom = newBom;
+						if(!m_recursiveResolve || bom.isFullyResolved())
+						{
+							// Something happened with the BOM so we consider ourselves done here
+							//
+							iteration = MAX_ITERATIONS;
+							break;
+						}
+					}
+
+					if(bomAtIterationStart.equals(bom))
 						//
-						iteration = MAX_ITERATIONS;
+						// A full iteration over all resolvers gave us nothing. Then
+						// it's safe to assume that the same thing would happen again
+						//
 						break;
-					}
 				}
 
-				if(bomAtIterationStart.equals(bom))
-					//
-					// A full iteration over all resolvers gave us nothing. Then
-					// it's safe to assume that the same thing would happen again
-					//
-					break;
-			}
-
-			if(bom.isFullyResolved())
-				m_context.clearStatus();
-			else if(!continueOnError)
-			{
-				IStatus status = m_context.getStatus();
-				if(status.getSeverity() == IStatus.ERROR)
-				{
+				if(bom.isFullyResolved())
 					m_context.clearStatus();
-					List<ComponentRequest> unresolvedList = bom.getUnresolvedList();
-					int top = unresolvedList.size();
-					if(top == 0)
-						throw new CoreException(status);
-
-					StringBuilder bld = new StringBuilder();
-					bld.append(Messages.Unable_to_resolve);
-
-					for(int idx = 0; idx < top; ++idx)
+				else if(!continueOnError)
+				{
+					IStatus status = m_context.getStatus();
+					if(status.getSeverity() == IStatus.ERROR)
 					{
-						if(idx > 0)
-							bld.append(", "); //$NON-NLS-1$
-						unresolvedList.get(idx).toString(bld);
+						m_context.clearStatus();
+						List<ComponentRequest> unresolvedList = bom.getUnresolvedList();
+						int top = unresolvedList.size();
+						if(top == 0)
+							throw new CoreException(status);
+
+						StringBuilder bld = new StringBuilder();
+						bld.append(Messages.Unable_to_resolve);
+
+						for(int idx = 0; idx < top; ++idx)
+						{
+							if(idx > 0)
+								bld.append(", "); //$NON-NLS-1$
+							unresolvedList.get(idx).toString(bld);
+						}
+						throw BuckminsterException.fromMessage(bld.toString());
 					}
-					throw BuckminsterException.fromMessage(bld.toString());
 				}
 			}
-			return bom;
+			finally
+			{
+				m_context.setContinueOnError(continueOnError);
+				m_context.setSilentStatus(silentStatus);
+				monitor.done();
+			}
 		}
-		finally
-		{
-			m_context.setContinueOnError(continueOnError);
-			m_context.setSilentStatus(silentStatus);
-			monitor.done();
-		}
+		return bom;
 	}
 
 	public void setRecursiveResolve(boolean flag)

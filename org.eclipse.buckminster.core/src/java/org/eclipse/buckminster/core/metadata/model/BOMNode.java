@@ -35,22 +35,8 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 
 	public static final String TAG = "depnode"; //$NON-NLS-1$
 
-	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
-			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException;
-
 	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
 	{
-	}
-
-	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
-	{
-	}
-
-	private void collectNodes(Set<BOMNode> nodes) throws CoreException
-	{
-		if(nodes.add(this))
-			for(BOMNode child : getChildren())
-				child.collectNodes(nodes);
 	}
 
 	public List<Resolution> findAll(Set<Resolution> skipThese) throws CoreException
@@ -96,7 +82,7 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 
 	public boolean isFullyResolved(ComponentQuery query) throws CoreException
 	{
-		return query.skipComponent(getRequest());
+		return isFullyResolved(query, new HashSet<BOMNode>());
 	}
 
 	public boolean isPersisted(StorageManager sm) throws CoreException
@@ -127,23 +113,6 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		throw new UnsupportedOperationException();
 	}
 
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
-	{
-		BOMNode self = visited.get(this);
-		if(self == null)
-		{
-			QualifiedDependency qDep = getQualifiedDependency();
-			if(topReplacer.getQualifiedDependency().equals(qDep))
-				self = topReplacer;
-			else if(topReplacer != node && node.getQualifiedDependency().equals(qDep))
-				self = node;
-			else
-				self = this;
-			visited.put(this, self);
-		}
-		return self;
-	}
-
 	public void store(StorageManager sm) throws CoreException
 	{
 		throw new UnsupportedOperationException();
@@ -161,5 +130,42 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		HashSet<BOMNode> allNodes = new HashSet<BOMNode>();
 		collectNodes(allNodes);
 		return allNodes.size();
+	}
+
+	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen) throws CoreException
+	{
+		ComponentRequest request = getRequest();
+		return query.skipComponent(request) || request.isOptional();
+	}
+
+	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException;
+
+	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
+	{
+	}
+
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
+	{
+		BOMNode self = visited.get(this);
+		if(self == null)
+		{
+			QualifiedDependency qDep = getQualifiedDependency();
+			if(topReplacer.getQualifiedDependency().equals(qDep))
+				self = topReplacer;
+			else if(topReplacer != node && node.getQualifiedDependency().equals(qDep))
+				self = node;
+			else
+				self = this;
+			visited.put(this, self);
+		}
+		return self;
+	}
+
+	private void collectNodes(Set<BOMNode> nodes) throws CoreException
+	{
+		if(nodes.add(this))
+			for(BOMNode child : getChildren())
+				child.collectNodes(nodes);
 	}
 }

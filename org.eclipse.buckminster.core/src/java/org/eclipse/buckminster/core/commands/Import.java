@@ -197,6 +197,7 @@ public class Import extends WorkspaceInitCommand
 				IResolver resolver = new MainResolver(ctx);
 				resolver.getContext().setContinueOnError(true);
 				bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 50));
+				resolver.getContext().emitWarningAndErrorTags();
 			}
 			else
 			{

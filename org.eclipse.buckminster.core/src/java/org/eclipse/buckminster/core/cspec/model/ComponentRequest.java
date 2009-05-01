@@ -45,6 +45,8 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	private final Filter m_filter;
 
+	public static final String FILTER_ECLIPSE_P2_OPTIONAL = "(!(eclipse.p2.optional=false))"; //$NON-NLS-1$
+
 	public ComponentRequest(ComponentRequestBuilder bld)
 	{
 		super(bld.getName(), bld.getComponentTypeID());
@@ -156,6 +158,11 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public boolean isEnabled(Map<String, ? extends Object> properties)
 	{
 		return m_filter == null || m_filter.matchCase(properties);
+	}
+
+	public boolean isOptional()
+	{
+		return m_filter != null && m_filter.toString().contains(FILTER_ECLIPSE_P2_OPTIONAL);
 	}
 
 	public ComponentRequest mergeDesignator(ComponentRequest that) throws CoreException

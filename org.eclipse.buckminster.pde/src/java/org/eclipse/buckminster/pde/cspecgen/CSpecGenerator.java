@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileHandle;
@@ -68,7 +69,7 @@ import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IMatchRules;
-import org.eclipse.pde.core.plugin.IPluginReference;
+import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -120,6 +121,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final Filter INCLUDE_TOP_FILTER;
 
+	public static final Filter P2_OPTIONAL_FILTER;
+
 	static
 	{
 		try
@@ -132,6 +135,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			PACK_DISABLED = FilterFactory.newInstance("(!(site.pack200=true))"); //$NON-NLS-1$
 			SIGNING_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(!(site.signing=true)))"); //$NON-NLS-1$
 			SIGNING_ENABLED_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(site.signing=true))"); //$NON-NLS-1$
+			P2_OPTIONAL_FILTER = FilterFactory.newInstance(ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL);
+
 		}
 		catch(InvalidSyntaxException e)
 		{
@@ -393,11 +398,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return copyPlugins;
 	}
 
-	protected ComponentRequestBuilder createDependency(IPluginReference pluginReference, String category)
+	protected ComponentRequestBuilder createDependency(IPluginImport pluginImport, String category)
 			throws CoreException
 	{
-		return createDependency(pluginReference.getId(), category, pluginReference.getVersion(),
-				pluginReference.getMatch(), null);
+		Filter filter = null;
+		if(pluginImport.isOptional())
+			filter = P2_OPTIONAL_FILTER;
+		return createDependency(pluginImport.getId(), category, pluginImport.getVersion(), pluginImport.getMatch(),
+				filter);
 	}
 
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,

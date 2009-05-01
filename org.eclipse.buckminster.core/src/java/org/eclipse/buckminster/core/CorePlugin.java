@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.actor.IPerformManager;
@@ -188,10 +190,10 @@ public class CorePlugin extends LogAwarePlugin
 
 	public static void logWarningsAndErrors(IStatus status)
 	{
-		logWarningsAndErrors(status, new StringBuilder(), 0);
+		logWarningsAndErrors(status, new StringBuilder(), new HashSet<String>(), 0);
 	}
 
-	private static void logWarningsAndErrors(IStatus status, StringBuilder line, int indent)
+	private static void logWarningsAndErrors(IStatus status, StringBuilder line, Set<String> unique, int indent)
 	{
 		switch(status.getSeverity())
 		{
@@ -222,9 +224,12 @@ public class CorePlugin extends LogAwarePlugin
 					line.append(reasonMsg);
 				}
 			}
-			getLogger().log(status.getSeverity(), line.toString());
+			String logMsg = line.toString();
+			if(unique.add(logMsg))
+				getLogger().log(status.getSeverity(), logMsg);
+			HashSet<String> childUnique = new HashSet<String>();
 			for(IStatus child : status.getChildren())
-				logWarningsAndErrors(child, line, indent + 2);
+				logWarningsAndErrors(child, line, childUnique, indent + 2);
 		}
 	}
 
@@ -545,8 +550,8 @@ public class CorePlugin extends LogAwarePlugin
 				MetadataSynchronizer.setUp();
 				MaterializationJob.setUp();
 
-				IConfigurationElement[] forcedActivations = Platform.getExtensionRegistry()
-						.getConfigurationElementsFor(FORCED_ACTIVATIONS_POINT);
+				IConfigurationElement[] forcedActivations = Platform.getExtensionRegistry().getConfigurationElementsFor(
+						FORCED_ACTIVATIONS_POINT);
 				monitor.beginTask(null, forcedActivations.length);
 				for(IConfigurationElement elem : forcedActivations)
 				{

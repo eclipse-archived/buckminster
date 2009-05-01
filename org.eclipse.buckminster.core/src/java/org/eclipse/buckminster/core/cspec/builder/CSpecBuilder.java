@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
@@ -132,6 +133,14 @@ public class CSpecBuilder implements ICSpecData
 			crb.setVersionRange(cap.getRange());
 
 			filterStr = cap.getFilter();
+			if(cap.isOptional())
+			{
+				if(filterStr == null)
+					filterStr = ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL;
+				else
+					filterStr = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL + filterStr + ')'; //$NON-NLS-1$
+			}
+
 			if(filterStr != null)
 				try
 				{

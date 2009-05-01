@@ -64,6 +64,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 
 /**
  * The LocalResolver will attempt to resolve the query using locally available resources. This includes:
@@ -165,8 +166,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes
-				.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, false, false, null, null);
+		Provider provider = new Provider(null, IReaderType.LOCAL,
+				possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, false, false,
+				null, null);
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
 		Resolution bestMatch = null;
@@ -388,8 +390,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor,
 						10)) };
 				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0],
-						MonitorUtils.subMonitor(monitor, 10))
-						.build(reader, false, MonitorUtils.subMonitor(monitor, 10));
+						MonitorUtils.subMonitor(monitor, 10)).build(reader, false, MonitorUtils.subMonitor(monitor, 10));
 				IOUtils.close(reader[0]);
 
 				Resolution res = node.getResolution();
@@ -450,9 +451,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		int top = nrs.length;
 		for(int idx = 0; idx < top; ++idx)
 		{
+			nr = nrs[idx];
 			try
 			{
-				nr = nrs[idx];
 				nr.addDependencyQualification(qDep);
 				return nr;
 			}
@@ -461,7 +462,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				// We have a conflict. Two components with the same
 				// name but incompatible versions.
 				//
-				CorePlugin.getLogger().warning(e.getMessage());
+				IStatus err = e.getStatus();
+				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING,
+						err.getPlugin(), err.getMessage()));
 			}
 		}
 

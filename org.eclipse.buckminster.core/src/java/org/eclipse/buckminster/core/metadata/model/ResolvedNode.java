@@ -112,66 +112,12 @@ public class ResolvedNode extends BOMNode
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolution.getId().toString());
-	}
-
-	@Override
-	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
-			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
-	{
-		for(BOMNode child : getChildren())
-			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
-
-		Resolution resolution = getResolution();
-		if(perused.add(resolution))
-		{
-			ComponentIdentifier ci = resolution.getComponentIdentifier();
-			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
-				resolutions.add(resolution);
-		}
-	}
-
-	@Override
 	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
 	{
 		if(skipThese.add(getResolution()))
 		{
 			for(BOMNode child : getChildren())
 				child.addUnresolved(unresolved, skipThese);
-		}
-	}
-
-	@Override
-	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
-	{
-		Resolution resolution = getResolution();
-		if(notThese.add(resolution))
-		{
-			// It's rather important that we do depth first here and store
-			// the child before its parent since they need to be materialized
-			// and bound in that order.
-			//
-			for(BOMNode child : getChildren())
-				child.collectAll(notThese, all);
-			all.add(getResolution());
-		}
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_children.size() > 0)
-		{
-			String childName = Utils.makeQualifiedName(prefix, CHILD_TAG);
-			for(BOMNode child : m_children)
-			{
-				AttributesImpl attrs = new AttributesImpl();
-				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.getId().toString());
-				receiver.startElement(namespace, CHILD_TAG, childName, attrs);
-				receiver.endElement(namespace, CHILD_TAG, childName);
-			}
 		}
 	}
 
@@ -243,15 +189,6 @@ public class ResolvedNode extends BOMNode
 	}
 
 	@Override
-	public boolean isFullyResolved(ComponentQuery query) throws CoreException
-	{
-		for(BOMNode child : getChildren())
-			if(!child.isFullyResolved(query))
-				return false;
-		return true;
-	}
-
-	@Override
 	public final boolean isReferencing(BOMNode node, boolean shallow) throws CoreException
 	{
 		if(equals(node))
@@ -268,6 +205,72 @@ public class ResolvedNode extends BOMNode
 					return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolution.getId().toString());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		if(m_children.size() > 0)
+		{
+			String childName = Utils.makeQualifiedName(prefix, CHILD_TAG);
+			for(BOMNode child : m_children)
+			{
+				AttributesImpl attrs = new AttributesImpl();
+				Utils.addAttribute(attrs, ElementRefHandler.ATTR_REFID, child.getId().toString());
+				receiver.startElement(namespace, CHILD_TAG, childName, attrs);
+				receiver.endElement(namespace, CHILD_TAG, childName);
+			}
+		}
+	}
+
+	@Override
+	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen) throws CoreException
+	{
+		if(seen.add(this))
+		{
+			for(BOMNode child : getChildren())
+				if(!child.isFullyResolved(query, seen))
+					return false;
+		}
+		return true;
+	}
+
+	@Override
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
+	{
+		for(BOMNode child : getChildren())
+			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
+
+		Resolution resolution = getResolution();
+		if(perused.add(resolution))
+		{
+			ComponentIdentifier ci = resolution.getComponentIdentifier();
+			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
+				resolutions.add(resolution);
+		}
+	}
+
+	@Override
+	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
+	{
+		Resolution resolution = getResolution();
+		if(notThese.add(resolution))
+		{
+			// It's rather important that we do depth first here and store
+			// the child before its parent since they need to be materialized
+			// and bound in that order.
+			//
+			for(BOMNode child : getChildren())
+				child.collectAll(notThese, all);
+			all.add(getResolution());
+		}
 	}
 
 	@Override

@@ -85,6 +85,7 @@ public class ResolveJob extends Job
 					throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_resolve_0, rootRequest));
 			}
 			CorePlugin.logWarningsAndErrors(status);
+			ctx.emitWarningAndErrorTags();
 
 			if(!m_materialize)
 			{
@@ -111,13 +112,14 @@ public class ResolveJob extends Job
 					mspecBuilder.setName(bom.getViewName());
 					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 					bom.addMaterializationNodes(mspecBuilder);
-					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder
-							.createMaterializationSpec(), ctx);
+					MaterializationContext matCtx = new MaterializationContext(bom,
+							mspecBuilder.createMaterializationSpec(), ctx);
 					MaterializationJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
 					status = ctx.getStatus();
 					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
 						return status;
 					CorePlugin.logWarningsAndErrors(status);
+					matCtx.emitWarningAndErrorTags();
 				}
 				return status;
 			}
