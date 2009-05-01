@@ -3,7 +3,6 @@ package org.eclipse.buckminster.galileo.builder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -39,10 +38,8 @@ import org.eclipse.amalgam.releng.build.Promotion;
 import org.eclipse.amalgam.releng.build.Repository;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.MultiTeeOutputStream;
 import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -119,7 +116,7 @@ public class Builder implements IApplication {
 
 	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group"; //$NON-NLS-1$
 
-	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = new Version(1, 0, 0);
+	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = Version.createOSGi(1, 0, 0);
 
 	public static final String COMPOSITE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".compositeRepository"; //$NON-NLS-1$
 
@@ -167,7 +164,7 @@ public class Builder implements IApplication {
 
 	public static IInstallableUnit getIU(IMetadataRepository mdr, String id, String version) {
 		version = Trivial.trim(version);
-		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, new Version(version));
+		InstallableUnitQuery query = version == null ? new InstallableUnitQuery(id) : new InstallableUnitQuery(id, Version.create(version));
 		Collector c = mdr.query(query, new Collector(), null);
 		IInstallableUnit[] result = (IInstallableUnit[]) c.toArray(IInstallableUnit.class);
 		return result.length > 0 ? result[0] : null;
@@ -324,17 +321,13 @@ public class Builder implements IApplication {
 
 	private URI categoriesRepo;
 
-	// A list of messages to be printed to the log file once we know which file
-	// that is.
-	private List<String> deferredLogMessages = new ArrayList<String>();
-
 	private String emailFrom;
 
 	private String emailFromName;
 
 	private int logLevel = Logger.INFO;
 
-	private OutputStream logOutput;
+	private String logURL;
 
 	private String mockEmailCC;
 
@@ -478,10 +471,9 @@ public class Builder implements IApplication {
 			if (buildModelLocation == null)
 				throw BuckminsterException.fromMessage("No buildmodel has been set");
 
-			if (buildID == null) {
-				Date now = new Date();
+			Date now = new Date();
+			if (buildID == null)
 				buildID = "build-" + DATE_FORMAT.format(now) + TIME_FORMAT.format(now);
-			}
 
 			if (smtpHost == null)
 				smtpHost = "localhost";
@@ -499,7 +491,7 @@ public class Builder implements IApplication {
 			// well-formed XML
 			verifyContributions();
 
-			runTransformation();
+			runTransformation(now);
 			List<Contribution> contributions = build.getContributions();
 
 			if (brandingContribution != null) {
@@ -635,11 +627,10 @@ public class Builder implements IApplication {
 				msgBld.append("\n\n");
 			}
 
-			if (build != null) {
+			if (logURL != null) {
 				msgBld.append("Check the log file for more information: ");
-				msgBld.append(build.getBuilderURL());
-				msgBld.append(buildID);
-				msgBld.append(".log.txt\n");
+				msgBld.append(logURL);
+				msgBld.append('\n');
 			}
 
 			if (useMock) {
@@ -760,6 +751,10 @@ public class Builder implements IApplication {
 		logLevel = level;
 	}
 
+	public void setLogURL(String logURL) {
+		this.logURL = logURL;
+	}
+
 	public void setMockEmailCC(String mockEmailCc) {
 		this.mockEmailCC = mockEmailCc;
 	}
@@ -843,19 +838,20 @@ public class Builder implements IApplication {
 	public Object start(IApplicationContext context) throws Exception {
 
 		String[] args = (String[]) context.getArguments().get("application.args");
+		Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
 		Logger log = Buckminster.getLogger();
 		StringBuilder msgBld = new StringBuilder();
-		msgBld.append("Running with arguments: ");
+		msgBld.append("Running with arguments:");
 		for (String arg : args) {
+			msgBld.append(LINE_SEPARATOR);
 			msgBld.append("  '");
 			msgBld.append(arg);
 			msgBld.append('\'');
-			msgBld.append(LINE_SEPARATOR);
 		}
 		String msg = msgBld.toString();
-		deferredLogMessages.add(msg);
 		try {
 			parseCommandLineArgs(args); //$NON-NLS-1$
+			Logger.setConsoleLevelThreshold(logLevel);
 			log.debug(msg);
 		} catch (Exception e) {
 			// We use error level when the arguments are corrupt since the user
@@ -868,12 +864,6 @@ public class Builder implements IApplication {
 	}
 
 	public void stop() {
-		if (logOutput != null) {
-			Logger.setOutStream(System.out);
-			Logger.setErrStream(System.err);
-			IOUtils.close(logOutput);
-			logOutput = null;
-		}
 	}
 
 	private InternetAddress mockCCRecipient() throws UnsupportedEncodingException {
@@ -910,18 +900,6 @@ public class Builder implements IApplication {
 				setProduction(true);
 				continue;
 			}
-			if ("-mockEmailTo".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setMockEmailTo(args[idx]);
-				continue;
-			}
-			if ("-subjectPrefix".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSubjectPrefix(args[idx]);
-				continue;
-			}
 			if ("-packedStrategy".equalsIgnoreCase(arg)) {
 				if (++idx >= top)
 					requiresArgument(arg);
@@ -941,6 +919,43 @@ public class Builder implements IApplication {
 					throw new IllegalArgumentException(String.format("%s is not a valid packed strategy", strategyStr));
 
 				setPackedStrategy(strategy);
+				continue;
+			}
+			if ("-logLevel".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				String levelStr = args[idx];
+				int level;
+				if ("debug".equalsIgnoreCase(levelStr))
+					level = Logger.DEBUG;
+				else if ("info".equalsIgnoreCase(levelStr))
+					level = Logger.INFO;
+				else if ("warning".equalsIgnoreCase(levelStr))
+					level = Logger.WARNING;
+				else if ("error".equalsIgnoreCase(levelStr))
+					level = Logger.WARNING;
+				else
+					throw new IllegalArgumentException(String.format("%s is not a valid logLevel", levelStr));
+
+				setLogLevel(level);
+				continue;
+			}
+			if ("-logURL".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setLogURL(args[idx]);
+				continue;
+			}
+			if ("-mockEmailTo".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setMockEmailTo(args[idx]);
+				continue;
+			}
+			if ("-subjectPrefix".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setSubjectPrefix(args[idx]);
 				continue;
 			}
 			if ("-emailFrom".equalsIgnoreCase(arg)) {
@@ -990,25 +1005,6 @@ public class Builder implements IApplication {
 				if (++idx >= top)
 					requiresArgument(arg);
 				setMockEmailCC(args[idx]);
-				continue;
-			}
-			if ("-logLevel".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				String levelStr = args[idx];
-				int level;
-				if ("debug".equalsIgnoreCase(levelStr))
-					level = Logger.DEBUG;
-				else if ("info".equalsIgnoreCase(levelStr))
-					level = Logger.INFO;
-				else if ("warning".equalsIgnoreCase(levelStr))
-					level = Logger.WARNING;
-				else if ("error".equalsIgnoreCase(levelStr))
-					level = Logger.WARNING;
-				else
-					throw new IllegalArgumentException(String.format("%s is not a valid logLevel", levelStr));
-
-				setLogLevel(level);
 				continue;
 			}
 			if ("-buildModel".equalsIgnoreCase(arg)) {
@@ -1097,15 +1093,14 @@ public class Builder implements IApplication {
 	 * @throws CoreException
 	 *             If something goes wrong with during the process
 	 */
-	private void runTransformation() throws CoreException {
+	private void runTransformation(Date now) throws CoreException {
 		File generatedBuildModel = null;
 		try {
 			// Transform the model, i.e. collect all contributions and create
 			// one single build model file
-			Date today = new Date();
 			Map<String, Object> configuration = new HashMap<String, Object>();
-			configuration.put("date", DATE_FORMAT.format(today)); //$NON-NLS-1$
-			configuration.put("time", TIME_FORMAT.format(today)); //$NON-NLS-1$
+			configuration.put("date", DATE_FORMAT.format(now)); //$NON-NLS-1$
+			configuration.put("time", TIME_FORMAT.format(now)); //$NON-NLS-1$
 			QvtTransformation transf = new QvtInterpretedTransformation(new DeployedQvtModule('/' + Activator.PLUGIN_ID + "/build.qvto")); //$NON-NLS-1$
 			List<ModelContent> inObjects = Collections.singletonList(transf.loadInput(org.eclipse.emf.common.util.URI
 					.createFileURI(buildModelLocation.getAbsolutePath())));
@@ -1144,21 +1139,6 @@ public class Builder implements IApplication {
 			buildRoot.mkdirs();
 			if (!buildRoot.exists())
 				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
-
-			logOutput = new FileOutputStream(new File(buildRoot, buildID + ".log.txt"));
-
-			// Print deferred messages (logged before we knew what file to use)
-			PrintStream tmp = new PrintStream(logOutput);
-			for (String msg : deferredLogMessages)
-				tmp.println(msg);
-			tmp.flush();
-
-			MultiTeeOutputStream outMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.out });
-			MultiTeeOutputStream errMux = new MultiTeeOutputStream(new OutputStream[] { logOutput, System.err });
-			Logger.setOutStream(new PrintStream(outMux));
-			Logger.setErrStream(new PrintStream(errMux));
-			Logger.setConsoleLevelThreshold(logLevel);
-			Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		} finally {

@@ -131,7 +131,7 @@ public class AllContributedCapabilitiesAction extends AbstractPublisherAction {
 		if (existingCapIU == null) {
 			iu.setProperty(IInstallableUnit.PROP_NAME, build.getLabel() + " Capability Definitions");
 			if ("qualifier".equals(version.getQualifier())) {
-				version = new Version(version.getMajor(), version.getMinor(), version.getMicro(), timestamp);
+				version = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), timestamp);
 			}
 		} else {
 			for (IRequiredCapability cap : existingCapIU.getRequiredCapabilities())
@@ -154,7 +154,7 @@ public class AllContributedCapabilitiesAction extends AbstractPublisherAction {
 					qualifier += '-' + timestamp;
 				}
 			}
-			version = new Version(version.getMajor(), version.getMinor(), version.getMicro(), qualifier);
+			version = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), qualifier);
 		}
 		brandingFeature.setVersion(version.toString());
 		iu.setVersion(version);
