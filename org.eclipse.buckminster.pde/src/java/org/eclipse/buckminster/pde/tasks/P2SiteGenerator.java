@@ -46,13 +46,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
-import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 import org.eclipse.equinox.internal.provisional.spi.p2.artifact.repository.SimpleArtifactRepositoryFactory;
@@ -497,11 +497,7 @@ public class P2SiteGenerator extends AbstractActor
 				if(fe.isPatch() || fe.isPlugin() || fe.isRequires())
 					continue;
 
-				String vstr = fe.getVersion();
-				Version version = vstr == null
-						? null
-						: new Version(vstr);
-				featureList.add(new VersionedName(fe.getId(), version));
+				featureList.add(new VersionedName(fe.getId(), fe.getVersion()));
 			}
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, featureList));
 		}

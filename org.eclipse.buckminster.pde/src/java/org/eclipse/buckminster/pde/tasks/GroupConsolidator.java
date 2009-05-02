@@ -32,8 +32,8 @@ import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
@@ -432,7 +432,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 				if(qualifier.charAt(resultingLength - 1) == '.')
 					resultingLength--;
 				qualifier = qualifier.substring(0, resultingLength);
-				version = new Version(version.getMajor(), version.getMinor(), version.getMicro(), qualifier);
+				version = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), qualifier);
 			}
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();

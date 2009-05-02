@@ -8,11 +8,11 @@ import java.util.Properties;
 
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
-import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
@@ -205,14 +205,14 @@ public class ProductVersionPatcher implements IProductDescriptor
 			{
 				String lowQual = qualifier.substring(0, qualifier.length() - 1);
 				String highQual = lowQual + "zzzzzzzzzzzzzzzz"; //$NON-NLS-1$
-				Version low = new Version(version.getMajor(), version.getMinor(), version.getMicro(), lowQual);
-				Version high = new Version(version.getMajor(), version.getMinor(), version.getMicro(), highQual);
+				Version low = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), lowQual);
+				Version high = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), highQual);
 				range = new VersionRange(low, true, high, true);
 			}
 			else
 			{
-				Version low = new Version(version.getMajor(), version.getMinor(), version.getMicro());
-				Version high = new Version(version.getMajor(), version.getMinor(), version.getMicro() + 1);
+				Version low = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro());
+				Version high = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro() + 1);
 				range = new VersionRange(low, true, high, false);
 			}
 		}

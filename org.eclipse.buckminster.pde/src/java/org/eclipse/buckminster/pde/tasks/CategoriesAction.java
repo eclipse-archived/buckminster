@@ -27,9 +27,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.internal.p2.publisher.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
@@ -114,8 +114,7 @@ public class CategoriesAction extends AbstractPublisherAction
 
 	private static final String PROP_CATEGORY_ID_PREFIX = "category.id."; //$NON-NLS-1$
 
-	private static final Pattern s_idAndVersionPattern = Pattern
-			.compile("^(\\S)_([0-9]+(?:\\.[0-9]+){0,2}(?:\\.[A-Za-z0-9_-]))$"); //$NON-NLS-1$
+	private static final Pattern s_idAndVersionPattern = Pattern.compile("^(\\S)_([0-9]+(?:\\.[0-9]+){0,2}(?:\\.[A-Za-z0-9_-]))$"); //$NON-NLS-1$
 
 	private static final List<Category> s_defaultCategoryList;
 
@@ -209,8 +208,8 @@ public class CategoriesAction extends AbstractPublisherAction
 		for(IInstallableUnit iu : featureIUs)
 		{
 			VersionRange range = new VersionRange(iu.getVersion(), true, iu.getVersion(), true);
-			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, iu
-					.getId(), range, iu.getFilter(), false, false));
+			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID,
+					iu.getId(), range, iu.getFilter(), false, false));
 		}
 		// note that update sites don't currently support nested categories, but it may be useful to add in the future
 		if(parentCategory != null)
@@ -218,8 +217,7 @@ public class CategoriesAction extends AbstractPublisherAction
 			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID,
 					parentCategory.getId(), VersionRange.emptyRange, parentCategory.getFilter(), false, false));
 		}
-		cat.setRequiredCapabilities(reqsConfigurationUnits.toArray(new IRequiredCapability[reqsConfigurationUnits
-				.size()]));
+		cat.setRequiredCapabilities(reqsConfigurationUnits.toArray(new IRequiredCapability[reqsConfigurationUnits.size()]));
 
 		// Create set of provided capabilities
 		ArrayList<IProvidedCapability> providedCapabilities = new ArrayList<IProvidedCapability>();
@@ -374,7 +372,7 @@ public class CategoriesAction extends AbstractPublisherAction
 					if(m.matches())
 					{
 						name = m.group(1);
-						version = new Version(m.group(2));
+						version = Version.parseVersion(m.group(2));
 					}
 					else
 						version = Version.emptyVersion;

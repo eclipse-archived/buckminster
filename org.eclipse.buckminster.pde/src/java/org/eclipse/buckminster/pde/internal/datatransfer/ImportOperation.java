@@ -105,17 +105,17 @@ public class ImportOperation extends WorkspaceJob
 	 * 
 	 * @param containerPath
 	 *            the full path of the destination container within the workspace
-	 * @param provider
+	 * @param provd
 	 *            the file system structure provider to use
 	 * @param overwriteImplementor
 	 *            the overwrite strategy to use
 	 * @param filesToImport
 	 *            the list of file system objects to be imported (element type: <code>Object</code>)
 	 */
-	public ImportOperation(IPath containerPath, IImportStructureProvider provider,
+	public ImportOperation(IPath containerPath, IImportStructureProvider provd,
 			IOverwriteQuery overwriteImplementor, List filesToImport)
 	{
-		this(containerPath, null, provider, overwriteImplementor);
+		this(containerPath, null, provd, overwriteImplementor);
 		setFilesToImport(filesToImport);
 	}
 
@@ -138,20 +138,20 @@ public class ImportOperation extends WorkspaceJob
 	 * 
 	 * @param containerPath
 	 *            the full path of the destination container within the workspace
-	 * @param source
+	 * @param src
 	 *            the root file system object to import
-	 * @param provider
+	 * @param provd
 	 *            the file system structure provider to use
 	 * @param overwriteImplementor
 	 *            the overwrite strategy to use
 	 */
-	public ImportOperation(IPath containerPath, Object source, IImportStructureProvider provider,
+	public ImportOperation(IPath containerPath, Object src, IImportStructureProvider provd,
 			IOverwriteQuery overwriteImplementor)
 	{
 		super("ImportOperation"); //$NON-NLS-1$
 		this.destinationPath = containerPath;
-		this.source = source;
-		this.provider = provider;
+		this.source = src;
+		this.provider = provd;
 		overwriteCallback = overwriteImplementor;
 	}
 
@@ -180,19 +180,19 @@ public class ImportOperation extends WorkspaceJob
 	 * 
 	 * @param containerPath
 	 *            the full path of the destination container within the workspace
-	 * @param source
+	 * @param src
 	 *            the root file system object to import from
-	 * @param provider
+	 * @param provd
 	 *            the file system structure provider to use
 	 * @param overwriteImplementor
 	 *            the overwrite strategy to use
 	 * @param filesToImport
 	 *            the list of file system objects to be imported (element type: <code>Object</code>)
 	 */
-	public ImportOperation(IPath containerPath, Object source, IImportStructureProvider provider,
+	public ImportOperation(IPath containerPath, Object src, IImportStructureProvider provd,
 			IOverwriteQuery overwriteImplementor, List filesToImport)
 	{
-		this(containerPath, source, provider, overwriteImplementor);
+		this(containerPath, src, provd, overwriteImplementor);
 		setFilesToImport(filesToImport);
 	}
 

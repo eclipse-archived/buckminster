@@ -48,7 +48,7 @@ public class SourceBundleConsolidator extends BundleConsolidator
 
 		manifest.clear(); // Since we don't want all dependencies, exports, etc.
 
-		String src = (String)getProperties().get("src.additionalRoots");
+		String src = (String)getProperties().get("src.additionalRoots"); //$NON-NLS-1$
 		if(src == null)
 			src = "."; //$NON-NLS-1$
 

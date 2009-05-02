@@ -96,7 +96,7 @@ public class PluginImportOperation extends JarImportOperation
 
 	private static final boolean ClasspathComputer_is35;
 
-	private static final String GET_CLASSPATH = "getClasspath";
+	private static final String GET_CLASSPATH = "getClasspath"; //$NON-NLS-1$
 
 	static
 	{
@@ -232,8 +232,8 @@ public class PluginImportOperation extends JarImportOperation
 
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
-			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution, MonitorUtils
-					.subMonitor(monitor, 1));
+			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution,
+					MonitorUtils.subMonitor(monitor, 1));
 
 			if(!workspace.getRoot().getLocation().equals(m_destination.removeLastSegments(1)))
 				description.setLocation(m_destination);
@@ -429,8 +429,7 @@ public class PluginImportOperation extends JarImportOperation
 			{
 				if(m_importType == IMPORT_BINARY_WITH_LINKS)
 				{
-					m_project.getFile(file.getName())
-							.createLink(new Path(file.getAbsolutePath()), IResource.NONE, null);
+					m_project.getFile(file.getName()).createLink(new Path(file.getAbsolutePath()), IResource.NONE, null);
 				}
 				else
 				{
@@ -1058,8 +1057,8 @@ public class PluginImportOperation extends JarImportOperation
 					if(srcPath != null)
 					{
 						if("src.zip".equals(zipName) && isJARd()){ //$NON-NLS-1$
-							path = new Path(ClasspathUtilCore.getSourceZipName(new File(m_model.getInstallLocation())
-									.getName()));
+							path = new Path(
+									ClasspathUtilCore.getSourceZipName(new File(m_model.getInstallLocation()).getName()));
 						}
 						IFile zipFile = m_project.getFile(path.lastSegment());
 						if(!zipFile.exists())

@@ -60,6 +60,7 @@ import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+@SuppressWarnings("restriction")
 public class PDEMapProvider extends Provider
 {
 	public static final String BM_PDEMAP_PROVIDER_NS = XMLConstants.BM_PREFIX + "PDEMapProvider-1.0"; //$NON-NLS-1$
@@ -124,8 +125,8 @@ public class PDEMapProvider extends Provider
 				return null;
 			}
 
-			MapFileEntry tv = getMapFileEntry(query, problemCollector, getMap(query, problemCollector, MonitorUtils
-					.subMonitor(monitor, 50)));
+			MapFileEntry tv = getMapFileEntry(query, problemCollector, getMap(query, problemCollector,
+					MonitorUtils.subMonitor(monitor, 50)));
 
 			if(tv == null)
 				//
