@@ -129,7 +129,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.ecf.provider.filetransfer" version="3.0.0" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.updatesite" version="1.0.100" match="equivalent"/>
       <import plugin="org.eclipse.equinox.p2.exemplarysetup" version="1.0.0" match="equivalent"/>
-      <import plugin="org.eclipse.jface.text" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.text" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.core.jobs" version="3.4.100" match="equivalent"/>
