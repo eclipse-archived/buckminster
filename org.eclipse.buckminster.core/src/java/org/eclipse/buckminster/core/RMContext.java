@@ -183,6 +183,9 @@ public class RMContext extends ExpandingProperties<Object>
 
 	private final Map<String, String[]> m_filterAttributeUsageMap = new HashMap<String, String[]>();
 
+	// Map that ensures that only one TagInfo is generated for each info string
+	private final Map<String, TagInfo> m_knownTagInfos = new HashMap<String, TagInfo>();
+
 	private static final Map<String, String> s_staticAdditions;
 
 	static
@@ -312,7 +315,18 @@ public class RMContext extends ExpandingProperties<Object>
 		TagInfo tagInfo = m_tagInfos.get(request);
 		if(tagInfo == null)
 		{
-			tagInfo = new TagInfo(info);
+			// Check if a TagInfo has been generated for this particular info String. If so
+			// let this request share that TagInfo with other requests.
+			//
+			// The TagInfo represents the Path that leads to a request, but it doesn't include
+			// the request itself, hence several requests can share the same TagInfo.
+			//
+			tagInfo = m_knownTagInfos.get(info);
+			if(tagInfo == null)
+			{
+				tagInfo = new TagInfo(info);
+				m_knownTagInfos.put(info, tagInfo);
+			}
 			m_tagInfos.put(request, tagInfo);
 		}
 	}

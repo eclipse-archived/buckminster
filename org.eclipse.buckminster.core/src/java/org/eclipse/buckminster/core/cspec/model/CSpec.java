@@ -136,7 +136,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		if(parentInfo != null)
 		{
 			int pathIdx = parentInfo.indexOf("path: "); //$NON-NLS-1$
-			if(projectInfoURL == null && parentInfo.startsWith("project: ")) //$NON-NLS-1$
+			if(projectInfoURL == null) //$NON-NLS-1$
 				bld.append(parentInfo);
 			else if(pathIdx >= 0)
 				bld.append(parentInfo, pathIdx, parentInfo.length());
