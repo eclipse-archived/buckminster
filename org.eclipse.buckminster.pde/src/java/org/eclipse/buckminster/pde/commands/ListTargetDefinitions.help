@@ -1,0 +1,7 @@
+Lists the target definitions known to the workspace
+
+usage: listtargetdefinitions
+       [{ -? | --help }]
+ -?
+--help
+  Show this help text

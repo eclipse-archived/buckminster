@@ -117,25 +117,30 @@
  <extension
        point="org.eclipse.buckminster.cmdline.prefmappings">
     <prefmapping
-          class="org.eclipse.buckminster.pde.prefs.TargetPlatformHandler"
-          description="The preference used by PDE to select linkages to platform components. Set to a directory root (e.g. /eclipse)."
+          class="org.eclipse.buckminster.pde.prefs.TargetPlatformPathHandler"
+          description="Set the active Target Platform to a definition that appoints a path"
           name="targetPlatformPath"/>
     <prefmapping
           class="org.eclipse.buckminster.pde.prefs.TargetOSHandler"
-          description="Sets the operating system of the PDE target platform"
+          description="Sets the operating system on the currently active target platform"
           name="targetOS"/>
     <prefmapping
           class="org.eclipse.buckminster.pde.prefs.TargetWSHandler"
-          description="Sets the window system of the PDE target platform"
+          description="Sets the window system on the currently active target platform"
           name="targetWS"/>
     <prefmapping
           class="org.eclipse.buckminster.pde.prefs.TargetArchHandler"
-          description="Sets the operating system architecture of the PDE target platform"
+          description="Sets the operating system architecture on the currently active target platform"
           name="targetArch"/>
     <prefmapping
           class="org.eclipse.buckminster.pde.prefs.TargetNLHandler"
-          description="Sets the locale of the PDE target platform"
+          description="Sets the locale of the currently active target platform"
           name="targetNL"/>
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.TargetDefinitionHandler"
+          description="Sets the active Target Platform Definition"
+          name="targetDefinition">
+    </prefmapping>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.targetPlatformProviders">
@@ -157,5 +162,26 @@
 			ID="p2ProductGenerator"
 			class="org.eclipse.buckminster.pde.tasks.P2ProductGenerator"
 			name="P2 Product Generator" />
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.commands">
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.pde.commands.ListTargetDefinitions"
+          name="org.eclipse.buckminster.pde.listtargetdefinitions"
+          status="NORMAL">
+       <alias
+             name="lstargets">
+       </alias>
+    </command>
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.pde.commands.ImportTargetDefinition"
+          name="org.eclipse.buckminster.pde.importtargetdefinition"
+          status="NORMAL">
+       <alias
+             name="importtarget">
+       </alias>
+    </command>
  </extension>
 </plugin>

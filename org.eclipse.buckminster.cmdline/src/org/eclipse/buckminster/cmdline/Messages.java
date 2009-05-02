@@ -58,6 +58,10 @@ public class Messages extends NLS
 
 	public static String ListCommands_Available_commands_including_aliases;
 
+	public static String Missing_bundle_0;
+
+	public static String No_handler_registered_for_preference_0;
+
 	public static String NoOptionNameException_Missing_option_name;
 
 	public static String OptionRequiresValueException_The_option_0_requires_a_value;

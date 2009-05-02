@@ -137,7 +137,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 
 	public void ungetService(Object service)
 	{
-		if(m_services != null)
+		if(m_services != null && service != null)
 		{
 			ServiceReference serviceRef = m_services.remove(service);
 			if(serviceRef != null)

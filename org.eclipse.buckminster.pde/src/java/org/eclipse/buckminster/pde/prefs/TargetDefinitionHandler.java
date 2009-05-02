@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2009, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -10,37 +10,35 @@ package org.eclipse.buckminster.pde.prefs;
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.pde.internal.core.ICoreConstants;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
+import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
- * Custom preference handler for the target preferences.
- * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-abstract class TargetVariableHandler extends BasicPreferenceHandler implements ICoreConstants
+public class TargetDefinitionHandler extends BasicPreferenceHandler
 {
 	@Override
 	public String get(String defaultValue) throws CoreException
 	{
 		Buckminster bucky = Buckminster.getDefault();
-		ITargetPlatformService service = null;
+		ITargetPlatformService service = bucky.getService(ITargetPlatformService.class);
 		try
 		{
-			service = bucky.getService(ITargetPlatformService.class);
 			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
 			if(activeHandle == null)
 				return defaultValue;
-			ITargetDefinition definition = activeHandle.getTargetDefinition();
-			String value = get(definition);
-			if(value == null)
-				value = defaultValue;
-			return value;
+			return activeHandle.getTargetDefinition().getName();
 		}
 		finally
 		{
@@ -49,19 +47,37 @@ abstract class TargetVariableHandler extends BasicPreferenceHandler implements I
 	}
 
 	@Override
-	public void set(String value) throws BackingStoreException
+	public void set(String targetDefinitionName) throws BackingStoreException
 	{
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = null;
 		try
 		{
 			service = bucky.getService(ITargetPlatformService.class);
-			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-			if(activeHandle == null)
-				throw new BackingStoreException(Messages.No_active_target_platform);
-			ITargetDefinition definition = activeHandle.getTargetDefinition();
-			set(definition, value);
-			service.saveTargetDefinition(definition);
+			ITargetDefinition target = null;
+			for(ITargetHandle targetHandle : service.getTargets(new NullProgressMonitor()))
+			{
+				ITargetDefinition candidate = targetHandle.getTargetDefinition();
+				if(Trivial.equalsAllowNull(targetDefinitionName, candidate.getName()))
+				{
+					ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+					if(activeHandle != null && activeHandle.equals(targetHandle))
+						// This target is already active. Nothing left to do here
+						return;
+
+					target = candidate;
+					break;
+				}
+			}
+
+			if(target == null)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Found_no_target_definition_named_0,
+						targetDefinitionName));
+
+			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
+			IStatus status = job.run(new NullProgressMonitor());
+			if(status.getSeverity() == IStatus.ERROR)
+				throw new CoreException(status);
 		}
 		catch(CoreException e)
 		{
@@ -73,7 +89,8 @@ abstract class TargetVariableHandler extends BasicPreferenceHandler implements I
 		}
 	}
 
-	abstract protected String get(ITargetDefinition definition) throws CoreException;
-
-	abstract protected void set(ITargetDefinition definition, String value) throws CoreException;
+	@Override
+	public void unset()
+	{
+	}
 }

@@ -113,6 +113,16 @@ public class Messages extends NLS
 
 	public static String artifact_not_found_0;
 
+	public static String Active_target_0_has_no_containers;
+
+	public static String Active_target_0_is_too_complex;
+
+	public static String Found_no_target_definition_named_0;
+
+	public static String No_active_target_platform;
+
+	public static String Unable_to_determine_path_for_active_target_0;
+
 	static
 	{
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -61,16 +62,12 @@ public class BasicPreferenceHandler implements IExecutableExtension
 		return m_name;
 	}
 
-	protected final String[] pathAsNodeAndKey(String path)
-	{
-		int lastSlash = path.lastIndexOf(SLASH);
-		if(lastSlash == -1)
-			throw new IllegalArgumentException(Messages.BasicPreferenceHandler_No_slash_in_preference_path);
-		return new String[] { path.substring(0, lastSlash), path.substring(lastSlash + 1) };
-	}
-
 	public void set(String value) throws BackingStoreException
 	{
+		String key = getKey();
+		if(key == null)
+			throw new IllegalArgumentException(NLS.bind(Messages.No_handler_registered_for_preference_0,
+					getName()));
 		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
 		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
 		node.put(prefNodeAndKey[1], value);
@@ -92,5 +89,13 @@ public class BasicPreferenceHandler implements IExecutableExtension
 		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
 		node.remove(prefNodeAndKey[1]);
 		node.flush();
+	}
+
+	protected final String[] pathAsNodeAndKey(String path)
+	{
+		int lastSlash = path.lastIndexOf(SLASH);
+		if(lastSlash == -1)
+			throw new IllegalArgumentException(Messages.BasicPreferenceHandler_No_slash_in_preference_path);
+		return new String[] { path.substring(0, lastSlash), path.substring(lastSlash + 1) };
 	}
 }

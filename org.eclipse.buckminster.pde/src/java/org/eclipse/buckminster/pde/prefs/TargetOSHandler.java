@@ -7,7 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.prefs;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -18,20 +19,21 @@ import org.osgi.service.prefs.BackingStoreException;
 @SuppressWarnings("restriction")
 public class TargetOSHandler extends TargetVariableHandler
 {
-	public TargetOSHandler()
-	{
-		super(OS);
-	}
-
 	@Override
 	public void unset() throws BackingStoreException
 	{
-		this.set(Platform.getOS());
+		set(null);
 	}
 
 	@Override
-	String[] getKnownValues()
+	protected String get(ITargetDefinition definition) throws CoreException
 	{
-		return Platform.knownOSValues();
+		return definition.getOS();
+	}
+
+	@Override
+	protected void set(ITargetDefinition definition, String value) throws CoreException
+	{
+		definition.setOS(value);
 	}
 }

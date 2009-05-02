@@ -223,21 +223,21 @@ public abstract class URLUtils
 		return "file".equals(proto) || "platform".equals(proto) || proto.startsWith("bundle"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
-	public static URI normalizeToURI(String repository, boolean asFolder) throws CoreException
+	public static URI normalizeToURI(String pathOrURI, boolean asFolder) throws CoreException
 	{
 		URI uri;
 		try
 		{
-			uri = new URI(repository);
+			uri = new URI(pathOrURI);
 		}
 		catch(URISyntaxException e)
 		{
-			if(repository.indexOf(' ') < 0)
+			if(pathOrURI.indexOf(' ') < 0)
 				throw BuckminsterException.wrap(e);
 
 			try
 			{
-				uri = new URI(repository.replaceAll("\\s", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
+				uri = new URI(pathOrURI.replaceAll("\\s", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			catch(URISyntaxException e2)
 			{

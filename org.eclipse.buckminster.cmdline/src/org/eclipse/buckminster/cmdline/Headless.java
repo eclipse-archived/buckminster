@@ -168,17 +168,17 @@ public class Headless implements IApplication, OptionValueType
 		{
 			if(!startEarly(packageAdmin, EXEMPLARY_SETUP))
 			{
-				Buckminster.getLogger().error(NLS.bind("Missing bundle {0}", EXEMPLARY_SETUP));
+				Buckminster.getLogger().error(NLS.bind(Messages.Missing_bundle_0, EXEMPLARY_SETUP));
 				return EXIT_ERROR;
 			}
 			if(!startEarly(packageAdmin, SIMPLE_CONFIGURATOR_MANIPULATOR))
 			{
-				Buckminster.getLogger().error(NLS.bind("Missing bundle {0}", SIMPLE_CONFIGURATOR_MANIPULATOR));
+				Buckminster.getLogger().error(NLS.bind(Messages.Missing_bundle_0, SIMPLE_CONFIGURATOR_MANIPULATOR));
 				return EXIT_ERROR;
 			}
 			if(!startEarly(packageAdmin, FRAMEWORKADMIN_EQUINOX))
 			{
-				Buckminster.getLogger().error(NLS.bind("Missing bundle {0}", FRAMEWORKADMIN_EQUINOX));
+				Buckminster.getLogger().error(NLS.bind(Messages.Missing_bundle_0, FRAMEWORKADMIN_EQUINOX));
 				return EXIT_ERROR;
 			}
 		}

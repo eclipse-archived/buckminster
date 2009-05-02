@@ -486,6 +486,8 @@ public class Messages extends NLS
 
 	public static String Could_not_find_a_site_to_install_to;
 
+	public static String No_target_definitions_found_in_workspace;
+
 	public static String No_target_platform_found_at_0;
 
 	public static String Not_a_TimestampVersion;

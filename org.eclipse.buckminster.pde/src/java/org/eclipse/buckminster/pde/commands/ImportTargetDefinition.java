@@ -1,0 +1,135 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2006
+ * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+ * Pontus Rydin, Nils Unden, Peer Torngren
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the individual
+ * copyright holders listed above, as Initial Contributors under such license.
+ * The text of such license is available at www.eclipse.org.
+ *******************************************************************************/
+
+package org.eclipse.buckminster.pde.commands;
+
+import java.net.URI;
+import java.util.List;
+
+import org.eclipse.buckminster.cmdline.Option;
+import org.eclipse.buckminster.cmdline.OptionDescriptor;
+import org.eclipse.buckminster.cmdline.OptionValueType;
+import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.commands.WorkspaceCommand;
+import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
+import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
+import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
+import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
+
+@SuppressWarnings("restriction")
+public class ImportTargetDefinition extends WorkspaceCommand
+{
+	private String m_targetPath;
+
+	private boolean m_importAsActive;
+
+	static private final OptionDescriptor OPTION_ACTIVE = new OptionDescriptor('A', "active", OptionValueType.NONE); //$NON-NLS-1$
+
+	public String getTargetPath()
+	{
+		return m_targetPath;
+	}
+
+	public boolean isImportAsActive()
+	{
+		return m_importAsActive;
+	}
+
+	public void setImportAsActive(boolean importAsActive)
+	{
+		this.m_importAsActive = importAsActive;
+	}
+
+	public void setTargetPath(String targetPath)
+	{
+		this.m_targetPath = targetPath;
+	}
+
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
+	{
+		super.getOptionDescriptors(appendHere);
+		appendHere.add(OPTION_ACTIVE);
+	}
+
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(OPTION_ACTIVE))
+			setImportAsActive(true);
+		else
+			super.handleOption(option);
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		if(unparsed.length > 1)
+			throw new SimpleErrorExitException(Messages.Too_many_arguments);
+		setTargetPath(unparsed[0]);
+	}
+
+	@Override
+	protected int internalRun(IProgressMonitor monitor) throws Exception
+	{
+		if(m_targetPath == null)
+			return 0;
+
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = bucky.getService(ITargetPlatformService.class);
+		URI uri = URLUtils.normalizeToURI(m_targetPath, false);
+
+		ITargetHandle handle = null;
+		if("file".equalsIgnoreCase(uri.getScheme())) //$NON-NLS-1$
+		{
+			IPath path = Path.fromPortableString(uri.getPath());
+			if(path.segmentCount() > 1)
+			{
+				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(
+						path.removeLastSegments(1));
+				if(container != null)
+					handle = service.getTarget(container.getFile(new Path(path.lastSegment())));
+			}
+		}
+
+		ITargetDefinition target;
+		if(handle == null)
+		{
+			// The target is external to the workspace so import it into
+			// a local target
+			handle = service.getTarget(uri);
+			ITargetDefinition externalTarget = handle.getTargetDefinition();
+			target = service.newTarget();
+			service.copyTargetDefinition(externalTarget, target);
+			service.saveTargetDefinition(target);
+		}
+		else
+			target = handle.getTargetDefinition();
+
+		if(m_importAsActive)
+		{
+			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
+			IStatus status = job.run(monitor);
+			if(status.getSeverity() == IStatus.ERROR)
+				throw new CoreException(status);
+		}
+		return 0;
+	}
+}
