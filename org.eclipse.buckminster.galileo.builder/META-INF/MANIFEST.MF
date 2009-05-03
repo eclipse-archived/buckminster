@@ -7,7 +7,9 @@ Bundle-Activator: org.eclipse.buckminster.galileo.builder.Activator
 Bundle-Vendor: Eclipse Buckminster
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Import-Package: org.apache.tools.ant,
+Import-Package: javax.mail;version="1.4.1",
+ javax.mail.internet;version="1.4.1",
+ org.apache.tools.ant,
  org.eclipse.amalgam.releng.build,
  org.eclipse.amalgam.releng.build.impl,
  org.eclipse.buckminster.core,
@@ -82,5 +84,3 @@ Import-Package: org.apache.tools.ant,
  org.eclipse.osgi.service.datalocation;version="1.2.0",
  org.osgi.framework;version="1.5.0",
  org.osgi.service.packageadmin
-Require-Bundle: javax.mail;bundle-version="1.4.0",
- javax.activation;bundle-version="1.1.0"
