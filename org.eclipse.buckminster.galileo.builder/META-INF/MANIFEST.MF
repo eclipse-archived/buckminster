@@ -7,7 +7,9 @@ Bundle-Activator: org.eclipse.buckminster.galileo.builder.Activator
 Bundle-Vendor: Eclipse Buckminster
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Import-Package: javax.mail;version="1.4.1",
+Import-Package: com.sun.mail.handlers,
+ com.sun.mail.smtp,
+ javax.mail;version="1.4.1",
  javax.mail.internet;version="1.4.1",
  org.apache.tools.ant,
  org.eclipse.amalgam.releng.build,
