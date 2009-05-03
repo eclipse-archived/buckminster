@@ -5,13 +5,9 @@ Bundle-SymbolicName: org.eclipse.buckminster.galileo.builder;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.galileo.builder.Activator
 Bundle-Vendor: Eclipse Buckminster
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: com.sun.mail.handlers,
- com.sun.mail.smtp,
- javax.mail;version="1.4.1",
- javax.mail.internet;version="1.4.1",
- org.apache.tools.ant,
+Import-Package: org.apache.tools.ant,
  org.eclipse.amalgam.releng.build,
  org.eclipse.amalgam.releng.build.impl,
  org.eclipse.buckminster.core,
@@ -86,3 +82,4 @@ Import-Package: com.sun.mail.handlers,
  org.eclipse.osgi.service.datalocation;version="1.2.0",
  org.osgi.framework;version="1.5.0",
  org.osgi.service.packageadmin
+Require-Bundle: javax.mail.glassfish;bundle-version="1.4.1"
