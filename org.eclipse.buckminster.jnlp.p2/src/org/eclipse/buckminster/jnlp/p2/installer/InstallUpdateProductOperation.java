@@ -302,19 +302,41 @@ public class InstallUpdateProductOperation implements IInstallOperation
 
 	private void prepareArtifactRepositories() throws ProvisionException
 	{
+		// disable all cached repos 
+		// TODO remove - testing
+		URI[] knownRepos = m_artifactRepoMan.getKnownRepositories(0);
+		for(URI repo : knownRepos)
+			m_artifactRepoMan.setEnabled(repo, false);
+		// end of remove
+		
 		URI[] repos = m_installDescription.getArtifactRepositories();
 		if(repos == null)
 			return;
-		for(int i = 0; i < repos.length; i++)
-			m_artifactRepoMan.loadRepository(repos[i], null);
+		for(URI repo : repos)
+		{
+			m_artifactRepoMan.loadRepository(repo, null);
+			// enable repo (an existing repo would be disabled)
+			m_artifactRepoMan.setEnabled(repo, true);
+		}
 	}
 
 	private void prepareMetadataRepositories() throws ProvisionException
 	{
+		// disable all cached repos 
+		// TODO remove - testing
+		URI[] knownRepos = m_metadataRepoMan.getKnownRepositories(0);
+		for(URI repo : knownRepos)
+			m_metadataRepoMan.setEnabled(repo, false);
+		// end of remove
+		
 		URI[] repos = m_installDescription.getMetadataRepositories();
 		if(repos == null)
 			return;
-		for(int i = 0; i < repos.length; i++)
-			m_metadataRepoMan.loadRepository(repos[i], null);
+		for(URI repo : repos)
+		{
+			m_metadataRepoMan.loadRepository(repo, null);
+			// enable repo (an existing repo would be disabled)
+			m_metadataRepoMan.setEnabled(repo, true);
+		}
 	}
 }

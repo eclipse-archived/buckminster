@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2;
 
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_HELP_URL;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -51,28 +54,26 @@ public class Application implements IApplication
 	 * The wizard dialog width
 	 */
 	private static final int WIZARD_MIN_WIDTH = 550;
+
 	private static final int WIZARD_MAX_WIDTH = 750;
 
 	/**
 	 * The wizard dialog height
 	 */
 	private static final int WIZARD_MIN_HEIGHT = 550;
+
 	private static final int WIZARD_MAX_HEIGHT = 750;
 
 	private static final long DEFAULT_POPUP_DELAY = 500;
-	
+
 	/**
 	 * String for synchronization with the bootstrap
 	 */
 	private String m_syncString = null;
-	
+
 	private String m_errorURL = ERROR_HELP_URL;
 
-	private void synchronizeWithBootstrap()
-	{
-		if(m_syncString != null)
-			System.out.println(m_syncString);
-	}
+	private String m_supportEmail;
 
 	public Object start(IApplicationContext context) throws Exception
 	{
@@ -187,13 +188,14 @@ public class Application implements IApplication
 			if(m_errorURL == null)
 				m_errorURL = MaterializationConstants.ERROR_HELP_URL;
 
+			m_supportEmail = properties.get(MaterializationConstants.PROP_SUPPORT_EMAIL);
+
 			String errorMessage = properties.get(MaterializationConstants.PROP_ERROR_MESSAGE);
 
 			if(errorMessage != null)
 			{
 				errorCode = MaterializationConstants.ERROR_CODE_404_EXCEPTION;
-				throw BuckminsterException
-						.fromMessage(new String(Base64.decodeBase64(errorMessage.getBytes()), "UTF-8")); //$NON-NLS-1$
+				throw BuckminsterException.fromMessage(new String(Base64.decodeBase64(errorMessage.getBytes()), "UTF-8")); //$NON-NLS-1$
 			}
 
 			try
@@ -202,7 +204,7 @@ public class Application implements IApplication
 				//
 				final InstallWizard installWizard = new InstallWizard(properties);
 				m_errorURL = installWizard.getErrorURL();
-				
+
 				AdvancedWizardDialog dialog = new AdvancedWizardDialog(installWizard, ~SWT.APPLICATION_MODAL);
 				dialog.create();
 
@@ -224,29 +226,33 @@ public class Application implements IApplication
 								: t).getStatus();
 						CorePlugin.logWarningsAndErrors(status);
 
+						String localErrorCode;
+						String message;
+						boolean reportable;
+
 						if(t instanceof JNLPException)
 						{
-							JNLPException je = (JNLPException)t;
-
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE, je
-									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, je.getErrorCode(), status);
+							JNLPException e = (JNLPException)t;
+							localErrorCode = e.getErrorCode();
+							message = e.getMessage();
+							reportable = e.isReportable();
 						}
 						else
 						{
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
+							localErrorCode = ERROR_CODE_RUNTIME_EXCEPTION;
+							message = "An unexpected error occurred.\n\nThis could be because of intermittent network problems.";
+							reportable = true;
 						}
 
-						// Try to keep running.
+						HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(),
+								MaterializationConstants.ERROR_WINDOW_TITLE, message, status, localErrorCode,
+								reportable, m_supportEmail, "Materialization Error");
 					}
 				});
 
 				final Shell shell = dialog.getShell();
-				shell.setSize(
-						Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH),
-						Math.min(Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
+				shell.setSize(Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH), Math.min(
+						Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
 
 				// when the shell is not started "ON TOP", it starts blinking
 				shell.addShellListener(new ShellAdapter()
@@ -281,10 +287,10 @@ public class Application implements IApplication
 					}
 
 					synchronizeWithBootstrap();
-					
+
 					long popupDelay = DEFAULT_POPUP_DELAY;
 					String popupDelayString = properties.get(MaterializationConstants.PROP_POPUP_DELAY);
-					
+
 					if(popupDelayString != null)
 					{
 						try
@@ -296,10 +302,10 @@ public class Application implements IApplication
 							popupDelay = DEFAULT_POPUP_DELAY;
 						}
 					}
-					
+
 					// need to wait a while until applet finishes
 					Thread.sleep(popupDelay);
-					
+
 					dialog.open();
 					return OK_EXIT_CODE;
 				}
@@ -314,8 +320,8 @@ public class Application implements IApplication
 						public void run()
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materialization wizard failed", MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, finalErrorCode, status);
+									"Materialization wizard failed", status, finalErrorCode, true, m_supportEmail,
+									"Materialization Error");
 						}
 					});
 					return ERROR_EXIT_CODE;
@@ -341,8 +347,8 @@ public class Application implements IApplication
 				public void run()
 				{
 					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-							"Materialization cannot be started", MaterializationConstants.ERROR_HELP_TITLE,
-							m_errorURL, finalErrorCode, status);
+							"Materialization cannot be started", status, finalErrorCode, true, m_supportEmail,
+							"Materialization Error");
 				}
 			});
 			return ERROR_EXIT_CODE;
@@ -351,5 +357,11 @@ public class Application implements IApplication
 
 	public void stop()
 	{
+	}
+
+	private void synchronizeWithBootstrap()
+	{
+		if(m_syncString != null)
+			System.out.println(m_syncString);
 	}
 }

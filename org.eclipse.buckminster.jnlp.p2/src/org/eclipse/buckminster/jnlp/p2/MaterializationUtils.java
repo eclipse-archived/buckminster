@@ -21,7 +21,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -34,8 +38,8 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.metadata.IResolution;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
@@ -44,6 +48,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -67,16 +72,6 @@ public class MaterializationUtils
 			m_value = value;
 		}
 
-		public String getKey()
-		{
-			return m_key;
-		}
-
-		public String getValue()
-		{
-			return m_value;
-		}
-
 		public int compareTo(PropertyEntryByLength o)
 		{
 			int result = o.getKey().length() - m_key.length();
@@ -85,6 +80,16 @@ public class MaterializationUtils
 				return result;
 
 			return m_key.compareTo(o.getKey());
+		}
+
+		public String getKey()
+		{
+			return m_key;
+		}
+
+		public String getValue()
+		{
+			return m_value;
 		}
 	}
 
@@ -145,8 +150,8 @@ public class MaterializationUtils
 				break;
 			}
 
-			throw new JNLPException("Cannot read materialization specification", errorCode, BuckminsterException
-					.fromMessage("%s - %s", originalURL, HttpStatus.getStatusText(status)));
+			throw new JNLPException("Cannot read materialization specification", errorCode,
+					BuckminsterException.fromMessage("%s - %s", originalURL, HttpStatus.getStatusText(status)));
 		}
 	}
 
@@ -154,7 +159,7 @@ public class MaterializationUtils
 	 * Checks response of IAuthenticator.register method
 	 * 
 	 * @param result
-	 * 		result of IAuthenticator.register method
+	 *            result of IAuthenticator.register method
 	 * @throws JNLPException
 	 */
 
@@ -181,19 +186,85 @@ public class MaterializationUtils
 		}
 	}
 
-	/**
-	 * Gets human readable component type
-	 * 
-	 * @param componentType
-	 * 		componentType ID
-	 * @return human readable component type
-	 */
-	public static String getHumanReadableComponentType(String componentType)
+	public static String createMailtoURL(String to, String subject, String body)
 	{
-		String hrType = s_humanReadableComponentTypes.get(componentType);
-		if(hrType == null)
-			hrType = componentType;
-		return hrType;
+		StringBuilder sb = new StringBuilder();
+		sb.append("mailto:");
+		sb.append(mailtoEncode(to));
+		sb.append("?subject=");
+		sb.append(mailtoEncode(subject));
+		sb.append("&body=");
+		sb.append(mailtoEncode(body));
+
+		return sb.toString();
+	}
+
+	public static String createStatusMessage(IStatus status)
+	{
+		final String NEW_LINE_SEPARATOR = "\n";
+		String[] systemProps = { "os.name", "os.arch", "user.country", "java.vendor", "java.version" };
+
+		StringBuilder messageBuilder = new StringBuilder();
+		messageBuilder.append("Environment:");
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+
+		for(String prop : systemProps)
+		{
+			messageBuilder.append(prop);
+			messageBuilder.append("=");
+			messageBuilder.append(System.getProperty(prop));
+			messageBuilder.append(NEW_LINE_SEPARATOR);
+		}
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+
+		messageBuilder.append("Status Message:");
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+		messageBuilder.append(status.getMessage());
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+		messageBuilder.append(NEW_LINE_SEPARATOR);
+
+		Throwable throwable = status.getException();
+		if(throwable != null)
+		{
+			messageBuilder.append("Stack Trace:");
+			messageBuilder.append(NEW_LINE_SEPARATOR);
+
+			StringWriter stackTrace = new StringWriter();
+			PrintWriter stackTraceWriter = null;
+			try
+			{
+				stackTraceWriter = new PrintWriter(stackTrace);
+				throwable.printStackTrace(stackTraceWriter);
+			}
+			finally
+			{
+				if(stackTraceWriter != null)
+				{
+					stackTraceWriter.flush();
+					stackTraceWriter.close();
+				}
+			}
+
+			messageBuilder.append(stackTrace);
+		}
+
+		return messageBuilder.toString();
+	}
+
+	/**
+	 * Excludes CSSite components
+	 * 
+	 * @param mspec
+	 * @param depNode
+	 * @throws CoreException
+	 */
+	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
+	{
+		if(hasCSsiteReader(depNode))
+			excludeComponent(mspec, depNode);
+
+		for(BOMNode childDepNode : depNode.getChildren())
+			excludeCSsiteComponents(mspec, childDepNode);
 	}
 
 	/**
@@ -269,6 +340,20 @@ public class MaterializationUtils
 		return new Path(pathToGeneralize);
 	}
 
+	public static File getBackupFolder(File eclipseFolder)
+	{
+		String backupString = eclipseFolder.getPath() + ".backup";
+		File backupFile = new File(backupString);
+
+		int i = 0;
+		while(backupFile.exists())
+		{
+			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++)));
+		}
+
+		return backupFile;
+	}
+
 	/**
 	 * Gets default install location
 	 * 
@@ -292,6 +377,21 @@ public class MaterializationUtils
 		return destination;
 	}
 
+	/**
+	 * Gets human readable component type
+	 * 
+	 * @param componentType
+	 *            componentType ID
+	 * @return human readable component type
+	 */
+	public static String getHumanReadableComponentType(String componentType)
+	{
+		String hrType = s_humanReadableComponentTypes.get(componentType);
+		if(hrType == null)
+			hrType = componentType;
+		return hrType;
+	}
+
 	public static Image getImage(String imageName)
 	{
 		Class<?> myClass = MaterializationUtils.class;
@@ -304,15 +404,12 @@ public class MaterializationUtils
 	 * From a given path computes a path that exists in the file system.
 	 * 
 	 * @param enteredPath
-	 * 		entered path
+	 *            entered path
 	 * @return path that exists in the file system
 	 */
 	public static String getKnownPath(String enteredPath)
 	{
 		IPath path = new Path(enteredPath);
-
-		if(path == null)
-			return null;
 
 		File file = null;
 		String pathString = null;
@@ -332,34 +429,43 @@ public class MaterializationUtils
 		return pathString;
 	}
 
-	public static File getBackupFolder(File eclipseFolder)
+	public static String mailtoEncode(String input)
 	{
-		String backupString = eclipseFolder.getPath() + ".backup";
-		File backupFile = new File(backupString);
+		String output;
 
-		int i = 0;
-		while(backupFile.exists())
+		try
 		{
-			backupFile = new File(backupString + String.format(".%d", Integer.valueOf(i++)));
+			output = URLEncoder.encode(input, "UTF-8");
+		}
+		catch(UnsupportedEncodingException e)
+		{
+			throw new RuntimeException(e);
 		}
 
-		return backupFile;
+		return output.replace("+", "%20");
 	}
 
-	/**
-	 * Excludes CSSite components
-	 * 
-	 * @param mspec
-	 * @param depNode
-	 * @throws CoreException
-	 */
-	public static void excludeCSsiteComponents(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
+	public static void saveBOM(BillOfMaterials bom, File file)
 	{
-		if(hasCSsiteReader(depNode))
-			excludeComponent(mspec, depNode);
+		OutputStream os = null;
 
-		for(BOMNode childDepNode : depNode.getChildren())
-			excludeCSsiteComponents(mspec, childDepNode);
+		try
+		{
+			os = new FileOutputStream(file);
+			Utils.serialize(bom, os);
+		}
+		catch(FileNotFoundException e1)
+		{
+			throw new JNLPException("File cannot be opened or created", ERROR_CODE_FILE_IO_EXCEPTION, e1);
+		}
+		catch(SAXException e1)
+		{
+			throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
+		}
+		finally
+		{
+			IOUtils.close(os);
+		}
 	}
 
 	private static void excludeComponent(MaterializationSpecBuilder mspec, BOMNode depNode) throws CoreException
@@ -397,28 +503,5 @@ public class MaterializationUtils
 				return true;
 
 		return false;
-	}
-
-	public static void saveBOM(BillOfMaterials bom, File file)
-	{
-		OutputStream os = null;
-
-		try
-		{
-			os = new FileOutputStream(file);
-			Utils.serialize(bom, os);
-		}
-		catch(FileNotFoundException e1)
-		{
-			throw new JNLPException("File cannot be opened or created", ERROR_CODE_FILE_IO_EXCEPTION, e1);
-		}
-		catch(SAXException e1)
-		{
-			throw new JNLPException("Unable to read BOM specification", ERROR_CODE_ARTIFACT_EXCEPTION, e1);
-		}
-		finally
-		{
-			IOUtils.close(os);
-		}
 	}
 }

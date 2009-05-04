@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2.ide;
 
-import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.*;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_REMOTE_IO_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_CODE_RUNTIME_EXCEPTION;
+import static org.eclipse.buckminster.jnlp.p2.MaterializationConstants.ERROR_HELP_URL;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -29,7 +32,6 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.window.Window.IExceptionHandler;
-
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Display;
@@ -40,6 +42,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class IDEApplication extends Observable
 {
+	public static enum State
+	{
+		INITIALIZING, STARTED, FAILED;
+	}
+
 	public static final Integer OK_EXIT_CODE = new Integer(0);
 
 	public static final Integer ERROR_EXIT_CODE = new Integer(1);
@@ -58,14 +65,17 @@ public class IDEApplication extends Observable
 
 	private static final int WIZARD_MAX_HEIGHT = 750;
 
+	public static void main(String[] args) throws Exception
+	{
+		IDEApplication app = new IDEApplication();
+		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop");
+	}
+
 	private String m_errorURL = ERROR_HELP_URL;
 
-	String m_errorCode = null;
+	private String m_supportEmail;
 
-	public static enum State
-	{
-		INITIALIZING, STARTED, FAILED;
-	}
+	String m_errorCode = null;
 
 	private State m_state = State.INITIALIZING;
 
@@ -84,7 +94,8 @@ public class IDEApplication extends Observable
 	public void start(final String configUrl) throws Exception
 	{
 
-		try{
+		try
+		{
 			if(configUrl == null || configUrl.length() < 1)
 			{
 				m_errorCode = ERROR_CODE_MISSING_ARGUMENT_EXCEPTION;
@@ -117,13 +128,19 @@ public class IDEApplication extends Observable
 			{
 				IOUtils.close(propStream);
 			}
+
+			m_errorURL = properties.get(MaterializationConstants.PROP_ERROR_URL);
+			if(m_errorURL == null)
+				m_errorURL = MaterializationConstants.ERROR_HELP_URL;
+
+			m_supportEmail = properties.get(MaterializationConstants.PROP_SUPPORT_EMAIL);
+
 			try
 			{
 				// Create the wizard dialog and resize it.
 				//
 				final InstallWizard installWizard = new InstallWizard(properties, true);
-				m_errorURL = installWizard.getErrorURL();
-				
+
 				// The original started with a mask of SWT.APPLICATION_MODAL - and this changed the icon of
 				// Eclipse to the icon of the dialog = a cloud. Looks much better if icon is unchanged.
 				//
@@ -148,29 +165,33 @@ public class IDEApplication extends Observable
 								: t).getStatus();
 						CorePlugin.logWarningsAndErrors(status);
 
+						String localErrorCode;
+						String message;
+						boolean reportable;
+
 						if(t instanceof JNLPException)
 						{
-							JNLPException je = (JNLPException)t;
-
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE, je
-									.getMessage(), MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, je.getErrorCode(), status);
+							JNLPException e = (JNLPException)t;
+							localErrorCode = e.getErrorCode();
+							message = e.getMessage();
+							reportable = e.isReportable();
 						}
 						else
 						{
-							HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(), MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materializator error", MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, ERROR_CODE_RUNTIME_EXCEPTION, status);
+							localErrorCode = ERROR_CODE_RUNTIME_EXCEPTION;
+							message = "An unexpected error occurred.\n\nThis could be because of intermittent network problems.";
+							reportable = true;
 						}
 
-						// Try to keep running.
+						HelpLinkErrorDialog.openError(null, installWizard.getWindowImage(),
+								MaterializationConstants.ERROR_WINDOW_TITLE, message, status, localErrorCode,
+								reportable, m_supportEmail, "Materialization Error");
 					}
 				});
 
 				final Shell shell = dialog.getShell();
-				shell.setSize(
-						Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH),
-						Math.min(Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
+				shell.setSize(Math.min(Math.max(WIZARD_MIN_WIDTH, shell.getSize().x), WIZARD_MAX_WIDTH), Math.min(
+						Math.max(WIZARD_MIN_HEIGHT, shell.getSize().y), WIZARD_MAX_HEIGHT));
 
 				// when the shell is not started "ON TOP", it starts blinking
 				shell.addShellListener(new ShellAdapter()
@@ -212,8 +233,8 @@ public class IDEApplication extends Observable
 						public void run()
 						{
 							HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-									"Materialization wizard failed", MaterializationConstants.ERROR_HELP_TITLE,
-									m_errorURL, finalErrorCode, status);
+									"Materialization wizard failed", status, finalErrorCode, true, m_supportEmail,
+									"Materialization Error");
 						}
 					});
 					return;
@@ -222,8 +243,8 @@ public class IDEApplication extends Observable
 			finally
 			{
 			}
-//	}});
-			
+			// }});
+
 		}
 		catch(Throwable e)
 		{
@@ -240,8 +261,8 @@ public class IDEApplication extends Observable
 				public void run()
 				{
 					HelpLinkErrorDialog.openError(null, null, MaterializationConstants.ERROR_WINDOW_TITLE,
-							"Materialization cannot be started", MaterializationConstants.ERROR_HELP_TITLE,
-							m_errorURL, finalErrorCode, status);
+							"Materialization cannot be started", status, finalErrorCode, true, m_supportEmail,
+							"Materialization Error");
 				}
 			});
 		}
@@ -249,11 +270,5 @@ public class IDEApplication extends Observable
 
 	public void stop()
 	{
-	}
-	
-	public static void main(String[] args) throws Exception
-	{
-		IDEApplication app = new IDEApplication();
-		app.start("http://www.cloudsmith.com/dynamic/prop/jnlp/mspec-81428344.prop");
 	}
 }

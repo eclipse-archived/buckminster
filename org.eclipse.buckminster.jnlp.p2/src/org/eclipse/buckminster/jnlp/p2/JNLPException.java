@@ -9,28 +9,41 @@
 package org.eclipse.buckminster.jnlp.p2;
 
 /**
- * @author kaja
- *
+ * @author Karel Brezina
+ * 
  */
 public class JNLPException extends RuntimeException
 {
 	private static final long serialVersionUID = 0L;
 
 	private String m_errorCode;
-	
+
+	private boolean m_reportable;
+
+	public JNLPException(String message, String errorCode)
+	{
+		this(message, errorCode, null, true);
+	}
+
 	public JNLPException(String message, String errorCode, Throwable cause)
+	{
+		this(message, errorCode, cause, true);
+	}
+
+	public JNLPException(String message, String errorCode, Throwable cause, boolean reportable)
 	{
 		super(message, cause);
 		m_errorCode = errorCode;
+		m_reportable = reportable;
 	}
-	
-	public JNLPException(String message, String errorCode)
-	{
-		this(message, errorCode, null);
-	}
-	
+
 	public String getErrorCode()
 	{
 		return m_errorCode;
+	}
+
+	public boolean isReportable()
+	{
+		return m_reportable;
 	}
 }
