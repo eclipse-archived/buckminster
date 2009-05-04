@@ -530,6 +530,11 @@ public class Main
 	{
 		try
 		{
+			// remove obsolete materializer
+			File cache = new File(getInstallLocation(), "cache");
+			if(cache.exists() && cache.isDirectory())
+				Utils.deleteRecursive(getInstallLocation());
+
 			m_configProps = loadConfigProperties(inputArgMap);
 
 			s_basePathURL = m_configProps.getProperty(PROP_BASE_PATH_URL);
@@ -584,13 +589,6 @@ public class Main
 			if(!SplashWindow.isSplashUp())
 			{
 				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage, SPLASH_WINDOW_DELAY);
-			}
-
-			// remove obsolete materializer
-			File cache = new File(getInstallLocation(), "cache");
-			if(cache.exists() && cache.isDirectory())
-			{
-				Utils.deleteRecursive(getInstallLocation());
 			}
 
 			DirectorInstaller installer = new DirectorInstaller(getInstallLocation());
