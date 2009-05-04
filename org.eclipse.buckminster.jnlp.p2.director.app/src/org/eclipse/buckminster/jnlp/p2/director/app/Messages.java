@@ -13,7 +13,7 @@ package org.eclipse.buckminster.jnlp.p2.director.app;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.equinox.internal.p2.director.app.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.buckminster.jnlp.p2.director.app.messages"; //$NON-NLS-1$
 	public static String destination_commandline;
 
 	public static String Operation_complete;
