@@ -586,6 +586,13 @@ public class Main
 				SplashWindow.splash(m_splashImageBoot, m_splashImage, m_windowIconImage, SPLASH_WINDOW_DELAY);
 			}
 
+			// remove obsolete materializer
+			File cache = new File(getInstallLocation(), "cache");
+			if(cache.exists() && cache.isDirectory())
+			{
+				Utils.deleteRecursive(getInstallLocation());
+			}
+
 			DirectorInstaller installer = new DirectorInstaller(getInstallLocation());
 
 			if(!installer.isLatestDirectorInstalled(inputArgMap.get(PROP_DIRECTOR_BUILD_PROPERTIES_URL)))
