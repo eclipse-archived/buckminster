@@ -14,21 +14,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.Message.RecipientType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.util.DateUtils;
+import org.apache.tools.mail.MailMessage;
 import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.amalgam.releng.build.BuildPackage;
 import org.eclipse.amalgam.releng.build.Contact;
@@ -40,7 +35,6 @@ import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.NullOutputStream;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IResource;
@@ -114,6 +108,24 @@ public class Builder implements IApplication {
 		SKIP
 	}
 
+	private static class EmailAddress {
+		private final String address;
+		private final String personal;
+
+		EmailAddress(String address, String personal) {
+			this.address = address;
+			this.personal = personal;
+		}
+
+		@Override
+		public String toString() {
+			if (personal == null)
+				return address;
+
+			return personal + " <" + address + ">";
+		}
+	}
+
 	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group"; //$NON-NLS-1$
 
 	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = Version.createOSGi(1, 0, 0);
@@ -181,13 +193,6 @@ public class Builder implements IApplication {
 				&& feature.getCategory().size() == 0;
 	}
 
-	private static InternetAddress contactToAddress(Contact contact) throws UnsupportedEncodingException {
-		InternetAddress addr = new InternetAddress();
-		addr.setPersonal(contact.getName());
-		addr.setAddress(contact.getEmail());
-		return addr;
-	}
-
 	private static void deleteAllButWorkspace(File folder, IPath wsPath) throws CoreException {
 		File[] children = folder.listFiles();
 		if (children == null)
@@ -240,6 +245,22 @@ public class Builder implements IApplication {
 
 	private static void requiresArgument(String opt) {
 		throw new IllegalArgumentException("Option " + opt + " requires an argument");
+	}
+
+	private static void send(String host, int port, EmailAddress from, List<EmailAddress> toList, EmailAddress cc, String subject, String message)
+			throws IOException {
+		MailMessage mailMessage = new MailMessage(host, port);
+		mailMessage.from(from.toString());
+		for (EmailAddress to : toList)
+			mailMessage.to(to.toString());
+		if (cc != null)
+			mailMessage.cc(cc.toString());
+		mailMessage.setSubject(subject);
+		mailMessage.setHeader("Date", DateUtils.getDateForHeader());
+		mailMessage.setHeader("Content-Type", "text/plain; charset=us-ascii");
+		PrintStream out = mailMessage.getPrintStream();
+		out.print(message);
+		mailMessage.sendAndClose();
 	}
 
 	private static boolean startEarly(PackageAdmin packageAdmin, String bundleName) throws BundleException {
@@ -345,11 +366,7 @@ public class Builder implements IApplication {
 
 	private String smtpHost;
 
-	private String smtpPassword;
-
 	private int smtpPort;
-
-	private String smtpUser;
 
 	private String subjectPrefix;
 
@@ -596,24 +613,19 @@ public class Builder implements IApplication {
 
 		Logger log = Buckminster.getLogger();
 		try {
-			InternetAddress buildMaster = new InternetAddress();
-			buildMaster.setAddress(buildMasterEmail);
-			buildMaster.setPersonal(buildMasterName);
-			InternetAddress emailFromAddr;
-			if (emailFrom != null) {
-				emailFromAddr = new InternetAddress();
-				emailFromAddr.setAddress(emailFrom);
-				if (emailFromName != null)
-					emailFromAddr.setPersonal(emailFromName);
-			} else
+			EmailAddress buildMaster = new EmailAddress(buildMasterEmail, buildMasterName);
+			EmailAddress emailFromAddr;
+			if (emailFrom != null)
+				emailFromAddr = new EmailAddress(emailFrom, emailFromName);
+			else
 				emailFromAddr = buildMaster;
 
-			List<InternetAddress> toList = new ArrayList<InternetAddress>();
+			List<EmailAddress> toList = new ArrayList<EmailAddress>();
 			if (contrib == null)
 				toList.add(buildMaster);
 			else
 				for (Contact contact : contrib.getContacts())
-					toList.add(contactToAddress(contact));
+					toList.add(new EmailAddress(contact.getEmail(), contact.getName()));
 
 			StringBuilder msgBld = new StringBuilder();
 			msgBld.append("The following error");
@@ -635,7 +647,7 @@ public class Builder implements IApplication {
 
 			if (useMock) {
 				msgBld.append("\nThis is a mock mail. Real recipients would have been:\n");
-				for (InternetAddress to : toList) {
+				for (EmailAddress to : toList) {
 					msgBld.append("  ");
 					msgBld.append(to);
 					msgBld.append('\n');
@@ -649,7 +661,7 @@ public class Builder implements IApplication {
 
 			msgBld.setLength(0);
 			msgBld.append("Sending email to: ");
-			for (InternetAddress to : toList) {
+			for (EmailAddress to : toList) {
 				msgBld.append(to);
 				msgBld.append(',');
 			}
@@ -671,46 +683,19 @@ public class Builder implements IApplication {
 			log.info("Subject: %s", subject);
 			log.info("Message content: %s", msgContent);
 
-			Properties props = new Properties();
-			Session session = Session.getDefaultInstance(props);
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(emailFromAddr);
-
+			List<EmailAddress> recipients;
+			EmailAddress ccRecipient = null;
 			if (useMock) {
-				List<InternetAddress> recipients = mockRecipients();
-				msg.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[recipients.size()]));
-				InternetAddress ccRecipient = mockCCRecipient();
-				if (ccRecipient != null)
-					msg.setRecipient(RecipientType.CC, ccRecipient);
+				recipients = mockRecipients();
+				ccRecipient = mockCCRecipient();
 			} else {
-				msg.setRecipients(RecipientType.TO, toList.toArray(new InternetAddress[toList.size()]));
+				recipients = toList;
 				if (contrib != null)
-					msg.setRecipient(RecipientType.CC, buildMaster);
+					ccRecipient = buildMaster;
 			}
+			send(smtpHost, smtpPort, emailFromAddr, recipients, ccRecipient, subject, msgContent);
 
-			msg.setText(msgContent);
-			msg.setSubject(subject);
-
-			// For some odd reason, the Geronimo SMTPTransport class chooses to
-			// output
-			// lots of completely meaningless output to System.out and there's
-			// absolutely
-			// no way to prevent that from happening.
-			PrintStream sysOut = System.out;
-			sysOut.flush();
-			System.setOut(new PrintStream(new NullOutputStream()));
-			try {
-				Transport transport = session.getTransport("smtp");
-				transport.connect(smtpHost, smtpPort, smtpUser, smtpPassword);
-				transport.sendMessage(msg, msg.getAllRecipients());
-				transport.close();
-			} finally {
-				System.setOut(sysOut);
-			}
-
-		} catch (MessagingException e) {
-			log.error(e, "Failed to send email: %s", e.getMessage());
-		} catch (UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			log.error(e, "Failed to send email: %s", e.getMessage());
 		}
 	}
@@ -775,16 +760,8 @@ public class Builder implements IApplication {
 		this.smtpHost = smtpHost;
 	}
 
-	public void setSmtpPassword(String smtpPassword) {
-		this.smtpPassword = smtpPassword;
-	}
-
 	public void setSmtpPort(int smtpPort) {
 		this.smtpPort = smtpPort;
-	}
-
-	public void setSmtpUser(String smtpUser) {
-		this.smtpUser = smtpUser;
 	}
 
 	public void setSubjectPrefix(String subjectPrefix) {
@@ -866,21 +843,16 @@ public class Builder implements IApplication {
 	public void stop() {
 	}
 
-	private InternetAddress mockCCRecipient() throws UnsupportedEncodingException {
-		InternetAddress mock = null;
-		if (mockEmailCC != null) {
-			mock = new InternetAddress();
-			mock.setAddress(mockEmailCC);
-		}
+	private EmailAddress mockCCRecipient() throws UnsupportedEncodingException {
+		EmailAddress mock = null;
+		if (mockEmailCC != null)
+			mock = new EmailAddress(mockEmailCC, null);
 		return mock;
 	}
 
-	private List<InternetAddress> mockRecipients() throws UnsupportedEncodingException {
-		if (mockEmailTo != null) {
-			InternetAddress mock = new InternetAddress();
-			mock.setAddress(mockEmailTo);
-			return Collections.singletonList(mock);
-		}
+	private List<EmailAddress> mockRecipients() throws UnsupportedEncodingException {
+		if (mockEmailTo != null)
+			return Collections.singletonList(new EmailAddress(mockEmailTo, null));
 		return Collections.emptyList();
 	}
 
@@ -987,18 +959,6 @@ public class Builder implements IApplication {
 				if (portNumber <= 0)
 					requiresArgument(arg);
 				setSmtpPort(portNumber);
-				continue;
-			}
-			if ("-smtpUser".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSmtpUser(args[idx]);
-				continue;
-			}
-			if ("-smtpPassword".equalsIgnoreCase(arg)) {
-				if (++idx >= top)
-					requiresArgument(arg);
-				setSmtpPassword(args[idx]);
 				continue;
 			}
 			if ("-mockEmailCC".equalsIgnoreCase(arg)) {

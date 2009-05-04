@@ -7,10 +7,9 @@ Bundle-Activator: org.eclipse.buckminster.galileo.builder.Activator
 Bundle-Vendor: Eclipse Buckminster
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: javax.activation;version="[1.1.0,1.2.0)",
- javax.mail;vendor=geronimo,
- javax.mail.internet;vendor=geronimo,
- org.apache.tools.ant,
+Import-Package: org.apache.tools.ant,
+ org.apache.tools.ant.util,
+ org.apache.tools.mail,
  org.eclipse.amalgam.releng.build,
  org.eclipse.amalgam.releng.build.impl,
  org.eclipse.buckminster.core,
