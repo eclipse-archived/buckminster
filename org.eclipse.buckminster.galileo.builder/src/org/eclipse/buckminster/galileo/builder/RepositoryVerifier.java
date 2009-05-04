@@ -295,9 +295,11 @@ public class RepositoryVerifier extends BuilderPhase {
 
 	private Contribution findContribution(String componentId) {
 		for (Contribution contrib : getBuilder().getBuild().getContributions()) {
-			for (Feature feature : contrib.getFeatures())
-				if (feature.getId().equals(componentId))
+			for (Feature feature : contrib.getFeatures()) {
+				String fullId = feature.getId() + Builder.FEATURE_GROUP_SUFFIX;
+				if (fullId.equals(componentId))
 					return contrib;
+			}
 			for (Bundle bundle : contrib.getBundles())
 				if (bundle.getId().equals(componentId))
 					return contrib;
@@ -350,7 +352,11 @@ public class RepositoryVerifier extends BuilderPhase {
 				contribs.put(contrib.getLabel(), contrib);
 			}
 		}
-		for (Contribution contrib : contribs.values())
-			builder.sendEmail(contrib, errors);
+		if (contribs.isEmpty())
+			builder.sendEmail(null, errors);
+		else {
+			for (Contribution contrib : contribs.values())
+				builder.sendEmail(contrib, errors);
+		}
 	}
 }
