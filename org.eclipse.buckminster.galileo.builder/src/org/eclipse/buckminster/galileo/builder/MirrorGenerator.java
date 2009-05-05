@@ -88,24 +88,17 @@ public class MirrorGenerator extends BuilderPhase {
 		}
 	}
 
-	private static IStatus constraintStatus(IStatus status) {
-		return status.getSeverity() == IStatus.ERROR && status.getException() != null ? status : null;
-	}
-
 	private static IStatus extractDeeperRootCause(IStatus status) {
 		if (status == null)
 			return null;
-		if (!status.isMultiStatus())
-			return constraintStatus(status);
 
-		IStatus[] children = ((MultiStatus) status).getChildren();
-		if (children == null)
-			return constraintStatus(status);
-
-		for (int i = 0; i < children.length; i++) {
-			IStatus deeper = extractDeeperRootCause(children[i]);
-			if (deeper != null)
-				return deeper;
+		if (status.isMultiStatus()) {
+			IStatus[] children = ((MultiStatus) status).getChildren();
+			for (int i = 0; i < children.length; i++) {
+				IStatus deeper = extractDeeperRootCause(children[i]);
+				if (deeper != null)
+					return deeper;
+			}
 		}
 
 		Throwable t = status.getException();
@@ -114,7 +107,7 @@ public class MirrorGenerator extends BuilderPhase {
 			if (deeper != null)
 				return deeper;
 		}
-		return constraintStatus(status);
+		return status.getSeverity() == IStatus.ERROR ? status : null;
 	}
 
 	/**

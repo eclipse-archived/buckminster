@@ -175,6 +175,7 @@ public class RepositoryVerifier extends BuilderPhase {
 				IStatus status = plan.getStatus();
 				if (status.getSeverity() == IStatus.ERROR) {
 					sendEmails(plan.getRequestStatus());
+					log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
 					throw new CoreException(status);
 				}
 
