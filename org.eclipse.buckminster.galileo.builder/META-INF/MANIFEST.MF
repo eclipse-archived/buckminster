@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.buckminster.galileo.builder;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.galileo.builder.Activator
 Bundle-Vendor: Eclipse Buckminster
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.tools.ant,
  org.apache.tools.ant.util,
