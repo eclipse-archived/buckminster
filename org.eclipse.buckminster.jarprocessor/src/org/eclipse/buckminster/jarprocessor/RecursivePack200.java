@@ -100,13 +100,18 @@ abstract class RecursivePack200 implements IConstants
 
 	private static final Pattern s_passFilePatter = Pattern.compile("^-(?:P|-pass-file=)(.+)$"); //$NON-NLS-1$
 
+	static ZipEntry createEntry(ZipEntry original)
+	{
+		ZipEntry copy = createEntry(original, original.getName());
+		copy.setExtra(original.getExtra());
+		return copy;
+	}
+
 	static ZipEntry createEntry(ZipEntry original, String name)
 	{
 		ZipEntry copy = new ZipEntry(name);
 		copy.setComment(original.getComment());
-		copy.setMethod(original.getMethod());
 		copy.setTime(original.getTime());
-		copy.setExtra(original.getExtra());
 		return copy;
 	}
 

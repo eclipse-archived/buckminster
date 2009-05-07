@@ -96,7 +96,7 @@ public class RecursiveConditioner extends RecursivePack200
 				while((entry = jarIn.getNextEntry()) != null)
 				{
 					String name = entry.getName();
-					entry = createEntry(entry, name);
+					entry = createEntry(entry);
 					if(name.equals(META_INF + ECLIPSE_INF))
 					{
 						if(hasEclipseInf)
