@@ -78,7 +78,7 @@ public abstract class ProducerThread extends Thread
 
 	public synchronized InputStream getReaderStream() throws IOException
 	{
-		m_reader = new PipedInputStream(0x10000);
+		m_reader = new PipedInputStream();
 		notify();
 		try
 		{
