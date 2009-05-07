@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
-import org.eclipse.equinox.p2.publisher.PublisherResult;
 
 /**
  * Action that generates version adjusted products
@@ -22,7 +21,8 @@ import org.eclipse.equinox.p2.publisher.PublisherResult;
 @SuppressWarnings("restriction")
 public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction
 {
-	public ProductAction(String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation)
+	public ProductAction(String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation,
+			String[] cfgSpecs)
 	{
 		super(src, new ProductVersionPatcher(productDesc), flvor, exeFeatureLocation);
 	}
@@ -31,11 +31,6 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
 		((ProductVersionPatcher)product).setQueryable(results);
-
-		IPublisherResult innerResult = new PublisherResult();
-		IStatus status = super.perform(publisherInfo, innerResult, monitor);
-		if(status.getSeverity() != IStatus.ERROR)
-			results.merge(innerResult, IPublisherResult.MERGE_MATCHING);
-		return status;
+		return super.perform(publisherInfo, results, monitor);
 	}
 }
