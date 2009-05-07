@@ -103,18 +103,18 @@ public class RecursivePacker extends RecursivePack200
 				{
 					if(nested.hasClasses())
 					{
-						jarOut.putNextEntry(new ZipEntry(name + PACK_SUFFIX));
+						jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
 						nestedPack(jarIn, nested, jarOut);
 					}
 					else
 					{
-						jarOut.putNextEntry(new ZipEntry(name));
+						jarOut.putNextEntry(createEntry(entry, name));
 						processNestedJars(jarIn, nested, jarOut, null);
 					}
 					continue;
 				}
 			}
-			jarOut.putNextEntry(entry);
+			jarOut.putNextEntry(createEntry(entry, name));
 			if(!entry.isDirectory())
 				IOUtils.copy(jarIn, jarOut, null);
 		}

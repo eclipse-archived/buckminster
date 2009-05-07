@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200.Packer;
@@ -23,9 +22,9 @@ import org.eclipse.core.runtime.CoreException;
 
 public class RecursiveConditioner extends RecursivePack200
 {
-	private static void emitEclipseInf(JarOutputStream jarOut, JarInfo jarInfo) throws IOException
+	private static void emitEclipseInf(JarOutputStream jarOut, JarInfo jarInfo, ZipEntry entry) throws IOException
 	{
-		jarOut.putNextEntry(new JarEntry(META_INF + ECLIPSE_INF));
+		jarOut.putNextEntry(entry);
 		Map<String, String> eclipseInf = jarInfo.getEclipseInf();
 		eclipseInf.put(JarInfo.PROP_PACK200_CONDITIONED, "true"); //$NON-NLS-1$
 		BMProperties.store(eclipseInf, jarOut, "Processed using Jarprocessor"); //$NON-NLS-1$		
@@ -78,7 +77,6 @@ public class RecursiveConditioner extends RecursivePack200
 			@Override
 			protected void internalRun(OutputStream writer) throws Exception
 			{
-				ZipEntry entry;
 				JarOutputStream jarOut = new JarOutputStream(writer);
 				ZipInputStream jarIn = new ZipInputStream(input);
 
@@ -88,19 +86,22 @@ public class RecursiveConditioner extends RecursivePack200
 				{
 					// Create the eclipse.inf here so that it ends up
 					// at the start of the file.
-					jarOut.putNextEntry(new JarEntry(META_INF));
-					emitEclipseInf(jarOut, jarInfo);
-					hasEclipseInf = true;
+					jarOut.putNextEntry(new ZipEntry(META_INF));
 					hasMetaInf = true;
+					emitEclipseInf(jarOut, jarInfo, new ZipEntry(META_INF + ECLIPSE_INF));
+					hasEclipseInf = true;
 				}
 
+				ZipEntry entry;
 				while((entry = jarIn.getNextEntry()) != null)
 				{
 					String name = entry.getName();
+					entry = createEntry(entry, name);
 					if(name.equals(META_INF + ECLIPSE_INF))
 					{
-						if(!hasEclipseInf)
-							emitEclipseInf(jarOut, jarInfo);
+						if(hasEclipseInf)
+							continue;
+						emitEclipseInf(jarOut, jarInfo, entry);
 						hasEclipseInf = true;
 						continue;
 					}
@@ -122,7 +123,7 @@ public class RecursiveConditioner extends RecursivePack200
 						JarInfo nested = jarInfo.getNestedInfo(name);
 						if(nested != null && !(nested.isConditioned() || nested.isSigned() || nested.isExcludeSign()))
 						{
-							jarOut.putNextEntry(new JarEntry(name));
+							jarOut.putNextEntry(entry);
 							nestedConditioning(jarIn, nested, jarOut);
 							continue;
 						}
@@ -130,10 +131,6 @@ public class RecursiveConditioner extends RecursivePack200
 					jarOut.putNextEntry(entry);
 					IOUtils.copy(jarIn, jarOut, null);
 				}
-				if(!hasMetaInf)
-					if(!hasEclipseInf)
-						emitEclipseInf(jarOut, jarInfo);
-
 				okToDrainReader();
 				jarOut.finish();
 			}

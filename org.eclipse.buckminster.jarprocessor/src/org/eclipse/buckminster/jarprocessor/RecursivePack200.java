@@ -16,6 +16,7 @@ import java.util.jar.Pack200.Packer;
 import java.util.jar.Pack200.Unpacker;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -98,6 +99,16 @@ abstract class RecursivePack200 implements IConstants
 	private static final Pattern s_modificationTimePatter = Pattern.compile("^-(?:m|-modification-time=)(latest|keep)$"); //$NON-NLS-1$
 
 	private static final Pattern s_passFilePatter = Pattern.compile("^-(?:P|-pass-file=)(.+)$"); //$NON-NLS-1$
+
+	static ZipEntry createEntry(ZipEntry original, String name)
+	{
+		ZipEntry copy = new ZipEntry(name);
+		copy.setComment(original.getComment());
+		copy.setMethod(original.getMethod());
+		copy.setTime(original.getTime());
+		copy.setExtra(original.getExtra());
+		return original;
+	}
 
 	RecursivePack200(List<String> defaultArgs)
 	{
