@@ -107,7 +107,7 @@ abstract class RecursivePack200 implements IConstants
 		copy.setMethod(original.getMethod());
 		copy.setTime(original.getTime());
 		copy.setExtra(original.getExtra());
-		return original;
+		return copy;
 	}
 
 	RecursivePack200(List<String> defaultArgs)
