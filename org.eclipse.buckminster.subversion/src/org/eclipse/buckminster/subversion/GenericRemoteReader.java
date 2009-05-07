@@ -41,8 +41,8 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 		super(readerType, provider);
 		VersionMatch vm = provider.getVersionMatch();
 		VersionSelector branchOrTag = vm.getBranchOrTag();
-		m_session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(), provider
-				.getNodeQuery().getContext());
+		m_session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(),
+				provider.getNodeQuery().getContext());
 		m_topEntries = getTopEntries(monitor);
 		if(m_topEntries.length == 0)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, m_session));
@@ -124,6 +124,14 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 			final FileHandle fh = new FileHandle(fileName, destFile, true);
 			destFile = null;
 			return fh;
+		}
+		catch(CoreException e)
+		{
+			throw e;
+		}
+		catch(IOException e)
+		{
+			throw e;
 		}
 		catch(Exception e)
 		{
