@@ -84,3 +84,4 @@ Import-Package: org.apache.tools.ant,
  org.eclipse.osgi.service.datalocation;version="1.2.0",
  org.osgi.framework;version="1.5.0",
  org.osgi.service.packageadmin
+Require-Bundle: org.apache.xerces;bundle-version="2.9.0"
