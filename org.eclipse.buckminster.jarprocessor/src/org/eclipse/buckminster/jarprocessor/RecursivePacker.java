@@ -72,7 +72,7 @@ public class RecursivePacker extends RecursivePack200
 			protected void internalRun(OutputStream writer) throws Exception
 			{
 				ZipInputStream jarIn = new ZipInputStream(input);
-				processNestedJars(jarIn, jarInfo, writer, this);
+				processNestedJars(jarIn, jarInfo, writer);
 			}
 		};
 		pumper.start();
@@ -88,8 +88,7 @@ public class RecursivePacker extends RecursivePack200
 		pumper.drain(jarInfo, null);
 	}
 
-	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output, ProducerThread top)
-			throws Exception
+	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output) throws Exception
 	{
 		ZipOutputStream jarOut = new ZipOutputStream(output);
 		ZipEntry entry;
@@ -109,7 +108,7 @@ public class RecursivePacker extends RecursivePack200
 					else
 					{
 						jarOut.putNextEntry(createEntry(entry));
-						processNestedJars(jarIn, nested, jarOut, null);
+						processNestedJars(jarIn, nested, jarOut);
 					}
 					continue;
 				}
@@ -118,8 +117,6 @@ public class RecursivePacker extends RecursivePack200
 			if(!entry.isDirectory())
 				IOUtils.copy(jarIn, jarOut, null);
 		}
-		if(top != null)
-			top.okToDrainReader();
 		jarOut.finish();
 	}
 }

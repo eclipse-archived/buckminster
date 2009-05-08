@@ -29,8 +29,6 @@ public abstract class ProducerThread extends Thread
 
 	private Throwable m_exception;
 
-	private boolean m_okToDrainReader = false;
-
 	public ProducerThread(String name)
 	{
 		super(name);
@@ -40,30 +38,28 @@ public abstract class ProducerThread extends Thread
 	{
 		try
 		{
-			while(isAlive())
-			{
-				join(10);
-				if(m_reader.available() > 0)
-				{
-					// Drain the reader.
-					//
-					if(m_okToDrainReader || m_exception != null)
-						m_reader.skip(m_reader.available());
-					else
-						m_reader.close();
-				}
-			}
+			byte[] drainBuffer = new byte[0x800];
+			while(m_reader.read(drainBuffer) > 0)
+				;
 		}
 		catch(IOException e)
 		{
-		}
-		catch(InterruptedException e)
-		{
+			// Ignore during draining. File is probably closed.
 		}
 		finally
 		{
 			IOUtils.close(m_reader);
 		}
+
+		try
+		{
+			join();
+		}
+		catch(InterruptedException e)
+		{
+			// Ignore
+		}
+
 		if(m_exception != null)
 		{
 			if(second != null)
@@ -90,11 +86,6 @@ public abstract class ProducerThread extends Thread
 		if(m_writer == null)
 			throw new IOException("No writer"); //$NON-NLS-1$
 		return m_reader;
-	}
-
-	public void okToDrainReader()
-	{
-		m_okToDrainReader = true;
 	}
 
 	@Override

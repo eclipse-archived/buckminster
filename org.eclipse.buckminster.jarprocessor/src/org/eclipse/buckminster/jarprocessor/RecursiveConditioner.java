@@ -72,7 +72,7 @@ public class RecursiveConditioner extends RecursivePack200
 	private void nestedConditioning(final InputStream input, final JarInfo jarInfo, OutputStream conditioned)
 			throws CoreException
 	{
-		ProducerThread pumper = new ProducerThread("Pack200 jarPumper") //$NON-NLS-1$
+		final ProducerThread jarPumper = new ProducerThread("Pack200 jarPumper") //$NON-NLS-1$
 		{
 			@Override
 			protected void internalRun(OutputStream writer) throws Exception
@@ -131,47 +131,43 @@ public class RecursiveConditioner extends RecursivePack200
 					jarOut.putNextEntry(entry);
 					IOUtils.copy(jarIn, jarOut, null);
 				}
-				okToDrainReader();
 				jarOut.finish();
 			}
 		};
-		pumper.start();
-		try
-		{
-			simpleConditioning(pumper.getReaderStream(), jarInfo, conditioned);
-		}
-		catch(IOException e)
-		{
-			pumper.drain(jarInfo, e);
-		}
-		pumper.drain(jarInfo, null);
-	}
 
-	private void simpleConditioning(final InputStream input, final JarInfo jarInfo, OutputStream conditioned)
-			throws CoreException
-	{
-		ProducerThread pumper = new ProducerThread("Pack200 packPumper") //$NON-NLS-1$
+		jarPumper.start();
+		ProducerThread packPumper = new ProducerThread("Pack200 packPumper") //$NON-NLS-1$
 		{
 			@Override
-			protected void internalRun(OutputStream writer) throws IOException
+			protected void internalRun(OutputStream writer) throws Exception
 			{
-				JarInputStream jarIn = new NonClosingJarInputStream(input);
-				Packer packer = getPacker(jarInfo);
-				packer.pack(jarIn, writer);
+				try
+				{
+					JarInputStream jarIn = new NonClosingJarInputStream(jarPumper.getReaderStream());
+					Packer packer = getPacker(jarInfo);
+					packer.pack(jarIn, writer);
+					writer.flush();
+				}
+				catch(IOException e)
+				{
+					jarPumper.drain(jarInfo, e);
+				}
+				jarPumper.drain(jarInfo, null);
 			}
 		};
-		pumper.start();
+
+		packPumper.start();
 		try
 		{
 			JarOutputStream jarOut = new JarOutputStream(conditioned);
 			Unpacker unpacker = getUnpacker();
-			unpacker.unpack(new NonClosingInputStream(pumper.getReaderStream()), jarOut);
+			unpacker.unpack(new NonClosingInputStream(packPumper.getReaderStream()), jarOut);
 			jarOut.finish();
 		}
 		catch(IOException e)
 		{
-			pumper.drain(jarInfo, e);
+			packPumper.drain(jarInfo, e);
 		}
-		pumper.drain(jarInfo, null);
+		packPumper.drain(jarInfo, null);
 	}
 }
