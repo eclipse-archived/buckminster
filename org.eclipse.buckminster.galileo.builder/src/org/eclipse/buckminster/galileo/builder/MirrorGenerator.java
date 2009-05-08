@@ -164,6 +164,7 @@ public class MirrorGenerator extends BuilderPhase {
 			return;
 		}
 
+		result = extractRootCause(result);
 		target.removeDescriptor(canonical);
 		throw BuckminsterException.fromMessage(result.getException(), "Unable to unpack artifact %s in repository %s: %s",
 				optimized.getArtifactKey(), target.getLocation(), result.getMessage());
