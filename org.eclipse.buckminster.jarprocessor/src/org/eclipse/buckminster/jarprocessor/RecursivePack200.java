@@ -3,7 +3,6 @@ package org.eclipse.buckminster.jarprocessor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Packer;
 import java.util.jar.Pack200.Unpacker;
@@ -29,32 +27,6 @@ import org.eclipse.core.runtime.Path;
 abstract class RecursivePack200 implements IConstants
 {
 	/**
-	 * This class will change the Pack200 magic. It's only supposed to be used on files that contains no class files
-	 * (and hence default to magics higher than Java 1.5 if a higher VM is used).
-	 */
-	static class MagicChangerOutputStream extends FilterOutputStream
-	{
-		private int cnt = 0;
-
-		public MagicChangerOutputStream(OutputStream wrapped)
-		{
-			super(wrapped);
-		}
-
-		@Override
-		public void write(byte b[], int off, int len) throws IOException
-		{
-			if(cnt == 4 && len >= 4)
-			{
-				b[0] = 7;
-				b[1] = (byte)(150 & 0xff);
-			}
-			out.write(b, off, len);
-			cnt += len;
-		}
-	}
-
-	/**
 	 * An input stream that ignores the call to close().
 	 */
 	static class NonClosingInputStream extends FilterInputStream
@@ -67,23 +39,6 @@ abstract class RecursivePack200 implements IConstants
 		@Override
 		public void close() throws IOException
 		{
-		}
-	}
-
-	/**
-	 * An input stream that ignores the call to close(). We don't want that.
-	 */
-	static class NonClosingJarInputStream extends JarInputStream
-	{
-		public NonClosingJarInputStream(InputStream wrapped) throws IOException
-		{
-			super(wrapped);
-		}
-
-		@Override
-		public void close() throws IOException
-		{
-			inf.end();
 		}
 	}
 
@@ -143,6 +98,14 @@ abstract class RecursivePack200 implements IConstants
 
 		Packer packer = Pack200.newPacker();
 		Map<String, String> properties = packer.properties();
+
+		if(!jarInfo.hasClasses())
+		{
+			// This is a nested pack. No need to pack again.
+			propsAdded.add(Packer.EFFORT);
+			properties.put(Packer.EFFORT, "0"); //$NON-NLS-1$
+		}
+
 		for(String arg : args)
 		{
 			Matcher m = s_effortPattern.matcher(arg);
@@ -226,9 +189,9 @@ abstract class RecursivePack200 implements IConstants
 		File temp = null;
 		try
 		{
-			// We need a temp file here since the Packer will change the
-			// modification time on the META-INF/MANIFEST.MF if we pass it
-			// an JarInputStream.
+			// We need a temp file here since the Packer will alter the
+			// META-INF/MANIFEST.MF if we pass it an JarInputStream. Not
+			// good if the jar is signed...
 			temp = File.createTempFile("conditionFile", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			OutputStream tempOut = null;
 			try

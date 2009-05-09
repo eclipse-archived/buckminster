@@ -58,8 +58,6 @@ public class RecursivePacker extends RecursivePack200
 			input = new FileInputStream(jarFile);
 			output = new FileOutputStream(fileName + PACK_GZ_SUFFIX);
 			output = new GZIPOutputStream(output);
-			if(!jarInfo.hasClasses())
-				output = new MagicChangerOutputStream(output);
 
 			if(jarInfo.isNested())
 				nestedPack(input, jarInfo, output);
