@@ -8,16 +8,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarInputStream;
+import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200.Packer;
 import java.util.jar.Pack200.Unpacker;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
 public class RecursiveConditioner extends RecursivePack200
@@ -37,30 +38,49 @@ public class RecursiveConditioner extends RecursivePack200
 
 	public boolean condition(File jarFile, File conditionedJarFile) throws CoreException
 	{
+		Logger log = Buckminster.getLogger();
 		InputStream input = null;
 		OutputStream output = null;
+		String fileName = jarFile.getAbsolutePath();
 		try
 		{
 			input = new ZipInputStream(new FileInputStream(jarFile));
-			JarInfo jarInfo = JarInfo.getJarInfo(null, jarFile.getAbsolutePath(), (ZipInputStream)input);
+			JarInfo jarInfo = JarInfo.getJarInfo(null, fileName, (ZipInputStream)input);
 			IOUtils.close(input);
 
-			if(jarInfo.isConditioned() || jarInfo.isSigned() || jarInfo.isExcludeSign())
+			boolean condition = true;
+			if(jarInfo.isConditioned())
 			{
-				input = new FileInputStream(jarFile);
-				output = new FileOutputStream(conditionedJarFile);
-				IOUtils.copy(input, output, null);
-				return false;
+				log.debug("Conditioner: skipping %s, it is already conditioned", fileName); //$NON-NLS-1$
+				condition = false;
+			}
+			else if(jarInfo.isSigned())
+			{
+				log.debug("Conditioner: skipping %s, it is already signed", fileName); //$NON-NLS-1$
+				condition = false;
+			}
+			else if(jarInfo.isExcludeSign())
+			{
+				log.debug("Conditioner: skipping %s, it is excluded from signing", fileName); //$NON-NLS-1$
+				condition = false;
+			}
+			else if(!(jarInfo.hasClasses() || jarInfo.isNested()))
+			{
+				log.debug("Conditioner: skipping %s, it has no classes and is not nested", fileName); //$NON-NLS-1$
+				condition = false;
 			}
 
 			input = new FileInputStream(jarFile);
 			output = new FileOutputStream(conditionedJarFile);
-			nestedConditioning(input, jarInfo, output);
-			return true;
+			if(condition)
+				nestedConditioning(input, jarInfo, output);
+			else
+				IOUtils.copy(input, output, null);
+			return condition;
 		}
 		catch(IOException e)
 		{
-			throw BuckminsterException.fromMessage(e, "Unable to condition %s", jarFile.getAbsolutePath()); //$NON-NLS-1$
+			throw BuckminsterException.fromMessage(e, "Unable to condition %s", fileName); //$NON-NLS-1$
 		}
 		finally
 		{
@@ -80,17 +100,8 @@ public class RecursiveConditioner extends RecursivePack200
 				JarOutputStream jarOut = new JarOutputStream(writer);
 				ZipInputStream jarIn = new ZipInputStream(input);
 
-				boolean hasMetaInf = false;
+				boolean metaAddingDone = false;
 				boolean hasEclipseInf = false;
-				if(!jarInfo.hasEclipseInf())
-				{
-					// Create the eclipse.inf here so that it ends up
-					// at the start of the file.
-					jarOut.putNextEntry(new ZipEntry(META_INF));
-					hasMetaInf = true;
-					emitEclipseInf(jarOut, jarInfo, new ZipEntry(META_INF + ECLIPSE_INF));
-					hasEclipseInf = true;
-				}
 
 				ZipEntry entry;
 				while((entry = jarIn.getNextEntry()) != null)
@@ -108,12 +119,6 @@ public class RecursiveConditioner extends RecursivePack200
 
 					if(entry.isDirectory())
 					{
-						if(name.equals(META_INF))
-						{
-							if(hasMetaInf)
-								continue;
-							hasMetaInf = true;
-						}
 						jarOut.putNextEntry(entry);
 						continue;
 					}
@@ -128,8 +133,19 @@ public class RecursiveConditioner extends RecursivePack200
 							continue;
 						}
 					}
+
 					jarOut.putNextEntry(entry);
 					IOUtils.copy(jarIn, jarOut, null);
+					if(!metaAddingDone && name.equals(JarFile.MANIFEST_NAME))
+					{
+						metaAddingDone = true;
+						if(!jarInfo.hasEclipseInf())
+						{
+							// Create the eclipse.inf here so that it ends up
+							emitEclipseInf(jarOut, jarInfo, new ZipEntry(META_INF + ECLIPSE_INF));
+							hasEclipseInf = true;
+						}
+					}
 				}
 				jarOut.finish();
 			}
@@ -143,10 +159,7 @@ public class RecursiveConditioner extends RecursivePack200
 			{
 				try
 				{
-					JarInputStream jarIn = new NonClosingJarInputStream(jarPumper.getReaderStream());
-					Packer packer = getPacker(jarInfo);
-					packer.pack(jarIn, writer);
-					writer.flush();
+					pack(jarInfo, jarPumper.getReaderStream(), writer);
 				}
 				catch(IOException e)
 				{

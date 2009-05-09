@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.jarprocessor;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Packer;
@@ -18,7 +21,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 abstract class RecursivePack200 implements IConstants
@@ -214,5 +219,35 @@ abstract class RecursivePack200 implements IConstants
 	Unpacker getUnpacker()
 	{
 		return Pack200.newUnpacker();
+	}
+
+	void pack(JarInfo jarInfo, InputStream in, OutputStream out) throws IOException
+	{
+		File temp = null;
+		try
+		{
+			// We need a temp file here since the Packer will change the
+			// modification time on the META-INF/MANIFEST.MF if we pass it
+			// an JarInputStream.
+			temp = File.createTempFile("conditionFile", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
+			OutputStream tempOut = null;
+			try
+			{
+				tempOut = new FileOutputStream(temp);
+				IOUtils.copy(in, tempOut, new NullProgressMonitor());
+			}
+			finally
+			{
+				IOUtils.close(tempOut);
+			}
+			Packer packer = getPacker(jarInfo);
+			packer.pack(new JarFile(temp), out);
+			out.flush();
+		}
+		finally
+		{
+			if(temp != null)
+				temp.delete();
+		}
 	}
 }
