@@ -116,7 +116,7 @@ public class JarProcessorActor extends AbstractActor
 			if(!name.endsWith(IConstants.JAR_SUFFIX))
 				continue;
 
-			RecursivePacker rpacker = new RecursivePacker(null);
+			RecursivePacker rpacker = new RecursivePacker(null, true);
 			rpacker.pack(new File(outputDir, name));
 		}
 	}

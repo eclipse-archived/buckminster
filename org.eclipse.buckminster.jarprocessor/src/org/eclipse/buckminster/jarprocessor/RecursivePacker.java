@@ -20,9 +20,12 @@ import org.eclipse.core.runtime.CoreException;
 
 public class RecursivePacker extends RecursivePack200
 {
-	public RecursivePacker(List<String> defaultArgs)
+	private final boolean m_useRedunantGZipping;
+
+	public RecursivePacker(List<String> defaultArgs, boolean useRedundantGZipping)
 	{
 		super(defaultArgs);
+		this.m_useRedunantGZipping = useRedundantGZipping;
 	}
 
 	public boolean pack(File jarFile) throws CoreException
@@ -113,8 +116,18 @@ public class RecursivePacker extends RecursivePack200
 				{
 					if(nested.hasClasses() && !(nested.isSigned() && !nested.isConditioned()))
 					{
-						jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
-						nestedPack(jarIn, nested, jarOut);
+						if(m_useRedunantGZipping)
+						{
+							jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
+							GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
+							nestedPack(jarIn, nested, gzipOut);
+							gzipOut.finish();
+						}
+						else
+						{
+							jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
+							nestedPack(jarIn, nested, jarOut);
+						}
 					}
 					else
 					{
