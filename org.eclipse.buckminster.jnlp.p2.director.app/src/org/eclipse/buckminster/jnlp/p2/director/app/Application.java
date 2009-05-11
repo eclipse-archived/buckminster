@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.jnlp.p2.director.app;
 
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.APP_LAUNCHED_SYNC_STRING;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.*;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_MAX_CAPTURED_LINES;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_STARTUP_TIME;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
@@ -653,7 +653,48 @@ public class Application implements IApplication
 		if(!SplashWindow.isSplashUp())
 		{
 			SplashWindow.splash(getSplashImageBoot(), getSplashImage(), getWindowIconImage(), forceSplashVisible ? 0 : BootstrapConstants.SPLASH_WINDOW_DELAY);
+			
+			if(!forceSplashVisible)
+			{
+				Thread splashSynchronizationThread = new Thread()
+				{
+					@Override
+					public void run()
+					{
+						BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
+
+						String line;
+						try
+						{
+							while((line = rd.readLine()) != null)
+							{
+								if(SLASH_IS_SHOWN_STRING.equals(line))
+								{
+									forceShowSplash();
+									break;
+								}
+							}
+						}
+						catch(IOException e)
+						{
+							// do nothing
+						}
+						finally
+						{
+							Utils.close(rd);
+						}
+					}
+				};
+				
+				splashSynchronizationThread.setDaemon(true);
+				splashSynchronizationThread.start();
+			}
 		}
+	}
+	
+	private void forceShowSplash()
+	{
+		SplashWindow.forceShowSplash();
 	}
 	
 	private Image getSplashImageBoot()
@@ -787,9 +828,6 @@ public class Application implements IApplication
 		
 		try
 		{
-			// tell jnlp.p2.bootstrap that the director app is started
-			System.out.println(BootstrapConstants.APP_LAUNCHED_SYNC_STRING);
-
 			String[] args = (String[])context.getArguments().get("application.args");
 			
 			String configURL = readArgs(args, "-configURL");
@@ -800,6 +838,9 @@ public class Application implements IApplication
 			boolean forceSplashVisible = "true".equals(readArgs(args, "-forceSplash"));
 			startSplash(forceSplashVisible);
 			
+			// tell jnlp.p2.bootstrap that the director app is started
+			System.out.println(BootstrapConstants.APP_LAUNCHED_SYNC_STRING);
+
 			m_packageAdminRef = Activator.getContext().getServiceReference(PackageAdmin.class.getName());
 			setPackageAdmin((PackageAdmin)Activator.getContext().getService(m_packageAdminRef));
 			if(!startEarly(EXEMPLARY_SETUP))
@@ -946,7 +987,7 @@ public class Application implements IApplication
 			final BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 			final BufferedReader erd = new BufferedReader(new InputStreamReader(eis));
 
-			new Thread()
+			Thread outReaderThread = new Thread()
 			{
 				@Override
 				public void run()
@@ -971,9 +1012,11 @@ public class Application implements IApplication
 						Utils.close(rd);
 					}
 				}
-			}.start();
+			};
+			outReaderThread.setDaemon(true);
+			outReaderThread.start();
 
-			new Thread()
+			Thread errReaderThread = new Thread()
 			{
 				@Override
 				public void run()
@@ -994,7 +1037,9 @@ public class Application implements IApplication
 						Utils.close(erd);
 					}
 				}
-			}.start();
+			};
+			errReaderThread.setDaemon(true);
+			errReaderThread.start();
 		}
 		catch(IOException e)
 		{
@@ -1007,7 +1052,7 @@ public class Application implements IApplication
 			if(!SplashWindow.isSplashUp())
 				SplashWindow.splash(null, getSplashImage(), getWindowIconImage());
 			else
-				SplashWindow.forceShowSplash();
+				forceShowSplash();
 				SplashWindow.setSplashImage(SplashWindow.SPLASH_IMAGE_ID);
 
 			try

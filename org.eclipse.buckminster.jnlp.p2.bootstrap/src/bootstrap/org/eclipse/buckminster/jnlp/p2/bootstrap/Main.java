@@ -43,6 +43,7 @@ import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIMEOUT;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SUPPORT_EMAIL;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_WINDOW_ICON;
+import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.SLASH_IS_SHOWN_STRING;
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.SPLASH_WINDOW_DELAY;
 
 import java.awt.Image;
@@ -470,7 +471,36 @@ public class Main
 			final BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 			final BufferedReader erd = new BufferedReader(new InputStreamReader(eis));
 
-			new Thread()
+			Thread splashSynchronizationThread = new Thread()
+			{
+				@Override
+				public void run()
+				{
+					PrintStream ps = new PrintStream(m_process.getOutputStream());
+					while(true)
+					{
+						if(SplashWindow.isSplashVisible())
+						{
+							ps.println(SLASH_IS_SHOWN_STRING);
+							break;
+						}
+
+						try
+						{
+							Thread.sleep(100);
+						}
+						catch(InterruptedException e)
+						{
+							// do nothing
+						}
+					}
+				}
+			};
+
+			splashSynchronizationThread.setDaemon(true);
+			splashSynchronizationThread.start();
+
+			Thread outReaderThread = new Thread()
 			{
 				@Override
 				public void run()
@@ -494,9 +524,11 @@ public class Main
 						Utils.close(rd);
 					}
 				}
-			}.start();
+			};
+			outReaderThread.setDaemon(true);
+			outReaderThread.start();
 
-			new Thread()
+			Thread errReaderThread = new Thread()
 			{
 				@Override
 				public void run()
@@ -516,7 +548,9 @@ public class Main
 						Utils.close(erd);
 					}
 				}
-			}.start();
+			};
+			errReaderThread.setDaemon(true);
+			errReaderThread.start();
 		}
 		catch(IOException e)
 		{

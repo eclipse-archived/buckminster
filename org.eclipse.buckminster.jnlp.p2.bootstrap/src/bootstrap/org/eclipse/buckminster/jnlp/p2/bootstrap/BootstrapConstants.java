@@ -16,6 +16,8 @@ public interface BootstrapConstants
 {
 	public static final String APP_LAUNCHED_SYNC_STRING = "sync info: application launched"; //$NON-NLS-1$
 
+	public static final String SLASH_IS_SHOWN_STRING = "sync info: splash is shown"; //$NON-NLS-1$
+
 	public static final int DEFAULT_MAX_CAPTURED_LINES = 1000;
 
 	public static final int DEFAULT_STARTUP_TIME = 4000;
