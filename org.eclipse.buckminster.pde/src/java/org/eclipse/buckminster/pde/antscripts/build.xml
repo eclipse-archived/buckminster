@@ -169,6 +169,14 @@
 		<delete file="${file.to.delete}"/>
 	</target>
 
+	<target name="filter">
+		<copy todir="${sp:action.output}">
+			<buckminster.valuefileset value="${fs:action.requirements}">
+				<filename name="${pattern}"/>
+			</buckminster.valuefileset>
+		</copy>
+	</target>
+
 	<target name="expand.bundle.version" depends="create.output.dir">
 		<property name="sp:properties" value=""/>
 		<buckminster.consolidateBundle inputFile="${sp:manifest}" outputFile="${sp:action.output}" propertiesFile="${sp:properties}"/>
