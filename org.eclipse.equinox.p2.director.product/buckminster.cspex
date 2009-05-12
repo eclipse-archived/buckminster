@@ -11,7 +11,7 @@
             </actorProperties>
             <properties>
                 <property key="profile" value="Director"/>
-                <property key="iu" value="org.eclipse.equinox.p2.director.app.product"/>
+                <property key="iu" value="org.eclipse.equinox.p2.director.product"/>
             </properties>
 			<prerequisites alias="repository">
 				<attribute name="site.p2"/>
