@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.cspecext.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
-import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.parser.ProductsHandler;
 import org.eclipse.buckminster.core.cspecext.builder.AlterActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspecext.builder.AlterActionBuilder;
@@ -20,7 +19,6 @@ import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.Path;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -64,14 +62,7 @@ class AlterProductsHandler extends AlterHandler
 		else if(child == m_removeAttributeHandler)
 			this.getAlterCSpecBuilder().addRemoveAttribute(m_removeAttributeHandler.getValue());
 		else if(child instanceof AlterActionArtifactHandler)
-			try
-			{
-				this.getAlterCSpecBuilder().addAlterAttribute(((AlterActionArtifactHandler)child).getBuilder());
-			}
-			catch(AttributeAlreadyDefinedException e)
-			{
-				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-			}
+			this.getAlterCSpecBuilder().addAlterAttribute(((AlterActionArtifactHandler)child).getBuilder());
 	}
 
 	@Override

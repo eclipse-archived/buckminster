@@ -9,7 +9,7 @@ package org.eclipse.buckminster.core.cspecext.parser;
 
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
-import org.eclipse.buckminster.core.cspecext.builder.AlterAttributeBuilder;
+import org.eclipse.buckminster.core.cspecext.builder.AlterCSpecBuilder;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
@@ -26,6 +26,8 @@ abstract class AlterAttributesHandler extends AlterHandler
 
 	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
 
+	private final RenameHandler m_renameHandler = new RenameHandler(this);
+
 	AlterAttributesHandler(AbstractHandler parent)
 	{
 		super(parent);
@@ -33,25 +35,16 @@ abstract class AlterAttributesHandler extends AlterHandler
 		m_privateHandler = this.createAttributeHandler(false);
 	}
 
-	void addAlterAttribute(AlterAttributeBuilder attribute) throws SAXException
-	{
-		((AlterCSpecHandler)this.getParentHandler()).addAlterAttribute(attribute);
-	}
-
-	void addRemoveAttribute(String name)
-	{
-		((AlterCSpecHandler)this.getParentHandler()).addRemoveAttribute(name);
-	}
-
 	public void childPopped(ChildHandler child) throws SAXException
 	{
+		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler)getParentHandler()).getAlterCSpecBuilder();
 		if(child == m_removeHandler)
-			this.addRemoveAttribute(m_removeHandler.getValue());
+			alterCSpec.addRemoveAttribute(m_removeHandler.getValue());
+		else if(child == m_renameHandler)
+			alterCSpec.addRenameAttribute(m_renameHandler.getOldName(), m_renameHandler.getNewName());
 		else
-			this.addAlterAttribute(((AlterAttributeHandler)child).getBuilder());
+			alterCSpec.addAlterAttribute(((AlterAttributeHandler)child).getBuilder());
 	}
-
-	abstract AlterAttributeHandler createAttributeHandler(boolean publ);
 
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
@@ -63,8 +56,12 @@ abstract class AlterAttributesHandler extends AlterHandler
 			ch = m_privateHandler;
 		else if(m_removeHandler.getTAG().equals(localName))
 			ch = m_removeHandler;
+		else if(m_renameHandler.getTAG().equals(localName))
+			ch = m_renameHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
+
+	abstract AlterAttributeHandler createAttributeHandler(boolean publ);
 }

@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.cspecext.parser;
 
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
+import org.eclipse.buckminster.core.cspecext.builder.AlterCSpecBuilder;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -33,11 +34,11 @@ class AlterDependenciesHandler extends AlterHandler
 
 	public void childPopped(ChildHandler child) throws SAXException
 	{
-		AlterCSpecHandler parent = (AlterCSpecHandler)this.getParentHandler();
+		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler)this.getParentHandler()).getAlterCSpecBuilder();
 		if(child == m_alterDependencyHandler)
-			parent.addAlterDependency(m_alterDependencyHandler.getBuilder());
+			alterCSpec.addAlterDependency(m_alterDependencyHandler.getBuilder());
 		else if(child == m_removeDependencyHandler)
-			parent.addRemoveDependency(m_removeDependencyHandler.getValue());
+			alterCSpec.addRemoveDependency(m_removeDependencyHandler.getValue());
 	}
 
 	@Override

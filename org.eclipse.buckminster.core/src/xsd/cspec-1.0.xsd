@@ -516,6 +516,7 @@
 								<element name="private"
 									type="cs:AlterAction" />
 								<element name="remove" type="cs:Remove" />
+								<element name="rename" type="cs:Rename" />
 							</choice>
 						</complexType>
 					</element>
@@ -528,6 +529,7 @@
 								<element name="private"
 									type="cs:AlterArtifact" />
 								<element name="remove" type="cs:Remove" />
+								<element name="rename" type="cs:Rename" />
 							</choice>
 						</complexType>
 					</element>
@@ -550,6 +552,7 @@
 								<element name="private"
 									type="cs:AlterGroup" />
 								<element name="remove" type="cs:Remove" />
+								<element name="rename" type="cs:Rename" />
 							</choice>
 						</complexType>
 					</element>
@@ -632,6 +635,10 @@
 	</complexType>
 	<complexType name="Remove">
 		<attribute name="name" type="string" use="required" />
+	</complexType>
+	<complexType name="Rename">
+		<attribute name="oldName" type="string" use="required" />
+		<attribute name="newName" type="string" use="required" />
 	</complexType>
 	<complexType name="RemovePath">
 		<attribute name="path" type="string" use="required" />

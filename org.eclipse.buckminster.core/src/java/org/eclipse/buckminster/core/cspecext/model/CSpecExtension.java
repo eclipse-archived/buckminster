@@ -61,17 +61,21 @@ public class CSpecExtension
 
 	private final Set<String> m_removedAttributes;
 
+	private final Map<String, String> m_renamedAttributes;
+
 	private final Map<String, AlterAttribute<? extends TopLevelAttribute>> m_alteredAttributes;
 
 	private final Map<String, AlterDependency> m_alteredDependencies;
 
 	public CSpecExtension(ICSpecData base, Set<String> removedDependencies,
 			Map<String, AlterDependency> alteredDependencies, Set<String> removedAttributes,
+			Map<String, String> renamedAttributes,
 			Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes)
 	{
 		m_base = base;
 		m_removedDependencies = Utils.createUnmodifiableSet(removedDependencies);
 		m_removedAttributes = Utils.createUnmodifiableSet(removedAttributes);
+		m_renamedAttributes = Utils.createUnmodifiableMap(renamedAttributes);
 		m_alteredAttributes = Utils.createUnmodifiableMap(alteredAttributes);
 		m_alteredDependencies = Utils.createUnmodifiableMap(alteredDependencies);
 	}
@@ -85,8 +89,8 @@ public class CSpecExtension
 		}
 
 		for(AlterDependency alterDep : m_alteredDependencies.values())
-			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName(), alterDep
-					.getComponentTypeID()));
+			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName(),
+					alterDep.getComponentTypeID()));
 
 		Collection<? extends IComponentRequest> addedDeps = m_base.getDependencies();
 		for(IComponentRequest addedDep : addedDeps)
@@ -104,6 +108,15 @@ public class CSpecExtension
 		{
 			cspecBuilder.getRequiredAttribute(removedAttr);
 			cspecBuilder.removeAttribute(removedAttr);
+		}
+
+		for(Map.Entry<String, String> renamedAttribute : m_renamedAttributes.entrySet())
+		{
+			String oldName = renamedAttribute.getKey();
+			AttributeBuilder bld = cspecBuilder.getRequiredAttribute(oldName);
+			bld.setName(renamedAttribute.getValue());
+			cspecBuilder.removeAttribute(oldName);
+			cspecBuilder.addAttribute(bld);
 		}
 
 		for(AlterAttribute<?> alterAttr : m_alteredAttributes.values())
@@ -128,8 +141,8 @@ public class CSpecExtension
 		// On the top element, we never override a value with NULL unless it is
 		// explicitly set to the string "null"
 		//
-		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(), m_base
-				.getComponentTypeID()));
+		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(),
+				m_base.getComponentTypeID()));
 		cspecBuilder.setVersion(overrideCheckNull(cspecBuilder.getVersion(), m_base.getVersion()));
 
 		Documentation origDoc = cspecBuilder.getDocumentation();

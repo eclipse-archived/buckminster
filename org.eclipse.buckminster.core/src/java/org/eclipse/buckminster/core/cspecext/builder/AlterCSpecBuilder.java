@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
-import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
 import org.eclipse.buckminster.core.cspecext.model.AlterDependency;
@@ -31,6 +29,8 @@ public class AlterCSpecBuilder
 
 	private final HashSet<String> m_removedAttributes = new HashSet<String>();
 
+	private final Map<String, String> m_renamedAttributes = new HashMap<String, String>();
+
 	private final Map<String, AlterAttributeBuilder> m_alteredAttributes = new HashMap<String, AlterAttributeBuilder>();
 
 	private final Map<String, AlterDependencyBuilder> m_alteredDependencies = new HashMap<String, AlterDependencyBuilder>();
@@ -42,20 +42,14 @@ public class AlterCSpecBuilder
 		m_baseBuilder = baseBuilder;
 	}
 
-	public void addAlterAttribute(AlterAttributeBuilder value) throws AttributeAlreadyDefinedException
+	public void addAlterAttribute(AlterAttributeBuilder value)
 	{
-		String key = value.getName();
-		if(m_alteredAttributes.containsKey(key))
-			throw new AttributeAlreadyDefinedException(m_name, key);
-		m_alteredAttributes.put(key, value);
+		m_alteredAttributes.put(value.getName(), value);
 	}
 
-	public void addAlterDependency(AlterDependencyBuilder value) throws DependencyAlreadyDefinedException
+	public void addAlterDependency(AlterDependencyBuilder value)
 	{
-		String key = value.getName();
-		if(m_alteredDependencies.containsKey(key))
-			throw new DependencyAlreadyDefinedException(m_name, key);
-		m_alteredDependencies.put(key, value);
+		m_alteredDependencies.put(value.getName(), value);
 	}
 
 	public void addRemoveAttribute(String key)
@@ -68,9 +62,15 @@ public class AlterCSpecBuilder
 		m_removedDependencies.add(key);
 	}
 
+	public void addRenameAttribute(String oldName, String newName)
+	{
+		m_renamedAttributes.put(oldName, newName);
+	}
+
 	public void clear()
 	{
 		m_removedAttributes.clear();
+		m_renamedAttributes.clear();
 		m_alteredAttributes.clear();
 		m_removedDependencies.clear();
 		m_alteredDependencies.clear();
@@ -85,12 +85,12 @@ public class AlterCSpecBuilder
 		for(Map.Entry<String, AlterAttributeBuilder> entry : m_alteredAttributes.entrySet())
 			alterAttributes.put(entry.getKey(), entry.getValue().createAlterAttribute());
 
-		HashMap<String, AlterDependency> alterDependencies = new HashMap<String, AlterDependency>(m_alteredDependencies
-				.size());
+		HashMap<String, AlterDependency> alterDependencies = new HashMap<String, AlterDependency>(
+				m_alteredDependencies.size());
 		for(Map.Entry<String, AlterDependencyBuilder> entry : m_alteredDependencies.entrySet())
 			alterDependencies.put(entry.getKey(), entry.getValue().createAlterDependency());
 		return new CSpecExtension(m_baseBuilder.createCSpec(), m_removedDependencies, alterDependencies,
-				m_removedAttributes, alterAttributes);
+				m_removedAttributes, m_renamedAttributes, alterAttributes);
 	}
 
 	public CSpecBuilder getBaseBuilder()
