@@ -245,12 +245,12 @@ public class ResolvedNode extends BOMNode
 	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
 			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
 	{
-		for(BOMNode child : getChildren())
-			child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
-
 		Resolution resolution = getResolution();
 		if(perused.add(resolution))
 		{
+			for(BOMNode child : getChildren())
+				child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
+
 			ComponentIdentifier ci = resolution.getComponentIdentifier();
 			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
 				resolutions.add(resolution);

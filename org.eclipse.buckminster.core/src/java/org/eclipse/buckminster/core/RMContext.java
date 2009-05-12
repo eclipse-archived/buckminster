@@ -532,6 +532,7 @@ public class RMContext extends ExpandingProperties<Object>
 		if(sorted.size() == 0)
 			return;
 
+		m_tagInfos.clear();
 		StringWriter bld = new StringWriter();
 		BufferedWriter wrt = new BufferedWriter(bld);
 		try

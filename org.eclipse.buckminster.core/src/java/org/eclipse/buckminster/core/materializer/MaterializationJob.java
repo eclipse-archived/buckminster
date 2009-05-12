@@ -56,19 +56,17 @@ public class MaterializationJob extends Job
 		return BuckminsterPreferences.getNode().getInt(MAX_PARALLEL_JOBS, MAX_PARALLEL_JOBS_DEFAULT);
 	}
 
-	public static void run(MaterializationContext context, boolean waitForInstall) throws CoreException
+	public static void run(MaterializationContext context) throws CoreException
 	{
 		try
 		{
-			MaterializationJob mbJob = new MaterializationJob(context, waitForInstall);
+			MaterializationJob mbJob = new MaterializationJob(context);
 			mbJob.schedule();
 			mbJob.join(); // long running
 			IStatus status = mbJob.getResult();
 
 			if(status.getSeverity() == IStatus.CANCEL)
 				throw new OperationCanceledException();
-			if(!status.isOK())
-				throw new CoreException(status);
 
 			// We wait to give the event manager a chance to deliver all
 			// events while the JobBlocker still active. This gives us
@@ -100,8 +98,8 @@ public class MaterializationJob extends Job
 	 */
 	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
 	{
-		MaterializationJob mbJob = new MaterializationJob(context, false);
-		mbJob.internalRun(monitor);
+		MaterializationJob mbJob = new MaterializationJob(context);
+		mbJob.internalRun(monitor, false);
 	}
 
 	public static void setMaxParallelJobs(int maxJobs)
@@ -126,13 +124,10 @@ public class MaterializationJob extends Job
 
 	private final MaterializationContext m_context;
 
-	private final boolean m_waitForInstall;
-
-	public MaterializationJob(MaterializationContext ctx, boolean waitForInstall)
+	public MaterializationJob(MaterializationContext ctx)
 	{
 		super(Messages.Materializing);
 		m_context = ctx;
-		m_waitForInstall = waitForInstall;
 
 		// Report using the standard job reporter.
 		//
@@ -146,18 +141,18 @@ public class MaterializationJob extends Job
 	{
 		try
 		{
-			internalRun(monitor);
-			return Status.OK_STATUS;
+			internalRun(monitor, true);
 		}
 		catch(CoreException e)
 		{
 			CorePlugin.getLogger().error(e, e.getMessage());
-			return e.getStatus();
 		}
 		catch(OperationCanceledException e)
 		{
 			return Status.CANCEL_STATUS;
 		}
+		m_context.emitWarningAndErrorTags();
+		return Status.OK_STATUS;
 	}
 
 	protected MaterializationContext getMaterializationContext()
@@ -165,7 +160,7 @@ public class MaterializationJob extends Job
 		return m_context;
 	}
 
-	protected void internalRun(final IProgressMonitor monitor) throws CoreException
+	protected void internalRun(final IProgressMonitor monitor, boolean waitForCompletion) throws CoreException
 	{
 		BillOfMaterials bom = m_context.getBillOfMaterials();
 
@@ -176,10 +171,12 @@ public class MaterializationJob extends Job
 			triggerJobs(monitor, allJobs);
 			waitForJobs(monitor, allJobs, bom);
 		}
+		if(m_context.getStatus().getSeverity() == IStatus.ERROR)
+			throw BuckminsterException.wrap(m_context.getStatus());
 
-		InstallerJob installerJob = new InstallerJob(m_context);
+		InstallerJob installerJob = new InstallerJob(m_context, !waitForCompletion);
 		installerJob.schedule();
-		if(m_waitForInstall)
+		if(waitForCompletion)
 		{
 			try
 			{
@@ -298,13 +295,6 @@ public class MaterializationJob extends Job
 			jobManager.cancel(m_context);
 			allJobs.clear();
 			throw new OperationCanceledException();
-		}
-
-		IStatus status = m_context.getStatus();
-		if(!m_context.isContinueOnError() && status.getSeverity() == IStatus.ERROR)
-		{
-			m_context.clearStatus();
-			throw new CoreException(status);
 		}
 	}
 }

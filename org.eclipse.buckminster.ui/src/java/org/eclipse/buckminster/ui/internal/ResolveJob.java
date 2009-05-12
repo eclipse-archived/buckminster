@@ -115,11 +115,6 @@ public class ResolveJob extends Job
 					MaterializationContext matCtx = new MaterializationContext(bom,
 							mspecBuilder.createMaterializationSpec(), ctx);
 					MaterializationJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
-					status = ctx.getStatus();
-					if(status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError())
-						return status;
-					CorePlugin.logWarningsAndErrors(status);
-					matCtx.emitWarningAndErrorTags();
 				}
 				return status;
 			}

@@ -131,7 +131,7 @@ public class QueryWizard extends Wizard implements INewWizard
 
 		try
 		{
-			MaterializationJob job = new MaterializationJob(getMaterializationContext(), false);
+			MaterializationJob job = new MaterializationJob(getMaterializationContext());
 			job.schedule();
 			return true;
 		}

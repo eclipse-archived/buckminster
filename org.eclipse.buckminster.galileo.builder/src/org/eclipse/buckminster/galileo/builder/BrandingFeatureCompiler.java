@@ -234,7 +234,7 @@ public class BrandingFeatureCompiler extends BuilderPhase {
 		mspecBld.setMaterializerID(IMaterializer.WORKSPACE);
 		bom.addMaterializationNodes(mspecBld);
 		MaterializationContext matCtx = new MaterializationContext(bom, mspecBld.createMaterializationSpec());
-		MaterializationJob.run(matCtx, true);
+		MaterializationJob.run(matCtx);
 		MonitorUtils.done(monitor);
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 	}

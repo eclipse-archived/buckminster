@@ -41,27 +41,32 @@ public class UnresolvedNode extends BOMNode
 	}
 
 	@Override
-	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
-			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
-	{
-		try
-		{
-			ComponentRequest request = getRequest();
-			if(!(query.skipComponent(request) || mspec.isExcluded(request)))
-				throw new UnresolvedNodeException(request);
-		}
-		catch(CoreException e)
-		{
-			if(!context.isContinueOnError())
-				throw e;
-			context.addRequestStatus(getRequest(), e.getStatus());
-		}
-	}
-
-	@Override
 	public void addUnresolved(List<ComponentRequest> unresolved, Set<Resolution> skipThese)
 	{
 		unresolved.add(m_dependency.getRequest());
+	}
+
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	@Override
+	public QualifiedDependency getQualifiedDependency()
+	{
+		return m_dependency;
+	}
+
+	@Override
+	public ComponentRequest getRequest()
+	{
+		return m_dependency.getRequest();
+	}
+
+	@Override
+	public String getViewName() throws CoreException
+	{
+		return getRequest().getViewName() + ":unresolved"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -86,26 +91,21 @@ public class UnresolvedNode extends BOMNode
 		}
 	}
 
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
 	@Override
-	public QualifiedDependency getQualifiedDependency()
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
 	{
-		return m_dependency;
-	}
-
-	@Override
-	public ComponentRequest getRequest()
-	{
-		return m_dependency.getRequest();
-	}
-
-	@Override
-	public String getViewName() throws CoreException
-	{
-		return getRequest().getViewName() + ":unresolved"; //$NON-NLS-1$
+		try
+		{
+			ComponentRequest request = getRequest();
+			if(!(request.isOptional() || query.skipComponent(request) || mspec.isExcluded(request)))
+				throw new UnresolvedNodeException(request);
+		}
+		catch(CoreException e)
+		{
+			if(!context.isContinueOnError())
+				throw e;
+			context.addRequestStatus(getRequest(), e.getStatus());
+		}
 	}
 }

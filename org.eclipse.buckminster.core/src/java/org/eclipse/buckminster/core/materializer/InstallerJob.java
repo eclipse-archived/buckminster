@@ -10,16 +10,15 @@
 
 package org.eclipse.buckminster.core.materializer;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 
 /**
@@ -29,50 +28,15 @@ import org.eclipse.core.runtime.Status;
  */
 public class InstallerJob extends WorkspaceJob
 {
-	public static void run(MaterializationContext context) throws CoreException
-	{
-		try
-		{
-			InstallerJob mbJob = new InstallerJob(context);
-			mbJob.schedule();
-			mbJob.join(); // longrunning
-			IStatus status = mbJob.getResult();
-
-			if(status.getSeverity() == IStatus.CANCEL)
-				throw new OperationCanceledException();
-			if(!status.isOK())
-				throw new CoreException(status);
-		}
-		catch(InterruptedException e)
-		{
-			throw new OperationCanceledException();
-		}
-		catch(OperationCanceledException e)
-		{
-			throw e;
-		}
-		catch(Throwable t)
-		{
-			throw BuckminsterException.wrap(t);
-		}
-	}
-
-	public static void runDelegated(MaterializationContext context, IProgressMonitor monitor) throws CoreException
-	{
-		InstallerJob mbJob = new InstallerJob(context);
-		IStatus status = mbJob.runInWorkspace(monitor);
-		if(status.getSeverity() == IStatus.CANCEL)
-			throw new OperationCanceledException();
-		if(!status.isOK())
-			throw new CoreException(status);
-	}
-
 	private final MaterializationContext m_context;
 
-	public InstallerJob(MaterializationContext ctx) throws CoreException
+	private final boolean m_propagateStatus;
+
+	public InstallerJob(MaterializationContext ctx, boolean propagateStatus) throws CoreException
 	{
 		super(Messages.InstallerJob_Installing);
 		m_context = ctx;
+		m_propagateStatus = propagateStatus;
 
 		// Report using the standard job reporter.
 		//
@@ -93,13 +57,15 @@ public class InstallerJob extends WorkspaceJob
 		}
 		catch(CoreException e)
 		{
-			if(!m_context.isContinueOnError())
-				throw e;
 			m_context.addRequestStatus(bom.getRequest(), e.getStatus());
+			if(m_propagateStatus)
+				CorePlugin.getLogger().error(e, e.getMessage());
 		}
 		finally
 		{
 			monitor.done();
+			if(m_propagateStatus)
+				m_context.emitWarningAndErrorTags();
 		}
 		return Status.OK_STATUS;
 	}

@@ -44,6 +44,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
@@ -237,8 +238,8 @@ public class Import extends WorkspaceInitCommand
 
 			MaterializationContext matCtx = new MaterializationContext(bom, mspec);
 			matCtx.setContinueOnError(continueOnError);
-			MaterializationJob.run(matCtx, true);
-			if(matCtx.emitWarningAndErrorTags())
+			MaterializationJob.run(matCtx);
+			if(matCtx.getStatus().getSeverity() == IStatus.ERROR)
 				return 1;
 		}
 		finally

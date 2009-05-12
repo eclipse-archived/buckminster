@@ -79,7 +79,9 @@ public class GetConfiguration extends WorkspaceCommand
 			bom.addMaterializationNodes(mspecBuilder);
 			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(),
 					context);
-			MaterializationJob.run(matCtx, true);
+			MaterializationJob.run(matCtx);
+			if(matCtx.getStatus().getSeverity() == IStatus.ERROR)
+				return 1;
 			MonitorUtils.worked(monitor, 1);
 			System.out.println(Messages.Query_complete);
 		}
