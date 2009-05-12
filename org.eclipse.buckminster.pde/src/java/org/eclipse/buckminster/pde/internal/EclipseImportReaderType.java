@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -93,6 +94,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUni
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.osgi.service.pluginconversion.PluginConversionException;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.PDECore;
@@ -397,7 +400,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private final HashMap<File, IFeatureModel[]> m_featureCache = new HashMap<File, IFeatureModel[]>();
 
-	private final HashMap<File, IPluginModelBase[]> m_pluginCache = new HashMap<File, IPluginModelBase[]>();
+	private final HashMap<File, PDEState> m_pluginCache = new HashMap<File, PDEState>();
 
 	public EclipseImportReaderType()
 	{
@@ -655,7 +658,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		return candidates;
 	}
 
-	EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
+	// Must be synchronized since we materialize to a common state
+	synchronized EclipseImportBase localizeContents(ProviderMatch rInfo, boolean isPlugin, IProgressMonitor monitor)
 			throws CoreException
 	{
 		NodeQuery query = rInfo.getNodeQuery();
@@ -663,150 +667,143 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(base.isLocal() && rInfo.getVersionMatch().getArtifactInfo() == null)
 			return base;
 
-		// Synchronize on base, it uses a lightweight pattern so only
-		// one instance will exists for any given URI/request combination
-		//
-		synchronized(base)
+		Map<UUID, Object> userCache = query.getContext().getUserCache();
+		String name = base.getComponentName();
+		monitor.beginTask(null, 1000);
+		monitor.subTask(NLS.bind(Messages.localizing_0, name));
+
+		try
 		{
-			Map<UUID, Object> userCache = query.getContext().getUserCache();
-			String name = base.getComponentName();
-			monitor.beginTask(null, 1000);
-			monitor.subTask(NLS.bind(Messages.localizing_0, name));
+			IConnectContext cctx = rInfo.getConnectContext();
+			String typeDir = isPlugin
+					? PLUGINS_FOLDER
+					: FEATURES_FOLDER;
 
-			try
+			File tempSite = getTempSite(userCache);
+			File subDir = new File(tempSite, typeDir);
+			String jarName;
+			File jarFile;
+
+			VersionMatch vm = rInfo.getVersionMatch();
+			if(vm.getArtifactInfo() != null)
 			{
-				IConnectContext cctx = rInfo.getConnectContext();
-				String typeDir = isPlugin
-						? PLUGINS_FOLDER
-						: FEATURES_FOLDER;
+				// This is a P2 artifact. Copy it from the artifact repository
+				//
+				IArtifactKey ak = ArtifactKey.parse(vm.getArtifactInfo());
+				IArtifactRepository ar = getArtifactRepository(base.getRemoteLocation().toURI(), monitor);
+				jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
+				jarFile = new File(subDir, jarName);
+				IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ar, ak, jarFile) }, monitor);
+				if(!status.isOK())
+					throw new CoreException(status);
+			}
+			else
+			{
+				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, rInfo.getComponentName(),
+						vm.getVersion(), typeDir);
 
-				File tempSite = getTempSite(userCache);
-				File subDir = new File(tempSite, typeDir);
-				String jarName;
-				File jarFile;
+				// Use a temporary local site
+				//
+				IPath path = Path.fromPortableString(pluginURL.getPath());
+				jarName = path.lastSegment();
+				if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_url_fore_remote_import_0,
+							pluginURL));
 
-				VersionMatch vm = rInfo.getVersionMatch();
-				if(vm.getArtifactInfo() != null)
+				jarFile = new File(subDir, jarName);
+				InputStream input = null;
+				try
 				{
-					// This is a P2 artifact. Copy it from the artifact repository
-					//
-					IArtifactKey ak = ArtifactKey.parse(vm.getArtifactInfo());
-					IArtifactRepository ar = getArtifactRepository(base.getRemoteLocation().toURI(), monitor);
-					jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
-					jarFile = new File(subDir, jarName);
-					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ar, ak, jarFile) },
-							monitor);
-					if(!status.isOK())
-						throw new CoreException(status);
+					input = DownloadManager.getCache().open(pluginURL, cctx, null, null,
+							MonitorUtils.subMonitor(monitor, 900));
+					FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
 				}
-				else
+				finally
 				{
-					URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, rInfo.getComponentName(),
-							vm.getVersion(), typeDir);
-
-					// Use a temporary local site
-					//
-					IPath path = Path.fromPortableString(pluginURL.getPath());
-					jarName = path.lastSegment();
-					if(!(jarName.endsWith(".jar") || jarName.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
-						throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_url_fore_remote_import_0,
-								pluginURL));
-
-					jarFile = new File(subDir, jarName);
-					InputStream input = null;
-					try
-					{
-						input = DownloadManager.getCache().open(pluginURL, cctx, null, null,
-								MonitorUtils.subMonitor(monitor, 900));
-						FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
-					}
-					finally
-					{
-						IOUtils.close(input);
-					}
+					IOUtils.close(input);
 				}
-				Key remoteKey = base.getKey();
+			}
+			Key remoteKey = base.getKey();
 
-				base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base //$NON-NLS-1$
-				.getQuery(), name).toString());
+			base = EclipseImportBase.obtain(query, new URI("file", null, tempSite.toURI().getPath(), base //$NON-NLS-1$
+			.getQuery(), name).toString());
 
-				File destDir = null;
-				boolean unpack = true;
-				ConflictResolution cres = ConflictResolution.REPLACE;
+			File destDir = null;
+			boolean unpack = true;
+			ConflictResolution cres = ConflictResolution.REPLACE;
 
-				if(jarName.endsWith(".zip")) //$NON-NLS-1$
+			if(jarName.endsWith(".zip")) //$NON-NLS-1$
+			{
+				// Special orbit packaging. Just unzip into the plug-ins folder
+				//
+				destDir = subDir;
+				cres = ConflictResolution.UPDATE;
+			}
+			else
+			{
+				if(!base.isFeature())
 				{
-					// Special orbit packaging. Just unzip into the plug-ins folder
+					// Guess unpack based on classpath
 					//
-					destDir = subDir;
-					cres = ConflictResolution.UPDATE;
-				}
-				else
-				{
-					if(!base.isFeature())
+					JarFile jf = new JarFile(jarFile);
+					Manifest mf = jf.getManifest();
+					if(mf != null)
 					{
-						// Guess unpack based on classpath
-						//
-						JarFile jf = new JarFile(jarFile);
-						Manifest mf = jf.getManifest();
-						if(mf != null)
+						String[] classPath = TextUtils.split(
+								mf.getMainAttributes().getValue(Constants.BUNDLE_CLASSPATH), ","); //$NON-NLS-1$
+
+						int top = classPath.length;
+						unpack = (top > 0);
+						for(int idx = 0; idx < top; ++idx)
 						{
-							String[] classPath = TextUtils.split(mf.getMainAttributes().getValue(
-									Constants.BUNDLE_CLASSPATH), ","); //$NON-NLS-1$
-
-							int top = classPath.length;
-							unpack = (top > 0);
-							for(int idx = 0; idx < top; ++idx)
+							if(classPath[idx].trim().equals(".")) //$NON-NLS-1$
 							{
-								if(classPath[idx].trim().equals(".")) //$NON-NLS-1$
-								{
-									unpack = false;
-									break;
-								}
+								unpack = false;
+								break;
 							}
 						}
-						jf.close();
 					}
-					if(unpack)
-					{
-						String vcName = jarName.substring(0, jarName.length() - 4);
-						destDir = new File(subDir, vcName);
-					}
+					jf.close();
 				}
-
 				if(unpack)
 				{
-					InputStream input = new FileInputStream(jarFile);
-					try
-					{
-						FileUtils.unzip(input, null, destDir, cres, MonitorUtils.subMonitor(monitor, 100));
-					}
-					finally
-					{
-						IOUtils.close(input);
-					}
-					jarFile.delete();
+					String vcName = jarName.substring(0, jarName.length() - 4);
+					destDir = new File(subDir, vcName);
 				}
-				base.setUnpack(unpack);
+			}
 
-				// Cache this using the remote key also so that the next time someone asks for it, the local
-				// version is returned
-				//
-				EclipseImportBase.getImportBaseCacheCache(userCache).put(remoteKey, base);
-				return base;
-			}
-			catch(URISyntaxException e)
+			if(unpack)
 			{
-				throw BuckminsterException.wrap(e);
+				InputStream input = new FileInputStream(jarFile);
+				try
+				{
+					FileUtils.unzip(input, null, destDir, cres, MonitorUtils.subMonitor(monitor, 100));
+				}
+				finally
+				{
+					IOUtils.close(input);
+				}
+				jarFile.delete();
 			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				monitor.done();
-			}
+			base.setUnpack(unpack);
+
+			// Cache this using the remote key also so that the next time someone asks for it, the local
+			// version is returned
+			//
+			EclipseImportBase.getImportBaseCacheCache(userCache).put(remoteKey, base);
+			return base;
+		}
+		catch(URISyntaxException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			monitor.done();
 		}
 	}
 
@@ -909,29 +906,45 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			File[] files = pluginsRoot.listFiles();
 			int idx = files.length;
 
-			IPluginModelBase[] plugins = m_pluginCache.get(location);
-			if(plugins != null && plugins.length == idx)
-				return plugins;
+			PDEState state = m_pluginCache.get(location);
+			if(state != null)
+			{
+				IPluginModelBase[] targetModels = state.getTargetModels();
+				if(targetModels.length == idx)
+					return targetModels;
 
-			URL[] pluginURLs = new URL[idx];
-			while(--idx >= 0)
-				pluginURLs[idx] = files[idx].toURI().toURL();
+				HashSet<String> newFiles = new HashSet<String>();
+				for(File file : files)
+					newFiles.add(file.getAbsolutePath());
+				for(IPluginModelBase p : state.getTargetModels())
+					newFiles.remove(p.getInstallLocation());
 
-			MonitorUtils.worked(monitor, 1);
-			PDEState state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
-			// was (for M5): plugins = state.getModels();
-			IPluginModelBase[] workspace = state.getWorkspaceModels();
-			IPluginModelBase[] target = state.getTargetModels();
-			IPluginModelBase[] all = new IPluginModelBase[workspace.length + target.length];
-			if(workspace.length > 0)
-				System.arraycopy(workspace, 0, all, 0, workspace.length);
-			if(target.length > 0)
-				System.arraycopy(target, 0, all, workspace.length, target.length);
-			plugins = all;
-			m_pluginCache.put(location, plugins);
-			return plugins;
+				if(newFiles.size() > 0)
+				{
+					BundleDescription[] bds = new BundleDescription[newFiles.size()];
+					int pidx = 0;
+					for(String newFile : newFiles)
+						bds[pidx++] = state.addBundle(new File(newFile), -1);
+					state.createTargetModels(bds);
+				}
+			}
+			else
+			{
+				URL[] pluginURLs = new URL[idx];
+				while(--idx >= 0)
+					pluginURLs[idx] = files[idx].toURI().toURL();
+
+				MonitorUtils.worked(monitor, 1);
+				state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
+				m_pluginCache.put(location, state);
+			}
+			return state.getTargetModels();
 		}
-		catch(MalformedURLException e)
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(PluginConversionException e)
 		{
 			throw BuckminsterException.wrap(e);
 		}
