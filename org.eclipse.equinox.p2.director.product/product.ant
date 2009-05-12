@@ -23,11 +23,11 @@
 			<arg value="org.eclipse.equinox.p2.director"/>
 			<arg value="-r"/>
 			<arg value="file:${repository}"/>
-			<arg value="-dest"/>
+			<arg value="-d"/>
 			<arg value="${destination}"/>
-			<arg value="-profile"/>
+			<arg value="-p"/>
 			<arg value="${profile}"/>
-			<arg value="-installIU"/>
+			<arg value="-i"/>
 			<arg value="${iu}"/>
 			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
 		</java>
