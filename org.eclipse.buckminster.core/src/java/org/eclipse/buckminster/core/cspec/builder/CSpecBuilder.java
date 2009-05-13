@@ -39,6 +39,10 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.CapabilityQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -73,7 +77,7 @@ public class CSpecBuilder implements ICSpecData
 	{
 	}
 
-	public CSpecBuilder(IInstallableUnit iu) throws CoreException
+	public CSpecBuilder(IMetadataRepository mdr, IInstallableUnit iu) throws CoreException
 	{
 		String name = iu.getId();
 		boolean isFeature = name.endsWith(FEATURE_GROUP);
@@ -101,6 +105,10 @@ public class CSpecBuilder implements ICSpecData
 				throw BuckminsterException.wrap(e);
 			}
 
+		boolean hasBogusFragments = isFeature && ("org.eclipse.platform".equals(name) //$NON-NLS-1$
+				|| "org.eclipse.equinox.executable".equals(name) //$NON-NLS-1$
+		|| "org.eclipse.rcp".equals(name)); //$NON-NLS-1$
+
 		for(IRequiredCapability cap : iu.getRequiredCapabilities())
 		{
 			// We only bother with direct dependencies to other IU's here
@@ -108,6 +116,10 @@ public class CSpecBuilder implements ICSpecData
 			//
 			String namespace = cap.getNamespace();
 			name = cap.getName();
+			if(name.endsWith("_root") || name.contains("_root.")) //$NON-NLS-1$ //$NON-NLS-2$
+				// TODO: Handle binary feature contribution.
+				continue;
+
 			String ctype;
 			if(IInstallableUnit.NAMESPACE_IU_ID.equals(namespace))
 			{
@@ -127,11 +139,6 @@ public class CSpecBuilder implements ICSpecData
 				// Package or something else that we don't care about here
 				continue;
 
-			ComponentRequestBuilder crb = new ComponentRequestBuilder();
-			crb.setName(name);
-			crb.setComponentTypeID(ctype);
-			crb.setVersionRange(cap.getRange());
-
 			filterStr = cap.getFilter();
 			if(cap.isOptional())
 			{
@@ -140,6 +147,19 @@ public class CSpecBuilder implements ICSpecData
 				else
 					filterStr = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL + filterStr + ')'; //$NON-NLS-1$
 			}
+			else if(hasBogusFragments && ctype == IComponentType.OSGI_BUNDLE && filterStr != null)
+			{
+				// Don't add unless this requirement can be satisfied within the same mdr
+				Query query = new CapabilityQuery(cap);
+				Collector collector = mdr.query(query, new Collector(), null);
+				if(collector.isEmpty())
+					continue;
+			}
+
+			ComponentRequestBuilder crb = new ComponentRequestBuilder();
+			crb.setName(name);
+			crb.setComponentTypeID(ctype);
+			crb.setVersionRange(cap.getRange());
 
 			if(filterStr != null)
 				try

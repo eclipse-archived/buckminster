@@ -21,6 +21,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 
 /**
  * @author Thomas Hallgren
@@ -42,9 +43,14 @@ public class EclipseBundleType extends AbstractComponentType
 		IReaderType readerType = rInfo.getReaderType();
 		if(readerType instanceof EclipseImportReaderType)
 		{
-			IInstallableUnit iu = ((EclipseImportReaderType)readerType).getCachedInstallableUnit(rInfo);
-			if(iu != null)
-				return PDEBuilder.createNode(rInfo, new CSpecBuilder(iu), null);
+			EclipseImportReaderType eiReaderType = (EclipseImportReaderType)readerType;
+			IMetadataRepository mdr = eiReaderType.getCachedMDR(rInfo);
+			if(mdr != null)
+			{
+				IInstallableUnit iu = eiReaderType.getCachedInstallableUnit(mdr, rInfo);
+				if(iu != null)
+					return PDEBuilder.createNode(rInfo, new CSpecBuilder(mdr, iu), null);
+			}
 		}
 		return super.getResolution(rInfo, forResolutionAidOnly, monitor);
 	}

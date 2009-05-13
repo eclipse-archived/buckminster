@@ -568,24 +568,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		m_classpaths.clear();
 	}
 
-	IInstallableUnit getCachedInstallableUnit(ProviderMatch providerMatch) throws CoreException
+	IInstallableUnit getCachedInstallableUnit(IMetadataRepository mdr, ProviderMatch providerMatch)
+			throws CoreException
 	{
 		NodeQuery query = providerMatch.getNodeQuery();
-		URI uri = URI.create(providerMatch.getRepositoryURI());
-		String path = uri.getPath();
-		if(path.endsWith(".jar") || path.endsWith(".map") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			return null;
-
-		StringBuilder bld = new StringBuilder(path);
-		if(!path.endsWith("/")) //$NON-NLS-1$
-			bld.append('/');
-
-		String base = bld.toString();
-		Map<String, IMetadataRepository> mdrCache = getMDRCache(query.getContext().getUserCache());
-		IMetadataRepository mdr = mdrCache.get(base);
-		if(mdr == null)
-			return null;
-
 		Version bv = providerMatch.getVersionMatch().getVersion();
 		if(bv == null)
 			return null;
@@ -600,6 +586,31 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(c.isEmpty())
 			return null;
 		return (IInstallableUnit)c.iterator().next();
+	}
+
+	IInstallableUnit getCachedInstallableUnit(ProviderMatch providerMatch) throws CoreException
+	{
+		IMetadataRepository mdr = getCachedMDR(providerMatch);
+		return (mdr == null)
+				? null
+				: getCachedInstallableUnit(mdr, providerMatch);
+	}
+
+	IMetadataRepository getCachedMDR(ProviderMatch providerMatch)
+	{
+		NodeQuery query = providerMatch.getNodeQuery();
+		URI uri = URI.create(providerMatch.getRepositoryURI());
+		String path = uri.getPath();
+		if(path.endsWith(".jar") || path.endsWith(".map") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			return null;
+
+		StringBuilder bld = new StringBuilder(path);
+		if(!path.endsWith("/")) //$NON-NLS-1$
+			bld.append('/');
+
+		String base = bld.toString();
+		Map<String, IMetadataRepository> mdrCache = getMDRCache(query.getContext().getUserCache());
+		return mdrCache.get(base);
 	}
 
 	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
