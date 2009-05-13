@@ -38,9 +38,9 @@ public class RecursivePacker extends RecursivePack200
 		{
 			input = new ZipInputStream(new FileInputStream(jarFile));
 			JarInfo jarInfo = JarInfo.getJarInfo(null, fileName, (ZipInputStream)input);
-			if(!(jarInfo.hasClasses() || jarInfo.isNested()))
+			if(!(jarInfo.hasClasses() || (jarInfo.isNested() && !jarInfo.isExcludeChildrenPack())))
 			{
-				log.debug("Packer: Skipping %s since it contains no classes and no nested jars", fileName); //$NON-NLS-1$
+				log.debug("Packer: Skipping %s since it contains no classes and no nested jars to pack", fileName); //$NON-NLS-1$
 				return false;
 			}
 			if(jarInfo.isExcludePack())
@@ -59,7 +59,7 @@ public class RecursivePacker extends RecursivePack200
 			output = new FileOutputStream(fileName + PACK_GZ_SUFFIX);
 			output = new GZIPOutputStream(output);
 
-			if(jarInfo.isNested())
+			if(jarInfo.isNested() && !jarInfo.isExcludeChildrenPack())
 				nestedPack(input, jarInfo, output);
 			else
 				pack(jarInfo, input, output);
@@ -104,10 +104,11 @@ public class RecursivePacker extends RecursivePack200
 	{
 		ZipOutputStream jarOut = new ZipOutputStream(output);
 		ZipEntry entry;
+		boolean packChildren = !jarInfo.isExcludeChildrenPack();
 		while((entry = jarIn.getNextEntry()) != null)
 		{
 			String name = entry.getName();
-			if(name.endsWith(JAR_SUFFIX))
+			if(packChildren && name.endsWith(JAR_SUFFIX))
 			{
 				JarInfo nested = jarInfo.getNestedInfo(name);
 				if(nested != null)

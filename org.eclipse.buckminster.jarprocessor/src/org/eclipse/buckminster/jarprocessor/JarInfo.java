@@ -103,7 +103,7 @@ class JarInfo implements IConstants
 		if(jarInfo.eclipseInf == null)
 			jarInfo.eclipseInf = Collections.emptyMap();
 
-		if(jarInfo.nestedInfos == null)
+		if(jarInfo.nestedInfos == null || jarInfo.isExcludeChildren())
 			jarInfo.nestedInfos = Collections.emptyMap();
 		else
 		{

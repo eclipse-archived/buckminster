@@ -64,9 +64,10 @@ public class RecursiveConditioner extends RecursivePack200
 				log.debug("Conditioner: skipping %s, it is excluded from signing", fileName); //$NON-NLS-1$
 				condition = false;
 			}
-			else if(!(jarInfo.hasClasses() || jarInfo.isNested()))
+			else if(!jarInfo.hasClasses() || (jarInfo.isNested() && !jarInfo.isExcludeChildrenSign()))
 			{
-				log.debug("Conditioner: skipping %s, it has no classes and is not nested", fileName); //$NON-NLS-1$
+				log.debug(
+						"Conditioner: skipping %s, it has no classes and has no nested jars eligable for signing", fileName); //$NON-NLS-1$
 				condition = false;
 			}
 
