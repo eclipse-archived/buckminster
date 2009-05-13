@@ -105,7 +105,6 @@ public class Utils
 		}
 
 		messageBuilder.append(stackTrace);
-
 		return messageBuilder.toString();
 	}
 
@@ -189,6 +188,10 @@ public class Utils
 	public static void emailException(String recipient, String subject, Throwable throwable) throws JNLPException
 	{
 		String mailtoURL = createMailtoURL(recipient, subject, createExceptionMessage(throwable));
+
+		// TODO create a more stable solution of sending emails
+		// Win-XP does not open link with more then 2000 chars
+		mailtoURL = mailtoURL.substring(0, Math.min(mailtoURL.length(), 2000));
 
 		showInBrowser(mailtoURL);
 	}

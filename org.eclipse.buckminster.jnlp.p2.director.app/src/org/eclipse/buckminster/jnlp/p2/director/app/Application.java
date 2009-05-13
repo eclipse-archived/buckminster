@@ -518,7 +518,7 @@ public class Application implements IApplication
 		}
 	}
 
-	public Object run(String[] args, IProgressMonitor monitor) throws Exception
+	public void run(String[] args, IProgressMonitor monitor) throws Exception
 	{
 		long time = -System.currentTimeMillis();
 		initializeServices();
@@ -546,8 +546,9 @@ public class Application implements IApplication
 				if(roots.size() <= 0)
 				{
 					System.out.println(NLS.bind(Messages.Missing_IU, m_root));
-					logFailure(new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_IU, m_root)));
-					return EXIT_ERROR;
+					IStatus status = new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_IU, m_root));
+					logFailure(status);
+					throw BuckminsterException.wrap(status);
 				}
 				// keep this result status in case there is a problem so we can report it to the user
 				boolean wasRoaming = Boolean.valueOf(profile.getProperty(IProfile.PROP_ROAMING)).booleanValue();
@@ -562,7 +563,7 @@ public class Application implements IApplication
 						System.out.println(multi.getMessage());
 						System.out.println(updateRoamStatus.getMessage());
 						logFailure(multi);
-						return EXIT_ERROR;
+						throw BuckminsterException.wrap(multi);
 					}
 					ProvisioningContext context = new ProvisioningContext(m_metadataRepositoryLocations);
 					context.setArtifactRepositories(m_artifactRepositoryLocations);
@@ -604,9 +605,8 @@ public class Application implements IApplication
 		{
 			System.out.println(Messages.Operation_failed);
 			logFailure(operationStatus);
-			return EXIT_ERROR;
+			throw BuckminsterException.wrap(operationStatus);
 		}
-		return IApplication.EXIT_OK;
 	}
 
 	private void loadConfigProperties(String configURL) throws JNLPException
@@ -835,7 +835,6 @@ public class Application implements IApplication
 	public Object start(IApplicationContext context) throws Exception
 	{
 		IProgressMonitor monitor = null;
-		Object result = null;
 		Exception exception = null;
 		boolean productInstalled = false;
 		
@@ -858,43 +857,44 @@ public class Application implements IApplication
 			setPackageAdmin((PackageAdmin)Activator.getContext().getService(m_packageAdminRef));
 			if(!startEarly(EXEMPLARY_SETUP))
 			{
-				logFailure(new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_bundle, EXEMPLARY_SETUP)));
-				return EXIT_ERROR;
+				IStatus status = new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_bundle, EXEMPLARY_SETUP));
+				logFailure(status);
+				throw BuckminsterException.wrap(status);
 			}
 			if(!startEarly(SIMPLE_CONFIGURATOR_MANIPULATOR))
 			{
-				logFailure(new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_bundle,
-						SIMPLE_CONFIGURATOR_MANIPULATOR)));
-				return EXIT_ERROR;
+				IStatus status = new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_bundle,
+						SIMPLE_CONFIGURATOR_MANIPULATOR));
+				logFailure(status);
+				throw BuckminsterException.wrap(status);
 			}
 			if(!startEarly(FRAMEWORKADMIN_EQUINOX))
 			{
-				logFailure(new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_bundle,
-						FRAMEWORKADMIN_EQUINOX)));
-				return EXIT_ERROR;
+				IStatus status = new Status(IStatus.ERROR, Activator.ID, NLS.bind(Messages.Missing_bundle,
+						FRAMEWORKADMIN_EQUINOX));
+				logFailure(status);
+				throw BuckminsterException.wrap(status);
 			}
 
-			result = run(args, monitor);
+			run(args, monitor);
 
-			productInstalled = result == IApplication.EXIT_OK;
-			
-			if(productInstalled)
-				startProduct(monitor);
+			productInstalled = true;
+
+			startProduct(monitor);
 		}
 		catch(OperationCanceledException e)
 		{
-			throw e;
+			// do nothing
 		}
 		catch(Exception e)
 		{
 			exception = e;
-			throw e;
 		}
 		finally
 		{
 			stopSplash();
 			
-			if(exception != null || !productInstalled)
+			if(exception != null)
 			{
 				String title;
 				if(productInstalled)
@@ -944,10 +944,12 @@ public class Application implements IApplication
 						// no report
 					}
 				}
+				
+				return EXIT_ERROR;
 			}
 		}
 
-		return result;
+		return IApplication.EXIT_OK;
 	}
 
 	private String readArgs(String[] args, String key)
