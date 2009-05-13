@@ -13,18 +13,11 @@
 package org.eclipse.buckminster.jnlp.p2.director.app;
 
 import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.*;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_MAX_CAPTURED_LINES;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.DEFAULT_STARTUP_TIME;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MALFORMED_PROPERTY_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_MATERIALIZER_EXECUTION_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.ERROR_CODE_PROPERTY_IO_EXCEPTION;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_MAX_CAPTURED_LINES;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_STARTUP_TIME;
-import static org.eclipse.buckminster.jnlp.p2.bootstrap.BootstrapConstants.PROP_SUPPORT_EMAIL;
 
 import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,12 +146,16 @@ public class Application implements IApplication
 				new Object[] { COMMAND_NAMES[cmd1], COMMAND_NAMES[cmd2] })));
 	}
 
-	private ProfileChangeRequest buildProvisioningRequest(IProfile profile, Collector roots, boolean install)
+	private ProfileChangeRequest buildProvisioningRequest(IProfile profile, Collector roots, boolean install, IProgressMonitor monitor)
 	{
 		ProfileChangeRequest request = new ProfileChangeRequest(profile);
 		markRoots(request, roots);
 		if(install)
 		{
+			InstallableUnitQuery query = new InstallableUnitQuery(m_root, VersionRange.emptyRange);
+			Collector installedRoots = profile.query(query, new Collector(), monitor);
+			
+			request.removeInstallableUnits((IInstallableUnit[])installedRoots.toArray(IInstallableUnit.class));
 			request.addInstallableUnits((IInstallableUnit[])roots.toArray(IInstallableUnit.class));
 		}
 		else
@@ -569,7 +566,7 @@ public class Application implements IApplication
 					}
 					ProvisioningContext context = new ProvisioningContext(m_metadataRepositoryLocations);
 					context.setArtifactRepositories(m_artifactRepositoryLocations);
-					ProfileChangeRequest request = buildProvisioningRequest(profile, roots, m_command == COMMAND_INSTALL);
+					ProfileChangeRequest request = buildProvisioningRequest(profile, roots, m_command == COMMAND_INSTALL, monitor);
 					printRequest(request);
 					operationStatus = planAndExecute(profile, context, request, monitor);
 				}
@@ -656,32 +653,48 @@ public class Application implements IApplication
 			
 			if(!forceSplashVisible)
 			{
-				Thread splashSynchronizationThread = new Thread()
+				Thread splashSynchronizationThread = new Thread(new ThreadGroup("splash.threads"), "bootstrap.synchronization")
 				{
 					@Override
 					public void run()
 					{
-						BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
-
-						String line;
+						InputStream is = System.in;
+						int sleepTime = 50;
+						int cyclesToGo = BootstrapConstants.SPLASH_WINDOW_DELAY / sleepTime;
+						StringBuilder sb = new StringBuilder();
+						ByteArrayOutputStream cache = new ByteArrayOutputStream();
+						
 						try
 						{
-							while((line = rd.readLine()) != null)
+							while(cyclesToGo > 0)
 							{
-								if(SLASH_IS_SHOWN_STRING.equals(line))
+								if(is.available() > 0)
 								{
-									forceShowSplash();
-									break;
+									cache.reset();
+									
+									while(is.available() > 0)
+										cache.write(is.read());
+									
+									sb.append(cache.toString());
+									
+									if(sb.toString().contains(SLASH_IS_SHOWN_STRING))
+									{
+										forceShowSplash();
+										break;
+									}
 								}
+								
+								Thread.sleep(sleepTime);
+								cyclesToGo--;
 							}
+						}
+						catch(InterruptedException e)
+						{
+							// do nothing
 						}
 						catch(IOException e)
 						{
 							// do nothing
-						}
-						finally
-						{
-							Utils.close(rd);
 						}
 					}
 				};
@@ -920,13 +933,16 @@ public class Application implements IApplication
 						throwableToReport)
 						.open();
 
-				try
+				if(exception != null)
 				{
-					Utils.reportToServer((String)m_configProps.get(BootstrapConstants.PROP_BASE_PATH_URL), errorCode, exception);
-				}
-				catch(IOException e)
-				{
-					// no report
+					try
+					{
+						Utils.reportToServer((String)m_configProps.get(BootstrapConstants.PROP_BASE_PATH_URL), errorCode, exception);
+					}
+					catch(IOException e)
+					{
+						// no report
+					}
 				}
 			}
 		}
