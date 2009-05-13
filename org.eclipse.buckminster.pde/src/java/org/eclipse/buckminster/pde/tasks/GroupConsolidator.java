@@ -425,19 +425,26 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		for(VersionedName refBundle : bundles)
 		{
 			Version version = refBundle.getVersion();
+			majorSum += version.getMajor();
+			minorSum += version.getMinor();
+			serviceSum += version.getMicro();
+
 			String qualifier = version.getQualifier();
 			if(qualifier != null && qualifier.endsWith(PROPERTY_QUALIFIER))
 			{
 				int resultingLength = qualifier.length() - PROPERTY_QUALIFIER.length();
-				if(qualifier.charAt(resultingLength - 1) == '.')
-					resultingLength--;
-				qualifier = qualifier.substring(0, resultingLength);
-				version = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), qualifier);
+				if(resultingLength > 0)
+				{
+					if(qualifier.charAt(resultingLength - 1) == '.')
+						resultingLength--;
+					qualifier = resultingLength > 0
+							? qualifier.substring(0, resultingLength)
+							: null;
+				}
+				else
+					qualifier = null;
 			}
-			majorSum += version.getMajor();
-			minorSum += version.getMinor();
-			serviceSum += version.getMicro();
-			qualifiers[idx++] = version.getQualifier();
+			qualifiers[idx++] = qualifier;
 		}
 
 		// Limit the qualifiers to the specified number of significant digits,
