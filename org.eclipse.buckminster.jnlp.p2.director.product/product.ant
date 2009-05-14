@@ -50,9 +50,6 @@
 			</fileset>
 		</copy>
 
-		<!-- eclipse.ini is not needed since we don't launch using an executable -->
-		<delete file="${destination}/eclipse.ini"/>
-
 		<!-- This app can do without the P2 profile and cache -->
 		<delete dir="${destination}/p2"/>
 	</target>
