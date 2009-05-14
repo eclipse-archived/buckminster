@@ -444,11 +444,12 @@ public class Main
 			allArgs.add("-extra"); //$NON-NLS-1$
 			allArgs.add(extraArgs);
 		}
-		if(SplashWindow.isSplashVisible())
-		{
-			allArgs.add("-forceSplash");
-			allArgs.add("true");
-		}
+		// Start director splash screen
+		// if(SplashWindow.isSplashVisible())
+		// {
+		allArgs.add("-forceSplash");
+		allArgs.add("true");
+		// }
 		allArgs.add("-vmargs");
 		allArgs.add("-Xmx512m"); //$NON-NLS-1$
 		allArgs.add("-Declipse.p2.data.area=");
@@ -487,7 +488,7 @@ public class Main
 
 						try
 						{
-							Thread.sleep(100);
+							Thread.sleep(50);
 						}
 						catch(InterruptedException e)
 						{
