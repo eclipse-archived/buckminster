@@ -167,7 +167,7 @@ public class P2SiteGenerator extends AbstractActor
 	}
 
 	private static void addProductAction(File sourceFolder, List<IPublisherAction> actions, IProductDescriptor product,
-			Map<String, String> buildProperties, String[] configSpecs) throws CoreException
+			Map<String, String> buildProperties) throws CoreException
 	{
 		String flavor = buildProperties.get("org.eclipse.p2.flavor"); //$NON-NLS-1$
 		if(flavor == null)
@@ -191,7 +191,7 @@ public class P2SiteGenerator extends AbstractActor
 					break;
 			}
 		}
-		actions.add(new ProductAction(null, product, flavor, exeFeature, configSpecs));
+		actions.add(new ProductAction(null, product, flavor, exeFeature));
 	}
 
 	private static File getExeFeatureFileIfReferenced(String featureId, String featureVersion) throws CoreException
@@ -345,8 +345,7 @@ public class P2SiteGenerator extends AbstractActor
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
 
-		IPublisherAction[] actions = createActions(sourceFolder, siteDescriptor, siteFolder, productConfigs,
-				info.getConfigurations());
+		IPublisherAction[] actions = createActions(sourceFolder, siteDescriptor, siteFolder, productConfigs);
 		Publisher publisher = new Publisher(info);
 		IStatus result = publisher.publish(actions, new NullProgressMonitor());
 		if(result.getSeverity() == IStatus.ERROR)
@@ -474,7 +473,7 @@ public class P2SiteGenerator extends AbstractActor
 	}
 
 	private IPublisherAction[] createActions(File sourceFolder, Object siteDescriptor, File siteFolder,
-			List<File> productConfigs, String[] configSpecs) throws CoreException
+			List<File> productConfigs) throws CoreException
 	{
 		ArrayList<IPublisherAction> actions = new ArrayList<IPublisherAction>();
 		actions.add(new FeaturesAction(new File[] { new File(siteFolder, "features") })); //$NON-NLS-1$
@@ -505,14 +504,14 @@ public class P2SiteGenerator extends AbstractActor
 		else
 		{
 			IProductDescriptor product = (IProductDescriptor)siteDescriptor;
-			addProductAction(sourceFolder, actions, product, buildProperties, configSpecs);
+			addProductAction(sourceFolder, actions, product, buildProperties);
 		}
 
 		for(File productConfigFile : productConfigs)
 		{
 			File productSourceFolder = productConfigFile.getParentFile();
 			addProductAction(productSourceFolder, actions, getProductDescriptor(productConfigFile),
-					readBuildProperties(productSourceFolder), configSpecs);
+					readBuildProperties(productSourceFolder));
 		}
 		return actions.toArray(new IPublisherAction[actions.size()]);
 	}
