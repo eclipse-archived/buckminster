@@ -13,6 +13,8 @@ import java.util.Collections;
 import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
+import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -49,6 +51,7 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
+		Logger log = Buckminster.getLogger();
 		InstallableUnitDescription iu = new MetadataFactory.InstallableUnitDescription();
 		iu.setId(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE);
 		iu.setVersion(Builder.ALL_CONTRIBUTED_CONTENT_VERSION);
@@ -87,7 +90,13 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 				}
 
 				requiredId += Builder.FEATURE_GROUP_SUFFIX;
-				Version v = Version.parseVersion(feature.getVersion());
+				IInstallableUnit featureIU = Builder.getIU(globalMdr, requiredId, feature.getVersion());
+				if (builder.discardAsUnverified(featureIU)) {
+					log.debug("Feature %s/%s excluded from verification", requiredId, feature.getVersion());
+					continue;
+				}
+
+				Version v = featureIU.getVersion();
 				VersionRange range = null;
 				if (!Version.emptyVersion.equals(v))
 					range = new VersionRange(v, true, v, true);
@@ -95,6 +104,10 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 			}
 			for (Bundle bundle : contrib.getBundles()) {
 				IInstallableUnit bundleIU = Builder.getIU(globalMdr, bundle.getId(), bundle.getVersion());
+				if (builder.discardAsUnverified(bundleIU)) {
+
+					continue;
+				}
 				Version v = bundleIU.getVersion();
 				VersionRange range = new VersionRange(v, true, v, true);
 				String filter = bundleIU.getFilter();

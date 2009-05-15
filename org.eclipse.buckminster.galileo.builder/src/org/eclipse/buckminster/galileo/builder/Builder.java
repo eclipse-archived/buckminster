@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +59,7 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
@@ -127,6 +129,8 @@ public class Builder implements IApplication {
 	}
 
 	public static final String ALL_CONTRIBUTED_CONTENT_FEATURE = "all.contributed.content.feature.group"; //$NON-NLS-1$
+
+	public static final String PDE_TARGET_PLATFORM_NAMESPACE = "A.PDE.Target.Platform";
 
 	public static final Version ALL_CONTRIBUTED_CONTENT_VERSION = Version.createOSGi(1, 0, 0);
 
@@ -374,11 +378,25 @@ public class Builder implements IApplication {
 
 	private Set<IInstallableUnit> trustedUnits;
 
+	private Set<IInstallableUnit> unverifiedUnits;
+
 	private boolean update = false;
 
 	private boolean verifyOnly = false;
 
 	private URI[] trustedContributionRepos;
+
+	public boolean discardAsUnverified(IInstallableUnit iu) {
+		for (IRequiredCapability rq : iu.getRequiredCapabilities()) {
+			if (PDE_TARGET_PLATFORM_NAMESPACE.equals(rq.getNamespace())) {
+				if (unverifiedUnits == null)
+					unverifiedUnits = new HashSet<IInstallableUnit>();
+				unverifiedUnits.add(iu);
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public Feature getBrandingFeature() {
 		return brandingFeature;
@@ -458,6 +476,10 @@ public class Builder implements IApplication {
 
 	public Set<IInstallableUnit> getUnitsToAggregate() {
 		return unitsToAggregate;
+	}
+
+	public Set<IInstallableUnit> getUnverifiedUnits() {
+		return unverifiedUnits == null ? Collections.<IInstallableUnit> emptySet() : unverifiedUnits;
 	}
 
 	public boolean isBrandingBuild() {

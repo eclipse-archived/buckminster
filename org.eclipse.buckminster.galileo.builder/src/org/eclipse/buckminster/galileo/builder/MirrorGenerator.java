@@ -25,6 +25,7 @@ import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepo
 import org.eclipse.equinox.internal.p2.artifact.repository.MirrorRequest;
 import org.eclipse.equinox.internal.p2.artifact.repository.RawMirrorRequest;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
+import org.eclipse.equinox.internal.p2.director.PermissiveSlicer;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
@@ -180,7 +181,8 @@ public class MirrorGenerator extends BuilderPhase {
 		log.info("Starting mirror generation");
 		long now = System.currentTimeMillis();
 
-		File destination = new File(getBuilder().getBuildRoot(), Builder.REPO_FOLDER_FINAL);
+		Builder builder = getBuilder();
+		File destination = new File(builder.getBuildRoot(), Builder.REPO_FOLDER_FINAL);
 		URI finalURI = Builder.createURI(destination);
 
 		File aggregateDestination = destination;
@@ -190,12 +192,12 @@ public class MirrorGenerator extends BuilderPhase {
 
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
-		URI source = getBuilder().getGlobalRepoURI();
+		URI source = builder.getGlobalRepoURI();
 		MonitorUtils.begin(monitor, 100);
 		boolean artifactErrors = false;
 		try {
-			boolean isUpdate = getBuilder().isUpdate();
-			URI[] trustedRepos = getBuilder().getTrustedContributionRepos();
+			boolean isUpdate = builder.isUpdate();
+			URI[] trustedRepos = builder.getTrustedContributionRepos();
 			if (trustedRepos.length > 0) {
 				aggregateDestination = new File(destination, Builder.REPO_FOLDER_AGGREGATE);
 				aggregateURI = Builder.createURI(aggregateDestination);
@@ -220,16 +222,16 @@ public class MirrorGenerator extends BuilderPhase {
 				}
 			}
 
-			URI mirrors = getBuilder().getMirrorsURI(false);
+			URI mirrors = builder.getMirrorsURI(false);
 			if (aggregateAr == null) {
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 				properties.put(Publisher.PUBLISH_PACK_FILES_AS_SIBLINGS, Boolean.toString(true));
 				if (mirrors != null) {
-					URI artifactMirrors = trustedRepos.length > 0 ? getBuilder().getMirrorsURI(true) : mirrors;
+					URI artifactMirrors = trustedRepos.length > 0 ? builder.getMirrorsURI(true) : mirrors;
 					properties.put(IRepository.PROP_MIRRORS_URL, artifactMirrors.toString());
 				}
-				String label = getBuilder().getBuild().getLabel();
+				String label = builder.getBuild().getLabel();
 				aggregateAr = arMgr.createRepository(aggregateURI, label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 			}
 
@@ -238,7 +240,7 @@ public class MirrorGenerator extends BuilderPhase {
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 				if (mirrors != null)
 					properties.put(IRepository.PROP_MIRRORS_URL, mirrors.toString());
-				String label = getBuilder().getBuild().getLabel();
+				String label = builder.getBuild().getLabel();
 				finalMdr = mdrMgr.createRepository(finalURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
 			}
 
@@ -247,18 +249,38 @@ public class MirrorGenerator extends BuilderPhase {
 			// one repository at a time to get a more informative error in case
 			// of failure
 			//
+			IMetadataRepository sourceMdr = mdrMgr.loadRepository(source, MonitorUtils.subMonitor(monitor, 1));
 			IArtifactRepository sourceAr = arMgr.loadRepository(source, MonitorUtils.subMonitor(monitor, 1));
 			List<URI> children = getCompositeChildren(sourceAr);
 			IProgressMonitor childMonitor = MonitorUtils.subMonitor(monitor, 88);
-			MonitorUtils.begin(childMonitor, children.size() * 100);
 
-			Set<IInstallableUnit> unitsToInstall = getBuilder().getUnitsToAggregate();
+			final Set<IInstallableUnit> unitsToInstall = builder.getUnitsToAggregate();
+
+			// Add the transitive closure of all unverified roots
+			//
+			Set<IInstallableUnit> unverifiedRoots = builder.getUnverifiedUnits();
+			if (!unverifiedRoots.isEmpty()) {
+				PermissiveSlicer slicer = new PermissiveSlicer(sourceMdr, null, true, false, true, false, false);
+				IQueryable slice = slicer.slice(unverifiedRoots.toArray(new IInstallableUnit[unverifiedRoots.size()]), MonitorUtils.subMonitor(
+						monitor, 1));
+
+				Query adder = new MatchQuery() {
+					@Override
+					public boolean isMatch(Object candidate) {
+						unitsToInstall.add((IInstallableUnit) candidate);
+						return false;
+					}
+				};
+				slice.query(adder, new Collector(), MonitorUtils.subMonitor(monitor, 1));
+			}
+
 			HashSet<IArtifactKey> keysToInstall = new HashSet<IArtifactKey>(unitsToInstall.size());
 			for (IInstallableUnit iu : unitsToInstall)
 				for (IArtifactKey key : iu.getArtifacts())
 					keysToInstall.add(key);
 
-			URI categoryRepo = getBuilder().getCategoriesRepo();
+			MonitorUtils.begin(childMonitor, children.size() * 100);
+			URI categoryRepo = builder.getCategoriesRepo();
 			allRepos: for (URI childURI : children) {
 				if (childURI.equals(categoryRepo))
 					continue;
@@ -278,7 +300,7 @@ public class MirrorGenerator extends BuilderPhase {
 						childStr += "/";
 
 					Contribution repoContributor = null;
-					outer: for (Contribution contrib : getBuilder().getBuild().getContributions()) {
+					outer: for (Contribution contrib : builder.getBuild().getContributions()) {
 						for (Repository repo : contrib.getRepositories()) {
 							String repoLoc = repo.getLocation();
 							if (!repoLoc.endsWith("/"))
@@ -290,7 +312,7 @@ public class MirrorGenerator extends BuilderPhase {
 						}
 					}
 					if (repoContributor != null)
-						getBuilder().sendEmail(repoContributor, errors);
+						builder.sendEmail(repoContributor, errors);
 
 				}
 			}
@@ -303,7 +325,6 @@ public class MirrorGenerator extends BuilderPhase {
 			// in case of
 			// failure
 			//
-			IMetadataRepository sourceMdr = mdrMgr.loadRepository(source, MonitorUtils.subMonitor(monitor, 1));
 
 			children = getCompositeChildren(sourceMdr);
 			childMonitor = MonitorUtils.subMonitor(monitor, 7);
@@ -317,7 +338,7 @@ public class MirrorGenerator extends BuilderPhase {
 				mirror(new IncludesQuery(unitsToInstall), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
 			}
 
-			Set<IInstallableUnit> trustedUnits = getBuilder().getTrustedUnits();
+			Set<IInstallableUnit> trustedUnits = builder.getTrustedUnits();
 			if (trustedUnits.size() > 0) {
 				for (URI trustedRepo : trustedRepos) {
 					log.info("Mirroring meta-data from from %s", trustedRepo);
@@ -341,7 +362,7 @@ public class MirrorGenerator extends BuilderPhase {
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 
-				String name = getBuilder().getBuild().getLabel();
+				String name = builder.getBuild().getLabel();
 				arMgr.removeRepository(finalURI);
 				CompositeArtifactRepository compositeAr = (CompositeArtifactRepository) arMgr.createRepository(finalURI,
 						name + " artifacts", Builder.COMPOSITE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
