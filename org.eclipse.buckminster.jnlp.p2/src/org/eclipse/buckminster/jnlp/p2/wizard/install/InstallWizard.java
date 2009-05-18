@@ -81,6 +81,7 @@ import org.eclipse.buckminster.jnlp.distroprovider.IRemoteDistroProvider;
 import org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.TransferUtils;
 import org.eclipse.buckminster.jnlp.p2.HelpLinkErrorDialog;
 import org.eclipse.buckminster.jnlp.p2.JNLPException;
+import org.eclipse.buckminster.jnlp.p2.JNLPPlugin;
 import org.eclipse.buckminster.jnlp.p2.MaterializationConstants;
 import org.eclipse.buckminster.jnlp.p2.MaterializationUtils;
 import org.eclipse.buckminster.jnlp.p2.MissingPropertyException;
@@ -347,18 +348,21 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 	{
 		if(m_brandingImage != null)
 		{
+			JNLPPlugin.unregister(JNLPPlugin.OBJECT_BRANDING_IMAGE);
 			m_brandingImage.dispose();
 			m_brandingImage = null;
 		}
 
 		if(m_windowImage != null)
 		{
+			JNLPPlugin.unregister(JNLPPlugin.OBJECT_WINDOW_IMAGE);
 			m_windowImage.dispose();
 			m_windowImage = null;
 		}
 
 		if(m_wizardImage != null)
 		{
+			JNLPPlugin.unregister(JNLPPlugin.OBJECT_WIZARD_IMAGE);
 			m_wizardImage.dispose();
 			m_wizardImage = null;
 		}
@@ -1262,6 +1266,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			tmp = WINDOW_TITLE_UNKNOWN;
 		}
 		m_windowTitle = tmp;
+		JNLPPlugin.register(JNLPPlugin.OBJECT_WINDOW_TITLE, m_windowTitle);
 
 		tmp = properties.get(PROP_WINDOW_ICON);
 		m_windowImage = null;
@@ -1270,6 +1275,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			try
 			{
 				m_windowImage = ImageDescriptor.createFromURL(new URL(tmp)).createImage();
+				JNLPPlugin.register(JNLPPlugin.OBJECT_WINDOW_IMAGE, m_windowImage);
 			}
 			catch(MalformedURLException e)
 			{
@@ -1285,6 +1291,7 @@ public class InstallWizard extends AdvancedWizard implements ILoginHandler
 			try
 			{
 				m_wizardImage = getNormalizedWizardImage(ImageDescriptor.createFromURL(new URL(tmp)).createImage());
+				JNLPPlugin.register(JNLPPlugin.OBJECT_WIZARD_IMAGE, m_wizardImage);
 			}
 			catch(MalformedURLException e)
 			{

@@ -88,7 +88,7 @@ public class P2MaterializerRunnable implements IRunnableWithProgress
 	private void startRequiredBundles(InstallDescription description) throws CoreException {
 		IPath installLocation = description.getInstallLocation();
 		if (installLocation == null)
-			throw new CoreException(new Status(IStatus.ERROR, JNLPPlugin.JNLP_P2, Messages.App_NoInstallLocation, null));
+			throw new CoreException(new Status(IStatus.ERROR, JNLPPlugin.ID, Messages.App_NoInstallLocation, null));
 		//set agent location if specified
 		IPath agentLocation = description.getAgentLocation();
 		if (agentLocation != null) {
@@ -104,7 +104,7 @@ public class P2MaterializerRunnable implements IRunnableWithProgress
 		try {
 			JNLPPlugin.getDefault().getBundle("org.eclipse.equinox.p2.exemplarysetup").start(Bundle.START_TRANSIENT); //$NON-NLS-1$
 		} catch (BundleException e) {
-			throw new CoreException(new Status(IStatus.ERROR, JNLPPlugin.JNLP_P2, Messages.App_FailedStart, e));
+			throw new CoreException(new Status(IStatus.ERROR, JNLPPlugin.ID, Messages.App_FailedStart, e));
 		}
 	}
 }
