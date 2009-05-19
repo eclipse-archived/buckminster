@@ -12,6 +12,7 @@ import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
+import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -43,7 +44,19 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		{
 			IInstallableUnit tmp = (IInstallableUnit)iu;
 			if(tmp.getId().startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER))
+			{
 				innerResult.addIU(tmp, IPublisherResult.ROOT);
+				continue;
+			}
+
+			for(Object bi : product.getBundleInfos())
+			{
+				if(tmp.getId().equals(((BundleInfo)bi).getSymbolicName()))
+				{
+					innerResult.addIU(tmp, IPublisherResult.ROOT);
+					break;
+				}
+			}
 		}
 
 		IStatus status = super.perform(publisherInfo, innerResult, monitor);
