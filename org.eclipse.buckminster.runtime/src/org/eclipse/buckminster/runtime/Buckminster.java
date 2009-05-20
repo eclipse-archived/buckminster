@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -80,6 +81,28 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		if(m_services == null)
 			m_services = new IdentityHashMap<Object, ServiceReference>();
 		m_services.put(service, serviceRef);
+		return service;
+	}
+
+	public <T> T getService(Class<T> serviceClass, String filter) throws CoreException
+	{
+		BundleContext context = getBundle().getBundleContext();
+		String serviceName = serviceClass.getName();
+		ServiceReference[] serviceRef;
+		try
+		{
+			serviceRef = context.getServiceReferences(serviceName, filter);
+		}
+		catch(InvalidSyntaxException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		if(serviceRef == null || serviceRef.length == 0)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
+		T service = serviceClass.cast(context.getService(serviceRef[0]));
+		if(m_services == null)
+			m_services = new IdentityHashMap<Object, ServiceReference>();
+		m_services.put(service, serviceRef[0]);
 		return service;
 	}
 
