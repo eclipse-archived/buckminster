@@ -13,10 +13,18 @@
 package org.eclipse.buckminster.jnlp.p2.installer;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.buckminster.jnlp.p2.JNLPPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
@@ -33,7 +41,8 @@ import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * This operation performs installation or update of an Eclipse-based product.
@@ -61,8 +70,61 @@ public class InstallUpdateProductOperation implements IInstallOperation
 
 	public InstallUpdateProductOperation(BundleContext context, InstallDescription description)
 	{
-		this.m_bundleContext = context;
-		this.m_installDescription = description;
+		m_bundleContext = context;
+		m_installDescription = description;
+	}
+
+	/**
+	 * Returns the result of the install operation, or <code>null</code> if no install operation has been run.
+	 */
+	public IStatus getResult()
+	{
+		return m_result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.eclipse.equinox.internal.provisional.p2.installer.IInstallOperation#install(org.eclipse.core.runtime.
+	 * IProgressMonitor)
+	 */
+	public IStatus install(IProgressMonitor pm)
+	{
+		SubMonitor monitor = SubMonitor.convert(pm, Messages.Op_Preparing, 100);
+		try
+		{
+			try
+			{
+				preInstall();
+				m_isInstall = getProfile() == null;
+				doInstall(monitor);
+				m_result = new Status(IStatus.OK, JNLPPlugin.ID, m_isInstall
+						? Messages.Op_InstallComplete
+						: Messages.Op_UpdateComplete, null);
+				monitor.setTaskName(Messages.Op_Cleanup);
+			}
+			finally
+			{
+				postInstall();
+			}
+		}
+		catch(CoreException e)
+		{
+			m_result = e.getStatus();
+		}
+		finally
+		{
+			monitor.done();
+		}
+		return m_result;
+	}
+
+	/**
+	 * Returns whether this operation represents the product being installed for the first time, in a new profile.
+	 */
+	public boolean isFirstInstall()
+	{
+		return m_isInstall;
 	}
 
 	/**
@@ -158,7 +220,7 @@ public class InstallUpdateProductOperation implements IInstallOperation
 	 */
 	private CoreException fail(String message, Throwable throwable)
 	{
-		return new CoreException(new Status(IStatus.ERROR, JNLPPlugin.JNLP_P2, message, throwable));
+		return new CoreException(new Status(IStatus.ERROR, JNLPPlugin.ID, message, throwable));
 	}
 
 	/**
@@ -203,7 +265,7 @@ public class InstallUpdateProductOperation implements IInstallOperation
 	private String getProfileId()
 	{
 		IPath location = m_installDescription.getInstallLocation();
-		
+
 		String profileName = (String)m_installDescription.getProfileProperties().get(P2PropertyKeys.PROP_PROFILE_NAME);
 		profileName = profileName == null
 				? DEFAULT_PROFILE_NAME
@@ -213,14 +275,6 @@ public class InstallUpdateProductOperation implements IInstallOperation
 			return location.toString() + "/" + profileName;
 
 		return m_installDescription.getProductName();
-	}
-
-	/**
-	 * Returns the result of the install operation, or <code>null</code> if no install operation has been run.
-	 */
-	public IStatus getResult()
-	{
-		return m_result;
 	}
 
 	private Object getService(String name) throws CoreException
@@ -233,51 +287,6 @@ public class InstallUpdateProductOperation implements IInstallOperation
 			throw fail(Messages.Op_NoServiceImpl + name);
 		m_serviceReferences.add(ref);
 		return service;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.equinox.internal.provisional.p2.installer.IInstallOperation#install(org.eclipse.core.runtime.
-	 * IProgressMonitor)
-	 */
-	public IStatus install(IProgressMonitor pm)
-	{
-		SubMonitor monitor = SubMonitor.convert(pm, Messages.Op_Preparing, 100);
-		try
-		{
-			try
-			{
-				preInstall();
-				m_isInstall = getProfile() == null;
-				doInstall(monitor);
-				m_result = new Status(IStatus.OK, JNLPPlugin.JNLP_P2, m_isInstall
-						? Messages.Op_InstallComplete
-						: Messages.Op_UpdateComplete, null);
-				monitor.setTaskName(Messages.Op_Cleanup);
-			}
-			finally
-			{
-				postInstall();
-			}
-		}
-		catch(CoreException e)
-		{
-			m_result = e.getStatus();
-		}
-		finally
-		{
-			monitor.done();
-		}
-		return m_result;
-	}
-
-	/**
-	 * Returns whether this operation represents the product being installed for the first time, in a new profile.
-	 */
-	public boolean isFirstInstall()
-	{
-		return m_isInstall;
 	}
 
 	private void postInstall()
@@ -302,13 +311,13 @@ public class InstallUpdateProductOperation implements IInstallOperation
 
 	private void prepareArtifactRepositories() throws ProvisionException
 	{
-		// disable all cached repos 
+		// disable all cached repos
 		// TODO remove - testing
 		URI[] knownRepos = m_artifactRepoMan.getKnownRepositories(0);
 		for(URI repo : knownRepos)
 			m_artifactRepoMan.setEnabled(repo, false);
 		// end of remove
-		
+
 		URI[] repos = m_installDescription.getArtifactRepositories();
 		if(repos == null)
 			return;
@@ -322,13 +331,13 @@ public class InstallUpdateProductOperation implements IInstallOperation
 
 	private void prepareMetadataRepositories() throws ProvisionException
 	{
-		// disable all cached repos 
+		// disable all cached repos
 		// TODO remove - testing
 		URI[] knownRepos = m_metadataRepoMan.getKnownRepositories(0);
 		for(URI repo : knownRepos)
 			m_metadataRepoMan.setEnabled(repo, false);
 		// end of remove
-		
+
 		URI[] repos = m_installDescription.getMetadataRepositories();
 		if(repos == null)
 			return;
