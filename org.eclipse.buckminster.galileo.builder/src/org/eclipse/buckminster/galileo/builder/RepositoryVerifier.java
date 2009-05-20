@@ -14,6 +14,7 @@ import org.eclipse.amalgam.releng.build.Config;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
 import org.eclipse.amalgam.releng.build.OS;
+import org.eclipse.amalgam.releng.build.Product;
 import org.eclipse.amalgam.releng.build.WS;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -303,6 +304,9 @@ public class RepositoryVerifier extends BuilderPhase {
 			}
 			for (Bundle bundle : contrib.getBundles())
 				if (bundle.getId().equals(componentId))
+					return contrib;
+			for (Product product : contrib.getProducts())
+				if (product.getId().equals(componentId))
 					return contrib;
 		}
 		return null;

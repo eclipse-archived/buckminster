@@ -11,6 +11,7 @@ import org.eclipse.amalgam.releng.build.Build;
 import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
+import org.eclipse.amalgam.releng.build.Product;
 import org.eclipse.amalgam.releng.build.Repository;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -97,7 +98,8 @@ public class CompositeRepoGenerator extends BuilderPhase {
 			}
 
 			if (errors.size() == 0) {
-				// Verify that all contributed features and bundles can be found
+				// Verify that all contributed features, bundles, and products
+				// can be found
 				// in their respective
 				// repository
 				for (Feature feature : contrib.getFeatures())
@@ -105,6 +107,8 @@ public class CompositeRepoGenerator extends BuilderPhase {
 							feature.getVersion(), errors);
 				for (Bundle bundle : contrib.getBundles())
 					verifyIUExistence(mdrMgr, bundle.getRepo(), bundle.getId(), bundle.getVersion(), errors);
+				for (Product product : contrib.getProducts())
+					verifyIUExistence(mdrMgr, product.getRepo(), product.getId(), product.getVersion(), errors);
 			}
 			MonitorUtils.done(contribMonitor);
 			if (!errors.isEmpty()) {

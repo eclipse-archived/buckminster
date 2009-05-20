@@ -13,6 +13,7 @@ import java.util.Collections;
 import org.eclipse.amalgam.releng.build.Bundle;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
+import org.eclipse.amalgam.releng.build.Product;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -112,6 +113,14 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 				VersionRange range = new VersionRange(v, true, v, true);
 				String filter = bundleIU.getFilter();
 				required.add(MetadataFactory.createRequiredCapability(Builder.NAMESPACE_OSGI_BUNDLE, bundleIU.getId(), range, filter, false, false));
+			}
+			for (Product product : contrib.getProducts()) {
+				IInstallableUnit productIU = Builder.getIU(globalMdr, product.getId(), product.getVersion());
+				Version v = productIU.getVersion();
+				VersionRange range = new VersionRange(v, true, v, true);
+				String filter = productIU.getFilter();
+				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, productIU.getId(), range, filter, false,
+						false));
 			}
 			if (errors.size() > 0) {
 				errorsFound = true;
