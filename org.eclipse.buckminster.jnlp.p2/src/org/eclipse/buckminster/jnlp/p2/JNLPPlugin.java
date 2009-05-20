@@ -24,6 +24,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("restriction")
 public class JNLPPlugin implements BundleActivator
 {
 	// The plug-in ID
@@ -142,7 +143,6 @@ public class JNLPPlugin implements BundleActivator
 		plugin = null;
 	}
 
-	@SuppressWarnings("restriction")
 	private void registerDelegatingAuthenticationService()
 	{
 		context.registerService(IServiceUI.class.getName(), new DelegatingAuthenticationService(), null);
