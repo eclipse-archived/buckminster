@@ -37,6 +37,8 @@ class JarInfo implements IConstants
 
 	static final String PROP_IS_EXCLUDE_CHILDREN = "jarprocessor.exclude.children"; //$NON-NLS-1$
 
+	static final String PROP_BUCK_IS_EXCLUDE_CHILDREN = "buckminster.exclude.children"; //$NON-NLS-1$
+
 	static final String PROP_IS_EXCLUDE_CHILDREN_PACK = "jarprocessor.exclude.children.pack"; //$NON-NLS-1$
 
 	static final String PROP_IS_EXCLUDE_CHILDREN_SIGN = "jarprocessor.exclude.children.sign"; //$NON-NLS-1$
@@ -188,7 +190,10 @@ class JarInfo implements IConstants
 
 	boolean isExcludeChildren()
 	{
-		return "true".equalsIgnoreCase(eclipseInf.get(PROP_IS_EXCLUDE_CHILDREN)); //$NON-NLS-1$
+		String prop = eclipseInf.get(PROP_BUCK_IS_EXCLUDE_CHILDREN);
+		if(prop == null)
+			prop = eclipseInf.get(PROP_IS_EXCLUDE_CHILDREN);
+		return "true".equalsIgnoreCase(prop); //$NON-NLS-1$
 	}
 
 	boolean isExcludeChildrenPack()
