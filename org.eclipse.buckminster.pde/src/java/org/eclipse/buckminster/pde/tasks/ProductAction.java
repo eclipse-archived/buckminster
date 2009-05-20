@@ -16,6 +16,7 @@ import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
+import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.PublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.EquinoxLauncherCUAction;
 
@@ -36,6 +37,13 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		((ProductVersionPatcher)product).setQueryable(results);
 
 		IPublisherResult innerResult = new PublisherResult();
+		PublisherInfo innerInfo = new PublisherInfo();
+		innerInfo.setConfigurations(publisherInfo.getConfigurations());
+		innerInfo.setArtifactOptions(publisherInfo.getArtifactOptions());
+		innerInfo.setArtifactRepository(publisherInfo.getArtifactRepository());
+		innerInfo.setMetadataRepository(publisherInfo.getMetadataRepository());
+		innerInfo.setContextArtifactRepository(publisherInfo.getContextArtifactRepository());
+		innerInfo.setContextMetadataRepository(innerInfo.getContextMetadataRepository());
 
 		// The inner result must see the launchers since the EquinoxLauncherCUAction created by the
 		// ApplicationLauncherAction must find them in order to generate the correct CU's
@@ -59,7 +67,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 			}
 		}
 
-		IStatus status = super.perform(publisherInfo, innerResult, monitor);
+		IStatus status = super.perform(innerInfo, innerResult, monitor);
 		if(status.getSeverity() != IStatus.ERROR)
 			results.merge(innerResult, IPublisherResult.MERGE_MATCHING);
 		return status;
