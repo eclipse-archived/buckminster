@@ -48,7 +48,8 @@ public class Application implements IApplication
 {
 	public static final Integer OK_EXIT_CODE = new Integer(0);
 
-	public static final Integer ERROR_EXIT_CODE = new Integer(1);
+	// fake, however, exit code 1 opens ugly window once the application is closed
+	public static final Integer ERROR_EXIT_CODE = new Integer(0);
 
 	/**
 	 * The wizard dialog width

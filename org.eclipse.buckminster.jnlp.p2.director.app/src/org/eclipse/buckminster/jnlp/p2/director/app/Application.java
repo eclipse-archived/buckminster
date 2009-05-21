@@ -601,6 +601,8 @@ public class Application implements IApplication
 		time += System.currentTimeMillis();
 		if(operationStatus.isOK())
 			System.out.println(NLS.bind(Messages.Operation_complete, new Long(time)));
+		else if(operationStatus.matches(IStatus.CANCEL))
+			throw new OperationCanceledException();
 		else
 		{
 			System.out.println(Messages.Operation_failed);
