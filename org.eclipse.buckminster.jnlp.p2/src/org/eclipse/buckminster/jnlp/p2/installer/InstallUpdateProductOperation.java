@@ -313,9 +313,9 @@ public class InstallUpdateProductOperation implements IInstallOperation
 	{
 		// disable all cached repos
 		// TODO remove - testing
-		URI[] knownRepos = m_artifactRepoMan.getKnownRepositories(0);
-		for(URI repo : knownRepos)
-			m_artifactRepoMan.setEnabled(repo, false);
+		// URI[] knownRepos = m_artifactRepoMan.getKnownRepositories(0);
+		// for(URI repo : knownRepos)
+		// m_artifactRepoMan.setEnabled(repo, false);
 		// end of remove
 
 		URI[] repos = m_installDescription.getArtifactRepositories();
@@ -324,7 +324,7 @@ public class InstallUpdateProductOperation implements IInstallOperation
 		for(URI repo : repos)
 		{
 			m_artifactRepoMan.loadRepository(repo, null);
-			// enable repo (an existing repo would be disabled)
+			// enable repo (might be disabled)
 			m_artifactRepoMan.setEnabled(repo, true);
 		}
 	}
@@ -333,9 +333,9 @@ public class InstallUpdateProductOperation implements IInstallOperation
 	{
 		// disable all cached repos
 		// TODO remove - testing
-		URI[] knownRepos = m_metadataRepoMan.getKnownRepositories(0);
-		for(URI repo : knownRepos)
-			m_metadataRepoMan.setEnabled(repo, false);
+		// URI[] knownRepos = m_metadataRepoMan.getKnownRepositories(0);
+		// for(URI repo : knownRepos)
+		// m_metadataRepoMan.setEnabled(repo, false);
 		// end of remove
 
 		URI[] repos = m_installDescription.getMetadataRepositories();
@@ -344,7 +344,7 @@ public class InstallUpdateProductOperation implements IInstallOperation
 		for(URI repo : repos)
 		{
 			m_metadataRepoMan.loadRepository(repo, null);
-			// enable repo (an existing repo would be disabled)
+			// enable repo (might be disabled)
 			m_metadataRepoMan.setEnabled(repo, true);
 		}
 	}
