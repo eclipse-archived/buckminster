@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" componentType="buckminster" version="1.1.350">
     <cs:dependencies>
-        <cs:dependency name="commons-net"/>
+        <cs:dependency name="org.apache.commons.net" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.bootstrap" componentType="buckminster"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.director.product" componentType="eclipse.feature"/>
@@ -53,7 +53,7 @@
             </cs:actorProperties>
             <cs:prerequisites>
                 <cs:attribute name="collect.jnlp" alias="requirement"/>
-                <cs:attribute name="java.binaries" alias="commons-net.classpath" component="commons-net"/>
+                <cs:attribute name="java.binaries" alias="commons-net.classpath" component="org.apache.commons.net"/>
             </cs:prerequisites>
         </cs:public>
         <cs:public name="publish.local.jnlp" actor="ant">
@@ -63,7 +63,7 @@
             </cs:actorProperties>
             <cs:prerequisites>
                 <cs:attribute name="collect.local.jnlp" alias="requirement"/>
-                <cs:attribute name="java.binaries" alias="commons-net.classpath" component="commons-net"/>
+                <cs:attribute name="java.binaries" alias="commons-net.classpath" component="org.apache.commons.net"/>
             </cs:prerequisites>
         </cs:public>
         <cs:private name="local.sign.jnlp" actor="ant">
