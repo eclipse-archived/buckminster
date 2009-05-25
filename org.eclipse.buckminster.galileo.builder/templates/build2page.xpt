@@ -167,7 +167,7 @@
 «ENDDEFINE»
 
 «DEFINE repoURL FOR build::Build-»
-<a href="http://download.eclipse.org«promotion.downloadDirectory»«IF promotion.downloadDirectory.xpandEndsWith('drops/')»«buildLabel(self)»/«ENDIF»">URL</a>
+<a href="http://download.eclipse.org«promotion.downloadDirectory»URL</a>
 «ENDDEFINE»
 
 «DEFINE downloadImage FOR build::Build-»
