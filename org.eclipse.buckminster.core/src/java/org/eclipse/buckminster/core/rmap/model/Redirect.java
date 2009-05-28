@@ -15,6 +15,7 @@ import java.net.URL;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -49,7 +50,8 @@ public class Redirect extends Matcher
 		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
 		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
 		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
-		return ResourceMap.fromURL(url, query.getComponentQuery().getConnectContext());
+		return ResourceMapResolverFactory.getCachedResourceMap(query.getResolutionContext(), url,
+				query.getComponentQuery().getConnectContext());
 	}
 
 	@Override

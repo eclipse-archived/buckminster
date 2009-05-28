@@ -77,13 +77,29 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	private static final UUID CACHE_KEY_RESOURCE_MAP = UUID.randomUUID();
 
+	public static ResourceMap getCachedResourceMap(ResolutionContext context, URL url, IConnectContext cctx)
+			throws CoreException
+	{
+		Map<String, ResourceMap> rmapCache = getResourceMapCache(context.getUserCache());
+		String key = url.toString().intern();
+		synchronized(key)
+		{
+			ResourceMap rmap = rmapCache.get(key);
+			if(rmap == null)
+			{
+				rmap = ResourceMap.fromURL(url, cctx);
+				rmapCache.put(key, rmap);
+			}
+			return rmap;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache)
 	{
 		synchronized(ctxUserCache)
 		{
-			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>)ctxUserCache
-					.get(CACHE_KEY_RESOURCE_MAP);
+			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>)ctxUserCache.get(CACHE_KEY_RESOURCE_MAP);
 			if(resourceMapCache == null)
 			{
 				resourceMapCache = Collections.synchronizedMap(new HashMap<String, ResourceMap>());
@@ -116,7 +132,8 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, Messages.Resource_map_URL);
 		pds[1] = new PreferenceDescriptor(OVERRIDE_QUERY_URL_PARAM, PreferenceType.Boolean,
 				Messages.Override_URL_in_Component_Query);
-		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean, Messages.Perform_local_resolution);
+		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean,
+				Messages.Perform_local_resolution);
 		pds[3] = new PreferenceDescriptor(RESOLVER_THREADS_MAX_PARAM, PreferenceType.Integer,
 				Messages.Maximum_number_of_resolver_threads);
 		pds[3].setTextWidth(2);
@@ -148,19 +165,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	{
 		if(isOverrideQueryURL())
 			url = getResourceMapURL();
-
-		Map<String, ResourceMap> rmapCache = getResourceMapCache(context.getUserCache());
-		String key = url.toString().intern();
-		synchronized(key)
-		{
-			ResourceMap rmap = rmapCache.get(key);
-			if(rmap == null)
-			{
-				rmap = ResourceMap.fromURL(url, cctx);
-				rmapCache.put(key, rmap);
-			}
-			return rmap;
-		}
+		return getCachedResourceMap(context, url, cctx);
 	}
 
 	/**
