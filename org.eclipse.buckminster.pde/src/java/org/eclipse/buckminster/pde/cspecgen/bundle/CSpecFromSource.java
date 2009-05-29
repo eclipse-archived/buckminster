@@ -431,8 +431,7 @@ public class CSpecFromSource extends CSpecGenerator
 					binIncludesSource = cspec.addGroup(IBuildEntry.BIN_INCLUDES, false);
 
 				IPath biPath = resolveLink(binInclude, projectRootReplacement);
-				String biName = biPath.toPortableString().replace('/', '_');
-				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '.' + biName, false, null,
+				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false, null,
 						projectRootReplacement[0]);
 				ab.addPath(biPath);
 				binIncludesSource.addLocalPrerequisite(ab);
