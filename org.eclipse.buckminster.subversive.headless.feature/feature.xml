@@ -91,14 +91,14 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
          unpack="false"/>
 
    <plugin
-         id="org.polarion.eclipse.team.svn.connector.svnkit15"
+         id="org.eclipse.buckminster.subversion"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.buckminster.subversion"
+         id="org.polarion.eclipse.team.svn.connector.svnkit16"
          download-size="0"
          install-size="0"
          version="0.0.0"
