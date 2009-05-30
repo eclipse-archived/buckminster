@@ -28,7 +28,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class SaxableSite extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "site"; //$NON-NLS-1$
@@ -151,6 +151,23 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		m_associateSitesURL = associateSitesURL;
 	}
 
+	public String getDefaultTag()
+	{
+		return TAG;
+	}
+
+	public Site getSite()
+	{
+		return m_site;
+	}
+
+	public void toSax(ContentHandler receiver) throws SAXException
+	{
+		receiver.startDocument();
+		toSax(receiver, "", "", TAG); //$NON-NLS-1$ //$NON-NLS-2$
+		receiver.endDocument();
+	}
+
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
@@ -199,22 +216,5 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		writeFeatures(handler, m_site.getFeatureReferenceModels());
 		writeCategories(handler, m_site.getCategoryModels());
 		writeArchives(handler, m_site.getArchiveReferenceModels());
-	}
-
-	public String getDefaultTag()
-	{
-		return TAG;
-	}
-
-	public Site getSite()
-	{
-		return m_site;
-	}
-
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
-		receiver.startDocument();
-		toSax(receiver, "", "", TAG); //$NON-NLS-1$ //$NON-NLS-2$
-		receiver.endDocument();
 	}
 }

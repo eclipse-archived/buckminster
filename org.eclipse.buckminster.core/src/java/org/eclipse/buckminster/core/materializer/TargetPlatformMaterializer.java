@@ -40,6 +40,7 @@ import org.eclipse.update.core.SiteManager;
  * 
  * @author Thomas Hallgren
  */
+@SuppressWarnings("deprecation")
 public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 {
 	public static final String TARGET_PLATFORM_PATH = "targetPlatformPathForMaterialization"; //$NON-NLS-1$
@@ -74,48 +75,6 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		return installSite.getSite();
 	}
 
-	/**
-	 * @param aFeature
-	 *            The feature to convert into a new IFeature instance that treats platform specific bundles as regular
-	 *            ones. Thus installs even non matching bundles.
-	 * @param context
-	 * @return
-	 * @throws CoreException
-	 */
-	private IFeature convertFeature(IFeature aFeature, MaterializationContext context) throws CoreException
-	{
-		// A shallow copy should be sufficient
-		IFeature piFeature = new PlatformIgnoringFeature(context);
-		try
-		{
-			Class<?> clazz = aFeature.getClass();
-			while(clazz != null)
-			{
-				Field[] fields = clazz.getDeclaredFields();
-				for(int i = 0; i < fields.length; i++)
-				{
-					Field field = fields[i];
-					if(!(Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
-							|| field.isEnumConstant())
-					{
-						field.setAccessible(true);
-						field.set(piFeature, field.get(aFeature));
-					}
-				}
-				clazz = clazz.getSuperclass();
-			}
-		}
-		catch(IllegalArgumentException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		catch(IllegalAccessException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		return piFeature;
-	}
-
 	@Override
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
 	{
@@ -127,6 +86,12 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 			return Path.fromOSString(path);
 		}
 		return getDefaultInstallRoot();
+	}
+
+	@Override
+	public String getMaterializerRootDir()
+	{
+		return "downloads"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -184,12 +149,6 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 	}
 
 	@Override
-	public String getMaterializerRootDir()
-	{
-		return "downloads"; //$NON-NLS-1$
-	}
-
-	@Override
 	protected void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
 			ISiteFeatureReference[] featureRefs, IProgressMonitor monitor) throws CoreException
 	{
@@ -223,5 +182,47 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 		{
 			monitor.done();
 		}
+	}
+
+	/**
+	 * @param aFeature
+	 *            The feature to convert into a new IFeature instance that treats platform specific bundles as regular
+	 *            ones. Thus installs even non matching bundles.
+	 * @param context
+	 * @return
+	 * @throws CoreException
+	 */
+	private IFeature convertFeature(IFeature aFeature, MaterializationContext context) throws CoreException
+	{
+		// A shallow copy should be sufficient
+		IFeature piFeature = new PlatformIgnoringFeature(context);
+		try
+		{
+			Class<?> clazz = aFeature.getClass();
+			while(clazz != null)
+			{
+				Field[] fields = clazz.getDeclaredFields();
+				for(int i = 0; i < fields.length; i++)
+				{
+					Field field = fields[i];
+					if(!(Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
+							|| field.isEnumConstant())
+					{
+						field.setAccessible(true);
+						field.set(piFeature, field.get(aFeature));
+					}
+				}
+				clazz = clazz.getSuperclass();
+			}
+		}
+		catch(IllegalArgumentException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		catch(IllegalAccessException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		return piFeature;
 	}
 }

@@ -25,7 +25,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class SiteFeatureFinder extends AbstractVersionFinder
 {
 	private final ISite m_site;

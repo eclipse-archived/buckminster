@@ -83,26 +83,6 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 	}
 
-	private static IFile[] getFilesForSystemId(String systemId)
-	{
-		if(systemId == null || systemId.contains(".metadata")) //$NON-NLS-1$
-			return s_noFiles;
-
-		try
-		{
-			URL url = new URL(systemId);
-			File file = FileUtils.getFile(url);
-			if(file == null)
-				return s_noFiles;
-			systemId = file.toString();
-		}
-		catch(MalformedURLException murle)
-		{
-			// Apparently not a valid URL. That's expected
-		}
-		return ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(new Path(systemId));
-	}
-
 	public static void setMarkers(IFile[] files, SAXParseException e)
 	{
 		// Annotate the file if "systemId" denotes a resource in a project
@@ -129,6 +109,27 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	private static IFile[] getFilesForSystemId(String systemId)
+	{
+		if(systemId == null || systemId.contains(".metadata")) //$NON-NLS-1$
+			return s_noFiles;
+
+		try
+		{
+			URL url = new URL(systemId);
+			File file = FileUtils.getFile(url);
+			if(file == null)
+				return s_noFiles;
+			systemId = file.toString();
+		}
+		catch(MalformedURLException murle)
+		{
+			// Apparently not a valid URL. That's expected
+		}
+		return ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(new Path(systemId));
+	}
+
 	private final boolean m_validating;
 
 	private final List<String> m_namespaceLocations;
@@ -146,8 +147,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		int top = namespaces.length;
 
 		if(top != schemaLocations.length)
-			throw new IllegalArgumentException(
-					Messages.The_namespace_and_schemaLocation_arrays_must_be_equal_in_length);
+			throw new IllegalArgumentException(Messages.The_namespace_and_schemaLocation_arrays_must_be_equal_in_length);
 		m_namespaceLocations = new ArrayList<String>();
 		for(int idx = 0; idx < top; ++idx)
 		{
@@ -155,8 +155,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 			String schemaFile = schemaLocations[idx];
 			URL schemaURL = getClass().getResource(schemaFile);
 			if(schemaURL == null)
-				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.Unable_to_find_XMLSchema_for_namespace_0, namespace));
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_find_XMLSchema_for_namespace_0,
+						namespace));
 			addNamespaceLocation(namespace, schemaURL);
 		}
 
@@ -168,11 +168,6 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		m_parserExtensions = parserExtensions;
 		setNamespaceAware(true);
 		setErrorHandler(this);
-	}
-
-	protected void addNamespaceLocation(String namespace, URL location)
-	{
-		m_namespaceLocations.add(namespace + ' ' + location.toString());
 	}
 
 	public <H extends ChildHandler> H createContentHandler(AbstractHandler parent, Class<H> handlerClass,
@@ -189,8 +184,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 					String prefix = xsiType.substring(0, colonIndex);
 					ns = getPrefixMapping(prefix);
 					if(ns == null)
-						throw new SAXParseException(NLS
-								.bind(Messages.Unknown_namespace_prefix_0, prefix), getDocumentLocator());
+						throw new SAXParseException(NLS.bind(Messages.Unknown_namespace_prefix_0, prefix),
+								getDocumentLocator());
 					xsiType = xsiType.substring(colonIndex + 1);
 				}
 				else
@@ -214,8 +209,8 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 		catch(Exception e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.Unable_to_create_extension_handler_0_1,
-					namespace, xsiType), getDocumentLocator(), e);
+			throw new SAXParseException(NLS.bind(Messages.Unable_to_create_extension_handler_0_1, namespace, xsiType),
+					getDocumentLocator(), e);
 		}
 	}
 
@@ -223,6 +218,28 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 	public void error(SAXParseException e) throws SAXException
 	{
 		throw e;
+	}
+
+	@Override
+	public void warning(SAXParseException e) throws SAXException
+	{
+		throw e;
+	}
+
+	public void warningOnce(String warning)
+	{
+		if(m_printedWarnings == null)
+			m_printedWarnings = new HashSet<String>();
+		else if(m_printedWarnings.contains(warning))
+			return;
+
+		m_printedWarnings.add(warning);
+		CorePlugin.getLogger().warning(warning);
+	}
+
+	protected void addNamespaceLocation(String namespace, URL location)
+	{
+		m_namespaceLocations.add(namespace + ' ' + location.toString());
 	}
 
 	protected void init() throws SAXException
@@ -277,22 +294,5 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		{
 			getXMLReader().setContentHandler(this);
 		}
-	}
-
-	@Override
-	public void warning(SAXParseException e) throws SAXException
-	{
-		throw e;
-	}
-
-	public void warningOnce(String warning)
-	{
-		if(m_printedWarnings == null)
-			m_printedWarnings = new HashSet<String>();
-		else if(m_printedWarnings.contains(warning))
-			return;
-
-		m_printedWarnings.add(warning);
-		CorePlugin.getLogger().warning(warning);
 	}
 }

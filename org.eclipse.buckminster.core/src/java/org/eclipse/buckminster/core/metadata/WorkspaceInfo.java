@@ -447,6 +447,7 @@ public class WorkspaceInfo
 	 * @throws CoreException
 	 *             for other persistent storage related issues
 	 */
+	@SuppressWarnings("unchecked")
 	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException
 	{
 		StorageManager sm = StorageManager.getDefault();
@@ -572,6 +573,7 @@ public class WorkspaceInfo
 		return allFound;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static IResource[] getResources(Materialization mat) throws CoreException
 	{
 		checkFirstUse();

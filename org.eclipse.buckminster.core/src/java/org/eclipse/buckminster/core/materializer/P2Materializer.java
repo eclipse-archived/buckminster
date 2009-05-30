@@ -207,7 +207,7 @@ public class P2Materializer extends AbstractMaterializer
 					subSubMon.setWorkRemaining(1000);
 
 					IComponentIdentifier cid = res.getComponentIdentifier();
-					Version version = new Version(cid.getVersion().toString());
+					Version version = Version.create(cid.getVersion().toString());
 					URI repoURI = cleanURIFromImportType(URI.create(res.getRepository()));
 					String path = repoURI.getPath();
 					if(path.endsWith(".jar")) //$NON-NLS-1$
@@ -259,18 +259,18 @@ public class P2Materializer extends AbstractMaterializer
 						ArtifactDescriptor desc;
 						if(IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()))
 						{
-							desc = new ArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid
-									.getName(), version));
-							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean
-									.toString(true)));
+							desc = new ArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE,
+									cid.getName(), version));
+							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
+									Boolean.toString(true)));
 						}
 						else
 						{
 							desc = new ArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(),
 									version));
 							if(res.isUnpack())
-								desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean
-										.toString(true)));
+								desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
+										Boolean.toString(true)));
 						}
 						destAR.addDescriptor(desc);
 						continue;
@@ -347,8 +347,8 @@ public class P2Materializer extends AbstractMaterializer
 					{ /* nothing to override */
 					};
 					engine = bucky.getService(IEngine.class);
-					IStatus status = engine.perform(profile, phaseSet, operands, new ProvisioningContext(), subMon
-							.newChild(200));
+					IStatus status = engine.perform(profile, phaseSet, operands, new ProvisioningContext(),
+							subMon.newChild(200));
 					if(status.getSeverity() == IStatus.ERROR)
 						throw BuckminsterException.wrap(status);
 				}

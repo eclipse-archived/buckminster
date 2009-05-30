@@ -80,7 +80,7 @@ import org.eclipse.update.internal.core.ExtendedSite;
  * 
  * @author thhal
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class EclipsePlatformReaderType extends CatalogReaderType implements ISiteFeatureConverter
 {
 	private static final String TEMP_FEATURE_ID = "buckminster.temp"; //$NON-NLS-1$

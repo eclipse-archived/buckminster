@@ -23,7 +23,7 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 {
 	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url"; //$NON-NLS-1$
@@ -57,8 +57,8 @@ public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 	protected void installFeatures(MaterializationContext context, ISite destinationSite, ISite fromSite,
 			ISiteFeatureReference[] features, IProgressMonitor monitor) throws CoreException
 	{
-		((MirrorSite)destinationSite).mirrorAndExpose(fromSite, features, null, (String)context
-				.get(MIRROR_SITE_URL_PROPERTY));
+		((MirrorSite)destinationSite).mirrorAndExpose(fromSite, features, null,
+				(String)context.get(MIRROR_SITE_URL_PROPERTY));
 		MonitorUtils.complete(monitor);
 	}
 }

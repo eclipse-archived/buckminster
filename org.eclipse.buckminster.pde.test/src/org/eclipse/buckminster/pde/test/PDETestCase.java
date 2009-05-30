@@ -20,7 +20,7 @@ import org.eclipse.pde.internal.core.PDECore;
 /**
  * @author thhal
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public abstract class PDETestCase extends AbstractTestCase
 {
 	/**

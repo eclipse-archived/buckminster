@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.SiteManager;
 
+@SuppressWarnings("deprecation")
 public class SiteTest extends TestCase
 {
 	public void testSite() throws Exception

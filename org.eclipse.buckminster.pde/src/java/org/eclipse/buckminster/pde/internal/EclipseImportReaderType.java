@@ -107,7 +107,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.internal.jarprocessor.Utils;
 import org.osgi.framework.Constants;
 
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	/**

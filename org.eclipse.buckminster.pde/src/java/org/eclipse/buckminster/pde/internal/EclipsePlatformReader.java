@@ -320,7 +320,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader
 		{
 			Version version = vsMatch.getVersionMatch().getVersion();
 			if(version != null)
-				desiredVersion = (VersionRange)VersionHelper.exactRange(version);
+				desiredVersion = VersionHelper.exactRange(version);
 		}
 		return desiredVersion;
 	}

@@ -50,7 +50,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 {
 	private static ResolverNode getResolverNode(Map<ComponentName, ResolverNode> nodes, RMContext context,

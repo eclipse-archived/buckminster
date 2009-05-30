@@ -13,7 +13,6 @@ package org.eclipse.buckminster.ui;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.plugin.PluginClassHandle;
-import org.eclipse.buckminster.generic.utils.PluginUtils;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -53,17 +52,9 @@ public class UiPlugin extends AbstractUIPlugin
 {
 	private static class OpenRssFeedActionHandle extends PluginClassHandle<IObjectActionDelegate>
 	{
-		private final String m_operationId;
-
 		public OpenRssFeedActionHandle(IConfigurationElement configElement)
 		{
 			super(s_plugin, configElement, IObjectActionDelegate.class, UiPlugin.EPOINT_OPEN_FEED);
-			m_operationId = PluginUtils.getAttribute(configElement, UiPlugin.ATT_CLASS, null);
-		}
-
-		public String getOperationId()
-		{
-			return m_operationId;
 		}
 	}
 

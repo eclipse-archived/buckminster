@@ -38,6 +38,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
+@SuppressWarnings( { "deprecation", "restriction" })
 public class SiteFeatureReaderType extends CatalogReaderType
 {
 	/**

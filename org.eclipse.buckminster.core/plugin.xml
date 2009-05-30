@@ -72,21 +72,17 @@
 	</extension>
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType
-          class="org.eclipse.buckminster.core.internal.version.OSGiVersionType"
           format="n[.n=0;[.n=0;[.S=[A-Za-z0-9_-];]]]"
           id="OSGi"/>
 		<versionType
-        class="org.eclipse.buckminster.core.internal.version.StringVersionType"
-        format="S"
-        id="String"/>
+          format="S"
+          id="String"/>
 		<versionType
-        class="org.eclipse.buckminster.core.internal.version.TimestampVersionType"
-        format="S=[0-9];={8};[.S=[0-9];={6};=&apos;000000&apos;;]"
-        id="Timestamp"/>
-  <versionType
-        class="org.eclipse.buckminster.core.internal.version.TripletVersionType"
-        format="n[.n=0;[.n=0;]][d?S=M;]"
-        id="Triplet"/>
+          format="S=[0-9];={8};[.S=[0-9];={6};=&apos;000000&apos;;]"
+          id="Timestamp"/>
+		<versionType
+          format="n[.n=0;[.n=0;]][d?S=M;]"
+          id="Triplet"/>
 	</extension>
 	<!-- Declare known readerTypes -->
  <extension
@@ -161,7 +157,7 @@
 			<run class="org.eclipse.buckminster.core.build.LocationEmitter" />
 		</builder>
 	</extension>
-	<extension point="org.eclipse.core.runtime.contentTypes">
+	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.xml"
 			file-extensions="cspec"

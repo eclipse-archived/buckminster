@@ -52,7 +52,7 @@ import org.eclipse.update.core.VersionedIdentifier;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 abstract class AbstractSiteMaterializer extends AbstractMaterializer
 {
 	@SuppressWarnings("serial")
@@ -71,8 +71,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 		{
 			if(!m_includedRes.contains(res))
 			{
-				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site, res
-						.getComponentIdentifier());
+				ISiteFeatureReference v = SiteFeatureReaderType.getSiteFeatureReference(m_site,
+						res.getComponentIdentifier());
 
 				// Get the site reference from the site. It might not exist since we only see
 				// the features that are listed in the site.xml
@@ -335,8 +335,8 @@ abstract class AbstractSiteMaterializer extends AbstractMaterializer
 								Messages.Start_mirroring));
 						Set<ComponentIdentifier> beforeInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
 								monitor, 5));
-						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(), MonitorUtils
-								.subMonitor(monitor, 90));
+						installFeatures(context, mirrorSite, fps.getSite(), fps.getFeatureRefs(),
+								MonitorUtils.subMonitor(monitor, 90));
 						Set<ComponentIdentifier> afterInstall = getSiteComponents(mirrorSite, MonitorUtils.subMonitor(
 								monitor, 5));
 

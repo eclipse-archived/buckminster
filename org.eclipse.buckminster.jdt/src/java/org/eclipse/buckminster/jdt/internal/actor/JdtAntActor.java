@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class JdtAntActor extends AntActor
 {
+	@SuppressWarnings("hiding")
 	public static final String ACTOR_ID = "jdt.ant"; //$NON-NLS-1$
 
 	public static final String PROPERTY_PROJECT_CLASSPATH = "project.classpath"; //$NON-NLS-1$

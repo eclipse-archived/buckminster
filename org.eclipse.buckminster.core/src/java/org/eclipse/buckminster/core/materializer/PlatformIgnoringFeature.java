@@ -23,14 +23,11 @@ import org.eclipse.update.core.VersionedIdentifier;
  *         An {@link IFeature} that ignores platform specific information. Thus installs even non matching platform
  *         specific bundles.
  */
+@SuppressWarnings("deprecation")
 public class PlatformIgnoringFeature extends Feature
 {
-
-	private MaterializationContext context;
-
 	public PlatformIgnoringFeature(MaterializationContext aContext)
 	{
-		context = aContext;
 	}
 
 	/*
@@ -52,8 +49,7 @@ public class PlatformIgnoringFeature extends Feature
 			String identifier = versionedIdentifier.getIdentifier();
 			PluginVersionIdentifier version = versionedIdentifier.getVersion();
 			if((identifier.startsWith("org.eclipse.swt.") || identifier.startsWith("org.eclipse.equinox.launcher.")) //$NON-NLS-1$ //$NON-NLS-2$
-					&& (version.getMajorComponent() == 0 && version.getMinorComponent() == 0 && version
-							.getServiceComponent() == 0))
+					&& (version.getMajorComponent() == 0 && version.getMinorComponent() == 0 && version.getServiceComponent() == 0))
 			{
 				continue;
 			}

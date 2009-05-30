@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class SiteReader implements IStreamConsumer<SaxableSite>
 {
 	static class ExtendedDefaultSiteParser extends DefaultSiteParser
@@ -52,6 +52,18 @@ public class SiteReader implements IStreamConsumer<SaxableSite>
 
 		private String m_associateSitesURL;
 
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+		{
+			super.startElement(uri, localName, qName, attributes);
+			if(m_atTop)
+			{
+				m_mirrorsURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_MIRRORS_URL));
+				m_associateSitesURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_ASSOCIATE_SITES_URL));
+				m_atTop = false;
+			}
+		}
+
 		String getAssociateSitesURL()
 		{
 			return m_associateSitesURL;
@@ -60,19 +72,6 @@ public class SiteReader implements IStreamConsumer<SaxableSite>
 		String getMirrorsURL()
 		{
 			return m_mirrorsURL;
-		}
-
-		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-		{
-			super.startElement(uri, localName, qName, attributes);
-			if(m_atTop)
-			{
-				m_mirrorsURL = TextUtils.notEmptyTrimmedString(attributes.getValue(SaxableSite.ATTR_MIRRORS_URL));
-				m_associateSitesURL = TextUtils.notEmptyTrimmedString(attributes
-						.getValue(SaxableSite.ATTR_ASSOCIATE_SITES_URL));
-				m_atTop = false;
-			}
 		}
 	}
 

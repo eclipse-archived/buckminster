@@ -48,7 +48,7 @@ import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.internal.core.FeatureDownloadException;
 
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "deprecation" })
 public class EclipseImportFinder extends AbstractVersionFinder
 {
 	private static ISiteFeatureReference[] getSiteFeatureReferences(URL location, IProgressMonitor monitor)
@@ -78,8 +78,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 	{
 		synchronized(ctxUserCache)
 		{
-			Map<String, IPluginEntry[]> cache = (Map<String, IPluginEntry[]>)ctxUserCache
-					.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
+			Map<String, IPluginEntry[]> cache = (Map<String, IPluginEntry[]>)ctxUserCache.get(CACHE_KEY_PLUGIN_ENTRIES_CACHE);
 			if(cache == null)
 			{
 				cache = Collections.synchronizedMap(new HashMap<String, IPluginEntry[]>());
@@ -137,8 +136,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 				seenFeatures.add(vid);
 				IFeature includedFeature = obtainFeature(ref, MonitorUtils.subMonitor(monitor, 50));
 				if(feature != null)
-					addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils
-							.subMonitor(monitor, 50));
+					addFeaturePluginEntries(entries, seenFeatures, includedFeature,
+							MonitorUtils.subMonitor(monitor, 50));
 			}
 		}
 		monitor.done();
@@ -177,8 +176,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS
-							.bind(Messages._0_is_higher, version));
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit,
+							NLS.bind(Messages._0_is_higher, version));
 					bestFit = version;
 				}
 			}
@@ -195,7 +194,6 @@ public class EclipseImportFinder extends AbstractVersionFinder
 				: getBestRemotePluginVersion(monitor);
 	}
 
-	@SuppressWarnings("deprecation")
 	private VersionMatch getBestRemoteFeatureVersion(IProgressMonitor monitor) throws CoreException
 	{
 		Version bestFit = null;
@@ -232,7 +230,6 @@ public class EclipseImportFinder extends AbstractVersionFinder
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private VersionMatch getBestRemotePluginVersion(IProgressMonitor monitor) throws CoreException
 	{
 		Version bestFit = null;
@@ -250,8 +247,8 @@ public class EclipseImportFinder extends AbstractVersionFinder
 					bestFit = version;
 				else if(version.compareTo(bestFit) > 0)
 				{
-					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit, NLS
-							.bind(Messages._0_is_higher, version));
+					logDecision(ResolverDecisionType.VERSION_REJECTED, bestFit,
+							NLS.bind(Messages._0_is_higher, version));
 					bestFit = version;
 				}
 			}
