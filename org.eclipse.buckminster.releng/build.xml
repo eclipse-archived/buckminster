@@ -28,6 +28,7 @@
 	<property name="temp" location="${result}/temp" />
 	<property name="tp" location="${result}/tp"/>
 	<property name="output" location="${result}/output"/>
+	<property name="http.download.location" location="/home/data/httpd/download.eclipse.org"/>
 
 	<property name="workspace.gzip" value="workspace-template.tar.gz" />
 	<property name="template.dir" location="${tools}/templates" />
@@ -63,8 +64,24 @@
 		</sequential>
 	</macrodef>
 
-	<!--Fetch and unzip the director
-	-->
+	<macrodef name="buckminster">
+		<attribute name="command"/>
+		<attribute name="workspace" default="${workspace}"/>
+		<element name="globargs" optional="true" />
+		<element name="cmdargs" optional="true" />
+		<sequential>
+			<eclipse.launch app="buckminster">
+				<args>
+					<arg value="-data" />
+					<arg value="@{workspace}" />
+					<globargs />
+					<arg value="@{command}" />
+					<cmdargs />
+				</args>
+			</eclipse.launch>
+		</sequential>
+	</macrodef>
+	
 	<available file="${tools}/director/director" property="director.exists" />
 	<target name="get.director" unless="director.exists">
 		<echo message="Fetching headless director application"/>
@@ -73,8 +90,6 @@
 		<unzip src="${director.zip}" dest="${tools}" />
 	</target>
 
-	<!--Configure the Buckminster product with needed features
-	-->
 	<available file="${tools}/buckminster/buckminster" property="buckminster.exists" />
 	<target name="install.buckminster" unless="buckminster.exists" depends="get.director">
 		<echo message="Configuring headless buckminster with needed features"/>
@@ -102,8 +117,6 @@
 		</eclipse.launch>
 	</target>
 
-	<!--Fetch the workspace template and store it locally
-	-->
 	<available file="${local.workspace.gzip}" property="workspace.gzip.exists" />
 	<target name="get.workspace" unless="workspace.gzip.exists">
 		<echo message="Fetching workspace template from ${template.workspace.site}/${workspace.gzip}"/>
@@ -111,10 +124,6 @@
 		<get src="${template.workspace.site}/${workspace.gzip}" dest="${local.workspace.gzip}" />
 	</target>
 
-	<!--Use Buckminster to create the workspace from scratch. Here this
-		is done in two steps. It can be done in one single step also
-		(by just removing the noimport option).
-	-->
 	<target name="init.workspace" depends="get.workspace">
 		<mkdir dir="${workspace}" />
 		<untar src="${local.workspace.gzip}" compression="gzip" dest="${workspace}" />
@@ -123,54 +132,38 @@
 	<available file="${tp}/artifacts.xml" property="tp.exists" />
 	<target name="build.tp" unless="tp.exists" depends="install.buckminster,init.workspace">
 		<echo message="Importing binaries into target platform ${tp}"/>
-		<eclipse.launch app="buckminster">
-			<args>
+		<buckminster command="import">
+			<globargs>
 				<jvmarg value="-DtargetPlatformPath=${tp}"/>
-				<arg value="-data" />
-				<arg value="${workspace}" />
-				<arg value="import"/>
+			</globargs>
+			<cmdargs>
 				<arg value="${basedir}/tp.mspec" />
-			</args>
-		</eclipse.launch>
+			</cmdargs>
+		</buckminster>
 	</target>
 
 	<target name="build.workspace" depends="init.workspace,install.buckminster,build.tp">
 		<echo message="Setting target platform path to ${tp}"/>
-		<eclipse.launch app="buckminster">
-			<args>
-				<arg value="-data" />
-				<arg value="${workspace}" />
-				<arg value="setpref"/>
+		<buckminster command="setpref">
+			<cmdargs>
 				<arg value="targetPlatformPath=${tp}" />
-			</args>
-		</eclipse.launch>
+			</cmdargs>
+		</buckminster>
 		<echo message="Importing projects into workspace ${workspace}"/>
-		<eclipse.launch app="buckminster">
-			<args>
-				<arg value="-data" />
-				<arg value="${workspace}" />
-				<arg value="import"/>
+		<buckminster command="import">
+			<cmdargs>
 				<arg value="${cquery.url}" />
-			</args>
-		</eclipse.launch>
+			</cmdargs>
+		</buckminster>
 	</target>
 
 	<target name="build.site" depends="build.workspace">
 		<echo message="Building all projects in workspace ${workspace}"/>
-		<eclipse.launch app="buckminster">
-			<args>
-				<arg value="-data" />
-				<arg value="${workspace}" />
-				<arg value="build"/>
-			</args>
-		</eclipse.launch>
+		<buckminster command="build"/>
 
 		<echo message="Performing org.eclipse.buckminster.site.eclipse#site.p2.zip"/>
-		<eclipse.launch app="buckminster">
-			<args>
-				<arg value="-data" />
-				<arg value="${workspace}" />
-				<arg value="perform"/>
+		<buckminster command="perform">
+			<cmdargs>
 				<arg value="-P"/>
 				<arg value="${basedir}/build.properties" />
 				<arg value="-D"/>
@@ -178,8 +171,8 @@
 				<arg value="-D"/>
 				<arg value="buckminster.temp.root=${temp}"/>
 				<arg value="org.eclipse.buckminster.site.eclipse#site.p2.zip" />
-			</args>
-		</eclipse.launch>
+			</cmdargs>
+		</buckminster>
 	</target>
 
 	<target name="clean.all" depends="clean.tools,clean.workspace,clean.tp,clean.output"/>
@@ -187,6 +180,24 @@
 		<delete dir="${tools}/director" failonerror="true" quiet="true"/>
 		<delete dir="${tools}/buckminster" failonerror="true" quiet="true"/>
 	</target>
+
+	<available property="at.build.eclipse.org" type="dir" file="${http.download.location}"/>
+	<target name="promote.from.local.client" unless="at.build.eclipse.org">
+		<echo message="Promotion from local client is not yet implemented"/>
+	</target>
+
+	<target name="promote.at.build.eclipse.org" if="at.build.eclipse.org" depends="build.site">
+		<property name="http.buckminster.location" location="${http.download.location}/tools/buckminster"/>
+		<property name="eclipse.site" location="${http.buckminster.location}/experiment-3.5"/>
+		<rename src="${eclipse.site}" dest="${eclipse.site}.save"/>
+		<mkdir dir="${eclipse.site}"/>
+		<unzip dest="${eclipse.site}">
+			<fileset includes="${output}/org.eclipse.buckminster.site.eclipse_*-eclipse.feature/*.zip"/>
+		</unzip>
+		<delete dir="${eclipse.site}.save"/>
+	</target>
+
+	<target name="promote" depends="promote.at.build.eclipse.org,promote.from.local.client"/>
 
 	<target name="clean.tp">
 		<delete dir="${tp}" failonerror="true" quiet="true"/>
