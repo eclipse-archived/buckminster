@@ -203,7 +203,8 @@ public class Import extends WorkspaceInitCommand
 				}
 				finally
 				{
-					resolver.getContext().emitWarningAndErrorTags();
+					if(resolver.getContext().emitWarningAndErrorTags() && !continueOnError)
+						return 1;
 				}
 			}
 			else
