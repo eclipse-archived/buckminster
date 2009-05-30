@@ -6,7 +6,7 @@
 
 	<searchPath name="org.eclipse.platform">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="http://download.eclipse.org/eclipse/updates/3.5milestones/S-3.5RC2-200905221710?importType=binary"/>
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5milestones/S-3.5RC3-200905282000?importType=binary"/>
 		</provider>
 	</searchPath>
 	<locator searchPathRef="org.eclipse.platform"/>
