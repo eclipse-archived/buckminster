@@ -30,8 +30,12 @@ import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 public class CompositeRepoGenerator extends BuilderPhase {
 	private static void verifyIUExistence(IMetadataRepositoryManager mdrMgr, Repository repo, String id, String version, List<String> errors)
 			throws CoreException {
-		if (repo == null)
+		if (repo == null) {
+			String msg = String.format("Unable to find %s/%s since its repository definition is missing", id, version);
+			errors.add(msg);
+			Buckminster.getLogger().error(msg);
 			return;
+		}
 
 		URI location = URI.create(repo.getLocation());
 		if (Builder.getIU(mdrMgr.loadRepository(location, null), id, version) == null) {
@@ -99,12 +103,13 @@ public class CompositeRepoGenerator extends BuilderPhase {
 
 			if (errors.size() == 0) {
 				// Verify that all contributed features, bundles, and products
-				// can be found
-				// in their respective
-				// repository
-				for (Feature feature : contrib.getFeatures())
+				// can be found in their respective repository
+				for (Feature feature : contrib.getFeatures()) {
+					if (feature.getRepo() == null && getBuilder().getBrandingFeature() == feature)
+						continue;
 					verifyIUExistence(mdrMgr, feature.getRepo(), feature.getId() + ".feature.group", //$NON-NLS-1$
 							feature.getVersion(), errors);
+				}
 				for (Bundle bundle : contrib.getBundles())
 					verifyIUExistence(mdrMgr, bundle.getRepo(), bundle.getId(), bundle.getVersion(), errors);
 				for (Product product : contrib.getProducts())
