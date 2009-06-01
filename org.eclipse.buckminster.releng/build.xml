@@ -9,30 +9,29 @@
 
 <project name="project">
 	<!--Property file containing overrides for the default properties
-	-->
+	  -->
 	<property file="build.properties" />
 
 	<!--Default properties intended to be overridden by entries in the
 		above property file.
 	-->
-	<property name="director.url" value="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/products/director_1.0.0.r10307.zip&amp;r=1" />
-	<property name="bm.headless.site" value="http://download.eclipse.org/tools/buckminster/headless-3.5/" />
-	<property name="bm.external.site" value="http://download.cloudsmith.com/buckminster/external" />
-	<property name="template.workspace.site" value="http://www.eclipse.org/buckminster/dev" />
-	<property name="cquery.url" value="http://www.eclipse.org/buckminster/samples/queries/buckminster-dev.cquery" />
-
 	<property name="build.root" location="${basedir}/build"/>
 	<property name="tools" location="${build.root}/tools" />
 	<property name="result" location="${build.root}/result" />
 	<property name="workspace" location="${result}/workspace" />
-	<property name="temp" location="${result}/temp" />
-	<property name="tp" location="${result}/tp"/>
-	<property name="output" location="${result}/output"/>
-	<property name="http.download.location" location="/home/data/httpd/download.eclipse.org"/>
+	<property name="targetPlatformPath" location="${result}/tp"/>
+
+	<property name="buckminster.output.root" location="${result}/output"/>
+	<property name="buckminster.output.temp" location="${result}/temp" />
 
 	<property name="workspace.gzip" value="workspace-template.tar.gz" />
 	<property name="template.dir" location="${tools}/templates" />
 	<property name="local.workspace.gzip" location="${template.dir}/${workspace.gzip}" />
+
+	<!-- Echo the properties to a temporary file so that Buckminster can read them
+	  -->
+	<tempfile destdir="${java.io.tmpdir}" prefix="build-" suffix=".properties" property="properties.tmp" deleteonexit="true"/>
+	<echoproperties destfile="${properties.tmp}"/>
 
 	<!-- This macro executes the default application of an eclipse installation that resides
 	     in the folder ${buildtools}/@app
@@ -76,6 +75,8 @@
 					<arg value="@{workspace}" />
 					<globargs />
 					<arg value="@{command}" />
+					<arg value="-P" />
+					<arg value="${properties.tmp}"/>
 					<cmdargs />
 				</args>
 			</eclipse.launch>
@@ -129,48 +130,39 @@
 		<untar src="${local.workspace.gzip}" compression="gzip" dest="${workspace}" />
 	</target>
 
-	<available file="${tp}/artifacts.xml" property="tp.exists" />
+	<available file="${targetPlatformPath}/artifacts.xml" property="targetPlatformPath.exists" />
 	<target name="build.tp" unless="tp.exists" depends="install.buckminster,init.workspace">
-		<echo message="Importing binaries into target platform ${tp}"/>
+		<echo message="Importing binaries into target platform ${targetPlatformPath}"/>
 		<buckminster command="import">
-			<globargs>
-				<jvmarg value="-DtargetPlatformPath=${tp}"/>
-			</globargs>
 			<cmdargs>
 				<arg value="${basedir}/tp.mspec" />
 			</cmdargs>
 		</buckminster>
-	</target>
-
-	<target name="build.workspace" depends="init.workspace,install.buckminster,build.tp">
-		<echo message="Setting target platform path to ${tp}"/>
+		<echo message="Setting target platform path to ${targetPlatformPath}"/>
 		<buckminster command="setpref">
 			<cmdargs>
-				<arg value="targetPlatformPath=${tp}" />
+				<arg value="targetPlatformPath=${targetPlatformPath}" />
 			</cmdargs>
 		</buckminster>
+	</target>
+
+	<target name="build.site.ws" depends="init.workspace,install.buckminster,build.tp">
 		<echo message="Importing projects into workspace ${workspace}"/>
 		<buckminster command="import">
 			<cmdargs>
-				<arg value="${cquery.url}" />
+				<arg value="${basedir}/build.cquery" />
 			</cmdargs>
 		</buckminster>
 	</target>
 
-	<target name="build.site" depends="build.workspace">
+	<target name="build.sites" depends="build.site.ws">
 		<echo message="Building all projects in workspace ${workspace}"/>
 		<buckminster command="build"/>
 
-		<echo message="Performing org.eclipse.buckminster.site.eclipse#site.p2.zip"/>
+		<echo message="Performing org.eclipse.buckminster.releng#site.zips"/>
 		<buckminster command="perform">
 			<cmdargs>
-				<arg value="-P"/>
-				<arg value="${basedir}/build.properties" />
-				<arg value="-D"/>
-				<arg value="buckminster.output.root=${output}"/>
-				<arg value="-D"/>
-				<arg value="buckminster.temp.root=${temp}"/>
-				<arg value="org.eclipse.buckminster.site.eclipse#site.p2.zip" />
+				<arg value="org.eclipse.buckminster.releng#site.zips" />
 			</cmdargs>
 		</buckminster>
 	</target>
@@ -186,21 +178,21 @@
 		<echo message="Promotion from local client is not yet implemented"/>
 	</target>
 
-	<target name="promote.at.build.eclipse.org" if="at.build.eclipse.org" depends="build.site">
+	<target name="promote.at.build.eclipse.org" if="at.build.eclipse.org">
 		<property name="http.buckminster.location" location="${http.download.location}/tools/buckminster"/>
 		<property name="eclipse.site" location="${http.buckminster.location}/experiment-3.5"/>
-		<rename src="${eclipse.site}" dest="${eclipse.site}.save"/>
-		<mkdir dir="${eclipse.site}"/>
+		<delete includeemptydirs="true">
+			<fileset dir="${eclipse.site}" includes="**/*" defaultexcludes="false"/>
+		</delete>
 		<unzip dest="${eclipse.site}">
-			<fileset includes="${output}/org.eclipse.buckminster.site.eclipse_*-eclipse.feature/*.zip"/>
+			<fileset dir="${buckminster.output.root}" includes="org.eclipse.buckminster.site.eclipse_*-eclipse.feature/*.zip"/>
 		</unzip>
-		<delete dir="${eclipse.site}.save"/>
 	</target>
 
 	<target name="promote" depends="promote.at.build.eclipse.org,promote.from.local.client"/>
 
 	<target name="clean.tp">
-		<delete dir="${tp}" failonerror="true" quiet="true"/>
+		<delete dir="${targetPlatformPath}" failonerror="true" quiet="true"/>
 	</target>
 
 	<target name="clean.workspace">
@@ -208,7 +200,7 @@
 	</target>
 
 	<target name="clean.output">
-		<delete dir="${temp}" failonerror="true" quiet="true" />
-		<delete dir="${output}" failonerror="true" quiet="true"/>
+		<delete dir="${buckminster.output.temp}" failonerror="true" quiet="true" />
+		<delete dir="${buckminster.output.root}" failonerror="true" quiet="true"/>
 	</target>
 </project>

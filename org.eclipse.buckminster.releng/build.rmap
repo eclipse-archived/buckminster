@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rmap xmlns="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
+
+	<searchPath name="org.eclipse.buckminster">
+		<provider readerType="svn" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true"
+			source="true">
+			<uri
+				format="http://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/{0}?moduleAfterTag&amp;moduleAfterBranch">
+				<bc:propertyRef key="buckminster.component" />
+			</uri>
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.platform">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5milestones/S-3.5RC3-200905282000?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
+	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.slf4j\.extendable$" />
+	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.product$" />
+	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.feature$" />
+
+	<locator searchPathRef="org.eclipse.platform"/>
+</rmap>
