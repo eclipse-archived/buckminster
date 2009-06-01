@@ -62,6 +62,21 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 
 	private URL m_template;
 
+	public void setContinueOnError(boolean flag)
+	{
+		m_continueOnError = flag;
+	}
+
+	public void setMaterializer(String materializer)
+	{
+		m_materializer = materializer;
+	}
+
+	public void setTemplate(URL template)
+	{
+		m_template = template;
+	}
+
 	protected String getMaterializer()
 	{
 		return m_materializer;
@@ -70,6 +85,7 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
+		super.getOptionDescriptors(appendHere);
 		appendHere.add(CONTINUE_ON_ERROR);
 		appendHere.add(MATERIALIZER);
 		appendHere.add(TEMPLATE);
@@ -84,6 +100,8 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 			setTemplate(URLUtils.normalizeToURL(option.getValue()));
 		else if(option.is(MATERIALIZER))
 			setMaterializer(option.getValue());
+		else
+			super.handleOption(option);
 	}
 
 	@Override
@@ -107,8 +125,7 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 		{
 			File wsRoot = FileUtils.getFile(FileLocator.toFileURL(Platform.getInstanceLocation().getURL()));
 			if(!isFolderEmpty(wsRoot))
-				throw new SimpleErrorExitException(NLS.bind(Messages.Workspace_at_0_is_not_empty,
-						wsRoot));
+				throw new SimpleErrorExitException(NLS.bind(Messages.Workspace_at_0_is_not_empty, wsRoot));
 
 			IProgressMonitor nullMon = new NullProgressMonitor();
 			URL template = FileLocator.toFileURL(m_template);
@@ -163,20 +180,5 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand
 	protected boolean isContinueOnError()
 	{
 		return m_continueOnError;
-	}
-
-	public void setContinueOnError(boolean flag)
-	{
-		m_continueOnError = flag;
-	}
-
-	public void setMaterializer(String materializer)
-	{
-		m_materializer = materializer;
-	}
-
-	public void setTemplate(URL template)
-	{
-		m_template = template;
 	}
 }

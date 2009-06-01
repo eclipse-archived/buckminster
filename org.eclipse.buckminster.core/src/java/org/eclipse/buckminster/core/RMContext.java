@@ -218,7 +218,7 @@ public class RMContext extends ExpandingProperties<Object>
 		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
 		IValueVariable[] vars = varMgr.getValueVariables();
 
-		Map<String, String> additions = new HashMap<String, String>(s_staticAdditions.size() + sysProps.size()
+		Map<String, Object> additions = new HashMap<String, Object>(s_staticAdditions.size() + sysProps.size()
 				+ vars.length + 6);
 		additions.putAll(s_staticAdditions);
 
@@ -236,9 +236,20 @@ public class RMContext extends ExpandingProperties<Object>
 			e.printStackTrace();
 		}
 		for(IValueVariable var : varMgr.getValueVariables())
-			additions.put(var.getName(), var.getValue());
+		{
+			Object value = var.getValue();
+			if(FilterUtils.MATCH_ALL.equals(value))
+				value = FilterUtils.MATCH_ALL_OBJ;
+			additions.put(var.getName(), value);
+		}
 
-		additions.putAll(sysProps);
+		for(Map.Entry<String, String> sysProp : sysProps.entrySet())
+		{
+			Object value = sysProp.getValue();
+			if(FilterUtils.MATCH_ALL.equals(value))
+				value = FilterUtils.MATCH_ALL_OBJ;
+			additions.put(sysProp.getKey(), value);
+		}
 		return additions;
 	}
 

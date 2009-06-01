@@ -37,6 +37,7 @@ public class UnsetPreference extends WorkspaceCommand
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(TEST_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
@@ -44,6 +45,8 @@ public class UnsetPreference extends WorkspaceCommand
 	{
 		if(option.is(TEST_DESCRIPTOR))
 			m_test = true;
+		else
+			super.handleOption(option);
 	}
 
 	@Override

@@ -7,16 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.commands;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
@@ -28,34 +22,20 @@ import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
-import org.eclipse.buckminster.download.DownloadManager;
-import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 
 public class Perform extends WorkspaceCommand
 {
-	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", //$NON-NLS-1$
-			OptionValueType.REQUIRED);
-
-	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$"); //$NON-NLS-1$
-
 	static private final OptionDescriptor FORCED_DESCRIPTOR = new OptionDescriptor('F', "force", OptionValueType.NONE); //$NON-NLS-1$
 
 	static private final OptionDescriptor QUIET_DESCRIPTOR = new OptionDescriptor('Q', "quiet", OptionValueType.NONE); //$NON-NLS-1$
 
 	static private final OptionDescriptor MAXWARNINGS_DESCRIPTOR = new OptionDescriptor('W', "maxWarnings", //$NON-NLS-1$
-			OptionValueType.REQUIRED);
-
-	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
 	private final List<Attribute> m_attributes = new ArrayList<Attribute>();
@@ -64,41 +44,11 @@ public class Perform extends WorkspaceCommand
 
 	private int m_maxWarnings = -1;
 
-	private Map<String, Object> m_props;
-
 	private boolean m_quiet;
 
 	public void addAttribute(Attribute attribute)
 	{
 		m_attributes.add(attribute);
-	}
-
-	public void addProperties(Map<String, String> properties)
-	{
-		if(m_props == null)
-			m_props = new HashMap<String, Object>(properties);
-		else
-			m_props.putAll(properties);
-
-		// Replace string value "*" with the special object that
-		// match all entries
-		//
-		for(Map.Entry<String, Object> entry : m_props.entrySet())
-			if("*".equals(entry.getValue())) //$NON-NLS-1$
-				entry.setValue(FilterUtils.MATCH_ALL_OBJ);
-	}
-
-	public void addProperty(String key, Object value)
-	{
-		if(m_props == null)
-			m_props = new HashMap<String, Object>();
-
-		// Replace string value "*" with the special object that
-		// match all entries
-		//
-		if("*".equals(value)) //$NON-NLS-1$
-			value = FilterUtils.MATCH_ALL_OBJ;
-		m_props.put(key, value);
 	}
 
 	public boolean isQuiet()
@@ -114,8 +64,7 @@ public class Perform extends WorkspaceCommand
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
-		appendHere.add(DEFINE_DESCRIPTOR);
-		appendHere.add(PROPERTIES_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 		appendHere.add(MAXWARNINGS_DESCRIPTOR);
 		appendHere.add(FORCED_DESCRIPTOR);
 		appendHere.add(QUIET_DESCRIPTOR);
@@ -124,43 +73,14 @@ public class Perform extends WorkspaceCommand
 	@Override
 	protected void handleOption(Option option) throws Exception
 	{
-		if(option.is(DEFINE_DESCRIPTOR))
-		{
-			String v = option.getValue();
-			Matcher m = DEFINE_PATTERN.matcher(v);
-			if(!m.matches())
-				throw new IllegalArgumentException(NLS.bind(Messages.Not_a_key_value_string_0, v));
-			String key = m.group(1);
-			String value = m.group(2) == null
-					? "" //$NON-NLS-1$
-					: m.group(2);
-			addProperty(key, value);
-		}
-		if(option.is(PROPERTIES_DESCRIPTOR))
-		{
-			String v = option.getValue();
-			InputStream input = null;
-			try
-			{
-				URL propsURL = URLUtils.normalizeToURL(v);
-				input = DownloadManager.read(propsURL, null);
-				addProperties(new BMProperties(input));
-			}
-			catch(MalformedURLException e)
-			{
-				throw new IllegalArgumentException(NLS.bind(Messages.Invalid_URL_or_Path_0, v));
-			}
-			finally
-			{
-				IOUtils.close(input);
-			}
-		}
-		else if(option.is(MAXWARNINGS_DESCRIPTOR))
+		if(option.is(MAXWARNINGS_DESCRIPTOR))
 			m_maxWarnings = Integer.parseInt(option.getValue());
 		else if(option.is(FORCED_DESCRIPTOR))
 			m_forced = true;
 		else if(option.is(QUIET_DESCRIPTOR))
 			m_quiet = true;
+		else
+			super.handleOption(option);
 	}
 
 	@Override
@@ -195,7 +115,7 @@ public class Perform extends WorkspaceCommand
 			throw new UsageException(Messages.No_attributes_specified);
 
 		IPerformManager pm = CorePlugin.getPerformManager();
-		IStatus status = pm.perform(m_attributes, m_props, m_forced, m_quiet, monitor).getStatus();
+		IStatus status = pm.perform(m_attributes, null, m_forced, m_quiet, monitor).getStatus();
 
 		if(status.isOK())
 			return 0;

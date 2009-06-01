@@ -10,6 +10,17 @@ usage: import
 --help
   Show this help text
 
+ -D
+--define
+  Defines a property as a key=value pair. The value may include ant-style expansion constructs
+  that will be expanded using both System properties and other properties that has been set.
+
+ -P <URL or Path>
+--properties <URL or Path>
+  The URL or file system path of a properties file. The values in the file may include ant-style
+  expansion constructs that will be expanded using both System properties and other properties
+  that has been set.
+
  -B <filename>
 --bomfile <filename>
   Store the resulting BOM in the file denoted by <filename>

@@ -35,12 +35,14 @@ public class SetPreference extends WorkspaceCommand
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(TEST_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
 	protected void handleOption(Option option) throws Exception
 	{
 		m_test = option.is(TEST_DESCRIPTOR);
+		super.handleOption(option);
 	}
 
 	@Override

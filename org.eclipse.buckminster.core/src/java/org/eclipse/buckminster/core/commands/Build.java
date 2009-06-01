@@ -146,6 +146,7 @@ public class Build extends WorkspaceCommand
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(s_cleanDescriptor);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
@@ -153,6 +154,8 @@ public class Build extends WorkspaceCommand
 	{
 		if(option.is(s_cleanDescriptor))
 			m_clean = true;
+		else
+			super.handleOption(option);
 	}
 
 	@Override

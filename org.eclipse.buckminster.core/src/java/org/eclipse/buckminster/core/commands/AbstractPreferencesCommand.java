@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.cmdline.Option;
@@ -69,6 +70,100 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 
 	private File m_prefsFile;
 
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
+	{
+		appendHere.add(SCOPE_OPTION);
+		appendHere.add(FILE_OPTION);
+		super.getOptionDescriptors(appendHere);
+	}
+
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(SCOPE_OPTION))
+		{
+			if(m_scope != null)
+				throw new UsageException(Messages.Only_one_scope_can_be_given);
+
+			String scopeName = option.getValue();
+			if(scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
+				m_scope = new InstanceScope();
+			else if(scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
+				m_scope = new ConfigurationScope();
+			else
+				throw new UsageException(NLS.bind(Messages.Invalid_scope_Valid_scopes_are_0_and_1,
+						ConfigurationScope.SCOPE, InstanceScope.SCOPE));
+		}
+		else if(option.is(FILE_OPTION))
+		{
+			if(m_prefsFile != null)
+				throw new UsageException(Messages.Only_one_file_can_be_given);
+			m_prefsFile = new File(option.getValue());
+		}
+		else
+			super.handleOption(option);
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		if(unparsed.length == 0)
+			return;
+
+		if(m_includes == null)
+			m_includes = new HashMap<String, ArrayList<PreferenceFilterEntry>>();
+
+		for(int idx = 0; idx < unparsed.length; ++idx)
+		{
+			String include = unparsed[idx];
+			String rootKey = null;
+			String[] subKeys = null;
+			int sepIdx = include.indexOf('#');
+			if(sepIdx < 0 || sepIdx >= 1)
+			{
+				if(sepIdx < 0)
+					rootKey = include.trim();
+				else
+				{
+					rootKey = include.substring(0, sepIdx).trim();
+					subKeys = include.substring(sepIdx + 1).split(","); //$NON-NLS-1$
+					if(subKeys.length == 0)
+						subKeys = null;
+				}
+			}
+			if(rootKey == null || rootKey.length() == 0)
+				throw new UsageException(NLS.bind(Messages.Illegal_include_0_Must_be_in_the_form, include));
+
+			if(subKeys == null)
+			{
+				m_includes.put(rootKey, null);
+				continue;
+			}
+
+			ArrayList<PreferenceFilterEntry> pfes = m_includes.get(rootKey);
+			if(pfes == null)
+				pfes = new ArrayList<PreferenceFilterEntry>();
+
+			for(int subIdx = 0; subIdx < subKeys.length; ++subIdx)
+			{
+				String subKey = subKeys[subIdx];
+				subKey = subKey.trim();
+				if(subKey.length() == 0)
+					continue;
+
+				// As a convenience, for a key like 'org.eclipse.jdt.core#compiler.codegen' we will
+				// add both 'compiler.codegen' and 'org.eclipse.jdt.core.compiler.codegen'
+				//
+				pfes.add(new PreferenceFilterEntry(subKey));
+				if(!subKey.startsWith(rootKey))
+					pfes.add(new PreferenceFilterEntry(rootKey + '.' + subKey));
+			}
+			if(pfes.size() > 0)
+				m_includes.put(rootKey, pfes);
+		}
+	}
+
 	File getFile()
 	{
 		return m_prefsFile;
@@ -111,96 +206,5 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 		else
 			node = (IEclipsePreferences)prefService.getRootNode().node(m_scope.getName());
 		return node;
-	}
-
-	protected OptionDescriptor[] getOptionDescriptors() throws Exception
-	{
-		return new OptionDescriptor[] { SCOPE_OPTION, FILE_OPTION };
-	}
-
-	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(SCOPE_OPTION))
-		{
-			if(m_scope != null)
-				throw new UsageException(Messages.Only_one_scope_can_be_given);
-
-			String scopeName = option.getValue();
-			if(scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
-				m_scope = new InstanceScope();
-			else if(scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
-				m_scope = new ConfigurationScope();
-			else
-				throw new UsageException(NLS.bind(
-						Messages.Invalid_scope_Valid_scopes_are_0_and_1,
-						ConfigurationScope.SCOPE, InstanceScope.SCOPE));
-		}
-		else if(option.is(FILE_OPTION))
-		{
-			if(m_prefsFile != null)
-				throw new UsageException(Messages.Only_one_file_can_be_given);
-			m_prefsFile = new File(option.getValue());
-		}
-	}
-
-	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length == 0)
-			return;
-
-		if(m_includes == null)
-			m_includes = new HashMap<String, ArrayList<PreferenceFilterEntry>>();
-
-		for(int idx = 0; idx < unparsed.length; ++idx)
-		{
-			String include = unparsed[idx];
-			String rootKey = null;
-			String[] subKeys = null;
-			int sepIdx = include.indexOf('#');
-			if(sepIdx < 0 || sepIdx >= 1)
-			{
-				if(sepIdx < 0)
-					rootKey = include.trim();
-				else
-				{
-					rootKey = include.substring(0, sepIdx).trim();
-					subKeys = include.substring(sepIdx + 1).split(","); //$NON-NLS-1$
-					if(subKeys.length == 0)
-						subKeys = null;
-				}
-			}
-			if(rootKey == null || rootKey.length() == 0)
-				throw new UsageException(NLS.bind(
-						Messages.Illegal_include_0_Must_be_in_the_form, include));
-
-			if(subKeys == null)
-			{
-				m_includes.put(rootKey, null);
-				continue;
-			}
-
-			ArrayList<PreferenceFilterEntry> pfes = m_includes.get(rootKey);
-			if(pfes == null)
-				pfes = new ArrayList<PreferenceFilterEntry>();
-
-			for(int subIdx = 0; subIdx < subKeys.length; ++subIdx)
-			{
-				String subKey = subKeys[subIdx];
-				subKey = subKey.trim();
-				if(subKey.length() == 0)
-					continue;
-
-				// As a convenience, for a key like 'org.eclipse.jdt.core#compiler.codegen' we will
-				// add both 'compiler.codegen' and 'org.eclipse.jdt.core.compiler.codegen'
-				//
-				pfes.add(new PreferenceFilterEntry(subKey));
-				if(!subKey.startsWith(rootKey))
-					pfes.add(new PreferenceFilterEntry(rootKey + '.' + subKey));
-			}
-			if(pfes.size() > 0)
-				m_includes.put(rootKey, pfes);
-		}
 	}
 }
