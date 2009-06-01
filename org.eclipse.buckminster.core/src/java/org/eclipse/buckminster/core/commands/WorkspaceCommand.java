@@ -24,7 +24,6 @@ import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.BMProperties;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.materializer.WorkspaceBindingInstallJob;
 import org.eclipse.buckminster.download.DownloadManager;
