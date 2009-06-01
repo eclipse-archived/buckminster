@@ -20,10 +20,44 @@
 		</provider>
 	</searchPath>
 
+	<searchPath name="subclipse">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
+			source="true">
+			<uri format="http://subclipse.tigris.org/update_1.4.x?importType=binary" />
+		</provider>
+	</searchPath>
+
+	<searchPath name="svnkit">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
+			source="true">
+			<uri format="http://eclipse.svnkit.com/1.3.x?importType=binary" />
+		</provider>
+	</searchPath>
+
+	<searchPath name="polarion">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
+			source="true">
+			<uri format="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site?importType=binary" />
+		</provider>
+	</searchPath>
+
+	<searchPath name="org.eclipse.team.svn">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
+			source="true">
+			<uri format="http://download.eclipse.org/technology/subversive/0.7/update-site?importType=binary" />
+		</provider>
+	</searchPath>
+
 	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
 	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.slf4j\.extendable$" />
 	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.product$" />
 	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.feature$" />
+
+	<locator searchPathRef="polarion" pattern="^org\.polarion(\..+)?" />
+	<locator searchPathRef="org.eclipse.team.svn" pattern="^org\.eclipse\.team\.svn(\..+)?$" />
+
+	<locator searchPathRef="svnkit" pattern="^org\.tmatesoft\.svnkit(\..+)?" />
+	<locator searchPathRef="subclipse" pattern="^org\.tigris\.subversion(\..+)?" />
 
 	<locator searchPathRef="org.eclipse.platform"/>
 </rmap>

@@ -28,10 +28,24 @@
 	<property name="template.dir" location="${tools}/templates" />
 	<property name="local.workspace.gzip" location="${template.dir}/${workspace.gzip}" />
 
-	<!-- Echo the properties to a temporary file so that Buckminster can read them
+	<!-- Echo relevant properties to a temporary file so that Buckminster can read them
 	  -->
-	<tempfile destdir="${java.io.tmpdir}" prefix="build-" suffix=".properties" property="properties.tmp" deleteonexit="true"/>
-	<echoproperties destfile="${properties.tmp}"/>
+	<tempfile destdir="${java.io.tmpdir}" prefix="build-" suffix=".properties" deleteonexit="true" property="properties.tmp"/>
+	<echoproperties destfile="${properties.tmp}">
+		<!-- We don't want these. basedir in particular will cause problems if passed explicitly -->
+		<propertyset negate="true">
+			<propertyref name="basedir"/>
+			<propertyref name="properties.tmp"/>
+			<propertyref name="line.separator"/>
+			<propertyref name="path.separator"/>
+			<propertyref prefix="ant."/>
+			<propertyref prefix="eclipse."/>
+			<propertyref prefix="file."/>
+			<propertyref prefix="java."/>
+			<propertyref prefix="sun."/>
+			<propertyref prefix="user."/>
+		</propertyset>
+	</echoproperties>
 
 	<!-- This macro executes the default application of an eclipse installation that resides
 	     in the folder ${buildtools}/@app
