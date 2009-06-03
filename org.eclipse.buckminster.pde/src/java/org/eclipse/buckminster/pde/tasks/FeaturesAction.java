@@ -268,12 +268,16 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				if(configAdvice == null)
 					continue;
 
+				File[] files = configAdvice.getFiles();
+				if(files.length == 0)
+					continue;
+
 				IInstallableUnit iu = (IInstallableUnit)createFeatureRootFileIU(feature.getId(), feature.getVersion(),
 						null, configAdvice.getDescriptor())[0];
 
 				IArtifactKey artifactKey = iu.getArtifacts()[0];
 				ArtifactDescriptor artifactDescriptor = new ArtifactDescriptor(artifactKey);
-				publishArtifact(artifactDescriptor, configAdvice.getFiles(), null, publisherInfo, configAdvice);
+				publishArtifact(artifactDescriptor, files, null, publisherInfo, configAdvice);
 				result.addIU(iu, IPublisherResult.NON_ROOT);
 				ius.add(iu);
 			}
