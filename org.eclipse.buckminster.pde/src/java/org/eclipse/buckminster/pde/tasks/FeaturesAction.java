@@ -34,6 +34,7 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
@@ -47,9 +48,15 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties, IPath baseDirectory)
 	{
-		FeatureRootAdvice advice = new FeatureRootAdvice(featureId);
-
 		Map<String, Map<String, String>> configMap = TypedCollections.processRootProperties(buildProperties, true);
+		if(configMap.size() == 1)
+		{
+			Map<String, String> entry = configMap.get(Utils.ROOT_COMMON);
+			if(entry != null && entry.isEmpty())
+				return null;
+		}
+
+		FeatureRootAdvice advice = new FeatureRootAdvice(featureId);
 		for(Map.Entry<String, Map<String, String>> entry : configMap.entrySet())
 		{
 			String config = entry.getKey();
@@ -214,7 +221,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 					{
 						input = new BufferedInputStream(new FileInputStream(buildProps));
 						properties.load(input);
-						publisherInfo.addAdvice(createRootAdvice(cspec.getName(), properties, location));
+						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), properties, location);
+						if(rootAdvice != null)
+							publisherInfo.addAdvice(rootAdvice);
 					}
 					catch(FileNotFoundException e)
 					{
