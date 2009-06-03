@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
@@ -72,4 +73,11 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 			results.merge(innerResult, IPublisherResult.MERGE_MATCHING);
 		return status;
 	}
+
+	@Override
+	protected IPublisherAction createApplicationExecutableAction(String[] configSpecs)
+	{
+		return new ApplicationLauncherAction(id, version, flavor, executableName, getExecutablesLocation(), configSpecs);
+	}
+
 }

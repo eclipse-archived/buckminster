@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.eclipse.buckminster.core.actor.MissingPrerequisiteException;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -64,7 +66,6 @@ import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.eclipse.BundlesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
-import org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.osgi.util.NLS;
@@ -294,8 +295,8 @@ public class P2SiteGenerator extends AbstractActor
 		}
 	}
 
-	public void run(File siteDefiner, File sourceFolder, List<File> productConfigs, File siteFolder,
-			Map<String, ? extends Object> properties) throws CoreException
+	public void run(IActionContext ctx, File siteDefiner, File sourceFolder, List<File> productConfigs,
+			File siteFolder, Map<String, ? extends Object> properties) throws CoreException
 	{
 		if(siteDefiner == null || siteFolder == null)
 			// Nothing to do
@@ -345,7 +346,7 @@ public class P2SiteGenerator extends AbstractActor
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
 
-		IPublisherAction[] actions = createActions(sourceFolder, siteDescriptor, siteFolder, productConfigs);
+		IPublisherAction[] actions = createActions(ctx, sourceFolder, siteDescriptor, siteFolder, productConfigs);
 		Publisher publisher = new Publisher(info);
 		IStatus result = publisher.publish(actions, new NullProgressMonitor());
 		if(result.getSeverity() == IStatus.ERROR)
@@ -453,7 +454,7 @@ public class P2SiteGenerator extends AbstractActor
 			}
 		}
 
-		run(siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, siteDir, ctx.getProperties());
+		run(ctx, siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, siteDir, ctx.getProperties());
 		if(siteDir != outputDir)
 		{
 			// Zip the content of the siteDir. The name of the zip should
@@ -472,11 +473,34 @@ public class P2SiteGenerator extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private IPublisherAction[] createActions(File sourceFolder, Object siteDescriptor, File siteFolder,
-			List<File> productConfigs) throws CoreException
+	private void collectFeatures(CSpec cspec, Map<VersionedName, CSpec> cspecs, IActionContext ctx)
+			throws CoreException
+	{
+		ComponentIdentifier ci = cspec.getComponentIdentifier();
+		if(cspecs.put(new VersionedName(ci.getName(), ci.getVersion()), cspec) != null)
+			return;
+
+		Attribute refs = cspec.getAttribute(IPDEConstants.ATTRIBUTE_FEATURE_REFS);
+		for(Prerequisite preq : refs.getPrerequisites())
+		{
+			Attribute ref = preq.getReferencedAttribute(cspec, ctx);
+			collectFeatures(ref.getCSpec(), cspecs, ctx);
+		}
+	}
+
+	private Map<VersionedName, CSpec> collectFeatures(IActionContext ctx) throws CoreException
+	{
+		CSpec cspec = ctx.getAction().getCSpec();
+		Map<VersionedName, CSpec> cspecs = new HashMap<VersionedName, CSpec>();
+		collectFeatures(cspec, cspecs, ctx);
+		return cspecs;
+	}
+
+	private IPublisherAction[] createActions(IActionContext ctx, File sourceFolder, Object siteDescriptor,
+			File siteFolder, List<File> productConfigs) throws CoreException
 	{
 		ArrayList<IPublisherAction> actions = new ArrayList<IPublisherAction>();
-		actions.add(new FeaturesAction(new File[] { new File(siteFolder, "features") })); //$NON-NLS-1$
+		actions.add(new FeaturesAction(new File[] { new File(siteFolder, "features") }, collectFeatures(ctx))); //$NON-NLS-1$
 		actions.add(new BundlesAction(new File[] { new File(siteFolder, "plugins") })); //$NON-NLS-1$
 
 		Map<String, String> buildProperties = readBuildProperties(sourceFolder);
