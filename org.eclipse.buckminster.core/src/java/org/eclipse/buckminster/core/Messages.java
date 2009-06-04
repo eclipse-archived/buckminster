@@ -184,7 +184,7 @@ public class Messages extends NLS
 
 	public static String You_must_provide_a_preference_name;
 
-	public static String Only_absolute_paths_can_be_scheduled_for_removal;
+	public static String Only_absolute_paths_can_be_scheduled_for_removal_0;
 
 	public static String Parameter_0_is_illegal_for_id_1_extension_point_2;
 
