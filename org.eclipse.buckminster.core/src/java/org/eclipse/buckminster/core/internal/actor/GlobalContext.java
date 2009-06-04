@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osgi.util.NLS;
 
 public class GlobalContext extends ModelCache implements IGlobalContext
 {
@@ -103,7 +104,8 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	public void scheduleRemoval(IPath path)
 	{
 		if(!path.isAbsolute())
-			throw new IllegalArgumentException(Messages.Only_absolute_paths_can_be_scheduled_for_removal);
+			throw new IllegalArgumentException(NLS.bind(Messages.Only_absolute_paths_can_be_scheduled_for_removal_0,
+					path.toOSString()));
 
 		int idx = m_scheduledRemovals.size();
 		while(--idx >= 0)
