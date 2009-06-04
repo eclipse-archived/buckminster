@@ -312,11 +312,8 @@ public class RMContext extends ExpandingProperties<Object>
 		}
 
 		if(m_status == null)
-		{
-			m_status = new MultiStatus(CorePlugin.getID(), IStatus.OK, status instanceof MultiStatus
-					? ((MultiStatus)status).getChildren()
-					: new IStatus[] { status }, "Errors and Warnings", null); //$NON-NLS-1$
-		}
+			m_status = new MultiStatus(CorePlugin.getID(), IStatus.OK, new IStatus[] { status },
+					"Errors and Warnings", null); //$NON-NLS-1$
 		else
 			m_status.merge(status);
 	}
@@ -446,10 +443,6 @@ public class RMContext extends ExpandingProperties<Object>
 		IStatus status = m_status;
 		if(status == null)
 			return Status.OK_STATUS;
-
-		while(status.isMultiStatus() && status.getChildren().length == 1)
-			status = status.getChildren()[0];
-
 		return status;
 	}
 

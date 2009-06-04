@@ -11,7 +11,6 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.util.List;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
@@ -44,6 +43,12 @@ class ResolverNodeWithJob extends ResolverNode
 			return family == m_resolver;
 		}
 
+		@Override
+		protected IStatus run(IProgressMonitor monitor)
+		{
+			return ResolverNodeWithJob.this.run(monitor);
+		}
+
 		ResolverNodeWithJob getNode()
 		{
 			return ResolverNodeWithJob.this;
@@ -52,12 +57,6 @@ class ResolverNodeWithJob extends ResolverNode
 		boolean isScheduled()
 		{
 			return m_scheduled;
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor)
-		{
-			return ResolverNodeWithJob.this.run(monitor);
 		}
 
 		void setScheduled(boolean flag)
@@ -79,11 +78,72 @@ class ResolverNodeWithJob extends ResolverNode
 	}
 
 	@Override
-	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
+	public synchronized void addDependencyQualification(QualifiedDependency newQDep, String tagInfo)
+			throws CoreException
 	{
-		super.addDependencyQualification(newQDep);
+		super.addDependencyQualification(newQDep, tagInfo);
 		if(isInvalidated() && !isScheduled())
 			m_resolver.schedule(this);
+	}
+
+	protected IStatus run(IProgressMonitor monitor)
+	{
+		clearInvalidationFlag();
+		m_resolver.addJobMonitor(monitor);
+		BOMNode node = null;
+		try
+		{
+			node = resolve(monitor);
+			if(node != null)
+			{
+				m_resolver.resolutionPartDone();
+				buildTree(node);
+			}
+		}
+		catch(CoreException e)
+		{
+			RMContext context = m_resolver.getContext();
+			context.addRequestStatus(getQuery().getComponentRequest(), e.getStatus());
+			if(!context.isContinueOnError())
+				m_resolver.cancelTopMonitor();
+		}
+		catch(OperationCanceledException e)
+		{
+			return Status.CANCEL_STATUS;
+		}
+		catch(Throwable e)
+		{
+			m_resolver.getContext().addRequestStatus(getQuery().getComponentRequest(),
+					BuckminsterException.wrap(e).getStatus());
+		}
+		finally
+		{
+			m_resolver.removeJobMonitor(monitor);
+			if(node == null)
+				m_resolver.resolutionPartDone();
+		}
+		return Status.OK_STATUS;
+	}
+
+	NodeResolutionJob getJob()
+	{
+		return m_job;
+	}
+
+	boolean isScheduled()
+	{
+		return m_job.isScheduled();
+	}
+
+	boolean rebuildTree(BOMNode node) throws CoreException
+	{
+		clearInvalidationFlag();
+		return buildTree(node);
+	}
+
+	void setScheduled(boolean scheduled)
+	{
+		m_job.setScheduled(scheduled);
 	}
 
 	private boolean buildTree(BOMNode node) throws CoreException
@@ -143,22 +203,6 @@ class ResolverNodeWithJob extends ResolverNode
 		return didSchedule;
 	}
 
-	NodeResolutionJob getJob()
-	{
-		return m_job;
-	}
-
-	boolean isScheduled()
-	{
-		return m_job.isScheduled();
-	}
-
-	boolean rebuildTree(BOMNode node) throws CoreException
-	{
-		clearInvalidationFlag();
-		return buildTree(node);
-	}
-
 	private BOMNode resolve(IProgressMonitor monitor) throws CoreException
 	{
 		NodeQuery query;
@@ -175,50 +219,5 @@ class ResolverNodeWithJob extends ResolverNode
 			return null;
 
 		return m_resolver.innerResolve(query, monitor);
-	}
-
-	protected IStatus run(IProgressMonitor monitor)
-	{
-		clearInvalidationFlag();
-		m_resolver.addJobMonitor(monitor);
-		BOMNode node = null;
-		try
-		{
-			node = resolve(monitor);
-			if(node != null)
-			{
-				m_resolver.resolutionPartDone();
-				buildTree(node);
-			}
-		}
-		catch(CoreException e)
-		{
-			RMContext context = m_resolver.getContext();
-			context.addRequestStatus(getQuery().getComponentRequest(), e.getStatus());
-			if(!context.isContinueOnError())
-				m_resolver.cancelTopMonitor();
-		}
-		catch(OperationCanceledException e)
-		{
-			return Status.CANCEL_STATUS;
-		}
-		catch(Throwable e)
-		{
-			CorePlugin.getLogger().warning(e, e.toString());
-			m_resolver.getContext().addRequestStatus(getQuery().getComponentRequest(),
-					BuckminsterException.wrap(e).getStatus());
-		}
-		finally
-		{
-			m_resolver.removeJobMonitor(monitor);
-			if(node == null)
-				m_resolver.resolutionPartDone();
-		}
-		return Status.OK_STATUS;
-	}
-
-	void setScheduled(boolean scheduled)
-	{
-		m_job.setScheduled(scheduled);
 	}
 }

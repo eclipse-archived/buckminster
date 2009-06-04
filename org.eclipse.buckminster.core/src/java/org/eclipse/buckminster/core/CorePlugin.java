@@ -203,8 +203,24 @@ public class CorePlugin extends LogAwarePlugin
 			break;
 		default:
 			line.setLength(0);
-			for(int idx = 0; idx < indent; ++idx)
-				line.append(' ');
+			if(indent > 0)
+			{
+				char leadIn;
+				switch(status.getSeverity())
+				{
+				case IStatus.ERROR:
+					leadIn = 'E';
+					break;
+				case IStatus.WARNING:
+					leadIn = 'W';
+					break;
+				default:
+					leadIn = 'I';
+				}
+				line.append(leadIn);
+				for(int idx = 1; idx < indent; ++idx)
+					line.append(' ');
+			}
 
 			String msg = status.getMessage();
 			if(msg != null)

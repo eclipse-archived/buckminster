@@ -74,7 +74,7 @@ public class SiteFeatureResolutionBuilder extends AbstractResolutionBuilder
 		}
 
 		if(!infant)
-			nr.addDependencyQualification(qDep);
+			nr.addDependencyQualification(qDep, tagInfo);
 		return nr;
 	}
 

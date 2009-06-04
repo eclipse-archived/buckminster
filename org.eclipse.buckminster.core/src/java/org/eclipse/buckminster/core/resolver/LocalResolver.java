@@ -449,18 +449,23 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			return nrs[0];
 
 		int top = nrs.length;
+		boolean newRqOptional = request.isOptional();
 		for(int idx = 0; idx < top; ++idx)
 		{
 			nr = nrs[idx];
+			if(newRqOptional != nr.getQuery().getComponentRequest().isOptional())
+				// We cannot merge optionals with non optionals
+				continue;
+
 			try
 			{
-				nr.addDependencyQualification(qDep);
+				nr.addDependencyQualification(qDep, requestorInfo);
 				return nr;
 			}
 			catch(ComponentRequestConflictException e)
 			{
 				// We have a conflict. Two components with the same
-				// name but incompatible versions.
+				// name but incompatible versions or filters.
 				//
 				IStatus err = e.getStatus();
 				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING,

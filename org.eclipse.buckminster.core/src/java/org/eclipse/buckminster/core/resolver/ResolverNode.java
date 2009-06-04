@@ -49,7 +49,7 @@ public class ResolverNode
 
 	private Resolution m_resolution;
 
-	private String m_tagInfo;
+	private final String m_tagInfo;
 
 	public ResolverNode(NodeQuery query, String tagInfo)
 	{
@@ -60,7 +60,8 @@ public class ResolverNode
 			query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
 	}
 
-	public synchronized void addDependencyQualification(QualifiedDependency newQDep) throws CoreException
+	public synchronized void addDependencyQualification(QualifiedDependency newQDep, String tagInfo)
+			throws CoreException
 	{
 		NodeQuery query = m_query.addDependencyQualification(newQDep);
 		if(query == m_query)
@@ -80,6 +81,8 @@ public class ResolverNode
 				// Nope, the resolution is still valid for this new query
 				//
 				m_query = query;
+				if(tagInfo != null)
+					query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
 				return;
 			}
 		}
@@ -92,6 +95,8 @@ public class ResolverNode
 		m_children = s_noChildren;
 		m_query = query;
 		m_invalidateRun = true;
+		if(tagInfo != null)
+			query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
 	}
 
 	public BOMNode collectNodes(Map<UUID, BOMNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop)
@@ -246,10 +251,5 @@ public class ResolverNode
 	void setGeneratorNode(GeneratorNode generatorNode)
 	{
 		m_generatorNode = generatorNode;
-	}
-
-	void setQuery(NodeQuery query)
-	{
-		m_query = query;
 	}
 }

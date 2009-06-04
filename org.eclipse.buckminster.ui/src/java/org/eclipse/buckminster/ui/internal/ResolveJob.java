@@ -26,9 +26,9 @@ import org.eclipse.buckminster.ui.wizards.QueryWizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -75,25 +75,35 @@ public class ResolveJob extends Job
 
 			Display display = m_site.getShell().getDisplay();
 			ComponentRequest rootRequest = query.getExpandedRootRequest(ctx);
-			final BillOfMaterials bom = m_resolver.resolve(rootRequest, resolutionMonitor);
-			IStatus status = ctx.getStatus();
-			if(!ctx.isContinueOnError())
+			BillOfMaterials bom = null;
+			IStatus status;
+			try
 			{
-				if(status.getSeverity() == IStatus.ERROR)
-					return status;
-				if(!bom.isFullyResolved(query))
-					throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_resolve_0, rootRequest));
+				bom = m_resolver.resolve(rootRequest, resolutionMonitor);
+				status = ctx.getStatus();
 			}
+			catch(OperationCanceledException e)
+			{
+				status = ctx.getStatus();
+			}
+			catch(CoreException e)
+			{
+				status = e.getStatus();
+			}
+
 			CorePlugin.logWarningsAndErrors(status);
 			ctx.emitWarningAndErrorTags();
+			if(bom == null || (status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError()))
+				return Status.OK_STATUS;
 
 			if(!m_materialize)
 			{
+				final BillOfMaterials finalBom = bom;
 				display.asyncExec(new Runnable()
 				{
 					public void run()
 					{
-						QueryWizard.openWizard(m_site, m_resolver.getContext(), bom);
+						QueryWizard.openWizard(m_site, m_resolver.getContext(), finalBom);
 					}
 				});
 				return Status.OK_STATUS;

@@ -200,6 +200,11 @@
           key="instance/org.eclipse.buckminster.runtime/rmap/resolverThreadsMax"
           name="maxParallelResolutions">
     </prefmapping>
+    <prefmapping
+          description="The location of the .buckminster project"
+          key="instance/org.eclipse.buckminster.runtime/bmProjectContents"
+          name="buckminsterProjectPath">
+    </prefmapping>
  </extension>
 	<extension point="org.eclipse.buckminster.cmdline.commands">
 		<command

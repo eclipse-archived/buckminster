@@ -177,6 +177,9 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		else if(thatCType != null && !thisCType.equals(thatCType))
 			throw new ComponentRequestConflictException(this, that);
 
+		if(!Trivial.equalsAllowNull(getFilter(), that.getFilter()))
+			throw new ComponentRequestConflictException(this, that);
+
 		VersionRange thisVD = getVersionRange();
 		VersionRange thatVD = that.getVersionRange();
 		if(thisVD == null)
