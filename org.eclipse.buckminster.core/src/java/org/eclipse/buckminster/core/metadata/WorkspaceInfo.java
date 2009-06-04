@@ -100,7 +100,12 @@ public class WorkspaceInfo
 
 	public static void forceRefreshOnAll(IProgressMonitor monitor)
 	{
-		MultiStatus status = new MultiStatus(CorePlugin.getID(), IStatus.OK, Messages.Problems_during_metadata_refresh,
+		CorePlugin plugin = CorePlugin.getDefault();
+		if(plugin == null)
+			// We're shutting down
+			return;
+
+		MultiStatus status = new MultiStatus(plugin.toString(), IStatus.OK, Messages.Problems_during_metadata_refresh,
 				null);
 		monitor.beginTask(Messages.Refreshing_meta_data, 1000);
 		s_hasBeenActivated = true;
