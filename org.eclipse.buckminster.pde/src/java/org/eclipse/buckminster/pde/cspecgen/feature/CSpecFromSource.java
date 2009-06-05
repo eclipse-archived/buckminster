@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
@@ -23,8 +24,10 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,6 +42,7 @@ import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
+import org.osgi.framework.InvalidSyntaxException;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecGenerator
@@ -311,6 +315,20 @@ public class CSpecFromSource extends CSpecGenerator
 	ComponentRequestBuilder createDependency(IFeatureChild feature) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
+		if(feature.isOptional())
+		{
+			if(filter == null)
+				filter = P2_OPTIONAL_FILTER;
+			else
+				try
+				{
+					filter = FilterFactory.newInstance("(&" + filter.toString() + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL + ')'); //$NON-NLS-1$
+				}
+				catch(InvalidSyntaxException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+		}
 		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(),
 				feature.getMatch(), filter);
 	}

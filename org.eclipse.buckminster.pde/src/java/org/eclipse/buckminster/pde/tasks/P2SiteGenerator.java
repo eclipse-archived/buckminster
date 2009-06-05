@@ -484,7 +484,8 @@ public class P2SiteGenerator extends AbstractActor
 		for(Prerequisite preq : refs.getPrerequisites())
 		{
 			Attribute ref = preq.getReferencedAttribute(cspec, ctx);
-			collectFeatures(ref.getCSpec(), cspecs, ctx);
+			if(ref != null)
+				collectFeatures(ref.getCSpec(), cspecs, ctx);
 		}
 	}
 
