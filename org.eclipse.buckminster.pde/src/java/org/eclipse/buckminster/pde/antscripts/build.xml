@@ -182,6 +182,18 @@
 		<replace token="${token}" value="${value}" file="${sp:action.output}"/>
 	</target>
 
+	<target name="replaceFeatureVersion">
+		<extractFeatureVersion file="${sp:manifest}" property="feature.version"/>
+		<copy file="${sp:action.input}" tofile="${sp:action.output}"/>
+		<replace token="${token}" value="${feature.version}" file="${sp:action.output}"/>
+	</target>
+
+	<target name="replaceBundleVersion">
+		<extractBundleVersion file="${sp:manifest}" property="bundle.version"/>
+		<copy file="${sp:action.input}" tofile="${sp:action.output}"/>
+		<replace token="${token}" value="${bundle.version}" file="${sp:action.output}"/>
+	</target>
+
 	<target name="expand.bundle.version" depends="create.output.dir">
 		<property name="sp:properties" value=""/>
 		<buckminster.consolidateBundle inputFile="${sp:manifest}" outputFile="${sp:action.output}" propertiesFile="${sp:properties}"/>
