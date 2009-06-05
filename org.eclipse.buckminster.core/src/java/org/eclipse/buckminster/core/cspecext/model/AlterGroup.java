@@ -50,8 +50,8 @@ public class AlterGroup extends AlterAttribute<Group>
 		GroupBuilder gBld = (GroupBuilder)original;
 		alterPrerequisiteMap(gBld);
 		alterDocumentation(gBld);
-		gBld.setPrerequisiteRebase(CSpecExtension.overrideCheckNull(gBld.getPrerequisiteRebase(), base
-				.getPrerequisiteRebase()));
+		gBld.setPrerequisiteRebase(CSpecExtension.overrideCheckNull(gBld.getPrerequisiteRebase(),
+				base.getPrerequisiteRebase()));
 	}
 
 	protected void alterPrerequisiteMap(GroupBuilder original) throws CoreException
@@ -80,7 +80,7 @@ public class AlterGroup extends AlterAttribute<Group>
 			}
 
 			for(String pqName : m_removedPrerequisites)
-				pqs.remove(pqName);
+				pqs.remove(GroupBuilder.indexOfPrerequisite(pqs, pqName));
 			for(IPrerequisite pq : m_alteredPrerequisites.values())
 				((PrerequisiteBuilder)pqs.get(GroupBuilder.indexOfPrerequisite(pqs, pq.toString()))).initFrom(pq);
 			for(Prerequisite pq : addedPqs)

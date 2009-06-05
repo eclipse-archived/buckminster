@@ -33,14 +33,7 @@ class AlterGroupHandler extends AlterAttributeHandler
 	private final RemoveHandler m_removeHandler = new RemoveHandler(this, AlterGroup.ELEM_REMOVE,
 			NamedElement.ATTR_NAME);
 
-	private final PrerequisiteHandler m_alterHandler = new PrerequisiteHandler(this)
-	{
-		@Override
-		public String getTAG()
-		{
-			return AlterGroup.ELEM_ALTER_ATTRIBUTE;
-		}
-	};
+	private final PrerequisiteHandler m_alterHandler = new PrerequisiteHandler(this);
 
 	AlterGroupHandler(AbstractHandler parent, AttributeHandler baseHandler)
 	{
