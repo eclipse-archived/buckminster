@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
@@ -63,6 +62,16 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		}
 	}
 
+	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException
+	{
+		IPath location = WorkspaceInfo.getComponentLocation(cid);
+		IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
+		if(readerType == null)
+			return null;
+
+		return readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
+	}
+
 	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
 	{
 		long now = System.currentTimeMillis();
@@ -83,12 +92,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 
 		try
 		{
-			IPath location = WorkspaceInfo.getComponentLocation(cid);
-			IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
-			if(readerType == null)
-				return currentVersion;
-
-			Date lastMod = readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
+			Date lastMod = getLastModification(cid, context);
 			if(lastMod == null)
 				return currentVersion;
 
@@ -101,7 +105,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 			mf.setTimeZone(DateAndTimeUtils.UTC);
 			mf.setLenient(false);
 
-			for(IComponentIdentifier dependency : dependencies)
+			for(ComponentIdentifier dependency : dependencies)
 			{
 				Version depVer = dependency.getVersion();
 				if(depVer == null)
@@ -135,6 +139,17 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 						}
 					}
 				}
+				if(depLastMod == null)
+				{
+					try
+					{
+						depLastMod = getLastModification(dependency, context);
+					}
+					catch(CoreException e)
+					{
+					}
+				}
+
 				if(depLastMod != null && depLastMod.compareTo(lastMod) > 0)
 					lastMod = depLastMod;
 			}
