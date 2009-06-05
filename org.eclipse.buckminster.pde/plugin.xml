@@ -184,4 +184,12 @@
        </alias>
     </command>
  </extension>
+ <extension
+       point="org.eclipse.ant.core.antProperties">
+    <antProperty
+          class="org.eclipse.buckminster.pde.antscripts.AntProperties"
+          headless="true"
+          name="buckminster.pdetasks">
+    </antProperty>
+ </extension>
 </plugin>

@@ -59,6 +59,55 @@ public class AntActor extends AbstractActor
 
 	private final static String BUILD_SCRIPT_RESOURCE = "resource"; //$NON-NLS-1$
 
+	public static IPath getBuildFileExtension(String buildFileId) throws CoreException
+	{
+		IConfigurationElement resourceElem = null;
+		IExtensionRegistry er = Platform.getExtensionRegistry();
+		for(IConfigurationElement elem : er.getConfigurationElementsFor(BUILD_SCRIPT_POINT))
+		{
+			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
+			{
+				resourceElem = elem;
+				break;
+			}
+		}
+
+		if(resourceElem == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_No_extension_found_defines_0_1,
+					AntActor.PROP_BUILD_FILE_ID, buildFileId));
+
+		// The resource must be loaded by the bundle that contributes it
+		//
+		String contributor = resourceElem.getContributor().getName();
+		Bundle contributorBundle = Platform.getBundle(contributor);
+		if(contributorBundle == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unable_to_load_bundle_0, contributor));
+
+		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
+		if(rsURL == null)
+			throw BuckminsterException.fromMessage(NLS.bind(
+					Messages.AntActor_Extension_found_using_0_1_appoints_non_existing_resource,
+					AntActor.PROP_BUILD_FILE_ID, buildFileId));
+
+		try
+		{
+			rsURL = FileLocator.toFileURL(rsURL);
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+
+		if(!"file".equalsIgnoreCase(rsURL.getProtocol())) //$NON-NLS-1$
+			//
+			// This should never happen. It's a resource in an active plug-in right?
+			//
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unexpected_protocol_0,
+					rsURL.getProtocol()));
+
+		return FileUtils.getFileAsPath(rsURL);
+	}
+
 	private static void addPathGroupArraysToProperties(Map<String, PathGroup[]> namedPGA, Map<String, String> props)
 	{
 		if(namedPGA == null)
@@ -124,8 +173,8 @@ public class AntActor extends AbstractActor
 	{
 		// script name must always be relative to project root
 		//
-		String buildFileId = this.getBuildFileIdProperty(ctx);
-		String buildFile = this.getBuildFileProperty(ctx);
+		String buildFileId = getBuildFileIdProperty(ctx);
+		String buildFile = getBuildFileProperty(ctx);
 		if(buildFile == null)
 		{
 			if(buildFileId == null)
@@ -133,7 +182,7 @@ public class AntActor extends AbstractActor
 						AntActor.PROP_BUILD_FILE));
 
 			buildFileId = ExpandingProperties.expand(ctx.getProperties(), buildFileId, 0);
-			return this.getBuildFileExtension(buildFileId);
+			return getBuildFileExtension(buildFileId);
 		}
 
 		if(buildFileId != null)
@@ -151,12 +200,12 @@ public class AntActor extends AbstractActor
 
 	protected String getBuildFileIdProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntActor.PROP_BUILD_FILE_ID));
+		return TextUtils.notEmptyTrimmedString(getActorProperty(AntActor.PROP_BUILD_FILE_ID));
 	}
 
 	protected String getBuildFileProperty(IActionContext ctx) throws CoreException
 	{
-		return TextUtils.notEmptyTrimmedString(this.getActorProperty(AntActor.PROP_BUILD_FILE));
+		return TextUtils.notEmptyTrimmedString(getActorProperty(AntActor.PROP_BUILD_FILE));
 	}
 
 	protected Map<String, String> getDefaultProperties(IActionContext ctx) throws CoreException
@@ -169,7 +218,7 @@ public class AntActor extends AbstractActor
 		// if the user has explicitly entered a blank field, return null to
 		// indicate 'use the default target'
 		//
-		String tlist = this.getTargetsString(ctx);
+		String tlist = getTargetsString(ctx);
 		if(tlist.length() == 0)
 			return null;
 
@@ -187,7 +236,7 @@ public class AntActor extends AbstractActor
 
 	protected final String getTargetsString(IActionContext ctx)
 	{
-		String tlist = this.getActorProperty(AntActor.PROP_TARGETS);
+		String tlist = getActorProperty(AntActor.PROP_TARGETS);
 
 		// if no targets field has been defined, use the action name
 		//
@@ -207,7 +256,7 @@ public class AntActor extends AbstractActor
 		PrintStream origErr = System.err;
 		try
 		{
-			IPath buildFile = this.getBuildFile(ctx);
+			IPath buildFile = getBuildFile(ctx);
 
 			// We add the installer hints onto the context properties.
 			//
@@ -260,54 +309,5 @@ public class AntActor extends AbstractActor
 			System.setErr(origErr);
 			monitor.done();
 		}
-	}
-
-	private IPath getBuildFileExtension(String buildFileId) throws CoreException
-	{
-		IConfigurationElement resourceElem = null;
-		IExtensionRegistry er = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : er.getConfigurationElementsFor(BUILD_SCRIPT_POINT))
-		{
-			if(elem.getAttribute(BUILD_SCRIPT_ID).equals(buildFileId))
-			{
-				resourceElem = elem;
-				break;
-			}
-		}
-
-		if(resourceElem == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_No_extension_found_defines_0_1,
-					AntActor.PROP_BUILD_FILE_ID, buildFileId));
-
-		// The resource must be loaded by the bundle that contributes it
-		//
-		String contributor = resourceElem.getContributor().getName();
-		Bundle contributorBundle = Platform.getBundle(contributor);
-		if(contributorBundle == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unable_to_load_bundle_0, contributor));
-
-		URL rsURL = contributorBundle.getResource(resourceElem.getAttribute(BUILD_SCRIPT_RESOURCE));
-		if(rsURL == null)
-			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.AntActor_Extension_found_using_0_1_appoints_non_existing_resource,
-					AntActor.PROP_BUILD_FILE_ID, buildFileId));
-
-		try
-		{
-			rsURL = FileLocator.toFileURL(rsURL);
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-
-		if(!"file".equalsIgnoreCase(rsURL.getProtocol())) //$NON-NLS-1$
-			//
-			// This should never happen. It's a resource in an active plug-in right?
-			//
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.AntActor_Unexpected_protocol_0, rsURL
-					.getProtocol()));
-
-		return FileUtils.getFileAsPath(rsURL);
 	}
 }
