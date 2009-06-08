@@ -175,7 +175,7 @@ class JarInfo implements IConstants
 
 		if(!hasClasses())
 			args.add("-E0"); //$NON-NLS-1$
-		else if(eclipseInf == null)
+		else if(eclipseInf == null || !eclipseInf.containsKey(PROP_PACK200_ARGS))
 			args.add("-E4"); //$NON-NLS-1$
 
 		if(!args.isEmpty())
