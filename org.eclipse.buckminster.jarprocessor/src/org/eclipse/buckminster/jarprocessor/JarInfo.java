@@ -270,7 +270,7 @@ class JarInfo implements IConstants
 				args.add(arg);
 			}
 		}
-		if(!hasEffort)
+		if(!hasEffort && atLeaf)
 			args.add("-E4"); //$NON-NLS-1$
 	}
 }
