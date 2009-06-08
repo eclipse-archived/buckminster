@@ -165,18 +165,19 @@ class JarInfo implements IConstants
 
 		List<String> args = new ArrayList<String>();
 		appendArgs(args);
-		if(!hasClasses())
+		int idx = args.size();
+		while(--idx >= 0)
 		{
-			// Only acceptable effort is -E0
-			int idx = args.size();
-			while(--idx >= 0)
-			{
-				Matcher m = RecursivePack200.EFFORT_PATTERN.matcher(args.get(idx));
-				if(m.matches())
-					args.remove(idx);
-			}
-			args.add("-E0"); //$NON-NLS-1$
+			Matcher m = RecursivePack200.EFFORT_PATTERN.matcher(args.get(idx));
+			if(m.matches())
+				args.remove(idx);
 		}
+
+		if(!hasClasses())
+			args.add("-E0"); //$NON-NLS-1$
+		else if(eclipseInf == null)
+			args.add("-E4"); //$NON-NLS-1$
+
 		if(!args.isEmpty())
 			map.put(PROP_PACK200_ARGS, TextUtils.concat(args, " ")); //$NON-NLS-1$
 		return map;
