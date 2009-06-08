@@ -187,24 +187,6 @@
 		<delete dir="${tools}/buckminster" failonerror="true" quiet="true"/>
 	</target>
 
-	<available property="at.build.eclipse.org" type="dir" file="${http.download.location}"/>
-	<target name="promote.from.local.client" unless="at.build.eclipse.org">
-		<echo message="Promotion from local client is not yet implemented"/>
-	</target>
-
-	<target name="promote.at.build.eclipse.org" if="at.build.eclipse.org">
-		<property name="http.buckminster.location" location="${http.download.location}/tools/buckminster"/>
-		<property name="eclipse.site" location="${http.buckminster.location}/experiment-3.5"/>
-		<delete includeemptydirs="true">
-			<fileset dir="${eclipse.site}" includes="**/*" defaultexcludes="false"/>
-		</delete>
-		<unzip dest="${eclipse.site}">
-			<fileset dir="${buckminster.output.root}" includes="org.eclipse.buckminster.site.eclipse_*-eclipse.feature/*.zip"/>
-		</unzip>
-	</target>
-
-	<target name="promote" depends="promote.at.build.eclipse.org,promote.from.local.client"/>
-
 	<target name="clean.tp">
 		<delete dir="${targetPlatformPath}" failonerror="true" quiet="true"/>
 	</target>
