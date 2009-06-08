@@ -9,12 +9,14 @@
 package org.eclipse.buckminster.jarprocessor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarInputStream;
+import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -147,12 +149,12 @@ class JarInfo implements IConstants
 
 	void appendArgs(List<String> args)
 	{
+		if(parent != null)
+			parent.appendArgs(args);
+
 		if(eclipseInf != null)
 			for(String arg : TextUtils.splitAndTrim(eclipseInf.get(PROP_PACK200_ARGS), " \t\n")) //$NON-NLS-1$
 				args.add(arg);
-
-		if(parent != null)
-			parent.appendArgs(args);
 	}
 
 	Map<String, String> getEclipseInf()
@@ -160,6 +162,23 @@ class JarInfo implements IConstants
 		Map<String, String> map = new HashMap<String, String>();
 		if(eclipseInf != null)
 			map.putAll(eclipseInf);
+
+		List<String> args = new ArrayList<String>();
+		appendArgs(args);
+		if(!hasClasses())
+		{
+			// Only acceptable effort is -E0
+			int idx = args.size();
+			while(--idx >= 0)
+			{
+				Matcher m = RecursivePack200.EFFORT_PATTERN.matcher(args.get(idx));
+				if(m.matches())
+					args.remove(idx);
+			}
+			args.add("-E0"); //$NON-NLS-1$
+		}
+		if(!args.isEmpty())
+			map.put(PROP_PACK200_ARGS, TextUtils.concat(args, " ")); //$NON-NLS-1$
 		return map;
 	}
 

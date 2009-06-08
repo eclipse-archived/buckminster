@@ -44,13 +44,13 @@ abstract class RecursivePack200 implements IConstants
 
 	private final List<String> m_defaultArgs;
 
+	static final Pattern EFFORT_PATTERN = Pattern.compile("^-(?:E|-effort=)([0-9])$"); //$NON-NLS-1$
+
 	private static final Pattern s_stripDebugPattern = Pattern.compile("^-(?:G|-strip-debug)$"); //$NON-NLS-1$
 
 	private static final Pattern s_noKeepFileOrderPattern = Pattern.compile("^-(?:O|-no-keep-file-order)$"); //$NON-NLS-1$
 
 	private static final Pattern s_keepFileOrderPattern = Pattern.compile("^--keep-file-order$"); //$NON-NLS-1$
-
-	private static final Pattern s_effortPattern = Pattern.compile("^-(?:E|-effort=)([0-9])$"); //$NON-NLS-1$
 
 	private static final Pattern s_segmentLimitPattern = Pattern.compile("^-(?:S|-segment-limit=)([0-9]+)$"); //$NON-NLS-1$
 
@@ -101,14 +101,14 @@ abstract class RecursivePack200 implements IConstants
 
 		if(!jarInfo.hasClasses())
 		{
-			// This is a nested pack. No need to pack again.
+			// This is a parent of a nested pack. No need to pack again.
 			propsAdded.add(Packer.EFFORT);
 			properties.put(Packer.EFFORT, "0"); //$NON-NLS-1$
 		}
 
 		for(String arg : args)
 		{
-			Matcher m = s_effortPattern.matcher(arg);
+			Matcher m = EFFORT_PATTERN.matcher(arg);
 			if(m.matches())
 			{
 				if(propsAdded.add(Packer.EFFORT))
