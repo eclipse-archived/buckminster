@@ -932,11 +932,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 				if(newFiles.size() > 0)
 				{
-					BundleDescription[] bds = new BundleDescription[newFiles.size()];
-					int pidx = 0;
+					List<BundleDescription> bds = new ArrayList<BundleDescription>(newFiles.size());
 					for(String newFile : newFiles)
-						bds[pidx++] = state.addBundle(new File(newFile), -1);
-					state.createTargetModels(bds);
+					{
+						BundleDescription bundle = state.addBundle(new File(newFile), -1);
+						if(bundle != null)
+							bds.add(bundle);
+					}
+					state.createTargetModels(bds.toArray(new BundleDescription[bds.size()]));
 				}
 			}
 			else
