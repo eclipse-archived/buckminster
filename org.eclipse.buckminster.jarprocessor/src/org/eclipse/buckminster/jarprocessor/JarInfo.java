@@ -149,12 +149,7 @@ class JarInfo implements IConstants
 
 	void appendArgs(List<String> args)
 	{
-		if(parent != null)
-			parent.appendArgs(args);
-
-		if(eclipseInf != null)
-			for(String arg : TextUtils.splitAndTrim(eclipseInf.get(PROP_PACK200_ARGS), " \t\n")) //$NON-NLS-1$
-				args.add(arg);
+		appendArgs(args, true);
 	}
 
 	Map<String, String> getEclipseInf()
@@ -165,19 +160,6 @@ class JarInfo implements IConstants
 
 		List<String> args = new ArrayList<String>();
 		appendArgs(args);
-		int idx = args.size();
-		while(--idx >= 0)
-		{
-			Matcher m = RecursivePack200.EFFORT_PATTERN.matcher(args.get(idx));
-			if(m.matches())
-				args.remove(idx);
-		}
-
-		if(!hasClasses())
-			args.add("-E0"); //$NON-NLS-1$
-		else if(eclipseInf == null || !eclipseInf.containsKey(PROP_PACK200_ARGS))
-			args.add("-E4"); //$NON-NLS-1$
-
 		if(!args.isEmpty())
 			map.put(PROP_PACK200_ARGS, TextUtils.concat(args, " ")); //$NON-NLS-1$
 		return map;
@@ -254,5 +236,41 @@ class JarInfo implements IConstants
 			bld.append("!/"); //$NON-NLS-1$
 		}
 		bld.append(jarName);
+	}
+
+	private void appendArgs(List<String> args, boolean atLeaf)
+	{
+		if(parent != null)
+		{
+			parent.appendArgs(args, false);
+			if(parent.isExcludeChildren())
+				return;
+		}
+
+		boolean hasEffort = false;
+		if(atLeaf && !hasClasses())
+		{
+			// This is the only reasonable effort for a jar that contains no
+			// classes.
+			args.add("-E0"); //$NON-NLS-1$
+			hasEffort = true;
+		}
+
+		if(eclipseInf != null)
+		{
+			for(String arg : TextUtils.splitAndTrim(eclipseInf.get(PROP_PACK200_ARGS), " \t\n")) //$NON-NLS-1$
+			{
+				Matcher m = RecursivePack200.EFFORT_PATTERN.matcher(arg);
+				if(m.matches())
+				{
+					if(hasEffort || !atLeaf)
+						continue;
+					hasEffort = true;
+				}
+				args.add(arg);
+			}
+		}
+		if(!hasEffort)
+			args.add("-E4"); //$NON-NLS-1$
 	}
 }
