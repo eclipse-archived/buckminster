@@ -9,6 +9,12 @@ usage: build
  -?
 --help
   Show this help text
+
  -c
 --clean
   Runs the clean targets before the regular build targets.
+
+ -t
+--thorough
+  Performs a second full build instead of just adding incremental builds when the initial
+  build is not successful.

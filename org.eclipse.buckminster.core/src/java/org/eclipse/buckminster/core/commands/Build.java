@@ -33,9 +33,17 @@ public class Build extends WorkspaceCommand
 {
 	static private final OptionDescriptor s_cleanDescriptor = new OptionDescriptor('c', "clean", OptionValueType.NONE); //$NON-NLS-1$
 
+	static private final OptionDescriptor s_thoroughDescriptor = new OptionDescriptor('t',
+			"thorough", OptionValueType.NONE); //$NON-NLS-1$
+
 	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
 
 	public static IMarker[] build(IProgressMonitor monitor, boolean clean) throws Exception
+	{
+		return build(monitor, clean, false);
+	}
+
+	public static IMarker[] build(IProgressMonitor monitor, boolean clean, boolean thorough) throws Exception
 	{
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot wsRoot = ws.getRoot();
@@ -92,7 +100,10 @@ public class Build extends WorkspaceCommand
 
 				// Build incrementally and then obtain a new set of markers
 				//
-				ws.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, MonitorUtils.subMonitor(monitor, projs.length));
+				int buildType = (thorough && retries == 0)
+						? IncrementalProjectBuilder.FULL_BUILD
+						: IncrementalProjectBuilder.INCREMENTAL_BUILD;
+				ws.build(buildType, MonitorUtils.subMonitor(monitor, projs.length));
 			}
 			Arrays.sort(markers, new Comparator<IMarker>()
 			{
@@ -142,10 +153,13 @@ public class Build extends WorkspaceCommand
 	//
 	private boolean m_clean = false;
 
+	private boolean m_thorough = false;
+
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
 	{
 		appendHere.add(s_cleanDescriptor);
+		appendHere.add(s_thoroughDescriptor);
 		super.getOptionDescriptors(appendHere);
 	}
 
@@ -154,6 +168,8 @@ public class Build extends WorkspaceCommand
 	{
 		if(option.is(s_cleanDescriptor))
 			m_clean = true;
+		else if(option.is(s_thoroughDescriptor))
+			m_thorough = true;
 		else
 			super.handleOption(option);
 	}
@@ -169,7 +185,7 @@ public class Build extends WorkspaceCommand
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
 		int exitValue = 0;
-		for(IMarker problem : build(monitor, m_clean))
+		for(IMarker problem : build(monitor, m_clean, m_thorough))
 		{
 			switch(problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO))
 			{
