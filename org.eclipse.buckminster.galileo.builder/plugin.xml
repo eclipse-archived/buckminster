@@ -2,13 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.m2m.qvt.oml.runtime.qvtTransformation">
-      <transformation
-            file="build.qvto"
-            id="build">
-      </transformation>
-   </extension>
-   <extension
          id="app"
          name="Galileo Builder"
          point="org.eclipse.core.runtime.applications">

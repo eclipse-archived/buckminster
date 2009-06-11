@@ -46,11 +46,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -64,12 +66,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUni
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.gmf.internal.xpand.ant.XpandFacade;
-import org.eclipse.m2m.internal.qvt.oml.common.launch.TargetUriData;
-import org.eclipse.m2m.internal.qvt.oml.emf.util.ModelContent;
-import org.eclipse.m2m.internal.qvt.oml.runtime.launch.QvtLaunchConfigurationDelegateBase;
-import org.eclipse.m2m.internal.qvt.oml.runtime.project.DeployedQvtModule;
-import org.eclipse.m2m.internal.qvt.oml.runtime.project.QvtInterpretedTransformation;
-import org.eclipse.m2m.internal.qvt.oml.runtime.project.QvtTransformation;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -844,33 +840,27 @@ public class Builder implements IApplication {
 	 *             If something goes wrong with during the process
 	 */
 	private void runTransformation(Date now) throws CoreException {
-		File generatedBuildModel = null;
 		try {
-			// Transform the model, i.e. collect all contributions and create
-			// one single build model file
-			Map<String, Object> configuration = new HashMap<String, Object>();
-			configuration.put("date", DATE_FORMAT.format(now)); //$NON-NLS-1$
-			configuration.put("time", TIME_FORMAT.format(now)); //$NON-NLS-1$
-			QvtTransformation transf = new QvtInterpretedTransformation(new DeployedQvtModule('/' + Activator.PLUGIN_ID + "/build.qvto")); //$NON-NLS-1$
-			List<ModelContent> inObjects = Collections.singletonList(transf.loadInput(org.eclipse.emf.common.util.URI
-					.createFileURI(buildModelLocation.getAbsolutePath())));
-			generatedBuildModel = File.createTempFile("buildModel_", ".tmp"); //$NON-NLS-1$//$NON-NLS-2$
-
-			List<TargetUriData> targetData = Collections.singletonList(new TargetUriData(createURI(generatedBuildModel).toString()));
-			QvtLaunchConfigurationDelegateBase.doLaunch(transf, inObjects, targetData, configuration, null);
-
 			// Load the Java model into memory
 			resourceSet = new ResourceSetImpl();
 			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
 					new XMIResourceFactoryImpl());
 			BuildPackage.eINSTANCE.eClass();
-			org.eclipse.emf.common.util.URI fileURI = org.eclipse.emf.common.util.URI.createFileURI(generatedBuildModel.getAbsolutePath());
+			org.eclipse.emf.common.util.URI fileURI = org.eclipse.emf.common.util.URI.createFileURI(buildModelLocation.getAbsolutePath());
 			Resource resource = resourceSet.getResource(fileURI, true);
 			EList<EObject> content = resource.getContents();
 			if (content.size() != 1)
 				throw BuckminsterException.fromMessage("ECore Resource did not contain one resource. It had %d", Integer.valueOf(content.size()));
 
 			build = (Build) content.get(0);
+			Diagnostic diag = Diagnostician.INSTANCE.validate(build);
+			if (diag.getSeverity() == Diagnostic.ERROR) {
+				Logger log = Buckminster.getLogger();
+				for (Diagnostic childDiag : diag.getChildren())
+					log.error(childDiag.getMessage());
+				throw BuckminsterException.fromMessage("Build model validation failed: %s", diag.getMessage());
+			}
+
 			if (buildRoot == null)
 				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
@@ -891,9 +881,6 @@ public class Builder implements IApplication {
 				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
-		} finally {
-			if (generatedBuildModel != null)
-				generatedBuildModel.delete();
 		}
 	}
 
