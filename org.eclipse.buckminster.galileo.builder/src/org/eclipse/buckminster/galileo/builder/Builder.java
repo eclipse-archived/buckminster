@@ -356,6 +356,8 @@ public class Builder implements IApplication {
 
 	private boolean brandingBuild = true;
 
+	private boolean mirrorReferences = false;
+
 	private boolean production = false;
 
 	private PackedStrategy packedStrategy = PackedStrategy.COPY;
@@ -484,6 +486,10 @@ public class Builder implements IApplication {
 
 	public boolean isBrandingBuild() {
 		return brandingBuild;
+	}
+
+	public boolean isMirrorReferences() {
+		return mirrorReferences;
 	}
 
 	public boolean isProduction() {
@@ -647,6 +653,10 @@ public class Builder implements IApplication {
 				if (++idx >= top)
 					requiresArgument(arg);
 				setBrandingContribution(args[idx]);
+				continue;
+			}
+			if ("-mirrorReferences".equalsIgnoreCase(arg)) {
+				setMirrorReferences(true);
 				continue;
 			}
 			if ("-noBrandingBuild".equalsIgnoreCase(arg)) {
@@ -1016,6 +1026,10 @@ public class Builder implements IApplication {
 
 	public void setLogURL(String logURL) {
 		this.logURL = logURL;
+	}
+
+	public void setMirrorReferences(boolean mirrorReferences) {
+		this.mirrorReferences = mirrorReferences;
 	}
 
 	public void setMockEmailCC(String mockEmailCc) {
