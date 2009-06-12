@@ -144,21 +144,6 @@ public class MirrorGenerator extends BuilderPhase {
 		return (repository instanceof ICompositeRepository) ? ((ICompositeRepository) repository).getChildren() : Collections.emptyList();
 	}
 
-	private static List<RepositoryReference> getRepositoryReferences(IMetadataRepositoryManager mdrMgr, IMetadataRepository mdr) throws CoreException {
-		if (mdr instanceof LocalMetadataRepository)
-			return getRepositoryReferences((LocalMetadataRepository) mdr);
-
-		if (mdr instanceof CompositeMetadataRepository) {
-			HashSet<RepositoryReference> compositeRefs = new HashSet<RepositoryReference>();
-			for (URI child : getCompositeChildren(mdr))
-				compositeRefs.addAll(getRepositoryReferences(mdrMgr, mdrMgr.loadRepository(child, null)));
-			if (compositeRefs.size() > 0)
-				return new ArrayList<RepositoryReference>(compositeRefs);
-		}
-
-		return Collections.emptyList();
-	}
-
 	@SuppressWarnings("unchecked")
 	private static List<RepositoryReference> getRepositoryReferences(LocalMetadataRepository localMdr) throws CoreException {
 		try {
@@ -205,8 +190,27 @@ public class MirrorGenerator extends BuilderPhase {
 				optimized.getArtifactKey(), target.getLocation(), result.getMessage());
 	}
 
+	private IMetadataRepositoryManager mdrMgr = null;
+
+	private IArtifactRepositoryManager arMgr = null;
+
 	public MirrorGenerator(Builder builder) {
 		super(builder);
+	}
+
+	private List<RepositoryReference> getRepositoryReferences(IMetadataRepository mdr) throws CoreException {
+		if (mdr instanceof LocalMetadataRepository)
+			return getRepositoryReferences((LocalMetadataRepository) mdr);
+
+		if (mdr instanceof CompositeMetadataRepository) {
+			HashSet<RepositoryReference> compositeRefs = new HashSet<RepositoryReference>();
+			for (URI child : getCompositeChildren(mdr))
+				compositeRefs.addAll(getRepositoryReferences(mdrMgr.loadRepository(child, null)));
+			if (compositeRefs.size() > 0)
+				return new ArrayList<RepositoryReference>(compositeRefs);
+		}
+
+		return Collections.emptyList();
 	}
 
 	private void mirror(IArtifactRepository source, IArtifactRepository dest, Set<IArtifactKey> keysToInstall, List<String> errors,
@@ -286,13 +290,20 @@ public class MirrorGenerator extends BuilderPhase {
 		MonitorUtils.done(monitor);
 	}
 
-	private void mirror(IMetadataRepositoryManager mdrMgr, Query filter, IMetadataRepository source, final IMetadataRepository dest,
-			IProgressMonitor monitor) throws CoreException {
+	private void mirror(Query filter, IMetadataRepository source, final IMetadataRepository dest, IProgressMonitor monitor) throws CoreException {
 		Collector allIUs = source.query(filter, new Collector(), monitor);
 		dest.addInstallableUnits((IInstallableUnit[]) allIUs.toArray(IInstallableUnit.class));
 		if (getBuilder().isMirrorReferences()) {
-			for (RepositoryReference ref : getRepositoryReferences(mdrMgr, source))
-				dest.addReference(ref.Location, ref.Nickname, ref.Type, ref.Options);
+			for (RepositoryReference ref : getRepositoryReferences(source)) {
+				if (ref.Type == IRepository.TYPE_ARTIFACT)
+					continue;
+				String refKey = ref.Location.toString();
+				if (refKey.endsWith("/site.xml"))
+					refKey = refKey.substring(0, refKey.length() - 9);
+				else if (refKey.endsWith("/"))
+					refKey = refKey.substring(0, refKey.length() - 1);
+				dest.addReference(URI.create(refKey), ref.Nickname, ref.Type, 0);
+			}
 		}
 	}
 
@@ -311,8 +322,8 @@ public class MirrorGenerator extends BuilderPhase {
 
 		Buckminster bucky = Buckminster.getDefault();
 
-		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+		mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+		arMgr = bucky.getService(IArtifactRepositoryManager.class);
 		URI source = builder.getGlobalRepoURI();
 		MonitorUtils.begin(monitor, 100);
 		boolean artifactErrors = false;
@@ -398,7 +409,7 @@ public class MirrorGenerator extends BuilderPhase {
 
 				log.info("Mirroring meta-data from from %s", childURI);
 				IMetadataRepository child = mdrMgr.loadRepository(childURI, MonitorUtils.subMonitor(childMonitor, 1));
-				mirror(mdrMgr, new IncludesQuery(unitsToInstall), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
+				mirror(new IncludesQuery(unitsToInstall), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
 			}
 
 			Set<IInstallableUnit> trustedUnits = builder.getTrustedUnits();
@@ -406,13 +417,13 @@ public class MirrorGenerator extends BuilderPhase {
 				for (URI trustedRepo : trustedRepos) {
 					log.info("Mirroring meta-data from from %s", trustedRepo);
 					IMetadataRepository child = mdrMgr.loadRepository(trustedRepo, MonitorUtils.subMonitor(childMonitor, 1));
-					mirror(mdrMgr, new IncludesQuery(trustedUnits), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
+					mirror(new IncludesQuery(trustedUnits), child, finalMdr, MonitorUtils.subMonitor(childMonitor, 99));
 				}
 			}
 			childMonitor.done();
 
 			IMetadataRepository categoryRepository = mdrMgr.loadRepository(categoryRepo, MonitorUtils.subMonitor(monitor, 1));
-			mirror(mdrMgr, new AllButAllContributedFeature(), categoryRepository, finalMdr, MonitorUtils.subMonitor(monitor, 1));
+			mirror(new AllButAllContributedFeature(), categoryRepository, finalMdr, MonitorUtils.subMonitor(monitor, 1));
 			log.info("Done mirroring meta-data");
 
 			HashSet<IArtifactKey> keysToInstall = new HashSet<IArtifactKey>(unitsToInstall.size());
@@ -481,7 +492,9 @@ public class MirrorGenerator extends BuilderPhase {
 			}
 		} finally {
 			bucky.ungetService(mdrMgr);
+			mdrMgr = null;
 			bucky.ungetService(arMgr);
+			arMgr = null;
 			MonitorUtils.done(monitor);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
