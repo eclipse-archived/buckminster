@@ -6,11 +6,8 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-
 /**
- * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Bundle</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Bundle</b></em>'. <!-- end-user-doc -->
  *
  *
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getBundle()

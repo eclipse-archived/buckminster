@@ -29,9 +29,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Contribution</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '<em><b>Contribution</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
@@ -45,247 +43,227 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class ContributionImpl extends MinimalEObjectImpl.Container implements Contribution
 {
-  /**
-   * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  protected int eFlags = 0;
+	/**
+	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	protected int eFlags = 0;
 
-  /**
-   * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getLabel()
-   * @generated
-   * @ordered
-   */
-  protected static final String LABEL_EDEFAULT = null;
+	/**
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LABEL_EDEFAULT = null;
 
-  /**
-   * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getLabel()
-   * @generated
-   * @ordered
-   */
-  protected String label = LABEL_EDEFAULT;
+	/**
+	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected String label = LABEL_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getRepositories() <em>Repositories</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getRepositories()
-   * @generated
-   * @ordered
-   */
-  protected EList<Repository> repositories;
+	/**
+	 * The cached value of the '{@link #getRepositories() <em>Repositories</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getRepositories()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Repository> repositories;
 
-  /**
-   * The cached value of the '{@link #getContacts() <em>Contacts</em>}' reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getContacts()
-   * @generated
-   * @ordered
-   */
-  protected EList<Contact> contacts;
+	/**
+	 * The cached value of the '{@link #getContacts() <em>Contacts</em>}' reference list.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @see #getContacts()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Contact> contacts;
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected ContributionImpl()
-  {
-    super();
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ContributionImpl()
+	{
+		super();
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return AggregatorPackage.Literals.CONTRIBUTION;
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	protected EClass eStaticClass()
+	{
+		return AggregatorPackage.Literals.CONTRIBUTION;
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getLabel()
-  {
-    return label;
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getLabel()
+	{
+		return label;
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setLabel(String newLabel)
-  {
-    String oldLabel = label;
-    label = newLabel;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__LABEL, oldLabel, label));
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLabel(String newLabel)
+	{
+		String oldLabel = label;
+		label = newLabel;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__LABEL, oldLabel, label));
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<Repository> getRepositories()
-  {
-    if (repositories == null)
-    {
-      repositories = new EObjectContainmentEList<Repository>(Repository.class, this, AggregatorPackage.CONTRIBUTION__REPOSITORIES);
-    }
-    return repositories;
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<Repository> getRepositories()
+	{
+		if (repositories == null) {
+			repositories = new EObjectContainmentEList<Repository>(Repository.class, this, AggregatorPackage.CONTRIBUTION__REPOSITORIES);
+		}
+		return repositories;
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<Contact> getContacts()
-  {
-    if (contacts == null)
-    {
-      contacts = new EObjectResolvingEList<Contact>(Contact.class, this, AggregatorPackage.CONTRIBUTION__CONTACTS);
-    }
-    return contacts;
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<Contact> getContacts()
+	{
+		if (contacts == null) {
+			contacts = new EObjectResolvingEList<Contact>(Contact.class, this, AggregatorPackage.CONTRIBUTION__CONTACTS);
+		}
+		return contacts;
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-  {
-    switch (featureID)
-    {
-      case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-        return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+				return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case AggregatorPackage.CONTRIBUTION__LABEL:
-        return getLabel();
-      case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-        return getRepositories();
-      case AggregatorPackage.CONTRIBUTION__CONTACTS:
-        return getContacts();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CONTRIBUTION__LABEL:
+				return getLabel();
+			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+				return getRepositories();
+			case AggregatorPackage.CONTRIBUTION__CONTACTS:
+				return getContacts();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @SuppressWarnings("unchecked")
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case AggregatorPackage.CONTRIBUTION__LABEL:
-        setLabel((String)newValue);
-        return;
-      case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-        getRepositories().clear();
-        getRepositories().addAll((Collection<? extends Repository>)newValue);
-        return;
-      case AggregatorPackage.CONTRIBUTION__CONTACTS:
-        getContacts().clear();
-        getContacts().addAll((Collection<? extends Contact>)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void eSet(int featureID, Object newValue)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CONTRIBUTION__LABEL:
+				setLabel((String)newValue);
+				return;
+			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+				getRepositories().clear();
+				getRepositories().addAll((Collection<? extends Repository>)newValue);
+				return;
+			case AggregatorPackage.CONTRIBUTION__CONTACTS:
+				getContacts().clear();
+				getContacts().addAll((Collection<? extends Contact>)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case AggregatorPackage.CONTRIBUTION__LABEL:
-        setLabel(LABEL_EDEFAULT);
-        return;
-      case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-        getRepositories().clear();
-        return;
-      case AggregatorPackage.CONTRIBUTION__CONTACTS:
-        getContacts().clear();
-        return;
-    }
-    super.eUnset(featureID);
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CONTRIBUTION__LABEL:
+				setLabel(LABEL_EDEFAULT);
+				return;
+			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+				getRepositories().clear();
+				return;
+			case AggregatorPackage.CONTRIBUTION__CONTACTS:
+				getContacts().clear();
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case AggregatorPackage.CONTRIBUTION__LABEL:
-        return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
-      case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-        return repositories != null && !repositories.isEmpty();
-      case AggregatorPackage.CONTRIBUTION__CONTACTS:
-        return contacts != null && !contacts.isEmpty();
-    }
-    return super.eIsSet(featureID);
-  }
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean eIsSet(int featureID)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CONTRIBUTION__LABEL:
+				return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
+			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+				return repositories != null && !repositories.isEmpty();
+			case AggregatorPackage.CONTRIBUTION__CONTACTS:
+				return contacts != null && !contacts.isEmpty();
+		}
+		return super.eIsSet(featureID);
+	}
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString()
+	{
+		if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (label: ");
-    result.append(label);
-    result.append(')');
-    return result.toString();
-  }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (label: ");
+		result.append(label);
+		result.append(')');
+		return result.toString();
+	}
 
-} //ContributionImpl
+} // ContributionImpl
