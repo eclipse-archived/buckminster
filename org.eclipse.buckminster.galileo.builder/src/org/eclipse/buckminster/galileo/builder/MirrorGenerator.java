@@ -293,15 +293,19 @@ public class MirrorGenerator extends BuilderPhase {
 	private void mirror(Query filter, IMetadataRepository source, final IMetadataRepository dest, IProgressMonitor monitor) throws CoreException {
 		Collector allIUs = source.query(filter, new Collector(), monitor);
 		dest.addInstallableUnits((IInstallableUnit[]) allIUs.toArray(IInstallableUnit.class));
+
 		if (getBuilder().isMirrorReferences()) {
+			Logger log = Buckminster.getLogger();
+			String sourceLocStr = source.getLocation().toString();
 			for (RepositoryReference ref : getRepositoryReferences(source)) {
-				if (ref.Type == IRepository.TYPE_ARTIFACT)
-					continue;
 				String refKey = ref.Location.toString();
 				if (refKey.endsWith("/site.xml"))
 					refKey = refKey.substring(0, refKey.length() - 9);
 				else if (refKey.endsWith("/"))
 					refKey = refKey.substring(0, refKey.length() - 1);
+
+				if (ref.Type == IRepository.TYPE_METADATA)
+					log.debug("- mirroring reference %s", refKey, sourceLocStr);
 				dest.addReference(URI.create(refKey), ref.Nickname, ref.Type, 0);
 			}
 		}
