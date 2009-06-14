@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -358,6 +360,10 @@ public class Builder implements IApplication {
 
 	private boolean mirrorReferences = false;
 
+	private Pattern referenceIncludePattern;
+
+	private Pattern referenceExcludePattern;
+
 	private boolean production = false;
 
 	private PackedStrategy packedStrategy = PackedStrategy.COPY;
@@ -486,6 +492,25 @@ public class Builder implements IApplication {
 
 	public boolean isBrandingBuild() {
 		return brandingBuild;
+	}
+
+	public boolean isMatchedReference(String reference) {
+		reference = Trivial.trim(reference);
+		if (reference == null)
+			return false;
+
+		if (referenceIncludePattern != null) {
+			Matcher m = referenceIncludePattern.matcher(reference);
+			if (!m.matches())
+				return false;
+		}
+
+		if (referenceExcludePattern != null) {
+			Matcher m = referenceExcludePattern.matcher(reference);
+			if (m.matches())
+				return false;
+		}
+		return true;
 	}
 
 	public boolean isMirrorReferences() {
@@ -657,6 +682,18 @@ public class Builder implements IApplication {
 			}
 			if ("-mirrorReferences".equalsIgnoreCase(arg)) {
 				setMirrorReferences(true);
+				continue;
+			}
+			if ("-referenceIncludePattern".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setReferenceIncludePattern(args[idx]);
+				continue;
+			}
+			if ("-referenceExcludePattern".equalsIgnoreCase(arg)) {
+				if (++idx >= top)
+					requiresArgument(arg);
+				setReferenceExcludePattern(args[idx]);
 				continue;
 			}
 			if ("-noBrandingBuild".equalsIgnoreCase(arg)) {
@@ -871,6 +908,9 @@ public class Builder implements IApplication {
 				throw BuckminsterException.fromMessage("Build model validation failed: %s", diag.getMessage());
 			}
 
+			build.setDate(DATE_FORMAT.format(now));
+			build.setTime(TIME_FORMAT.format(now));
+
 			if (buildRoot == null)
 				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(build.getBuildRoot()));
 
@@ -1046,6 +1086,16 @@ public class Builder implements IApplication {
 
 	public void setProduction(boolean production) {
 		this.production = production;
+	}
+
+	public void setReferenceExcludePattern(String pattern) {
+		pattern = Trivial.trim(pattern);
+		referenceExcludePattern = pattern == null ? null : Pattern.compile(pattern);
+	}
+
+	public void setReferenceIncludePattern(String pattern) {
+		pattern = Trivial.trim(pattern);
+		referenceIncludePattern = pattern == null ? null : Pattern.compile(pattern);
 	}
 
 	public void setSmtpHost(String smtpHost) {

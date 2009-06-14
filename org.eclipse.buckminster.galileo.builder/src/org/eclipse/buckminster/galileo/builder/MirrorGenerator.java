@@ -294,19 +294,23 @@ public class MirrorGenerator extends BuilderPhase {
 		Collector allIUs = source.query(filter, new Collector(), monitor);
 		dest.addInstallableUnits((IInstallableUnit[]) allIUs.toArray(IInstallableUnit.class));
 
-		if (getBuilder().isMirrorReferences()) {
+		Builder builder = getBuilder();
+		if (builder.isMirrorReferences()) {
 			Logger log = Buckminster.getLogger();
-			String sourceLocStr = source.getLocation().toString();
 			for (RepositoryReference ref : getRepositoryReferences(source)) {
-				String refKey = ref.Location.toString();
-				if (refKey.endsWith("/site.xml"))
-					refKey = refKey.substring(0, refKey.length() - 9);
-				else if (refKey.endsWith("/"))
-					refKey = refKey.substring(0, refKey.length() - 1);
+				URI location = ref.Location;
+				String refKey = location.toString();
+				String refType = ref.Type == IRepository.TYPE_METADATA ? "meta-data" : "artifacts";
+				if (!builder.isMatchedReference(refKey)) {
+					log.debug("- %s reference %s was ruled out by inclusion/exclusion patterns", refType, refKey);
+					continue;
+				}
 
-				if (ref.Type == IRepository.TYPE_METADATA)
-					log.debug("- mirroring reference %s", refKey, sourceLocStr);
-				dest.addReference(URI.create(refKey), ref.Nickname, ref.Type, 0);
+				if (refKey.endsWith("/site.xml"))
+					location = URI.create(refKey.substring(0, refKey.length() - 8));
+
+				log.debug("- mirroring %s reference %s", refType, refKey);
+				dest.addReference(location, ref.Nickname, ref.Type, 0);
 			}
 		}
 	}

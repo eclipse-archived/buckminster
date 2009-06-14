@@ -148,8 +148,14 @@ public class AllContributedCapabilitiesAction extends AbstractPublisherAction {
 				try {
 					// An existing timestamp is replaced
 					// by a new timestamp.
-					Builder.TIMESTAMP_FORMAT.parse(qualifier);
-					qualifier = timestamp;
+					if(qualifier.startsWith("v2")) {
+						Builder.TIMESTAMP_FORMAT.parse(qualifier.substring(1));
+						qualifier = 'v' + timestamp;
+					}
+					else {
+						Builder.TIMESTAMP_FORMAT.parse(qualifier);
+						qualifier = timestamp;
+					}
 				} catch (ParseException e) {
 					qualifier += '-' + timestamp;
 				}
