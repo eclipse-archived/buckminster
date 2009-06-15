@@ -28,7 +28,7 @@
 
 
 «DEFINE repoURL FOR build::Build-»
-http://download.eclipse.org«promotion.downloadDirectory»«IF promotion.downloadDirectory.xpandEndsWith('drops/')»«buildLabel(self)»/«ENDIF»«ENDDEFINE»
+http://download.eclipse.org«promotion.downloadDirectory»«ENDDEFINE»
 
 «DEFINE requirements FOR build::Build»
 <categories>

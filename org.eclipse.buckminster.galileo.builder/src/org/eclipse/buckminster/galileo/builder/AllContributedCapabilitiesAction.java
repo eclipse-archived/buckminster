@@ -102,7 +102,7 @@ public class AllContributedCapabilitiesAction extends AbstractPublisherAction {
 				Version v = bundleIU.getVersion();
 				VersionRange vr = new VersionRange(v, true, v, true);
 				IRequiredCapability cap = MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, bundleIU.getId(), vr, bundleIU
-						.getFilter(), false, false);
+						.getFilter(), true, false);
 				didExtend = true;
 				log.info("Adding capabilities bundle: %s/%s", cap.getName(), cap.getRange());
 				required.add(cap);
@@ -148,11 +148,10 @@ public class AllContributedCapabilitiesAction extends AbstractPublisherAction {
 				try {
 					// An existing timestamp is replaced
 					// by a new timestamp.
-					if(qualifier.startsWith("v2")) {
+					if (qualifier.startsWith("v2")) {
 						Builder.TIMESTAMP_FORMAT.parse(qualifier.substring(1));
 						qualifier = 'v' + timestamp;
-					}
-					else {
+					} else {
 						Builder.TIMESTAMP_FORMAT.parse(qualifier);
 						qualifier = timestamp;
 					}
