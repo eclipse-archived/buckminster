@@ -16,14 +16,20 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
-import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
+import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
+import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
+import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
+import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
+import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
 
 /**
  * @author Thomas Hallgren
@@ -31,9 +37,23 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 @SuppressWarnings("restriction")
 public class PDETargetPlatform extends AbstractExtension implements ITargetPlatform
 {
+	private static interface ITargetDefinitionOperation<T>
+	{
+		T run(ITargetDefinition target) throws CoreException;
+	}
+
 	public String getArch()
 	{
-		return TargetPlatform.getOSArch();
+		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		{
+			public String run(ITargetDefinition target)
+			{
+				String arch = target.getArch();
+				return arch == null
+						? Platform.getOSArch()
+						: arch;
+			}
+		});
 	}
 
 	public List<ComponentIdentifier> getComponents() throws CoreException
@@ -64,24 +84,86 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 
 	public File getLocation()
 	{
-		String location = TargetPlatform.getLocation();
-		return (location == null || location.length() == 0)
-				? null
-				: new File(location);
+		return doWithActivePlatform(new ITargetDefinitionOperation<File>()
+		{
+			public File run(ITargetDefinition target) throws CoreException
+			{
+				for(IBundleContainer container : target.getBundleContainers())
+				{
+					if(container instanceof DirectoryBundleContainer)
+					{
+						return new File(((DirectoryBundleContainer)container).getLocation(true));
+					}
+				}
+				return null;
+			}
+		});
 	}
 
 	public String getNL()
 	{
-		return TargetPlatform.getNL();
+		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		{
+			public String run(ITargetDefinition target)
+			{
+				String nl = target.getNL();
+				return nl == null
+						? Platform.getNL()
+						: nl;
+			}
+		});
 	}
 
 	public String getOS()
 	{
-		return TargetPlatform.getOS();
+		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		{
+			public String run(ITargetDefinition target)
+			{
+				String os = target.getOS();
+				return os == null
+						? Platform.getOS()
+						: os;
+			}
+		});
 	}
 
 	public String getWS()
 	{
-		return TargetPlatform.getWS();
+		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		{
+			public String run(ITargetDefinition target)
+			{
+				String ws = target.getWS();
+				return ws == null
+						? Platform.getWS()
+						: ws;
+			}
+		});
+	}
+
+	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation)
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = null;
+		try
+		{
+			service = bucky.getService(ITargetPlatformService.class);
+			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+			if(activeHandle == null)
+				return null;
+			ITargetDefinition definition = activeHandle.getTargetDefinition();
+			return operation.run(definition);
+		}
+		catch(CoreException e)
+		{
+			// TODO: handle this correctly
+			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
+			return null;
+		}
+		finally
+		{
+			bucky.ungetService(service);
+		}
 	}
 }
