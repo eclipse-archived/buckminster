@@ -18,10 +18,10 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -42,18 +42,43 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		T run(ITargetDefinition target) throws CoreException;
 	}
 
+	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation)
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = null;
+		try
+		{
+			service = bucky.getService(ITargetPlatformService.class);
+			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+			if(activeHandle == null)
+				return null;
+			ITargetDefinition definition = activeHandle.getTargetDefinition();
+			return operation.run(definition);
+		}
+		catch(CoreException e)
+		{
+			// TODO: handle this correctly
+			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
+			return null;
+		}
+		finally
+		{
+			bucky.ungetService(service);
+		}
+	}
+
 	public String getArch()
 	{
-		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		String arch = doWithActivePlatform(new ITargetDefinitionOperation<String>()
 		{
 			public String run(ITargetDefinition target)
 			{
-				String arch = target.getArch();
-				return arch == null
-						? Platform.getOSArch()
-						: arch;
+				return target.getArch();
 			}
 		});
+		return arch == null
+				? TargetPlatform.getOSArch()
+				: arch;
 	}
 
 	public List<ComponentIdentifier> getComponents() throws CoreException
@@ -84,7 +109,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 
 	public File getLocation()
 	{
-		return doWithActivePlatform(new ITargetDefinitionOperation<File>()
+		File location = doWithActivePlatform(new ITargetDefinitionOperation<File>()
 		{
 			public File run(ITargetDefinition target) throws CoreException
 			{
@@ -98,72 +123,54 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 				return null;
 			}
 		});
+		if(location == null)
+		{
+			String locationStr = TargetPlatform.getLocation();
+			if(locationStr != null)
+				location = new File(locationStr);
+		}
+		return location;
 	}
 
 	public String getNL()
 	{
-		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		String nl = doWithActivePlatform(new ITargetDefinitionOperation<String>()
 		{
 			public String run(ITargetDefinition target)
 			{
-				String nl = target.getNL();
-				return nl == null
-						? Platform.getNL()
-						: nl;
+				return target.getNL();
 			}
 		});
+		return nl == null
+				? TargetPlatform.getNL()
+				: nl;
 	}
 
 	public String getOS()
 	{
-		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		String os = doWithActivePlatform(new ITargetDefinitionOperation<String>()
 		{
 			public String run(ITargetDefinition target)
 			{
-				String os = target.getOS();
-				return os == null
-						? Platform.getOS()
-						: os;
+				return target.getOS();
 			}
 		});
+		return os == null
+				? TargetPlatform.getOS()
+				: os;
 	}
 
 	public String getWS()
 	{
-		return doWithActivePlatform(new ITargetDefinitionOperation<String>()
+		String ws = doWithActivePlatform(new ITargetDefinitionOperation<String>()
 		{
 			public String run(ITargetDefinition target)
 			{
-				String ws = target.getWS();
-				return ws == null
-						? Platform.getWS()
-						: ws;
+				return target.getWS();
 			}
 		});
-	}
-
-	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation)
-	{
-		Buckminster bucky = Buckminster.getDefault();
-		ITargetPlatformService service = null;
-		try
-		{
-			service = bucky.getService(ITargetPlatformService.class);
-			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-			if(activeHandle == null)
-				return null;
-			ITargetDefinition definition = activeHandle.getTargetDefinition();
-			return operation.run(definition);
-		}
-		catch(CoreException e)
-		{
-			// TODO: handle this correctly
-			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
-			return null;
-		}
-		finally
-		{
-			bucky.ungetService(service);
-		}
+		return ws == null
+				? TargetPlatform.getWS()
+				: ws;
 	}
 }
