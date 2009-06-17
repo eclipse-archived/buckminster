@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 
@@ -46,6 +47,9 @@ public class AlterGroup extends AlterAttribute<Group>
 	@Override
 	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
 	{
+		if(!(original instanceof GroupBuilder))
+			throw BuckminsterException.fromMessage("%s is not an group", original.getQualifiedName()); //$NON-NLS-1$
+
 		Group base = getBase();
 		GroupBuilder gBld = (GroupBuilder)original;
 		alterPrerequisiteMap(gBld);

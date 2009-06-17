@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -68,9 +69,18 @@ public class AlterAction extends AlterAttribute<Action>
 		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
+	protected void alterActorProperties(ActionBuilder original) throws CoreException
+	{
+		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original //$NON-NLS-1$
+		.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(), m_removedActorProperties);
+	}
+
 	@Override
 	public void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException
 	{
+		if(!(attrBld instanceof ActionBuilder))
+			throw BuckminsterException.fromMessage("%s is not an action", attrBld.getQualifiedName()); //$NON-NLS-1$
+
 		ActionBuilder actionBld = (ActionBuilder)attrBld;
 		IAction base = getBase();
 
@@ -84,16 +94,8 @@ public class AlterAction extends AlterAttribute<Action>
 		alterProperties(actionBld);
 		alterDocumentation(actionBld);
 
-		actionBld
-				.setProductAlias(CSpecExtension.overrideCheckNull(actionBld.getProductAlias(), base.getProductAlias()));
+		actionBld.setProductAlias(CSpecExtension.overrideCheckNull(actionBld.getProductAlias(), base.getProductAlias()));
 		actionBld.setProductBase(CSpecExtension.overrideCheckNull(actionBld.getProductBase(), base.getProductBase()));
-	}
-
-	protected void alterActorProperties(ActionBuilder original) throws CoreException
-	{
-		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original //$NON-NLS-1$
-				.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(),
-				m_removedActorProperties);
 	}
 
 	protected void alterProductPaths(ActionBuilder original) throws CoreException

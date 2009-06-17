@@ -9,10 +9,7 @@ package org.eclipse.buckminster.core.cspecext.builder;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
-import org.eclipse.buckminster.core.cspec.IPrerequisite;
-import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
@@ -39,12 +36,6 @@ public class AlterGroupBuilder extends AlterAttributeBuilder
 		String key = value.toString();
 		if(m_alteredPrerequisites.containsKey(key))
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-
-		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder()
-				.getPrerequisites();
-		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
-			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-
 		m_alteredPrerequisites.put(key, value);
 	}
 

@@ -397,10 +397,13 @@ public class CSpecBuilder implements ICSpecData
 
 	public ActionBuilder getActionBuilder(String name)
 	{
-		AttributeBuilder attr = m_attributes.get(name);
-		return attr instanceof ActionBuilder
-				? (ActionBuilder)attr
-				: null;
+		if(m_attributes != null)
+		{
+			AttributeBuilder attr = m_attributes.get(name);
+			if(attr instanceof ActionBuilder)
+				return (ActionBuilder)attr;
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -520,18 +523,24 @@ public class CSpecBuilder implements ICSpecData
 
 	public ArtifactBuilder getRequiredArtifact(String name) throws MissingAttributeException
 	{
-		AttributeBuilder attr = m_attributes.get(name);
-		if(attr instanceof ArtifactBuilder)
-			return (ArtifactBuilder)attr;
+		if(m_attributes != null)
+		{
+			AttributeBuilder attr = m_attributes.get(name);
+			if(attr instanceof ArtifactBuilder)
+				return (ArtifactBuilder)attr;
+		}
 		throw new MissingAttributeException(m_name, name);
 	}
 
 	public AttributeBuilder getRequiredAttribute(String name) throws MissingAttributeException
 	{
-		AttributeBuilder attr = m_attributes.get(name);
-		if(attr == null)
-			throw new MissingAttributeException(m_name, name);
-		return attr;
+		if(m_attributes != null)
+		{
+			AttributeBuilder attr = m_attributes.get(name);
+			if(attr != null)
+				return attr;
+		}
+		throw new MissingAttributeException(m_name, name);
 	}
 
 	public ComponentRequestBuilder getRequiredDependency(String dependencyName, String componentType)

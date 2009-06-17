@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.cspec.IArtifact;
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -31,6 +32,9 @@ public class AlterActionArtifact extends AlterArtifact
 	@Override
 	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
 	{
+		if(!(original instanceof ActionArtifactBuilder))
+			throw BuckminsterException.fromMessage("%s is not an action artifact", original.getQualifiedName()); //$NON-NLS-1$
+
 		IArtifact base = getBase();
 		ActionArtifactBuilder aaBld = (ActionArtifactBuilder)original;
 		alterPaths(aaBld);
