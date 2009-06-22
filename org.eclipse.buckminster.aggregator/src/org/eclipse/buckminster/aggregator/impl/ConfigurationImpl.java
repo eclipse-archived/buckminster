@@ -8,15 +8,11 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Architecture;
-import org.eclipse.buckminster.aggregator.ArchiveFormat;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.OperatingSystem;
 import org.eclipse.buckminster.aggregator.WindowSystem;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -28,7 +24,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  *   <li>{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl#getOperatingSystem <em>Operating System</em>}</li>
  *   <li>{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl#getWindowSystem <em>Window System</em>}</li>
  *   <li>{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl#getArchitecture <em>Architecture</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl#getArchiveFormat <em>Archive Format</em>}</li>
  * </ul>
  * </p>
  *
@@ -97,7 +92,7 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	 * @generated
 	 * @ordered
 	 */
-	protected static final WindowSystem WINDOW_SYSTEM_EDEFAULT = WindowSystem.COCOA;
+	protected static final WindowSystem WINDOW_SYSTEM_EDEFAULT = WindowSystem.WIN32;
 
 	/**
 	 * The offset of the flags representing the value of the '{@link #getWindowSystem() <em>Window System</em>}' attribute.
@@ -178,51 +173,6 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	 * @ordered
 	 */
 	protected static final int ARCHITECTURE_EFLAG = 0x3 << ARCHITECTURE_EFLAG_OFFSET;
-
-	/**
-	 * The default value of the '{@link #getArchiveFormat() <em>Archive Format</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getArchiveFormat()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final ArchiveFormat ARCHIVE_FORMAT_EDEFAULT = ArchiveFormat.ZIP;
-
-	/**
-	 * The offset of the flags representing the value of the '{@link #getArchiveFormat() <em>Archive Format</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int ARCHIVE_FORMAT_EFLAG_OFFSET = 6;
-
-	/**
-	 * The flags representing the default value of the '{@link #getArchiveFormat() <em>Archive Format</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int ARCHIVE_FORMAT_EFLAG_DEFAULT = ARCHIVE_FORMAT_EDEFAULT.ordinal() << ARCHIVE_FORMAT_EFLAG_OFFSET;
-
-	/**
-	 * The array of enumeration values for '{@link ArchiveFormat Archive Format}'
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	private static final ArchiveFormat[] ARCHIVE_FORMAT_EFLAG_VALUES = ArchiveFormat.values();
-
-	/**
-	 * The flag representing the value of the '{@link #getArchiveFormat() <em>Archive Format</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getArchiveFormat()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int ARCHIVE_FORMAT_EFLAG = 1 << ARCHIVE_FORMAT_EFLAG_OFFSET;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -313,22 +263,11 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArchiveFormat getArchiveFormat()
+	public String getName()
 	{
-		return ARCHIVE_FORMAT_EFLAG_VALUES[(eFlags & ARCHIVE_FORMAT_EFLAG) >>> ARCHIVE_FORMAT_EFLAG_OFFSET];
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setArchiveFormat(ArchiveFormat newArchiveFormat)
-	{
-		ArchiveFormat oldArchiveFormat = ARCHIVE_FORMAT_EFLAG_VALUES[(eFlags & ARCHIVE_FORMAT_EFLAG) >>> ARCHIVE_FORMAT_EFLAG_OFFSET];
-		if (newArchiveFormat == null) newArchiveFormat = ARCHIVE_FORMAT_EDEFAULT;
-		eFlags = eFlags & ~ARCHIVE_FORMAT_EFLAG | newArchiveFormat.ordinal() << ARCHIVE_FORMAT_EFLAG_OFFSET;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONFIGURATION__ARCHIVE_FORMAT, oldArchiveFormat, newArchiveFormat));
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -345,8 +284,6 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 				return getWindowSystem();
 			case AggregatorPackage.CONFIGURATION__ARCHITECTURE:
 				return getArchitecture();
-			case AggregatorPackage.CONFIGURATION__ARCHIVE_FORMAT:
-				return getArchiveFormat();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -367,9 +304,6 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 				return;
 			case AggregatorPackage.CONFIGURATION__ARCHITECTURE:
 				setArchitecture((Architecture)newValue);
-				return;
-			case AggregatorPackage.CONFIGURATION__ARCHIVE_FORMAT:
-				setArchiveFormat((ArchiveFormat)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -392,9 +326,6 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 			case AggregatorPackage.CONFIGURATION__ARCHITECTURE:
 				setArchitecture(ARCHITECTURE_EDEFAULT);
 				return;
-			case AggregatorPackage.CONFIGURATION__ARCHIVE_FORMAT:
-				setArchiveFormat(ARCHIVE_FORMAT_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -413,8 +344,6 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 				return (eFlags & WINDOW_SYSTEM_EFLAG) != WINDOW_SYSTEM_EFLAG_DEFAULT;
 			case AggregatorPackage.CONFIGURATION__ARCHITECTURE:
 				return (eFlags & ARCHITECTURE_EFLAG) != ARCHITECTURE_EFLAG_DEFAULT;
-			case AggregatorPackage.CONFIGURATION__ARCHIVE_FORMAT:
-				return (eFlags & ARCHIVE_FORMAT_EFLAG) != ARCHIVE_FORMAT_EFLAG_DEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -435,8 +364,6 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 		result.append(WINDOW_SYSTEM_EFLAG_VALUES[(eFlags & WINDOW_SYSTEM_EFLAG) >>> WINDOW_SYSTEM_EFLAG_OFFSET]);
 		result.append(", architecture: ");
 		result.append(ARCHITECTURE_EFLAG_VALUES[(eFlags & ARCHITECTURE_EFLAG) >>> ARCHITECTURE_EFLAG_OFFSET]);
-		result.append(", archiveFormat: ");
-		result.append(ARCHIVE_FORMAT_EFLAG_VALUES[(eFlags & ARCHIVE_FORMAT_EFLAG) >>> ARCHIVE_FORMAT_EFLAG_OFFSET]);
 		result.append(')');
 		return result.toString();
 	}

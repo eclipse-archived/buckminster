@@ -7,12 +7,9 @@
 package org.eclipse.buckminster.aggregator.util;
 
 import org.eclipse.buckminster.aggregator.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -73,16 +70,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 				return createAggregatorAdapter();
 			}
 			@Override
-			public Adapter caseRepository(Repository object) {
-				return createRepositoryAdapter();
+			public Adapter caseMappedRepository(MappedRepository object) {
+				return createMappedRepositoryAdapter();
 			}
 			@Override
 			public Adapter caseConfiguration(Configuration object) {
 				return createConfigurationAdapter();
-			}
-			@Override
-			public Adapter caseCategory(Category object) {
-				return createCategoryAdapter();
 			}
 			@Override
 			public Adapter caseContribution(Contribution object) {
@@ -101,12 +94,24 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 				return createBundleAdapter();
 			}
 			@Override
-			public Adapter caseInstallationUnit(InstallationUnit object) {
-				return createInstallationUnitAdapter();
+			public Adapter caseMappedUnit(MappedUnit object) {
+				return createMappedUnitAdapter();
 			}
 			@Override
 			public Adapter caseProduct(Product object) {
 				return createProductAdapter();
+			}
+			@Override
+			public Adapter caseProperty(Property object) {
+				return createPropertyAdapter();
+			}
+			@Override
+			public Adapter caseCategory(Category object) {
+				return createCategoryAdapter();
+			}
+			@Override
+			public Adapter caseCustomCategory(CustomCategory object) {
+				return createCustomCategoryAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -143,16 +148,15 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Repository
-	 * <em>Repository</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
-	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
-	 * -->
-	 * 
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MappedRepository <em>Mapped Repository</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.aggregator.Repository
+	 * @see org.eclipse.buckminster.aggregator.MappedRepository
 	 * @generated
 	 */
-	public Adapter createRepositoryAdapter()
+	public Adapter createMappedRepositoryAdapter()
 	{
 		return null;
 	}
@@ -168,21 +172,6 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createConfigurationAdapter()
-	{
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Category
-	 * <em>Category</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
-	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
-	 * -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.aggregator.Category
-	 * @generated
-	 */
-	public Adapter createCategoryAdapter()
 	{
 		return null;
 	}
@@ -242,15 +231,16 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.InstallationUnit <em>Installation Unit</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that we can
-	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
-	 * end-user-doc -->
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MappedUnit
+	 * <em>Mapped Unit</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.aggregator.InstallationUnit
+	 * @see org.eclipse.buckminster.aggregator.MappedUnit
 	 * @generated
 	 */
-	public Adapter createInstallationUnitAdapter()
+	public Adapter createMappedUnitAdapter()
 	{
 		return null;
 	}
@@ -264,6 +254,50 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createProductAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Property
+	 * <em>Property</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.Property
+	 * @generated
+	 */
+	public Adapter createPropertyAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Category
+	 * <em>Category</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.Category
+	 * @generated
+	 */
+	public Adapter createCategoryAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.CustomCategory <em>Custom Category</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.CustomCategory
+	 * @generated
+	 */
+	public Adapter createCustomCategoryAdapter()
 	{
 		return null;
 	}

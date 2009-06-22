@@ -22,5 +22,12 @@
             type="build"
             class="org.eclipse.buckminster.aggregator.util.AggregatorResourceFactoryImpl"/>
    </extension>
+   <extension
+         point="org.eclipse.emf.ecore.protocol_parser">
+      <parser
+            class="org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceFactoryImpl"
+            protocolName="p2">
+      </parser>
+   </extension>
 
 </plugin>

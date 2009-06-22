@@ -6,22 +6,17 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
-
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.AggregateType;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -34,37 +29,32 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.Aggregator} object.
- * <!-- begin-user-doc -->
- * <!-- end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.Aggregator} object. <!--
+ * begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
-public class AggregatorItemProvider
-	extends ItemProviderAdapter
-	implements
-		IEditingDomainItemProvider,
-		IStructuredItemContentProvider,
-		ITreeItemContentProvider,
-		IItemLabelProvider,
-		IItemPropertySource {
+public class AggregatorItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+{
 	/**
 	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public AggregatorItemProvider(AdapterFactory adapterFactory) {
+	public AggregatorItemProvider(AdapterFactory adapterFactory)
+	{
 		super(adapterFactory);
 	}
 
 	/**
 	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
@@ -78,11 +68,11 @@ public class AggregatorItemProvider
 
 	/**
 	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addTypePropertyDescriptor(Object object) {
+	protected void addTypePropertyDescriptor(Object object)
+	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
@@ -100,11 +90,11 @@ public class AggregatorItemProvider
 
 	/**
 	 * This adds a property descriptor for the Build Root feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addBuildRootPropertyDescriptor(Object object) {
+	protected void addBuildRootPropertyDescriptor(Object object)
+	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
@@ -122,11 +112,11 @@ public class AggregatorItemProvider
 
 	/**
 	 * This adds a property descriptor for the Label feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addLabelPropertyDescriptor(Object object) {
+	protected void addLabelPropertyDescriptor(Object object)
+	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
@@ -144,11 +134,11 @@ public class AggregatorItemProvider
 
 	/**
 	 * This adds a property descriptor for the Sendmail feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addSendmailPropertyDescriptor(Object object) {
+	protected void addSendmailPropertyDescriptor(Object object)
+	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
@@ -168,29 +158,32 @@ public class AggregatorItemProvider
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
+	{
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONFIGURATIONS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTRIBUTIONS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTACTS);
+			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__ALL_REPOSITORIES);
+			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES);
 		}
 		return childrenFeatures;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child) {
+	protected EStructuralFeature getChildFeature(Object object, Object child)
+	{
 		// Check the type of the specified child object and return the proper feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
@@ -199,39 +192,39 @@ public class AggregatorItemProvider
 
 	/**
 	 * This returns Aggregator.gif.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Object getImage(Object object) {
+	public Object getImage(Object object)
+	{
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/Aggregator"));
 	}
 
 	/**
 	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public String getText(Object object) {
-		AggregateType labelValue = ((Aggregator)object).getType();
-		String label = labelValue == null ? null : labelValue.toString();
+	public String getText(Object object)
+	{
+		String label = ((Aggregator)object).getLabel();
 		return label == null || label.length() == 0 ?
 			getString("_UI_Aggregator_type") :
 			getString("_UI_Aggregator_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
+	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public void notifyChanged(Notification notification) {
+	public void notifyChanged(Notification notification)
+	{
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Aggregator.class)) {
@@ -245,6 +238,8 @@ public class AggregatorItemProvider
 			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 			case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 			case AggregatorPackage.AGGREGATOR__CONTACTS:
+			case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
+			case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -254,12 +249,12 @@ public class AggregatorItemProvider
 	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
 	 * that can be created under this object.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
+	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
+	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
 		newChildDescriptors.add
@@ -281,6 +276,16 @@ public class AggregatorItemProvider
 			(createChildParameter
 				(AggregatorPackage.Literals.AGGREGATOR__CONTACTS,
 				 AggregatorFactory.eINSTANCE.createContact()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(AggregatorPackage.Literals.AGGREGATOR__ALL_REPOSITORIES,
+				 P2Factory.eINSTANCE.createMetadataRepository()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES,
+				 AggregatorFactory.eINSTANCE.createCustomCategory()));
 	}
 
 	/**
@@ -290,7 +295,8 @@ public class AggregatorItemProvider
 	 * @generated
 	 */
 	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
+	{
 		Object childFeature = feature;
 		Object childObject = child;
 
@@ -308,12 +314,12 @@ public class AggregatorItemProvider
 
 	/**
 	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public ResourceLocator getResourceLocator() {
+	public ResourceLocator getResourceLocator()
+	{
 		return AggregatorEditPlugin.INSTANCE;
 	}
 

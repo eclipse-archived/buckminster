@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.buckminster.aggregator.Configuration#getOperatingSystem <em>Operating System</em>}</li>
  *   <li>{@link org.eclipse.buckminster.aggregator.Configuration#getWindowSystem <em>Window System</em>}</li>
  *   <li>{@link org.eclipse.buckminster.aggregator.Configuration#getArchitecture <em>Architecture</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.Configuration#getArchiveFormat <em>Archive Format</em>}</li>
  * </ul>
  * </p>
  *
@@ -112,32 +111,10 @@ public interface Configuration extends EObject
 	void setArchitecture(Architecture value);
 
 	/**
-	 * Returns the value of the '<em><b>Archive Format</b></em>' attribute. The default value is <code>"tar.gz"</code>.
-	 * The literals are from the enumeration {@link org.eclipse.buckminster.aggregator.ArchiveFormat}. <!--
-	 * begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Archive Format</em>' attribute isn't clear, there really should be more of a
-	 * description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Archive Format</em>' attribute.
-	 * @see org.eclipse.buckminster.aggregator.ArchiveFormat
-	 * @see #setArchiveFormat(ArchiveFormat)
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getConfiguration_ArchiveFormat()
-	 * @model default="tar.gz"
-	 * @generated
-	 */
-	ArchiveFormat getArchiveFormat();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Configuration#getArchiveFormat <em>Archive Format</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Archive Format</em>' attribute.
-	 * @see org.eclipse.buckminster.aggregator.ArchiveFormat
-	 * @see #getArchiveFormat()
+	 * @model kind="operation"
 	 * @generated
 	 */
-	void setArchiveFormat(ArchiveFormat value);
+	String getName();
 
 } // Configuration

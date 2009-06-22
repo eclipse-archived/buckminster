@@ -10,8 +10,17 @@ Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.buckminster.aggregator,
  org.eclipse.buckminster.aggregator.impl,
+ org.eclipse.buckminster.aggregator.p2,
+ org.eclipse.buckminster.aggregator.p2.impl,
+ org.eclipse.buckminster.aggregator.p2.util,
  org.eclipse.buckminster.aggregator.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.buckminster.runtime,
+ org.eclipse.equinox.internal.provisional.p2.core,
+ org.eclipse.equinox.internal.provisional.p2.metadata,
+ org.eclipse.equinox.internal.provisional.p2.metadata.repository,
+ org.eclipse.equinox.internal.provisional.p2.query,
+ org.eclipse.equinox.internal.provisional.p2.repository

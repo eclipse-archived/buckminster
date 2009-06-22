@@ -6,15 +6,14 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
-import org.eclipse.buckminster.aggregator.*;
+import java.net.URI;
 
+import org.eclipse.buckminster.aggregator.*;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
@@ -61,14 +60,16 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		switch (eClass.getClassifierID()) {
 			case AggregatorPackage.AGGREGATOR: return createAggregator();
-			case AggregatorPackage.REPOSITORY: return createRepository();
+			case AggregatorPackage.MAPPED_REPOSITORY: return createMappedRepository();
 			case AggregatorPackage.CONFIGURATION: return createConfiguration();
-			case AggregatorPackage.CATEGORY: return createCategory();
 			case AggregatorPackage.CONTRIBUTION: return createContribution();
 			case AggregatorPackage.CONTACT: return createContact();
 			case AggregatorPackage.FEATURE: return createFeature();
 			case AggregatorPackage.BUNDLE: return createBundle();
 			case AggregatorPackage.PRODUCT: return createProduct();
+			case AggregatorPackage.PROPERTY: return createProperty();
+			case AggregatorPackage.CATEGORY: return createCategory();
+			case AggregatorPackage.CUSTOM_CATEGORY: return createCustomCategory();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -90,8 +91,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 				return createWindowSystemFromString(eDataType, initialValue);
 			case AggregatorPackage.ARCHITECTURE:
 				return createArchitectureFromString(eDataType, initialValue);
-			case AggregatorPackage.ARCHIVE_FORMAT:
-				return createArchiveFormatFromString(eDataType, initialValue);
+			case AggregatorPackage.URI:
+				return createURIFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -113,8 +114,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 				return convertWindowSystemToString(eDataType, instanceValue);
 			case AggregatorPackage.ARCHITECTURE:
 				return convertArchitectureToString(eDataType, instanceValue);
-			case AggregatorPackage.ARCHIVE_FORMAT:
-				return convertArchiveFormatToString(eDataType, instanceValue);
+			case AggregatorPackage.URI:
+				return convertURIToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -134,10 +135,10 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Repository createRepository()
+	public MappedRepository createMappedRepository()
 	{
-		RepositoryImpl repository = new RepositoryImpl();
-		return repository;
+		MappedRepositoryImpl mappedRepository = new MappedRepositoryImpl();
+		return mappedRepository;
 	}
 
 	/**
@@ -148,16 +149,6 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		ConfigurationImpl configuration = new ConfigurationImpl();
 		return configuration;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Category createCategory()
-	{
-		CategoryImpl category = new CategoryImpl();
-		return category;
 	}
 
 	/**
@@ -208,6 +199,36 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		ProductImpl product = new ProductImpl();
 		return product;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Property createProperty()
+	{
+		PropertyImpl property = new PropertyImpl();
+		return property;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Category createCategory()
+	{
+		CategoryImpl category = new CategoryImpl();
+		return category;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CustomCategory createCustomCategory()
+	{
+		CustomCategoryImpl customCategory = new CustomCategoryImpl();
+		return customCategory;
 	}
 
 	/**
@@ -294,20 +315,18 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArchiveFormat createArchiveFormatFromString(EDataType eDataType, String initialValue)
+	public URI createURIFromString(EDataType eDataType, String initialValue)
 	{
-		ArchiveFormat result = ArchiveFormat.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
+		return (URI)super.createFromString(eDataType, initialValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertArchiveFormatToString(EDataType eDataType, Object instanceValue)
+	public String convertURIToString(EDataType eDataType, Object instanceValue)
 	{
-		return instanceValue == null ? null : instanceValue.toString();
+		return super.convertToString(eDataType, instanceValue);
 	}
 
 	/**

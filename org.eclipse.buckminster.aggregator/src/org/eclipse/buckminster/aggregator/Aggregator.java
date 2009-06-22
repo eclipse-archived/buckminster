@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator;
 
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -24,6 +25,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}</li>
  *   <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
  *   <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getAllRepositories <em>All Repositories</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
  * </ul>
  * </p>
  *
@@ -144,25 +147,25 @@ public interface Aggregator extends EObject
 	void setLabel(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Buildmaster</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Buildmaster</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Buildmaster</em>' containment reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Buildmaster</em>' containment reference.
+	 * @return the value of the '<em>Buildmaster</em>' reference.
 	 * @see #setBuildmaster(Contact)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_Buildmaster()
-	 * @model containment="true" keys="email"
+	 * @model keys="email"
 	 * @generated
 	 */
 	Contact getBuildmaster();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}' containment reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}' reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Buildmaster</em>' containment reference.
+	 * @param value the new value of the '<em>Buildmaster</em>' reference.
 	 * @see #getBuildmaster()
 	 * @generated
 	 */
@@ -208,5 +211,46 @@ public interface Aggregator extends EObject
 	 * @generated
 	 */
 	EList<Contact> getContacts();
+
+	/**
+	 * Returns the value of the '<em><b>All Repositories</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>All Repositories</em>' containment reference isn't clear, there really should be more
+	 * of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>All Repositories</em>' containment reference.
+	 * @see #setAllRepositories(MetadataRepository)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_AllRepositories()
+	 * @model containment="true"
+	 * @generated
+	 */
+	MetadataRepository getAllRepositories();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getAllRepositories <em>All Repositories</em>}' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>All Repositories</em>' containment reference.
+	 * @see #getAllRepositories()
+	 * @generated
+	 */
+	void setAllRepositories(MetadataRepository value);
+
+	/**
+	 * Returns the value of the '<em><b>Custom Categories</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.CustomCategory}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Custom Categories</em>' containment reference list isn't clear, there really should be
+	 * more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Custom Categories</em>' containment reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_CustomCategories()
+	 * @model containment="true" keys="identifier"
+	 * @generated
+	 */
+	EList<CustomCategory> getCustomCategories();
 
 } // Aggregator

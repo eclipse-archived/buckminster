@@ -14,6 +14,6 @@ package org.eclipse.buckminster.aggregator;
  * @model
  * @generated
  */
-public interface Bundle extends InstallationUnit
+public interface Bundle extends MappedUnit
 {
 } // Bundle

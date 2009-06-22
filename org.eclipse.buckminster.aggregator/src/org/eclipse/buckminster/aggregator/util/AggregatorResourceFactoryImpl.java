@@ -40,5 +40,4 @@ public class AggregatorResourceFactoryImpl extends ResourceFactoryImpl
 		Resource result = new AggregatorResourceImpl(uri);
 		return result;
 	}
-
 } // AggregatorResourceFactoryImpl

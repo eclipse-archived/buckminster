@@ -22,85 +22,36 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum WindowSystem implements Enumerator
 {
 	/**
-	 * The '<em><b>Cocoa</b></em>' literal object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #COCOA_VALUE
-	 * @generated
-	 * @ordered
-	 */
-	COCOA(3, "Cocoa", "cocoa"),
-
-	/**
-	 * The '<em><b>Carbon</b></em>' literal object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #CARBON_VALUE
-	 * @generated
-	 * @ordered
-	 */
-	CARBON(2, "Carbon", "Carbon"),
-
-	/**
-	 * The '<em><b>GTK</b></em>' literal object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #GTK_VALUE
-	 * @generated
-	 * @ordered
-	 */
-	GTK(1, "GTK", "GTK"),
-
-	/**
 	 * The '<em><b>Win32</b></em>' literal object.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #WIN32_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	WIN32(0, "Win32", "Win32");
-
-	/**
-	 * The '<em><b>Cocoa</b></em>' literal value.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>Cocoa</b></em>' literal object isn't clear, there really should be more of a
-	 * description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @see #COCOA
-	 * @model name="Cocoa" literal="cocoa"
+	WIN32(0, "Win32", "Win32"), /**
+	 * The '<em><b>GTK</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #GTK_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	public static final int COCOA_VALUE = 3;
-
-	/**
-	 * The '<em><b>Carbon</b></em>' literal value.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>Carbon</b></em>' literal object isn't clear, there really should be more of a
-	 * description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @see #CARBON
-	 * @model name="Carbon"
+	GTK(1, "GTK", "GTK"), /**
+	 * The '<em><b>Carbon</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see #CARBON_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	public static final int CARBON_VALUE = 2;
-
-	/**
-	 * The '<em><b>GTK</b></em>' literal value.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of '<em><b>GTK</b></em>' literal object isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @see #GTK
-	 * @model
+	CARBON(2, "Carbon", "Carbon"), /**
+	 * The '<em><b>Cocoa</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @see #COCOA_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	public static final int GTK_VALUE = 1;
+	COCOA(3, "Cocoa", "cocoa");
 
 	/**
 	 * The '<em><b>Win32</b></em>' literal value.
@@ -118,15 +69,60 @@ public enum WindowSystem implements Enumerator
 	public static final int WIN32_VALUE = 0;
 
 	/**
+	 * The '<em><b>GTK</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>GTK</b></em>' literal object isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #GTK
+	 * @model
+	 * @generated
+	 * @ordered
+	 */
+	public static final int GTK_VALUE = 1;
+
+	/**
+	 * The '<em><b>Carbon</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Carbon</b></em>' literal object isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #CARBON
+	 * @model name="Carbon"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CARBON_VALUE = 2;
+
+	/**
+	 * The '<em><b>Cocoa</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Cocoa</b></em>' literal object isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #COCOA
+	 * @model name="Cocoa" literal="cocoa"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int COCOA_VALUE = 3;
+
+	/**
 	 * An array of all the '<em><b>Window System</b></em>' enumerators.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	private static final WindowSystem[] VALUES_ARRAY = new WindowSystem[] {
-			COCOA,
-			CARBON,
-			GTK,
 			WIN32,
+			GTK,
+			CARBON,
+			COCOA,
 		};
 
 	/**
@@ -180,10 +176,10 @@ public enum WindowSystem implements Enumerator
 	public static WindowSystem get(int value)
 	{
 		switch (value) {
-			case COCOA_VALUE: return COCOA;
-			case CARBON_VALUE: return CARBON;
-			case GTK_VALUE: return GTK;
 			case WIN32_VALUE: return WIN32;
+			case GTK_VALUE: return GTK;
+			case CARBON_VALUE: return CARBON;
+			case COCOA_VALUE: return COCOA;
 		}
 		return null;
 	}

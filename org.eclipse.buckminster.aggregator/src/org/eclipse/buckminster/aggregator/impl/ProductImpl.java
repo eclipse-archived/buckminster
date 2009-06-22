@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class ProductImpl extends InstallationUnitImpl implements Product
+public class ProductImpl extends MappedUnitImpl implements Product
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

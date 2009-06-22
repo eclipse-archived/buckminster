@@ -11,7 +11,7 @@ import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
-import org.eclipse.buckminster.aggregator.Repository;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -79,7 +79,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Repository> repositories;
+	protected EList<MappedRepository> repositories;
 
 	/**
 	 * The cached value of the '{@link #getContacts() <em>Contacts</em>}' reference list.
@@ -135,10 +135,10 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Repository> getRepositories()
+	public EList<MappedRepository> getRepositories()
 	{
 		if (repositories == null) {
-			repositories = new EObjectContainmentEList<Repository>(Repository.class, this, AggregatorPackage.CONTRIBUTION__REPOSITORIES);
+			repositories = new EObjectContainmentEList<MappedRepository>(MappedRepository.class, this, AggregatorPackage.CONTRIBUTION__REPOSITORIES);
 		}
 		return repositories;
 	}
@@ -201,7 +201,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 				return;
 			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
 				getRepositories().clear();
-				getRepositories().addAll((Collection<? extends Repository>)newValue);
+				getRepositories().addAll((Collection<? extends MappedRepository>)newValue);
 				return;
 			case AggregatorPackage.CONTRIBUTION__CONTACTS:
 				getContacts().clear();

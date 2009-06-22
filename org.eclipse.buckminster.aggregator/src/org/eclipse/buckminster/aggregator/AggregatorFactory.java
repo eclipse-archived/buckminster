@@ -32,12 +32,12 @@ public interface AggregatorFactory extends EFactory
 	Aggregator createAggregator();
 
 	/**
-	 * Returns a new object of class '<em>Repository</em>'.
+	 * Returns a new object of class '<em>Mapped Repository</em>'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @return a new object of class '<em>Repository</em>'.
+	 * @return a new object of class '<em>Mapped Repository</em>'.
 	 * @generated
 	 */
-	Repository createRepository();
+	MappedRepository createMappedRepository();
 
 	/**
 	 * Returns a new object of class '<em>Configuration</em>'.
@@ -46,14 +46,6 @@ public interface AggregatorFactory extends EFactory
 	 * @generated
 	 */
 	Configuration createConfiguration();
-
-	/**
-	 * Returns a new object of class '<em>Category</em>'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @return a new object of class '<em>Category</em>'.
-	 * @generated
-	 */
-	Category createCategory();
 
 	/**
 	 * Returns a new object of class '<em>Contribution</em>'.
@@ -94,6 +86,30 @@ public interface AggregatorFactory extends EFactory
 	 * @generated
 	 */
 	Product createProduct();
+
+	/**
+	 * Returns a new object of class '<em>Property</em>'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return a new object of class '<em>Property</em>'.
+	 * @generated
+	 */
+	Property createProperty();
+
+	/**
+	 * Returns a new object of class '<em>Category</em>'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return a new object of class '<em>Category</em>'.
+	 * @generated
+	 */
+	Category createCategory();
+
+	/**
+	 * Returns a new object of class '<em>Custom Category</em>'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return a new object of class '<em>Custom Category</em>'.
+	 * @generated
+	 */
+	CustomCategory createCustomCategory();
 
 	/**
 	 * Returns the package supported by this factory.

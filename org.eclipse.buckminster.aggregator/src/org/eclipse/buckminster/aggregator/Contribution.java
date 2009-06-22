@@ -55,7 +55,7 @@ public interface Contribution extends EObject
 
 	/**
 	 * Returns the value of the '<em><b>Repositories</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.Repository}.
+	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.MappedRepository}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Repositories</em>' containment reference list isn't clear, there really should be more
@@ -64,10 +64,10 @@ public interface Contribution extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Repositories</em>' containment reference list.
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution_Repositories()
-	 * @model containment="true" keys="location"
+	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Repository> getRepositories();
+	EList<MappedRepository> getRepositories();
 
 	/**
 	 * Returns the value of the '<em><b>Contacts</b></em>' reference list.
@@ -80,7 +80,7 @@ public interface Contribution extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Contacts</em>' reference list.
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution_Contacts()
-	 * @model
+	 * @model keys="email"
 	 * @generated
 	 */
 	EList<Contact> getContacts();

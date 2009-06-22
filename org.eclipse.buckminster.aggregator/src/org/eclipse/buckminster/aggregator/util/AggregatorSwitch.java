@@ -9,7 +9,6 @@ package org.eclipse.buckminster.aggregator.util;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -88,21 +87,15 @@ public class AggregatorSwitch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.REPOSITORY: {
-				Repository repository = (Repository)theEObject;
-				T result = caseRepository(repository);
+			case AggregatorPackage.MAPPED_REPOSITORY: {
+				MappedRepository mappedRepository = (MappedRepository)theEObject;
+				T result = caseMappedRepository(mappedRepository);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case AggregatorPackage.CONFIGURATION: {
 				Configuration configuration = (Configuration)theEObject;
 				T result = caseConfiguration(configuration);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case AggregatorPackage.CATEGORY: {
-				Category category = (Category)theEObject;
-				T result = caseCategory(category);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -121,27 +114,46 @@ public class AggregatorSwitch<T>
 			case AggregatorPackage.FEATURE: {
 				Feature feature = (Feature)theEObject;
 				T result = caseFeature(feature);
-				if (result == null) result = caseInstallationUnit(feature);
+				if (result == null) result = caseMappedUnit(feature);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case AggregatorPackage.BUNDLE: {
 				Bundle bundle = (Bundle)theEObject;
 				T result = caseBundle(bundle);
-				if (result == null) result = caseInstallationUnit(bundle);
+				if (result == null) result = caseMappedUnit(bundle);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.INSTALLATION_UNIT: {
-				InstallationUnit installationUnit = (InstallationUnit)theEObject;
-				T result = caseInstallationUnit(installationUnit);
+			case AggregatorPackage.MAPPED_UNIT: {
+				MappedUnit mappedUnit = (MappedUnit)theEObject;
+				T result = caseMappedUnit(mappedUnit);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case AggregatorPackage.PRODUCT: {
 				Product product = (Product)theEObject;
 				T result = caseProduct(product);
-				if (result == null) result = caseInstallationUnit(product);
+				if (result == null) result = caseMappedUnit(product);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AggregatorPackage.PROPERTY: {
+				Property property = (Property)theEObject;
+				T result = caseProperty(property);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AggregatorPackage.CATEGORY: {
+				Category category = (Category)theEObject;
+				T result = caseCategory(category);
+				if (result == null) result = caseMappedUnit(category);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AggregatorPackage.CUSTOM_CATEGORY: {
+				CustomCategory customCategory = (CustomCategory)theEObject;
+				T result = caseCustomCategory(customCategory);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -164,15 +176,17 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Repository</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Repository</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Mapped Repository</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Mapped Repository</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseRepository(Repository object)
+	public T caseMappedRepository(MappedRepository object)
 	{
 		return null;
 	}
@@ -187,20 +201,6 @@ public class AggregatorSwitch<T>
 	 * @generated
 	 */
 	public T caseConfiguration(Configuration object)
-	{
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Category</em>'.
-	 * <!-- begin-user-doc --> This
-	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Category</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseCategory(Category object)
 	{
 		return null;
 	}
@@ -262,17 +262,15 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Installation Unit</em>'. <!-- begin-user-doc
-	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
-	 * -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Installation Unit</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Mapped Unit</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Mapped Unit</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInstallationUnit(InstallationUnit object)
+	public T caseMappedUnit(MappedUnit object)
 	{
 		return null;
 	}
@@ -287,6 +285,50 @@ public class AggregatorSwitch<T>
 	 * @generated
 	 */
 	public T caseProduct(Product object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Property</em>'.
+	 * <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Property</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseProperty(Property object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Category</em>'.
+	 * <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Category</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCategory(Category object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Custom Category</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Custom Category</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCustomCategory(CustomCategory object)
 	{
 		return null;
 	}

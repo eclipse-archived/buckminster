@@ -6,7 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.presentation;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,7 +76,6 @@ import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
-
 import org.eclipse.core.runtime.Path;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -88,95 +86,86 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 
-
 /**
  * This is a simple wizard for creating a new model file.
- * <!-- begin-user-doc -->
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> <!-- end-user-doc -->
  * @generated
  */
-public class AggregatorModelWizard extends Wizard implements INewWizard {
+public class AggregatorModelWizard extends Wizard implements INewWizard
+{
 	/**
 	 * The supported extensions for created files.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static final List<String> FILE_EXTENSIONS =
-		Collections.unmodifiableList(Arrays.asList(AggregatorEditorPlugin.INSTANCE.getString("_UI_AggregatorEditorFilenameExtensions").split("\\s*,\\s*")));
+	public static final List<String> FILE_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(AggregatorEditorPlugin.INSTANCE.getString("_UI_AggregatorEditorFilenameExtensions").split("\\s*,\\s*")));
 
 	/**
-	 * A formatted list of supported file extensions, suitable for display.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * A formatted list of supported file extensions, suitable for display. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
 	 * @generated
 	 */
-	public static final String FORMATTED_FILE_EXTENSIONS =
-		AggregatorEditorPlugin.INSTANCE.getString("_UI_AggregatorEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
+	public static final String FORMATTED_FILE_EXTENSIONS = AggregatorEditorPlugin.INSTANCE.getString("_UI_AggregatorEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
 
 	/**
 	 * This caches an instance of the model package.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected AggregatorPackage aggregatorPackage = AggregatorPackage.eINSTANCE;
 
 	/**
 	 * This caches an instance of the model factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected AggregatorFactory aggregatorFactory = aggregatorPackage.getAggregatorFactory();
 
 	/**
 	 * This is the file creation page.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected AggregatorModelWizardNewFileCreationPage newFileCreationPage;
 
 	/**
 	 * This is the initial object creation page.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected AggregatorModelWizardInitialObjectCreationPage initialObjectCreationPage;
 
 	/**
 	 * Remember the selection during initialization for populating the default container.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * @generated
 	 */
 	protected IStructuredSelection selection;
 
 	/**
 	 * Remember the workbench during initialization.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected IWorkbench workbench;
 
 	/**
-	 * Caches the names of the types that can be created as the root object.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Caches the names of the types that can be created as the root object. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
 	 * @generated
 	 */
 	protected List<String> initialObjectNames;
 
 	/**
 	 * This just records the information.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public void init(IWorkbench workbench, IStructuredSelection selection)
+	{
 		this.workbench = workbench;
 		this.selection = selection;
 		setWindowTitle(AggregatorEditorPlugin.INSTANCE.getString("_UI_Wizard_label"));
@@ -184,12 +173,13 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 	}
 
 	/**
-	 * Returns the names of the types that can be created as the root object.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Returns the names of the types that can be created as the root object. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
 	 * @generated
 	 */
-	protected Collection<String> getInitialObjectNames() {
+	protected Collection<String> getInitialObjectNames()
+	{
 		if (initialObjectNames == null) {
 			initialObjectNames = new ArrayList<String>();
 			for (EClassifier eClassifier : aggregatorPackage.getEClassifiers()) {
@@ -207,11 +197,11 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 
 	/**
 	 * Create a new model.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected EObject createInitialModel() {
+	protected EObject createInitialModel()
+	{
 		EClass eClass = (EClass)aggregatorPackage.getEClassifier(initialObjectCreationPage.getInitialObjectName());
 		EObject rootObject = aggregatorFactory.create(eClass);
 		return rootObject;
@@ -219,12 +209,12 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 
 	/**
 	 * Do the work after everything is specified.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public boolean performFinish() {
+	public boolean performFinish()
+	{
 		try {
 			// Remember the file.
 			//
@@ -310,29 +300,29 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 
 	/**
 	 * This is the one page of the wizard.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public class AggregatorModelWizardNewFileCreationPage extends WizardNewFileCreationPage {
+	public class AggregatorModelWizardNewFileCreationPage extends WizardNewFileCreationPage
+	{
 		/**
 		 * Pass in the selection.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		public AggregatorModelWizardNewFileCreationPage(String pageId, IStructuredSelection selection) {
+		public AggregatorModelWizardNewFileCreationPage(String pageId, IStructuredSelection selection)
+		{
 			super(pageId, selection);
 		}
 
 		/**
 		 * The framework calls this to see if the file is correct.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
 		@Override
-		protected boolean validatePage() {
+		protected boolean validatePage()
+		{
 			if (super.validatePage()) {
 				String extension = new Path(getFileName()).getFileExtension();
 				if (extension == null || !FILE_EXTENSIONS.contains(extension)) {
@@ -346,61 +336,56 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		public IFile getModelFile() {
+		public IFile getModelFile()
+		{
 			return ResourcesPlugin.getWorkspace().getRoot().getFile(getContainerFullPath().append(getFileName()));
 		}
 	}
 
 	/**
 	 * This is the page where the type of object to create is selected.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public class AggregatorModelWizardInitialObjectCreationPage extends WizardPage {
+	public class AggregatorModelWizardInitialObjectCreationPage extends WizardPage
+	{
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
 		protected Combo initialObjectField;
 
 		/**
-		 * @generated
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * @generated <!-- begin-user-doc --> <!-- end-user-doc -->
 		 */
 		protected List<String> encodings;
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
 		protected Combo encodingField;
 
 		/**
 		 * Pass in the selection.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		public AggregatorModelWizardInitialObjectCreationPage(String pageId) {
+		public AggregatorModelWizardInitialObjectCreationPage(String pageId)
+		{
 			super(pageId);
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		public void createControl(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NONE);
-			{
+		public void createControl(Composite parent)
+		{
+			Composite composite = new Composite(parent, SWT.NONE); {
 				GridLayout layout = new GridLayout();
 				layout.numColumns = 1;
 				layout.verticalSpacing = 12;
@@ -467,33 +452,31 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		protected ModifyListener validator =
-			new ModifyListener() {
+		protected ModifyListener validator = new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
 					setPageComplete(validatePage());
 				}
 			};
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		protected boolean validatePage() {
+		protected boolean validatePage()
+		{
 			return getInitialObjectName() != null && getEncodings().contains(encodingField.getText());
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
 		@Override
-		public void setVisible(boolean visible) {
+		public void setVisible(boolean visible)
+		{
 			super.setVisible(visible);
 			if (visible) {
 				if (initialObjectField.getItemCount() == 1) {
@@ -508,11 +491,11 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		public String getInitialObjectName() {
+		public String getInitialObjectName()
+		{
 			String label = initialObjectField.getText();
 
 			for (String name : getInitialObjectNames()) {
@@ -524,21 +507,21 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		public String getEncoding() {
+		public String getEncoding()
+		{
 			return encodingField.getText();
 		}
 
 		/**
 		 * Returns the label for the specified type name.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		protected String getLabel(String typeName) {
+		protected String getLabel(String typeName)
+		{
 			try {
 				return AggregatorEditPlugin.INSTANCE.getString("_UI_" + typeName + "_type");
 			}
@@ -549,11 +532,11 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 		}
 
 		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
 		 */
-		protected Collection<String> getEncodings() {
+		protected Collection<String> getEncodings()
+		{
 			if (encodings == null) {
 				encodings = new ArrayList<String>();
 				for (StringTokenizer stringTokenizer = new StringTokenizer(AggregatorEditorPlugin.INSTANCE.getString("_UI_XMLEncodingChoices")); stringTokenizer.hasMoreTokens(); ) {
@@ -566,12 +549,12 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 
 	/**
 	 * The framework calls this to create the contents of the wizard.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-		@Override
-	public void addPages() {
+	@Override
+	public void addPages()
+	{
 		// Create a page, set the title, and the initial model file name.
 		//
 		newFileCreationPage = new AggregatorModelWizardNewFileCreationPage("Whatever", selection);
@@ -621,11 +604,11 @@ public class AggregatorModelWizard extends Wizard implements INewWizard {
 
 	/**
 	 * Get the file from the page.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IFile getModelFile() {
+	public IFile getModelFile()
+	{
 		return newFileCreationPage.getModelFile();
 	}
 
