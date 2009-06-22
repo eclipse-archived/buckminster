@@ -261,13 +261,32 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	public String getName()
 	{
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		StringBuilder bld = new StringBuilder();
+		bld.append(OPERATING_SYSTEM_EFLAG_VALUES[(eFlags & OPERATING_SYSTEM_EFLAG) >>> OPERATING_SYSTEM_EFLAG_OFFSET]);
+		bld.append(',');
+		bld.append(WINDOW_SYSTEM_EFLAG_VALUES[(eFlags & WINDOW_SYSTEM_EFLAG) >>> WINDOW_SYSTEM_EFLAG_OFFSET]);
+		bld.append(',');
+		bld.append(ARCHITECTURE_EFLAG_VALUES[(eFlags & ARCHITECTURE_EFLAG) >>> ARCHITECTURE_EFLAG_OFFSET]);
+		return bld.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated NOT
+	 */
+	public String getOSGiEnvironmentString() {
+		StringBuilder bld = new StringBuilder();
+		bld.append("osgi.os="); //$NON-NLS-1$
+		bld.append(OPERATING_SYSTEM_EFLAG_VALUES[(eFlags & OPERATING_SYSTEM_EFLAG) >>> OPERATING_SYSTEM_EFLAG_OFFSET]);
+		bld.append(",osgi.ws="); //$NON-NLS-1$
+		bld.append(WINDOW_SYSTEM_EFLAG_VALUES[(eFlags & WINDOW_SYSTEM_EFLAG) >>> WINDOW_SYSTEM_EFLAG_OFFSET]);
+		bld.append(",osgi.arch="); //$NON-NLS-1$
+		bld.append(ARCHITECTURE_EFLAG_VALUES[(eFlags & ARCHITECTURE_EFLAG) >>> ARCHITECTURE_EFLAG_OFFSET]);
+		return bld.toString();
 	}
 
 	/**

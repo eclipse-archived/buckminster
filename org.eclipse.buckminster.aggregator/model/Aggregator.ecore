@@ -37,6 +37,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Configuration">
     <eOperations name="getName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="getOSGiEnvironmentString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operatingSystem" lowerBound="1"
         eType="#//OperatingSystem"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowSystem" lowerBound="1"

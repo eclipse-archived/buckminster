@@ -117,4 +117,11 @@ public interface Configuration extends EObject
 	 */
 	String getName();
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @model kind="operation"
+	 * @generated
+	 */
+	String getOSGiEnvironmentString();
+
 } // Configuration
