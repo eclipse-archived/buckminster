@@ -7,6 +7,7 @@
 package org.eclipse.buckminster.aggregator.provider;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
@@ -24,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -55,6 +57,20 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
+	 * Show the children only if the repository is not mapped verbatim
+	 * 
+	 * @generated NOT
+	 */
+	@Override
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
+	{
+		if(((MappedRepository)object).isMapVerbatim())
+			return Collections.emptySet();
+
+		return getChildrenFeaturesGen(object);
+	}
+
+	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
@@ -62,8 +78,7 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
+	public Collection<? extends EStructuralFeature> getChildrenFeaturesGen(Object object)
 	{
 		if(childrenFeatures == null)
 		{
@@ -85,6 +100,18 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	public Object getImage(Object object)
 	{
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MappedRepository"));
+	}
+
+	/**
+	 * Allow adding children only if the repository is not mapped verbatim
+	 */
+	@Override
+	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling)
+	{
+		if(((MappedRepository)object).isMapVerbatim())
+			return Collections.emptySet();
+
+		return super.getNewChildDescriptors(object, editingDomain, sibling);
 	}
 
 	/**
@@ -161,10 +188,11 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 		if(!(feature instanceof EAttribute))
 			return;
 
-		if(!"location".equals(((EAttribute)feature).getName()))
-			return;
-
-		onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
+		String name = ((EAttribute)feature).getName();
+		if("location".equals(name))
+			onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
+		else if("mapVerbatim".equals(name))
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 	}
 
 	/**
