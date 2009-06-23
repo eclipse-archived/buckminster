@@ -16,15 +16,12 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -350,23 +347,12 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		MetadataRepository repo = null;
 		try
 		{
-			EObject topObject = repository;
-			EObject parent = topObject.eContainer();
-			while(parent != null)
-			{
-				topObject = parent;
-				parent = topObject.eContainer();
-			}
-			ResourceSet topSet = topObject.eResource().getResourceSet();
-			Resource mdr = topSet.getResource(URI.createGenericURI("p2", location, null), true);
-			List<EObject> contents = mdr.getContents();
-			if(contents.size() == 1)
-				repo = (MetadataRepository)contents.get(0);
+			Aggregator aggregator = (Aggregator)repository.eContainer().eContainer();
+			repo = MetadataRepositoryResourceImpl.loadRepository(location, aggregator);
 		}
 		finally
 		{
 			repository.setMetadataRepository(repo);
 		}
 	}
-
 }
