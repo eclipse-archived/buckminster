@@ -169,7 +169,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Product> getProducts()
 	{
-		if (products == null) {
+		if (products == null)
+		{
 			products = new EObjectContainmentEList<Product>(Product.class, this, AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS);
 		}
 		return products;
@@ -181,7 +182,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Bundle> getBundles()
 	{
-		if (bundles == null) {
+		if (bundles == null)
+		{
 			bundles = new EObjectContainmentEList<Bundle>(Bundle.class, this, AggregatorPackage.MAPPED_REPOSITORY__BUNDLES);
 		}
 		return bundles;
@@ -193,7 +195,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Feature> getFeatures()
 	{
-		if (features == null) {
+		if (features == null)
+		{
 			features = new EObjectContainmentEList<Feature>(Feature.class, this, AggregatorPackage.MAPPED_REPOSITORY__FEATURES);
 		}
 		return features;
@@ -226,10 +229,12 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public MetadataRepository getMetadataRepository()
 	{
-		if (metadataRepository != null && metadataRepository.eIsProxy()) {
+		if (metadataRepository != null && metadataRepository.eIsProxy())
+		{
 			InternalEObject oldMetadataRepository = (InternalEObject)metadataRepository;
 			metadataRepository = (MetadataRepository)eResolveProxy(oldMetadataRepository);
-			if (metadataRepository != oldMetadataRepository) {
+			if (metadataRepository != oldMetadataRepository)
+			{
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository, metadataRepository));
 			}
@@ -264,7 +269,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Category> getCategories()
 	{
-		if (categories == null) {
+		if (categories == null)
+		{
 			categories = new EObjectContainmentEList<Category>(Category.class, this, AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES);
 		}
 		return categories;
@@ -298,7 +304,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				return ((InternalEList<?>)getProducts()).basicRemove(otherEnd, msgs);
 			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -318,7 +325,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				return getProducts();
 			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -346,7 +354,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				getProducts().clear();
 				getProducts().addAll((Collection<? extends Product>)newValue);
@@ -383,7 +392,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				getProducts().clear();
 				return;
@@ -416,7 +426,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				return products != null && !products.isEmpty();
 			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:

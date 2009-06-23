@@ -170,7 +170,8 @@ public enum AggregateType implements Enumerator
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final AggregateType[] VALUES_ARRAY = new AggregateType[] {
+	private static final AggregateType[] VALUES_ARRAY = new AggregateType[]
+		{
 			STABLE,
 			INTEGRATION,
 			NIGHTLY,
@@ -195,9 +196,11 @@ public enum AggregateType implements Enumerator
 	 */
 	public static AggregateType get(String literal)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
 			AggregateType result = VALUES_ARRAY[i];
-			if (result.toString().equals(literal)) {
+			if (result.toString().equals(literal))
+			{
 				return result;
 			}
 		}
@@ -212,9 +215,11 @@ public enum AggregateType implements Enumerator
 	 */
 	public static AggregateType getByName(String name)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
 			AggregateType result = VALUES_ARRAY[i];
-			if (result.getName().equals(name)) {
+			if (result.getName().equals(name))
+			{
 				return result;
 			}
 		}
@@ -229,7 +234,8 @@ public enum AggregateType implements Enumerator
 	 */
 	public static AggregateType get(int value)
 	{
-		switch (value) {
+		switch (value)
+		{
 			case STABLE_VALUE: return STABLE;
 			case INTEGRATION_VALUE: return INTEGRATION;
 			case NIGHTLY_VALUE: return NIGHTLY;

@@ -296,7 +296,8 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 				return getOperatingSystem();
 			case AggregatorPackage.CONFIGURATION__WINDOW_SYSTEM:
@@ -314,7 +315,8 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 				setOperatingSystem((OperatingSystem)newValue);
 				return;
@@ -335,7 +337,8 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 				setOperatingSystem(OPERATING_SYSTEM_EDEFAULT);
 				return;
@@ -356,7 +359,8 @@ public class ConfigurationImpl extends MinimalEObjectImpl.Container implements C
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 				return (eFlags & OPERATING_SYSTEM_EFLAG) != OPERATING_SYSTEM_EFLAG_DEFAULT;
 			case AggregatorPackage.CONFIGURATION__WINDOW_SYSTEM:

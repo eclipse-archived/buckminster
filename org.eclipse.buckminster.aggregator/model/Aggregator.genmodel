@@ -62,6 +62,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Configuration/windowSystem"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Configuration/architecture"/>
       <genOperations ecoreOperation="Aggregator.ecore#//Configuration/getName"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//Configuration/getOSGiEnvironmentString"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Contribution">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contribution/label"/>
@@ -93,7 +94,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//CustomCategory/identifier"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//CustomCategory/label"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//CustomCategory/description"/>
-      <genFeatures notify="false" children="true" createChild="true" propertySortChoices="true"
+      <genFeatures children="true" createChild="true" propertyDescription="" propertySortChoices="true"
           ecoreFeature="ecore:EReference Aggregator.ecore#//CustomCategory/features"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" ecorePackage="Aggregator.ecore#//p2">

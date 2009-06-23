@@ -56,7 +56,8 @@ public class TouchpointInstructionItemProvider extends ItemProviderAdapter imple
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addBodyPropertyDescriptor(object);
@@ -146,7 +147,8 @@ public class TouchpointInstructionItemProvider extends ItemProviderAdapter imple
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(TouchpointInstruction.class)) {
+		switch (notification.getFeatureID(TouchpointInstruction.class))
+		{
 			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
 			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

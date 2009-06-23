@@ -148,7 +148,8 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.COPYRIGHT__LOCATION:
 				return getLocation();
 			case P2Package.COPYRIGHT__BODY:
@@ -164,7 +165,8 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.COPYRIGHT__LOCATION:
 				setLocation((URI)newValue);
 				return;
@@ -182,7 +184,8 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.COPYRIGHT__LOCATION:
 				setLocation(LOCATION_EDEFAULT);
 				return;
@@ -200,7 +203,8 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.COPYRIGHT__LOCATION:
 				return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
 			case P2Package.COPYRIGHT__BODY:

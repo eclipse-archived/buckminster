@@ -98,7 +98,8 @@ public enum OperatingSystem implements Enumerator
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final OperatingSystem[] VALUES_ARRAY = new OperatingSystem[] {
+	private static final OperatingSystem[] VALUES_ARRAY = new OperatingSystem[]
+		{
 			WIN32,
 			LINUX,
 			MAC_OSX,
@@ -120,9 +121,11 @@ public enum OperatingSystem implements Enumerator
 	 */
 	public static OperatingSystem get(String literal)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
 			OperatingSystem result = VALUES_ARRAY[i];
-			if (result.toString().equals(literal)) {
+			if (result.toString().equals(literal))
+			{
 				return result;
 			}
 		}
@@ -137,9 +140,11 @@ public enum OperatingSystem implements Enumerator
 	 */
 	public static OperatingSystem getByName(String name)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
 			OperatingSystem result = VALUES_ARRAY[i];
-			if (result.getName().equals(name)) {
+			if (result.getName().equals(name))
+			{
 				return result;
 			}
 		}
@@ -154,7 +159,8 @@ public enum OperatingSystem implements Enumerator
 	 */
 	public static OperatingSystem get(int value)
 	{
-		switch (value) {
+		switch (value)
+		{
 			case WIN32_VALUE: return WIN32;
 			case LINUX_VALUE: return LINUX;
 			case MAC_OSX_VALUE: return MAC_OSX;

@@ -62,7 +62,8 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addMapVerbatimPropertyDescriptor(object);
@@ -166,7 +167,8 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__PRODUCTS);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES);
@@ -240,7 +242,8 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(MappedRepository.class)) {
+		switch (notification.getFeatureID(MappedRepository.class))
+		{
 			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
 			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:

@@ -61,7 +61,8 @@ public class MetadataRepositoryItemProvider extends ItemProviderAdapter implemen
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addLocationPropertyDescriptor(object);
@@ -125,7 +126,8 @@ public class MetadataRepositoryItemProvider extends ItemProviderAdapter implemen
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2Package.Literals.METADATA_REPOSITORY__INSTALLABLE_UNITS);
 		}
@@ -183,7 +185,8 @@ public class MetadataRepositoryItemProvider extends ItemProviderAdapter implemen
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(MetadataRepository.class)) {
+		switch (notification.getFeatureID(MetadataRepository.class))
+		{
 			case P2Package.METADATA_REPOSITORY__LOCATION:
 			case P2Package.METADATA_REPOSITORY__NAME:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

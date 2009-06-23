@@ -39,7 +39,8 @@ public final class AggregatorEditPlugin extends EMFPlugin
 	public AggregatorEditPlugin()
 	{
 		super
-		  (new ResourceLocator [] {
+		  (new ResourceLocator [] 
+		   {
 		   });
 	}
 

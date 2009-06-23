@@ -137,7 +137,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 */
 	public EList<MappedRepository> getRepositories()
 	{
-		if (repositories == null) {
+		if (repositories == null)
+		{
 			repositories = new EObjectContainmentEList<MappedRepository>(MappedRepository.class, this, AggregatorPackage.CONTRIBUTION__REPOSITORIES);
 		}
 		return repositories;
@@ -149,7 +150,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 */
 	public EList<Contact> getContacts()
 	{
-		if (contacts == null) {
+		if (contacts == null)
+		{
 			contacts = new EObjectResolvingEList<Contact>(Contact.class, this, AggregatorPackage.CONTRIBUTION__CONTACTS);
 		}
 		return contacts;
@@ -162,7 +164,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
 				return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
 		}
@@ -176,7 +179,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTRIBUTION__LABEL:
 				return getLabel();
 			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
@@ -195,7 +199,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTRIBUTION__LABEL:
 				setLabel((String)newValue);
 				return;
@@ -218,7 +223,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTRIBUTION__LABEL:
 				setLabel(LABEL_EDEFAULT);
 				return;
@@ -239,7 +245,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTRIBUTION__LABEL:
 				return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
 			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:

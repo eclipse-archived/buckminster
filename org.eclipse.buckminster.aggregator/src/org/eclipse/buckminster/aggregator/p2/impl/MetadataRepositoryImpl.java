@@ -165,7 +165,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	public EList<InstallableUnit> getInstallableUnits()
 	{
-		if (installableUnits == null) {
+		if (installableUnits == null)
+		{
 			installableUnits = new EObjectContainmentEList<InstallableUnit>(InstallableUnit.class, this, P2Package.METADATA_REPOSITORY__INSTALLABLE_UNITS);
 		}
 		return installableUnits;
@@ -188,7 +189,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.METADATA_REPOSITORY__INSTALLABLE_UNITS:
 				return ((InternalEList<?>)getInstallableUnits()).basicRemove(otherEnd, msgs);
 		}
@@ -202,7 +204,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.METADATA_REPOSITORY__LOCATION:
 				return getLocation();
 			case P2Package.METADATA_REPOSITORY__NAME:
@@ -221,7 +224,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.METADATA_REPOSITORY__LOCATION:
 				setLocation((URI)newValue);
 				return;
@@ -243,7 +247,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.METADATA_REPOSITORY__LOCATION:
 				setLocation(LOCATION_EDEFAULT);
 				return;
@@ -264,7 +269,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.METADATA_REPOSITORY__LOCATION:
 				return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
 			case P2Package.METADATA_REPOSITORY__NAME:

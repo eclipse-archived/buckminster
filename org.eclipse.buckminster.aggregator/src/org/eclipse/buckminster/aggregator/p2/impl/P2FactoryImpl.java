@@ -42,13 +42,16 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	 */
 	public static P2Factory init()
 	{
-		try {
+		try
+		{
 			P2Factory theP2Factory = (P2Factory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/2009/p2"); 
-			if (theP2Factory != null) {
+			if (theP2Factory != null)
+			{
 				return theP2Factory;
 			}
 		}
-		catch (Exception exception) {
+		catch (Exception exception)
+		{
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new P2FactoryImpl();
@@ -71,7 +74,8 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	@Override
 	public EObject create(EClass eClass)
 	{
-		switch (eClass.getClassifierID()) {
+		switch (eClass.getClassifierID())
+		{
 			case P2Package.ARTIFACT_KEY: return createArtifactKey();
 			case P2Package.COPYRIGHT: return createCopyright();
 			case P2Package.METADATA_REPOSITORY: return createMetadataRepository();
@@ -98,7 +102,8 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue)
 	{
-		switch (eDataType.getClassifierID()) {
+		switch (eDataType.getClassifierID())
+		{
 			case P2Package.VERSION:
 				return createVersionFromString(eDataType, initialValue);
 			case P2Package.VERSION_RANGE:
@@ -131,7 +136,8 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue)
 	{
-		switch (eDataType.getClassifierID()) {
+		switch (eDataType.getClassifierID())
+		{
 			case P2Package.VERSION:
 				return convertVersionToString(eDataType, instanceValue);
 			case P2Package.VERSION_RANGE:

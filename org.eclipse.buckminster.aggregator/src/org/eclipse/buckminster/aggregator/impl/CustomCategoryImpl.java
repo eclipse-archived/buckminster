@@ -205,7 +205,8 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 */
 	public EList<Feature> getFeatures()
 	{
-		if (features == null) {
+		if (features == null)
+		{
 			features = new EObjectResolvingEList<Feature>(Feature.class, this, AggregatorPackage.CUSTOM_CATEGORY__FEATURES);
 		}
 		return features;
@@ -218,7 +219,8 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				return getIdentifier();
 			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
@@ -239,7 +241,8 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				setIdentifier((String)newValue);
 				return;
@@ -264,7 +267,8 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				setIdentifier(IDENTIFIER_EDEFAULT);
 				return;
@@ -288,7 +292,8 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				return IDENTIFIER_EDEFAULT == null ? identifier != null : !IDENTIFIER_EDEFAULT.equals(identifier);
 			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:

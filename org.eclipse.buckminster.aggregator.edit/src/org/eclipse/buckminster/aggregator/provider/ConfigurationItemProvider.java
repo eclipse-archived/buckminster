@@ -58,7 +58,8 @@ public class ConfigurationItemProvider extends ItemProviderAdapter implements IE
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addOperatingSystemPropertyDescriptor(object);
@@ -193,7 +194,8 @@ public class ConfigurationItemProvider extends ItemProviderAdapter implements IE
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Configuration.class)) {
+		switch (notification.getFeatureID(Configuration.class))
+		{
 			case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 			case AggregatorPackage.CONFIGURATION__WINDOW_SYSTEM:
 			case AggregatorPackage.CONFIGURATION__ARCHITECTURE:

@@ -54,7 +54,8 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addIdentifierPropertyDescriptor(object);
@@ -164,7 +165,8 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.CUSTOM_CATEGORY__FEATURES);
 		}
@@ -221,11 +223,15 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(CustomCategory.class)) {
+		switch (notification.getFeatureID(CustomCategory.class))
+		{
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
 			case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);

@@ -59,7 +59,8 @@ public class CopyrightItemProvider extends ItemProviderAdapter implements IEditi
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addLocationPropertyDescriptor(object);
@@ -150,7 +151,8 @@ public class CopyrightItemProvider extends ItemProviderAdapter implements IEditi
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Copyright.class)) {
+		switch (notification.getFeatureID(Copyright.class))
+		{
 			case P2Package.COPYRIGHT__LOCATION:
 			case P2Package.COPYRIGHT__BODY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

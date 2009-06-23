@@ -56,7 +56,8 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addLabelOverridePropertyDescriptor(object);
@@ -136,7 +137,8 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Category.class)) {
+		switch (notification.getFeatureID(Category.class))
+		{
 			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

@@ -63,7 +63,8 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 	 */
 	public EList<CustomCategory> getCategory()
 	{
-		if (category == null) {
+		if (category == null)
+		{
 			category = new EObjectResolvingEList<CustomCategory>(CustomCategory.class, this, AggregatorPackage.FEATURE__CATEGORY);
 		}
 		return category;
@@ -76,7 +77,8 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.FEATURE__CATEGORY:
 				return getCategory();
 		}
@@ -91,7 +93,8 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.FEATURE__CATEGORY:
 				getCategory().clear();
 				getCategory().addAll((Collection<? extends CustomCategory>)newValue);
@@ -107,7 +110,8 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.FEATURE__CATEGORY:
 				getCategory().clear();
 				return;
@@ -122,7 +126,8 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.FEATURE__CATEGORY:
 				return category != null && !category.isEmpty();
 		}

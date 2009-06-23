@@ -96,7 +96,8 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
 				return getLabelOverride();
 		}
@@ -110,7 +111,8 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
 				setLabelOverride((String)newValue);
 				return;
@@ -125,7 +127,8 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
 				setLabelOverride(LABEL_OVERRIDE_EDEFAULT);
 				return;
@@ -140,7 +143,8 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
 				return LABEL_OVERRIDE_EDEFAULT == null ? labelOverride != null : !LABEL_OVERRIDE_EDEFAULT.equals(labelOverride);
 		}

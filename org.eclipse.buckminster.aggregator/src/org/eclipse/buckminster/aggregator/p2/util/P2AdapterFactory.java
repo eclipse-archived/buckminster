@@ -48,7 +48,8 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 	 */
 	public P2AdapterFactory()
 	{
-		if (modelPackage == null) {
+		if (modelPackage == null)
+		{
 			modelPackage = P2Package.eINSTANCE;
 		}
 	}
@@ -64,10 +65,12 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 	@Override
 	public boolean isFactoryForType(Object object)
 	{
-		if (object == modelPackage) {
+		if (object == modelPackage)
+		{
 			return true;
 		}
-		if (object instanceof EObject) {
+		if (object instanceof EObject)
+		{
 			return ((EObject)object).eClass().getEPackage() == modelPackage;
 		}
 		return false;
@@ -78,113 +81,141 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected P2Switch<Adapter> modelSwitch = new P2Switch<Adapter>() {
+	protected P2Switch<Adapter> modelSwitch = new P2Switch<Adapter>()
+		{
 			@Override
-			public Adapter caseIArtifactKey(IArtifactKey object) {
+			public Adapter caseIArtifactKey(IArtifactKey object)
+			{
 				return createIArtifactKeyAdapter();
 			}
 			@Override
-			public Adapter caseICopyright(ICopyright object) {
+			public Adapter caseICopyright(ICopyright object)
+			{
 				return createICopyrightAdapter();
 			}
 			@Override
-			public Adapter caseIInstallableUnit(IInstallableUnit object) {
+			public Adapter caseIInstallableUnit(IInstallableUnit object)
+			{
 				return createIInstallableUnitAdapter();
 			}
 			@Override
-			public Adapter caseIInstallableUnitFragment(IInstallableUnitFragment object) {
+			public Adapter caseIInstallableUnitFragment(IInstallableUnitFragment object)
+			{
 				return createIInstallableUnitFragmentAdapter();
 			}
 			@Override
-			public Adapter caseILicense(ILicense object) {
+			public Adapter caseILicense(ILicense object)
+			{
 				return createILicenseAdapter();
 			}
 			@Override
-			public Adapter caseIProvidedCapability(IProvidedCapability object) {
+			public Adapter caseIProvidedCapability(IProvidedCapability object)
+			{
 				return createIProvidedCapabilityAdapter();
 			}
 			@Override
-			public Adapter caseIRequiredCapability(IRequiredCapability object) {
+			public Adapter caseIRequiredCapability(IRequiredCapability object)
+			{
 				return createIRequiredCapabilityAdapter();
 			}
 			@Override
-			public Adapter caseITouchpointData(ITouchpointData object) {
+			public Adapter caseITouchpointData(ITouchpointData object)
+			{
 				return createITouchpointDataAdapter();
 			}
 			@Override
-			public Adapter caseITouchpointInstruction(ITouchpointInstruction object) {
+			public Adapter caseITouchpointInstruction(ITouchpointInstruction object)
+			{
 				return createITouchpointInstructionAdapter();
 			}
 			@Override
-			public Adapter caseITouchpointType(ITouchpointType object) {
+			public Adapter caseITouchpointType(ITouchpointType object)
+			{
 				return createITouchpointTypeAdapter();
 			}
 			@Override
-			public Adapter caseIUpdateDescriptor(IUpdateDescriptor object) {
+			public Adapter caseIUpdateDescriptor(IUpdateDescriptor object)
+			{
 				return createIUpdateDescriptorAdapter();
 			}
 			@Override
-			public Adapter caseArtifactKey(ArtifactKey object) {
+			public Adapter caseArtifactKey(ArtifactKey object)
+			{
 				return createArtifactKeyAdapter();
 			}
 			@Override
-			public Adapter caseCopyright(Copyright object) {
+			public Adapter caseCopyright(Copyright object)
+			{
 				return createCopyrightAdapter();
 			}
 			@Override
-			public Adapter caseMetadataRepository(MetadataRepository object) {
+			public Adapter caseMetadataRepository(MetadataRepository object)
+			{
 				return createMetadataRepositoryAdapter();
 			}
 			@Override
-			public Adapter caseInstallableUnit(InstallableUnit object) {
+			public Adapter caseInstallableUnit(InstallableUnit object)
+			{
 				return createInstallableUnitAdapter();
 			}
 			@Override
-			public Adapter caseInstallableUnitFragment(InstallableUnitFragment object) {
+			public Adapter caseInstallableUnitFragment(InstallableUnitFragment object)
+			{
 				return createInstallableUnitFragmentAdapter();
 			}
 			@Override
-			public Adapter caseLicense(License object) {
+			public Adapter caseLicense(License object)
+			{
 				return createLicenseAdapter();
 			}
 			@Override
-			public Adapter caseProvidedCapability(ProvidedCapability object) {
+			public Adapter caseProvidedCapability(ProvidedCapability object)
+			{
 				return createProvidedCapabilityAdapter();
 			}
 			@Override
-			public Adapter caseRequiredCapability(RequiredCapability object) {
+			public Adapter caseRequiredCapability(RequiredCapability object)
+			{
 				return createRequiredCapabilityAdapter();
 			}
 			@Override
-			public Adapter caseTouchpointData(TouchpointData object) {
+			public Adapter caseTouchpointData(TouchpointData object)
+			{
 				return createTouchpointDataAdapter();
 			}
 			@Override
-			public Adapter caseTouchpointInstruction(TouchpointInstruction object) {
+			public Adapter caseTouchpointInstruction(TouchpointInstruction object)
+			{
 				return createTouchpointInstructionAdapter();
 			}
 			@Override
-			public Adapter caseTouchpointType(TouchpointType object) {
+			public Adapter caseTouchpointType(TouchpointType object)
+			{
 				return createTouchpointTypeAdapter();
 			}
 			@Override
-			public Adapter caseUpdateDescriptor(UpdateDescriptor object) {
+			public Adapter caseUpdateDescriptor(UpdateDescriptor object)
+			{
 				return createUpdateDescriptorAdapter();
 			}
 			@Override
-			public Adapter caseProperty(Map.Entry<String, String> object) {
+			public Adapter caseProperty(Map.Entry<String, String> object)
+			{
 				return createPropertyAdapter();
 			}
 			@Override
-			public Adapter caseInstructionMap(Map.Entry<String, TouchpointInstruction> object) {
+			public Adapter caseInstructionMap(Map.Entry<String, TouchpointInstruction> object)
+			{
 				return createInstructionMapAdapter();
 			}
 			@Override
-			public Adapter caseIQueryable(IQueryable object) {
+			public Adapter caseIQueryable(IQueryable object)
+			{
 				return createIQueryableAdapter();
 			}
 			@Override
-			public Adapter defaultCase(EObject object) {
+			public Adapter defaultCase(EObject object)
+			{
 				return createEObjectAdapter();
 			}
 		};

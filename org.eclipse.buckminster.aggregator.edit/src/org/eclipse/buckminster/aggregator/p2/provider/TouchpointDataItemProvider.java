@@ -58,7 +58,8 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 		}
@@ -76,7 +77,8 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2Package.Literals.TOUCHPOINT_DATA__INSTRUCTION_MAP);
 		}
@@ -130,7 +132,8 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(TouchpointData.class)) {
+		switch (notification.getFeatureID(TouchpointData.class))
+		{
 			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;

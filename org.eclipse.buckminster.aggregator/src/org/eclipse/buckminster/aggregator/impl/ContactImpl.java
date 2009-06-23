@@ -146,7 +146,8 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTACT__NAME:
 				return getName();
 			case AggregatorPackage.CONTACT__EMAIL:
@@ -162,7 +163,8 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTACT__NAME:
 				setName((String)newValue);
 				return;
@@ -180,7 +182,8 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTACT__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -198,7 +201,8 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.CONTACT__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case AggregatorPackage.CONTACT__EMAIL:

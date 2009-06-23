@@ -57,7 +57,8 @@ public class UpdateDescriptorItemProvider extends ItemProviderAdapter implements
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addIdPropertyDescriptor(object);
@@ -193,7 +194,8 @@ public class UpdateDescriptorItemProvider extends ItemProviderAdapter implements
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(UpdateDescriptor.class)) {
+		switch (notification.getFeatureID(UpdateDescriptor.class))
+		{
 			case P2Package.UPDATE_DESCRIPTOR__ID:
 			case P2Package.UPDATE_DESCRIPTOR__RANGE:
 			case P2Package.UPDATE_DESCRIPTOR__DESCRIPTION:

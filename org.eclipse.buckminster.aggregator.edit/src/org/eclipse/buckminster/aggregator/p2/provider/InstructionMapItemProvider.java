@@ -60,7 +60,8 @@ public class InstructionMapItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addKeyPropertyDescriptor(object);
@@ -101,7 +102,8 @@ public class InstructionMapItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2Package.Literals.INSTRUCTION_MAP__VALUE);
 		}
@@ -156,7 +158,8 @@ public class InstructionMapItemProvider extends ItemProviderAdapter implements I
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Map.Entry.class)) {
+		switch (notification.getFeatureID(Map.Entry.class))
+		{
 			case P2Package.INSTRUCTION_MAP__KEY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

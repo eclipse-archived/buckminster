@@ -78,7 +78,8 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	 */
 	public EMap<String, TouchpointInstruction> getInstructionMap()
 	{
-		if (instructionMap == null) {
+		if (instructionMap == null)
+		{
 			instructionMap = new EcoreEMap<String,TouchpointInstruction>(P2Package.Literals.INSTRUCTION_MAP, InstructionMapImpl.class, this, P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP);
 		}
 		return instructionMap;
@@ -112,7 +113,8 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
 				return ((InternalEList<?>)getInstructionMap()).basicRemove(otherEnd, msgs);
 		}
@@ -126,7 +128,8 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
 				if (coreType) return getInstructionMap();
 				else return getInstructionMap().map();
@@ -141,7 +144,8 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
 				((EStructuralFeature.Setting)getInstructionMap()).set(newValue);
 				return;
@@ -156,7 +160,8 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
 				getInstructionMap().clear();
 				return;
@@ -171,7 +176,8 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
 				return instructionMap != null && !instructionMap.isEmpty();
 		}

@@ -36,7 +36,8 @@ public class AggregatorSwitch<T>
 	 */
 	public AggregatorSwitch()
 	{
-		if (modelPackage == null) {
+		if (modelPackage == null)
+		{
 			modelPackage = AggregatorPackage.eINSTANCE;
 		}
 	}
@@ -60,10 +61,12 @@ public class AggregatorSwitch<T>
 	 */
 	protected T doSwitch(EClass theEClass, EObject theEObject)
 	{
-		if (theEClass.eContainer() == modelPackage) {
+		if (theEClass.eContainer() == modelPackage)
+		{
 			return doSwitch(theEClass.getClassifierID(), theEObject);
 		}
-		else {
+		else
+		{
 			List<EClass> eSuperTypes = theEClass.getESuperTypes();
 			return
 				eSuperTypes.isEmpty() ?
@@ -80,78 +83,91 @@ public class AggregatorSwitch<T>
 	 */
 	protected T doSwitch(int classifierID, EObject theEObject)
 	{
-		switch (classifierID) {
-			case AggregatorPackage.AGGREGATOR: {
+		switch (classifierID)
+		{
+			case AggregatorPackage.AGGREGATOR:
+			{
 				Aggregator aggregator = (Aggregator)theEObject;
 				T result = caseAggregator(aggregator);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.MAPPED_REPOSITORY: {
+			case AggregatorPackage.MAPPED_REPOSITORY:
+			{
 				MappedRepository mappedRepository = (MappedRepository)theEObject;
 				T result = caseMappedRepository(mappedRepository);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.CONFIGURATION: {
+			case AggregatorPackage.CONFIGURATION:
+			{
 				Configuration configuration = (Configuration)theEObject;
 				T result = caseConfiguration(configuration);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.CONTRIBUTION: {
+			case AggregatorPackage.CONTRIBUTION:
+			{
 				Contribution contribution = (Contribution)theEObject;
 				T result = caseContribution(contribution);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.CONTACT: {
+			case AggregatorPackage.CONTACT:
+			{
 				Contact contact = (Contact)theEObject;
 				T result = caseContact(contact);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.FEATURE: {
+			case AggregatorPackage.FEATURE:
+			{
 				Feature feature = (Feature)theEObject;
 				T result = caseFeature(feature);
 				if (result == null) result = caseMappedUnit(feature);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.BUNDLE: {
+			case AggregatorPackage.BUNDLE:
+			{
 				Bundle bundle = (Bundle)theEObject;
 				T result = caseBundle(bundle);
 				if (result == null) result = caseMappedUnit(bundle);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.MAPPED_UNIT: {
+			case AggregatorPackage.MAPPED_UNIT:
+			{
 				MappedUnit mappedUnit = (MappedUnit)theEObject;
 				T result = caseMappedUnit(mappedUnit);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.PRODUCT: {
+			case AggregatorPackage.PRODUCT:
+			{
 				Product product = (Product)theEObject;
 				T result = caseProduct(product);
 				if (result == null) result = caseMappedUnit(product);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.PROPERTY: {
+			case AggregatorPackage.PROPERTY:
+			{
 				Property property = (Property)theEObject;
 				T result = caseProperty(property);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.CATEGORY: {
+			case AggregatorPackage.CATEGORY:
+			{
 				Category category = (Category)theEObject;
 				T result = caseCategory(category);
 				if (result == null) result = caseMappedUnit(category);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AggregatorPackage.CUSTOM_CATEGORY: {
+			case AggregatorPackage.CUSTOM_CATEGORY:
+			{
 				CustomCategory customCategory = (CustomCategory)theEObject;
 				T result = caseCustomCategory(customCategory);
 				if (result == null) result = defaultCase(theEObject);

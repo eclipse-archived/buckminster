@@ -104,7 +104,8 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	 */
 	public EList<RequiredCapability> getHostList()
 	{
-		if (hostList == null) {
+		if (hostList == null)
+		{
 			hostList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this, P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST);
 		}
 		return hostList;
@@ -117,7 +118,8 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
 				return ((InternalEList<?>)getHostList()).basicRemove(otherEnd, msgs);
 		}
@@ -131,7 +133,8 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
 				return getHost();
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
@@ -148,7 +151,8 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
 				getHostList().clear();
 				getHostList().addAll((Collection<? extends RequiredCapability>)newValue);
@@ -164,7 +168,8 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
 				getHostList().clear();
 				return;
@@ -179,7 +184,8 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
 				return HOST_EDEFAULT == null ? host != null : !HOST_EDEFAULT.equals(host);
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
@@ -195,8 +201,10 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
-		if (baseClass == IInstallableUnitFragment.class) {
-			switch (derivedFeatureID) {
+		if (baseClass == IInstallableUnitFragment.class)
+		{
+			switch (derivedFeatureID)
+			{
 				case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST: return P2Package.IINSTALLABLE_UNIT_FRAGMENT__HOST;
 				default: return -1;
 			}
@@ -211,8 +219,10 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 	@Override
 	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
 	{
-		if (baseClass == IInstallableUnitFragment.class) {
-			switch (baseFeatureID) {
+		if (baseClass == IInstallableUnitFragment.class)
+		{
+			switch (baseFeatureID)
+			{
 				case P2Package.IINSTALLABLE_UNIT_FRAGMENT__HOST: return P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST;
 				default: return -1;
 			}

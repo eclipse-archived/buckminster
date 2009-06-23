@@ -58,7 +58,8 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addLabelPropertyDescriptor(object);
@@ -99,7 +100,8 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES);
 			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__CONTACTS);
@@ -157,7 +159,8 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Contribution.class)) {
+		switch (notification.getFeatureID(Contribution.class))
+		{
 			case AggregatorPackage.CONTRIBUTION__LABEL:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

@@ -295,7 +295,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public EList<Configuration> getConfigurations()
 	{
-		if (configurations == null) {
+		if (configurations == null)
+		{
 			configurations = new EObjectContainmentEList<Configuration>(Configuration.class, this, AggregatorPackage.AGGREGATOR__CONFIGURATIONS);
 		}
 		return configurations;
@@ -307,7 +308,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public EList<Contribution> getContributions()
 	{
-		if (contributions == null) {
+		if (contributions == null)
+		{
 			contributions = new EObjectContainmentEList<Contribution>(Contribution.class, this, AggregatorPackage.AGGREGATOR__CONTRIBUTIONS);
 		}
 		return contributions;
@@ -340,10 +342,12 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public Contact getBuildmaster()
 	{
-		if (buildmaster != null && buildmaster.eIsProxy()) {
+		if (buildmaster != null && buildmaster.eIsProxy())
+		{
 			InternalEObject oldBuildmaster = (InternalEObject)buildmaster;
 			buildmaster = (Contact)eResolveProxy(oldBuildmaster);
-			if (buildmaster != oldBuildmaster) {
+			if (buildmaster != oldBuildmaster)
+			{
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.AGGREGATOR__BUILDMASTER, oldBuildmaster, buildmaster));
 			}
@@ -399,7 +403,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public EList<Contact> getContacts()
 	{
-		if (contacts == null) {
+		if (contacts == null)
+		{
 			contacts = new EObjectContainmentEList<Contact>(Contact.class, this, AggregatorPackage.AGGREGATOR__CONTACTS);
 		}
 		return contacts;
@@ -422,7 +427,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	{
 		MetadataRepository oldAllRepositories = allRepositories;
 		allRepositories = newAllRepositories;
-		if (eNotificationRequired()) {
+		if (eNotificationRequired())
+		{
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES, oldAllRepositories, newAllRepositories);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -435,7 +441,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public void setAllRepositories(MetadataRepository newAllRepositories)
 	{
-		if (newAllRepositories != allRepositories) {
+		if (newAllRepositories != allRepositories)
+		{
 			NotificationChain msgs = null;
 			if (allRepositories != null)
 				msgs = ((InternalEObject)allRepositories).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES, null, msgs);
@@ -454,7 +461,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public EList<CustomCategory> getCustomCategories()
 	{
-		if (customCategories == null) {
+		if (customCategories == null)
+		{
 			customCategories = new EObjectContainmentEList<CustomCategory>(CustomCategory.class, this, AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES);
 		}
 		return customCategories;
@@ -467,7 +475,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 				return ((InternalEList<?>)getConfigurations()).basicRemove(otherEnd, msgs);
 			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
@@ -489,7 +498,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.AGGREGATOR__TYPE:
 				return getType();
 			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
@@ -523,7 +533,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.AGGREGATOR__TYPE:
 				setType((AggregateType)newValue);
 				return;
@@ -569,7 +580,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.AGGREGATOR__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
@@ -611,7 +623,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case AggregatorPackage.AGGREGATOR__TYPE:
 				return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
 			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:

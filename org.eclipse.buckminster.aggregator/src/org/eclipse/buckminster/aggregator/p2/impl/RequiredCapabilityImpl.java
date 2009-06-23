@@ -401,7 +401,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.REQUIRED_CAPABILITY__FILTER:
 				return getFilter();
 			case P2Package.REQUIRED_CAPABILITY__NAME:
@@ -429,7 +430,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.REQUIRED_CAPABILITY__FILTER:
 				setFilter((String)newValue);
 				return;
@@ -465,7 +467,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.REQUIRED_CAPABILITY__FILTER:
 				setFilter(FILTER_EDEFAULT);
 				return;
@@ -501,7 +504,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.REQUIRED_CAPABILITY__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
 			case P2Package.REQUIRED_CAPABILITY__NAME:

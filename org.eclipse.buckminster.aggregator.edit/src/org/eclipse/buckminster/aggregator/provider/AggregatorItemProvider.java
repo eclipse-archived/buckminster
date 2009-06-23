@@ -55,7 +55,8 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addTypePropertyDescriptor(object);
@@ -165,7 +166,8 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONFIGURATIONS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTRIBUTIONS);
@@ -227,7 +229,8 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Aggregator.class)) {
+		switch (notification.getFeatureID(Aggregator.class))
+		{
 			case AggregatorPackage.AGGREGATOR__TYPE:
 			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
 			case AggregatorPackage.AGGREGATOR__LABEL:
@@ -304,7 +307,8 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 			childFeature == AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER ||
 			childFeature == AggregatorPackage.Literals.AGGREGATOR__CONTACTS;
 
-		if (qualify) {
+		if (qualify)
+		{
 			return getString
 				("_UI_CreateChild_text2",
 				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });

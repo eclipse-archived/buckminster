@@ -57,7 +57,8 @@ public class ArtifactKeyItemProvider extends ItemProviderAdapter implements IEdi
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addClassifierPropertyDescriptor(object);
@@ -170,7 +171,8 @@ public class ArtifactKeyItemProvider extends ItemProviderAdapter implements IEdi
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(ArtifactKey.class)) {
+		switch (notification.getFeatureID(ArtifactKey.class))
+		{
 			case P2Package.ARTIFACT_KEY__CLASSIFIER:
 			case P2Package.ARTIFACT_KEY__ID:
 			case P2Package.ARTIFACT_KEY__VERSION:

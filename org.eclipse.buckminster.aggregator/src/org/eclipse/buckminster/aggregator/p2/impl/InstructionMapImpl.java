@@ -133,7 +133,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	{
 		TouchpointInstruction oldValue = value;
 		value = newValue;
-		if (eNotificationRequired()) {
+		if (eNotificationRequired())
+		{
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTRUCTION_MAP__VALUE, oldValue, newValue);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -146,7 +147,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setTypedValue(TouchpointInstruction newValue)
 	{
-		if (newValue != value) {
+		if (newValue != value)
+		{
 			NotificationChain msgs = null;
 			if (value != null)
 				msgs = ((InternalEObject)value).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTRUCTION_MAP__VALUE, null, msgs);
@@ -166,7 +168,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTRUCTION_MAP__VALUE:
 				return basicSetTypedValue(null, msgs);
 		}
@@ -180,7 +183,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTRUCTION_MAP__KEY:
 				return getTypedKey();
 			case P2Package.INSTRUCTION_MAP__VALUE:
@@ -196,7 +200,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTRUCTION_MAP__KEY:
 				setTypedKey((String)newValue);
 				return;
@@ -214,7 +219,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTRUCTION_MAP__KEY:
 				setTypedKey(KEY_EDEFAULT);
 				return;
@@ -232,7 +238,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTRUCTION_MAP__KEY:
 				return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
 			case P2Package.INSTRUCTION_MAP__VALUE:
@@ -269,7 +276,8 @@ public class InstructionMapImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public int getHash()
 	{
-		if (hash == -1) {
+		if (hash == -1)
+		{
 			Object theKey = getKey();
 			hash = (theKey == null ? 0 : theKey.hashCode());
 		}

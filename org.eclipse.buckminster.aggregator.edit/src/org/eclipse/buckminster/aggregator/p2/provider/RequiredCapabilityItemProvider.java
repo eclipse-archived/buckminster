@@ -57,7 +57,8 @@ public class RequiredCapabilityItemProvider extends ItemProviderAdapter implemen
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addFilterPropertyDescriptor(object);
@@ -285,7 +286,8 @@ public class RequiredCapabilityItemProvider extends ItemProviderAdapter implemen
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(RequiredCapability.class)) {
+		switch (notification.getFeatureID(RequiredCapability.class))
+		{
 			case P2Package.REQUIRED_CAPABILITY__FILTER:
 			case P2Package.REQUIRED_CAPABILITY__NAME:
 			case P2Package.REQUIRED_CAPABILITY__NAMESPACE:

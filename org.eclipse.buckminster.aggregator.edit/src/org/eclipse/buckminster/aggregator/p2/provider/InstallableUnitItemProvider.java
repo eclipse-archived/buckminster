@@ -60,7 +60,8 @@ public class InstallableUnitItemProvider extends ItemProviderAdapter implements 
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if (itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addFilterPropertyDescriptor(object);
@@ -216,7 +217,8 @@ public class InstallableUnitItemProvider extends ItemProviderAdapter implements 
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if (childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2Package.Literals.IINSTALLABLE_UNIT__TOUCHPOINT_TYPE);
 			childrenFeatures.add(P2Package.Literals.IINSTALLABLE_UNIT__UPDATE_DESCRIPTOR);
@@ -282,7 +284,8 @@ public class InstallableUnitItemProvider extends ItemProviderAdapter implements 
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(InstallableUnit.class)) {
+		switch (notification.getFeatureID(InstallableUnit.class))
+		{
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 			case P2Package.INSTALLABLE_UNIT__ID:
 			case P2Package.INSTALLABLE_UNIT__VERSION:
@@ -385,7 +388,8 @@ public class InstallableUnitItemProvider extends ItemProviderAdapter implements 
 			childFeature == P2Package.Literals.INSTALLABLE_UNIT__REQUIRED_CAPABILITY_LIST ||
 			childFeature == P2Package.Literals.INSTALLABLE_UNIT__META_REQUIRED_CAPABILITY_LIST;
 
-		if (qualify) {
+		if (qualify)
+		{
 			return getString
 				("_UI_CreateChild_text2",
 				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });

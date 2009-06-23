@@ -379,7 +379,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		ITouchpointType oldTouchpointType = touchpointType;
 		touchpointType = newTouchpointType;
-		if (eNotificationRequired()) {
+		if (eNotificationRequired())
+		{
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE, oldTouchpointType, newTouchpointType);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -392,7 +393,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setTouchpointType(ITouchpointType newTouchpointType)
 	{
-		if (newTouchpointType != touchpointType) {
+		if (newTouchpointType != touchpointType)
+		{
 			NotificationChain msgs = null;
 			if (touchpointType != null)
 				msgs = ((InternalEObject)touchpointType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE, null, msgs);
@@ -506,7 +508,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		IUpdateDescriptor oldUpdateDescriptor = updateDescriptor;
 		updateDescriptor = newUpdateDescriptor;
-		if (eNotificationRequired()) {
+		if (eNotificationRequired())
+		{
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__UPDATE_DESCRIPTOR, oldUpdateDescriptor, newUpdateDescriptor);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -519,7 +522,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setUpdateDescriptor(IUpdateDescriptor newUpdateDescriptor)
 	{
-		if (newUpdateDescriptor != updateDescriptor) {
+		if (newUpdateDescriptor != updateDescriptor)
+		{
 			NotificationChain msgs = null;
 			if (updateDescriptor != null)
 				msgs = ((InternalEObject)updateDescriptor).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__UPDATE_DESCRIPTOR, null, msgs);
@@ -549,7 +553,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		ILicense oldLicense = license;
 		license = newLicense;
-		if (eNotificationRequired()) {
+		if (eNotificationRequired())
+		{
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__LICENSE, oldLicense, newLicense);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -562,7 +567,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setLicense(ILicense newLicense)
 	{
-		if (newLicense != license) {
+		if (newLicense != license)
+		{
 			NotificationChain msgs = null;
 			if (license != null)
 				msgs = ((InternalEObject)license).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__LICENSE, null, msgs);
@@ -592,7 +598,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		ICopyright oldCopyright = copyright;
 		copyright = newCopyright;
-		if (eNotificationRequired()) {
+		if (eNotificationRequired())
+		{
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__COPYRIGHT, oldCopyright, newCopyright);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -605,7 +612,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setCopyright(ICopyright newCopyright)
 	{
-		if (newCopyright != copyright) {
+		if (newCopyright != copyright)
+		{
 			NotificationChain msgs = null;
 			if (copyright != null)
 				msgs = ((InternalEObject)copyright).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__COPYRIGHT, null, msgs);
@@ -624,7 +632,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<ArtifactKey> getArtifactList()
 	{
-		if (artifactList == null) {
+		if (artifactList == null)
+		{
 			artifactList = new EObjectContainmentEList<ArtifactKey>(ArtifactKey.class, this, P2Package.INSTALLABLE_UNIT__ARTIFACT_LIST);
 		}
 		return artifactList;
@@ -636,7 +645,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<ProvidedCapability> getProvidedCapabilityList()
 	{
-		if (providedCapabilityList == null) {
+		if (providedCapabilityList == null)
+		{
 			providedCapabilityList = new EObjectContainmentEList<ProvidedCapability>(ProvidedCapability.class, this, P2Package.INSTALLABLE_UNIT__PROVIDED_CAPABILITY_LIST);
 		}
 		return providedCapabilityList;
@@ -648,7 +658,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<RequiredCapability> getRequiredCapabilityList()
 	{
-		if (requiredCapabilityList == null) {
+		if (requiredCapabilityList == null)
+		{
 			requiredCapabilityList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this, P2Package.INSTALLABLE_UNIT__REQUIRED_CAPABILITY_LIST);
 		}
 		return requiredCapabilityList;
@@ -660,7 +671,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<RequiredCapability> getMetaRequiredCapabilityList()
 	{
-		if (metaRequiredCapabilityList == null) {
+		if (metaRequiredCapabilityList == null)
+		{
 			metaRequiredCapabilityList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this, P2Package.INSTALLABLE_UNIT__META_REQUIRED_CAPABILITY_LIST);
 		}
 		return metaRequiredCapabilityList;
@@ -672,7 +684,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EMap<String, String> getPropertyMap()
 	{
-		if (propertyMap == null) {
+		if (propertyMap == null)
+		{
 			propertyMap = new EcoreEMap<String,String>(P2Package.Literals.PROPERTY, PropertyImpl.class, this, P2Package.INSTALLABLE_UNIT__PROPERTY_MAP);
 		}
 		return propertyMap;
@@ -684,7 +697,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<TouchpointData> getTouchpointDataList()
 	{
-		if (touchpointDataList == null) {
+		if (touchpointDataList == null)
+		{
 			touchpointDataList = new EObjectContainmentEList<TouchpointData>(TouchpointData.class, this, P2Package.INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST);
 		}
 		return touchpointDataList;
@@ -823,7 +837,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE:
 				return basicSetTouchpointType(null, msgs);
 			case P2Package.INSTALLABLE_UNIT__UPDATE_DESCRIPTOR:
@@ -855,7 +870,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				return getFilter();
 			case P2Package.INSTALLABLE_UNIT__ID:
@@ -901,7 +917,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				setFilter((String)newValue);
 				return;
@@ -966,7 +983,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				setFilter(FILTER_EDEFAULT);
 				return;
@@ -1026,7 +1044,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID) {
+		switch (featureID)
+		{
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
 			case P2Package.INSTALLABLE_UNIT__ID:
