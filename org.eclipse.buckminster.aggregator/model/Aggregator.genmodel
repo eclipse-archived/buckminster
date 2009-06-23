@@ -9,8 +9,8 @@
     language="" packedEnums="true" classNamePattern="">
   <foreignModel>Aggregator.ecore</foreignModel>
   <genPackages prefix="Aggregator" basePackage="org.eclipse.buckminster" resource="XMI"
-      disposableProviderFactory="true" contentTypeIdentifier="" fileExtensions="build"
-      ecorePackage="Aggregator.ecore#/">
+      disposableProviderFactory="true" multipleEditorPages="false" contentTypeIdentifier=""
+      fileExtensions="build" ecorePackage="Aggregator.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Aggregator.ecore#//AggregateType">
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//AggregateType/Stable"/>
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//AggregateType/Integration"/>
@@ -203,6 +203,7 @@
       <genClasses ecoreClass="Aggregator.ecore#//p2/MetadataRepository">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/installableUnits"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/repositoryReferences"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/propertyMap"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/InstallableUnit">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/artifactList"/>
