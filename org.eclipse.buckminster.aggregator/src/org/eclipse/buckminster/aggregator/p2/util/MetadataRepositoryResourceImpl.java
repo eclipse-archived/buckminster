@@ -105,6 +105,19 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 	};
 
+	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator)
+	{
+		ResourceSet topSet = aggregator.eResource().getResourceSet();
+		Resource mdr = topSet.getResource(URI.createGenericURI("p2", repositoryURI, null), true);
+		List<EObject> contents = mdr.getContents();
+		if(contents.size() != 1)
+			return (MetadataRepository)contents.get(0);
+
+		// We should normally never get to this point
+		//
+		throw new RuntimeException(String.format("Unable to load repository %s", repositoryURI));
+	}
+
 	public MetadataRepositoryResourceImpl(URI uri)
 	{
 		super(uri);
@@ -164,18 +177,5 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	public void save(Map<?, ?> options) throws IOException
 	{
 		// Let this be a no-op.
-	}
-
-	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator)
-	{
-		ResourceSet topSet = aggregator.eResource().getResourceSet();
-		Resource mdr = topSet.getResource(URI.createGenericURI("p2", repositoryURI, null), true);
-		List<EObject> contents = mdr.getContents();
-		if(contents.size() != 1)
-			return (MetadataRepository)contents.get(0);
-
-		// We should normally never get to this point
-		//
-		throw new RuntimeException(String.format("Unable to load repository %s", repositoryURI));
 	}
 }
