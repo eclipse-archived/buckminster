@@ -8,26 +8,21 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.Collection;
 
-import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.AggregateType;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
-
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -44,7 +39,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildmaster <em>Buildmaster</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContacts <em>Contacts</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getAllRepositories <em>All Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getCustomCategories <em>Custom Categories</em>}</li>
  * </ul>
  * </p>
@@ -210,16 +204,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected EList<Contact> contacts;
 
 	/**
-	 * The cached value of the '{@link #getAllRepositories() <em>All Repositories</em>}' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getAllRepositories()
-	 * @generated
-	 * @ordered
-	 */
-	protected MetadataRepository allRepositories;
-
-	/**
 	 * The cached value of the '{@link #getCustomCategories() <em>Custom Categories</em>}' containment reference list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -254,27 +238,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetAllRepositories(MetadataRepository newAllRepositories, NotificationChain msgs)
-	{
-		MetadataRepository oldAllRepositories = allRepositories;
-		allRepositories = newAllRepositories;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES, oldAllRepositories, newAllRepositories);
-			if(msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
@@ -298,8 +261,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return isSendmail();
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			return getContacts();
-		case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
-			return getAllRepositories();
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return getCustomCategories();
 		}
@@ -322,8 +283,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return ((InternalEList<?>)getContributions()).basicRemove(otherEnd, msgs);
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			return ((InternalEList<?>)getContacts()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
-			return basicSetAllRepositories(null, msgs);
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return ((InternalEList<?>)getCustomCategories()).basicRemove(otherEnd, msgs);
 		}
@@ -360,8 +319,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			return contacts != null && !contacts.isEmpty();
-		case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
-			return allRepositories != null;
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return customCategories != null && !customCategories.isEmpty();
 		}
@@ -406,9 +363,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			getContacts().clear();
 			getContacts().addAll((Collection<? extends Contact>)newValue);
 			return;
-		case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
-			setAllRepositories((MetadataRepository)newValue);
-			return;
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			getCustomCategories().clear();
 			getCustomCategories().addAll((Collection<? extends CustomCategory>)newValue);
@@ -451,24 +405,11 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			getContacts().clear();
 			return;
-		case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
-			setAllRepositories((MetadataRepository)null);
-			return;
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			getCustomCategories().clear();
 			return;
 		}
 		super.eUnset(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public MetadataRepository getAllRepositories()
-	{
-		return allRepositories;
 	}
 
 	/**
@@ -571,6 +512,16 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		return label;
 	}
 
+	public int getStatus()
+	{
+		for(CustomCategory category : getCustomCategories())
+		{
+			if(category.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
+		return StatusProvider.OK;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -589,31 +540,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	public boolean isSendmail()
 	{
 		return (eFlags & SENDMAIL_EFLAG) != 0;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setAllRepositories(MetadataRepository newAllRepositories)
-	{
-		if(newAllRepositories != allRepositories)
-		{
-			NotificationChain msgs = null;
-			if(allRepositories != null)
-				msgs = ((InternalEObject)allRepositories).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-						- AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES, null, msgs);
-			if(newAllRepositories != null)
-				msgs = ((InternalEObject)newAllRepositories).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-						- AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES, null, msgs);
-			msgs = basicSetAllRepositories(newAllRepositories, msgs);
-			if(msgs != null)
-				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES,
-					newAllRepositories, newAllRepositories));
 	}
 
 	/**

@@ -267,7 +267,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEReference(aggregatorEClass, AGGREGATOR__BUILDMASTER);
 		createEAttribute(aggregatorEClass, AGGREGATOR__SENDMAIL);
 		createEReference(aggregatorEClass, AGGREGATOR__CONTACTS);
-		createEReference(aggregatorEClass, AGGREGATOR__ALL_REPOSITORIES);
 		createEReference(aggregatorEClass, AGGREGATOR__CUSTOM_CATEGORIES);
 
 		mappedRepositoryEClass = createEClass(MAPPED_REPOSITORY);
@@ -353,16 +352,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
-	public EReference getAggregator_AllRepositories()
-	{
-		return (EReference)aggregatorEClass.getEStructuralFeatures().get(8);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EReference getAggregator_Buildmaster()
 	{
 		return (EReference)aggregatorEClass.getEStructuralFeatures().get(5);
@@ -415,7 +404,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EReference getAggregator_CustomCategories()
 	{
-		return (EReference)aggregatorEClass.getEStructuralFeatures().get(9);
+		return (EReference)aggregatorEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -928,9 +917,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getAggregator_Contacts().getEKeys().add(this.getContact_Email());
-		initEReference(getAggregator_AllRepositories(), theP2Package.getMetadataRepository(), null, "allRepositories",
-				null, 0, 1, Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAggregator_CustomCategories(), this.getCustomCategory(), null, "customCategories", null, 0,
 				-1, Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

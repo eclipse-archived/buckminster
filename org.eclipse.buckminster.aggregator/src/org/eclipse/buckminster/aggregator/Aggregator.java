@@ -6,52 +6,36 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Aggregator</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Aggregator</b></em>'.
  * 
- * <p>
- * The following features are supported:
- * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildRoot <em>Build Root</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getConfigurations <em>Configurations</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContributions <em>Contributions</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getLabel <em>Label</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getAllRepositories <em>All Repositories</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
- * </ul>
- * </p>
+ * @extends StatusProvider <!-- end-user-doc -->
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildRoot <em>Build Root</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getConfigurations <em>Configurations</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContributions <em>Contributions</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getLabel <em>Label</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
+ *          </ul>
+ *          </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator()
  * @model
  * @generated
  */
-public interface Aggregator extends EObject
+public interface Aggregator extends EObject, StatusProvider
 {
-	/**
-	 * Returns the value of the '<em><b>All Repositories</b></em>' containment reference. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>All Repositories</em>' containment reference isn't clear, there really should be more
-	 * of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>All Repositories</em>' containment reference.
-	 * @see #setAllRepositories(MetadataRepository)
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_AllRepositories()
-	 * @model containment="true"
-	 * @generated
-	 */
-	MetadataRepository getAllRepositories();
-
 	/**
 	 * Returns the value of the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
@@ -197,17 +181,6 @@ public interface Aggregator extends EObject
 	 * @generated
 	 */
 	boolean isSendmail();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getAllRepositories
-	 * <em>All Repositories</em>}' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>All Repositories</em>' containment reference.
-	 * @see #getAllRepositories()
-	 * @generated
-	 */
-	void setAllRepositories(MetadataRepository value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}'

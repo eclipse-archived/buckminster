@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -246,6 +247,16 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 					AggregatorPackage.CONTRIBUTION__REPOSITORIES);
 		}
 		return repositories;
+	}
+
+	public int getStatus()
+	{
+		for(MappedRepository repo : getRepositories())
+		{
+			if(repo.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
+		return StatusProvider.OK;
 	}
 
 	/**

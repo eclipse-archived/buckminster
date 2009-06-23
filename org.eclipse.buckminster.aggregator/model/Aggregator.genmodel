@@ -6,6 +6,7 @@
     modelName="Aggregator" modelPluginClass="org.eclipse.buckminster.aggregator.AggregatorPlugin"
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" booleanFlagsField="eFlags"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
+    providerRootExtendsClass="org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter"
     language="" packedEnums="true" classNamePattern="">
   <foreignModel>Aggregator.ecore</foreignModel>
   <genPackages prefix="Aggregator" basePackage="org.eclipse.buckminster" resource="XMI"
@@ -45,7 +46,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/buildmaster"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/sendmail"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/contacts"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/allRepositories"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/customCategories"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//MappedRepository">

@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -28,7 +29,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -37,7 +37,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class TouchpointDataItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
+public class TouchpointDataItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**

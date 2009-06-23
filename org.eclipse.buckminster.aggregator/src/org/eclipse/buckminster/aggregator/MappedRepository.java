@@ -12,27 +12,29 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Mapped Repository</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Mapped Repository</b></em>'.
  * 
- * <p>
- * The following features are supported:
- * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getProducts <em>Products</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getBundles <em>Bundles</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getFeatures <em>Features</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
- * </ul>
- * </p>
+ * @extends StatusProvider <!-- end-user-doc -->
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getProducts <em>Products</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getBundles <em>Bundles</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getFeatures <em>Features</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository
+ *          </em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
+ *          </ul>
+ *          </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository()
  * @model
  * @generated
  */
-public interface MappedRepository extends EObject
+public interface MappedRepository extends EObject, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Bundles</b></em>' containment reference list. The list contents are of type

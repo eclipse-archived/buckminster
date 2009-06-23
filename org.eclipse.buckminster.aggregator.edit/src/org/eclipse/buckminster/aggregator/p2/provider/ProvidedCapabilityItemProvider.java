@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -27,7 +28,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -36,8 +36,9 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class ProvidedCapabilityItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapter implements
+		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
+		IItemPropertySource
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->

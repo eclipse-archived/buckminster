@@ -16,6 +16,7 @@ import org.eclipse.buckminster.aggregator.p2.P2Package;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -29,7 +30,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -38,7 +38,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class CopyrightItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
+public class CopyrightItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**

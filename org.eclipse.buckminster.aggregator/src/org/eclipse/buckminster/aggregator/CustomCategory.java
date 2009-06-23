@@ -10,23 +10,25 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Added Category</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Added Category</b></em>'.
  * 
- * <p>
- * The following features are supported:
- * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getIdentifier <em>Identifier</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getLabel <em>Label</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getDescription <em>Description</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getFeatures <em>Features</em>}</li>
- * </ul>
- * </p>
+ * @extends StatusProvider <!-- end-user-doc -->
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getIdentifier <em>Identifier</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getLabel <em>Label</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getDescription <em>Description</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.CustomCategory#getFeatures <em>Features</em>}</li>
+ *          </ul>
+ *          </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getCustomCategory()
  * @model
  * @generated
  */
-public interface CustomCategory extends EObject
+public interface CustomCategory extends EObject, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc -->

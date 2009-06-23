@@ -10,21 +10,23 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Mapped Unit</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Mapped Unit</b></em>'.
  * 
- * <p>
- * The following features are supported:
- * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#isEnabled <em>Enabled</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit <em>Installable Unit</em>}</li>
- * </ul>
- * </p>
+ * @extends StatusProvider <!-- end-user-doc -->
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#isEnabled <em>Enabled</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit <em>Installable Unit</em>}</li>
+ *          </ul>
+ *          </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedUnit()
  * @model abstract="true"
  * @generated
  */
-public interface MappedUnit extends EObject
+public interface MappedUnit extends EObject, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc -->

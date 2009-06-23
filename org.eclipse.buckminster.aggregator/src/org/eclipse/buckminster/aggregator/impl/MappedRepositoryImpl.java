@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -473,6 +474,16 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 					AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS);
 		}
 		return products;
+	}
+
+	public int getStatus()
+	{
+		for(MappedUnit unit : getEnabledUnits())
+		{
+			if(unit.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
+		return StatusProvider.OK;
 	}
 
 	/**

@@ -8,7 +8,9 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -186,6 +188,14 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			}
 		}
 		return installableUnit;
+	}
+
+	public int getStatus()
+	{
+		if(getInstallableUnit() != null && Trivial.trim(getInstallableUnit().getId()) == null)
+			return StatusProvider.BROKEN;
+
+		return StatusProvider.OK;
 	}
 
 	/**

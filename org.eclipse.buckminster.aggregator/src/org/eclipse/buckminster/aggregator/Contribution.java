@@ -11,22 +11,24 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Contribution</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Contribution</b></em>'.
  * 
- * <p>
- * The following features are supported:
- * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getRepositories <em>Repositories</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getContacts <em>Contacts</em>}</li>
- * </ul>
- * </p>
+ * @extends StatusProvider <!-- end-user-doc -->
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getRepositories <em>Repositories</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getContacts <em>Contacts</em>}</li>
+ *          </ul>
+ *          </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution()
  * @model
  * @generated
  */
-public interface Contribution extends EObject
+public interface Contribution extends EObject, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Contacts</b></em>' reference list. The list contents are of type

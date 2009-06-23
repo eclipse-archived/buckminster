@@ -12,7 +12,6 @@ import java.util.List;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
@@ -25,7 +24,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -34,7 +32,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class AggregatorItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
+public class AggregatorItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
@@ -65,7 +63,6 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTRIBUTIONS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTACTS);
-			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__ALL_REPOSITORIES);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES);
 		}
 		return childrenFeatures;
@@ -174,7 +171,6 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
-		case AggregatorPackage.AGGREGATOR__ALL_REPOSITORIES:
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
@@ -264,9 +260,6 @@ public class AggregatorItemProvider extends ItemProviderAdapter implements IEdit
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__CONTACTS,
 				AggregatorFactory.eINSTANCE.createContact()));
-
-		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__ALL_REPOSITORIES,
-				P2Factory.eINSTANCE.createMetadataRepository()));
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES,
 				AggregatorFactory.eINSTANCE.createCustomCategory()));

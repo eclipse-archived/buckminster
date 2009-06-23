@@ -11,6 +11,7 @@ import java.util.Collection;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -311,6 +312,16 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	public String getLabel()
 	{
 		return label;
+	}
+
+	public int getStatus()
+	{
+		for(Feature feature : getFeatures())
+		{
+			if(feature.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
+		return StatusProvider.OK;
 	}
 
 	/**

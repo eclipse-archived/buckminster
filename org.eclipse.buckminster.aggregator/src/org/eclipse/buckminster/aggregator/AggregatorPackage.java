@@ -118,14 +118,6 @@ public interface AggregatorPackage extends EPackage
 		EReference AGGREGATOR__CONTACTS = eINSTANCE.getAggregator_Contacts();
 
 		/**
-		 * The meta object literal for the '<em><b>All Repositories</b></em>' containment reference feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference AGGREGATOR__ALL_REPOSITORIES = eINSTANCE.getAggregator_AllRepositories();
-
-		/**
 		 * The meta object literal for the '<em><b>Custom Categories</b></em>' containment reference list feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -608,22 +600,13 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR__CONTACTS = 7;
 
 	/**
-	 * The feature id for the '<em><b>All Repositories</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int AGGREGATOR__ALL_REPOSITORIES = 8;
-
-	/**
 	 * The feature id for the '<em><b>Custom Categories</b></em>' containment reference list. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CUSTOM_CATEGORIES = 9;
+	int AGGREGATOR__CUSTOM_CATEGORIES = 8;
 
 	/**
 	 * The number of structural features of the '<em>Aggregator</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -632,7 +615,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR_FEATURE_COUNT = 10;
+	int AGGREGATOR_FEATURE_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MappedRepositoryImpl
@@ -1190,18 +1173,6 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EClass getAggregator();
-
-	/**
-	 * Returns the meta object for the containment reference '
-	 * {@link org.eclipse.buckminster.aggregator.Aggregator#getAllRepositories <em>All Repositories</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference '<em>All Repositories</em>'.
-	 * @see org.eclipse.buckminster.aggregator.Aggregator#getAllRepositories()
-	 * @see #getAggregator()
-	 * @generated
-	 */
-	EReference getAggregator_AllRepositories();
 
 	/**
 	 * Returns the meta object for the reference '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster
