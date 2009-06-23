@@ -13,10 +13,12 @@ import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -85,26 +87,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected EList<Feature> features;
 
 	/**
-	 * The default value of the '{@link #isMapVerbatim() <em>Map Verbatim</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @see #isMapVerbatim()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean MAP_VERBATIM_EDEFAULT = false;
-
-	/**
-	 * The flag representing the value of the '{@link #isMapVerbatim() <em>Map Verbatim</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #isMapVerbatim()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int MAP_VERBATIM_EFLAG = 1 << 0;
-
-	/**
 	 * The cached value of the '{@link #getMetadataRepository() <em>Metadata Repository</em>}' reference. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -145,12 +127,53 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected String location = LOCATION_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #isMapVerbatim() <em>Map Verbatim</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @see #isMapVerbatim()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean MAP_VERBATIM_EDEFAULT = false;
+
+	/**
+	 * The flag representing the value of the '{@link #isMapVerbatim() <em>Map Verbatim</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #isMapVerbatim()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MAP_VERBATIM_EFLAG = 1 << 0;
+
+	/**
+	 * The default value of the '{@link #isMirrorArtifacts() <em>Mirror Artifacts</em>}' attribute.
+	 * <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * @see #isMirrorArtifacts()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean MIRROR_ARTIFACTS_EDEFAULT = true;
+
+	/**
+	 * The flag representing the value of the '{@link #isMirrorArtifacts() <em>Mirror Artifacts</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #isMirrorArtifacts()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 1;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected MappedRepositoryImpl()
 	{
 		super();
+		eFlags |= MIRROR_ARTIFACTS_EFLAG;
 	}
 
 	/**
@@ -169,8 +192,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Product> getProducts()
 	{
-		if (products == null)
-		{
+		if (products == null) {
 			products = new EObjectContainmentEList<Product>(Product.class, this, AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS);
 		}
 		return products;
@@ -182,8 +204,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Bundle> getBundles()
 	{
-		if (bundles == null)
-		{
+		if (bundles == null) {
 			bundles = new EObjectContainmentEList<Bundle>(Bundle.class, this, AggregatorPackage.MAPPED_REPOSITORY__BUNDLES);
 		}
 		return bundles;
@@ -195,8 +216,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Feature> getFeatures()
 	{
-		if (features == null)
-		{
+		if (features == null) {
 			features = new EObjectContainmentEList<Feature>(Feature.class, this, AggregatorPackage.MAPPED_REPOSITORY__FEATURES);
 		}
 		return features;
@@ -227,14 +247,33 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isMirrorArtifacts()
+	{
+		return (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setMirrorArtifacts(boolean newMirrorArtifacts)
+	{
+		boolean oldMirrorArtifacts = (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
+		if (newMirrorArtifacts) eFlags |= MIRROR_ARTIFACTS_EFLAG; else eFlags &= ~MIRROR_ARTIFACTS_EFLAG;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS, oldMirrorArtifacts, newMirrorArtifacts));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
 	public MetadataRepository getMetadataRepository()
 	{
-		if (metadataRepository != null && metadataRepository.eIsProxy())
-		{
+		if (metadataRepository != null && metadataRepository.eIsProxy()) {
 			InternalEObject oldMetadataRepository = (InternalEObject)metadataRepository;
 			metadataRepository = (MetadataRepository)eResolveProxy(oldMetadataRepository);
-			if (metadataRepository != oldMetadataRepository)
-			{
+			if (metadataRepository != oldMetadataRepository) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository, metadataRepository));
 			}
@@ -269,8 +308,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<Category> getCategories()
 	{
-		if (categories == null)
-		{
+		if (categories == null) {
 			categories = new EObjectContainmentEList<Category>(Category.class, this, AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES);
 		}
 		return categories;
@@ -299,13 +337,40 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<MappedUnit> getEnabledUnits()
+	{
+		EList<Category> categories = getCategories();
+		EList<Product> products = getProducts();
+		EList<Feature> features = getFeatures();
+		EList<Bundle> bundles = getBundles();
+		EList<MappedUnit> units = new BasicEList<MappedUnit>(categories.size() + products.size() + features.size()
+				+ bundles.size());
+		for(Category category : categories)
+			if(category.isEnabled())
+				units.add(category);
+		for(Product product : products)
+			if(product.isEnabled())
+				units.add(product);
+		for(Feature feature : features)
+			if(feature.isEnabled())
+				units.add(feature);
+		for(Bundle bundle : bundles)
+			if(bundle.isEnabled())
+				units.add(bundle);
+		return units;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				return ((InternalEList<?>)getProducts()).basicRemove(otherEnd, msgs);
 			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -325,16 +390,13 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				return getProducts();
 			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
 				return getBundles();
 			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 				return getFeatures();
-			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-				return isMapVerbatim();
 			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 				if (resolve) return getMetadataRepository();
 				return basicGetMetadataRepository();
@@ -342,6 +404,10 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 				return getCategories();
 			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 				return getLocation();
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+				return isMapVerbatim();
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				return isMirrorArtifacts();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -354,8 +420,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				getProducts().clear();
 				getProducts().addAll((Collection<? extends Product>)newValue);
@@ -368,9 +433,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 				getFeatures().clear();
 				getFeatures().addAll((Collection<? extends Feature>)newValue);
 				return;
-			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-				setMapVerbatim((Boolean)newValue);
-				return;
 			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 				setMetadataRepository((MetadataRepository)newValue);
 				return;
@@ -380,6 +442,12 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 				return;
 			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 				setLocation((String)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+				setMapVerbatim((Boolean)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				setMirrorArtifacts((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -392,8 +460,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				getProducts().clear();
 				return;
@@ -403,9 +470,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 				getFeatures().clear();
 				return;
-			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-				setMapVerbatim(MAP_VERBATIM_EDEFAULT);
-				return;
 			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 				setMetadataRepository((MetadataRepository)null);
 				return;
@@ -414,6 +478,12 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 				return;
 			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 				setLocation(LOCATION_EDEFAULT);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+				setMapVerbatim(MAP_VERBATIM_EDEFAULT);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				setMirrorArtifacts(MIRROR_ARTIFACTS_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -426,22 +496,23 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 				return products != null && !products.isEmpty();
 			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
 				return bundles != null && !bundles.isEmpty();
 			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 				return features != null && !features.isEmpty();
-			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-				return ((eFlags & MAP_VERBATIM_EFLAG) != 0) != MAP_VERBATIM_EDEFAULT;
 			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 				return metadataRepository != null;
 			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 				return categories != null && !categories.isEmpty();
 			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 				return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+				return ((eFlags & MAP_VERBATIM_EFLAG) != 0) != MAP_VERBATIM_EDEFAULT;
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				return ((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0) != MIRROR_ARTIFACTS_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -456,10 +527,12 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (mapVerbatim: ");
-		result.append((eFlags & MAP_VERBATIM_EFLAG) != 0);
-		result.append(", location: ");
+		result.append(" (location: ");
 		result.append(location);
+		result.append(", mapVerbatim: ");
+		result.append((eFlags & MAP_VERBATIM_EFLAG) != 0);
+		result.append(", mirrorArtifacts: ");
+		result.append((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0);
 		result.append(')');
 		return result.toString();
 	}

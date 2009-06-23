@@ -14,14 +14,17 @@ import org.eclipse.buckminster.aggregator.Feature;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Added Category</b></em>'. <!-- end-user-doc -->
@@ -205,11 +208,39 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 */
 	public EList<Feature> getFeatures()
 	{
-		if (features == null)
-		{
-			features = new EObjectResolvingEList<Feature>(Feature.class, this, AggregatorPackage.CUSTOM_CATEGORY__FEATURES);
+		if (features == null) {
+			features = new EObjectWithInverseResolvingEList.ManyInverse<Feature>(Feature.class, this, AggregatorPackage.CUSTOM_CATEGORY__FEATURES, AggregatorPackage.FEATURE__CATEGORIES);
 		}
 		return features;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getFeatures()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID) {
+			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+				return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -219,8 +250,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				return getIdentifier();
 			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
@@ -241,8 +271,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				setIdentifier((String)newValue);
 				return;
@@ -267,8 +296,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				setIdentifier(IDENTIFIER_EDEFAULT);
 				return;
@@ -292,8 +320,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 				return IDENTIFIER_EDEFAULT == null ? identifier != null : !IDENTIFIER_EDEFAULT.equals(identifier);
 			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:

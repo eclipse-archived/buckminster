@@ -62,7 +62,7 @@ public interface Contact extends EObject
 	 * @return the value of the '<em>Email</em>' attribute.
 	 * @see #setEmail(String)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContact_Email()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getEmail();

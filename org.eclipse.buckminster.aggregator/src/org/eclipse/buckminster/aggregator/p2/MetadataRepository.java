@@ -6,11 +6,10 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import java.net.URI;
-
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Metadata Repository</b></em>'. <!-- end-user-doc
@@ -29,57 +28,8 @@ import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IQueryable"
  * @generated
  */
-public interface MetadataRepository extends EObject, IQueryable
+public interface MetadataRepository extends EObject, IMetadataRepository
 {
-	/**
-	 * Returns the value of the '<em><b>Location</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Location</em>' attribute isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Location</em>' attribute.
-	 * @see #setLocation(URI)
-	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_Location()
-	 * @model dataType="org.eclipse.buckminster.aggregator.URI"
-	 * @generated
-	 */
-	URI getLocation();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getLocation <em>Location</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Location</em>' attribute.
-	 * @see #getLocation()
-	 * @generated
-	 */
-	void setLocation(URI value);
-
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_Name()
-	 * @model
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
-
 	/**
 	 * Returns the value of the '<em><b>Installable Units</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit}.
@@ -95,5 +45,38 @@ public interface MetadataRepository extends EObject, IQueryable
 	 * @generated
 	 */
 	EList<InstallableUnit> getInstallableUnits();
+
+	/**
+	 * Returns the value of the '<em><b>Repository References</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Repository References</em>' containment reference list isn't clear, there really
+	 * should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Repository References</em>' containment reference list.
+	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_RepositoryReferences()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<RepositoryReference> getRepositoryReferences();
+
+	/**
+	 * Returns the value of the '<em><b>Property Map</b></em>' map.
+	 * The key is of type {@link java.lang.String},
+	 * and the value is of type {@link java.lang.String},
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Property Map</em>' map isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Property Map</em>' map.
+	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_PropertyMap()
+	 * @model mapType="org.eclipse.buckminster.aggregator.p2.Property<org.eclipse.emf.ecore.EString, org.eclipse.emf.ecore.EString>"
+	 * @generated
+	 */
+	EMap<String, String> getPropertyMap();
 
 } // MetadataRepository

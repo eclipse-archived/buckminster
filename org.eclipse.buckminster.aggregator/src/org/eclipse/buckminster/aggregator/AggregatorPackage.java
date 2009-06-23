@@ -196,21 +196,13 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY__FEATURES = 2;
 
 	/**
-	 * The feature id for the '<em><b>Map Verbatim</b></em>' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__MAP_VERBATIM = 3;
-
-	/**
 	 * The feature id for the '<em><b>Metadata Repository</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__METADATA_REPOSITORY = 4;
+	int MAPPED_REPOSITORY__METADATA_REPOSITORY = 3;
 
 	/**
 	 * The feature id for the '<em><b>Categories</b></em>' containment reference list.
@@ -219,7 +211,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORIES = 5;
+	int MAPPED_REPOSITORY__CATEGORIES = 4;
 
 	/**
 	 * The feature id for the '<em><b>Location</b></em>' attribute.
@@ -227,7 +219,24 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__LOCATION = 6;
+	int MAPPED_REPOSITORY__LOCATION = 5;
+
+	/**
+	 * The feature id for the '<em><b>Map Verbatim</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__MAP_VERBATIM = 6;
+
+	/**
+	 * The feature id for the '<em><b>Mirror Artifacts</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = 7;
 
 	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class.
@@ -236,7 +245,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = 7;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = 8;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl <em>Configuration</em>}' class.
@@ -419,12 +428,12 @@ public interface AggregatorPackage extends EPackage
 	int FEATURE__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Category</b></em>' reference list.
+	 * The feature id for the '<em><b>Categories</b></em>' reference list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__CATEGORY = MAPPED_UNIT_FEATURE_COUNT + 0;
+	int FEATURE__CATEGORIES = MAPPED_UNIT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Feature</em>' class.
@@ -845,6 +854,18 @@ public interface AggregatorPackage extends EPackage
 	EAttribute getMappedRepository_MapVerbatim();
 
 	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Mirror Artifacts</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts()
+	 * @see #getMappedRepository()
+	 * @generated
+	 */
+	EAttribute getMappedRepository_MirrorArtifacts();
+
+	/**
 	 * Returns the meta object for the reference '{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Metadata Repository</em>'.
@@ -1005,14 +1026,14 @@ public interface AggregatorPackage extends EPackage
 	EClass getFeature();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.eclipse.buckminster.aggregator.Feature#getCategory <em>Category</em>}'.
+	 * Returns the meta object for the reference list '{@link org.eclipse.buckminster.aggregator.Feature#getCategories <em>Categories</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Category</em>'.
-	 * @see org.eclipse.buckminster.aggregator.Feature#getCategory()
+	 * @return the meta object for the reference list '<em>Categories</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Feature#getCategories()
 	 * @see #getFeature()
 	 * @generated
 	 */
-	EReference getFeature_Category();
+	EReference getFeature_Categories();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.Bundle <em>Bundle</em>}'. <!--
@@ -1367,6 +1388,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute MAPPED_REPOSITORY__MAP_VERBATIM = eINSTANCE.getMappedRepository_MapVerbatim();
 
 		/**
+		 * The meta object literal for the '<em><b>Mirror Artifacts</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MAPPED_REPOSITORY__MIRROR_ARTIFACTS = eINSTANCE.getMappedRepository_MirrorArtifacts();
+
+		/**
 		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature.
 		 * <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
@@ -1491,12 +1520,12 @@ public interface AggregatorPackage extends EPackage
 		EClass FEATURE = eINSTANCE.getFeature();
 
 		/**
-		 * The meta object literal for the '<em><b>Category</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Categories</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference FEATURE__CATEGORY = eINSTANCE.getFeature_Category();
+		EReference FEATURE__CATEGORIES = eINSTANCE.getFeature_Categories();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.BundleImpl <em>Bundle</em>}' class.

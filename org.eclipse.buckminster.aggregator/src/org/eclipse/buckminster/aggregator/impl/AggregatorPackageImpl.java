@@ -348,7 +348,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EAttribute getMappedRepository_MapVerbatim()
 	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getMappedRepository_MirrorArtifacts()
+	{
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -357,7 +366,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EReference getMappedRepository_MetadataRepository()
 	{
-		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(4);
+		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -366,7 +375,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EReference getMappedRepository_Categories()
 	{
-		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(5);
+		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -375,7 +384,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EAttribute getMappedRepository_Location()
 	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(6);
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -490,7 +499,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFeature_Category()
+	public EReference getFeature_Categories()
 	{
 		return (EReference)featureEClass.getEStructuralFeatures().get(0);
 	}
@@ -718,10 +727,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__PRODUCTS);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__BUNDLES);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__FEATURES);
-		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__MAP_VERBATIM);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__METADATA_REPOSITORY);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__CATEGORIES);
 		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__LOCATION);
+		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__MAP_VERBATIM);
+		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__MIRROR_ARTIFACTS);
 
 		configurationEClass = createEClass(CONFIGURATION);
 		createEAttribute(configurationEClass, CONFIGURATION__OPERATING_SYSTEM);
@@ -738,7 +748,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEAttribute(contactEClass, CONTACT__EMAIL);
 
 		featureEClass = createEClass(FEATURE);
-		createEReference(featureEClass, FEATURE__CATEGORY);
+		createEReference(featureEClass, FEATURE__CATEGORIES);
 
 		bundleEClass = createEClass(BUNDLE);
 
@@ -830,10 +840,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEReference(getMappedRepository_Products(), this.getProduct(), null, "products", null, 0, -1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMappedRepository_Bundles(), this.getBundle(), null, "bundles", null, 0, -1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMappedRepository_Features(), this.getFeature(), null, "features", null, 0, -1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMappedRepository_MapVerbatim(), ecorePackage.getEBoolean(), "mapVerbatim", null, 0, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMappedRepository_MetadataRepository(), theP2Package.getMetadataRepository(), null, "metadataRepository", null, 0, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMappedRepository_Categories(), this.getCategory(), null, "categories", null, 0, -1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMappedRepository_Location(), ecorePackage.getEString(), "location", null, 0, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMappedRepository_Location(), ecorePackage.getEString(), "location", null, 1, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMappedRepository_MapVerbatim(), ecorePackage.getEBoolean(), "mapVerbatim", null, 0, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMappedRepository_MirrorArtifacts(), ecorePackage.getEBoolean(), "mirrorArtifacts", "true", 0, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		addEOperation(mappedRepositoryEClass, this.getMappedUnit(), "getEnabledUnits", 0, -1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(configurationEClass, Configuration.class, "Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConfiguration_OperatingSystem(), this.getOperatingSystem(), "operatingSystem", null, 1, 1, Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -845,17 +858,17 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEOperation(configurationEClass, ecorePackage.getEString(), "getOSGiEnvironmentString", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(contributionEClass, Contribution.class, "Contribution", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getContribution_Label(), ecorePackage.getEString(), "label", null, 0, 1, Contribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getContribution_Label(), ecorePackage.getEString(), "label", null, 1, 1, Contribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getContribution_Repositories(), this.getMappedRepository(), null, "repositories", null, 0, -1, Contribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getContribution_Contacts(), this.getContact(), null, "contacts", null, 0, -1, Contribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getContribution_Contacts().getEKeys().add(this.getContact_Email());
 
 		initEClass(contactEClass, Contact.class, "Contact", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getContact_Name(), ecorePackage.getEString(), "name", null, 0, 1, Contact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getContact_Email(), ecorePackage.getEString(), "email", null, 0, 1, Contact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getContact_Email(), ecorePackage.getEString(), "email", null, 1, 1, Contact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(featureEClass, Feature.class, "Feature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getFeature_Category(), this.getCustomCategory(), null, "category", null, 0, -1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFeature_Categories(), this.getCustomCategory(), this.getCustomCategory_Features(), "categories", null, 0, -1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(bundleEClass, Bundle.class, "Bundle", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -875,10 +888,10 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEAttribute(getCategory_LabelOverride(), ecorePackage.getEString(), "labelOverride", null, 0, 1, Category.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(customCategoryEClass, CustomCategory.class, "CustomCategory", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getCustomCategory_Identifier(), ecorePackage.getEString(), "identifier", null, 0, 1, CustomCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCustomCategory_Identifier(), ecorePackage.getEString(), "identifier", null, 1, 1, CustomCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCustomCategory_Label(), ecorePackage.getEString(), "label", null, 0, 1, CustomCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCustomCategory_Description(), ecorePackage.getEString(), "description", null, 0, 1, CustomCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCustomCategory_Features(), this.getFeature(), null, "features", null, 0, -1, CustomCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCustomCategory_Features(), this.getFeature(), this.getFeature_Categories(), "features", null, 0, -1, CustomCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

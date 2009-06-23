@@ -204,8 +204,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.PROVIDED_CAPABILITY__NAME:
 				return getName();
 			case P2Package.PROVIDED_CAPABILITY__NAMESPACE:
@@ -223,8 +222,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.PROVIDED_CAPABILITY__NAME:
 				setName((String)newValue);
 				return;
@@ -245,8 +243,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.PROVIDED_CAPABILITY__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -267,8 +264,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.PROVIDED_CAPABILITY__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case P2Package.PROVIDED_CAPABILITY__NAMESPACE:

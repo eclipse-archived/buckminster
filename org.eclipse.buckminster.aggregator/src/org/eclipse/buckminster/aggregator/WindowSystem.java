@@ -118,8 +118,7 @@ public enum WindowSystem implements Enumerator
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final WindowSystem[] VALUES_ARRAY = new WindowSystem[]
-		{
+	private static final WindowSystem[] VALUES_ARRAY = new WindowSystem[] {
 			WIN32,
 			GTK,
 			CARBON,
@@ -142,11 +141,9 @@ public enum WindowSystem implements Enumerator
 	 */
 	public static WindowSystem get(String literal)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			WindowSystem result = VALUES_ARRAY[i];
-			if (result.toString().equals(literal))
-			{
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -161,11 +158,9 @@ public enum WindowSystem implements Enumerator
 	 */
 	public static WindowSystem getByName(String name)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			WindowSystem result = VALUES_ARRAY[i];
-			if (result.getName().equals(name))
-			{
+			if (result.getName().equals(name)) {
 				return result;
 			}
 		}
@@ -180,8 +175,7 @@ public enum WindowSystem implements Enumerator
 	 */
 	public static WindowSystem get(int value)
 	{
-		switch (value)
-		{
+		switch (value) {
 			case WIN32_VALUE: return WIN32;
 			case GTK_VALUE: return GTK;
 			case CARBON_VALUE: return CARBON;

@@ -52,10 +52,12 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedRepository/products"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedRepository/bundles"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedRepository/features"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/mapVerbatim"/>
       <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedRepository/metadataRepository"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedRepository/categories"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/location"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/mapVerbatim"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/mirrorArtifacts"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//MappedRepository/getEnabledUnits"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Configuration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Configuration/operatingSystem"/>
@@ -74,7 +76,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contact/email"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Feature">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Feature/category"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Feature/categories"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Bundle"/>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//MappedUnit">
@@ -94,7 +96,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//CustomCategory/identifier"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//CustomCategory/label"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//CustomCategory/description"/>
-      <genFeatures children="true" createChild="true" propertyDescription="" propertySortChoices="true"
+      <genFeatures notify="false" children="true" createChild="true" propertySortChoices="true"
           ecoreFeature="ecore:EReference Aggregator.ecore#//CustomCategory/features"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" ecorePackage="Aggregator.ecore#//p2">
@@ -198,10 +200,9 @@
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/ArtifactKey"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/Copyright"/>
-      <genClasses ecoreClass="Aggregator.ecore#//p2/MetadataRepository" labelFeature="#//aggregator/p2/MetadataRepository/location">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/MetadataRepository/location"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/MetadataRepository/name"/>
+      <genClasses ecoreClass="Aggregator.ecore#//p2/MetadataRepository">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/installableUnits"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/repositoryReferences"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/InstallableUnit">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/artifactList"/>
@@ -239,6 +240,47 @@
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IQueryable/query/query"/>
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IQueryable/query/collector"/>
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IQueryable/query/progress"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2/IMetadataRepository">
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IMetadataRepository/addInstallableUnits">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/addInstallableUnits/installableUnits"/>
+        </genOperations>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IMetadataRepository/addReference">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/addReference/location"/>
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/addReference/nickname"/>
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/addReference/type"/>
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/addReference/options"/>
+        </genOperations>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IMetadataRepository/removeInstallableUnits">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/removeInstallableUnits/query"/>
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IMetadataRepository/removeInstallableUnits/monitor"/>
+        </genOperations>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IMetadataRepository/removeAll"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IRepository">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/location"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/type"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/version"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/description"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/provider"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/modifiable"/>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IRepository/getProperties"/>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IRepository/setProperty">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IRepository/setProperty/key"/>
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IRepository/setProperty/value"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2/RepositoryReference">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/location"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/type"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/options"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/nickname"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IAdaptable">
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IAdaptable/getAdapter">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IAdaptable/getAdapter/adapter"/>
         </genOperations>
       </genClasses>
     </nestedGenPackages>

@@ -244,8 +244,7 @@ public class UpdateDescriptorImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.UPDATE_DESCRIPTOR__ID:
 				return getId();
 			case P2Package.UPDATE_DESCRIPTOR__RANGE:
@@ -265,8 +264,7 @@ public class UpdateDescriptorImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.UPDATE_DESCRIPTOR__ID:
 				setId((String)newValue);
 				return;
@@ -290,8 +288,7 @@ public class UpdateDescriptorImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.UPDATE_DESCRIPTOR__ID:
 				setId(ID_EDEFAULT);
 				return;
@@ -315,8 +312,7 @@ public class UpdateDescriptorImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.UPDATE_DESCRIPTOR__ID:
 				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 			case P2Package.UPDATE_DESCRIPTOR__RANGE:

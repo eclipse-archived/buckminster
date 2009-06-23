@@ -14,7 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.Feature#getCategory <em>Category</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.Feature#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
  *
@@ -25,19 +25,21 @@ import org.eclipse.emf.common.util.EList;
 public interface Feature extends MappedUnit
 {
 	/**
-	 * Returns the value of the '<em><b>Category</b></em>' reference list.
+	 * Returns the value of the '<em><b>Categories</b></em>' reference list.
 	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.CustomCategory}.
+	 * It is bidirectional and its opposite is '{@link org.eclipse.buckminster.aggregator.CustomCategory#getFeatures <em>Features</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Category</em>' reference list isn't clear, there really should be more of a
+	 * If the meaning of the '<em>Categories</em>' reference list isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Category</em>' reference list.
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getFeature_Category()
-	 * @model
+	 * @return the value of the '<em>Categories</em>' reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getFeature_Categories()
+	 * @see org.eclipse.buckminster.aggregator.CustomCategory#getFeatures
+	 * @model opposite="features"
 	 * @generated
 	 */
-	EList<CustomCategory> getCategory();
+	EList<CustomCategory> getCategories();
 
 } // Feature

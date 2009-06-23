@@ -39,7 +39,7 @@ public interface CustomCategory extends EObject
 	 * @return the value of the '<em>Identifier</em>' attribute.
 	 * @see #setIdentifier(String)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getCustomCategory_Identifier()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getIdentifier();
@@ -106,6 +106,7 @@ public interface CustomCategory extends EObject
 	/**
 	 * Returns the value of the '<em><b>Features</b></em>' reference list.
 	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.Feature}.
+	 * It is bidirectional and its opposite is '{@link org.eclipse.buckminster.aggregator.Feature#getCategories <em>Categories</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Features</em>' reference list isn't clear, there really should be more of a
@@ -114,7 +115,8 @@ public interface CustomCategory extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Features</em>' reference list.
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getCustomCategory_Features()
-	 * @model
+	 * @see org.eclipse.buckminster.aggregator.Feature#getCategories
+	 * @model opposite="categories"
 	 * @generated
 	 */
 	EList<Feature> getFeatures();

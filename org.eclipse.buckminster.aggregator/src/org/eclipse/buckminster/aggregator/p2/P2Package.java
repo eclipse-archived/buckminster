@@ -740,6 +740,80 @@ public interface P2Package extends EPackage
 	int IQUERYABLE_FEATURE_COUNT = 0;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository <em>IMetadata Repository</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository
+	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIMetadataRepository()
+	 * @generated
+	 */
+	int IMETADATA_REPOSITORY = 26;
+
+	/**
+	 * The feature id for the '<em><b>Location</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__LOCATION = IQUERYABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__NAME = IQUERYABLE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__TYPE = IQUERYABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__VERSION = IQUERYABLE_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__DESCRIPTION = IQUERYABLE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Provider</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__PROVIDER = IQUERYABLE_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Modifiable</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY__MODIFIABLE = IQUERYABLE_FEATURE_COUNT + 6;
+
+	/**
+	 * The number of structural features of the '<em>IMetadata Repository</em>' class.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IMETADATA_REPOSITORY_FEATURE_COUNT = IQUERYABLE_FEATURE_COUNT + 7;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.MetadataRepositoryImpl <em>Metadata Repository</em>}' class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.MetadataRepositoryImpl
@@ -754,7 +828,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY__LOCATION = IQUERYABLE_FEATURE_COUNT + 0;
+	int METADATA_REPOSITORY__LOCATION = IMETADATA_REPOSITORY__LOCATION;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -762,7 +836,47 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY__NAME = IQUERYABLE_FEATURE_COUNT + 1;
+	int METADATA_REPOSITORY__NAME = IMETADATA_REPOSITORY__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__TYPE = IMETADATA_REPOSITORY__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__VERSION = IMETADATA_REPOSITORY__VERSION;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__DESCRIPTION = IMETADATA_REPOSITORY__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Provider</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__PROVIDER = IMETADATA_REPOSITORY__PROVIDER;
+
+	/**
+	 * The feature id for the '<em><b>Modifiable</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__MODIFIABLE = IMETADATA_REPOSITORY__MODIFIABLE;
 
 	/**
 	 * The feature id for the '<em><b>Installable Units</b></em>' containment reference list.
@@ -771,7 +885,25 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY__INSTALLABLE_UNITS = IQUERYABLE_FEATURE_COUNT + 2;
+	int METADATA_REPOSITORY__INSTALLABLE_UNITS = IMETADATA_REPOSITORY_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Repository References</b></em>' containment reference list.
+	 * <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__REPOSITORY_REFERENCES = IMETADATA_REPOSITORY_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Property Map</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY__PROPERTY_MAP = IMETADATA_REPOSITORY_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Metadata Repository</em>' class.
@@ -780,7 +912,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_FEATURE_COUNT = IQUERYABLE_FEATURE_COUNT + 3;
+	int METADATA_REPOSITORY_FEATURE_COUNT = IMETADATA_REPOSITORY_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl <em>Installable Unit</em>}' class.
@@ -1488,13 +1620,156 @@ public interface P2Package extends EPackage
 	int INSTRUCTION_MAP_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.core.runtime.IAdaptable <em>IAdaptable</em>}' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.core.runtime.IAdaptable
+	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIAdaptable()
+	 * @generated
+	 */
+	int IADAPTABLE = 29;
+
+	/**
+	 * The number of structural features of the '<em>IAdaptable</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IADAPTABLE_FEATURE_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository <em>IRepository</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository
+	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIRepository()
+	 * @generated
+	 */
+	int IREPOSITORY = 27;
+
+	/**
+	 * The feature id for the '<em><b>Location</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__LOCATION = IADAPTABLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__NAME = IADAPTABLE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__TYPE = IADAPTABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__VERSION = IADAPTABLE_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__DESCRIPTION = IADAPTABLE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Provider</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__PROVIDER = IADAPTABLE_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Modifiable</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY__MODIFIABLE = IADAPTABLE_FEATURE_COUNT + 6;
+
+	/**
+	 * The number of structural features of the '<em>IRepository</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IREPOSITORY_FEATURE_COUNT = IADAPTABLE_FEATURE_COUNT + 7;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.RepositoryReferenceImpl <em>Repository Reference</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see org.eclipse.buckminster.aggregator.p2.impl.RepositoryReferenceImpl
+	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getRepositoryReference()
+	 * @generated
+	 */
+	int REPOSITORY_REFERENCE = 28;
+
+	/**
+	 * The feature id for the '<em><b>Location</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REPOSITORY_REFERENCE__LOCATION = 0;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REPOSITORY_REFERENCE__TYPE = 1;
+
+	/**
+	 * The feature id for the '<em><b>Options</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REPOSITORY_REFERENCE__OPTIONS = 2;
+
+	/**
+	 * The feature id for the '<em><b>Nickname</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REPOSITORY_REFERENCE__NICKNAME = 3;
+
+	/**
+	 * The number of structural features of the '<em>Repository Reference</em>' class.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REPOSITORY_REFERENCE_FEATURE_COUNT = 4;
+
+	/**
 	 * The meta object id for the '<em>Version</em>' data type.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see org.eclipse.equinox.internal.provisional.p2.core.Version
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersion()
 	 * @generated
 	 */
-	int VERSION = 26;
+	int VERSION = 30;
 
 	/**
 	 * The meta object id for the '<em>Version Range</em>' data type.
@@ -1503,7 +1778,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersionRange()
 	 * @generated
 	 */
-	int VERSION_RANGE = 27;
+	int VERSION_RANGE = 31;
 
 	/**
 	 * The meta object id for the '<em>IInstallable Unit Array</em>' data type.
@@ -1512,7 +1787,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIInstallableUnitArray()
 	 * @generated
 	 */
-	int IINSTALLABLE_UNIT_ARRAY = 28;
+	int IINSTALLABLE_UNIT_ARRAY = 32;
 
 	/**
 	 * The meta object id for the '<em>IRequired Capability Array</em>' data type.
@@ -1521,7 +1796,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIRequiredCapabilityArray()
 	 * @generated
 	 */
-	int IREQUIRED_CAPABILITY_ARRAY = 29;
+	int IREQUIRED_CAPABILITY_ARRAY = 33;
 
 	/**
 	 * The meta object id for the '<em>IProvided Capability Array</em>' data type.
@@ -1530,7 +1805,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIProvidedCapabilityArray()
 	 * @generated
 	 */
-	int IPROVIDED_CAPABILITY_ARRAY = 30;
+	int IPROVIDED_CAPABILITY_ARRAY = 34;
 
 	/**
 	 * The meta object id for the '<em>IInstallable Unit Fragment Array</em>' data type.
@@ -1539,7 +1814,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIInstallableUnitFragmentArray()
 	 * @generated
 	 */
-	int IINSTALLABLE_UNIT_FRAGMENT_ARRAY = 31;
+	int IINSTALLABLE_UNIT_FRAGMENT_ARRAY = 35;
 
 	/**
 	 * The meta object id for the '<em>IArtifact Key Array</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1548,7 +1823,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIArtifactKeyArray()
 	 * @generated
 	 */
-	int IARTIFACT_KEY_ARRAY = 32;
+	int IARTIFACT_KEY_ARRAY = 36;
 
 	/**
 	 * The meta object id for the '<em>ITouchpoint Data Array</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1557,7 +1832,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getITouchpointDataArray()
 	 * @generated
 	 */
-	int ITOUCHPOINT_DATA_ARRAY = 33;
+	int ITOUCHPOINT_DATA_ARRAY = 37;
 
 	/**
 	 * The meta object id for the '<em>String Array</em>' data type.
@@ -1565,7 +1840,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getStringArray()
 	 * @generated
 	 */
-	int STRING_ARRAY = 34;
+	int STRING_ARRAY = 38;
 
 	/**
 	 * The meta object id for the '<em>Untyped Map</em>' data type.
@@ -1574,7 +1849,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getUntypedMap()
 	 * @generated
 	 */
-	int UNTYPED_MAP = 35;
+	int UNTYPED_MAP = 39;
 
 	/**
 	 * The meta object id for the '<em>Query</em>' data type.
@@ -1583,7 +1858,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getQuery()
 	 * @generated
 	 */
-	int QUERY = 36;
+	int QUERY = 40;
 
 	/**
 	 * The meta object id for the '<em>Collector</em>' data type.
@@ -1592,7 +1867,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getCollector()
 	 * @generated
 	 */
-	int COLLECTOR = 37;
+	int COLLECTOR = 41;
 
 	/**
 	 * The meta object id for the '<em>IProgress Monitor</em>' data type.
@@ -1601,7 +1876,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIProgressMonitor()
 	 * @generated
 	 */
-	int IPROGRESS_MONITOR = 38;
+	int IPROGRESS_MONITOR = 42;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey <em>IArtifact Key</em>}'.
@@ -2165,29 +2440,6 @@ public interface P2Package extends EPackage
 	EClass getMetadataRepository();
 
 	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getLocation <em>Location</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Location</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2.MetadataRepository#getLocation()
-	 * @see #getMetadataRepository()
-	 * @generated
-	 */
-	EAttribute getMetadataRepository_Location();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2.MetadataRepository#getName()
-	 * @see #getMetadataRepository()
-	 * @generated
-	 */
-	EAttribute getMetadataRepository_Name();
-
-	/**
 	 * Returns the meta object for the containment reference list '{@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getInstallableUnits <em>Installable Units</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Installable Units</em>'.
@@ -2196,6 +2448,27 @@ public interface P2Package extends EPackage
 	 * @generated
 	 */
 	EReference getMetadataRepository_InstallableUnits();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getRepositoryReferences <em>Repository References</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Repository References</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.MetadataRepository#getRepositoryReferences()
+	 * @see #getMetadataRepository()
+	 * @generated
+	 */
+	EReference getMetadataRepository_RepositoryReferences();
+
+	/**
+	 * Returns the meta object for the map '{@link org.eclipse.buckminster.aggregator.p2.MetadataRepository#getPropertyMap <em>Property Map</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the map '<em>Property Map</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.MetadataRepository#getPropertyMap()
+	 * @see #getMetadataRepository()
+	 * @generated
+	 */
+	EReference getMetadataRepository_PropertyMap();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit <em>Installable Unit</em>}'.
@@ -2442,6 +2715,173 @@ public interface P2Package extends EPackage
 	 * @generated
 	 */
 	EClass getIQueryable();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository <em>IMetadata Repository</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for class '<em>IMetadata Repository</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository" superTypes="org.eclipse.buckminster.aggregator.p2.IQueryable org.eclipse.buckminster.aggregator.p2.IRepository"
+	 * @generated
+	 */
+	EClass getIMetadataRepository();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository <em>IRepository</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for class '<em>IRepository</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.repository.IRepository" superTypes="org.eclipse.buckminster.aggregator.p2.IAdaptable"
+	 * @generated
+	 */
+	EClass getIRepository();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getLocation <em>Location</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Location</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getLocation()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Location();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getName <em>Name</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getName()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Name();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getType <em>Type</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getType()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Type();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getVersion <em>Version</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Version</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getVersion()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Version();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getDescription()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Description();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getProvider <em>Provider</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Provider</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#getProvider()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Provider();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository#isModifiable <em>Modifiable</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Modifiable</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository#isModifiable()
+	 * @see #getIRepository()
+	 * @generated
+	 */
+	EAttribute getIRepository_Modifiable();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2.RepositoryReference <em>Repository Reference</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Repository Reference</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.RepositoryReference
+	 * @generated
+	 */
+	EClass getRepositoryReference();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference#getLocation <em>Location</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Location</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.RepositoryReference#getLocation()
+	 * @see #getRepositoryReference()
+	 * @generated
+	 */
+	EAttribute getRepositoryReference_Location();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.p2.RepositoryReference#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.RepositoryReference#getType()
+	 * @see #getRepositoryReference()
+	 * @generated
+	 */
+	EAttribute getRepositoryReference_Type();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference#getOptions <em>Options</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Options</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.RepositoryReference#getOptions()
+	 * @see #getRepositoryReference()
+	 * @generated
+	 */
+	EAttribute getRepositoryReference_Options();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference#getNickname <em>Nickname</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Nickname</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2.RepositoryReference#getNickname()
+	 * @see #getRepositoryReference()
+	 * @generated
+	 */
+	EAttribute getRepositoryReference_Nickname();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.core.runtime.IAdaptable <em>IAdaptable</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>IAdaptable</em>'.
+	 * @see org.eclipse.core.runtime.IAdaptable
+	 * @model instanceClass="org.eclipse.core.runtime.IAdaptable"
+	 * @generated
+	 */
+	EClass getIAdaptable();
 
 	/**
 	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.core.Version <em>Version</em>}'.
@@ -3025,28 +3465,27 @@ public interface P2Package extends EPackage
 		EClass METADATA_REPOSITORY = eINSTANCE.getMetadataRepository();
 
 		/**
-		 * The meta object literal for the '<em><b>Location</b></em>' attribute feature.
-		 * <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * @generated
-		 */
-		EAttribute METADATA_REPOSITORY__LOCATION = eINSTANCE.getMetadataRepository_Location();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * @generated
-		 */
-		EAttribute METADATA_REPOSITORY__NAME = eINSTANCE.getMetadataRepository_Name();
-
-		/**
 		 * The meta object literal for the '<em><b>Installable Units</b></em>' containment reference list feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference METADATA_REPOSITORY__INSTALLABLE_UNITS = eINSTANCE.getMetadataRepository_InstallableUnits();
+
+		/**
+		 * The meta object literal for the '<em><b>Repository References</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference METADATA_REPOSITORY__REPOSITORY_REFERENCES = eINSTANCE.getMetadataRepository_RepositoryReferences();
+
+		/**
+		 * The meta object literal for the '<em><b>Property Map</b></em>' map feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference METADATA_REPOSITORY__PROPERTY_MAP = eINSTANCE.getMetadataRepository_PropertyMap();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl <em>Installable Unit</em>}' class.
@@ -3247,6 +3686,131 @@ public interface P2Package extends EPackage
 		 * @generated
 		 */
 		EClass IQUERYABLE = eINSTANCE.getIQueryable();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository <em>IMetadata Repository</em>}' class.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository
+		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIMetadataRepository()
+		 * @generated
+		 */
+		EClass IMETADATA_REPOSITORY = eINSTANCE.getIMetadataRepository();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.equinox.internal.provisional.p2.repository.IRepository <em>IRepository</em>}' class.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * @see org.eclipse.equinox.internal.provisional.p2.repository.IRepository
+		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIRepository()
+		 * @generated
+		 */
+		EClass IREPOSITORY = eINSTANCE.getIRepository();
+
+		/**
+		 * The meta object literal for the '<em><b>Location</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__LOCATION = eINSTANCE.getIRepository_Location();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__NAME = eINSTANCE.getIRepository_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__TYPE = eINSTANCE.getIRepository_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__VERSION = eINSTANCE.getIRepository_Version();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__DESCRIPTION = eINSTANCE.getIRepository_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Provider</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__PROVIDER = eINSTANCE.getIRepository_Provider();
+
+		/**
+		 * The meta object literal for the '<em><b>Modifiable</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IREPOSITORY__MODIFIABLE = eINSTANCE.getIRepository_Modifiable();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2.impl.RepositoryReferenceImpl <em>Repository Reference</em>}' class.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * @see org.eclipse.buckminster.aggregator.p2.impl.RepositoryReferenceImpl
+		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getRepositoryReference()
+		 * @generated
+		 */
+		EClass REPOSITORY_REFERENCE = eINSTANCE.getRepositoryReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Location</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REPOSITORY_REFERENCE__LOCATION = eINSTANCE.getRepositoryReference_Location();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REPOSITORY_REFERENCE__TYPE = eINSTANCE.getRepositoryReference_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Options</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REPOSITORY_REFERENCE__OPTIONS = eINSTANCE.getRepositoryReference_Options();
+
+		/**
+		 * The meta object literal for the '<em><b>Nickname</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REPOSITORY_REFERENCE__NICKNAME = eINSTANCE.getRepositoryReference_Nickname();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.core.runtime.IAdaptable <em>IAdaptable</em>}' class. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.core.runtime.IAdaptable
+		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIAdaptable()
+		 * @generated
+		 */
+		EClass IADAPTABLE = eINSTANCE.getIAdaptable();
 
 		/**
 		 * The meta object literal for the '<em>Version</em>' data type.

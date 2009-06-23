@@ -98,8 +98,7 @@ public enum Architecture implements Enumerator
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final Architecture[] VALUES_ARRAY = new Architecture[]
-		{
+	private static final Architecture[] VALUES_ARRAY = new Architecture[] {
 			X86,
 			PPC,
 			X86_64,
@@ -121,11 +120,9 @@ public enum Architecture implements Enumerator
 	 */
 	public static Architecture get(String literal)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			Architecture result = VALUES_ARRAY[i];
-			if (result.toString().equals(literal))
-			{
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -140,11 +137,9 @@ public enum Architecture implements Enumerator
 	 */
 	public static Architecture getByName(String name)
 	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			Architecture result = VALUES_ARRAY[i];
-			if (result.getName().equals(name))
-			{
+			if (result.getName().equals(name)) {
 				return result;
 			}
 		}
@@ -159,8 +154,7 @@ public enum Architecture implements Enumerator
 	 */
 	public static Architecture get(int value)
 	{
-		switch (value)
-		{
+		switch (value) {
 			case X86_VALUE: return X86;
 			case PPC_VALUE: return PPC;
 			case X86_64_VALUE: return X86_64;

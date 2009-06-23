@@ -39,7 +39,7 @@ public interface Contribution extends EObject
 	 * @return the value of the '<em>Label</em>' attribute.
 	 * @see #setLabel(String)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution_Label()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getLabel();

@@ -13,11 +13,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
+import org.eclipse.buckminster.aggregator.p2.Copyright;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.License;
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.buckminster.aggregator.p2.TouchpointData;
+import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
+import org.eclipse.buckminster.aggregator.p2.TouchpointType;
+import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -41,6 +47,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
+import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
 
@@ -379,8 +386,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		ITouchpointType oldTouchpointType = touchpointType;
 		touchpointType = newTouchpointType;
-		if (eNotificationRequired())
-		{
+		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE, oldTouchpointType, newTouchpointType);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -393,8 +399,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setTouchpointType(ITouchpointType newTouchpointType)
 	{
-		if (newTouchpointType != touchpointType)
-		{
+		if (newTouchpointType != touchpointType) {
 			NotificationChain msgs = null;
 			if (touchpointType != null)
 				msgs = ((InternalEObject)touchpointType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE, null, msgs);
@@ -508,8 +513,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		IUpdateDescriptor oldUpdateDescriptor = updateDescriptor;
 		updateDescriptor = newUpdateDescriptor;
-		if (eNotificationRequired())
-		{
+		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__UPDATE_DESCRIPTOR, oldUpdateDescriptor, newUpdateDescriptor);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -522,8 +526,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setUpdateDescriptor(IUpdateDescriptor newUpdateDescriptor)
 	{
-		if (newUpdateDescriptor != updateDescriptor)
-		{
+		if (newUpdateDescriptor != updateDescriptor) {
 			NotificationChain msgs = null;
 			if (updateDescriptor != null)
 				msgs = ((InternalEObject)updateDescriptor).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__UPDATE_DESCRIPTOR, null, msgs);
@@ -553,8 +556,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		ILicense oldLicense = license;
 		license = newLicense;
-		if (eNotificationRequired())
-		{
+		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__LICENSE, oldLicense, newLicense);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -567,8 +569,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setLicense(ILicense newLicense)
 	{
-		if (newLicense != license)
-		{
+		if (newLicense != license) {
 			NotificationChain msgs = null;
 			if (license != null)
 				msgs = ((InternalEObject)license).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__LICENSE, null, msgs);
@@ -598,8 +599,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		ICopyright oldCopyright = copyright;
 		copyright = newCopyright;
-		if (eNotificationRequired())
-		{
+		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__COPYRIGHT, oldCopyright, newCopyright);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
@@ -612,8 +612,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public void setCopyright(ICopyright newCopyright)
 	{
-		if (newCopyright != copyright)
-		{
+		if (newCopyright != copyright) {
 			NotificationChain msgs = null;
 			if (copyright != null)
 				msgs = ((InternalEObject)copyright).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - P2Package.INSTALLABLE_UNIT__COPYRIGHT, null, msgs);
@@ -632,8 +631,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<ArtifactKey> getArtifactList()
 	{
-		if (artifactList == null)
-		{
+		if (artifactList == null) {
 			artifactList = new EObjectContainmentEList<ArtifactKey>(ArtifactKey.class, this, P2Package.INSTALLABLE_UNIT__ARTIFACT_LIST);
 		}
 		return artifactList;
@@ -645,8 +643,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<ProvidedCapability> getProvidedCapabilityList()
 	{
-		if (providedCapabilityList == null)
-		{
+		if (providedCapabilityList == null) {
 			providedCapabilityList = new EObjectContainmentEList<ProvidedCapability>(ProvidedCapability.class, this, P2Package.INSTALLABLE_UNIT__PROVIDED_CAPABILITY_LIST);
 		}
 		return providedCapabilityList;
@@ -658,8 +655,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<RequiredCapability> getRequiredCapabilityList()
 	{
-		if (requiredCapabilityList == null)
-		{
+		if (requiredCapabilityList == null) {
 			requiredCapabilityList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this, P2Package.INSTALLABLE_UNIT__REQUIRED_CAPABILITY_LIST);
 		}
 		return requiredCapabilityList;
@@ -671,8 +667,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<RequiredCapability> getMetaRequiredCapabilityList()
 	{
-		if (metaRequiredCapabilityList == null)
-		{
+		if (metaRequiredCapabilityList == null) {
 			metaRequiredCapabilityList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this, P2Package.INSTALLABLE_UNIT__META_REQUIRED_CAPABILITY_LIST);
 		}
 		return metaRequiredCapabilityList;
@@ -684,8 +679,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EMap<String, String> getPropertyMap()
 	{
-		if (propertyMap == null)
-		{
+		if (propertyMap == null) {
 			propertyMap = new EcoreEMap<String,String>(P2Package.Literals.PROPERTY, PropertyImpl.class, this, P2Package.INSTALLABLE_UNIT__PROPERTY_MAP);
 		}
 		return propertyMap;
@@ -697,8 +691,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public EList<TouchpointData> getTouchpointDataList()
 	{
-		if (touchpointDataList == null)
-		{
+		if (touchpointDataList == null) {
 			touchpointDataList = new EObjectContainmentEList<TouchpointData>(TouchpointData.class, this, P2Package.INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST);
 		}
 		return touchpointDataList;
@@ -837,8 +830,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE:
 				return basicSetTouchpointType(null, msgs);
 			case P2Package.INSTALLABLE_UNIT__UPDATE_DESCRIPTOR:
@@ -870,8 +862,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				return getFilter();
 			case P2Package.INSTALLABLE_UNIT__ID:
@@ -917,8 +908,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				setFilter((String)newValue);
 				return;
@@ -983,8 +973,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				setFilter(FILTER_EDEFAULT);
 				return;
@@ -1044,8 +1033,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.INSTALLABLE_UNIT__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
 			case P2Package.INSTALLABLE_UNIT__ID:
@@ -1161,6 +1149,167 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return m.matches()
 				? new VersionedName(m.group(1), m.group(2))
 				: null;
+	}
+
+	public static InstallableUnit importToModel(IInstallableUnit iu)
+	{
+		if(iu == null)
+			return null;
+
+		P2Factory factory = P2Factory.eINSTANCE;
+		InstallableUnitImpl miu;
+		if(iu instanceof IInstallableUnitFragment)
+		{
+			InstallableUnitFragmentImpl miuf = (InstallableUnitFragmentImpl)factory.createInstallableUnitFragment();
+			List<RequiredCapability> mhosts = miuf.getHostList();
+			for(IRequiredCapability host : ((IInstallableUnitFragment)iu).getHost())
+				mhosts.add(importToModel(host));
+			miu = miuf;
+		}
+		else
+			miu = (InstallableUnitImpl)factory.createInstallableUnit();
+
+		miu.setCopyright(importToModel(iu.getCopyright()));
+		miu.setFilter(iu.getFilter());
+		miu.setFragment(iu.isFragment());
+		miu.setId(iu.getId());
+		miu.setLicense(importToModel(iu.getLicense()));
+		miu.setResolved(iu.isResolved());
+		miu.setSingleton(iu.isSingleton());
+		miu.setTouchpointType(importToModel(iu.getTouchpointType()));
+		miu.setUpdateDescriptor(importToModel(iu.getUpdateDescriptor()));
+		miu.setVersion(iu.getVersion());
+
+		@SuppressWarnings("unchecked")
+		Map<String, String> props = iu.getProperties();
+		if(props.size() > 0)
+			miu.getPropertyMap().putAll(props);
+
+		List<ArtifactKey> keys = miu.getArtifactList();
+		for(IArtifactKey key : iu.getArtifacts())
+			keys.add(importToModel(key));
+
+		List<RequiredCapability> rcs = miu.getMetaRequiredCapabilityList();
+		for(IRequiredCapability rc : iu.getMetaRequiredCapabilities())
+			rcs.add(importToModel(rc));
+
+		rcs = miu.getRequiredCapabilityList();
+		for(IRequiredCapability rc : iu.getRequiredCapabilities())
+			rcs.add(importToModel(rc));
+
+		List<ProvidedCapability> pcs = miu.getProvidedCapabilityList();
+		for(IProvidedCapability pc : iu.getProvidedCapabilities())
+			pcs.add(importToModel(pc));
+
+		List<TouchpointData> tds = miu.getTouchpointDataList();
+		for(ITouchpointData td : iu.getTouchpointData())
+			tds.add(importToModel(td));
+
+		return miu;
+	}
+
+	private static ArtifactKey importToModel(IArtifactKey key)
+	{
+		if(key == null)
+			return null;
+		ArtifactKeyImpl mkey = (ArtifactKeyImpl)P2Factory.eINSTANCE.createArtifactKey();
+		mkey.setClassifier(key.getClassifier());
+		mkey.setId(key.getId());
+		mkey.setVersion(key.getVersion());
+		return mkey;
+	}
+
+	private static Copyright importToModel(ICopyright cr)
+	{
+		if(cr == null)
+			return null;
+		CopyrightImpl mcr = (CopyrightImpl)P2Factory.eINSTANCE.createCopyright();
+		mcr.setBody(cr.getBody());
+		mcr.setLocation(cr.getLocation());
+		return mcr;
+	}
+
+	private static License importToModel(ILicense lc)
+	{
+		if(lc == null)
+			return null;
+		LicenseImpl mlc = (LicenseImpl)P2Factory.eINSTANCE.createLicense();
+		mlc.setBody(lc.getBody());
+		mlc.setDigest(lc.getDigest());
+		mlc.setLocation(lc.getLocation());
+		return mlc;
+	}
+
+	private static ProvidedCapability importToModel(IProvidedCapability pc)
+	{
+		if(pc == null)
+			return null;
+		ProvidedCapabilityImpl mrq = (ProvidedCapabilityImpl)P2Factory.eINSTANCE.createProvidedCapability();
+		mrq.setName(pc.getName());
+		mrq.setNamespace(pc.getNamespace());
+		mrq.setVersion(pc.getVersion());
+		return mrq;
+	}
+
+	private static RequiredCapability importToModel(IRequiredCapability rc)
+	{
+		if(rc == null)
+			return null;
+		RequiredCapabilityImpl mrc = (RequiredCapabilityImpl)P2Factory.eINSTANCE.createRequiredCapability();
+		mrc.setFilter(rc.getFilter());
+		mrc.setGreedy(rc.isGreedy());
+		mrc.setMultiple(rc.isMultiple());
+		mrc.setName(rc.getName());
+		mrc.setNamespace(rc.getNamespace());
+		mrc.setOptional(rc.isOptional());
+		mrc.setRange(rc.getRange());
+		mrc.setSelectors(rc.getSelectors());
+		return mrc;
+	}
+
+	private static TouchpointData importToModel(ITouchpointData ptd)
+	{
+		if(ptd == null)
+			return null;
+		TouchpointData mtpd = P2Factory.eINSTANCE.createTouchpointData();
+		EMap<String, TouchpointInstruction> minstrMap = mtpd.getInstructionMap();
+		@SuppressWarnings("unchecked")
+		Map<String, ITouchpointInstruction> instrMap = ptd.getInstructions();
+		for(Map.Entry<String, ITouchpointInstruction> instr : instrMap.entrySet())
+			minstrMap.put(instr.getKey(), importToModel(instr.getValue()));
+		return mtpd;
+	}
+
+	private static TouchpointInstruction importToModel(ITouchpointInstruction ti)
+	{
+		if(ti == null)
+			return null;
+		TouchpointInstructionImpl mti = (TouchpointInstructionImpl)P2Factory.eINSTANCE.createTouchpointInstruction();
+		mti.setBody(ti.getBody());
+		mti.setImportAttribute(ti.getImportAttribute());
+		return mti;
+	}
+
+	private static TouchpointType importToModel(ITouchpointType tpt)
+	{
+		if(tpt == null)
+			return null;
+		TouchpointTypeImpl mtpt = (TouchpointTypeImpl)P2Factory.eINSTANCE.createTouchpointType();
+		mtpt.setId(tpt.getId());
+		mtpt.setVersion(tpt.getVersion());
+		return mtpt;
+	}
+
+	private static UpdateDescriptor importToModel(IUpdateDescriptor ud)
+	{
+		if(ud == null)
+			return null;
+		UpdateDescriptorImpl mud = (UpdateDescriptorImpl)P2Factory.eINSTANCE.createUpdateDescriptor();
+		mud.setDescription(ud.getDescription());
+		mud.setId(ud.getId());
+		mud.setRange(ud.getRange());
+		mud.setSeverity(ud.getSeverity());
+		return mud;
 	}
 
 } // InstallableUnitImpl

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.p2.*;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
@@ -23,7 +24,9 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
+import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 /**
  * <!-- begin-user-doc --> The <b>Switch</b> for the model's inheritance hierarchy. It supports the call
@@ -49,8 +52,7 @@ public class P2Switch<T>
 	 */
 	public P2Switch()
 	{
-		if (modelPackage == null)
-		{
+		if (modelPackage == null) {
 			modelPackage = P2Package.eINSTANCE;
 		}
 	}
@@ -74,12 +76,10 @@ public class P2Switch<T>
 	 */
 	protected T doSwitch(EClass theEClass, EObject theEObject)
 	{
-		if (theEClass.eContainer() == modelPackage)
-		{
+		if (theEClass.eContainer() == modelPackage) {
 			return doSwitch(theEClass.getClassifierID(), theEObject);
 		}
-		else
-		{
+		else {
 			List<EClass> eSuperTypes = theEClass.getESuperTypes();
 			return
 				eSuperTypes.isEmpty() ?
@@ -96,42 +96,39 @@ public class P2Switch<T>
 	 */
 	protected T doSwitch(int classifierID, EObject theEObject)
 	{
-		switch (classifierID)
-		{
-			case P2Package.ARTIFACT_KEY:
-			{
+		switch (classifierID) {
+			case P2Package.ARTIFACT_KEY: {
 				ArtifactKey artifactKey = (ArtifactKey)theEObject;
 				T result = caseArtifactKey(artifactKey);
 				if (result == null) result = caseIArtifactKey(artifactKey);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.COPYRIGHT:
-			{
+			case P2Package.COPYRIGHT: {
 				Copyright copyright = (Copyright)theEObject;
 				T result = caseCopyright(copyright);
 				if (result == null) result = caseICopyright(copyright);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.METADATA_REPOSITORY:
-			{
+			case P2Package.METADATA_REPOSITORY: {
 				MetadataRepository metadataRepository = (MetadataRepository)theEObject;
 				T result = caseMetadataRepository(metadataRepository);
+				if (result == null) result = caseIMetadataRepository(metadataRepository);
 				if (result == null) result = caseIQueryable(metadataRepository);
+				if (result == null) result = caseIRepository(metadataRepository);
+				if (result == null) result = caseIAdaptable(metadataRepository);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.INSTALLABLE_UNIT:
-			{
+			case P2Package.INSTALLABLE_UNIT: {
 				InstallableUnit installableUnit = (InstallableUnit)theEObject;
 				T result = caseInstallableUnit(installableUnit);
 				if (result == null) result = caseIInstallableUnit(installableUnit);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.INSTALLABLE_UNIT_FRAGMENT:
-			{
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT: {
 				InstallableUnitFragment installableUnitFragment = (InstallableUnitFragment)theEObject;
 				T result = caseInstallableUnitFragment(installableUnitFragment);
 				if (result == null) result = caseInstallableUnit(installableUnitFragment);
@@ -140,73 +137,70 @@ public class P2Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.LICENSE:
-			{
+			case P2Package.LICENSE: {
 				License license = (License)theEObject;
 				T result = caseLicense(license);
 				if (result == null) result = caseILicense(license);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.PROVIDED_CAPABILITY:
-			{
+			case P2Package.PROVIDED_CAPABILITY: {
 				ProvidedCapability providedCapability = (ProvidedCapability)theEObject;
 				T result = caseProvidedCapability(providedCapability);
 				if (result == null) result = caseIProvidedCapability(providedCapability);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.REQUIRED_CAPABILITY:
-			{
+			case P2Package.REQUIRED_CAPABILITY: {
 				RequiredCapability requiredCapability = (RequiredCapability)theEObject;
 				T result = caseRequiredCapability(requiredCapability);
 				if (result == null) result = caseIRequiredCapability(requiredCapability);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.TOUCHPOINT_DATA:
-			{
+			case P2Package.TOUCHPOINT_DATA: {
 				TouchpointData touchpointData = (TouchpointData)theEObject;
 				T result = caseTouchpointData(touchpointData);
 				if (result == null) result = caseITouchpointData(touchpointData);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.TOUCHPOINT_INSTRUCTION:
-			{
+			case P2Package.TOUCHPOINT_INSTRUCTION: {
 				TouchpointInstruction touchpointInstruction = (TouchpointInstruction)theEObject;
 				T result = caseTouchpointInstruction(touchpointInstruction);
 				if (result == null) result = caseITouchpointInstruction(touchpointInstruction);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.TOUCHPOINT_TYPE:
-			{
+			case P2Package.TOUCHPOINT_TYPE: {
 				TouchpointType touchpointType = (TouchpointType)theEObject;
 				T result = caseTouchpointType(touchpointType);
 				if (result == null) result = caseITouchpointType(touchpointType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.UPDATE_DESCRIPTOR:
-			{
+			case P2Package.UPDATE_DESCRIPTOR: {
 				UpdateDescriptor updateDescriptor = (UpdateDescriptor)theEObject;
 				T result = caseUpdateDescriptor(updateDescriptor);
 				if (result == null) result = caseIUpdateDescriptor(updateDescriptor);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.PROPERTY:
-			{
+			case P2Package.PROPERTY: {
 				@SuppressWarnings("unchecked") Map.Entry<String, String> property = (Map.Entry<String, String>)theEObject;
 				T result = caseProperty(property);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case P2Package.INSTRUCTION_MAP:
-			{
+			case P2Package.INSTRUCTION_MAP: {
 				@SuppressWarnings("unchecked") Map.Entry<String, TouchpointInstruction> instructionMap = (Map.Entry<String, TouchpointInstruction>)theEObject;
 				T result = caseInstructionMap(instructionMap);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case P2Package.REPOSITORY_REFERENCE: {
+				RepositoryReference repositoryReference = (RepositoryReference)theEObject;
+				T result = caseRepositoryReference(repositoryReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -610,6 +604,66 @@ public class P2Switch<T>
 	 * @generated
 	 */
 	public T caseIQueryable(IQueryable object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IMetadata Repository</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IMetadata Repository</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIMetadataRepository(IMetadataRepository object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IRepository</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IRepository</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIRepository(IRepository object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Repository Reference</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Repository Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRepositoryReference(RepositoryReference object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IAdaptable</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IAdaptable</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIAdaptable(IAdaptable object)
 	{
 		return null;
 	}

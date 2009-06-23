@@ -19,11 +19,13 @@ import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
 import org.eclipse.buckminster.aggregator.p2.TouchpointType;
 import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -46,9 +48,11 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
+import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
@@ -211,6 +215,34 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 * @generated
 	 */
 	private EClass iQueryableEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass iMetadataRepositoryEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass iRepositoryEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass repositoryReferenceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass iAdaptableEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -830,26 +862,26 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getMetadataRepository_Location()
-	{
-		return (EAttribute)metadataRepositoryEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getMetadataRepository_Name()
-	{
-		return (EAttribute)metadataRepositoryEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getMetadataRepository_InstallableUnits()
 	{
+		return (EReference)metadataRepositoryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getMetadataRepository_RepositoryReferences() {
+		return (EReference)metadataRepositoryEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getMetadataRepository_PropertyMap() {
 		return (EReference)metadataRepositoryEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -1070,6 +1102,141 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getIMetadataRepository() {
+		return iMetadataRepositoryEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getIRepository() {
+		return iRepositoryEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Location() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Name() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Type() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Version() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Description() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Provider() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIRepository_Modifiable() {
+		return (EAttribute)iRepositoryEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getRepositoryReference() {
+		return repositoryReferenceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRepositoryReference_Location() {
+		return (EAttribute)repositoryReferenceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRepositoryReference_Type() {
+		return (EAttribute)repositoryReferenceEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRepositoryReference_Options() {
+		return (EAttribute)repositoryReferenceEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRepositoryReference_Nickname() {
+		return (EAttribute)repositoryReferenceEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getIAdaptable() {
+		return iAdaptableEClass;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1278,9 +1445,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		copyrightEClass = createEClass(COPYRIGHT);
 
 		metadataRepositoryEClass = createEClass(METADATA_REPOSITORY);
-		createEAttribute(metadataRepositoryEClass, METADATA_REPOSITORY__LOCATION);
-		createEAttribute(metadataRepositoryEClass, METADATA_REPOSITORY__NAME);
 		createEReference(metadataRepositoryEClass, METADATA_REPOSITORY__INSTALLABLE_UNITS);
+		createEReference(metadataRepositoryEClass, METADATA_REPOSITORY__REPOSITORY_REFERENCES);
+		createEReference(metadataRepositoryEClass, METADATA_REPOSITORY__PROPERTY_MAP);
 
 		installableUnitEClass = createEClass(INSTALLABLE_UNIT);
 		createEReference(installableUnitEClass, INSTALLABLE_UNIT__ARTIFACT_LIST);
@@ -1317,6 +1484,25 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEReference(instructionMapEClass, INSTRUCTION_MAP__VALUE);
 
 		iQueryableEClass = createEClass(IQUERYABLE);
+
+		iMetadataRepositoryEClass = createEClass(IMETADATA_REPOSITORY);
+
+		iRepositoryEClass = createEClass(IREPOSITORY);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__LOCATION);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__NAME);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__TYPE);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__VERSION);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__DESCRIPTION);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__PROVIDER);
+		createEAttribute(iRepositoryEClass, IREPOSITORY__MODIFIABLE);
+
+		repositoryReferenceEClass = createEClass(REPOSITORY_REFERENCE);
+		createEAttribute(repositoryReferenceEClass, REPOSITORY_REFERENCE__LOCATION);
+		createEAttribute(repositoryReferenceEClass, REPOSITORY_REFERENCE__TYPE);
+		createEAttribute(repositoryReferenceEClass, REPOSITORY_REFERENCE__OPTIONS);
+		createEAttribute(repositoryReferenceEClass, REPOSITORY_REFERENCE__NICKNAME);
+
+		iAdaptableEClass = createEClass(IADAPTABLE);
 
 		// Create data types
 		versionEDataType = createEDataType(VERSION);
@@ -1368,7 +1554,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		iInstallableUnitFragmentEClass.getESuperTypes().add(this.getIInstallableUnit());
 		artifactKeyEClass.getESuperTypes().add(this.getIArtifactKey());
 		copyrightEClass.getESuperTypes().add(this.getICopyright());
-		metadataRepositoryEClass.getESuperTypes().add(this.getIQueryable());
+		metadataRepositoryEClass.getESuperTypes().add(this.getIMetadataRepository());
 		installableUnitEClass.getESuperTypes().add(this.getIInstallableUnit());
 		installableUnitFragmentEClass.getESuperTypes().add(this.getInstallableUnit());
 		installableUnitFragmentEClass.getESuperTypes().add(this.getIInstallableUnitFragment());
@@ -1379,6 +1565,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		touchpointInstructionEClass.getESuperTypes().add(this.getITouchpointInstruction());
 		touchpointTypeEClass.getESuperTypes().add(this.getITouchpointType());
 		updateDescriptorEClass.getESuperTypes().add(this.getIUpdateDescriptor());
+		iMetadataRepositoryEClass.getESuperTypes().add(this.getIQueryable());
+		iMetadataRepositoryEClass.getESuperTypes().add(this.getIRepository());
+		iRepositoryEClass.getESuperTypes().add(this.getIAdaptable());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(iArtifactKeyEClass, IArtifactKey.class, "IArtifactKey", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
@@ -1481,11 +1670,11 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEClass(copyrightEClass, Copyright.class, "Copyright", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(metadataRepositoryEClass, MetadataRepository.class, "MetadataRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMetadataRepository_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMetadataRepository_Name(), ecorePackage.getEString(), "name", null, 0, 1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMetadataRepository_InstallableUnits(), this.getInstallableUnit(), null, "installableUnits", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getMetadataRepository_InstallableUnits().getEKeys().add(this.getIInstallableUnit_Id());
 		getMetadataRepository_InstallableUnits().getEKeys().add(this.getIInstallableUnit_Version());
+		initEReference(getMetadataRepository_RepositoryReferences(), this.getRepositoryReference(), null, "repositoryReferences", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMetadataRepository_PropertyMap(), this.getProperty(), null, "propertyMap", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(installableUnitEClass, InstallableUnit.class, "InstallableUnit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstallableUnit_ArtifactList(), this.getArtifactKey(), null, "artifactList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1531,6 +1720,49 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		addEParameter(op, this.getCollector(), "collector", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIProgressMonitor(), "progress", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		initEClass(iMetadataRepositoryEClass, IMetadataRepository.class, "IMetadataRepository", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+
+		op = addEOperation(iMetadataRepositoryEClass, null, "addInstallableUnits", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getIInstallableUnitArray(), "installableUnits", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(iMetadataRepositoryEClass, null, "addReference", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theAggregatorPackage.getURI(), "location", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "nickname", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "type", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "options", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(iMetadataRepositoryEClass, ecorePackage.getEBoolean(), "removeInstallableUnits", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getQuery(), "query", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getIProgressMonitor(), "monitor", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(iMetadataRepositoryEClass, null, "removeAll", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(iRepositoryEClass, IRepository.class, "IRepository", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIRepository_Location(), theAggregatorPackage.getURI(), "location", null, 1, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Name(), ecorePackage.getEString(), "name", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Type(), ecorePackage.getEString(), "type", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Version(), ecorePackage.getEString(), "version", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Description(), ecorePackage.getEString(), "description", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Provider(), ecorePackage.getEString(), "provider", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Modifiable(), ecorePackage.getEBoolean(), "modifiable", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		addEOperation(iRepositoryEClass, this.getUntypedMap(), "getProperties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(iRepositoryEClass, ecorePackage.getEString(), "setProperty", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "key", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "value", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(repositoryReferenceEClass, RepositoryReference.class, "RepositoryReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getRepositoryReference_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRepositoryReference_Type(), ecorePackage.getEInt(), "type", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRepositoryReference_Options(), ecorePackage.getEInt(), "options", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRepositoryReference_Nickname(), ecorePackage.getEString(), "nickname", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(iAdaptableEClass, IAdaptable.class, "IAdaptable", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+
+		op = addEOperation(iAdaptableEClass, theXMLTypePackage.getAnySimpleType(), "getAdapter", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEJavaClass(), "adapter", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		// Initialize data types
 		initEDataType(versionEDataType, Version.class, "Version", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(versionRangeEDataType, VersionRange.class, "VersionRange", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -1545,6 +1777,25 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEDataType(queryEDataType, Query.class, "Query", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(collectorEDataType, Collector.class, "Collector", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(iProgressMonitorEDataType, IProgressMonitor.class, "IProgressMonitor", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+
+		// Create annotations
+		// http:///org/eclipse/emf/ecore/util/ExtendedMetaData
+		createExtendedMetaDataAnnotations();
+	}
+
+	/**
+	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void createExtendedMetaDataAnnotations() {
+		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";		
+		addAnnotation
+		  (getRepositoryReference_Location(), 
+		   source, 
+		   new String[] {
+		   });
 	}
 
 } // P2PackageImpl

@@ -120,6 +120,14 @@ public interface P2Factory extends EFactory
 	UpdateDescriptor createUpdateDescriptor();
 
 	/**
+	 * Returns a new object of class '<em>Repository Reference</em>'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return a new object of class '<em>Repository Reference</em>'.
+	 * @generated
+	 */
+	RepositoryReference createRepositoryReference();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @return the package supported by this factory.

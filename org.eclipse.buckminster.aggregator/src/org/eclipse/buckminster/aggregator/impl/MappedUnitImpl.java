@@ -114,12 +114,10 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	 */
 	public InstallableUnit getInstallableUnit()
 	{
-		if (installableUnit != null && installableUnit.eIsProxy())
-		{
+		if (installableUnit != null && installableUnit.eIsProxy()) {
 			InternalEObject oldInstallableUnit = (InternalEObject)installableUnit;
 			installableUnit = (InstallableUnit)eResolveProxy(oldInstallableUnit);
-			if (installableUnit != oldInstallableUnit)
-			{
+			if (installableUnit != oldInstallableUnit) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT, oldInstallableUnit, installableUnit));
 			}
@@ -155,8 +153,7 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_UNIT__ENABLED:
 				return isEnabled();
 			case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
@@ -173,8 +170,7 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_UNIT__ENABLED:
 				setEnabled((Boolean)newValue);
 				return;
@@ -192,8 +188,7 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_UNIT__ENABLED:
 				setEnabled(ENABLED_EDEFAULT);
 				return;
@@ -211,8 +206,7 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case AggregatorPackage.MAPPED_UNIT__ENABLED:
 				return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 			case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:

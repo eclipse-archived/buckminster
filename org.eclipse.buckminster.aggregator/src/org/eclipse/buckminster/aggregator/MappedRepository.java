@@ -108,6 +108,32 @@ public interface MappedRepository extends EObject
 	void setMapVerbatim(boolean value);
 
 	/**
+	 * Returns the value of the '<em><b>Mirror Artifacts</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Mirror Artifacts</em>' attribute isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Mirror Artifacts</em>' attribute.
+	 * @see #setMirrorArtifacts(boolean)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_MirrorArtifacts()
+	 * @model default="true"
+	 * @generated
+	 */
+	boolean isMirrorArtifacts();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Mirror Artifacts</em>' attribute.
+	 * @see #isMirrorArtifacts()
+	 * @generated
+	 */
+	void setMirrorArtifacts(boolean value);
+
+	/**
 	 * Returns the value of the '<em><b>Metadata Repository</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -159,7 +185,7 @@ public interface MappedRepository extends EObject
 	 * @return the value of the '<em>Location</em>' attribute.
 	 * @see #setLocation(String)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_Location()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getLocation();
@@ -172,5 +198,12 @@ public interface MappedRepository extends EObject
 	 * @generated
 	 */
 	void setLocation(String value);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @model kind="operation"
+	 * @generated
+	 */
+	EList<MappedUnit> getEnabledUnits();
 
 } // MappedRepository

@@ -147,8 +147,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
 				return getBody();
 			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
@@ -164,8 +163,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
 				setBody((String)newValue);
 				return;
@@ -183,8 +181,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
 				setBody(BODY_EDEFAULT);
 				return;
@@ -202,8 +199,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
 				return BODY_EDEFAULT == null ? body != null : !BODY_EDEFAULT.equals(body);
 			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:

@@ -199,8 +199,7 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.ARTIFACT_KEY__CLASSIFIER:
 				return getClassifier();
 			case P2Package.ARTIFACT_KEY__ID:
@@ -218,8 +217,7 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.ARTIFACT_KEY__CLASSIFIER:
 				setClassifier((String)newValue);
 				return;
@@ -240,8 +238,7 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.ARTIFACT_KEY__CLASSIFIER:
 				setClassifier(CLASSIFIER_EDEFAULT);
 				return;
@@ -262,8 +259,7 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
-		{
+		switch (featureID) {
 			case P2Package.ARTIFACT_KEY__CLASSIFIER:
 				return CLASSIFIER_EDEFAULT == null ? classifier != null : !CLASSIFIER_EDEFAULT.equals(classifier);
 			case P2Package.ARTIFACT_KEY__ID:
