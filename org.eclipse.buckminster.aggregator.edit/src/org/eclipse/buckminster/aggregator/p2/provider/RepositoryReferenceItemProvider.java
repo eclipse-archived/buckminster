@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2.provider;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
@@ -172,12 +173,13 @@ public class RepositoryReferenceItemProvider extends ItemProviderAdapter impleme
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((RepositoryReference)object).getNickname();
+		URI location = ((RepositoryReference)object).getLocation();
+		String label = location ==  null ? ((RepositoryReference)object).getNickname() : location.toString();
 		return label == null || label.length() == 0 ?
 			getString("_UI_RepositoryReference_type") :
 			getString("_UI_RepositoryReference_type") + " " + label;
