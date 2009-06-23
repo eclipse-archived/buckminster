@@ -36,8 +36,8 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public ProductItemProvider(AdapterFactory adapterFactory)
@@ -46,29 +46,30 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if (itemPropertyDescriptors == null) {
-			super.getPropertyDescriptors(object);
-
-		}
-		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This returns Product.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Product.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/Product"));
+	}
+
+	/**
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
+		if(itemPropertyDescriptors == null)
+		{
+			super.getPropertyDescriptors(object);
+
+		}
+		return itemPropertyDescriptors;
 	}
 
 	/**
@@ -112,9 +113,9 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

@@ -59,7 +59,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				repository.setType(repo.getType());
 				repository.setVersion(repo.getVersion());
 				@SuppressWarnings("unchecked")
-				Map<String,String> props = repo.getProperties();
+				Map<String, String> props = repo.getProperties();
 				repository.getPropertyMap().putAll(props);
 
 				Collector collector = repo.query(QUERY_ALL_IUS, new Collector(), MonitorUtils.subMonitor(monitor, 20));

@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.Enumerator;
 /**
  * <!-- begin-user-doc --> A representation of the literals of the enumeration '<em><b>Window System</b></em>', and
  * utility methods for working with them. <!-- end-user-doc -->
+ * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getWindowSystem()
  * @model
  * @generated
@@ -22,8 +23,8 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum WindowSystem implements Enumerator
 {
 	/**
-	 * The '<em><b>Win32</b></em>' literal object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>Win32</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #WIN32_VALUE
 	 * @generated
 	 * @ordered
@@ -37,16 +38,16 @@ public enum WindowSystem implements Enumerator
 	 * @ordered
 	 */
 	GTK(1, "GTK", "GTK"), /**
-	 * The '<em><b>Carbon</b></em>' literal object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>Carbon</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #CARBON_VALUE
 	 * @generated
 	 * @ordered
 	 */
 	CARBON(2, "Carbon", "Carbon"), /**
-	 * The '<em><b>Cocoa</b></em>' literal object.
-	 * <!-- begin-user-doc --> <!--
+	 * The '<em><b>Cocoa</b></em>' literal object. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #COCOA_VALUE
 	 * @generated
 	 * @ordered
@@ -54,13 +55,13 @@ public enum WindowSystem implements Enumerator
 	COCOA(3, "Cocoa", "cocoa");
 
 	/**
-	 * The '<em><b>Win32</b></em>' literal value.
-	 * <!-- begin-user-doc -->
+	 * The '<em><b>Win32</b></em>' literal value. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>Win32</b></em>' literal object isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #WIN32
 	 * @model name="Win32"
 	 * @generated
@@ -69,13 +70,13 @@ public enum WindowSystem implements Enumerator
 	public static final int WIN32_VALUE = 0;
 
 	/**
-	 * The '<em><b>GTK</b></em>' literal value.
-	 * <!-- begin-user-doc -->
+	 * The '<em><b>GTK</b></em>' literal value. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>GTK</b></em>' literal object isn't clear, there really should be more of a description
 	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #GTK
 	 * @model
 	 * @generated
@@ -84,13 +85,13 @@ public enum WindowSystem implements Enumerator
 	public static final int GTK_VALUE = 1;
 
 	/**
-	 * The '<em><b>Carbon</b></em>' literal value.
-	 * <!-- begin-user-doc -->
+	 * The '<em><b>Carbon</b></em>' literal value. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>Carbon</b></em>' literal object isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #CARBON
 	 * @model name="Carbon"
 	 * @generated
@@ -99,13 +100,13 @@ public enum WindowSystem implements Enumerator
 	public static final int CARBON_VALUE = 2;
 
 	/**
-	 * The '<em><b>Cocoa</b></em>' literal value.
-	 * <!-- begin-user-doc -->
+	 * The '<em><b>Cocoa</b></em>' literal value. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>Cocoa</b></em>' literal object isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #COCOA
 	 * @model name="Cocoa" literal="cocoa"
 	 * @generated
@@ -114,97 +115,104 @@ public enum WindowSystem implements Enumerator
 	public static final int COCOA_VALUE = 3;
 
 	/**
-	 * An array of all the '<em><b>Window System</b></em>' enumerators.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * An array of all the '<em><b>Window System</b></em>' enumerators. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	private static final WindowSystem[] VALUES_ARRAY = new WindowSystem[] {
-			WIN32,
-			GTK,
-			CARBON,
-			COCOA,
-		};
+	private static final WindowSystem[] VALUES_ARRAY = new WindowSystem[] { WIN32, GTK, CARBON, COCOA, };
 
 	/**
-	 * A public read-only list of all the '<em><b>Window System</b></em>' enumerators.
-	 * <!-- begin-user-doc --> <!--
+	 * A public read-only list of all the '<em><b>Window System</b></em>' enumerators. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static final List<WindowSystem> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Window System</b></em>' literal with the specified literal value.
-	 * <!-- begin-user-doc -->
+	 * Returns the '<em><b>Window System</b></em>' literal with the specified integer value. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public static WindowSystem get(String literal)
-	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			WindowSystem result = VALUES_ARRAY[i];
-			if (result.toString().equals(literal)) {
-				return result;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the '<em><b>Window System</b></em>' literal with the specified name.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @generated
-	 */
-	public static WindowSystem getByName(String name)
-	{
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			WindowSystem result = VALUES_ARRAY[i];
-			if (result.getName().equals(name)) {
-				return result;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the '<em><b>Window System</b></em>' literal with the specified integer value.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static WindowSystem get(int value)
 	{
-		switch (value) {
-			case WIN32_VALUE: return WIN32;
-			case GTK_VALUE: return GTK;
-			case CARBON_VALUE: return CARBON;
-			case COCOA_VALUE: return COCOA;
+		switch(value)
+		{
+		case WIN32_VALUE:
+			return WIN32;
+		case GTK_VALUE:
+			return GTK;
+		case CARBON_VALUE:
+			return CARBON;
+		case COCOA_VALUE:
+			return COCOA;
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the '<em><b>Window System</b></em>' literal with the specified literal value. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public static WindowSystem get(String literal)
+	{
+		for(int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
+			WindowSystem result = VALUES_ARRAY[i];
+			if(result.toString().equals(literal))
+			{
+				return result;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the '<em><b>Window System</b></em>' literal with the specified name. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public static WindowSystem getByName(String name)
+	{
+		for(int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
+			WindowSystem result = VALUES_ARRAY[i];
+			if(result.getName().equals(name))
+			{
+				return result;
+			}
 		}
 		return null;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	private final int value;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	private final String name;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	private final String literal;
 
 	/**
-	 * Only this class can construct instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Only this class can construct instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	private WindowSystem(int value, String name, String literal)
@@ -216,35 +224,38 @@ public enum WindowSystem implements Enumerator
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public int getValue()
-	{
-	  return value;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getName()
-	{
-	  return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getLiteral()
 	{
-	  return literal;
+		return literal;
 	}
 
 	/**
-	 * Returns the literal value of the enumerator, which is its string representation.
-	 * <!-- begin-user-doc --> <!--
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public int getValue()
+	{
+		return value;
+	}
+
+	/**
+	 * Returns the literal value of the enumerator, which is its string representation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

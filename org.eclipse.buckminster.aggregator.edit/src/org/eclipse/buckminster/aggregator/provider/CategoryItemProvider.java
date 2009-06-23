@@ -39,8 +39,8 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public CategoryItemProvider(AdapterFactory adapterFactory)
@@ -49,52 +49,31 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if (itemPropertyDescriptors == null) {
-			super.getPropertyDescriptors(object);
-
-			addLabelOverridePropertyDescriptor(object);
-		}
-		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Label Override feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addLabelOverridePropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Category_labelOverride_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Category_labelOverride_feature", "_UI_Category_type"),
-				 AggregatorPackage.Literals.CATEGORY__LABEL_OVERRIDE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns Category.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Category.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/Category"));
+	}
+
+	/**
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
+		if(itemPropertyDescriptors == null)
+		{
+			super.getPropertyDescriptors(object);
+
+			addLabelOverridePropertyDescriptor(object);
+		}
+		return itemPropertyDescriptors;
 	}
 
 	/**
@@ -136,18 +115,34 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Category.class)) {
-			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
+		switch(notification.getFeatureID(Category.class))
+		{
+		case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Label Override feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addLabelOverridePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Category_labelOverride_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Category_labelOverride_feature", "_UI_Category_type"),
+				AggregatorPackage.Literals.CATEGORY__LABEL_OVERRIDE, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

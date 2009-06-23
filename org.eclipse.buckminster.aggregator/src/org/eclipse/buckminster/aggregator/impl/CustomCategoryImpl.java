@@ -31,13 +31,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getIdentifier <em>Identifier</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getLabel <em>Label</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getFeatures <em>Features</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getIdentifier <em>Identifier</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getLabel <em>Label</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getDescription <em>Description</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getFeatures <em>Features</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements CustomCategory
@@ -45,15 +45,16 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The default value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getIdentifier()
 	 * @generated
 	 * @ordered
@@ -61,9 +62,9 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	protected static final String IDENTIFIER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getIdentifier()
 	 * @generated
 	 * @ordered
@@ -71,9 +72,9 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	protected String identifier = IDENTIFIER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getLabel()
 	 * @generated
 	 * @ordered
@@ -91,9 +92,9 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	protected String label = LABEL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getDescription()
 	 * @generated
 	 * @ordered
@@ -101,9 +102,9 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	protected static final String DESCRIPTION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getDescription()
 	 * @generated
 	 * @ordered
@@ -111,9 +112,9 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getFeatures() <em>Features</em>}' reference list.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getFeatures() <em>Features</em>}' reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getFeatures()
 	 * @generated
 	 * @ordered
@@ -122,6 +123,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected CustomCategoryImpl()
@@ -131,58 +133,144 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		return AggregatorPackage.Literals.CUSTOM_CATEGORY;
+		switch(featureID)
+		{
+		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
+			return getIdentifier();
+		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
+			return getLabel();
+		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
+			return getDescription();
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			return getFeatures();
+		}
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String getIdentifier()
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		return identifier;
+		switch(featureID)
+		{
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			return ((InternalEList<InternalEObject>)(InternalEList<?>)getFeatures()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void setIdentifier(String newIdentifier)
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		String oldIdentifier = identifier;
-		identifier = newIdentifier;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER, oldIdentifier, identifier));
+		switch(featureID)
+		{
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String getLabel()
+	@Override
+	public boolean eIsSet(int featureID)
 	{
-		return label;
+		switch(featureID)
+		{
+		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
+			return IDENTIFIER_EDEFAULT == null
+					? identifier != null
+					: !IDENTIFIER_EDEFAULT.equals(identifier);
+		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
+			return LABEL_EDEFAULT == null
+					? label != null
+					: !LABEL_EDEFAULT.equals(label);
+		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
+			return DESCRIPTION_EDEFAULT == null
+					? description != null
+					: !DESCRIPTION_EDEFAULT.equals(description);
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			return features != null && !features.isEmpty();
+		}
+		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void setLabel(String newLabel)
+	@SuppressWarnings("unchecked")
+	@Override
+	public void eSet(int featureID, Object newValue)
 	{
-		String oldLabel = label;
-		label = newLabel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CUSTOM_CATEGORY__LABEL, oldLabel, label));
+		switch(featureID)
+		{
+		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
+			setIdentifier((String)newValue);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
+			setLabel((String)newValue);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
+			setDescription((String)newValue);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			getFeatures().clear();
+			getFeatures().addAll((Collection<? extends Feature>)newValue);
+			return;
+		}
+		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID)
+	{
+		switch(featureID)
+		{
+		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
+			setIdentifier(IDENTIFIER_EDEFAULT);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
+			setLabel(LABEL_EDEFAULT);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
+			setDescription(DESCRIPTION_EDEFAULT);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			getFeatures().clear();
+			return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getDescription()
@@ -192,155 +280,91 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDescription(String newDescription)
-	{
-		String oldDescription = description;
-		description = newDescription;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION, oldDescription, description));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<Feature> getFeatures()
 	{
-		if (features == null) {
-			features = new EObjectWithInverseResolvingEList.ManyInverse<Feature>(Feature.class, this, AggregatorPackage.CUSTOM_CATEGORY__FEATURES, AggregatorPackage.FEATURE__CATEGORIES);
+		if(features == null)
+		{
+			features = new EObjectWithInverseResolvingEList.ManyInverse<Feature>(Feature.class, this,
+					AggregatorPackage.CUSTOM_CATEGORY__FEATURES, AggregatorPackage.FEATURE__CATEGORIES);
 		}
 		return features;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	public String getIdentifier()
 	{
-		switch (featureID) {
-			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getFeatures()).basicAdd(otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
+		return identifier;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	public String getLabel()
 	{
-		switch (featureID) {
-			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-				return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
+		return label;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	public void setDescription(String newDescription)
 	{
-		switch (featureID) {
-			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
-				return getIdentifier();
-			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
-				return getLabel();
-			case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
-				return getDescription();
-			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-				return getFeatures();
-		}
-		return super.eGet(featureID, resolve, coreType);
+		String oldDescription = description;
+		description = newDescription;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION,
+					oldDescription, description));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void eSet(int featureID, Object newValue)
+	public void setIdentifier(String newIdentifier)
 	{
-		switch (featureID) {
-			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
-				setIdentifier((String)newValue);
-				return;
-			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
-				setLabel((String)newValue);
-				return;
-			case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
-				setDescription((String)newValue);
-				return;
-			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-				getFeatures().clear();
-				getFeatures().addAll((Collection<? extends Feature>)newValue);
-				return;
-		}
-		super.eSet(featureID, newValue);
+		String oldIdentifier = identifier;
+		identifier = newIdentifier;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER,
+					oldIdentifier, identifier));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID)
+	public void setLabel(String newLabel)
 	{
-		switch (featureID) {
-			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
-				setIdentifier(IDENTIFIER_EDEFAULT);
-				return;
-			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
-				setLabel(LABEL_EDEFAULT);
-				return;
-			case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
-				setDescription(DESCRIPTION_EDEFAULT);
-				return;
-			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-				getFeatures().clear();
-				return;
-		}
-		super.eUnset(featureID);
+		String oldLabel = label;
+		label = newLabel;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CUSTOM_CATEGORY__LABEL, oldLabel,
+					label));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
-				return IDENTIFIER_EDEFAULT == null ? identifier != null : !IDENTIFIER_EDEFAULT.equals(identifier);
-			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
-				return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
-			case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
-				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
-			case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-				return features != null && !features.isEmpty();
-		}
-		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (identifier: ");
@@ -351,6 +375,17 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 		result.append(description);
 		result.append(')');
 		return result.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected EClass eStaticClass()
+	{
+		return AggregatorPackage.Literals.CUSTOM_CATEGORY;
 	}
 
 } // CustomCategoryImpl

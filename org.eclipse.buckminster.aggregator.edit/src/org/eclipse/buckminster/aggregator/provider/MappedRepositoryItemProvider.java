@@ -45,8 +45,8 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public MappedRepositoryItemProvider(AdapterFactory adapterFactory)
@@ -55,14 +55,48 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
+	{
+		if(childrenFeatures == null)
+		{
+			super.getChildrenFeatures(object);
+			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__PRODUCTS);
+			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES);
+			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__FEATURES);
+			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES);
+		}
+		return childrenFeatures;
+	}
+
+	/**
+	 * This returns MappedRepository.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Object getImage(Object object)
+	{
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/MappedRepository"));
+	}
+
+	/**
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if(itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addMetadataRepositoryPropertyDescriptor(object);
@@ -74,47 +108,122 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Map Verbatim feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator()
+	{
+		return AggregatorEditPlugin.INSTANCE;
+	}
+
+	/**
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	@Override
+	public String getText(Object object)
+	{
+		MappedRepository mappedRepository = (MappedRepository)object;
+		MetadataRepository mdr = mappedRepository.getMetadataRepository();
+		StringBuilder bld = new StringBuilder();
+		bld.append(getString("_UI_MappedRepository_type"));
+		bld.append(' ');
+		if(mdr != null)
+		{
+			if(mdr.getName() != null)
+			{
+				bld.append(mdr.getName());
+				bld.append(' ');
+			}
+			bld.append(mdr.getLocation());
+			if(mappedRepository.isMapVerbatim())
+				bld.append(" mapped verbatim");
+		}
+		else
+			bld.append("not mapped");
+		return bld.toString();
+	}
+
+	/**
+	 * Experimental. Loads a resource when the user types in a URL.
+	 */
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		notifyChangedGen(notification);
+		if(notification.getEventType() != Notification.SET)
+			return;
+
+		Object feature = notification.getFeature();
+		if(!(feature instanceof EAttribute))
+			return;
+
+		if(!"location".equals(((EAttribute)feature).getName()))
+			return;
+
+		onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
+	}
+
+	/**
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
+	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 */
+	public void notifyChangedGen(Notification notification)
+	{
+		updateChildren(notification);
+
+		switch(notification.getFeatureID(MappedRepository.class))
+		{
+		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
+		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
+		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
+		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
+		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			return;
+		}
+		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Location feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addLocationPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MappedRepository_location_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_MappedRepository_location_feature", "_UI_MappedRepository_type"),
+				AggregatorPackage.Literals.MAPPED_REPOSITORY__LOCATION, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Map Verbatim feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addMapVerbatimPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_MappedRepository_mapVerbatim_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MappedRepository_mapVerbatim_feature", "_UI_MappedRepository_type"),
-				 AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_VERBATIM,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Mirror Artifacts feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addMirrorArtifactsPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_MappedRepository_mirrorArtifacts_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MappedRepository_mirrorArtifacts_feature", "_UI_MappedRepository_type"),
-				 AggregatorPackage.Literals.MAPPED_REPOSITORY__MIRROR_ARTIFACTS,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MappedRepository_mapVerbatim_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_MappedRepository_mapVerbatim_feature", "_UI_MappedRepository_type"),
+				AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_VERBATIM, true, false, false,
+				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -157,50 +266,47 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Location feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Mirror Artifacts feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	protected void addLocationPropertyDescriptor(Object object)
+	protected void addMirrorArtifactsPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_MappedRepository_location_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_MappedRepository_location_feature", "_UI_MappedRepository_type"),
-				 AggregatorPackage.Literals.MAPPED_REPOSITORY__LOCATION,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MappedRepository_mirrorArtifacts_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_mirrorArtifacts_feature",
+						"_UI_MappedRepository_type"), AggregatorPackage.Literals.MAPPED_REPOSITORY__MIRROR_ARTIFACTS,
+				true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
+	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__PRODUCTS);
-			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES);
-			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__FEATURES);
-			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES);
-		}
-		return childrenFeatures;
+		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__PRODUCTS,
+				AggregatorFactory.eINSTANCE.createProduct()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES,
+				AggregatorFactory.eINSTANCE.createBundle()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__FEATURES,
+				AggregatorFactory.eINSTANCE.createFeature()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES,
+				AggregatorFactory.eINSTANCE.createCategory()));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -210,94 +316,6 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);
-	}
-
-	/**
-	 * This returns MappedRepository.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object)
-	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/MappedRepository"));
-	}
-
-	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public String getText(Object object)
-	{
-		MappedRepository mappedRepository = (MappedRepository)object;
-		MetadataRepository mdr = mappedRepository.getMetadataRepository();
-		StringBuilder bld = new StringBuilder();
-		bld.append(getString("_UI_MappedRepository_type"));
-		bld.append(' ');
-		if(mdr != null)
-		{
-			if(mdr.getName() != null)
-			{
-				bld.append(mdr.getName());
-				bld.append(' ');
-			}
-			bld.append(mdr.getLocation());
-			if(mappedRepository.isMapVerbatim())
-				bld.append(" mapped verbatim");
-		}
-		else
-			bld.append("not mapped");
-		return bld.toString();
-	}
-
-	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
-	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 */
-	public void notifyChangedGen(Notification notification)
-	{
-		updateChildren(notification);
-
-		switch (notification.getFeatureID(MappedRepository.class)) {
-			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
-			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
-			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
-			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-				return;
-		}
-		super.notifyChanged(notification);
-	}
-
-	/**
-	 * Experimental. Loads a resource when the user types in a URL.
-	 */
-	@Override
-	public void notifyChanged(Notification notification)
-	{
-		notifyChangedGen(notification);
-		if(notification.getEventType() != Notification.SET)
-			return;
-
-		Object feature = notification.getFeature();
-		if(!(feature instanceof EAttribute))
-			return;
-
-		if(!"location".equals(((EAttribute)feature).getName()))
-			return;
-
-		onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
 	}
 
 	private void onLocationChange(MappedRepository repository, String location)
@@ -322,49 +340,6 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 		{
 			repository.setMetadataRepository(repo);
 		}
-	}
-
-	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
-	{
-		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.MAPPED_REPOSITORY__PRODUCTS,
-				 AggregatorFactory.eINSTANCE.createProduct()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES,
-				 AggregatorFactory.eINSTANCE.createBundle()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.MAPPED_REPOSITORY__FEATURES,
-				 AggregatorFactory.eINSTANCE.createFeature()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES,
-				 AggregatorFactory.eINSTANCE.createCategory()));
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return AggregatorEditPlugin.INSTANCE;
 	}
 
 }

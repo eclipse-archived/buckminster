@@ -24,27 +24,28 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.PropertyImpl#getTypedKey <em>Key</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.PropertyImpl#getTypedValue <em>Value</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.PropertyImpl#getTypedKey <em>Key</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.PropertyImpl#getTypedValue <em>Value</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
-public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicEMap.Entry<String,String>
+public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicEMap.Entry<String, String>
 {
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The default value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getTypedKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
@@ -52,9 +53,9 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 	protected static final String KEY_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getTypedKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
@@ -62,9 +63,9 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 	protected String key = KEY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getTypedValue() <em>Value</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getTypedValue() <em>Value</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getTypedValue()
 	 * @generated
 	 * @ordered
@@ -72,9 +73,9 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 	protected static final String VALUE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getTypedValue() <em>Value</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getTypedValue() <em>Value</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getTypedValue()
 	 * @generated
 	 * @ordered
@@ -83,6 +84,14 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected int hash = -1;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertyImpl()
@@ -92,16 +101,128 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		return P2Package.Literals.PROPERTY;
+		switch(featureID)
+		{
+		case P2Package.PROPERTY__KEY:
+			return getTypedKey();
+		case P2Package.PROPERTY__VALUE:
+			return getTypedValue();
+		}
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public boolean eIsSet(int featureID)
+	{
+		switch(featureID)
+		{
+		case P2Package.PROPERTY__KEY:
+			return KEY_EDEFAULT == null
+					? key != null
+					: !KEY_EDEFAULT.equals(key);
+		case P2Package.PROPERTY__VALUE:
+			return VALUE_EDEFAULT == null
+					? value != null
+					: !VALUE_EDEFAULT.equals(value);
+		}
+		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eSet(int featureID, Object newValue)
+	{
+		switch(featureID)
+		{
+		case P2Package.PROPERTY__KEY:
+			setTypedKey((String)newValue);
+			return;
+		case P2Package.PROPERTY__VALUE:
+			setTypedValue((String)newValue);
+			return;
+		}
+		super.eSet(featureID, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID)
+	{
+		switch(featureID)
+		{
+		case P2Package.PROPERTY__KEY:
+			setTypedKey(KEY_EDEFAULT);
+			return;
+		case P2Package.PROPERTY__VALUE:
+			setTypedValue(VALUE_EDEFAULT);
+			return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	public EMap<String, String> getEMap()
+	{
+		EObject container = eContainer();
+		return container == null
+				? null
+				: (EMap<String, String>)container.eGet(eContainmentFeature());
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public int getHash()
+	{
+		if(hash == -1)
+		{
+			Object theKey = getKey();
+			hash = (theKey == null
+					? 0
+					: theKey.hashCode());
+		}
+		return hash;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getKey()
+	{
+		return getTypedKey();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getTypedKey()
@@ -111,18 +232,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTypedKey(String newKey)
-	{
-		String oldKey = key;
-		key = newKey;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.PROPERTY__KEY, oldKey, key));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getTypedValue()
@@ -132,92 +242,82 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getValue()
+	{
+		return getTypedValue();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setHash(int hash)
+	{
+		this.hash = hash;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setKey(String key)
+	{
+		setTypedKey(key);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setTypedKey(String newKey)
+	{
+		String oldKey = key;
+		key = newKey;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.PROPERTY__KEY, oldKey, key));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setTypedValue(String newValue)
 	{
 		String oldValue = value;
 		value = newValue;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.PROPERTY__VALUE, oldValue, value));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	public String setValue(String value)
 	{
-		switch (featureID) {
-			case P2Package.PROPERTY__KEY:
-				return getTypedKey();
-			case P2Package.PROPERTY__VALUE:
-				return getTypedValue();
-		}
-		return super.eGet(featureID, resolve, coreType);
+		String oldValue = getValue();
+		setTypedValue(value);
+		return oldValue;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch (featureID) {
-			case P2Package.PROPERTY__KEY:
-				setTypedKey((String)newValue);
-				return;
-			case P2Package.PROPERTY__VALUE:
-				setTypedValue((String)newValue);
-				return;
-		}
-		super.eSet(featureID, newValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eUnset(int featureID)
-	{
-		switch (featureID) {
-			case P2Package.PROPERTY__KEY:
-				setTypedKey(KEY_EDEFAULT);
-				return;
-			case P2Package.PROPERTY__VALUE:
-				setTypedValue(VALUE_EDEFAULT);
-				return;
-		}
-		super.eUnset(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch (featureID) {
-			case P2Package.PROPERTY__KEY:
-				return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
-			case P2Package.PROPERTY__VALUE:
-				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
-		}
-		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (key: ");
@@ -230,79 +330,13 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements BasicE
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	protected int hash = -1;
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public int getHash()
+	@Override
+	protected EClass eStaticClass()
 	{
-		if (hash == -1) {
-			Object theKey = getKey();
-			hash = (theKey == null ? 0 : theKey.hashCode());
-		}
-		return hash;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setHash(int hash)
-	{
-		this.hash = hash;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getKey()
-	{
-		return getTypedKey();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setKey(String key)
-	{
-		setTypedKey(key);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getValue()
-	{
-		return getTypedValue();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String setValue(String value)
-	{
-		String oldValue = getValue();
-		setTypedValue(value);
-		return oldValue;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EMap<String, String> getEMap()
-	{
-		EObject container = eContainer();
-		return container == null ? null : (EMap<String, String>)container.eGet(eContainmentFeature());
+		return P2Package.Literals.PROPERTY;
 	}
 
 } // PropertyImpl

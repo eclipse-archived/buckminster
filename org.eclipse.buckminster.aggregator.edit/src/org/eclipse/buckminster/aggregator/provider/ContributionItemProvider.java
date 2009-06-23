@@ -41,8 +41,8 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public ContributionItemProvider(AdapterFactory adapterFactory)
@@ -51,55 +51,18 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if (itemPropertyDescriptors == null) {
-			super.getPropertyDescriptors(object);
-
-			addLabelPropertyDescriptor(object);
-		}
-		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Label feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addLabelPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Contribution_label_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Contribution_label_feature", "_UI_Contribution_type"),
-				 AggregatorPackage.Literals.CONTRIBUTION__LABEL,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!--
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if(childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES);
 			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__CONTACTS);
@@ -108,21 +71,8 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child)
-	{
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	/**
-	 * This returns Contribution.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Contribution.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -132,17 +82,45 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
+		if(itemPropertyDescriptors == null)
+		{
+			super.getPropertyDescriptors(object);
+
+			addLabelPropertyDescriptor(object);
+		}
+		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator()
+	{
+		return AggregatorEditPlugin.INSTANCE;
+	}
+
+	/**
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
 		String label = ((Contribution)object).getLabel();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Contribution_type") :
-			getString("_UI_Contribution_type") + " " + label;
+		return label == null || label.length() == 0
+				? getString("_UI_Contribution_type")
+				: getString("_UI_Contribution_type") + " " + label;
 	}
 
 	/**
@@ -157,22 +135,38 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Contribution.class)) {
-			case AggregatorPackage.CONTRIBUTION__LABEL:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-			case AggregatorPackage.CONTRIBUTION__CONTACTS:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-				return;
+		switch(notification.getFeatureID(Contribution.class))
+		{
+		case AggregatorPackage.CONTRIBUTION__LABEL:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+		case AggregatorPackage.CONTRIBUTION__CONTACTS:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Label feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addLabelPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Contribution_label_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Contribution_label_feature", "_UI_Contribution_type"),
+				AggregatorPackage.Literals.CONTRIBUTION__LABEL, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -180,26 +174,25 @@ public class ContributionItemProvider extends ItemProviderAdapter implements IEd
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES,
-				 AggregatorFactory.eINSTANCE.createMappedRepository()));
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES,
+				AggregatorFactory.eINSTANCE.createMappedRepository()));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.CONTRIBUTION__CONTACTS,
-				 AggregatorFactory.eINSTANCE.createContact()));
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__CONTACTS,
+				AggregatorFactory.eINSTANCE.createContact()));
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public ResourceLocator getResourceLocator()
+	protected EStructuralFeature getChildFeature(Object object, Object child)
 	{
-		return AggregatorEditPlugin.INSTANCE;
+		// Check the type of the specified child object and return the proper feature to use for
+		// adding (see {@link AddCommand}) it as a child.
+
+		return super.getChildFeature(object, child);
 	}
 
 }

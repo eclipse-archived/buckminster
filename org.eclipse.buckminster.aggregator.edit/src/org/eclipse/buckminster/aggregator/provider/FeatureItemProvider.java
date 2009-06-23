@@ -44,51 +44,13 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public FeatureItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
-	}
-
-	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if (itemPropertyDescriptors == null) {
-			super.getPropertyDescriptors(object);
-
-			addCategoriesPropertyDescriptor(object);
-		}
-		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Categories feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addCategoriesPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Feature_categories_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Feature_categories_feature", "_UI_Feature_type"),
-				 AggregatorPackage.Literals.FEATURE__CATEGORIES,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**
@@ -116,6 +78,23 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 		else
 			image = getResourceLocator().getImage("full/obj16/Feature");
 		return overlayImage(object, image);
+	}
+
+	/**
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
+		if(itemPropertyDescriptors == null)
+		{
+			super.getPropertyDescriptors(object);
+
+			addCategoriesPropertyDescriptor(object);
+		}
+		return itemPropertyDescriptors;
 	}
 
 	/**
@@ -183,9 +162,23 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Categories feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addCategoriesPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Feature_categories_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Feature_categories_feature", "_UI_Feature_type"),
+				AggregatorPackage.Literals.FEATURE__CATEGORIES, true, false, true, null, null, null));
+	}
+
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

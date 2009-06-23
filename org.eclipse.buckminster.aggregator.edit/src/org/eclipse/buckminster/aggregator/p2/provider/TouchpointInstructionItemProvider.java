@@ -33,14 +33,15 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2.TouchpointInstruction} object.
  * <!-- begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class TouchpointInstructionItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public TouchpointInstructionItemProvider(AdapterFactory adapterFactory)
@@ -49,69 +50,8 @@ public class TouchpointInstructionItemProvider extends ItemProviderAdapter imple
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if (itemPropertyDescriptors == null) {
-			super.getPropertyDescriptors(object);
-
-			addBodyPropertyDescriptor(object);
-			addImportAttributePropertyDescriptor(object);
-		}
-		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Body feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addBodyPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ITouchpointInstruction_body_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ITouchpointInstruction_body_feature", "_UI_ITouchpointInstruction_type"),
-				 P2Package.Literals.ITOUCHPOINT_INSTRUCTION__BODY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Import Attribute feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addImportAttributePropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ITouchpointInstruction_importAttribute_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ITouchpointInstruction_importAttribute_feature", "_UI_ITouchpointInstruction_type"),
-				 P2Package.Literals.ITOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns TouchpointInstruction.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns TouchpointInstruction.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -121,17 +61,46 @@ public class TouchpointInstructionItemProvider extends ItemProviderAdapter imple
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
+		if(itemPropertyDescriptors == null)
+		{
+			super.getPropertyDescriptors(object);
+
+			addBodyPropertyDescriptor(object);
+			addImportAttributePropertyDescriptor(object);
+		}
+		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator()
+	{
+		return AggregatorEditPlugin.INSTANCE;
+	}
+
+	/**
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
 		String label = ((TouchpointInstruction)object).getBody();
-		return label == null || label.length() == 0 ?
-			getString("_UI_TouchpointInstruction_type") :
-			getString("_UI_TouchpointInstruction_type") + " " + label;
+		return label == null || label.length() == 0
+				? getString("_UI_TouchpointInstruction_type")
+				: getString("_UI_TouchpointInstruction_type") + " " + label;
 	}
 
 	/**
@@ -146,36 +115,57 @@ public class TouchpointInstructionItemProvider extends ItemProviderAdapter imple
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(TouchpointInstruction.class)) {
-			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
-			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
+		switch(notification.getFeatureID(TouchpointInstruction.class))
+		{
+		case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
+		case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Body feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addBodyPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_ITouchpointInstruction_body_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_ITouchpointInstruction_body_feature", "_UI_ITouchpointInstruction_type"),
+				P2Package.Literals.ITOUCHPOINT_INSTRUCTION__BODY, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Import Attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addImportAttributePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_ITouchpointInstruction_importAttribute_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_ITouchpointInstruction_importAttribute_feature",
+						"_UI_ITouchpointInstruction_type"),
+				P2Package.Literals.ITOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return AggregatorEditPlugin.INSTANCE;
 	}
 
 }

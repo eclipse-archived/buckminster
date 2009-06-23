@@ -41,8 +41,8 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public TouchpointDataItemProvider(AdapterFactory adapterFactory)
@@ -51,32 +51,18 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if (itemPropertyDescriptors == null) {
-			super.getPropertyDescriptors(object);
-
-		}
-		return itemPropertyDescriptors;
-	}
-
-	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!--
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null) {
+		if(childrenFeatures == null)
+		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2Package.Literals.TOUCHPOINT_DATA__INSTRUCTION_MAP);
 		}
@@ -84,21 +70,8 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child)
-	{
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	/**
-	 * This returns TouchpointData.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns TouchpointData.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -108,8 +81,35 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
+	{
+		if(itemPropertyDescriptors == null)
+		{
+			super.getPropertyDescriptors(object);
+
+		}
+		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator()
+	{
+		return AggregatorEditPlugin.INSTANCE;
+	}
+
+	/**
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -130,18 +130,19 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(TouchpointData.class)) {
-			case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-				return;
+		switch(notification.getFeatureID(TouchpointData.class))
+		{
+		case P2Package.TOUCHPOINT_DATA__INSTRUCTION_MAP:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -149,21 +150,22 @@ public class TouchpointDataItemProvider extends ItemProviderAdapter implements I
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add
-			(createChildParameter
-				(P2Package.Literals.TOUCHPOINT_DATA__INSTRUCTION_MAP,
-				 P2Factory.eINSTANCE.create(P2Package.Literals.INSTRUCTION_MAP)));
+		newChildDescriptors.add(createChildParameter(P2Package.Literals.TOUCHPOINT_DATA__INSTRUCTION_MAP,
+				P2Factory.eINSTANCE.create(P2Package.Literals.INSTRUCTION_MAP)));
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public ResourceLocator getResourceLocator()
+	protected EStructuralFeature getChildFeature(Object object, Object child)
 	{
-		return AggregatorEditPlugin.INSTANCE;
+		// Check the type of the specified child object and return the proper feature to use for
+		// adding (see {@link AddCommand}) it as a child.
+
+		return super.getChildFeature(object, child);
 	}
 
 }

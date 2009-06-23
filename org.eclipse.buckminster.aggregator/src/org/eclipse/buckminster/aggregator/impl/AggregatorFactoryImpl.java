@@ -18,32 +18,48 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFactory
 {
 	/**
-	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @deprecated
+	 * @generated
+	 */
+	@Deprecated
+	public static AggregatorPackage getPackage()
+	{
+		return AggregatorPackage.eINSTANCE;
+	}
+
+	/**
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static AggregatorFactory init()
 	{
-		try {
-			AggregatorFactory theAggregatorFactory = (AggregatorFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/2009/aggregator"); 
-			if (theAggregatorFactory != null) {
+		try
+		{
+			AggregatorFactory theAggregatorFactory = (AggregatorFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/2009/aggregator");
+			if(theAggregatorFactory != null)
+			{
 				return theAggregatorFactory;
 			}
 		}
-		catch (Exception exception) {
+		catch(Exception exception)
+		{
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new AggregatorFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public AggregatorFactoryImpl()
@@ -53,76 +69,141 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public EObject create(EClass eClass)
+	public String convertAggregateTypeToString(EDataType eDataType, Object instanceValue)
 	{
-		switch (eClass.getClassifierID()) {
-			case AggregatorPackage.AGGREGATOR: return createAggregator();
-			case AggregatorPackage.MAPPED_REPOSITORY: return createMappedRepository();
-			case AggregatorPackage.CONFIGURATION: return createConfiguration();
-			case AggregatorPackage.CONTRIBUTION: return createContribution();
-			case AggregatorPackage.CONTACT: return createContact();
-			case AggregatorPackage.FEATURE: return createFeature();
-			case AggregatorPackage.BUNDLE: return createBundle();
-			case AggregatorPackage.PRODUCT: return createProduct();
-			case AggregatorPackage.PROPERTY: return createProperty();
-			case AggregatorPackage.CATEGORY: return createCategory();
-			case AggregatorPackage.CUSTOM_CATEGORY: return createCustomCategory();
-			default:
-				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
-		}
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue)
+	public String convertArchitectureToString(EDataType eDataType, Object instanceValue)
 	{
-		switch (eDataType.getClassifierID()) {
-			case AggregatorPackage.AGGREGATE_TYPE:
-				return createAggregateTypeFromString(eDataType, initialValue);
-			case AggregatorPackage.OPERATING_SYSTEM:
-				return createOperatingSystemFromString(eDataType, initialValue);
-			case AggregatorPackage.WINDOW_SYSTEM:
-				return createWindowSystemFromString(eDataType, initialValue);
-			case AggregatorPackage.ARCHITECTURE:
-				return createArchitectureFromString(eDataType, initialValue);
-			case AggregatorPackage.URI:
-				return createURIFromString(eDataType, initialValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String convertOperatingSystemToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue)
 	{
-		switch (eDataType.getClassifierID()) {
-			case AggregatorPackage.AGGREGATE_TYPE:
-				return convertAggregateTypeToString(eDataType, instanceValue);
-			case AggregatorPackage.OPERATING_SYSTEM:
-				return convertOperatingSystemToString(eDataType, instanceValue);
-			case AggregatorPackage.WINDOW_SYSTEM:
-				return convertWindowSystemToString(eDataType, instanceValue);
-			case AggregatorPackage.ARCHITECTURE:
-				return convertArchitectureToString(eDataType, instanceValue);
-			case AggregatorPackage.URI:
-				return convertURIToString(eDataType, instanceValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		switch(eDataType.getClassifierID())
+		{
+		case AggregatorPackage.AGGREGATE_TYPE:
+			return convertAggregateTypeToString(eDataType, instanceValue);
+		case AggregatorPackage.OPERATING_SYSTEM:
+			return convertOperatingSystemToString(eDataType, instanceValue);
+		case AggregatorPackage.WINDOW_SYSTEM:
+			return convertWindowSystemToString(eDataType, instanceValue);
+		case AggregatorPackage.ARCHITECTURE:
+			return convertArchitectureToString(eDataType, instanceValue);
+		case AggregatorPackage.URI:
+			return convertURIToString(eDataType, instanceValue);
+		default:
+			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String convertURIToString(EDataType eDataType, Object instanceValue)
+	{
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String convertWindowSystemToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public EObject create(EClass eClass)
+	{
+		switch(eClass.getClassifierID())
+		{
+		case AggregatorPackage.AGGREGATOR:
+			return createAggregator();
+		case AggregatorPackage.MAPPED_REPOSITORY:
+			return createMappedRepository();
+		case AggregatorPackage.CONFIGURATION:
+			return createConfiguration();
+		case AggregatorPackage.CONTRIBUTION:
+			return createContribution();
+		case AggregatorPackage.CONTACT:
+			return createContact();
+		case AggregatorPackage.FEATURE:
+			return createFeature();
+		case AggregatorPackage.BUNDLE:
+			return createBundle();
+		case AggregatorPackage.PRODUCT:
+			return createProduct();
+		case AggregatorPackage.PROPERTY:
+			return createProperty();
+		case AggregatorPackage.CATEGORY:
+			return createCategory();
+		case AggregatorPackage.CUSTOM_CATEGORY:
+			return createCustomCategory();
+		default:
+			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public AggregateType createAggregateTypeFromString(EDataType eDataType, String initialValue)
+	{
+		AggregateType result = AggregateType.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Aggregator createAggregator()
@@ -133,56 +214,21 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public MappedRepository createMappedRepository()
+	public Architecture createArchitectureFromString(EDataType eDataType, String initialValue)
 	{
-		MappedRepositoryImpl mappedRepository = new MappedRepositoryImpl();
-		return mappedRepository;
+		Architecture result = Architecture.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Configuration createConfiguration()
-	{
-		ConfigurationImpl configuration = new ConfigurationImpl();
-		return configuration;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Contribution createContribution()
-	{
-		ContributionImpl contribution = new ContributionImpl();
-		return contribution;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Contact createContact()
-	{
-		ContactImpl contact = new ContactImpl();
-		return contact;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Feature createFeature()
-	{
-		FeatureImpl feature = new FeatureImpl();
-		return feature;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Bundle createBundle()
@@ -193,26 +239,7 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Product createProduct()
-	{
-		ProductImpl product = new ProductImpl();
-		return product;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Property createProperty()
-	{
-		PropertyImpl property = new PropertyImpl();
-		return property;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Category createCategory()
@@ -223,6 +250,40 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Configuration createConfiguration()
+	{
+		ConfigurationImpl configuration = new ConfigurationImpl();
+		return configuration;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Contact createContact()
+	{
+		ContactImpl contact = new ContactImpl();
+		return contact;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Contribution createContribution()
+	{
+		ContributionImpl contribution = new ContributionImpl();
+		return contribution;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public CustomCategory createCustomCategory()
@@ -233,86 +294,90 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public AggregateType createAggregateTypeFromString(EDataType eDataType, String initialValue)
+	public Feature createFeature()
 	{
-		AggregateType result = AggregateType.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
+		FeatureImpl feature = new FeatureImpl();
+		return feature;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String convertAggregateTypeToString(EDataType eDataType, Object instanceValue)
+	@Override
+	public Object createFromString(EDataType eDataType, String initialValue)
 	{
-		return instanceValue == null ? null : instanceValue.toString();
+		switch(eDataType.getClassifierID())
+		{
+		case AggregatorPackage.AGGREGATE_TYPE:
+			return createAggregateTypeFromString(eDataType, initialValue);
+		case AggregatorPackage.OPERATING_SYSTEM:
+			return createOperatingSystemFromString(eDataType, initialValue);
+		case AggregatorPackage.WINDOW_SYSTEM:
+			return createWindowSystemFromString(eDataType, initialValue);
+		case AggregatorPackage.ARCHITECTURE:
+			return createArchitectureFromString(eDataType, initialValue);
+		case AggregatorPackage.URI:
+			return createURIFromString(eDataType, initialValue);
+		default:
+			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		}
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public MappedRepository createMappedRepository()
+	{
+		MappedRepositoryImpl mappedRepository = new MappedRepositoryImpl();
+		return mappedRepository;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public OperatingSystem createOperatingSystemFromString(EDataType eDataType, String initialValue)
 	{
 		OperatingSystem result = OperatingSystem.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
 		return result;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String convertOperatingSystemToString(EDataType eDataType, Object instanceValue)
+	public Product createProduct()
 	{
-		return instanceValue == null ? null : instanceValue.toString();
+		ProductImpl product = new ProductImpl();
+		return product;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public WindowSystem createWindowSystemFromString(EDataType eDataType, String initialValue)
+	public Property createProperty()
 	{
-		WindowSystem result = WindowSystem.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
+		PropertyImpl property = new PropertyImpl();
+		return property;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertWindowSystemToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null ? null : instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Architecture createArchitectureFromString(EDataType eDataType, String initialValue)
-	{
-		Architecture result = Architecture.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertArchitectureToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null ? null : instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public URI createURIFromString(EDataType eDataType, String initialValue)
@@ -322,31 +387,26 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String convertURIToString(EDataType eDataType, Object instanceValue)
+	public WindowSystem createWindowSystemFromString(EDataType eDataType, String initialValue)
 	{
-		return super.convertToString(eDataType, instanceValue);
+		WindowSystem result = WindowSystem.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public AggregatorPackage getAggregatorPackage()
 	{
 		return (AggregatorPackage)getEPackage();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @deprecated
-	 * @generated
-	 */
-	@Deprecated
-	public static AggregatorPackage getPackage()
-	{
-		return AggregatorPackage.eINSTANCE;
 	}
 
 } // AggregatorFactoryImpl

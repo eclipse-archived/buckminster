@@ -40,8 +40,8 @@ public class UpdateDescriptorItemProvider extends ItemProviderAdapter implements
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public UpdateDescriptorItemProvider(AdapterFactory adapterFactory)
@@ -50,14 +50,26 @@ public class UpdateDescriptorItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns UpdateDescriptor.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Object getImage(Object object)
+	{
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/UpdateDescriptor"));
+	}
+
+	/**
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null) {
+		if(itemPropertyDescriptors == null)
+		{
 			super.getPropertyDescriptors(object);
 
 			addIdPropertyDescriptor(object);
@@ -69,116 +81,28 @@ public class UpdateDescriptorItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Id feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addIdPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_IUpdateDescriptor_id_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_IUpdateDescriptor_id_feature", "_UI_IUpdateDescriptor_type"),
-				 P2Package.Literals.IUPDATE_DESCRIPTOR__ID,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Range feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addRangePropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_IUpdateDescriptor_range_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_IUpdateDescriptor_range_feature", "_UI_IUpdateDescriptor_type"),
-				 P2Package.Literals.IUPDATE_DESCRIPTOR__RANGE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Description feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDescriptionPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_IUpdateDescriptor_description_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_IUpdateDescriptor_description_feature", "_UI_IUpdateDescriptor_type"),
-				 P2Package.Literals.IUPDATE_DESCRIPTOR__DESCRIPTION,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Severity feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addSeverityPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_IUpdateDescriptor_severity_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_IUpdateDescriptor_severity_feature", "_UI_IUpdateDescriptor_type"),
-				 P2Package.Literals.IUPDATE_DESCRIPTOR__SEVERITY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns UpdateDescriptor.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public Object getImage(Object object)
+	public ResourceLocator getResourceLocator()
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/UpdateDescriptor"));
+		return AggregatorEditPlugin.INSTANCE;
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
 		String label = ((UpdateDescriptor)object).getId();
-		return label == null || label.length() == 0 ?
-			getString("_UI_UpdateDescriptor_type") :
-			getString("_UI_UpdateDescriptor_type") + " " + label;
+		return label == null || label.length() == 0
+				? getString("_UI_UpdateDescriptor_type")
+				: getString("_UI_UpdateDescriptor_type") + " " + label;
 	}
 
 	/**
@@ -193,38 +117,88 @@ public class UpdateDescriptorItemProvider extends ItemProviderAdapter implements
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(UpdateDescriptor.class)) {
-			case P2Package.UPDATE_DESCRIPTOR__ID:
-			case P2Package.UPDATE_DESCRIPTOR__RANGE:
-			case P2Package.UPDATE_DESCRIPTOR__DESCRIPTION:
-			case P2Package.UPDATE_DESCRIPTOR__SEVERITY:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
+		switch(notification.getFeatureID(UpdateDescriptor.class))
+		{
+		case P2Package.UPDATE_DESCRIPTOR__ID:
+		case P2Package.UPDATE_DESCRIPTOR__RANGE:
+		case P2Package.UPDATE_DESCRIPTOR__DESCRIPTION:
+		case P2Package.UPDATE_DESCRIPTOR__SEVERITY:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Description feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addDescriptionPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUpdateDescriptor_description_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUpdateDescriptor_description_feature", "_UI_IUpdateDescriptor_type"),
+				P2Package.Literals.IUPDATE_DESCRIPTOR__DESCRIPTION, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Id feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addIdPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUpdateDescriptor_id_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUpdateDescriptor_id_feature", "_UI_IUpdateDescriptor_type"),
+				P2Package.Literals.IUPDATE_DESCRIPTOR__ID, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Range feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addRangePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUpdateDescriptor_range_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUpdateDescriptor_range_feature", "_UI_IUpdateDescriptor_type"),
+				P2Package.Literals.IUPDATE_DESCRIPTOR__RANGE, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Severity feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addSeverityPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUpdateDescriptor_severity_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUpdateDescriptor_severity_feature", "_UI_IUpdateDescriptor_type"),
+				P2Package.Literals.IUPDATE_DESCRIPTOR__SEVERITY, true, false, false,
+				ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return AggregatorEditPlugin.INSTANCE;
 	}
 
 }

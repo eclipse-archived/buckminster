@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ContactImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ContactImpl#getEmail <em>Email</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContactImpl#getName <em>Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContactImpl#getEmail <em>Email</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
@@ -33,6 +33,7 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
@@ -59,9 +60,9 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getEmail() <em>Email</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getEmail() <em>Email</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getEmail()
 	 * @generated
 	 * @ordered
@@ -80,6 +81,7 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ContactImpl()
@@ -89,37 +91,87 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		return AggregatorPackage.Literals.CONTACT;
+		switch(featureID)
+		{
+		case AggregatorPackage.CONTACT__NAME:
+			return getName();
+		case AggregatorPackage.CONTACT__EMAIL:
+			return getEmail();
+		}
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String getName()
+	@Override
+	public boolean eIsSet(int featureID)
 	{
-		return name;
+		switch(featureID)
+		{
+		case AggregatorPackage.CONTACT__NAME:
+			return NAME_EDEFAULT == null
+					? name != null
+					: !NAME_EDEFAULT.equals(name);
+		case AggregatorPackage.CONTACT__EMAIL:
+			return EMAIL_EDEFAULT == null
+					? email != null
+					: !EMAIL_EDEFAULT.equals(email);
+		}
+		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
+	@Override
+	public void eSet(int featureID, Object newValue)
 	{
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTACT__NAME, oldName, name));
+		switch(featureID)
+		{
+		case AggregatorPackage.CONTACT__NAME:
+			setName((String)newValue);
+			return;
+		case AggregatorPackage.CONTACT__EMAIL:
+			setEmail((String)newValue);
+			return;
+		}
+		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID)
+	{
+		switch(featureID)
+		{
+		case AggregatorPackage.CONTACT__NAME:
+			setName(NAME_EDEFAULT);
+			return;
+		case AggregatorPackage.CONTACT__EMAIL:
+			setEmail(EMAIL_EDEFAULT);
+			return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getEmail()
@@ -129,92 +181,50 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setEmail(String newEmail)
 	{
 		String oldEmail = email;
 		email = newEmail;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTACT__EMAIL, oldEmail, email));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	public void setName(String newName)
 	{
-		switch (featureID) {
-			case AggregatorPackage.CONTACT__NAME:
-				return getName();
-			case AggregatorPackage.CONTACT__EMAIL:
-				return getEmail();
-		}
-		return super.eGet(featureID, resolve, coreType);
+		String oldName = name;
+		name = newName;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTACT__NAME, oldName, name));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CONTACT__NAME:
-				setName((String)newValue);
-				return;
-			case AggregatorPackage.CONTACT__EMAIL:
-				setEmail((String)newValue);
-				return;
-		}
-		super.eSet(featureID, newValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eUnset(int featureID)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CONTACT__NAME:
-				setName(NAME_EDEFAULT);
-				return;
-			case AggregatorPackage.CONTACT__EMAIL:
-				setEmail(EMAIL_EDEFAULT);
-				return;
-		}
-		super.eUnset(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CONTACT__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case AggregatorPackage.CONTACT__EMAIL:
-				return EMAIL_EDEFAULT == null ? email != null : !EMAIL_EDEFAULT.equals(email);
-		}
-		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
@@ -223,6 +233,17 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 		result.append(email);
 		result.append(')');
 		return result.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected EClass eStaticClass()
+	{
+		return AggregatorPackage.Literals.CONTACT;
 	}
 
 } // ContactImpl

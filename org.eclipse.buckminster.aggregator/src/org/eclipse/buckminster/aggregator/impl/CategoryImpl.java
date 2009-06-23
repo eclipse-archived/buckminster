@@ -30,9 +30,9 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class CategoryImpl extends MappedUnitImpl implements Category
 {
 	/**
-	 * The default value of the '{@link #getLabelOverride() <em>Label Override</em>}' attribute.
-	 * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getLabelOverride() <em>Label Override</em>}' attribute. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #getLabelOverride()
 	 * @generated
 	 * @ordered
@@ -40,9 +40,9 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 	protected static final String LABEL_OVERRIDE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getLabelOverride() <em>Label Override</em>}' attribute.
-	 * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getLabelOverride() <em>Label Override</em>}' attribute. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #getLabelOverride()
 	 * @generated
 	 * @ordered
@@ -51,6 +51,7 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected CategoryImpl()
@@ -60,16 +61,75 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		return AggregatorPackage.Literals.CATEGORY;
+		switch(featureID)
+		{
+		case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
+			return getLabelOverride();
+		}
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public boolean eIsSet(int featureID)
+	{
+		switch(featureID)
+		{
+		case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
+			return LABEL_OVERRIDE_EDEFAULT == null
+					? labelOverride != null
+					: !LABEL_OVERRIDE_EDEFAULT.equals(labelOverride);
+		}
+		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eSet(int featureID, Object newValue)
+	{
+		switch(featureID)
+		{
+		case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
+			setLabelOverride((String)newValue);
+			return;
+		}
+		super.eSet(featureID, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID)
+	{
+		switch(featureID)
+		{
+		case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
+			setLabelOverride(LABEL_OVERRIDE_EDEFAULT);
+			return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getLabelOverride()
@@ -79,88 +139,45 @@ public class CategoryImpl extends MappedUnitImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setLabelOverride(String newLabelOverride)
 	{
 		String oldLabelOverride = labelOverride;
 		labelOverride = newLabelOverride;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CATEGORY__LABEL_OVERRIDE, oldLabelOverride, labelOverride));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CATEGORY__LABEL_OVERRIDE,
+					oldLabelOverride, labelOverride));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
-				return getLabelOverride();
-		}
-		return super.eGet(featureID, resolve, coreType);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
-				setLabelOverride((String)newValue);
-				return;
-		}
-		super.eSet(featureID, newValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eUnset(int featureID)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
-				setLabelOverride(LABEL_OVERRIDE_EDEFAULT);
-				return;
-		}
-		super.eUnset(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch (featureID) {
-			case AggregatorPackage.CATEGORY__LABEL_OVERRIDE:
-				return LABEL_OVERRIDE_EDEFAULT == null ? labelOverride != null : !LABEL_OVERRIDE_EDEFAULT.equals(labelOverride);
-		}
-		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (labelOverride: ");
 		result.append(labelOverride);
 		result.append(')');
 		return result.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected EClass eStaticClass()
+	{
+		return AggregatorPackage.Literals.CATEGORY;
 	}
 
 } // CategoryImpl
