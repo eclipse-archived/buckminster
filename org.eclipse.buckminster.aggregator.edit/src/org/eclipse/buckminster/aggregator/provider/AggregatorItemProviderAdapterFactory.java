@@ -90,8 +90,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createAggregatorAdapter()
 	{
-		if (aggregatorItemProvider == null)
-		{
+		if (aggregatorItemProvider == null) {
 			aggregatorItemProvider = new AggregatorItemProvider(this);
 		}
 
@@ -114,8 +113,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createMappedRepositoryAdapter()
 	{
-		if (mappedRepositoryItemProvider == null)
-		{
+		if (mappedRepositoryItemProvider == null) {
 			mappedRepositoryItemProvider = new MappedRepositoryItemProvider(this);
 		}
 
@@ -138,8 +136,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createConfigurationAdapter()
 	{
-		if (configurationItemProvider == null)
-		{
+		if (configurationItemProvider == null) {
 			configurationItemProvider = new ConfigurationItemProvider(this);
 		}
 
@@ -162,8 +159,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createContributionAdapter()
 	{
-		if (contributionItemProvider == null)
-		{
+		if (contributionItemProvider == null) {
 			contributionItemProvider = new ContributionItemProvider(this);
 		}
 
@@ -186,8 +182,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createContactAdapter()
 	{
-		if (contactItemProvider == null)
-		{
+		if (contactItemProvider == null) {
 			contactItemProvider = new ContactItemProvider(this);
 		}
 
@@ -210,8 +205,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createFeatureAdapter()
 	{
-		if (featureItemProvider == null)
-		{
+		if (featureItemProvider == null) {
 			featureItemProvider = new FeatureItemProvider(this);
 		}
 
@@ -234,8 +228,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createBundleAdapter()
 	{
-		if (bundleItemProvider == null)
-		{
+		if (bundleItemProvider == null) {
 			bundleItemProvider = new BundleItemProvider(this);
 		}
 
@@ -258,8 +251,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createProductAdapter()
 	{
-		if (productItemProvider == null)
-		{
+		if (productItemProvider == null) {
 			productItemProvider = new ProductItemProvider(this);
 		}
 
@@ -282,8 +274,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createPropertyAdapter()
 	{
-		if (propertyItemProvider == null)
-		{
+		if (propertyItemProvider == null) {
 			propertyItemProvider = new PropertyItemProvider(this);
 		}
 
@@ -306,8 +297,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createCategoryAdapter()
 	{
-		if (categoryItemProvider == null)
-		{
+		if (categoryItemProvider == null) {
 			categoryItemProvider = new CategoryItemProvider(this);
 		}
 
@@ -330,8 +320,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Adapter createCustomCategoryAdapter()
 	{
-		if (customCategoryItemProvider == null)
-		{
+		if (customCategoryItemProvider == null) {
 			customCategoryItemProvider = new CustomCategoryItemProvider(this);
 		}
 
@@ -387,11 +376,9 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	@Override
 	public Object adapt(Object object, Object type)
 	{
-		if (isFactoryForType(type))
-		{
+		if (isFactoryForType(type)) {
 			Object adapter = super.adapt(object, type);
-			if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter)))
-			{
+			if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter))) {
 				return adapter;
 			}
 		}
@@ -429,8 +416,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	{
 		changeNotifier.fireNotifyChanged(notification);
 
-		if (parentAdapterFactory != null)
-		{
+		if (parentAdapterFactory != null) {
 			parentAdapterFactory.fireNotifyChanged(notification);
 		}
 	}

@@ -55,8 +55,7 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addHostPropertyDescriptor(object);
@@ -97,8 +96,7 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null)
-		{
+		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2Package.Literals.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST);
 		}
@@ -155,8 +153,7 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(InstallableUnitFragment.class))
-		{
+		switch (notification.getFeatureID(InstallableUnitFragment.class)) {
 			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
@@ -201,8 +198,7 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 			childFeature == P2Package.Literals.INSTALLABLE_UNIT__META_REQUIRED_CAPABILITY_LIST ||
 			childFeature == P2Package.Literals.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST;
 
-		if (qualify)
-		{
+		if (qualify) {
 			return getString
 				("_UI_CreateChild_text2",
 				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });

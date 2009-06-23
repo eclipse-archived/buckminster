@@ -92,8 +92,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createArtifactKeyAdapter()
 	{
-		if (artifactKeyItemProvider == null)
-		{
+		if (artifactKeyItemProvider == null) {
 			artifactKeyItemProvider = new ArtifactKeyItemProvider(this);
 		}
 
@@ -116,8 +115,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createCopyrightAdapter()
 	{
-		if (copyrightItemProvider == null)
-		{
+		if (copyrightItemProvider == null) {
 			copyrightItemProvider = new CopyrightItemProvider(this);
 		}
 
@@ -140,8 +138,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createMetadataRepositoryAdapter()
 	{
-		if (metadataRepositoryItemProvider == null)
-		{
+		if (metadataRepositoryItemProvider == null) {
 			metadataRepositoryItemProvider = new MetadataRepositoryItemProvider(this);
 		}
 
@@ -164,8 +161,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createInstallableUnitAdapter()
 	{
-		if (installableUnitItemProvider == null)
-		{
+		if (installableUnitItemProvider == null) {
 			installableUnitItemProvider = new InstallableUnitItemProvider(this);
 		}
 
@@ -189,8 +185,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createInstallableUnitFragmentAdapter()
 	{
-		if (installableUnitFragmentItemProvider == null)
-		{
+		if (installableUnitFragmentItemProvider == null) {
 			installableUnitFragmentItemProvider = new InstallableUnitFragmentItemProvider(this);
 		}
 
@@ -213,8 +208,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createLicenseAdapter()
 	{
-		if (licenseItemProvider == null)
-		{
+		if (licenseItemProvider == null) {
 			licenseItemProvider = new LicenseItemProvider(this);
 		}
 
@@ -237,8 +231,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createProvidedCapabilityAdapter()
 	{
-		if (providedCapabilityItemProvider == null)
-		{
+		if (providedCapabilityItemProvider == null) {
 			providedCapabilityItemProvider = new ProvidedCapabilityItemProvider(this);
 		}
 
@@ -261,8 +254,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createRequiredCapabilityAdapter()
 	{
-		if (requiredCapabilityItemProvider == null)
-		{
+		if (requiredCapabilityItemProvider == null) {
 			requiredCapabilityItemProvider = new RequiredCapabilityItemProvider(this);
 		}
 
@@ -285,8 +277,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createTouchpointDataAdapter()
 	{
-		if (touchpointDataItemProvider == null)
-		{
+		if (touchpointDataItemProvider == null) {
 			touchpointDataItemProvider = new TouchpointDataItemProvider(this);
 		}
 
@@ -310,8 +301,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createTouchpointInstructionAdapter()
 	{
-		if (touchpointInstructionItemProvider == null)
-		{
+		if (touchpointInstructionItemProvider == null) {
 			touchpointInstructionItemProvider = new TouchpointInstructionItemProvider(this);
 		}
 
@@ -334,8 +324,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createTouchpointTypeAdapter()
 	{
-		if (touchpointTypeItemProvider == null)
-		{
+		if (touchpointTypeItemProvider == null) {
 			touchpointTypeItemProvider = new TouchpointTypeItemProvider(this);
 		}
 
@@ -358,8 +347,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createUpdateDescriptorAdapter()
 	{
-		if (updateDescriptorItemProvider == null)
-		{
+		if (updateDescriptorItemProvider == null) {
 			updateDescriptorItemProvider = new UpdateDescriptorItemProvider(this);
 		}
 
@@ -382,8 +370,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createPropertyAdapter()
 	{
-		if (propertyItemProvider == null)
-		{
+		if (propertyItemProvider == null) {
 			propertyItemProvider = new PropertyItemProvider(this);
 		}
 
@@ -406,12 +393,35 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createInstructionMapAdapter()
 	{
-		if (instructionMapItemProvider == null)
-		{
+		if (instructionMapItemProvider == null) {
 			instructionMapItemProvider = new InstructionMapItemProvider(this);
 		}
 
 		return instructionMapItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference} instances.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 */
+	protected RepositoryReferenceItemProvider repositoryReferenceItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createRepositoryReferenceAdapter()
+	{
+		if (repositoryReferenceItemProvider == null) {
+			repositoryReferenceItemProvider = new RepositoryReferenceItemProvider(this);
+		}
+
+		return repositoryReferenceItemProvider;
 	}
 
 	/**
@@ -463,11 +473,9 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Object adapt(Object object, Object type)
 	{
-		if (isFactoryForType(type))
-		{
+		if (isFactoryForType(type)) {
 			Object adapter = super.adapt(object, type);
-			if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter)))
-			{
+			if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter))) {
 				return adapter;
 			}
 		}
@@ -505,8 +513,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	{
 		changeNotifier.fireNotifyChanged(notification);
 
-		if (parentAdapterFactory != null)
-		{
+		if (parentAdapterFactory != null) {
 			parentAdapterFactory.fireNotifyChanged(notification);
 		}
 	}
@@ -532,6 +539,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 		if (updateDescriptorItemProvider != null) updateDescriptorItemProvider.dispose();
 		if (propertyItemProvider != null) propertyItemProvider.dispose();
 		if (instructionMapItemProvider != null) instructionMapItemProvider.dispose();
+		if (repositoryReferenceItemProvider != null) repositoryReferenceItemProvider.dispose();
 	}
 
 }

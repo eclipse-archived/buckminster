@@ -53,8 +53,7 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 		}

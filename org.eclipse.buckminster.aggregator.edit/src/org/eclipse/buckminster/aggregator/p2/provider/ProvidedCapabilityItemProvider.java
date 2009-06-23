@@ -57,8 +57,7 @@ public class ProvidedCapabilityItemProvider extends ItemProviderAdapter implemen
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
@@ -171,8 +170,7 @@ public class ProvidedCapabilityItemProvider extends ItemProviderAdapter implemen
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(ProvidedCapability.class))
-		{
+		switch (notification.getFeatureID(ProvidedCapability.class)) {
 			case P2Package.PROVIDED_CAPABILITY__NAME:
 			case P2Package.PROVIDED_CAPABILITY__NAMESPACE:
 			case P2Package.PROVIDED_CAPABILITY__VERSION:

@@ -55,8 +55,7 @@ public class PropertyItemProvider extends ItemProviderAdapter implements IEditin
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addKeyPropertyDescriptor(object);
@@ -146,8 +145,7 @@ public class PropertyItemProvider extends ItemProviderAdapter implements IEditin
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Property.class))
-		{
+		switch (notification.getFeatureID(Property.class)) {
 			case AggregatorPackage.PROPERTY__KEY:
 			case AggregatorPackage.PROPERTY__VALUE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

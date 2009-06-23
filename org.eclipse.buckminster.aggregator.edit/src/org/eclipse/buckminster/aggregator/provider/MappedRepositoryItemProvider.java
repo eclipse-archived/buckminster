@@ -62,13 +62,13 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addMapVerbatimPropertyDescriptor(object);
 			addMetadataRepositoryPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
+			addMapVerbatimPropertyDescriptor(object);
+			addMirrorArtifactsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -87,6 +87,28 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 				 getString("_UI_MappedRepository_mapVerbatim_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_MappedRepository_mapVerbatim_feature", "_UI_MappedRepository_type"),
 				 AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_VERBATIM,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Mirror Artifacts feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addMirrorArtifactsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_MappedRepository_mirrorArtifacts_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MappedRepository_mirrorArtifacts_feature", "_UI_MappedRepository_type"),
+				 AggregatorPackage.Literals.MAPPED_REPOSITORY__MIRROR_ARTIFACTS,
 				 true,
 				 false,
 				 false,
@@ -167,8 +189,7 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null)
-		{
+		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__PRODUCTS);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES);
@@ -242,11 +263,11 @@ public class MappedRepositoryItemProvider extends ItemProviderAdapter implements
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(MappedRepository.class))
-		{
-			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+		switch (notification.getFeatureID(MappedRepository.class)) {
 			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:

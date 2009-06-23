@@ -1,21 +1,27 @@
 /**
- * <copyright>
- * </copyright>
+ * Copyright (c) 2006-2009, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
  *
  * $Id$
  */
-package org.eclipse.buckminster.aggregator.provider;
+package org.eclipse.buckminster.aggregator.p2.provider;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.AggregatorFactory;
-import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.p2.P2Package;
+
+import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
+import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
+
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.common.util.ResourceLocator;
-import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -28,12 +34,11 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.CustomCategory} object. <!--
- * begin-user-doc --> <!-- end-user-doc -->
- * 
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference} object.
+ * <!-- begin-user-doc --> <!-- end-user-doc -->
  * @generated
  */
-public class CustomCategoryItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
+public class RepositoryReferenceItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
@@ -41,7 +46,7 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public CustomCategoryItemProvider(AdapterFactory adapterFactory)
+	public RepositoryReferenceItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
@@ -57,28 +62,28 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addIdentifierPropertyDescriptor(object);
-			addLabelPropertyDescriptor(object);
-			addDescriptionPropertyDescriptor(object);
-			addFeaturesPropertyDescriptor(object);
+			addLocationPropertyDescriptor(object);
+			addTypePropertyDescriptor(object);
+			addOptionsPropertyDescriptor(object);
+			addNicknamePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Identifier feature.
+	 * This adds a property descriptor for the Location feature.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addIdentifierPropertyDescriptor(Object object)
+	protected void addLocationPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_CustomCategory_identifier_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CustomCategory_identifier_feature", "_UI_CustomCategory_type"),
-				 AggregatorPackage.Literals.CUSTOM_CATEGORY__IDENTIFIER,
+				 getString("_UI_RepositoryReference_location_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_RepositoryReference_location_feature", "_UI_RepositoryReference_type"),
+				 P2Package.Literals.REPOSITORY_REFERENCE__LOCATION,
 				 true,
 				 false,
 				 false,
@@ -88,19 +93,63 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	}
 
 	/**
-	 * This adds a property descriptor for the Label feature.
+	 * This adds a property descriptor for the Type feature.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addLabelPropertyDescriptor(Object object)
+	protected void addTypePropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_CustomCategory_label_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CustomCategory_label_feature", "_UI_CustomCategory_type"),
-				 AggregatorPackage.Literals.CUSTOM_CATEGORY__LABEL,
+				 getString("_UI_RepositoryReference_type_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_RepositoryReference_type_feature", "_UI_RepositoryReference_type"),
+				 P2Package.Literals.REPOSITORY_REFERENCE__TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Options feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addOptionsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_RepositoryReference_options_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_RepositoryReference_options_feature", "_UI_RepositoryReference_type"),
+				 P2Package.Literals.REPOSITORY_REFERENCE__OPTIONS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Nickname feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNicknamePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_RepositoryReference_nickname_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_RepositoryReference_nickname_feature", "_UI_RepositoryReference_type"),
+				 P2Package.Literals.REPOSITORY_REFERENCE__NICKNAME,
 				 true,
 				 false,
 				 false,
@@ -110,89 +159,14 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	}
 
 	/**
-	 * This adds a property descriptor for the Description feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDescriptionPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CustomCategory_description_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CustomCategory_description_feature", "_UI_CustomCategory_type"),
-				 AggregatorPackage.Literals.CUSTOM_CATEGORY__DESCRIPTION,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Features feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addFeaturesPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CustomCategory_features_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CustomCategory_features_feature", "_UI_CustomCategory_type"),
-				 AggregatorPackage.Literals.CUSTOM_CATEGORY__FEATURES,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
-	{
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(AggregatorPackage.Literals.CUSTOM_CATEGORY__FEATURES);
-		}
-		return childrenFeatures;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child)
-	{
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	/**
-	 * This returns CustomCategory.gif.
+	 * This returns RepositoryReference.gif.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/CustomCategory"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/RepositoryReference"));
 	}
 
 	/**
@@ -203,10 +177,10 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((CustomCategory)object).getIdentifier();
+		String label = ((RepositoryReference)object).getNickname();
 		return label == null || label.length() == 0 ?
-			getString("_UI_CustomCategory_type") :
-			getString("_UI_CustomCategory_type") + " " + label;
+			getString("_UI_RepositoryReference_type") :
+			getString("_UI_RepositoryReference_type") + " " + label;
 	}
 
 	/**
@@ -221,10 +195,11 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(CustomCategory.class)) {
-			case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
-			case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
-			case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
+		switch (notification.getFeatureID(RepositoryReference.class)) {
+			case P2Package.REPOSITORY_REFERENCE__LOCATION:
+			case P2Package.REPOSITORY_REFERENCE__TYPE:
+			case P2Package.REPOSITORY_REFERENCE__OPTIONS:
+			case P2Package.REPOSITORY_REFERENCE__NICKNAME:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
@@ -241,11 +216,6 @@ public class CustomCategoryItemProvider extends ItemProviderAdapter implements I
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(AggregatorPackage.Literals.CUSTOM_CATEGORY__FEATURES,
-				 AggregatorFactory.eINSTANCE.createFeature()));
 	}
 
 	/**

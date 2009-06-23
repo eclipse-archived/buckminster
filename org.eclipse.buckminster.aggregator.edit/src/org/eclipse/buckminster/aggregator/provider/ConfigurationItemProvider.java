@@ -10,16 +10,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.Architecture;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.OperatingSystem;
-import org.eclipse.buckminster.aggregator.WindowSystem;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -58,8 +53,7 @@ public class ConfigurationItemProvider extends ItemProviderAdapter implements IE
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addOperatingSystemPropertyDescriptor(object);
@@ -157,28 +151,8 @@ public class ConfigurationItemProvider extends ItemProviderAdapter implements IE
 		Configuration config = (Configuration)object;
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Configuration_type"));
-		char sep = ' ';
-		WindowSystem ws = config.getWindowSystem();
-		if(ws != null)
-		{
-			bld.append(sep);
-			sep = ',';
-			bld.append(ws.getLiteral());
-		}
-		OperatingSystem os = config.getOperatingSystem();
-		if(os != null)
-		{
-			bld.append(sep);
-			sep = ',';
-			bld.append(os.getLiteral());
-		}
-		Architecture arch = config.getArchitecture();
-		if(arch != null)
-		{
-			bld.append(sep);
-			sep = ',';
-			bld.append(arch.getLiteral());
-		}
+		bld.append(' ');
+		bld.append(config.getName());
 		return bld.toString();
 	}
 
@@ -194,8 +168,7 @@ public class ConfigurationItemProvider extends ItemProviderAdapter implements IE
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Configuration.class))
-		{
+		switch (notification.getFeatureID(Configuration.class)) {
 			case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 			case AggregatorPackage.CONFIGURATION__WINDOW_SYSTEM:
 			case AggregatorPackage.CONFIGURATION__ARCHITECTURE:

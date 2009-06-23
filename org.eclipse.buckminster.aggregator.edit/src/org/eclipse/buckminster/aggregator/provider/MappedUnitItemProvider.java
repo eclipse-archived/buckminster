@@ -60,8 +60,7 @@ public class MappedUnitItemProvider extends ItemProviderAdapter implements IEdit
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addEnabledPropertyDescriptor(object);
@@ -160,8 +159,7 @@ public class MappedUnitItemProvider extends ItemProviderAdapter implements IEdit
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null)
-		{
+		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_UNIT__INSTALLABLE_UNIT);
 		}
@@ -211,8 +209,7 @@ public class MappedUnitItemProvider extends ItemProviderAdapter implements IEdit
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(MappedUnit.class))
-		{
+		switch (notification.getFeatureID(MappedUnit.class)) {
 			case AggregatorPackage.MAPPED_UNIT__ENABLED:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

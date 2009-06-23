@@ -57,8 +57,7 @@ public class TouchpointTypeItemProvider extends ItemProviderAdapter implements I
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addIdPropertyDescriptor(object);
@@ -148,8 +147,7 @@ public class TouchpointTypeItemProvider extends ItemProviderAdapter implements I
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(TouchpointType.class))
-		{
+		switch (notification.getFeatureID(TouchpointType.class)) {
 			case P2Package.TOUCHPOINT_TYPE__ID:
 			case P2Package.TOUCHPOINT_TYPE__VERSION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

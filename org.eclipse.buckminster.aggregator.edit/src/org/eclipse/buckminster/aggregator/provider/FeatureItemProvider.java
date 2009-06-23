@@ -61,29 +61,28 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addCategoryPropertyDescriptor(object);
+			addCategoriesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Category feature.
+	 * This adds a property descriptor for the Categories feature.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addCategoryPropertyDescriptor(Object object)
+	protected void addCategoriesPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_Feature_category_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Feature_category_feature", "_UI_Feature_type"),
-				 AggregatorPackage.Literals.FEATURE__CATEGORY,
+				 getString("_UI_Feature_categories_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Feature_categories_feature", "_UI_Feature_type"),
+				 AggregatorPackage.Literals.FEATURE__CATEGORIES,
 				 true,
 				 false,
 				 true,

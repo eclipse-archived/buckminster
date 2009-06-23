@@ -59,8 +59,7 @@ public class LicenseItemProvider extends ItemProviderAdapter implements IEditing
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addLocationPropertyDescriptor(object);
@@ -174,8 +173,7 @@ public class LicenseItemProvider extends ItemProviderAdapter implements IEditing
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(License.class))
-		{
+		switch (notification.getFeatureID(License.class)) {
 			case P2Package.LICENSE__LOCATION:
 			case P2Package.LICENSE__BODY:
 			case P2Package.LICENSE__DIGEST:

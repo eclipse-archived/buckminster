@@ -55,8 +55,7 @@ public class ContactItemProvider extends ItemProviderAdapter implements IEditing
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
-		{
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
@@ -146,8 +145,7 @@ public class ContactItemProvider extends ItemProviderAdapter implements IEditing
 	{
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(Contact.class))
-		{
+		switch (notification.getFeatureID(Contact.class)) {
 			case AggregatorPackage.CONTACT__NAME:
 			case AggregatorPackage.CONTACT__EMAIL:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
