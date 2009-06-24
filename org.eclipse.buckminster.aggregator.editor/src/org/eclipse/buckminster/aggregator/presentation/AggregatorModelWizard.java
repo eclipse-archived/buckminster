@@ -444,7 +444,7 @@ public class AggregatorModelWizard extends Wizard implements INewWizard
 	/**
 	 * The framework calls this to create the contents of the wizard. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public void addPages()
@@ -496,10 +496,6 @@ public class AggregatorModelWizard extends Wizard implements INewWizard
 				}
 			}
 		}
-		initialObjectCreationPage = new AggregatorModelWizardInitialObjectCreationPage("Whatever2");
-		initialObjectCreationPage.setTitle(AggregatorEditorPlugin.INSTANCE.getString("_UI_AggregatorModelWizard_label"));
-		initialObjectCreationPage.setDescription(AggregatorEditorPlugin.INSTANCE.getString("_UI_Wizard_initial_object_description"));
-		addPage(initialObjectCreationPage);
 	}
 
 	/**
@@ -528,7 +524,7 @@ public class AggregatorModelWizard extends Wizard implements INewWizard
 	/**
 	 * Do the work after everything is specified. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public boolean performFinish()
@@ -571,7 +567,7 @@ public class AggregatorModelWizard extends Wizard implements INewWizard
 						// Save the contents of the resource to the file system.
 						//
 						Map<Object, Object> options = new HashMap<Object, Object>();
-						options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
+						options.put(XMLResource.OPTION_ENCODING, "UTF-8");
 						resource.save(options);
 					}
 					catch(Exception exception)
@@ -630,11 +626,11 @@ public class AggregatorModelWizard extends Wizard implements INewWizard
 	/**
 	 * Create a new model. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected EObject createInitialModel()
 	{
-		EClass eClass = (EClass)aggregatorPackage.getEClassifier(initialObjectCreationPage.getInitialObjectName());
+		EClass eClass = aggregatorPackage.getAggregator();
 		EObject rootObject = aggregatorFactory.create(eClass);
 		return rootObject;
 	}
