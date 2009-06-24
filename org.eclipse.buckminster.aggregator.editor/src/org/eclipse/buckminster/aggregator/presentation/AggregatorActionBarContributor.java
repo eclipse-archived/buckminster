@@ -9,6 +9,7 @@ package org.eclipse.buckminster.aggregator.presentation;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -40,6 +41,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 
@@ -51,6 +54,35 @@ import org.eclipse.ui.PartInitException;
 public class AggregatorActionBarContributor extends EditingDomainActionBarContributor implements
 		ISelectionChangedListener
 {
+	class BuildRepoActionImpl extends BuildRepoAction
+	{
+
+		public BuildRepoActionImpl(boolean verifyOnly)
+		{
+			super(verifyOnly);
+		}
+
+		@Override
+		protected boolean saveModel()
+		{
+			if(getActiveEditor() == null)
+				return true;
+
+			getActiveEditor().doSave(new NullProgressMonitor());
+
+			if(getActiveEditor().isDirty())
+			{
+				MessageBox messageBox = new MessageBox(getActiveEditor().getSite().getShell(), SWT.ICON_ERROR | SWT.OK);
+				messageBox.setMessage("Cannot save aggregator definition");
+				messageBox.open();
+				return false;
+			}
+
+			return true;
+		}
+
+	}
+
 	/**
 	 * This keeps track of the active editor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -148,10 +180,14 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 */
 	protected IMenuManager createSiblingMenuManager;
 
+	protected BuildRepoAction m_buildRepoAction;
+
+	protected BuildRepoAction m_verifyRepoAction;
+
 	/**
 	 * This creates an instance of the contributor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public AggregatorActionBarContributor()
 	{
@@ -159,6 +195,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();
 		controlAction = new ControlAction();
+		m_buildRepoAction = new BuildRepoActionImpl(false);
+		m_verifyRepoAction = new BuildRepoActionImpl(true);
 	}
 
 	/**
@@ -326,13 +364,22 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
+	@Override
+	protected void addGlobalActions(IMenuManager menuManager)
+	{
+		menuManager.insertBefore("additions", new ActionContributionItem(m_buildRepoAction));
+		menuManager.insertBefore("additions", new ActionContributionItem(m_verifyRepoAction));
+		menuManager.insertBefore("additions", new Separator());
+
+		addGlobalActionsGen(menuManager);
+	}
+
 	/**
 	 * This inserts global actions before the "additions-end" separator. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	@Override
-	protected void addGlobalActions(IMenuManager menuManager)
+	protected void addGlobalActionsGen(IMenuManager menuManager)
 	{
 		menuManager.insertAfter("additions-end", new Separator("ui-actions"));
 		menuManager.insertAfter("ui-actions", showPropertiesViewAction);
