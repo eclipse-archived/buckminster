@@ -14,7 +14,7 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 {
-	class OverlayedImage extends ComposedImage
+	class OverlaidImage extends ComposedImage
 	{
 		public static final int BASIC = 0;
 
@@ -30,7 +30,7 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 
 		private int[] m_positions;
 
-		public OverlayedImage(Object[] images, int[] positions)
+		public OverlaidImage(Object[] images, int[] positions)
 		{
 			super(Arrays.asList(images));
 			m_positions = positions;
@@ -96,13 +96,13 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 				int[] positions = new int[2];
 
 				images[0] = image;
-				positions[0] = OverlayedImage.BASIC;
+				positions[0] = OverlaidImage.BASIC;
 
 				images[1] = new URL(URI.createPlatformPluginURI("/org.eclipse.update.ui/icons/ovr16/warning_co.gif",
 						false).toString());
-				positions[1] = OverlayedImage.OVERLAY_BOTTOM_RIGHT;
+				positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
 
-				image = new OverlayedImage(images, positions);
+				image = new OverlaidImage(images, positions);
 			}
 			catch(MalformedURLException e)
 			{
