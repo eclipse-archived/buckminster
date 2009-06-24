@@ -986,7 +986,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@SuppressWarnings("unchecked")
 	public Map getProperties()
 	{
-		return (Map)getPropertyMap();
+		return getPropertyMap().map();
 	}
 
 	/**

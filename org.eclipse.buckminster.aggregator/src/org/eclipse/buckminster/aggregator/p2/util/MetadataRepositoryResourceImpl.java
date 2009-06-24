@@ -111,11 +111,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		Resource mdr = topSet.getResource(URI.createGenericURI("p2", repositoryURI, null), true);
 		List<EObject> contents = mdr.getContents();
 		if(contents.size() != 1)
-			return (MetadataRepository)contents.get(0);
-
-		// We should normally never get to this point
-		//
-		throw new RuntimeException(String.format("Unable to load repository %s", repositoryURI));
+			throw new RuntimeException(String.format("Unable to load repository %s", repositoryURI));
+		return (MetadataRepository)contents.get(0);
 	}
 
 	public MetadataRepositoryResourceImpl(URI uri)

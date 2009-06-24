@@ -182,7 +182,7 @@ public class TouchpointDataImpl extends MinimalEObjectImpl.Container implements 
 	@SuppressWarnings("unchecked")
 	public Map getInstructions()
 	{
-		return (Map)getInstructionMap();
+		return getInstructionMap().map();
 	}
 
 	/**

@@ -666,7 +666,7 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	@SuppressWarnings("unchecked")
 	public Map getProperties()
 	{
-		return (Map)getPropertyMap();
+		return getPropertyMap().map();
 	}
 
 	/**
