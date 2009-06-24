@@ -9,7 +9,6 @@ package org.eclipse.buckminster.aggregator.p2.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 
@@ -23,6 +22,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -92,6 +92,7 @@ public class TouchpointDataItemProvider extends AggregatorItemProviderAdapter im
 		{
 			super.getPropertyDescriptors(object);
 
+			addInstructionMapPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -140,6 +141,20 @@ public class TouchpointDataItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
+	 * This adds a property descriptor for the Instruction Map feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addInstructionMapPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_TouchpointData_instructionMap_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_TouchpointData_instructionMap_feature", "_UI_TouchpointData_type"),
+				P2Package.Literals.TOUCHPOINT_DATA__INSTRUCTION_MAP, false, false, false, null, null, null));
+	}
+
+	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -149,9 +164,6 @@ public class TouchpointDataItemProvider extends AggregatorItemProviderAdapter im
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.TOUCHPOINT_DATA__INSTRUCTION_MAP,
-				P2Factory.eINSTANCE.create(P2Package.Literals.INSTRUCTION_MAP)));
 	}
 
 	/**

@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -68,30 +67,6 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	}
 
 	/**
-	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
-	{
-		Object childFeature = feature;
-		Object childObject = child;
-
-		boolean qualify = childFeature == P2Package.Literals.INSTALLABLE_UNIT__REQUIRED_CAPABILITY_LIST
-				|| childFeature == P2Package.Literals.INSTALLABLE_UNIT__META_REQUIRED_CAPABILITY_LIST
-				|| childFeature == P2Package.Literals.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST;
-
-		if(qualify)
-		{
-			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject),
-					getFeatureText(childFeature), getTypeText(owner) });
-		}
-		return super.getCreateChildText(owner, feature, child, selection);
-	}
-
-	/**
 	 * This returns InstallableUnitFragment.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -115,6 +90,7 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 			super.getPropertyDescriptors(object);
 
 			addHostPropertyDescriptor(object);
+			addHostListPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -158,6 +134,21 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	}
 
 	/**
+	 * This adds a property descriptor for the Host List feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addHostListPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_InstallableUnitFragment_hostList_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_InstallableUnitFragment_hostList_feature",
+						"_UI_InstallableUnitFragment_type"), P2Package.Literals.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST,
+				false, false, false, null, null, null));
+	}
+
+	/**
 	 * This adds a property descriptor for the Host feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -168,7 +159,7 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IInstallableUnitFragment_host_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IInstallableUnitFragment_host_feature", "_UI_IInstallableUnitFragment_type"),
-				P2Package.Literals.IINSTALLABLE_UNIT_FRAGMENT__HOST, true, false, false,
+				P2Package.Literals.IINSTALLABLE_UNIT_FRAGMENT__HOST, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -182,9 +173,6 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST,
-				P2Factory.eINSTANCE.createRequiredCapability()));
 	}
 
 	/**

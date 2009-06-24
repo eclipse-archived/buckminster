@@ -148,7 +148,7 @@ public class RepositoryReferenceItemProvider extends AggregatorItemProviderAdapt
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_RepositoryReference_location_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_RepositoryReference_location_feature", "_UI_RepositoryReference_type"),
-				P2Package.Literals.REPOSITORY_REFERENCE__LOCATION, true, false, false,
+				P2Package.Literals.REPOSITORY_REFERENCE__LOCATION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -163,7 +163,7 @@ public class RepositoryReferenceItemProvider extends AggregatorItemProviderAdapt
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_RepositoryReference_nickname_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_RepositoryReference_nickname_feature", "_UI_RepositoryReference_type"),
-				P2Package.Literals.REPOSITORY_REFERENCE__NICKNAME, true, false, false,
+				P2Package.Literals.REPOSITORY_REFERENCE__NICKNAME, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -178,7 +178,7 @@ public class RepositoryReferenceItemProvider extends AggregatorItemProviderAdapt
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_RepositoryReference_options_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_RepositoryReference_options_feature", "_UI_RepositoryReference_type"),
-				P2Package.Literals.REPOSITORY_REFERENCE__OPTIONS, true, false, false,
+				P2Package.Literals.REPOSITORY_REFERENCE__OPTIONS, false, false, false,
 				ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE, null, null));
 	}
 
@@ -193,7 +193,7 @@ public class RepositoryReferenceItemProvider extends AggregatorItemProviderAdapt
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_RepositoryReference_type_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_RepositoryReference_type_feature", "_UI_RepositoryReference_type"),
-				P2Package.Literals.REPOSITORY_REFERENCE__TYPE, true, false, false,
+				P2Package.Literals.REPOSITORY_REFERENCE__TYPE, false, false, false,
 				ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE, null, null));
 	}
 

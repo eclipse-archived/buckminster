@@ -142,7 +142,7 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ILicense_body_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ILicense_body_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__BODY, true,
+						"_UI_ILicense_body_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__BODY, false,
 				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -156,8 +156,8 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ILicense_digest_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ILicense_digest_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__DIGEST, true,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+						"_UI_ILicense_digest_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__DIGEST,
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ILicense_location_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_ILicense_location_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__LOCATION,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

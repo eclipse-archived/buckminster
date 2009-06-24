@@ -140,7 +140,7 @@ public class UpdateDescriptorItemProvider extends AggregatorItemProviderAdapter 
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUpdateDescriptor_description_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUpdateDescriptor_description_feature", "_UI_IUpdateDescriptor_type"),
-				P2Package.Literals.IUPDATE_DESCRIPTOR__DESCRIPTION, true, false, false,
+				P2Package.Literals.IUPDATE_DESCRIPTOR__DESCRIPTION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -155,7 +155,7 @@ public class UpdateDescriptorItemProvider extends AggregatorItemProviderAdapter 
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUpdateDescriptor_id_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUpdateDescriptor_id_feature", "_UI_IUpdateDescriptor_type"),
-				P2Package.Literals.IUPDATE_DESCRIPTOR__ID, true, false, false,
+				P2Package.Literals.IUPDATE_DESCRIPTOR__ID, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -170,7 +170,7 @@ public class UpdateDescriptorItemProvider extends AggregatorItemProviderAdapter 
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUpdateDescriptor_range_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUpdateDescriptor_range_feature", "_UI_IUpdateDescriptor_type"),
-				P2Package.Literals.IUPDATE_DESCRIPTOR__RANGE, true, false, false,
+				P2Package.Literals.IUPDATE_DESCRIPTOR__RANGE, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -185,7 +185,7 @@ public class UpdateDescriptorItemProvider extends AggregatorItemProviderAdapter 
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUpdateDescriptor_severity_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUpdateDescriptor_severity_feature", "_UI_IUpdateDescriptor_type"),
-				P2Package.Literals.IUPDATE_DESCRIPTOR__SEVERITY, true, false, false,
+				P2Package.Literals.IUPDATE_DESCRIPTOR__SEVERITY, false, false, false,
 				ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE, null, null));
 	}
 

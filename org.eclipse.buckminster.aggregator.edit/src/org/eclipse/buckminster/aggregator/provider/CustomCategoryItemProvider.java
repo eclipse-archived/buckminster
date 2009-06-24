@@ -139,6 +139,9 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			return;
 		}
 		super.notifyChanged(notification);
 	}

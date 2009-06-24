@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
@@ -99,6 +98,9 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 			addDescriptionPropertyDescriptor(object);
 			addProviderPropertyDescriptor(object);
 			addModifiablePropertyDescriptor(object);
+			addInstallableUnitsPropertyDescriptor(object);
+			addRepositoryReferencesPropertyDescriptor(object);
+			addPropertyMapPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -171,8 +173,23 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_description_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_description_feature", "_UI_IRepository_type"),
-				P2Package.Literals.IREPOSITORY__DESCRIPTION, true, false, false,
+				P2Package.Literals.IREPOSITORY__DESCRIPTION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Installable Units feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addInstallableUnitsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MetadataRepository_installableUnits_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MetadataRepository_installableUnits_feature",
+						"_UI_MetadataRepository_type"), P2Package.Literals.METADATA_REPOSITORY__INSTALLABLE_UNITS,
+				false, false, false, null, null, null));
 	}
 
 	/**
@@ -186,7 +203,7 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_location_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_location_feature", "_UI_IRepository_type"),
-				P2Package.Literals.IREPOSITORY__LOCATION, true, false, false,
+				P2Package.Literals.IREPOSITORY__LOCATION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -201,7 +218,7 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_modifiable_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_modifiable_feature", "_UI_IRepository_type"),
-				P2Package.Literals.IREPOSITORY__MODIFIABLE, true, false, false,
+				P2Package.Literals.IREPOSITORY__MODIFIABLE, false, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
@@ -216,7 +233,22 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_name_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_name_feature", "_UI_IRepository_type"), P2Package.Literals.IREPOSITORY__NAME,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Property Map feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addPropertyMapPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MetadataRepository_propertyMap_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MetadataRepository_propertyMap_feature",
+						"_UI_MetadataRepository_type"), P2Package.Literals.METADATA_REPOSITORY__PROPERTY_MAP, false,
+				false, false, null, null, null));
 	}
 
 	/**
@@ -230,8 +262,24 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_provider_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_provider_feature", "_UI_IRepository_type"),
-				P2Package.Literals.IREPOSITORY__PROVIDER, true, false, false,
+				P2Package.Literals.IREPOSITORY__PROVIDER, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Repository References feature. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 */
+	protected void addRepositoryReferencesPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MetadataRepository_repositoryReferences_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MetadataRepository_repositoryReferences_feature",
+						"_UI_MetadataRepository_type"), P2Package.Literals.METADATA_REPOSITORY__REPOSITORY_REFERENCES,
+				false, false, false, null, null, null));
 	}
 
 	/**
@@ -245,7 +293,7 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_type_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_type_feature", "_UI_IRepository_type"), P2Package.Literals.IREPOSITORY__TYPE,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -259,7 +307,7 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IRepository_version_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IRepository_version_feature", "_UI_IRepository_type"),
-				P2Package.Literals.IREPOSITORY__VERSION, true, false, false,
+				P2Package.Literals.IREPOSITORY__VERSION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -273,18 +321,6 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.METADATA_REPOSITORY__INSTALLABLE_UNITS,
-				P2Factory.eINSTANCE.createInstallableUnit()));
-
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.METADATA_REPOSITORY__INSTALLABLE_UNITS,
-				P2Factory.eINSTANCE.createInstallableUnitFragment()));
-
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.METADATA_REPOSITORY__REPOSITORY_REFERENCES,
-				P2Factory.eINSTANCE.createRepositoryReference()));
-
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.METADATA_REPOSITORY__PROPERTY_MAP,
-				P2Factory.eINSTANCE.create(P2Package.Literals.PROPERTY)));
 	}
 
 	/**

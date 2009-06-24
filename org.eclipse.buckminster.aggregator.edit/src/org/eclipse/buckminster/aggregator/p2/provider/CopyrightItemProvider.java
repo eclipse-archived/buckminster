@@ -141,7 +141,7 @@ public class CopyrightItemProvider extends AggregatorItemProviderAdapter impleme
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ICopyright_body_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_ICopyright_body_feature", "_UI_ICopyright_type"), P2Package.Literals.ICOPYRIGHT__BODY,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class CopyrightItemProvider extends AggregatorItemProviderAdapter impleme
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ICopyright_location_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_ICopyright_location_feature", "_UI_ICopyright_type"),
-				P2Package.Literals.ICOPYRIGHT__LOCATION, true, false, false,
+				P2Package.Literals.ICOPYRIGHT__LOCATION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 

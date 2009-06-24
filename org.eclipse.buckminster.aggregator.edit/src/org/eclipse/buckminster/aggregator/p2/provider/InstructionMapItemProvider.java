@@ -95,6 +95,7 @@ public class InstructionMapItemProvider extends AggregatorItemProviderAdapter im
 			super.getPropertyDescriptors(object);
 
 			addKeyPropertyDescriptor(object);
+			addValuePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -157,8 +158,22 @@ public class InstructionMapItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_InstructionMap_key_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_InstructionMap_key_feature", "_UI_InstructionMap_type"),
-				P2Package.Literals.INSTRUCTION_MAP__KEY, true, false, false,
+				P2Package.Literals.INSTRUCTION_MAP__KEY, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Value feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addValuePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_InstructionMap_value_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_InstructionMap_value_feature", "_UI_InstructionMap_type"),
+				P2Package.Literals.INSTRUCTION_MAP__VALUE, false, false, false, null, null, null));
 	}
 
 	/**

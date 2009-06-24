@@ -139,7 +139,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IProvidedCapability_name_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IProvidedCapability_name_feature", "_UI_IProvidedCapability_type"),
-				P2Package.Literals.IPROVIDED_CAPABILITY__NAME, true, false, false,
+				P2Package.Literals.IPROVIDED_CAPABILITY__NAME, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -154,7 +154,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IProvidedCapability_namespace_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IProvidedCapability_namespace_feature", "_UI_IProvidedCapability_type"),
-				P2Package.Literals.IPROVIDED_CAPABILITY__NAMESPACE, true, false, false,
+				P2Package.Literals.IPROVIDED_CAPABILITY__NAMESPACE, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -169,7 +169,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IProvidedCapability_version_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IProvidedCapability_version_feature", "_UI_IProvidedCapability_type"),
-				P2Package.Literals.IPROVIDED_CAPABILITY__VERSION, true, false, false,
+				P2Package.Literals.IPROVIDED_CAPABILITY__VERSION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 

@@ -22,11 +22,12 @@ import org.eclipse.emf.ecore.EObject;
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getProducts <em>Products</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getBundles <em>Bundles</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getFeatures <em>Features</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository
  *          </em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
  *          </ul>
  *          </p>
  * 

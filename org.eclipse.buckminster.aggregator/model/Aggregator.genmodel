@@ -113,26 +113,26 @@
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/Collector"/>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/IProgressMonitor"/>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IArtifactKey">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IArtifactKey/classifier"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IArtifactKey/id"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IArtifactKey/version"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IArtifactKey/classifier"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IArtifactKey/id"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IArtifactKey/version"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IArtifactKey/toExternalForm"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ICopyright">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/location"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/body"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/location"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/body"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IInstallableUnit">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/filter"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/id"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/touchpointType"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/version"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/fragment"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/resolved"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/singleton"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/updateDescriptor"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/license"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/copyright"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/filter"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/id"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/touchpointType"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/version"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/fragment"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/resolved"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/singleton"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/updateDescriptor"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/license"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/copyright"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/getArtifacts"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/getFragments"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/getProperty">
@@ -149,30 +149,30 @@
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/unresolved"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IInstallableUnitFragment">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnitFragment/host"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnitFragment/host"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ILicense">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/location"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/body"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/digest"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/location"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/body"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/digest"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IProvidedCapability">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IProvidedCapability/name"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IProvidedCapability/namespace"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IProvidedCapability/version"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IProvidedCapability/name"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IProvidedCapability/namespace"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IProvidedCapability/version"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IProvidedCapability/satisfies">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IProvidedCapability/satisfies/requirement"/>
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IRequiredCapability">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/filter"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/name"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/namespace"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/range"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/selectors"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/multiple"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/optional"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/greedy"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/filter"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/name"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/namespace"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/range"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/selectors"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/multiple"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/optional"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/greedy"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ITouchpointData">
         <genOperations ecoreOperation="Aggregator.ecore#//p2/ITouchpointData/getInstruction">
@@ -181,18 +181,18 @@
         <genOperations ecoreOperation="Aggregator.ecore#//p2/ITouchpointData/getInstructions"/>
       </genClasses>
       <genClasses provider="None" image="false" ecoreClass="Aggregator.ecore#//p2/ITouchpointInstruction">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointInstruction/body"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointInstruction/importAttribute"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointInstruction/body"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointInstruction/importAttribute"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ITouchpointType">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointType/id"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointType/version"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointType/id"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ITouchpointType/version"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IUpdateDescriptor">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/id"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/range"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/description"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/severity"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/id"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/range"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/description"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IUpdateDescriptor/severity"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IUpdateDescriptor/isUpdateOf">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IUpdateDescriptor/isUpdateOf/iu"/>
         </genOperations>
@@ -200,40 +200,43 @@
       <genClasses ecoreClass="Aggregator.ecore#//p2/ArtifactKey"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/Copyright"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/MetadataRepository">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/installableUnits"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/repositoryReferences"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/propertyMap"/>
+        <genFeatures property="Readonly" children="true" createChild="false" propertyDescription=""
+            ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/installableUnits"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/repositoryReferences"/>
+        <genFeatures property="Readonly" children="true" createChild="false" propertyCategory=""
+            propertyDescription="" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/MetadataRepository/propertyMap"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/InstallableUnit">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/artifactList"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/providedCapabilityList"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/requiredCapabilityList"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/metaRequiredCapabilityList"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/propertyMap"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/touchpointDataList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" propertyCategory=""
+            ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/artifactList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/providedCapabilityList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/requiredCapabilityList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/metaRequiredCapabilityList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/propertyMap"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/touchpointDataList"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/InstallableUnit/compareTo">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/InstallableUnit/compareTo/other"/>
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/InstallableUnitFragment">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnitFragment/hostList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnitFragment/hostList"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/License"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/ProvidedCapability"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/RequiredCapability"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/TouchpointData">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/TouchpointData/instructionMap"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/TouchpointData/instructionMap"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/TouchpointInstruction"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/TouchpointType"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/UpdateDescriptor"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2/Property">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/Property/key"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/Property/value"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/Property/key"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/Property/value"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/InstructionMap">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/InstructionMap/key"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstructionMap/value"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/InstructionMap/key"/>
+        <genFeatures property="Readonly" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstructionMap/value"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IQueryable">
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IQueryable/query">
@@ -259,13 +262,13 @@
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IMetadataRepository/removeAll"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IRepository">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/location"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/name"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/type"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/version"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/description"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/provider"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/modifiable"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/location"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/name"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/type"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/version"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/description"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/provider"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRepository/modifiable"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IRepository/getProperties"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IRepository/setProperty">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IRepository/setProperty/key"/>
@@ -273,10 +276,10 @@
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/RepositoryReference">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/location"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/type"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/options"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/nickname"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/location"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/type"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/options"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/RepositoryReference/nickname"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IAdaptable">
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IAdaptable/getAdapter">

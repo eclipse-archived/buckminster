@@ -136,7 +136,7 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ITouchpointType_id_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_ITouchpointType_id_feature", "_UI_ITouchpointType_type"),
-				P2Package.Literals.ITOUCHPOINT_TYPE__ID, true, false, false,
+				P2Package.Literals.ITOUCHPOINT_TYPE__ID, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -151,7 +151,7 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ITouchpointType_version_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_ITouchpointType_version_feature", "_UI_ITouchpointType_type"),
-				P2Package.Literals.ITOUCHPOINT_TYPE__VERSION, true, false, false,
+				P2Package.Literals.ITOUCHPOINT_TYPE__VERSION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
