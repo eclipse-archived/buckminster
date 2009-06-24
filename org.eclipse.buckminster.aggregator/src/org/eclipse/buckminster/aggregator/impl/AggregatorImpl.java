@@ -514,9 +514,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	public int getStatus()
 	{
-		for(CustomCategory category : getCustomCategories())
+		for(Contribution contribution : getContributions())
 		{
-			if(category.getStatus() != StatusProvider.OK)
+			if(contribution.getStatus() != StatusProvider.OK)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;
