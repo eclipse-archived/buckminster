@@ -12,6 +12,7 @@ Export-Package: org.eclipse.buckminster.aggregator.presentation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.buckminster.aggregator.edit;visibility:=reexport,
+ org.eclipse.buckminster.aggregator.engine;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.emf.edit.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport

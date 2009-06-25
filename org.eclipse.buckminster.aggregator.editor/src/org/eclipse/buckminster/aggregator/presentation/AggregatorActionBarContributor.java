@@ -6,22 +6,31 @@
  */
 package org.eclipse.buckminster.aggregator.presentation;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.buckminster.aggregator.engine.Builder;
+import org.eclipse.buckminster.aggregator.engine.Engine;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
-
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
-
 import org.eclipse.emf.edit.ui.action.ControlAction;
 import org.eclipse.emf.edit.ui.action.CreateChildAction;
 import org.eclipse.emf.edit.ui.action.CreateSiblingAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.action.LoadResourceAction;
 import org.eclipse.emf.edit.ui.action.ValidateAction;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -33,18 +42,21 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.SubContributionItem;
-
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
+import org.xml.sax.SAXException;
 
 /**
  * This is the action bar contributor for the Aggregator model editor. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -54,18 +66,113 @@ import org.eclipse.ui.PartInitException;
 public class AggregatorActionBarContributor extends EditingDomainActionBarContributor implements
 		ISelectionChangedListener
 {
-	class BuildRepoActionImpl extends BuildRepoAction
+	class BuildRepoAction extends Action
 	{
 
-		public BuildRepoActionImpl(boolean verifyOnly)
+		private boolean m_verifyOnly;
+
+		public BuildRepoAction(boolean verifyOnly)
 		{
-			super(verifyOnly);
+			m_verifyOnly = verifyOnly;
+
+			if(m_verifyOnly)
+			{
+				setText("Verify Repository");
+			}
+			else
+			{
+				setText("Build Repository");
+				Object imageURL = AggregatorEditorPlugin.INSTANCE.getImage("full/obj16/start_task.gif");
+
+				if(imageURL != null && imageURL instanceof URL)
+					setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
+			}
 		}
 
 		@Override
-		protected boolean saveModel()
+		public void run()
 		{
 			if(getActiveEditor() == null)
+			{
+				MessageBox messageBox = new MessageBox(getActiveEditor().getSite().getShell(), SWT.ICON_ERROR | SWT.OK);
+				messageBox.setMessage("No editor is active");
+				messageBox.open();
+				return;
+			}
+			
+			if(saveModel())
+			{
+				try
+				{
+					new ProgressMonitorDialog(getActiveEditor().getSite().getShell()).run(true, true, new IRunnableWithProgress(){
+
+						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+						{
+							try
+							{
+								Builder builder = new Builder();
+								org.eclipse.emf.common.util.URI emfURI = ((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(0).getURI(); 
+								URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
+								URI uri = fileURL.toURI();
+								if(uri.isOpaque())
+									uri =  new URI(uri.getScheme() + ":/" + uri.getSchemeSpecificPart());
+								builder.setBuildModelLocation(new File(uri));
+								builder.setVerifyOnly(m_verifyOnly);
+								builder.run(monitor);
+							}
+							catch(Throwable e)
+							{
+								throw new InvocationTargetException(e);
+							}
+						}});
+				}
+				catch(InvocationTargetException e)
+				{
+					Throwable cause = unwind(e);
+					IStatus status = (cause instanceof CoreException)
+					? ((CoreException)cause).getStatus()
+							: new Status(IStatus.ERROR, Engine.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
+
+					ErrorDialog dialog = new ErrorDialog(null, "Error", "Repository builder has not finish successfuly", status, IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR);
+					dialog.open();
+				}
+				catch(InterruptedException e)
+				{
+					// interrupted by user
+				}
+			}
+			
+		}
+
+		private Throwable unwind(Throwable t)
+		{
+			for(;;)
+			{
+				Class<?> tc = t.getClass();
+
+				// We don't use instanceof operator since we want
+				// the explicit class, not subclasses.
+				//
+				if(tc != RuntimeException.class && tc != InvocationTargetException.class && tc != SAXException.class
+						&& tc != IOException.class)
+					break;
+
+				Throwable cause = t.getCause();
+				if(cause == null)
+					break;
+
+				String msg = t.getMessage();
+				if(msg != null && !msg.equals(cause.toString()))
+					break;
+
+				t = cause;
+			}
+			return t;
+		}
+
+		protected boolean saveModel()
+		{
+			if(getActiveEditor() == null || !getActiveEditor().isDirty())
 				return true;
 
 			getActiveEditor().doSave(new NullProgressMonitor());
@@ -82,7 +189,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 
 	}
-
+	
 	/**
 	 * This keeps track of the active editor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -195,8 +302,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();
 		controlAction = new ControlAction();
-		m_buildRepoAction = new BuildRepoActionImpl(false);
-		m_verifyRepoAction = new BuildRepoActionImpl(true);
+		m_buildRepoAction = new BuildRepoAction(false);
+		m_verifyRepoAction = new BuildRepoAction(true);
 	}
 
 	/**

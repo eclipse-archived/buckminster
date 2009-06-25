@@ -42,3 +42,4 @@ Import-Package: org.apache.tools.ant,
  org.eclipse.equinox.spi.p2.publisher,
  org.osgi.framework;version="1.5.0",
  org.osgi.service.packageadmin;version="1.2.0"
+Export-Package: org.eclipse.buckminster.aggregator.engine
