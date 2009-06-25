@@ -120,8 +120,15 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	{
 		notifyChangedGen(notification);
 
-		if(notification.getFeatureID(MappedUnit.class) == AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT)
+		switch(notification.getFeatureID(MappedUnit.class))
+		{
+		case AggregatorPackage.MAPPED_UNIT__ENABLED:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			return;
+		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		}
 	}
 
 	/**
