@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -91,7 +92,7 @@ public class RepositoryVerifier extends BuilderPhase
 		log.info("Starting planner verification"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
-		String profilePrefix = Builder.PROFILE_ID + '_'; 
+		String profilePrefix = Builder.PROFILE_ID + '_';
 		final HashSet<IInstallableUnit> unitsToAggregate = new HashSet<IInstallableUnit>();
 		final HashSet<IInstallableUnit> trustedUnits = new HashSet<IInstallableUnit>();
 
@@ -164,11 +165,23 @@ public class RepositoryVerifier extends BuilderPhase
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
 		}
+		List<Contribution> contribs = getBuilder().getAggregator().getContributions();
+		for(Contribution contrib : contribs)
+		{
+			for(MappedRepository repo : contrib.getRepositories())
+			{
+				if(repo.isMirrorArtifacts() && repo.isMapVerbatim())
+					for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
+						unitsToAggregate.add(iu);
+			}
+		}
+
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
-		log.info("Found %d units to install", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
+		log.info("Found %d units to mirror", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 
 		boolean pruningLogged = false;
-		for(Contribution contrib : getBuilder().getAggregator().getContributions())
+
+		for(Contribution contrib : contribs)
 		{
 			for(MappedRepository repo : contrib.getRepositories())
 			{
@@ -177,7 +190,8 @@ public class RepositoryVerifier extends BuilderPhase
 
 				if(!pruningLogged)
 				{
-					log.info("Pruning using trusted contributed repositories", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
+					log.info(
+							"Pruning mirror list from units contributed by referenced repositories", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 					pruningLogged = true;
 				}
 
@@ -194,9 +208,10 @@ public class RepositoryVerifier extends BuilderPhase
 				}, new Collector(), null);
 			}
 
-			if(pruningLogged)
-				log.info("%d units remain after pruning", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 		}
+		if(pruningLogged)
+			log.info("%d units remain after pruning", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
+
 		getBuilder().setUnitsToAggregate(unitsToAggregate);
 		getBuilder().setTrustedUnits(trustedUnits);
 	}

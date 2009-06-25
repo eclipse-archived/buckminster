@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.buckminster.aggregator"
+         name="Buckminster Aggregator"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.buckminster.aggregator.engine.Builder">
+         </run>
+      </application>
+   </extension>
+
+</plugin>

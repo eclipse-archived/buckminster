@@ -27,7 +27,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.util.DateUtils;
 import org.apache.tools.mail.MailMessage;
 import org.eclipse.buckminster.aggregator.Aggregator;
-import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -47,7 +46,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.Diagnostician;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
@@ -545,7 +543,7 @@ public class Builder implements IApplication
 					props.put(IProfile.PROP_NAME, aggregator.getLabel());
 					props.put(IProfile.PROP_DESCRIPTION, String.format("Default profile during %s build",
 							aggregator.getLabel()));
-					props.put(IProfile.PROP_CACHE, instArea); 
+					props.put(IProfile.PROP_CACHE, instArea);
 					props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
 					profile = profileRegistry.addProfile(PROFILE_ID, props);
 				}
@@ -824,7 +822,7 @@ public class Builder implements IApplication
 		String msg = msgBld.toString();
 		try
 		{
-			parseCommandLineArgs(args); 
+			parseCommandLineArgs(args);
 			Logger.setConsoleLevelThreshold(logLevel);
 			log.debug(msg);
 		}
@@ -1072,9 +1070,6 @@ public class Builder implements IApplication
 		{
 			// Load the Java model into memory
 			resourceSet = new ResourceSetImpl();
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-					Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-			AggregatorPackage.eINSTANCE.eClass();
 			org.eclipse.emf.common.util.URI fileURI = org.eclipse.emf.common.util.URI.createFileURI(buildModelLocation.getAbsolutePath());
 			Resource resource = resourceSet.getResource(fileURI, true);
 			EList<EObject> content = resource.getContents();

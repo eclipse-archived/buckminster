@@ -10,8 +10,6 @@ import java.util.Map;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MappedUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -23,7 +21,6 @@ import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepo
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
@@ -73,30 +70,6 @@ public class CompositeRepoGenerator extends BuilderPhase
 			for(MappedRepository repo : repos)
 			{
 				MetadataRepository mdr = repo.getMetadataRepository();
-				if(mdr.eIsProxy())
-				{
-					String msg = String.format("Repository location %s is unresolved", repo.getLocation());
-					errors.add(msg);
-					log.error(msg);
-					continue;
-				}
-
-				if(!repo.isMapVerbatim())
-				{
-					for(MappedUnit mu : repo.getEnabledUnits())
-					{
-						InstallableUnit muIU = mu.getInstallableUnit();
-						if(muIU.eIsProxy())
-						{
-							VersionedName vn = muIU.getVersionedNameFromProxy();
-							String msg = String.format("Unable to find %s/%s in repository %s", vn.getId(),
-									vn.getVersion(), repo.getLocation());
-							errors.add(msg);
-							log.error(msg);
-						}
-					}
-				}
-
 				try
 				{
 					URI childLocation = mdr.getLocation();
