@@ -99,41 +99,48 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				messageBox.open();
 				return;
 			}
-			
+
 			if(saveModel())
 			{
 				try
 				{
-					new ProgressMonitorDialog(getActiveEditor().getSite().getShell()).run(true, true, new IRunnableWithProgress(){
+					new ProgressMonitorDialog(getActiveEditor().getSite().getShell()).run(true, true,
+							new IRunnableWithProgress()
+							{
 
-						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-						{
-							try
-							{
-								Builder builder = new Builder();
-								org.eclipse.emf.common.util.URI emfURI = ((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(0).getURI(); 
-								URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
-								URI uri = fileURL.toURI();
-								if(uri.isOpaque())
-									uri =  new URI(uri.getScheme() + ":/" + uri.getSchemeSpecificPart());
-								builder.setBuildModelLocation(new File(uri));
-								builder.setVerifyOnly(m_verifyOnly);
-								builder.run(monitor);
-							}
-							catch(Throwable e)
-							{
-								throw new InvocationTargetException(e);
-							}
-						}});
+								public void run(IProgressMonitor monitor) throws InvocationTargetException,
+										InterruptedException
+								{
+									try
+									{
+										Builder builder = new Builder();
+										org.eclipse.emf.common.util.URI emfURI = ((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(
+												0).getURI();
+										URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
+										URI uri = fileURL.toURI();
+										if(uri.isOpaque())
+											uri = new URI(uri.getScheme() + ":/" + uri.getSchemeSpecificPart());
+										builder.setBuildModelLocation(new File(uri));
+										builder.setVerifyOnly(m_verifyOnly);
+										builder.run(monitor);
+									}
+									catch(Throwable e)
+									{
+										throw new InvocationTargetException(e);
+									}
+								}
+							});
 				}
 				catch(InvocationTargetException e)
 				{
 					Throwable cause = unwind(e);
 					IStatus status = (cause instanceof CoreException)
-					? ((CoreException)cause).getStatus()
+							? ((CoreException)cause).getStatus()
 							: new Status(IStatus.ERROR, Engine.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
 
-					ErrorDialog dialog = new ErrorDialog(null, "Error", "Repository builder has not finish successfuly", status, IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR);
+					ErrorDialog dialog = new ErrorDialog(null, "Error",
+							"Repository builder has not finish successfuly", status, IStatus.OK | IStatus.INFO
+									| IStatus.WARNING | IStatus.ERROR);
 					dialog.open();
 				}
 				catch(InterruptedException e)
@@ -141,7 +148,25 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 					// interrupted by user
 				}
 			}
-			
+
+		}
+
+		protected boolean saveModel()
+		{
+			if(getActiveEditor() == null || !getActiveEditor().isDirty())
+				return true;
+
+			getActiveEditor().doSave(new NullProgressMonitor());
+
+			if(getActiveEditor().isDirty())
+			{
+				MessageBox messageBox = new MessageBox(getActiveEditor().getSite().getShell(), SWT.ICON_ERROR | SWT.OK);
+				messageBox.setMessage("Cannot save aggregator definition");
+				messageBox.open();
+				return false;
+			}
+
+			return true;
 		}
 
 		private Throwable unwind(Throwable t)
@@ -170,26 +195,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			return t;
 		}
 
-		protected boolean saveModel()
-		{
-			if(getActiveEditor() == null || !getActiveEditor().isDirty())
-				return true;
-
-			getActiveEditor().doSave(new NullProgressMonitor());
-
-			if(getActiveEditor().isDirty())
-			{
-				MessageBox messageBox = new MessageBox(getActiveEditor().getSite().getShell(), SWT.ICON_ERROR | SWT.OK);
-				messageBox.setMessage("Cannot save aggregator definition");
-				messageBox.open();
-				return false;
-			}
-
-			return true;
-		}
-
 	}
-	
+
 	/**
 	 * This keeps track of the active editor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

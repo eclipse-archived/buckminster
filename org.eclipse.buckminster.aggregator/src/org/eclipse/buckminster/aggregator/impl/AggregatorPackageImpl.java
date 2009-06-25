@@ -905,7 +905,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getAggregator_Contributions().getEKeys().add(this.getContribution_Label());
-		initEAttribute(getAggregator_Label(), ecorePackage.getEString(), "label", null, 0, 1, Aggregator.class,
+		initEAttribute(getAggregator_Label(), ecorePackage.getEString(), "label", null, 1, 1, Aggregator.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAggregator_Buildmaster(), this.getContact(), null, "buildmaster", null, 0, 1,
 				Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,

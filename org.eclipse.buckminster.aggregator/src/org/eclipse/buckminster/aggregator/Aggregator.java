@@ -144,7 +144,7 @@ public interface Aggregator extends EObject, StatusProvider
 	 * @return the value of the '<em>Label</em>' attribute.
 	 * @see #setLabel(String)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_Label()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getLabel();
