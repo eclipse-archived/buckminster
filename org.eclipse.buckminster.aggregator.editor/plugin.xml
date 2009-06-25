@@ -12,14 +12,14 @@
 
    <extension point="org.eclipse.ui.newWizards">
       <category
-            id="org.eclipse.emf.ecore.Wizard.category.ID"
-            name="%_UI_Wizard_category"/>
+            id="org.eclipse.buckminster"
+            name="Buckminster"/>
       <wizard
-            id="org.eclipse.buckminster.aggregator.presentation.AggregatorModelWizardID"
-            name="%_UI_AggregatorModelWizard_label"
+            category="org.eclipse.buckminster"
             class="org.eclipse.buckminster.aggregator.presentation.AggregatorModelWizard"
-            category="org.eclipse.emf.ecore.Wizard.category.ID"
-            icon="icons/full/obj16/AggregatorModelFile.gif">
+            icon="icons/full/obj16/AggregatorModelFile.gif"
+            id="org.eclipse.buckminster.aggregator.presentation.AggregatorModelWizardID"
+            name="%_UI_AggregatorModelWizard_label">
          <description>%_UI_AggregatorModelWizard_description</description>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
