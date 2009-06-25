@@ -113,14 +113,25 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	}
 
 	/**
+	 * @generated NOT
+	 */
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		notifyChangedGen(notification);
+
+		if(notification.getFeatureID(MappedUnit.class) == AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT)
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+	}
+
+	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void notifyChanged(Notification notification)
+	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
 
