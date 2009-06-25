@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.buckminster.aggregator.p2.impl.MetadataRepositoryImpl;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -59,11 +60,14 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		{
 			exception = null;
 			Buckminster bucky = Buckminster.getDefault();
+			Logger log = Buckminster.getLogger();
 			IMetadataRepositoryManager mdrMgr = null;
 			MonitorUtils.begin(monitor, 100);
 			try
 			{
 				mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+				log.debug("Loading repository %s", location);
+				long start = System.currentTimeMillis();
 				IMetadataRepository repo = mdrMgr.loadRepository(location, MonitorUtils.subMonitor(monitor, 80));
 				repository.setName(repo.getName());
 				repository.setLocation(repo.getLocation());
@@ -82,6 +86,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 					repository.getInstallableUnits().add(InstallableUnitImpl.importToModel(itor.next()));
 
 				repository.addRepositoryReferences(mdrMgr, repo);
+				log.debug("Done. Took %d millisecs", Long.valueOf(System.currentTimeMillis() - start));
 			}
 			catch(Exception e)
 			{

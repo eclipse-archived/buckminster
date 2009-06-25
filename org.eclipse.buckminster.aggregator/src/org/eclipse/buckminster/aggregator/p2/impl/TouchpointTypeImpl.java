@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Touchpoint Type</b></em>'. <!-- end-user-doc
@@ -130,6 +131,18 @@ public class TouchpointTypeImpl extends MinimalEObjectImpl.Container implements 
 		return super.eIsSet(featureID);
 	}
 
+	public boolean equals(Object obj)
+	{
+		if(this == obj)
+			return true;
+		if(super.equals(obj))
+			return true;
+		if(obj == null || !(obj instanceof ITouchpointType))
+			return false;
+		ITouchpointType other = (ITouchpointType)obj;
+		return id.equals(other.getId()) && version.equals(other.getVersion());
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -188,6 +201,11 @@ public class TouchpointTypeImpl extends MinimalEObjectImpl.Container implements 
 	public Version getVersion()
 	{
 		return version;
+	}
+
+	public int hashCode()
+	{
+		return 31 * id.hashCode() + version.hashCode();
 	}
 
 	/**

@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>License</b></em>'. <!-- end-user-doc -->
@@ -160,6 +161,21 @@ public class LicenseImpl extends MinimalEObjectImpl.Container implements License
 		return super.eIsSet(featureID);
 	}
 
+	public boolean equals(Object obj)
+	{
+		if(obj == this)
+			return true;
+		if(obj == null)
+			return false;
+		if(obj instanceof ILicense)
+		{
+			ILicense other = (ILicense)obj;
+			if(other.getDigest().equals(getDigest()))
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -234,6 +250,11 @@ public class LicenseImpl extends MinimalEObjectImpl.Container implements License
 	public URI getLocation()
 	{
 		return location;
+	}
+
+	public int hashCode()
+	{
+		return getDigest().hashCode();
 	}
 
 	/**

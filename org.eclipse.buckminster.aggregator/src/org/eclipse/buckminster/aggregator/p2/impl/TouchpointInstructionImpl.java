@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Touchpoint Instruction</b></em>'. <!--
@@ -131,6 +132,32 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 		return super.eIsSet(featureID);
 	}
 
+	public boolean equals(Object obj)
+	{
+		if(this == obj)
+			return true;
+		if(obj == null)
+			return false;
+		if(!(obj instanceof ITouchpointInstruction))
+			return false;
+		ITouchpointInstruction other = (ITouchpointInstruction)obj;
+		if(body == null)
+		{
+			if(other.getBody() != null)
+				return false;
+		}
+		else if(!body.equals(other.getBody()))
+			return false;
+		if(importAttribute == null)
+		{
+			if(other.getImportAttribute() != null)
+				return false;
+		}
+		else if(!importAttribute.equals(other.getImportAttribute()))
+			return false;
+		return true;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -189,6 +216,19 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	public String getImportAttribute()
 	{
 		return importAttribute;
+	}
+
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((body == null)
+				? 0
+				: body.hashCode());
+		result = prime * result + ((importAttribute == null)
+				? 0
+				: importAttribute.hashCode());
+		return result;
 	}
 
 	/**

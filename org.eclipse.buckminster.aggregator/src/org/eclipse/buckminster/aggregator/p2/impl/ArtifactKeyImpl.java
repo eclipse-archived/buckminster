@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Artifact Key</b></em>'. <!-- end-user-doc -->
@@ -156,6 +157,15 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 		return super.eIsSet(featureID);
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof IArtifactKey))
+			return false;
+		IArtifactKey ak = (IArtifactKey)obj;
+		return ak.getId().equals(id) && ak.getVersion().equals(getVersion()) && ak.getClassifier().equals(classifier);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -230,6 +240,15 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 	public Version getVersion()
 	{
 		return version;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = id.hashCode();
+		hash = 17 * hash + getVersion().hashCode();
+		hash = 17 * hash + classifier.hashCode();
+		return hash;
 	}
 
 	/**
@@ -316,5 +335,4 @@ public class ArtifactKeyImpl extends MinimalEObjectImpl.Container implements Art
 	{
 		return P2Package.Literals.ARTIFACT_KEY;
 	}
-
 } // ArtifactKeyImpl

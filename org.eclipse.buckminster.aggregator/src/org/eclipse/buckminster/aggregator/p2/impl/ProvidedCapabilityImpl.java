@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
+import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
 /**
@@ -161,6 +162,20 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		return super.eIsSet(featureID);
 	}
 
+	public boolean equals(Object other)
+	{
+		if(other == null)
+			return false;
+		if(!(other instanceof IProvidedCapability))
+			return false;
+		IProvidedCapability otherCapability = (IProvidedCapability)other;
+		if(!(namespace.equals(otherCapability.getNamespace())))
+			return false;
+		if(!(name.equals(otherCapability.getName())))
+			return false;
+		return version.equals(otherCapability.getVersion());
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -235,6 +250,11 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	public Version getVersion()
 	{
 		return version;
+	}
+
+	public int hashCode()
+	{
+		return namespace.hashCode() * name.hashCode() * version.hashCode();
 	}
 
 	/**

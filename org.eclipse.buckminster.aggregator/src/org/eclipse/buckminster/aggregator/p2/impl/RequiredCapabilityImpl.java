@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Required Capability</b></em>'. <!--
@@ -288,6 +289,35 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		return super.eIsSet(featureID);
 	}
 
+	public boolean equals(Object obj)
+	{
+		if(this == obj)
+			return true;
+		if(obj == null)
+			return false;
+		if(!(obj instanceof IRequiredCapability))
+			return false;
+		final IRequiredCapability other = (IRequiredCapability)obj;
+		if(filter == null)
+		{
+			if(other.getFilter() != null)
+				return false;
+		}
+		else if(!filter.equals(other.getFilter()))
+			return false;
+		if(isMultiple() != other.isMultiple())
+			return false;
+		if(!name.equals(other.getName()))
+			return false;
+		if(!namespace.equals(other.getNamespace()))
+			return false;
+		if(isOptional() != other.isOptional())
+			return false;
+		if(!range.equals(other.getRange()))
+			return false;
+		return true;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -412,6 +442,25 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	public String[] getSelectors()
 	{
 		return selectors;
+	}
+
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((filter == null)
+				? 0
+				: filter.hashCode());
+		result = prime * result + (isMultiple()
+				? 1231
+				: 1237);
+		result = prime * result + name.hashCode();
+		result = prime * result + namespace.hashCode();
+		result = prime * result + (isOptional()
+				? 1231
+				: 1237);
+		result = prime * result + range.hashCode();
+		return result;
 	}
 
 	/**
