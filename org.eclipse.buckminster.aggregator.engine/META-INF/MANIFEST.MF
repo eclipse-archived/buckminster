@@ -4,7 +4,7 @@ Bundle-Name: Buckminster Repository Aggregator Engine
 Bundle-SymbolicName: org.eclipse.buckminster.aggregator.engine;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.aggregator.engine.Engine
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.tools.ant,
