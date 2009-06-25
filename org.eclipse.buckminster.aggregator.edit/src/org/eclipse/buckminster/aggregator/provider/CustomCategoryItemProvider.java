@@ -9,7 +9,6 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -34,6 +33,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  */
 public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -215,9 +215,6 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CUSTOM_CATEGORY__FEATURES,
-				AggregatorFactory.eINSTANCE.createFeature()));
 	}
 
 	/**
@@ -232,6 +229,16 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);
+	}
+
+	/**
+	 * Force the children (features) to be wrapped so that changes to the children are propagated to the custom category
+	 * (as a non-containing parent)
+	 */
+	@Override
+	protected boolean isWrappingNeeded(Object object)
+	{
+		return true;
 	}
 
 }
