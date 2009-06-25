@@ -318,7 +318,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	{
 		for(Feature feature : getFeatures())
 		{
-			if(feature.getStatus() != StatusProvider.OK)
+			if(feature.isEnabled() && feature.getStatus() != StatusProvider.OK)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;
