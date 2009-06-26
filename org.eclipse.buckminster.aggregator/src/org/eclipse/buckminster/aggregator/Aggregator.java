@@ -37,17 +37,17 @@ import org.eclipse.emf.ecore.EObject;
 public interface Aggregator extends EObject, StatusProvider
 {
 	/**
-	 * Returns the value of the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Buildmaster</b></em>' containment reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Buildmaster</em>' containment reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Buildmaster</em>' reference.
+	 * @return the value of the '<em>Buildmaster</em>' containment reference.
 	 * @see #setBuildmaster(Contact)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_Buildmaster()
-	 * @model keys="email"
+	 * @model containment="true" keys="email"
 	 * @generated
 	 */
 	Contact getBuildmaster();
@@ -184,10 +184,10 @@ public interface Aggregator extends EObject, StatusProvider
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}'
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Buildmaster</em>' reference.
+	 *            the new value of the '<em>Buildmaster</em>' containment reference.
 	 * @see #getBuildmaster()
 	 * @generated
 	 */

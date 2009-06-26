@@ -13,7 +13,7 @@
         eType="#//Contribution" containment="true" eKeys="#//Contribution/label"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="buildmaster" eType="#//Contact"
-        eKeys="#//Contact/email"/>
+        containment="true" eKeys="#//Contact/email"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sendmail" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contacts" upperBound="-1"
         eType="#//Contact" containment="true" eKeys="#//Contact/email"/>
