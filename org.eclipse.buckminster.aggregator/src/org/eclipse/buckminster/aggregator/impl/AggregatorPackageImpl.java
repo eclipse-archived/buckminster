@@ -292,6 +292,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		contactEClass = createEClass(CONTACT);
 		createEAttribute(contactEClass, CONTACT__NAME);
 		createEAttribute(contactEClass, CONTACT__EMAIL);
+		createEReference(contactEClass, CONTACT__AGGREGATOR);
 
 		featureEClass = createEClass(FEATURE);
 		createEReference(featureEClass, FEATURE__CATEGORIES);
@@ -535,6 +536,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EClass getContact()
 	{
 		return contactEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getContact_Aggregator()
+	{
+		return (EReference)contactEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -908,14 +919,14 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEAttribute(getAggregator_Label(), ecorePackage.getEString(), "label", null, 1, 1, Aggregator.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAggregator_Buildmaster(), this.getContact(), null, "buildmaster", null, 0, 1,
-				Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+				Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getAggregator_Buildmaster().getEKeys().add(this.getContact_Email());
 		initEAttribute(getAggregator_Sendmail(), ecorePackage.getEBoolean(), "sendmail", null, 0, 1, Aggregator.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAggregator_Contacts(), this.getContact(), null, "contacts", null, 0, -1, Aggregator.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAggregator_Contacts(), this.getContact(), this.getContact_Aggregator(), "contacts", null, 0,
+				-1, Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getAggregator_Contacts().getEKeys().add(this.getContact_Email());
 		initEReference(getAggregator_CustomCategories(), this.getCustomCategory(), null, "customCategories", null, 0,
 				-1, Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
@@ -985,6 +996,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getContact_Email(), ecorePackage.getEString(), "email", null, 1, 1, Contact.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getContact_Aggregator(), this.getAggregator(), this.getAggregator_Contacts(), "aggregator",
+				null, 1, 1, Contact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE,
+				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(featureEClass, Feature.class, "Feature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFeature_Categories(), this.getCustomCategory(), this.getCustomCategory_Features(),

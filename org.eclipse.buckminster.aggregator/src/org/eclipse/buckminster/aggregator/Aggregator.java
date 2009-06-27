@@ -37,17 +37,17 @@ import org.eclipse.emf.ecore.EObject;
 public interface Aggregator extends EObject, StatusProvider
 {
 	/**
-	 * Returns the value of the '<em><b>Buildmaster</b></em>' containment reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Buildmaster</em>' containment reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Buildmaster</em>' containment reference.
+	 * @return the value of the '<em>Buildmaster</em>' reference.
 	 * @see #setBuildmaster(Contact)
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_Buildmaster()
-	 * @model containment="true" keys="email"
+	 * @model keys="email"
 	 * @generated
 	 */
 	Contact getBuildmaster();
@@ -87,7 +87,8 @@ public interface Aggregator extends EObject, StatusProvider
 
 	/**
 	 * Returns the value of the '<em><b>Contacts</b></em>' containment reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.aggregator.Contact}. <!-- begin-user-doc -->
+	 * {@link org.eclipse.buckminster.aggregator.Contact}. It is bidirectional and its opposite is '
+	 * {@link org.eclipse.buckminster.aggregator.Contact#getAggregator <em>Aggregator</em>}'. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Contacts</em>' containment reference list isn't clear, there really should be more of
 	 * a description here...
@@ -96,7 +97,8 @@ public interface Aggregator extends EObject, StatusProvider
 	 * 
 	 * @return the value of the '<em>Contacts</em>' containment reference list.
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_Contacts()
-	 * @model containment="true" keys="email"
+	 * @see org.eclipse.buckminster.aggregator.Contact#getAggregator
+	 * @model opposite="aggregator" containment="true" keys="email"
 	 * @generated
 	 */
 	EList<Contact> getContacts();
@@ -184,10 +186,10 @@ public interface Aggregator extends EObject, StatusProvider
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Buildmaster</em>' containment reference.
+	 *            the new value of the '<em>Buildmaster</em>' reference.
 	 * @see #getBuildmaster()
 	 * @generated
 	 */

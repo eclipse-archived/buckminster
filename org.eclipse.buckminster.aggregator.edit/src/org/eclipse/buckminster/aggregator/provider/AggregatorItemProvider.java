@@ -61,34 +61,10 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONFIGURATIONS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTRIBUTIONS);
-			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTACTS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES);
 		}
 		return childrenFeatures;
-	}
-
-	/**
-	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
-	{
-		Object childFeature = feature;
-		Object childObject = child;
-
-		boolean qualify = childFeature == AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER
-				|| childFeature == AggregatorPackage.Literals.AGGREGATOR__CONTACTS;
-
-		if(qualify)
-		{
-			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject),
-					getFeatureText(childFeature), getTypeText(owner) });
-		}
-		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**
@@ -117,6 +93,7 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 			addTypePropertyDescriptor(object);
 			addBuildRootPropertyDescriptor(object);
 			addLabelPropertyDescriptor(object);
+			addBuildmasterPropertyDescriptor(object);
 			addSendmailPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -164,18 +141,32 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 		case AggregatorPackage.AGGREGATOR__TYPE:
 		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
 		case AggregatorPackage.AGGREGATOR__LABEL:
+		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 		case AggregatorPackage.AGGREGATOR__SENDMAIL:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
-		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Buildmaster feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addBuildmasterPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Aggregator_buildmaster_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Aggregator_buildmaster_feature", "_UI_Aggregator_type"),
+				AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER, true, false, false, null, null, null));
 	}
 
 	/**
@@ -254,9 +245,6 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__CONTRIBUTIONS,
 				AggregatorFactory.eINSTANCE.createContribution()));
-
-		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__BUILDMASTER,
-				AggregatorFactory.eINSTANCE.createContact()));
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__CONTACTS,
 				AggregatorFactory.eINSTANCE.createContact()));

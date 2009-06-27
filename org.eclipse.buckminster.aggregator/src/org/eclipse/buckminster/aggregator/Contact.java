@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.Contact#getName <em>Name</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.Contact#getEmail <em>Email</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Contact#getAggregator <em>Aggregator</em>}</li>
  * </ul>
  * </p>
  * 
@@ -25,6 +26,24 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Contact extends EObject
 {
+	/**
+	 * Returns the value of the '<em><b>Aggregator</b></em>' container reference. It is bidirectional and its opposite
+	 * is '{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}'. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Aggregator</em>' container reference isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Aggregator</em>' container reference.
+	 * @see #setAggregator(Aggregator)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContact_Aggregator()
+	 * @see org.eclipse.buckminster.aggregator.Aggregator#getContacts
+	 * @model opposite="contacts" required="true" transient="false"
+	 * @generated
+	 */
+	Aggregator getAggregator();
+
 	/**
 	 * Returns the value of the '<em><b>Email</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
@@ -55,6 +74,17 @@ public interface Contact extends EObject
 	 * @generated
 	 */
 	String getName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Contact#getAggregator <em>Aggregator</em>}'
+	 * container reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Aggregator</em>' container reference.
+	 * @see #getAggregator()
+	 * @generated
+	 */
+	void setAggregator(Aggregator value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Contact#getEmail <em>Email</em>}' attribute.

@@ -294,6 +294,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute CONTACT__EMAIL = eINSTANCE.getContact_Email();
 
 		/**
+		 * The meta object literal for the '<em><b>Aggregator</b></em>' container reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference CONTACT__AGGREGATOR = eINSTANCE.getContact_Aggregator();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl <em>Feature</em>}
 		 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -575,8 +583,7 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR__LABEL = 4;
 
 	/**
-	 * The feature id for the '<em><b>Buildmaster</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -832,12 +839,21 @@ public interface AggregatorPackage extends EPackage
 	int CONTACT__EMAIL = 1;
 
 	/**
+	 * The feature id for the '<em><b>Aggregator</b></em>' container reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CONTACT__AGGREGATOR = 2;
+
+	/**
 	 * The number of structural features of the '<em>Contact</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CONTACT_FEATURE_COUNT = 2;
+	int CONTACT_FEATURE_COUNT = 3;
 
 	/**
 	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1176,11 +1192,10 @@ public interface AggregatorPackage extends EPackage
 	EClass getAggregator();
 
 	/**
-	 * Returns the meta object for the containment reference '
-	 * {@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}'. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * Returns the meta object for the reference '{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster
+	 * <em>Buildmaster</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference '<em>Buildmaster</em>'.
+	 * @return the meta object for the reference '<em>Buildmaster</em>'.
 	 * @see org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster()
 	 * @see #getAggregator()
 	 * @generated
@@ -1383,6 +1398,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EClass getContact();
+
+	/**
+	 * Returns the meta object for the container reference '
+	 * {@link org.eclipse.buckminster.aggregator.Contact#getAggregator <em>Aggregator</em>}'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the container reference '<em>Aggregator</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Contact#getAggregator()
+	 * @see #getContact()
+	 * @generated
+	 */
+	EReference getContact_Aggregator();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Contact#getEmail

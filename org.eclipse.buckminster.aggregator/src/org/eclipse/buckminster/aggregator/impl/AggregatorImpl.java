@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -228,20 +229,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetBuildmaster(Contact newBuildmaster, NotificationChain msgs)
+	public Contact basicGetBuildmaster()
 	{
-		Contact oldBuildmaster = buildmaster;
-		buildmaster = newBuildmaster;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					AggregatorPackage.AGGREGATOR__BUILDMASTER, oldBuildmaster, newBuildmaster);
-			if(msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
+		return buildmaster;
 	}
 
 	/**
@@ -265,7 +255,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		case AggregatorPackage.AGGREGATOR__LABEL:
 			return getLabel();
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-			return getBuildmaster();
+			if(resolve)
+				return getBuildmaster();
+			return basicGetBuildmaster();
 		case AggregatorPackage.AGGREGATOR__SENDMAIL:
 			return isSendmail();
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
@@ -274,6 +266,23 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return getCustomCategories();
 		}
 		return super.eGet(featureID, resolve, coreType);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch(featureID)
+		{
+		case AggregatorPackage.AGGREGATOR__CONTACTS:
+			return ((InternalEList<InternalEObject>)(InternalEList<?>)getContacts()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -290,8 +299,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return ((InternalEList<?>)getConfigurations()).basicRemove(otherEnd, msgs);
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 			return ((InternalEList<?>)getContributions()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-			return basicSetBuildmaster(null, msgs);
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			return ((InternalEList<?>)getContacts()).basicRemove(otherEnd, msgs);
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
@@ -430,6 +437,17 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public Contact getBuildmaster()
 	{
+		if(buildmaster != null && buildmaster.eIsProxy())
+		{
+			InternalEObject oldBuildmaster = (InternalEObject)buildmaster;
+			buildmaster = (Contact)eResolveProxy(oldBuildmaster);
+			if(buildmaster != oldBuildmaster)
+			{
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							AggregatorPackage.AGGREGATOR__BUILDMASTER, oldBuildmaster, buildmaster));
+			}
+		}
 		return buildmaster;
 	}
 
@@ -467,7 +485,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	{
 		if(contacts == null)
 		{
-			contacts = new EObjectContainmentEList<Contact>(Contact.class, this, AggregatorPackage.AGGREGATOR__CONTACTS);
+			contacts = new EObjectContainmentWithInverseEList<Contact>(Contact.class, this,
+					AggregatorPackage.AGGREGATOR__CONTACTS, AggregatorPackage.CONTACT__AGGREGATOR);
 		}
 		return contacts;
 	}
@@ -549,22 +568,11 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 */
 	public void setBuildmaster(Contact newBuildmaster)
 	{
-		if(newBuildmaster != buildmaster)
-		{
-			NotificationChain msgs = null;
-			if(buildmaster != null)
-				msgs = ((InternalEObject)buildmaster).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-						- AggregatorPackage.AGGREGATOR__BUILDMASTER, null, msgs);
-			if(newBuildmaster != null)
-				msgs = ((InternalEObject)newBuildmaster).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-						- AggregatorPackage.AGGREGATOR__BUILDMASTER, null, msgs);
-			msgs = basicSetBuildmaster(newBuildmaster, msgs);
-			if(msgs != null)
-				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
+		Contact oldBuildmaster = buildmaster;
+		buildmaster = newBuildmaster;
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__BUILDMASTER,
-					newBuildmaster, newBuildmaster));
+					oldBuildmaster, buildmaster));
 	}
 
 	/**

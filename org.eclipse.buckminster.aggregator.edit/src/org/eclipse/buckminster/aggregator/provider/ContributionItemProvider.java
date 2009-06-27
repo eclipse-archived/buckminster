@@ -60,7 +60,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES);
-			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__CONTACTS);
 		}
 		return childrenFeatures;
 	}
@@ -89,6 +88,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 			super.getPropertyDescriptors(object);
 
 			addLabelPropertyDescriptor(object);
+			addContactsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -133,14 +133,28 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		switch(notification.getFeatureID(Contribution.class))
 		{
 		case AggregatorPackage.CONTRIBUTION__LABEL:
+		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Contacts feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addContactsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Contribution_contacts_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Contribution_contacts_feature", "_UI_Contribution_type"),
+				AggregatorPackage.Literals.CONTRIBUTION__CONTACTS, true, false, false, null, null, null));
 	}
 
 	/**
@@ -171,9 +185,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES,
 				AggregatorFactory.eINSTANCE.createMappedRepository()));
-
-		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__CONTACTS,
-				AggregatorFactory.eINSTANCE.createContact()));
 	}
 
 	/**

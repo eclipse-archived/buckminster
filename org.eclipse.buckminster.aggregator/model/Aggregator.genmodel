@@ -43,7 +43,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/configurations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/contributions"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/label"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/buildmaster"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/buildmaster"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/sendmail"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/contacts"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/customCategories"/>
@@ -69,11 +69,12 @@
     <genClasses ecoreClass="Aggregator.ecore#//Contribution">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contribution/label"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Contribution/repositories"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Contribution/contacts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//Contribution/contacts"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Contact">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contact/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contact/email"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//Contact/aggregator"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Feature">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Feature/categories"/>

@@ -87,12 +87,15 @@ public class ContactItemProvider extends AggregatorItemProviderAdapter implement
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Contact)object).getName();
+		Contact contact = (Contact)object;
+		String label = contact.getName();
+		if(label == null || label.length() == 0)
+			label = contact.getEmail();
 		return label == null || label.length() == 0
 				? getString("_UI_Contact_type")
 				: getString("_UI_Contact_type") + " " + label;
