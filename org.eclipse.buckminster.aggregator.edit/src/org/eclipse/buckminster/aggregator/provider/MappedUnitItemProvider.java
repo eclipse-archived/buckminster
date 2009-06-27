@@ -212,7 +212,7 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 					if(iu == null)
 						continue;
 
-					int idx = result.indexOf(mu);
+					int idx = result.indexOf(iu);
 					if(idx >= 0)
 						result.remove(idx);
 				}
