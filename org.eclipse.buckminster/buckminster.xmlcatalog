@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
 	<uri name="http://www.eclipse.org/buckminster/Common-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/common-1.0.xsd" />
+		uri="http://www.eclipse.org/buckminster/schemas/common-1.0.xsd" />
 	<uri name="http://www.eclipse.org/buckminster/CQuery-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/cquery-1.0.xsd" />
+		uri="http://www.eclipse.org/buckminster/schemas/cquery-1.0.xsd" />
 	<uri name="http://www.eclipse.org/buckminster/CSpec-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/cspec-1.0.xsd" />
-	<uri name="http://www.eclipse.org/buckminster/MetaData-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/metadata-1.0.xsd" />
+		uri="http://www.eclipse.org/buckminster/schemas/cspec-1.0.xsd" />
 	<uri name="http://www.eclipse.org/buckminster/RMap-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.core/src/xsd/rmap-1.0.xsd" />
+		uri="http://www.eclipse.org/buckminster/schemas/rmap-1.0.xsd" />
 	<uri name="http://www.eclipse.org/buckminster/MavenProvider-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.maven/src/xsd/maven-provider-1.0.xsd" />
+		uri="http://www.eclipse.org/buckminster/schemas/maven-provider-1.0.xsd" />
 	<uri name="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
-		uri="platform:/resource/org.eclipse.buckminster.pde/src/xsd/map-provider-1.0.xsd" />
-	<uri name="http://www.eclipse.org/buckminster/SiteContribution-1.0"
-		uri="platform:/resource/org.eclipse.dash.siteassembler/src/siteContribution-1.0.xsd" />
+		uri="http://www.eclipse.org/buckminster/schemas/map-provider-1.0.xsd" />
+	<uri name="http://opml.org/spec2"
+		uri="http://www.eclipse.org/buckminster/schemas/opml-2.0.xsd" />
+	<uri name="http://www.w3.org/XML/1998/namespace"
+		uri="http://www.eclipse.org/buckminster/schemas/xml-1998.xsd" />
+	<uri name="http://www.w3.org/1999/xhtml"
+		uri="http://www.eclipse.org/buckminster/schemas/xhtml-1999.xsd" />
+	<uri name="http://www.w3.org/2001/XMLSchema"
+		uri="http://www.eclipse.org/buckminster/schemas/XMLSchema-2001.xsd" />
 </catalog>
