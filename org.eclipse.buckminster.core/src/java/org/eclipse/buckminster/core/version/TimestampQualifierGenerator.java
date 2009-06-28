@@ -143,7 +143,13 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				{
 					try
 					{
-						depLastMod = getLastModification(dependency, context);
+						// Replace the qualifier and attempt to find the real source in the workspace. If
+						// found, we use the SCM timestamp for that source.
+						//
+						depVer = Version.createOSGi(depVer.getMajor(), depVer.getMinor(), depVer.getMicro(),
+								"qualifier"); //$NON-NLS-1$
+						depLastMod = getLastModification(new ComponentIdentifier(dependency.getName(),
+								dependency.getComponentTypeID(), depVer), context);
 					}
 					catch(CoreException e)
 					{
