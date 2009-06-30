@@ -139,7 +139,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 							: new Status(IStatus.ERROR, Engine.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
 
 					ErrorDialog dialog = new ErrorDialog(null, "Error",
-							"Repository builder has not finish successfuly", status, IStatus.OK | IStatus.INFO
+							"Repository builder has not finished successfully", status, IStatus.OK | IStatus.INFO
 									| IStatus.WARNING | IStatus.ERROR);
 					dialog.open();
 				}
