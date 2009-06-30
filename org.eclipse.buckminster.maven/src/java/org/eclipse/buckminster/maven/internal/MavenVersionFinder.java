@@ -42,7 +42,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class MavenVersionFinder extends AbstractVersionFinder
+public class MavenVersionFinder extends AbstractVersionFinder implements ILocationResolver
 {
 	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" }; //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -75,6 +75,11 @@ public class MavenVersionFinder extends AbstractVersionFinder
 		for(VersionMatch candidate : getComponentVersions(monitor))
 			best = getBestVersion(candidate, best);
 		return best;
+	}
+
+	public URI getURI()
+	{
+		return m_uri;
 	}
 
 	VersionMatch getBestVersion(VersionMatch a, VersionMatch b)
@@ -185,11 +190,6 @@ public class MavenVersionFinder extends AbstractVersionFinder
 	MavenReaderType getReaderType()
 	{
 		return m_readerType;
-	}
-
-	URI getURI()
-	{
-		return m_uri;
 	}
 
 	private URL[] createFileList(VersionRange designator, IProgressMonitor monitor) throws CoreException

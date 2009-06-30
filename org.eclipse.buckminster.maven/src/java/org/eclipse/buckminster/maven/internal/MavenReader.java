@@ -39,15 +39,15 @@ import org.xml.sax.SAXParseException;
  * 
  * @author Thomas Hallgren
  */
-public class MavenReader extends URLFileReader
+public class MavenReader extends URLFileReader implements ILocationResolver
 {
 	private final MapEntry m_mapEntry;
 
 	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException
 	{
 		super(readerType, rInfo, readerType.getURI(rInfo));
-		m_mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(), rInfo.getNodeQuery()
-				.getComponentRequest());
+		m_mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(),
+				rInfo.getNodeQuery().getComponentRequest());
 	}
 
 	@Override
@@ -135,5 +135,10 @@ public class MavenReader extends URLFileReader
 	VersionMatch getVersionMatch() throws CoreException
 	{
 		return getProviderMatch().getVersionMatch();
+	}
+
+	void setPackaging(String packaging)
+	{
+		((MavenReaderType)getReaderType()).setPackaging(getProviderMatch(), packaging);
 	}
 }

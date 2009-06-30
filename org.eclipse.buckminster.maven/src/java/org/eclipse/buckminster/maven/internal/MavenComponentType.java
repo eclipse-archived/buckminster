@@ -68,8 +68,8 @@ public class MavenComponentType extends AbstractComponentType
 	private static SimpleDateFormat s_timestampFormat = new SimpleDateFormat("yyyyMMdd'.'HHmmss", Locale.US); //$NON-NLS-1$
 
 	private static final Pattern s_timestampPattern = Pattern.compile(//
-			"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
-					"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
+	"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
+			"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
 
 	public static Version createVersion(String versionStr) throws CoreException
 	{
@@ -91,7 +91,7 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	static void addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec, GroupBuilder archives,
+	static String addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec, GroupBuilder archives,
 			ExpandingProperties<String> properties) throws CoreException
 	{
 		Element project = pomDoc.getDocumentElement();
@@ -101,6 +101,7 @@ public class MavenComponentType extends AbstractComponentType
 		String groupId = null;
 		String artifactId = null;
 		String versionStr = null;
+		String packaging = "jar"; //$NON-NLS-1$
 
 		for(Node child = project.getFirstChild(); child != null; child = child.getNextSibling())
 		{
@@ -120,6 +121,8 @@ public class MavenComponentType extends AbstractComponentType
 				artifactId = child.getTextContent().trim();
 			else if("version".equals(nodeName)) //$NON-NLS-1$
 				versionStr = child.getTextContent().trim();
+			else if("packaging".equals(nodeName)) //$NON-NLS-1$
+				packaging = child.getTextContent().trim();
 		}
 
 		if(reader instanceof MavenReader && parentNode != null)
@@ -160,6 +163,7 @@ public class MavenComponentType extends AbstractComponentType
 					addDependency(query, provider, cspec, archives, properties, dep);
 			}
 		}
+		return packaging;
 	}
 
 	static Date createTimestamp(String date, String time) throws CoreException
@@ -391,13 +395,9 @@ public class MavenComponentType extends AbstractComponentType
 				: MavenProvider.getDefaultName(groupId, artifactId);
 
 		MapEntry entry = new MapEntry(componentName, groupId, artifactId, null);
-		VersionMatch vm = reader.getVersionMatch();
-		if(versionStr != null)
-			vm = createVersionMatch(versionStr, vm.getArtifactInfo());
-
-		IPath parentPath;
 		MavenReaderType mrt = (MavenReaderType)reader.getReaderType();
-		parentPath = mrt.getPomPath(entry, vm);
+		VersionMatch vm = mrt.createVersionMatch(reader, entry, versionStr);
+		IPath parentPath = mrt.getPomPath(entry, vm);
 
 		MavenPlugin.getLogger().debug(
 				"Getting POM information for parent: %s - %s at path %s", groupId, artifactId, parentPath); //$NON-NLS-1$

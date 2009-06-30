@@ -207,6 +207,12 @@ public class MavenReaderType extends URLCatalogReaderType
 		appendFolder(pbld, "poms"); //$NON-NLS-1$
 	}
 
+	VersionMatch createVersionMatch(ILocationResolver resolver, MapEntry mapEntry, String versionStr)
+			throws CoreException
+	{
+		return MavenComponentType.createVersionMatch(versionStr, null);
+	}
+
 	IPath getArtifactPath(MapEntry mapEntry, VersionMatch vs) throws CoreException
 	{
 		StringBuilder pbld = new StringBuilder();
@@ -250,5 +256,10 @@ public class MavenReaderType extends URLCatalogReaderType
 		appendFolder(pbld, repoURI.getPath());
 		appendPathToPom(pbld, mapEntry, vs);
 		return createURL(repoURI, pbld.toString());
+	}
+
+	void setPackaging(ProviderMatch providerMatch, String packaging)
+	{
+		// Our Maven 1 proxy doesn't support this
 	}
 }

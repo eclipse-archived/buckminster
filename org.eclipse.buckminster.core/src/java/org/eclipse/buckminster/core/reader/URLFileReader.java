@@ -77,7 +77,7 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		return m_fileInfo;
 	}
 
-	protected final URI getURI()
+	public final URI getURI()
 	{
 		return m_uri;
 	}

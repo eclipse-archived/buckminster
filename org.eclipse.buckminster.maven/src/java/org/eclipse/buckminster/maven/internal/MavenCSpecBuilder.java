@@ -96,7 +96,9 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			if(pomDoc != null)
 			{
 				ExpandingProperties<String> properties = new ExpandingProperties<String>();
-				MavenComponentType.addDependencies(reader, pomDoc, cspecBld, archives, properties);
+				String packaging = MavenComponentType.addDependencies(reader, pomDoc, cspecBld, archives, properties);
+				if(reader instanceof MavenReader && !"jar".equals(packaging)) //$NON-NLS-1$
+					((MavenReader)reader).setPackaging(packaging);
 			}
 
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));

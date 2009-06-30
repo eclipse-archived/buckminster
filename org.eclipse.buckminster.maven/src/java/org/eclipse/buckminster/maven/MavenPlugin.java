@@ -14,6 +14,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.buckminster.maven.internal.LocalCache;
+import org.eclipse.buckminster.maven.internal.Maven2ReaderType;
 import org.eclipse.buckminster.maven.internal.Maven2VersionFinder;
 import org.eclipse.buckminster.maven.internal.MavenComponentType;
 import org.eclipse.buckminster.runtime.LogAwarePlugin;
@@ -53,18 +54,18 @@ public class MavenPlugin extends LogAwarePlugin
 	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx,
 			IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		return Maven2VersionFinder.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder
+		return Maven2ReaderType.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder
 				.getDefaultLocalRepoPath()), cctx, monitor);
 	}
 
 	public static String getSnapshotVersion(Document doc, String version) throws CoreException
 	{
-		return Maven2VersionFinder.getSnapshotVersion(doc, version);
+		return Maven2ReaderType.getSnapshotVersion(doc, version);
 	}
 
 	public static List<String> getVersions(Document doc)
 	{
-		return Maven2VersionFinder.getVersions(doc);
+		return Maven2ReaderType.getVersions(doc);
 	}
 
 	public MavenPlugin()
