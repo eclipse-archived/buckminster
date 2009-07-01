@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -68,6 +69,22 @@ public interface MappedRepository extends EObject, StatusProvider
 	 * @generated
 	 */
 	EList<Category> getCategories();
+
+	/**
+	 * Returns the value of the '<em><b>Category Prefix</b></em>' attribute. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Category Prefix</em>' attribute isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Category Prefix</em>' attribute.
+	 * @see #setCategoryPrefix(String)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_CategoryPrefix()
+	 * @model
+	 * @generated
+	 */
+	String getCategoryPrefix();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -173,6 +190,17 @@ public interface MappedRepository extends EObject, StatusProvider
 	 * @generated
 	 */
 	boolean isMirrorArtifacts();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix
+	 * <em>Category Prefix</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Category Prefix</em>' attribute.
+	 * @see #getCategoryPrefix()
+	 * @generated
+	 */
+	void setCategoryPrefix(String value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}'

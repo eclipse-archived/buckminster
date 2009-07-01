@@ -126,6 +126,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			addLocationPropertyDescriptor(object);
 			addMapVerbatimPropertyDescriptor(object);
 			addMirrorArtifactsPropertyDescriptor(object);
+			addCategoryPrefixPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -208,6 +209,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
@@ -218,6 +220,21 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Category Prefix feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addCategoryPrefixPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MappedRepository_categoryPrefix_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_categoryPrefix_feature",
+						"_UI_MappedRepository_type"), AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORY_PREFIX,
+				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

@@ -176,6 +176,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute MAPPED_REPOSITORY__MIRROR_ARTIFACTS = eINSTANCE.getMappedRepository_MirrorArtifacts();
 
 		/**
+		 * The meta object literal for the '<em><b>Category Prefix</b></em>' attribute feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAPPED_REPOSITORY__CATEGORY_PREFIX = eINSTANCE.getMappedRepository_CategoryPrefix();
+
+		/**
 		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature. <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
 		 * 
@@ -706,13 +714,21 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = 7;
 
 	/**
+	 * The feature id for the '<em><b>Category Prefix</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__CATEGORY_PREFIX = 8;
+
+	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = 8;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -1589,6 +1605,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMappedRepository_Categories();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Category Prefix</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix()
+	 * @see #getMappedRepository()
+	 * @generated
+	 */
+	EAttribute getMappedRepository_CategoryPrefix();
 
 	/**
 	 * Returns the meta object for the containment reference list '

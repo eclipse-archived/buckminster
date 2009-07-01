@@ -169,6 +169,26 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 1;
 
 	/**
+	 * The default value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @see #getCategoryPrefix()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CATEGORY_PREFIX_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @see #getCategoryPrefix()
+	 * @generated
+	 * @ordered
+	 */
+	protected String categoryPrefix = CATEGORY_PREFIX_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -217,6 +237,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return isMapVerbatim();
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			return isMirrorArtifacts();
+		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+			return getCategoryPrefix();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -271,6 +293,10 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return ((eFlags & MAP_VERBATIM_EFLAG) != 0) != MAP_VERBATIM_EDEFAULT;
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			return ((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0) != MIRROR_ARTIFACTS_EDEFAULT;
+		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+			return CATEGORY_PREFIX_EDEFAULT == null
+					? categoryPrefix != null
+					: !CATEGORY_PREFIX_EDEFAULT.equals(categoryPrefix);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -314,6 +340,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			setMirrorArtifacts((Boolean)newValue);
 			return;
+		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+			setCategoryPrefix((String)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -352,6 +381,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			setMirrorArtifacts(MIRROR_ARTIFACTS_EDEFAULT);
 			return;
+		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+			setCategoryPrefix(CATEGORY_PREFIX_EDEFAULT);
+			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -384,6 +416,16 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 					AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES);
 		}
 		return categories;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getCategoryPrefix()
+	{
+		return categoryPrefix;
 	}
 
 	/**
@@ -511,6 +553,20 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
+	public void setCategoryPrefix(String newCategoryPrefix)
+	{
+		String oldCategoryPrefix = categoryPrefix;
+		categoryPrefix = newCategoryPrefix;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX,
+					oldCategoryPrefix, categoryPrefix));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setLocation(String newLocation)
 	{
 		String oldLocation = location;
@@ -586,6 +642,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		result.append((eFlags & MAP_VERBATIM_EFLAG) != 0);
 		result.append(", mirrorArtifacts: ");
 		result.append((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0);
+		result.append(", categoryPrefix: ");
+		result.append(categoryPrefix);
 		result.append(')');
 		return result.toString();
 	}
