@@ -14,7 +14,9 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -189,7 +191,13 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		if("location".equals(name))
 			onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
 		else if("mapVerbatim".equals(name))
+		{
+			for(Feature mappedFeature : ((MappedRepository)notification.getNotifier()).getFeatures())
+				for(CustomCategory category : mappedFeature.getCategories())
+					category.eNotify(ViewerNotification.wrapNotification(notification, category));
+
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+		}
 	}
 
 	/**

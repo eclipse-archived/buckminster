@@ -153,6 +153,13 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 				: getString("_UI_CustomCategory_type") + " " + label;
 	}
 
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		cachedFilteredChildren = null;
+		notifyChangedGen(notification);
+	}
+
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
@@ -160,11 +167,9 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void notifyChanged(Notification notification)
+	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
-		cachedFilteredChildren = null;
 
 		switch(notification.getFeatureID(CustomCategory.class))
 		{
@@ -174,6 +179,7 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
