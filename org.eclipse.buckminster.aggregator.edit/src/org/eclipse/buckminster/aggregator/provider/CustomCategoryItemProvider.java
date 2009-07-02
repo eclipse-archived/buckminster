@@ -44,7 +44,7 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public CustomCategoryItemProvider(AdapterFactory adapterFactory)
 	{
@@ -158,6 +158,9 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	{
 		cachedFilteredChildren = null;
 		notifyChangedGen(notification);
+		
+		if(notification.getFeatureID(CustomCategory.class) == AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM)
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 	}
 
 	/**
@@ -179,7 +182,6 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.CUSTOM_CATEGORY__FEATURES:
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
