@@ -158,7 +158,7 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	{
 		cachedFilteredChildren = null;
 		notifyChangedGen(notification);
-		
+
 		if(notification.getFeatureID(CustomCategory.class) == AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM)
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 	}
