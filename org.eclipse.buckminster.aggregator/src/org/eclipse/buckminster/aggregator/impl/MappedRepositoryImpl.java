@@ -129,26 +129,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected String location = LOCATION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isMapVerbatim() <em>Map Verbatim</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #isMapVerbatim()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean MAP_VERBATIM_EDEFAULT = false;
-
-	/**
-	 * The flag representing the value of the '{@link #isMapVerbatim() <em>Map Verbatim</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #isMapVerbatim()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int MAP_VERBATIM_EFLAG = 1 << 0;
-
-	/**
 	 * The default value of the '{@link #isMirrorArtifacts() <em>Mirror Artifacts</em>}' attribute. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -166,7 +146,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 1;
+	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 0;
 
 	/**
 	 * The default value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute. <!-- begin-user-doc
@@ -233,8 +213,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return getCategories();
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 			return getLocation();
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-			return isMapVerbatim();
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			return isMirrorArtifacts();
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
@@ -289,8 +267,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return LOCATION_EDEFAULT == null
 					? location != null
 					: !LOCATION_EDEFAULT.equals(location);
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-			return ((eFlags & MAP_VERBATIM_EFLAG) != 0) != MAP_VERBATIM_EDEFAULT;
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			return ((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0) != MIRROR_ARTIFACTS_EDEFAULT;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
@@ -334,9 +310,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 			setLocation((String)newValue);
 			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-			setMapVerbatim((Boolean)newValue);
-			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			setMirrorArtifacts((Boolean)newValue);
 			return;
@@ -374,9 +347,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 			setLocation(LOCATION_EDEFAULT);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
-			setMapVerbatim(MAP_VERBATIM_EDEFAULT);
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			setMirrorArtifacts(MIRROR_ARTIFACTS_EDEFAULT);
@@ -583,16 +553,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
-	public boolean isMapVerbatim()
-	{
-		return (eFlags & MAP_VERBATIM_EFLAG) != 0;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public boolean isMirrorArtifacts()
 	{
 		return (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
@@ -624,23 +584,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__LOCATION,
 					oldLocation, location));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setMapVerbatim(boolean newMapVerbatim)
-	{
-		boolean oldMapVerbatim = (eFlags & MAP_VERBATIM_EFLAG) != 0;
-		if(newMapVerbatim)
-			eFlags |= MAP_VERBATIM_EFLAG;
-		else
-			eFlags &= ~MAP_VERBATIM_EFLAG;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM,
-					oldMapVerbatim, newMapVerbatim));
 	}
 
 	/**
@@ -688,8 +631,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (location: ");
 		result.append(location);
-		result.append(", mapVerbatim: ");
-		result.append((eFlags & MAP_VERBATIM_EFLAG) != 0);
 		result.append(", mirrorArtifacts: ");
 		result.append((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0);
 		result.append(", categoryPrefix: ");

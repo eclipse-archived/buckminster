@@ -6,20 +6,16 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
-import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
-import org.eclipse.emf.edit.provider.DelegatingWrapperItemProvider;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -39,43 +35,14 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 
 {
-	private Collection<Object> cachedFilteredChildren;
-
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	public CustomCategoryItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
-		cachedFilteredChildren = null;
-	}
-
-	@Override
-	public Collection<?> getChildren(Object object)
-	{
-		if(cachedFilteredChildren == null)
-		{
-			cachedFilteredChildren = new ArrayList<Object>();
-
-			for(Object child : super.getChildren(object))
-			{
-				Object unwrappedChild;
-
-				if(child instanceof DelegatingWrapperItemProvider)
-					unwrappedChild = ((DelegatingWrapperItemProvider)child).getValue();
-				else
-					unwrappedChild = child;
-
-				if(unwrappedChild instanceof MappedUnit
-						&& ((MappedUnit)unwrappedChild).eContainer() instanceof MappedRepository
-						&& !((MappedRepository)((MappedUnit)unwrappedChild).eContainer()).isMapVerbatim())
-					cachedFilteredChildren.add(child);
-			}
-		}
-
-		return cachedFilteredChildren;
 	}
 
 	/**
@@ -153,16 +120,6 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 				: getString("_UI_CustomCategory_type") + " " + label;
 	}
 
-	@Override
-	public void notifyChanged(Notification notification)
-	{
-		cachedFilteredChildren = null;
-		notifyChangedGen(notification);
-
-		if(notification.getFeatureID(CustomCategory.class) == AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM)
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-	}
-
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
@@ -170,7 +127,8 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
-	public void notifyChangedGen(Notification notification)
+	@Override
+	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
 

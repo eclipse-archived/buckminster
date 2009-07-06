@@ -277,7 +277,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__METADATA_REPOSITORY);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__CATEGORIES);
 		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__LOCATION);
-		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__MAP_VERBATIM);
 		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__MIRROR_ARTIFACTS);
 		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__CATEGORY_PREFIX);
 
@@ -717,7 +716,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EAttribute getMappedRepository_CategoryPrefix()
 	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(8);
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -745,16 +744,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
-	public EAttribute getMappedRepository_MapVerbatim()
-	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EReference getMappedRepository_MetadataRepository()
 	{
 		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(3);
@@ -767,7 +756,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EAttribute getMappedRepository_MirrorArtifacts()
 	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(7);
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -963,9 +952,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getMappedRepository_Location(), ecorePackage.getEString(), "location", null, 1, 1,
-				MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMappedRepository_MapVerbatim(), ecorePackage.getEBoolean(), "mapVerbatim", null, 0, 1,
 				MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
 				!IS_DERIVED, IS_ORDERED);
 		initEAttribute(getMappedRepository_MirrorArtifacts(), ecorePackage.getEBoolean(), "mirrorArtifacts", "true", 0,

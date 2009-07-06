@@ -160,14 +160,6 @@ public interface AggregatorPackage extends EPackage
 		EReference MAPPED_REPOSITORY__FEATURES = eINSTANCE.getMappedRepository_Features();
 
 		/**
-		 * The meta object literal for the '<em><b>Map Verbatim</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute MAPPED_REPOSITORY__MAP_VERBATIM = eINSTANCE.getMappedRepository_MapVerbatim();
-
-		/**
 		 * The meta object literal for the '<em><b>Mirror Artifacts</b></em>' attribute feature. <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * 
@@ -697,21 +689,13 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY__LOCATION = 5;
 
 	/**
-	 * The feature id for the '<em><b>Map Verbatim</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__MAP_VERBATIM = 6;
-
-	/**
 	 * The feature id for the '<em><b>Mirror Artifacts</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = 7;
+	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = 6;
 
 	/**
 	 * The feature id for the '<em><b>Category Prefix</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -719,7 +703,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORY_PREFIX = 8;
+	int MAPPED_REPOSITORY__CATEGORY_PREFIX = 7;
 
 	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
@@ -728,7 +712,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = 9;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = 8;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -1641,18 +1625,6 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getMappedRepository_Location();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Map Verbatim</em>'.
-	 * @see org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim()
-	 * @see #getMappedRepository()
-	 * @generated
-	 */
-	EAttribute getMappedRepository_MapVerbatim();
 
 	/**
 	 * Returns the meta object for the reference '

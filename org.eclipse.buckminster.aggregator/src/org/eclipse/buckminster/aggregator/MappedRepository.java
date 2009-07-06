@@ -26,7 +26,6 @@ import org.eclipse.emf.ecore.EObject;
  *          </em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim <em>Map Verbatim</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
  *          </ul>
@@ -170,22 +169,6 @@ public interface MappedRepository extends EObject, StatusProvider
 	boolean isMapEverything();
 
 	/**
-	 * Returns the value of the '<em><b>Map Verbatim</b></em>' attribute. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Map Verbatim</em>' attribute isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Map Verbatim</em>' attribute.
-	 * @see #setMapVerbatim(boolean)
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_MapVerbatim()
-	 * @model
-	 * @generated
-	 */
-	boolean isMapVerbatim();
-
-	/**
 	 * Returns the value of the '<em><b>Mirror Artifacts</b></em>' attribute. The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -223,17 +206,6 @@ public interface MappedRepository extends EObject, StatusProvider
 	 * @generated
 	 */
 	void setLocation(String value);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#isMapVerbatim
-	 * <em>Map Verbatim</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Map Verbatim</em>' attribute.
-	 * @see #isMapVerbatim()
-	 * @generated
-	 */
-	void setMapVerbatim(boolean value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository

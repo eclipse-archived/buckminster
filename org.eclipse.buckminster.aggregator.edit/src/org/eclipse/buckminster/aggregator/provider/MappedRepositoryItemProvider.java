@@ -7,7 +7,6 @@
 package org.eclipse.buckminster.aggregator.provider;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
@@ -24,7 +23,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -55,20 +53,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	}
 
 	/**
-	 * Show the children only if the repository is not mapped verbatim
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
-	{
-		if(((MappedRepository)object).isMapVerbatim())
-			return Collections.emptySet();
-
-		return getChildrenFeaturesGen(object);
-	}
-
-	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
@@ -76,7 +60,8 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	 * 
 	 * @generated
 	 */
-	public Collection<? extends EStructuralFeature> getChildrenFeaturesGen(Object object)
+	@Override
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
 		if(childrenFeatures == null)
 		{
@@ -101,18 +86,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	}
 
 	/**
-	 * Allow adding children only if the repository is not mapped verbatim
-	 */
-	@Override
-	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling)
-	{
-		if(((MappedRepository)object).isMapVerbatim())
-			return Collections.emptySet();
-
-		return super.getNewChildDescriptors(object, editingDomain, sibling);
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -126,7 +99,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 			addMetadataRepositoryPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
-			addMapVerbatimPropertyDescriptor(object);
 			addMirrorArtifactsPropertyDescriptor(object);
 			addCategoryPrefixPropertyDescriptor(object);
 		}
@@ -165,8 +137,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 				bld.append(' ');
 			}
 			bld.append(mdr.getLocation());
-			if(mappedRepository.isMapVerbatim())
-				bld.append(" mapped verbatim");
 		}
 		else
 			bld.append("not mapped");
@@ -215,7 +185,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		{
 		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_VERBATIM:
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -258,21 +227,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 						"_UI_MappedRepository_location_feature", "_UI_MappedRepository_type"),
 				AggregatorPackage.Literals.MAPPED_REPOSITORY__LOCATION, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Map Verbatim feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addMapVerbatimPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MappedRepository_mapVerbatim_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MappedRepository_mapVerbatim_feature", "_UI_MappedRepository_type"),
-				AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_VERBATIM, true, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

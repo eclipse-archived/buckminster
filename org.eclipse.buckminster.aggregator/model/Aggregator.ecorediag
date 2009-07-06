@@ -39,10 +39,6 @@
         <element xmi:type="ecore:EAttribute" href="Aggregator.ecore#//MappedRepository/location"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_6_qNgV6uEd69MdKdOqCgTQ"/>
       </children>
-      <children xmi:type="notation:Node" xmi:id="_1lhq8F-9Ed6t4JGrCUyEKA" type="2001">
-        <element xmi:type="ecore:EAttribute" href="Aggregator.ecore#//MappedRepository/mapVerbatim"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_1liSAF-9Ed6t4JGrCUyEKA"/>
-      </children>
       <children xmi:type="notation:Node" xmi:id="_6tV5UF-9Ed6t4JGrCUyEKA" type="2001">
         <element xmi:type="ecore:EAttribute" href="Aggregator.ecore#//MappedRepository/mirrorArtifacts"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_6tV5UV-9Ed6t4JGrCUyEKA"/>
