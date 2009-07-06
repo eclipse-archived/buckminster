@@ -87,14 +87,6 @@ public interface MappedRepository extends EObject, StatusProvider
 	String getCategoryPrefix();
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @model kind="operation"
-	 * @generated
-	 */
-	EList<MappedUnit> getEnabledUnits();
-
-	/**
 	 * Returns the value of the '<em><b>Features</b></em>' containment reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.aggregator.Feature}. <!-- begin-user-doc -->
 	 * <p>
@@ -157,6 +149,25 @@ public interface MappedRepository extends EObject, StatusProvider
 	 * @generated
 	 */
 	EList<Product> getProducts();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc --> Returns the MappedUnits referenced by this
+	 * instance. Units that have their <code>enabled</code> flag set to false will be excluded if the parameter
+	 * <code>enabledOnly</code> is set to <code>true</code>. <!-- end-model-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	EList<MappedUnit> getUnits(boolean enabledOnly);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc --> Returns <code>true</code> if the container
+	 * has no MappedUnit children. <!-- end-model-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	boolean isMapEverything();
 
 	/**
 	 * Returns the value of the '<em><b>Map Verbatim</b></em>' attribute. <!-- begin-user-doc -->

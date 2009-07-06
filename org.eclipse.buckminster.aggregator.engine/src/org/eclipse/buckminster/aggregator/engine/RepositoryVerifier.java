@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -96,13 +97,15 @@ public class RepositoryVerifier extends BuilderPhase
 		final HashSet<IInstallableUnit> unitsToAggregate = new HashSet<IInstallableUnit>();
 		final HashSet<IInstallableUnit> trustedUnits = new HashSet<IInstallableUnit>();
 
-		List<Configuration> configs = getBuilder().getAggregator().getConfigurations();
+		Builder builder = getBuilder();
+		Aggregator aggregator = builder.getAggregator();
+		List<Configuration> configs = aggregator.getConfigurations();
 		MonitorUtils.begin(monitor, configs.size() * 100);
 		Buckminster bucky = Buckminster.getDefault();
 		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		IPlanner planner = bucky.getService(IPlanner.class);
-		boolean update = getBuilder().isUpdate();
-		URI repoLocation = getBuilder().getGlobalRepoURI();
+		boolean update = builder.isUpdate();
+		URI repoLocation = builder.getGlobalRepoURI();
 		try
 		{
 			for(Configuration config : configs)
@@ -165,14 +168,28 @@ public class RepositoryVerifier extends BuilderPhase
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
 		}
-		List<Contribution> contribs = getBuilder().getAggregator().getContributions();
+		List<Contribution> contribs = aggregator.getContributions();
 		for(Contribution contrib : contribs)
 		{
 			for(MappedRepository repo : contrib.getRepositories())
 			{
-				if(repo.isMirrorArtifacts() && repo.isMapVerbatim())
-					for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
+				if(!repo.isMapEverything())
+					continue;
+
+				boolean mirrorArtifacts = repo.isMirrorArtifacts();
+				for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
+				{
+					if(builder.isTopLevelCategory(iu))
+						//
+						// Categories have special treatment so we don't add them here.
+						//
+						continue;
+
+					if(mirrorArtifacts)
 						unitsToAggregate.add(iu);
+					else
+						trustedUnits.add(iu);
+				}
 			}
 		}
 
@@ -212,8 +229,8 @@ public class RepositoryVerifier extends BuilderPhase
 		if(pruningLogged)
 			log.info("%d units remain after pruning", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
 
-		getBuilder().setUnitsToAggregate(unitsToAggregate);
-		getBuilder().setTrustedUnits(trustedUnits);
+		builder.setUnitsToAggregate(unitsToAggregate);
+		builder.setTrustedUnits(trustedUnits);
 	}
 
 	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions,
@@ -303,16 +320,10 @@ public class RepositoryVerifier extends BuilderPhase
 	private Contribution findContribution(String componentId)
 	{
 		for(Contribution contrib : getBuilder().getAggregator().getContributions())
-		{
 			for(MappedRepository repository : contrib.getRepositories())
-			{
-				for(MappedUnit mu : repository.getEnabledUnits())
-				{
+				for(MappedUnit mu : repository.getUnits(true))
 					if(componentId.equals(mu.getInstallableUnit().getId()))
 						return contrib;
-				}
-			}
-		}
 		return null;
 	}
 

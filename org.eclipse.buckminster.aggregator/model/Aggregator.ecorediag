@@ -53,8 +53,12 @@
     </children>
     <children xmi:type="notation:Node" xmi:id="_lJXNoFtqEd6VuawgzDNa7w" type="5002">
       <children xmi:type="notation:Node" xmi:id="_UWXdAF8xEd63EaRaP69PJQ" type="2002">
-        <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//MappedRepository/getEnabledUnits"/>
+        <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//MappedRepository/getUnits"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_UWXdAV8xEd63EaRaP69PJQ"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_dpSGIGkyEd6ZaI_KukqTFw" type="2002">
+        <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//MappedRepository/isMapEverything"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_dpSGIWkyEd6ZaI_KukqTFw"/>
       </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_lJXNoVtqEd6VuawgzDNa7w"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_lJXNoltqEd6VuawgzDNa7w"/>
@@ -489,7 +493,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_lJZp0VtqEd6VuawgzDNa7w" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_lJZp0ltqEd6VuawgzDNa7w" fontColor="4210752" fontName="Sans" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="Aggregator.ecore#//MappedRepository/products"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_lJZp01tqEd6VuawgzDNa7w" points="[36, -6, 0, 92]$[36, -98, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_lJZp01tqEd6VuawgzDNa7w" points="[31, -7, 0, 92]$[31, -99, 0, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_lJZp1FtqEd6VuawgzDNa7w" id="(0.6210526315789474,0.07692307692307693)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_lJZp1VtqEd6VuawgzDNa7w" id="(0.47058823529411764,1.0)"/>
   </edges>
@@ -503,7 +507,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_lJZp21tqEd6VuawgzDNa7w" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_lJZp3FtqEd6VuawgzDNa7w" fontColor="4210752" fontName="Sans" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="Aggregator.ecore#//MappedRepository/bundles"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_lJZp3VtqEd6VuawgzDNa7w" points="[31, 0, 0, 92]$[31, -92, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_lJZp3VtqEd6VuawgzDNa7w" points="[30, 0, 0, 92]$[30, -92, 0, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_lJZp3ltqEd6VuawgzDNa7w" id="(0.1368421052631579,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_lJZp31tqEd6VuawgzDNa7w" id="(0.5,1.0)"/>
   </edges>
@@ -625,7 +629,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_uiy6sVttEd6VuawgzDNa7w" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_uiy6slttEd6VuawgzDNa7w" fontColor="4210752" fontName="Sans" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="Aggregator.ecore#//MappedRepository/metadataRepository"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_uiy6s1ttEd6VuawgzDNa7w" points="[0, -19, 275, 9]$[-201, -19, 74, 9]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_uiy6s1ttEd6VuawgzDNa7w" points="[0, -44, 275, 8]$[-201, -44, 74, 8]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_u-OAgFtvEd6VuawgzDNa7w" id="(0.0,0.7846153846153846)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_88dH4FttEd6VuawgzDNa7w" type="3002" source="_uiXc4FttEd6VuawgzDNa7w" target="_88MCIFttEd6VuawgzDNa7w">

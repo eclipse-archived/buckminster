@@ -65,9 +65,10 @@ public class AllContributedContentAction extends AbstractPublisherAction
 			ArrayList<String> errors = new ArrayList<String>();
 			for(MappedRepository repository : contrib.getRepositories())
 			{
-				if(repository.isMapVerbatim())
+				if(repository.isMapEverything())
 					continue;
-				for(MappedUnit mu : repository.getEnabledUnits())
+
+				for(MappedUnit mu : repository.getUnits(true))
 				{
 					InstallableUnit muIU = mu.getInstallableUnit();
 					String id = muIU.getId();

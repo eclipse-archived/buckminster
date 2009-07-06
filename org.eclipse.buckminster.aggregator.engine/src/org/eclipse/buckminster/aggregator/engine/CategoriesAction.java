@@ -9,15 +9,19 @@ package org.eclipse.buckminster.aggregator.engine;
 
 import java.util.ArrayList;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
@@ -40,8 +44,53 @@ public class CategoriesAction extends AbstractPublisherAction
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
-		for(CustomCategory category : builder.getAggregator().getCustomCategories())
+		Aggregator aggregator = builder.getAggregator();
+		for(CustomCategory category : aggregator.getCustomCategories())
 			results.addIU(createCategoryIU(category, null), IPublisherResult.NON_ROOT);
+
+		for(Contribution contrib : aggregator.getContributions())
+		{
+			for(MappedRepository repo : contrib.getRepositories())
+			{
+				ArrayList<InstallableUnit> categoryIUs = new ArrayList<InstallableUnit>();
+				if(repo.isMapEverything())
+				{
+					for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
+						if(builder.isTopLevelCategory(iu))
+							categoryIUs.add(iu);
+				}
+				else
+				{
+					for(Category category : repo.getCategories())
+					{
+						InstallableUnit iu = category.getInstallableUnit();
+						if(builder.isTopLevelCategory(iu))
+							categoryIUs.add(iu);
+					}
+				}
+
+				// Add all categories from this repository.
+				//
+				String categoryPrefix = repo.getCategoryPrefix();
+				if(categoryPrefix != null)
+				{
+					// All requirements for categories must be renamed.
+					//
+					int idx = categoryIUs.size();
+					while(--idx >= 0)
+					{
+						InstallableUnit iu = categoryIUs.get(idx);
+						InstallableUnit renamedIU = InstallableUnitImpl.importToModel(iu);
+						String oldName = iu.getProperty(IInstallableUnit.PROP_NAME);
+						renamedIU.getPropertyMap().map().put(IInstallableUnit.PROP_NAME, categoryPrefix + oldName);
+						categoryIUs.set(idx, renamedIU);
+					}
+				}
+
+				for(InstallableUnit iu : categoryIUs)
+					results.addIU(iu, IPublisherResult.NON_ROOT);
+			}
+		}
 		return Status.OK_STATUS;
 	}
 
@@ -69,7 +118,7 @@ public class CategoriesAction extends AbstractPublisherAction
 		cat.setRequiredCapabilities(rcs.toArray(new IRequiredCapability[rcs.size()]));
 		cat.setCapabilities(new IProvidedCapability[] { PublisherHelper.createSelfCapability(categoryId,
 				Version.emptyVersion) });
-		cat.setArtifacts(new IArtifactKey[0]);
+		cat.setArtifacts(Builder.NO_ARTIFACT_KEYS);
 		cat.setProperty(IInstallableUnit.PROP_TYPE_CATEGORY, "true"); //$NON-NLS-1$
 		return MetadataFactory.createInstallableUnit(cat);
 	}

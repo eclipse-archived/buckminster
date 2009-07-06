@@ -52,6 +52,7 @@ import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
@@ -153,6 +154,8 @@ public class Builder implements IApplication
 	public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmm"); //$NON-NLS-1$
 
 	static final String FEATURE_GROUP_SUFFIX = ".feature.group"; //$NON-NLS-1$
+
+	static final IArtifactKey[] NO_ARTIFACT_KEYS = new IArtifactKey[0];
 
 	private static final String BUNDLE_ECF_FS_PROVIDER = "org.eclipse.ecf.provider.filetransfer"; //$NON-NLS-1$
 
@@ -467,6 +470,12 @@ public class Builder implements IApplication
 	public boolean isProduction()
 	{
 		return production;
+	}
+
+	public boolean isTopLevelCategory(IInstallableUnit iu)
+	{
+		return "true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY))
+				&& !"true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_GROUP));
 	}
 
 	public boolean isUpdate()

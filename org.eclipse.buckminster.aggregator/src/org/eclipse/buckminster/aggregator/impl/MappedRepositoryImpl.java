@@ -531,6 +531,56 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public EList<MappedUnit> getUnits(boolean enabledOnly)
+	{
+		EList<Category> categories = getCategories();
+		EList<Product> products = getProducts();
+		EList<Feature> features = getFeatures();
+		EList<Bundle> bundles = getBundles();
+		EList<MappedUnit> units = new BasicEList<MappedUnit>(categories.size() + products.size() + features.size()
+				+ bundles.size());
+
+		if(enabledOnly)
+		{
+			for(Category category : categories)
+				if(category.isEnabled())
+					units.add(category);
+			for(Product product : products)
+				if(product.isEnabled())
+					units.add(product);
+			for(Feature feature : features)
+				if(feature.isEnabled())
+					units.add(feature);
+			for(Bundle bundle : bundles)
+				if(bundle.isEnabled())
+					units.add(bundle);
+		}
+		else
+		{
+			units.addAll(categories);
+			units.addAll(products);
+			units.addAll(features);
+			units.addAll(bundles);
+		}
+		return units;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isMapEverything()
+	{
+		return getFeatures().size() == 0 && getCategories().size() == 0 && getProducts().size() == 0
+				&& getBundles().size() == 0;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isMapVerbatim()

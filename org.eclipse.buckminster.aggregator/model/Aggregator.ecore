@@ -21,7 +21,17 @@
         eType="#//CustomCategory" containment="true" eKeys="#//CustomCategory/identifier"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MappedRepository">
-    <eOperations name="getEnabledUnits" upperBound="-1" eType="#//MappedUnit"/>
+    <eOperations name="getUnits" upperBound="-1" eType="#//MappedUnit">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns the MappedUnits referenced by this instance. Units that have their &lt;code>enabled&lt;/code> flag set to false will be excluded if the parameter &lt;code>enabledOnly&lt;/code> is set to &lt;code>true&lt;/code>."/>
+      </eAnnotations>
+      <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
+    <eOperations name="isMapEverything" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns &lt;code>true&lt;/code> if the container has no MappedUnit children."/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1"
         eType="#//Product" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="bundles" upperBound="-1"
