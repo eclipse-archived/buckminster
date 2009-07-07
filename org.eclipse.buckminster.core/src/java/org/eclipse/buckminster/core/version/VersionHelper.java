@@ -177,8 +177,12 @@ public class VersionHelper
 
 		StringBuffer buf = new StringBuffer();
 		getOriginal(version, buf);
-		buf.append('#');
-		buf.append(getVersionType(version.getFormat()).getId());
+		VersionFormat fmt = version.getFormat();
+		if(!VersionFormat.OSGI_FORMAT.equals(fmt))
+		{
+			buf.append('#');
+			buf.append(getVersionType(fmt).getId());
+		}
 		return buf.toString();
 	}
 
@@ -210,9 +214,9 @@ public class VersionHelper
 						? ']'
 						: ')');
 			}
+			buf.append('#');
+			buf.append(getVersionType(fmt).getId());
 		}
-		buf.append('#');
-		buf.append(getVersionType(fmt).getId());
 		return buf.toString();
 	}
 
