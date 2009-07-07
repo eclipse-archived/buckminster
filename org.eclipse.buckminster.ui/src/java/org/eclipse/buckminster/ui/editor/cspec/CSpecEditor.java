@@ -876,7 +876,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 					}
 				});
 		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		m_externalSaveAsButton.setEnabled(false);
 	}
 
 	private ActionBuilder findActionBuilder(String actionName)
@@ -1219,7 +1218,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			return;
 
 		m_hasChanges = flag;
-		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
 	}
 }
