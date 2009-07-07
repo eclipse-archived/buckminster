@@ -81,6 +81,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -377,6 +379,15 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
 		m_xmlTab.setText(Messages.xml_content);
 		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
+
+		m_tabFolder.addPaintListener(new PaintListener()
+		{
+			public void paintControl(PaintEvent e)
+			{
+				if(m_tabFolder.getSelection() == null)
+					m_tabFolder.setSelection(0);
+			}
+		});
 
 		m_tabFolder.addSelectionListener(new SelectionAdapter()
 		{
@@ -711,7 +722,6 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 					}
 				});
 		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		m_externalSaveAsButton.setEnabled(false);
 	}
 
 	private void createButtonBox(Composite parent)
@@ -1696,6 +1706,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 
 		node.setSkipComponent(m_skipComponent.getSelection());
 
+		node.getAttributes().clear();
 		String tmp = UiUtils.trimmedValue(m_wantedAttributes);
 		if(tmp != null)
 			for(String attribute : tmp.split(",")) //$NON-NLS-1$
@@ -1830,7 +1841,6 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		if(m_mute || m_hasChanges == flag)
 			return;
 		m_hasChanges = flag;
-		m_externalSaveAsButton.setEnabled(flag);
 		firePropertyChange(PROP_DIRTY);
 	}
 
