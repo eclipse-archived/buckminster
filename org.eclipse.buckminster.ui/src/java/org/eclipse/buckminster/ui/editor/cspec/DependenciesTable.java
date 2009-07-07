@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
@@ -189,7 +190,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 		array[0] = t.getName();
 		array[1] = t.getComponentTypeID();
-		array[2] = t.getVersionRange();
+		array[2] = VersionHelper.getHumanReadable(t.getVersionRange());
 		array[3] = t.getFilter();
 
 		return array;

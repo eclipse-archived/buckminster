@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.ui.utils.UiUtils;
@@ -167,7 +168,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			if(version != null)
 			{
 				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
-				bld.append(version.toString(), StyledString.DECORATIONS_STYLER);
+				bld.append(VersionHelper.getHumanReadable(version), StyledString.DECORATIONS_STYLER);
 			}
 			return bld;
 		}

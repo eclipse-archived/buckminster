@@ -11,6 +11,7 @@ package org.eclipse.buckminster.ui.internal;
 
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
@@ -50,7 +51,7 @@ public class CSpecEditorInput extends SaxableEditorInput
 		if(version != null)
 		{
 			bld.append(':');
-			bld.append(version);
+			bld.append(VersionHelper.getHumanReadable(version));
 		}
 		bld.append(".cspec"); //$NON-NLS-1$
 		return bld.toString();

@@ -12,10 +12,10 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.internal.DynamicTableLayout;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-@SuppressWarnings("restriction")
 public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActionDelegate
 {
 	static class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider
@@ -60,9 +59,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 				lbl = cr.getRequest().getViewName();
 				break;
 			case 1:
-				Version vs = cr.getVersion();
-				lbl = vs == null
-						? "" : vs.toString(); //$NON-NLS-1$
+				lbl = VersionHelper.getHumanReadable(cr.getVersion());
 				break;
 			default:
 				lbl = null;
