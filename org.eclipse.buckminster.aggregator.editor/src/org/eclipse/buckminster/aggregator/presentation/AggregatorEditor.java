@@ -8,16 +8,19 @@ package org.eclipse.buckminster.aggregator.presentation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -43,6 +46,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -106,6 +110,7 @@ import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 
 import org.eclipse.emf.ecore.EObject;
@@ -144,6 +149,9 @@ import org.eclipse.emf.edit.ui.util.EditUIUtil;
 
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
 
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
@@ -638,12 +646,76 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
+	 * Call generated model generator and then initialize all repositories contained in the model using a progress bar.
+	 */
+	public void createModel()
+	{
+		createModelGen();
+
+		URI resourceURI = EditUIUtil.getURI(getEditorInput());
+		Resource resource = editingDomain.getResourceSet().getResource(resourceURI, false);
+
+		if(resource != null)
+		{
+			EList<EObject> contents = resource.getContents();
+			if(contents.size() == 1 && contents.get(0) instanceof Aggregator)
+			{
+				Aggregator aggregator = (Aggregator)contents.get(0);
+				final Set<MappedRepository> repositoriesToLoad = new HashSet<MappedRepository>();
+
+				for(Contribution contribution : aggregator.getContributions())
+					for(MappedRepository mappedRepository : contribution.getRepositories())
+						repositoriesToLoad.add(mappedRepository);
+
+				try
+				{
+					new ProgressMonitorDialog(getSite().getShell()).run(true, true, new IRunnableWithProgress()
+					{
+
+						public void run(IProgressMonitor monitor) throws InvocationTargetException,
+								InterruptedException
+						{
+							if(monitor == null)
+								monitor = new NullProgressMonitor();
+
+							monitor.beginTask("Loading repositories...", repositoriesToLoad.size());
+
+							try
+							{
+								for(MappedRepository mappedRepository : repositoriesToLoad)
+								{
+									if(monitor.isCanceled())
+										throw new InterruptedException("Operation was cancelled");
+
+									monitor.subTask(mappedRepository.getLocation());
+									mappedRepository.getMetadataRepository();
+									monitor.worked(1);
+								}
+							}
+							finally
+							{
+								monitor.done();
+							}
+
+						}
+
+					});
+				}
+				catch(Exception e)
+				{
+					throw new RuntimeException("Unable to load repositories: " + e.getMessage(), e);
+				}
+			}
+		}
+	}
+
+	/**
 	 * This is the method called to load a resource into the editing domain's resource set based on the editor's input.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void createModel()
+	public void createModelGen()
 	{
 		URI resourceURI = EditUIUtil.getURI(getEditorInput());
 		Exception exception = null;
