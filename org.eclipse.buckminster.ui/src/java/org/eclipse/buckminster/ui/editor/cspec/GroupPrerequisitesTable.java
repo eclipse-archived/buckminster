@@ -13,10 +13,12 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * PrerequisitesTable without Alias field
@@ -36,13 +38,13 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public String[] getColumnHeaders()
 	{
-		return new String[] { Messages.component, Messages.name, Messages.contributor };
+		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.filter };
 	}
 
 	@Override
 	public int[] getColumnWeights()
 	{
-		return new int[] { 20, 10, 0 };
+		return new int[] { 20, 10, 0, 0 };
 	}
 
 	@Override
@@ -58,7 +60,8 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
-		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()) };
+		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()),
+				TextUtils.notNullString(t.getFilter()) };
 	}
 
 	@Override
@@ -67,5 +70,20 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
 		builder.setName(TextUtils.notEmptyString((String)args[1]));
 		builder.setContributor(((Boolean)args[2]).booleanValue());
+
+		String filterStr = TextUtils.notEmptyString((String)args[3]);
+		if(filterStr != null)
+		{
+			try
+			{
+				builder.setFilter(FilterFactory.newInstance(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+		else
+			builder.setFilter(null);
 	}
 }

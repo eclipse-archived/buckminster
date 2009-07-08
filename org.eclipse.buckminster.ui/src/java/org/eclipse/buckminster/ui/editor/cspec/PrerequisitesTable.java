@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.IValidator;
@@ -35,6 +36,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * @author Karel Brezina
@@ -68,12 +70,13 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor };
+		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor,
+				Messages.filter };
 	}
 
 	public int[] getColumnWeights()
 	{
-		return new int[] { 20, 10, 10, 0 };
+		return new int[] { 20, 10, 10, 0, 0 };
 	}
 
 	@Override
@@ -117,6 +120,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 			return getTextWidgetin(parent, idx, value);
 		case 3:
 			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value, Boolean.TRUE);
+		case 4:
+			return getTextWidgetin(parent, idx, value);
 		default:
 			return getTextWidgetin(parent, idx, value);
 		}
@@ -124,7 +129,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
-		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()) };
+		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
+				TextUtils.notNullString(t.getFilter()) };
 	}
 
 	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
@@ -133,6 +139,21 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		builder.setName(TextUtils.notEmptyString((String)args[1]));
 		builder.setAlias(TextUtils.notEmptyString((String)args[2]));
 		builder.setContributor(((Boolean)args[3]).booleanValue());
+
+		String filterStr = TextUtils.notEmptyString((String)args[4]);
+		if(filterStr != null)
+		{
+			try
+			{
+				builder.setFilter(FilterFactory.newInstance(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+		else
+			builder.setFilter(null);
 	}
 
 	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style)

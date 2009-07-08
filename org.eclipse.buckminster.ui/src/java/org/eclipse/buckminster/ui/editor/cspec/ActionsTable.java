@@ -157,8 +157,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		CSpecEditorUtils.copyAndSortItems(builder.getProductPaths(), m_productPaths);
 		m_productPathsEditor.refresh();
 
-		CSpecEditorUtils.copyAndSortItems(m_actionArtifacts.get(builder), m_productArtifacts, CSpecEditorUtils
-				.getAttributeComparator());
+		CSpecEditorUtils.copyAndSortItems(m_actionArtifacts.get(builder), m_productArtifacts,
+				CSpecEditorUtils.getAttributeComparator());
 		createProductArtifactsCopy();
 		m_productArtifactsEditor.refresh();
 
@@ -176,8 +176,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 				? null
 				: rebasePath.toOSString()));
 
-		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites, CSpecEditorUtils
-				.getPrerequisiteComparator());
+		CSpecEditorUtils.copyAndSortItems(prereqBuilder.getPrerequisites(), m_prerequisites,
+				CSpecEditorUtils.getPrerequisiteComparator());
 		m_prerequisitesEditor.refresh();
 	}
 
@@ -364,7 +364,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.always_with_colon, 1, 0, SWT.NONE);
 		m_alwaysCheck = UiUtils.createCheckButton(geComposite, null, null);
-		m_actorNameText.addSelectionListener(FIELD_LISTENER);
+		m_alwaysCheck.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.assign_console_support_with_colon, 1, 0, SWT.NONE);
 		m_assignConsoleSupportCheck = UiUtils.createCheckButton(geComposite, null, null);
@@ -372,7 +372,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.filter_with_colon, 1, 0, SWT.NONE);
 		m_actionFilter = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
-		m_actionFilter.addSelectionListener(FIELD_LISTENER);
+		m_actionFilter.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.prerequisites_alias_with_colon, 1, 0, SWT.NONE);
 		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
@@ -394,8 +394,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites, createNewRow()
-				.getPrerequisitesBuilder());
+		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites,
+				createNewRow().getPrerequisitesBuilder());
 		preTable.addTableModifyListener(FIELD_LISTENER);
 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null,
