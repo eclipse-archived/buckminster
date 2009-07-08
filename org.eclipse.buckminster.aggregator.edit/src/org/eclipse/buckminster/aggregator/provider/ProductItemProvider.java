@@ -140,6 +140,7 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 			{
 				IInstallableUnit iu = (IInstallableUnit)candidate;
 				return "true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_GROUP))
+						&& !"true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY))
 						&& !iu.getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX);
 			}
 		};

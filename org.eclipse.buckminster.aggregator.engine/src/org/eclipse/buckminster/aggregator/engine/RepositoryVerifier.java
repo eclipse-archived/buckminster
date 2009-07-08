@@ -3,7 +3,6 @@ package org.eclipse.buckminster.aggregator.engine;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +12,6 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -45,8 +43,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUni
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.CompositeQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
-import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 public class RepositoryVerifier extends BuilderPhase
@@ -89,37 +85,39 @@ public class RepositoryVerifier extends BuilderPhase
 	@Override
 	public void run(IProgressMonitor monitor) throws CoreException
 	{
+		Builder builder = getBuilder();
+		Aggregator aggregator = builder.getAggregator();
+		List<Configuration> configs = aggregator.getConfigurations();
+		MonitorUtils.begin(monitor, configs.size() * 100);
+
 		Logger log = Buckminster.getLogger();
 		log.info("Starting planner verification"); //$NON-NLS-1$
 		long now = System.currentTimeMillis();
 
 		String profilePrefix = Builder.PROFILE_ID + '_';
-		final HashSet<IInstallableUnit> unitsToAggregate = new HashSet<IInstallableUnit>();
-		final HashSet<IInstallableUnit> trustedUnits = new HashSet<IInstallableUnit>();
 
-		Builder builder = getBuilder();
-		Aggregator aggregator = builder.getAggregator();
-		List<Configuration> configs = aggregator.getConfigurations();
-		MonitorUtils.begin(monitor, configs.size() * 100);
+		Set<IInstallableUnit> unitsToAggregate = builder.getUnitsToAggregate();
 		Buckminster bucky = Buckminster.getDefault();
 		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		IPlanner planner = bucky.getService(IPlanner.class);
-		boolean update = builder.isUpdate();
-		URI repoLocation = builder.getGlobalRepoURI();
+		URI repoLocation = builder.getSourceCompositeURI();
 		try
 		{
 			for(Configuration config : configs)
 			{
 				String configName = config.getName();
-				String profileId = profilePrefix + configName;
-				log.info("Verifying config: %s", configName); //$NON-NLS-1$
+				String info = String.format("Verifying config: %s", configName); //$NON-NLS-1$
+				log.info(info);
+				monitor.subTask(info);
+
 				Map<String, String> props = new HashMap<String, String>();
 				props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
 				props.put(IProfile.PROP_ENVIRONMENTS, config.getOSGiEnvironmentString());
 				props.put(IProfile.PROP_INSTALL_FEATURES, "true");
 
 				IProfile profile = null;
-				if(update)
+				String profileId = profilePrefix + configName;
+				if(builder.isUpdate())
 					profile = profileRegistry.getProfile(profileId);
 
 				if(profile == null)
@@ -168,69 +166,6 @@ public class RepositoryVerifier extends BuilderPhase
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
 		}
-		List<Contribution> contribs = aggregator.getContributions();
-		for(Contribution contrib : contribs)
-		{
-			for(MappedRepository repo : contrib.getRepositories())
-			{
-				if(!repo.isMapEverything())
-					continue;
-
-				boolean mirrorArtifacts = repo.isMirrorArtifacts();
-				for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
-				{
-					if(builder.isTopLevelCategory(iu))
-						//
-						// Categories have special treatment so we don't add them here.
-						//
-						continue;
-
-					if(mirrorArtifacts)
-						unitsToAggregate.add(iu);
-					else
-						trustedUnits.add(iu);
-				}
-			}
-		}
-
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
-		log.info("Found %d units to mirror", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
-
-		boolean pruningLogged = false;
-
-		for(Contribution contrib : contribs)
-		{
-			for(MappedRepository repo : contrib.getRepositories())
-			{
-				if(repo.isMirrorArtifacts())
-					continue;
-
-				if(!pruningLogged)
-				{
-					log.info(
-							"Pruning mirror list from units contributed by referenced repositories", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
-					pruningLogged = true;
-				}
-
-				IQueryable trustedRepo = repo.getMetadataRepository();
-				trustedRepo.query(new MatchQuery()
-				{
-					@Override
-					public boolean isMatch(Object candidate)
-					{
-						if(unitsToAggregate.remove(candidate))
-							trustedUnits.add((IInstallableUnit)candidate);
-						return false;
-					}
-				}, new Collector(), null);
-			}
-
-		}
-		if(pruningLogged)
-			log.info("%d units remain after pruning", Integer.valueOf(unitsToAggregate.size())); //$NON-NLS-1$
-
-		builder.setUnitsToAggregate(unitsToAggregate);
-		builder.setTrustedUnits(trustedUnits);
 	}
 
 	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions,

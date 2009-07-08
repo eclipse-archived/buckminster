@@ -17,6 +17,8 @@ import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
+import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -44,14 +46,21 @@ public class CategoriesAction extends AbstractPublisherAction
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
+		MonitorUtils.begin(monitor, 10);
 		Aggregator aggregator = builder.getAggregator();
 		for(CustomCategory category : aggregator.getCustomCategories())
 			results.addIU(createCategoryIU(category, null), IPublisherResult.NON_ROOT);
 
+		MonitorUtils.worked(monitor, 5);
 		for(Contribution contrib : aggregator.getContributions())
 		{
 			for(MappedRepository repo : contrib.getRepositories())
 			{
+				if(builder.isMapVerbatim(repo))
+					// Meta-data is included as reference so all categories will be mapped
+					//
+					continue;
+
 				ArrayList<InstallableUnit> categoryIUs = new ArrayList<InstallableUnit>();
 				if(repo.isMapEverything())
 				{
@@ -71,7 +80,7 @@ public class CategoriesAction extends AbstractPublisherAction
 
 				// Add all categories from this repository.
 				//
-				String categoryPrefix = repo.getCategoryPrefix();
+				String categoryPrefix = Trivial.trim(repo.getCategoryPrefix());
 				if(categoryPrefix != null)
 				{
 					// All requirements for categories must be renamed.
@@ -91,6 +100,7 @@ public class CategoriesAction extends AbstractPublisherAction
 					results.addIU(iu, IPublisherResult.NON_ROOT);
 			}
 		}
+		MonitorUtils.done(monitor);
 		return Status.OK_STATUS;
 	}
 

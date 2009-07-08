@@ -29,6 +29,8 @@ import org.apache.tools.mail.MailMessage;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -49,6 +51,7 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
+import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
@@ -138,6 +141,8 @@ public class Builder implements IApplication
 	public static final String PROFILE_ID = "GalileoTest"; //$NON-NLS-1$
 
 	public static final String REPO_FOLDER_CATEGORIES = "categories"; //$NON-NLS-1$
+
+	public static final String REPO_FOLDER_VERIFICATION = "verification"; //$NON-NLS-1$
 
 	public static final String REPO_FOLDER_FINAL = "final"; //$NON-NLS-1$
 
@@ -329,7 +334,7 @@ public class Builder implements IApplication
 
 	private File buildRoot;
 
-	private URI categoriesRepo;
+	private MetadataRepository categoriesRepo;
 
 	private String emailFrom;
 
@@ -363,15 +368,15 @@ public class Builder implements IApplication
 
 	private String subjectPrefix;
 
-	private Set<IInstallableUnit> unitsToAggregate;
-
-	private Set<IInstallableUnit> trustedUnits;
+	final private Set<IInstallableUnit> unitsToAggregate = new HashSet<IInstallableUnit>();
 
 	private Set<IInstallableUnit> unverifiedUnits;
 
 	private boolean update = false;
 
 	private boolean verifyOnly = false;
+
+	private CompositeMetadataRepository sourceComposite;
 
 	public boolean discardAsUnverified(IInstallableUnit iu)
 	{
@@ -408,14 +413,9 @@ public class Builder implements IApplication
 		return buildRoot;
 	}
 
-	public URI getCategoriesRepo()
+	public MetadataRepository getCategoriesRepo()
 	{
 		return categoriesRepo;
-	}
-
-	public URI getGlobalRepoURI() throws CoreException
-	{
-		return createURI(new File(buildRoot, REPO_FOLDER_INTERIM));
 	}
 
 	public PackedStrategy getPackedStrategy()
@@ -423,9 +423,14 @@ public class Builder implements IApplication
 		return packedStrategy;
 	}
 
-	public Set<IInstallableUnit> getTrustedUnits()
+	public CompositeMetadataRepository getSourceComposite()
 	{
-		return trustedUnits;
+		return sourceComposite;
+	}
+
+	public URI getSourceCompositeURI() throws CoreException
+	{
+		return createURI(new File(buildRoot, REPO_FOLDER_INTERIM));
 	}
 
 	public Set<IInstallableUnit> getUnitsToAggregate()
@@ -438,6 +443,11 @@ public class Builder implements IApplication
 		return unverifiedUnits == null
 				? Collections.<IInstallableUnit> emptySet()
 				: unverifiedUnits;
+	}
+
+	public boolean isMapVerbatim(MappedRepository repo)
+	{
+		return repo.isMapEverything() && !repo.isMirrorArtifacts() && Trivial.trim(repo.getCategoryPrefix()) == null;
 	}
 
 	public boolean isMatchedReference(String reference)
@@ -497,7 +507,7 @@ public class Builder implements IApplication
 	{
 		MonitorUtils.begin(monitor, verifyOnly
 				? 200
-				: 1100);
+				: 2200);
 
 		try
 		{
@@ -568,10 +578,11 @@ public class Builder implements IApplication
 			}
 
 			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
-			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 10));
-			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 20));
+			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 15));
+			runVerificationFeatureGenerator(MonitorUtils.subMonitor(monitor, 15));
+			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 100));
 			if(!verifyOnly)
-				runMirroring(MonitorUtils.subMonitor(monitor, 900));
+				runMirroring(MonitorUtils.subMonitor(monitor, 2000));
 		}
 		catch(Throwable e)
 		{
@@ -712,7 +723,7 @@ public class Builder implements IApplication
 		this.buildRoot = buildRoot;
 	}
 
-	public void setCategoriesRepo(URI categoriesRepo)
+	public void setCategoriesRepo(MetadataRepository categoriesRepo)
 	{
 		this.categoriesRepo = categoriesRepo;
 	}
@@ -788,19 +799,14 @@ public class Builder implements IApplication
 		this.smtpPort = smtpPort;
 	}
 
+	public void setSourceComposite(CompositeMetadataRepository sourceComposite)
+	{
+		this.sourceComposite = sourceComposite;
+	}
+
 	public void setSubjectPrefix(String subjectPrefix)
 	{
 		this.subjectPrefix = subjectPrefix;
-	}
-
-	public void setTrustedUnits(Set<IInstallableUnit> trustedUnits)
-	{
-		this.trustedUnits = trustedUnits;
-	}
-
-	public void setUnitsToAggregate(Set<IInstallableUnit> unitsToAggregate)
-	{
-		this.unitsToAggregate = unitsToAggregate;
 	}
 
 	public void setUpdate(boolean update)
@@ -1045,20 +1051,20 @@ public class Builder implements IApplication
 
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException
 	{
-		CategoryRepoGenerator extraGenerator = new CategoryRepoGenerator(this);
-		extraGenerator.run(monitor);
+		CategoryRepoGenerator generator = new CategoryRepoGenerator(this);
+		generator.run(monitor);
 	}
 
 	private void runCompositeGenerator(IProgressMonitor monitor) throws CoreException
 	{
-		CompositeRepoGenerator repoGenerator = new CompositeRepoGenerator(this);
-		repoGenerator.run(monitor);
+		SourceCompositeGenerator generator = new SourceCompositeGenerator(this);
+		generator.run(monitor);
 	}
 
 	private void runMirroring(IProgressMonitor monitor) throws CoreException
 	{
-		MirrorGenerator mirrorGenerator = new MirrorGenerator(this);
-		mirrorGenerator.run(monitor);
+		MirrorGenerator generator = new MirrorGenerator(this);
+		generator.run(monitor);
 	}
 
 	private void runRepositoryVerifier(IProgressMonitor monitor) throws CoreException
@@ -1117,6 +1123,12 @@ public class Builder implements IApplication
 		{
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	private void runVerificationFeatureGenerator(IProgressMonitor monitor) throws CoreException
+	{
+		VerificationFeatureGenerator generator = new VerificationFeatureGenerator(this);
+		generator.run(monitor);
 	}
 
 	private void verifyContributions() throws CoreException
