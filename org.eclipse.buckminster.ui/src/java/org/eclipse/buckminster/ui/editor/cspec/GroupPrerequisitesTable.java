@@ -36,13 +36,13 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public String[] getColumnHeaders()
 	{
-		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.optional };
+		return new String[] { Messages.component, Messages.name, Messages.contributor };
 	}
 
 	@Override
 	public int[] getColumnWeights()
 	{
-		return new int[] { 20, 10, 0, 0 };
+		return new int[] { 20, 10, 0 };
 	}
 
 	@Override
@@ -58,8 +58,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
-		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()),
-				Boolean.valueOf(t.isOptional()) };
+		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()) };
 	}
 
 	@Override
@@ -68,6 +67,5 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
 		builder.setName(TextUtils.notEmptyString((String)args[1]));
 		builder.setContributor(((Boolean)args[2]).booleanValue());
-		builder.setOptional(((Boolean)args[3]).booleanValue());
 	}
 }

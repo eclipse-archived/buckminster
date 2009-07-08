@@ -68,13 +68,12 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public String[] getColumnHeaders()
 	{
-		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor,
-				Messages.optional };
+		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor };
 	}
 
 	public int[] getColumnWeights()
 	{
-		return new int[] { 20, 10, 10, 0, 0 };
+		return new int[] { 20, 10, 10, 0 };
 	}
 
 	@Override
@@ -108,8 +107,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 			return m_componentWidgetin = getComponentWidgetin(parent, idx, value, m_editor.getComponentNames(),
 					SWT.NONE);
 		case 1:
-			m_attributeWidgetin = getAttributeWidgetin(parent, idx, value, m_editor
-					.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
+			m_attributeWidgetin = getAttributeWidgetin(parent, idx, value,
+					m_editor.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
 
 			setAttributeItems();
 
@@ -118,8 +117,6 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 			return getTextWidgetin(parent, idx, value);
 		case 3:
 			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value, Boolean.TRUE);
-		case 4:
-			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value);
 		default:
 			return getTextWidgetin(parent, idx, value);
 		}
@@ -127,8 +124,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
-		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
-				Boolean.valueOf(t.isOptional()) };
+		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()) };
 	}
 
 	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
@@ -137,7 +133,6 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		builder.setName(TextUtils.notEmptyString((String)args[1]));
 		builder.setAlias(TextUtils.notEmptyString((String)args[2]));
 		builder.setContributor(((Boolean)args[3]).booleanValue());
-		builder.setOptional(((Boolean)args[4]).booleanValue());
 	}
 
 	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
@@ -215,8 +210,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		else
 		{
 			ComponentRequestBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
-			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder
-					.getVersionRange());
+			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(),
+					builder.getVersionRange());
 
 			TreeSet<String> prereqAttributes = new TreeSet<String>();
 			try
