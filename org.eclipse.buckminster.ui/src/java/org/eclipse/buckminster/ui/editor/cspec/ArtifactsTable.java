@@ -39,8 +39,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 {
 	private Text m_basePathText;
 
-	private Text m_typeText;
-
 	private List<PathWrapper> m_paths = new ArrayList<PathWrapper>();
 
 	private SimpleTableEditor<PathWrapper> m_pathsEditor;
@@ -56,7 +54,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		super.enableFields(enabled);
 
 		m_basePathText.setEnabled(enabled);
-		m_typeText.setEnabled(enabled);
 		m_pathsEditor.setEnabled(enabled);
 	}
 
@@ -82,7 +79,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		m_basePathText.setText(TextUtils.notNullString(basePath == null
 				? null
 				: basePath.toOSString()));
-		m_typeText.setText(TextUtils.notNullString(builder.getType()));
 
 		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths);
 		m_pathsEditor.refresh();
@@ -101,8 +97,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 			basePath = Path.fromOSString(basePathString);
 		}
 		builder.setBase(basePath);
-
-		builder.setType(UiUtils.trimmedValue(m_typeText));
 
 		Set<IPath> paths = builder.getPaths();
 
@@ -150,11 +144,6 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
 		m_basePathText.addModifyListener(FIELD_LISTENER);
-
-		UiUtils.createGridLabel(geComposite, Messages.type_with_colon, 1, 0, SWT.NONE);
-
-		m_typeText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
-		m_typeText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
