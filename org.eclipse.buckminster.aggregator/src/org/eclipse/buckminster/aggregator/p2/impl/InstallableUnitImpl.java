@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.Copyright;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -24,6 +25,7 @@ import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
 import org.eclipse.buckminster.aggregator.p2.TouchpointType;
 import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -1064,6 +1066,13 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 					P2Package.INSTALLABLE_UNIT__REQUIRED_CAPABILITY_LIST);
 		}
 		return requiredCapabilityList;
+	}
+
+	public int getStatus()
+	{
+		return Trivial.trim(getId()) != null
+				? StatusProvider.OK
+				: StatusProvider.BROKEN;
 	}
 
 	/**

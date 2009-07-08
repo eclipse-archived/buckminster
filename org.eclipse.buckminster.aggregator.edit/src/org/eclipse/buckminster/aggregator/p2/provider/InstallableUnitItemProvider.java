@@ -6,20 +6,24 @@
  */
 package org.eclipse.buckminster.aggregator.p2.provider;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
-
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -31,6 +35,7 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit} object. <!--
@@ -82,12 +87,27 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 	/**
 	 * This returns InstallableUnit.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/InstallableUnit"));
+		StatusProvider iu = (StatusProvider)object;
+		Object image;
+		if(iu.getStatus() == StatusProvider.BROKEN)
+			try
+			{
+				image = new URL(
+						URI.createPlatformPluginURI("/org.eclipse.ui.ide/icons/full/obj16/warning.gif", false).toString());
+			}
+			catch(MalformedURLException e)
+			{
+				image = getResourceLocator().getImage("full/obj16/InstallableUnit");
+			}
+		else
+			image = getResourceLocator().getImage("full/obj16/InstallableUnit");
+
+		return overlayImage(object, image);
 	}
 
 	/**
@@ -136,12 +156,20 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((InstallableUnit)object).getId();
+		String label = Trivial.trim(((InstallableUnit)object).getId());
+
+		if(label == null)
+		{
+			VersionedName vn = ((InstallableUnit)object).getVersionedNameFromProxy();
+			if(vn != null)
+				label = vn.getId() + " (broken)";
+		}
+
 		return label == null || label.length() == 0
 				? getString("_UI_InstallableUnit_type")
 				: getString("_UI_InstallableUnit_type") + " " + label;

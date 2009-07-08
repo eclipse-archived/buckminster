@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EObject;
@@ -13,30 +14,31 @@ import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit</b></em>'.
  * 
- * <p>
- * The following features are supported:
- * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getArtifactList <em>Artifact List</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getProvidedCapabilityList <em>Provided Capability
- * List</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getRequiredCapabilityList <em>Required Capability
- * List</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getMetaRequiredCapabilityList <em>Meta Required
- * Capability List</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getPropertyMap <em>Property Map</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getTouchpointDataList <em>Touchpoint Data List</em>}
- * </li>
- * </ul>
- * </p>
+ * @extends StatusProvider <!-- end-user-doc -->
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getArtifactList <em>Artifact List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getProvidedCapabilityList <em>Provided
+ *          Capability List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getRequiredCapabilityList <em>Required
+ *          Capability List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getMetaRequiredCapabilityList <em>Meta
+ *          Required Capability List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getPropertyMap <em>Property Map</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getTouchpointDataList <em>Touchpoint Data
+ *          List</em>}</li>
+ *          </ul>
+ *          </p>
  * 
  * @see org.eclipse.buckminster.aggregator.p2.P2Package#getInstallableUnit()
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IInstallableUnit"
  * @generated
  */
-public interface InstallableUnit extends EObject, IInstallableUnit
+public interface InstallableUnit extends EObject, IInstallableUnit, StatusProvider
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

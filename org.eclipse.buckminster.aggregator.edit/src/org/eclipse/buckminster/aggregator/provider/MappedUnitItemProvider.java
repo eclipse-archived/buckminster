@@ -9,9 +9,13 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -19,6 +23,7 @@ import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -124,6 +129,25 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 		{
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+
+			Set<EObject> affectedNodes = new HashSet<EObject>();
+
+			// Go through all direct ancestors first
+			EObject container = ((EObject)notification.getNotifier()).eContainer();
+			while(container != null)
+			{
+				affectedNodes.add(container);
+				container = container.eContainer();
+			}
+
+			// And now, find all categories which may contain the feature just being enabled/disabled
+			if(notification.getNotifier() instanceof Feature)
+				for(CustomCategory category : ((Feature)notification.getNotifier()).getCategories())
+					affectedNodes.add(category);
+
+			for(EObject affectedNode : affectedNodes)
+				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
+
 			return;
 		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -199,7 +223,16 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 
 				List<InstallableUnit> result = new ArrayList<InstallableUnit>();
 				result.add(null);
-				result.addAll(collector.toCollection());
+
+				Collection availableUnits = collector.toCollection();
+
+				// if current installable unit is not among the newly retrieved ones,
+				// add it to the choice values so that user would not be surprised by
+				// disappearing current choice after clicking on the property value
+				if(!availableUnits.contains(self.getInstallableUnit()))
+					result.add(self.getInstallableUnit());
+
+				result.addAll(availableUnits);
 
 				// Exclude IU's that are already mapped
 				//

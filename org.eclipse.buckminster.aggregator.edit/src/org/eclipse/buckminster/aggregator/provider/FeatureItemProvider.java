@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,7 +18,6 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -61,23 +58,9 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	public Object getImage(Object object)
 	{
-		// Experimental. Should use an overlay and also affect parten with overlays
-		//
-		Feature feature = (Feature)object;
-		Object image;
-		if(feature.getInstallableUnit() != null && Trivial.trim(feature.getInstallableUnit().getId()) == null)
-			try
-			{
-				image = new URL(
-						URI.createPlatformPluginURI("/org.eclipse.ui.ide/icons/full/obj16/warning.gif", false).toString());
-			}
-			catch(MalformedURLException e)
-			{
-				image = getResourceLocator().getImage("full/obj16/Feature");
-			}
-		else
-			image = getResourceLocator().getImage("full/obj16/Feature");
-		return overlayImage(object, image);
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Feature" + (((Feature)object).isEnabled()
+				? ""
+				: "Disabled")));
 	}
 
 	/**
@@ -110,7 +93,6 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Feature_type"));
 		bld.append(' ');
-		boolean broken = false;
 		String id = null;
 		Version version = null;
 		if(iu != null)
@@ -118,7 +100,6 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 			id = Trivial.trim(iu.getId());
 			if(id == null)
 			{
-				broken = true;
 				VersionedName vn = iu.getVersionedNameFromProxy();
 				if(vn != null)
 				{
@@ -139,11 +120,9 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 			bld.append('/');
 			bld.append(version);
 			if(!feature.isEnabled())
-				bld.append(" - disabled");
+				bld.append(" (disabled)");
 		}
-		if(broken)
-			// TODO: Indicate with graphic marker
-			bld.append(" broken!");
+
 		return bld.toString();
 	}
 
