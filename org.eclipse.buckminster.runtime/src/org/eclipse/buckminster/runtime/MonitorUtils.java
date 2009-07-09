@@ -41,9 +41,9 @@ public class MonitorUtils
 	 * some work' (even if it was nothing)
 	 * 
 	 * @param monitor
-	 *            the monitor to run beginTask()/isCanceled()/done() for
+	 *            the monitor to run beginTask()/isCanceled()/done() for. Can be <code>null</code>
 	 * @throws OperationCanceledException
-	 *             if the monitor was cancelled
+	 *             if the monitor was canceled
 	 */
 	public static void complete(IProgressMonitor monitor) throws OperationCanceledException
 	{
@@ -78,7 +78,7 @@ public class MonitorUtils
 	 *            the monitor to check for nullness and replace with a 'real' monitor if necessary
 	 * @return The argument or a new {@link NullProgressMonitor} if the argument was <code>null</code>
 	 * @throws OperationCanceledException
-	 *             if the monitor was cancelled
+	 *             if the monitor was canceled
 	 */
 	public static IProgressMonitor ensureNotNull(IProgressMonitor monitor) throws OperationCanceledException
 	{
@@ -95,12 +95,13 @@ public class MonitorUtils
 	 * monitor.
 	 * 
 	 * @param monitor
-	 *            the parent progress monitor
+	 *            the parent progress monitor. Can be <code>null</code>
 	 * @param ticks
 	 *            the number of work ticks allocated from the parent monitor
-	 * @return The sub montior
+	 * @return The sub monitor or <code>null</code> if the provided <code>monitor</code> parameter was <code>null</code>
+	 *         .
 	 * @throws OperationCanceledException
-	 *             if the monitor was cancelled
+	 *             if the monitor was canceled
 	 */
 	public static IProgressMonitor subMonitor(IProgressMonitor monitor, int ticks) throws OperationCanceledException
 	{
@@ -118,7 +119,7 @@ public class MonitorUtils
 	 * monitor.
 	 * 
 	 * @param monitor
-	 *            the parent progress monitor
+	 *            the parent progress monitor. Can be <code>null</code>
 	 * @param ticks
 	 *            the number of work ticks allocated from the parent monitor
 	 * @param style
@@ -129,9 +130,9 @@ public class MonitorUtils
 	 *            </ul>
 	 * @see SubProgressMonitor#SUPPRESS_SUBTASK_LABEL
 	 * @see SubProgressMonitor#PREPEND_MAIN_LABEL_TO_SUBTASK
-	 * @return The sub monitor
+	 * @return The sub monitor or <code>null</code> if the provided <code>monitor</code> parameter was <code>null</code>
 	 * @throws OperationCanceledException
-	 *             if the monitor was cancelled
+	 *             if the monitor was canceled
 	 */
 	public static IProgressMonitor subMonitor(IProgressMonitor monitor, int ticks, boolean prependMainLabelToSubtask)
 			throws OperationCanceledException
@@ -148,13 +149,33 @@ public class MonitorUtils
 	}
 
 	/**
+	 * Notifies that a subtask of the main task is beginning. Subtasks are optional; the main task might not have
+	 * subtasks. A check for cancellation is made prior to notifying.
+	 * 
+	 * @param monitor
+	 *            the progress monitor. Can be <code>null</code>
+	 * @param name
+	 *            the name (or description) of the subtask
+	 * @throws OperationCanceledException
+	 *             if the monitor was canceled
+	 */
+	public static void subTask(IProgressMonitor monitor, String name) throws OperationCanceledException
+	{
+		if(monitor != null)
+		{
+			checkedTestCancelStatus(monitor);
+			monitor.subTask(name);
+		}
+	}
+
+	/**
 	 * The typical pattern is to always check cancellation before doing any action. Use this to easily make the check a
 	 * one-liner.
 	 * 
 	 * @param monitor
-	 *            the monitor to check for cancellation
+	 *            the monitor to check for cancellation. Can be <code>null</code>
 	 * @throws OperationCanceledException
-	 *             if the monitor was cancelled
+	 *             if the monitor was canceled
 	 */
 	public static void testCancelStatus(IProgressMonitor monitor) throws OperationCanceledException
 	{
@@ -187,5 +208,4 @@ public class MonitorUtils
 		if(monitor.isCanceled())
 			throw new OperationCanceledException();
 	}
-
 }
