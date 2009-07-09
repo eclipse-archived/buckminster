@@ -42,31 +42,6 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		T run(ITargetDefinition target) throws CoreException;
 	}
 
-	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation)
-	{
-		Buckminster bucky = Buckminster.getDefault();
-		ITargetPlatformService service = null;
-		try
-		{
-			service = bucky.getService(ITargetPlatformService.class);
-			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-			if(activeHandle == null)
-				return null;
-			ITargetDefinition definition = activeHandle.getTargetDefinition();
-			return operation.run(definition);
-		}
-		catch(CoreException e)
-		{
-			// TODO: handle this correctly
-			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
-			return null;
-		}
-		finally
-		{
-			bucky.ungetService(service);
-		}
-	}
-
 	public String getArch()
 	{
 		String arch = doWithActivePlatform(new ITargetDefinitionOperation<String>()
@@ -113,7 +88,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		{
 			public File run(ITargetDefinition target) throws CoreException
 			{
-				for(IBundleContainer container : target.getBundleContainers())
+				IBundleContainer[] containers = target.getBundleContainers();
+				if(containers == null)
+					return null;
+				for(IBundleContainer container : containers)
 				{
 					if(container instanceof DirectoryBundleContainer)
 					{
@@ -172,5 +150,30 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return ws == null
 				? TargetPlatform.getWS()
 				: ws;
+	}
+
+	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation)
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = null;
+		try
+		{
+			service = bucky.getService(ITargetPlatformService.class);
+			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+			if(activeHandle == null)
+				return null;
+			ITargetDefinition definition = activeHandle.getTargetDefinition();
+			return operation.run(definition);
+		}
+		catch(CoreException e)
+		{
+			// TODO: handle this correctly
+			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
+			return null;
+		}
+		finally
+		{
+			bucky.ungetService(service);
+		}
 	}
 }

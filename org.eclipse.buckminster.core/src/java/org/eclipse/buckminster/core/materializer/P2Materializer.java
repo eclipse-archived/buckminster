@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -130,7 +132,7 @@ public class P2Materializer extends AbstractMaterializer
 
 		IPath installRoot = mspec.getInstallLocation();
 		if(installRoot == null)
-			installRoot = Platform.getLocation();
+			installRoot = Path.fromOSString(TargetPlatform.getInstance().getLocation().getAbsolutePath());
 		else
 			installRoot = Path.fromOSString(ExpandingProperties.expand(context, installRoot.toOSString(), 0));
 
@@ -279,7 +281,7 @@ public class P2Materializer extends AbstractMaterializer
 					IMetadataRepository mdr = knownMDRs.get(repoURI);
 					if(mdr == null)
 					{
-						if(mdrManager.contains(repoURI))
+						if(!mdrManager.contains(repoURI))
 						{
 							if(mdrsToRemove == null)
 								mdrsToRemove = new ArrayList<URI>();
@@ -314,7 +316,7 @@ public class P2Materializer extends AbstractMaterializer
 						IArtifactRepository ar = knownARs.get(repoURI);
 						if(ar == null)
 						{
-							if(arManager.contains(repoURI))
+							if(!arManager.contains(repoURI))
 							{
 								if(arsToRemove == null)
 									arsToRemove = new ArrayList<URI>();
@@ -347,8 +349,11 @@ public class P2Materializer extends AbstractMaterializer
 					{ /* nothing to override */
 					};
 					engine = bucky.getService(IEngine.class);
-					IStatus status = engine.perform(profile, phaseSet, operands, new ProvisioningContext(),
-							subMon.newChild(200));
+					Set<URI> mdrURIs = knownMDRs.keySet();
+					Set<URI> arURIs = knownARs.keySet();
+					ProvisioningContext pctx = new ProvisioningContext(mdrURIs.toArray(new URI[mdrURIs.size()]));
+					pctx.setArtifactRepositories(arURIs.toArray(new URI[arURIs.size()]));
+					IStatus status = engine.perform(profile, phaseSet, operands, pctx, subMon.newChild(200));
 					if(status.getSeverity() == IStatus.ERROR)
 						throw BuckminsterException.wrap(status);
 				}
