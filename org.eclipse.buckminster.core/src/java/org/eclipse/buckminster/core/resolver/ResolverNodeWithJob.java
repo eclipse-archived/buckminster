@@ -82,12 +82,15 @@ class ResolverNodeWithJob extends ResolverNode
 			throws CoreException
 	{
 		super.addDependencyQualification(newQDep, tagInfo);
-		if(isInvalidated() && !isScheduled())
+		if(isInvalidated() && !(isForceUnresolved() || isScheduled()))
 			m_resolver.schedule(this);
 	}
 
 	protected IStatus run(IProgressMonitor monitor)
 	{
+		if(isForceUnresolved())
+			return Status.OK_STATUS;
+
 		clearInvalidationFlag();
 		m_resolver.addJobMonitor(monitor);
 		BOMNode node = null;

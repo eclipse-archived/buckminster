@@ -9,13 +9,15 @@ package org.eclipse.buckminster.osgi.filter.impl;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
+
 class NotFilterImpl extends FilterImpl
 {
 	private final FilterImpl m_filter;
 
-	NotFilterImpl(boolean topLevel, String attr, FilterImpl value)
+	NotFilterImpl(boolean topLevel, FilterImpl value)
 	{
-		super(topLevel, FilterImpl.NOT, attr);
+		super(topLevel, FilterImpl.NOT, null);
 		m_filter = value;
 	}
 
@@ -29,6 +31,22 @@ class NotFilterImpl extends FilterImpl
 	boolean match0(Map<String, ? extends Object> properties)
 	{
 		return !m_filter.match0(properties);
+	}
+
+	@Override
+	FilterImpl stripFilter(Filter subFilter, boolean topLevel)
+	{
+		if(equals(subFilter))
+			return null;
+
+		FilterImpl newFilter = m_filter.stripFilter(subFilter, false);
+		if(newFilter == m_filter)
+			return this;
+
+		if(newFilter == null)
+			return null;
+
+		return new NotFilterImpl(topLevel, newFilter);
 	}
 
 	@Override

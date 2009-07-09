@@ -15,10 +15,12 @@ import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -45,7 +47,21 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	private final Filter m_filter;
 
+	public static final Filter P2_OPTIONAL_FILTER;
+
 	public static final String FILTER_ECLIPSE_P2_OPTIONAL = "(!(eclipse.p2.optional=false))"; //$NON-NLS-1$
+
+	static
+	{
+		try
+		{
+			P2_OPTIONAL_FILTER = FilterFactory.newInstance(ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL);
+		}
+		catch(InvalidSyntaxException e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	public ComponentRequest(ComponentRequestBuilder bld)
 	{
@@ -63,16 +79,19 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public ComponentRequest(String name, String componentType, String versionRangeStr, String versionTypeId,
 			Filter filter) throws CoreException
 	{
-		super(name, componentType);
-		m_versionRange = VersionHelper.createRange(versionTypeId, versionRangeStr);
-		m_filter = filter;
+		this(name, componentType, VersionHelper.createRange(versionTypeId, versionRangeStr), filter);
 	}
 
 	public ComponentRequest(String name, String componentType, VersionRange versionRange)
 	{
+		this(name, componentType, versionRange, null);
+	}
+
+	public ComponentRequest(String name, String componentType, VersionRange versionRange, Filter filter)
+	{
 		super(name, componentType);
 		m_versionRange = versionRange;
-		m_filter = null;
+		m_filter = filter;
 	}
 
 	public void appendViewName(StringBuilder bld)
@@ -177,9 +196,6 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		else if(thatCType != null && !thisCType.equals(thatCType))
 			throw new ComponentRequestConflictException(this, that);
 
-		if(!Trivial.equalsAllowNull(getFilter(), that.getFilter()))
-			throw new ComponentRequestConflictException(this, that);
-
 		VersionRange thisVD = getVersionRange();
 		VersionRange thatVD = that.getVersionRange();
 		if(thisVD == null)
@@ -197,7 +213,18 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		if(mergedVD == null)
 			throw new ComponentRequestConflictException(this, that);
 
-		return new ComponentRequest(getName(), thisCType, mergedVD);
+		Filter thisFilter = getFilter();
+		Filter thatFilter = that.getFilter();
+		if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
+		{
+			if(thisFilter != null)
+				thisFilter = thisFilter.stripFilter(P2_OPTIONAL_FILTER);
+			if(thatFilter != null)
+				thatFilter = thatFilter.stripFilter(P2_OPTIONAL_FILTER);
+			if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
+				throw new ComponentRequestConflictException(this, that);
+		}
+		return new ComponentRequest(getName(), thisCType, mergedVD, thisFilter);
 	}
 
 	@Override

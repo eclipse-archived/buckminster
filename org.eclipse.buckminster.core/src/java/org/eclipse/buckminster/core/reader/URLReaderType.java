@@ -42,10 +42,15 @@ import org.eclipse.core.runtime.Path;
  */
 public class URLReaderType extends AbstractReaderType
 {
+	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
+	{
+		return getDirectReader(externalFile, IReaderType.URL, monitor);
+	}
+
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
 	{
 		String urlString = url.toString();
-		ComponentRequest rq = new ComponentRequest(urlString, null, null, null);
+		ComponentRequest rq = new ComponentRequest(urlString, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
 		queryBld.setPlatformAgnostic(true);
@@ -56,11 +61,6 @@ public class URLReaderType extends AbstractReaderType
 		Provider provider = new Provider(readerType, new String[] { ctype.getId() }, urlString, null);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return pm.getReader(monitor);
-	}
-
-	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
-	{
-		return getDirectReader(externalFile, IReaderType.URL, monitor);
 	}
 
 	@Override

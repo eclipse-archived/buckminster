@@ -137,8 +137,8 @@ public class URIMatcher extends RxAssembly
 
 		try
 		{
-			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()), pm
-					.getConnectContext());
+			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()),
+					pm.getConnectContext());
 			NodeQuery nq = pm.getNodeQuery();
 			ResolutionBuilder resBld = new ResolutionBuilder(bld, null);
 			resBld.getRequest().initFrom(nq.getComponentRequest());

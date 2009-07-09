@@ -7,15 +7,18 @@
  ******************************************************************************/
 package org.eclipse.buckminster.osgi.filter.impl;
 
+import java.util.ArrayList;
 import java.util.Map;
+
+import org.eclipse.buckminster.osgi.filter.Filter;
 
 class AndOrFilterImpl extends FilterImpl
 {
 	private final FilterImpl[] m_filters;
 
-	AndOrFilterImpl(boolean topLevel, int operation, String attr, FilterImpl[] filters)
+	AndOrFilterImpl(boolean topLevel, int operation, FilterImpl[] filters)
 	{
-		super(topLevel, operation, attr);
+		super(topLevel, operation, null);
 		m_filters = filters;
 	}
 
@@ -24,6 +27,34 @@ class AndOrFilterImpl extends FilterImpl
 	{
 		for(int i = 0; i < m_filters.length; i++)
 			m_filters[i].addConsultedAttributes(propertyChoices);
+	}
+
+	public Filter[] getFilters()
+	{
+		return m_filters;
+	}
+
+	@Override
+	FilterImpl addFilter(FilterImpl subFilter, int op)
+	{
+		FilterImpl result;
+		if(getOp() == op)
+		{
+			int top = m_filters.length;
+
+			// Prevent that the same filter is concatenated twice.
+			for(int idx = 0; idx < top; ++idx)
+				if(m_filters[idx].equals(subFilter))
+					return this;
+
+			FilterImpl[] newArray = new FilterImpl[top + 1];
+			System.arraycopy(m_filters, 0, newArray, 0, top);
+			newArray[top] = subFilter;
+			result = new AndOrFilterImpl(true, op, newArray);
+		}
+		else
+			result = super.addFilter(subFilter, op);
+		return result;
 	}
 
 	@Override
@@ -43,6 +74,43 @@ class AndOrFilterImpl extends FilterImpl
 			return false;
 		}
 		return false;
+	}
+
+	@Override
+	FilterImpl stripFilter(Filter subFilter, boolean topLevel)
+	{
+		ArrayList<FilterImpl> newList = new ArrayList<FilterImpl>(m_filters.length);
+		boolean change = false;
+		for(int idx = 0; idx < m_filters.length; ++idx)
+		{
+			FilterImpl child = m_filters[idx];
+			if(child.equals(subFilter))
+			{
+				change = true;
+				continue;
+			}
+
+			if(child instanceof AndOrFilterImpl)
+			{
+				FilterImpl newChild = ((AndOrFilterImpl)child).stripFilter(subFilter, false);
+				if(child != newChild)
+					change = true;
+				if(newChild != null)
+					newList.add(newChild);
+			}
+			else
+				newList.add(child);
+		}
+
+		if(!change)
+			return this;
+
+		int newSize = newList.size();
+		if(newSize == 0)
+			return null;
+		if(newSize == 1)
+			return newList.get(0);
+		return new AndOrFilterImpl(topLevel, getOp(), newList.toArray(new FilterImpl[newSize]));
 	}
 
 	@Override

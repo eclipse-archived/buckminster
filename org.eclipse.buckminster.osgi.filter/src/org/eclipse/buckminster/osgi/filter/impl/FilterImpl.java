@@ -281,10 +281,29 @@ abstract class FilterImpl implements Filter
 		}
 	}
 
+	public Filter addFilterWithAnd(Filter subFilter)
+	{
+		return subFilter == null
+				? this
+				: addFilter((FilterImpl)subFilter, AND);
+	}
+
+	public Filter addFilterWithOr(Filter subFilter)
+	{
+		return subFilter == null
+				? this
+				: addFilter((FilterImpl)subFilter, OR);
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj == this || (obj instanceof Filter && toString().equals(obj.toString()));
+	}
+
+	public int getOp()
+	{
+		return m_op;
 	}
 
 	@Override
@@ -326,6 +345,11 @@ abstract class FilterImpl implements Filter
 				: properties);
 	}
 
+	public Filter stripFilter(Filter subFilter)
+	{
+		return stripFilter(subFilter, true);
+	}
+
 	@Override
 	public String toString()
 	{
@@ -339,6 +363,13 @@ abstract class FilterImpl implements Filter
 				m_filterString = result;
 		}
 		return result;
+	}
+
+	FilterImpl addFilter(FilterImpl subFilter, int op)
+	{
+		if(equals(subFilter))
+			return this;
+		return new AndOrFilterImpl(true, op, new FilterImpl[] { this, subFilter });
 	}
 
 	final boolean compare(Object value1)
@@ -370,11 +401,6 @@ abstract class FilterImpl implements Filter
 		return m_attr;
 	}
 
-	int getOp()
-	{
-		return m_op;
-	}
-
 	String getValueAsString()
 	{
 		return null;
@@ -386,6 +412,13 @@ abstract class FilterImpl implements Filter
 	}
 
 	abstract boolean match0(Map<String, ? extends Object> properties);
+
+	FilterImpl stripFilter(Filter subFilter, boolean topLevel)
+	{
+		return equals(subFilter)
+				? null
+				: this;
+	}
 
 	abstract void toString(StringBuilder bld);
 

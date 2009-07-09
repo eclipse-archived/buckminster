@@ -49,6 +49,8 @@ public class ResolverNode
 
 	private Resolution m_resolution;
 
+	private boolean m_forceUnresolved;
+
 	private final String m_tagInfo;
 
 	public ResolverNode(NodeQuery query, String tagInfo)
@@ -186,6 +188,19 @@ public class ResolverNode
 		return node;
 	}
 
+	public synchronized void forceUnresolved()
+	{
+		m_resolution = null;
+		m_children = s_noChildren;
+		m_invalidateRun = true;
+		m_forceUnresolved = true;
+	}
+
+	public boolean isForceUnresolved()
+	{
+		return m_forceUnresolved;
+	}
+
 	public boolean isResolved()
 	{
 		return m_resolution != null;
@@ -230,7 +245,8 @@ public class ResolverNode
 
 	synchronized void clearInvalidationFlag()
 	{
-		m_invalidateRun = false;
+		if(!m_forceUnresolved)
+			m_invalidateRun = false;
 	}
 
 	NodeQuery getQuery()

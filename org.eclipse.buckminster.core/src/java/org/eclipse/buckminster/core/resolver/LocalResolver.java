@@ -65,6 +65,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
 /**
  * The LocalResolver will attempt to resolve the query using locally available resources. This includes:
@@ -76,7 +77,7 @@ import org.eclipse.core.runtime.Status;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("serial")
+@SuppressWarnings( { "serial", "restriction" })
 public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implements IResolver
 {
 	public static final Provider INSTALLED_BUNDLE_PROVIDER;
@@ -450,12 +451,38 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 		int top = nrs.length;
 		boolean newRqOptional = request.isOptional();
+		boolean invalidateInfant = false;
 		for(int idx = 0; idx < top; ++idx)
 		{
 			nr = nrs[idx];
-			if(newRqOptional != nr.getQuery().getComponentRequest().isOptional())
-				// We cannot merge optionals with non optionals
-				continue;
+			ComponentRequest oldRq = nr.getQuery().getComponentRequest();
+			if(newRqOptional != oldRq.isOptional())
+			{
+				// We don't want a version conflict is one of the ranges are optional.
+				//
+				VersionRange newRqRange = request.getVersionRange();
+				if(newRqRange != null)
+				{
+					VersionRange oldRqRange = oldRq.getVersionRange();
+					if(oldRqRange != null && oldRqRange.intersect(newRqRange) == null)
+					{
+						if(oldRq.isOptional())
+							//
+							// Previous request now in conflict and must be discarded.
+							//
+							nr.forceUnresolved();
+						else
+						{
+							// New request is optional and in conflict. Invalidate the
+							// new infant.
+							//
+							invalidateInfant = true;
+							break;
+						}
+						continue;
+					}
+				}
+			}
 
 			try
 			{
@@ -482,6 +509,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			if(nrs.length == top)
 			{
 				nr = createResolverNode(context, qDep, requestorInfo);
+				if(invalidateInfant)
+					nr.forceUnresolved();
 				ResolverNode[] newNrs = new ResolverNode[top + 1];
 				System.arraycopy(nrs, 0, newNrs, 0, top);
 				newNrs[top] = nr;

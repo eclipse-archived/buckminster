@@ -121,8 +121,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final Filter INCLUDE_TOP_FILTER;
 
-	public static final Filter P2_OPTIONAL_FILTER;
-
 	static
 	{
 		try
@@ -135,8 +133,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			PACK_DISABLED = FilterFactory.newInstance("(!(site.pack200=true))"); //$NON-NLS-1$
 			SIGNING_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(!(site.signing=true)))"); //$NON-NLS-1$
 			SIGNING_ENABLED_AND_PACK_DISABLED = FilterFactory.newInstance("(&(!(site.pack200=true))(site.signing=true))"); //$NON-NLS-1$
-			P2_OPTIONAL_FILTER = FilterFactory.newInstance(ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL);
-
 		}
 		catch(InvalidSyntaxException e)
 		{
@@ -412,7 +408,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	{
 		Filter filter = null;
 		if(pluginImport.isOptional())
-			filter = P2_OPTIONAL_FILTER;
+			filter = ComponentRequest.P2_OPTIONAL_FILTER;
 		return createDependency(pluginImport.getId(), category, pluginImport.getVersion(), pluginImport.getMatch(),
 				filter);
 	}

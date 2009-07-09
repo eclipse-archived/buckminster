@@ -67,7 +67,7 @@ public class Parser
 			c = m_filter.charAt(m_pos);
 		}
 
-		return new AndOrFilterImpl(topLevel, FilterImpl.AND, null, operands.toArray(new FilterImpl[operands.size()]));
+		return new AndOrFilterImpl(topLevel, FilterImpl.AND, operands.toArray(new FilterImpl[operands.size()]));
 	}
 
 	private String parse_attr() throws InvalidSyntaxException
@@ -197,7 +197,7 @@ public class Parser
 		if(m_filter.charAt(m_pos) != '(')
 			throw syntaxException(Messages.FILTER_MISSING_LEFTPAREN);
 		FilterImpl child = parse_filter(false);
-		return new NotFilterImpl(topLevel, null, child);
+		return new NotFilterImpl(topLevel, child);
 	}
 
 	private FilterImpl parse_or(boolean topLevel) throws InvalidSyntaxException
@@ -215,7 +215,7 @@ public class Parser
 			c = m_filter.charAt(m_pos);
 		}
 
-		return new AndOrFilterImpl(topLevel, FilterImpl.OR, null, operands.toArray(new FilterImpl[operands.size()]));
+		return new AndOrFilterImpl(topLevel, FilterImpl.OR, operands.toArray(new FilterImpl[operands.size()]));
 	}
 
 	private Object parse_substring() throws InvalidSyntaxException

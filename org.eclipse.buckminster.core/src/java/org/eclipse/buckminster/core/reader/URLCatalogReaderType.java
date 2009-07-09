@@ -246,7 +246,7 @@ public class URLCatalogReaderType extends CatalogReaderType
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
 	{
 		String urlString = url.toString();
-		ComponentRequest rq = new ComponentRequest(urlString, null, null, null);
+		ComponentRequest rq = new ComponentRequest(urlString, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
 		queryBld.setPlatformAgnostic(true);
