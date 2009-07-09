@@ -39,7 +39,6 @@ public class AlterActionArtifact extends AlterArtifact
 		ActionArtifactBuilder aaBld = (ActionArtifactBuilder)original;
 		alterPaths(aaBld);
 		alterDocumentation(aaBld);
-		aaBld.setType(CSpecExtension.overrideCheckNull(aaBld.getType(), base.getType()));
 		aaBld.setBase(CSpecExtension.overrideCheckNull(aaBld.getBase(), base.getBase()));
 	}
 }

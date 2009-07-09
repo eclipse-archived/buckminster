@@ -10,5 +10,9 @@ public interface IArtifact extends IAttribute
 
 	Set<IPath> getPaths();
 
+	/**
+	 * @deprecated Artifact is not used
+	 */
+	@Deprecated
 	String getType();
 }

@@ -65,7 +65,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		m_prerequisitesBuilder.addPrerequisite(prerequisite);
 	}
 
-	public ArtifactBuilder addProductArtifact(String name, boolean publ, String type, IPath output)
+	public ArtifactBuilder addProductArtifact(String name, boolean publ, IPath output)
 			throws AttributeAlreadyDefinedException
 	{
 		CSpecBuilder cspecBuilder = getCSpecBuilder();
@@ -73,10 +73,19 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		bld.setActionName(getName());
 		bld.setName(name);
 		bld.setPublic(publ);
-		bld.setType(type);
 		bld.setBase(output);
 		cspecBuilder.addAttribute(bld);
 		return bld;
+	}
+
+	/**
+	 * @deprecated The type is no longer used. Please use {@link #addProductArtifact(String, boolean, IPath)} instead.
+	 */
+	@Deprecated
+	public ArtifactBuilder addProductArtifact(String name, boolean publ, String type, IPath output)
+			throws AttributeAlreadyDefinedException
+	{
+		return addProductArtifact(name, publ, output);
 	}
 
 	public void addProductPath(IPath path)

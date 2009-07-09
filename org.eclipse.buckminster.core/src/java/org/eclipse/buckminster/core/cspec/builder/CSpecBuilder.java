@@ -188,16 +188,24 @@ public class CSpecBuilder implements ICSpecData
 		return bld;
 	}
 
-	public ArtifactBuilder addArtifact(String name, boolean publ, String type, IPath base)
-			throws AttributeAlreadyDefinedException
+	public ArtifactBuilder addArtifact(String name, boolean publ, IPath base) throws AttributeAlreadyDefinedException
 	{
 		ArtifactBuilder bld = createArtifactBuilder();
 		bld.setName(name);
 		bld.setPublic(publ);
-		bld.setType(type);
 		bld.setBase(base);
 		addAttribute(bld);
 		return bld;
+	}
+
+	/**
+	 * @deprecated Please use {@link #addArtifact(String, boolean, IPath)}
+	 */
+	@Deprecated
+	public ArtifactBuilder addArtifact(String name, boolean publ, String type, IPath base)
+			throws AttributeAlreadyDefinedException
+	{
+		return addArtifact(name, publ, base);
 	}
 
 	public void addAttribute(IAttribute attribute) throws AttributeAlreadyDefinedException

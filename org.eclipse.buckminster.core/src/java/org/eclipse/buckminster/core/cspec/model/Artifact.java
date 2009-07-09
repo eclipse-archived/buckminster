@@ -41,14 +41,11 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 
 	private final IPath m_base;
 
-	private final String m_type;
-
 	private final Set<IPath> m_paths;
 
 	public Artifact(ArtifactBuilder builder)
 	{
 		super(builder);
-		m_type = builder.getType();
 		IPath base = builder.getBase();
 		if(base != null)
 		{
@@ -69,9 +66,13 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 		return m_paths;
 	}
 
+	/**
+	 * @deprecated type is not used
+	 */
+	@Deprecated
 	public final String getType()
 	{
-		return m_type;
+		return null;
 	}
 
 	@Override
@@ -80,8 +81,6 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 		super.addAttributes(attrs);
 		if(m_paths.size() == 1)
 			Utils.addAttribute(attrs, ATTR_PATH, m_paths.iterator().next().toPortableString());
-		if(m_type != null)
-			Utils.addAttribute(attrs, ATTR_TYPE, m_type);
 		if(m_base != null)
 			Utils.addAttribute(attrs, ATTR_BASE, m_base.toPortableString());
 	}

@@ -45,7 +45,6 @@ public class AlterArtifact extends AlterAttribute<Artifact>
 		ArtifactBuilder aBld = (ArtifactBuilder)original;
 		alterPaths(aBld);
 		alterDocumentation(aBld);
-		aBld.setType(CSpecExtension.overrideCheckNull(aBld.getType(), base.getType()));
 		aBld.setBase(CSpecExtension.overrideCheckNull(aBld.getBase(), base.getBase()));
 	}
 

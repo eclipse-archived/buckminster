@@ -345,7 +345,7 @@
 				<attribute name="type" type="string" use="optional">
 					<annotation>
 						<documentation>
-							Defines the type for this artifact
+							Deprecated and ignored.
 						</documentation>
 					</annotation>
 				</attribute>

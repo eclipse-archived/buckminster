@@ -120,7 +120,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			// No unpacked bundle exists (or should ever exist). We're happy with what we have.
 			//
 			cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
-			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_JAR, true, ATTRIBUTE_BUNDLE_JAR, null);
+			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_JAR, true, null);
 			pluginExport.addPath(new Path(buildArtifactName(true)));
 			pluginExport.setBase(parentDir); // we want the site/plugins folder, i.e. the parent of the jar
 			classpath.addLocalPrerequisite(pluginExport);
@@ -172,7 +172,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			{
 				// Create an artifact that contains all entries listed in the classpath
 				//
-				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false, ATTRIBUTE_JAVA_BINARIES, null);
+				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false, null);
 				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ","); //$NON-NLS-1$
 				while(tokens.hasMoreTokens())
 				{
@@ -201,8 +201,7 @@ public class CSpecFromBinary extends CSpecGenerator
 					bundleExport.getPrerequisitesBuilder().addLocalPrerequisite(bundleClasspath);
 				else
 				{
-					ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false,
-							ATTRIBUTE_JAVA_BINARIES, null);
+					ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false, null);
 					importedJar.addPath(Path.fromPortableString(jarName));
 					bundleExport.getPrerequisitesBuilder().addLocalPrerequisite(importedJar);
 				}

@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
@@ -173,7 +172,7 @@ public class CSpecFromSource extends CSpecGenerator
 			// add the class path entry to build sources
 			IPath cpePath = asProjectRelativeFolder(cpe.getPath(), projectRootReplacement);
 			ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_ECLIPSE_BUILD_SOURCE + '_' + cnt++, false,
-					WellKnownExports.JAVA_SOURCES, projectRootReplacement[0]);
+					projectRootReplacement[0]);
 			ab.setBase(cpePath);
 			if(ebSrcBld == null)
 				ebSrcBld = getGroupEclipseBuildSource(true);
@@ -212,8 +211,7 @@ public class CSpecFromSource extends CSpecGenerator
 					absPath = null;
 				}
 
-				ArtifactBuilder ab2 = eclipseBuild.addProductArtifact(getArtifactName(output), false,
-						WellKnownExports.JAVA_BINARIES, base);
+				ArtifactBuilder ab2 = eclipseBuild.addProductArtifact(getArtifactName(output), false, base);
 				if(absPath != null)
 					ab2.addPath(absPath);
 				eclipseBuildProducts.put(output, ab2);
@@ -291,8 +289,7 @@ public class CSpecFromSource extends CSpecGenerator
 					// We don't know how this entry came about. Chances are it has been
 					// checked in with the source.
 					//
-					ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_BUNDLE_EXTRAJARS + '_' + cnt++, false,
-							WellKnownExports.JAVA_BINARIES, null);
+					ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_BUNDLE_EXTRAJARS + '_' + cnt++, false, null);
 					IPath eaPath = resolveLink(Path.fromPortableString(token), projectRootReplacement);
 					ab.setBase(projectRootReplacement[0]);
 					ab.addPath(eaPath);
@@ -336,7 +333,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// Add the build.properties artifact. We want to manage that separately since it
 		// is one of the requirements for expanding the bundle version
 		//
-		cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
+		cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, true, null).addPath(new Path(BUILD_PROPERTIES_FILE));
 
 		if(versionExpansion)
 		{
@@ -344,7 +341,7 @@ public class CSpecFromSource extends CSpecGenerator
 			// Another action that will do the same for the manifest used for the source bundle
 			//
 			IPath manifestPath = new Path(MANIFEST);
-			ArtifactBuilder rawManifest = cspec.addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null, manifestFolder);
+			ArtifactBuilder rawManifest = cspec.addArtifact(ATTRIBUTE_RAW_MANIFEST, false, manifestFolder);
 			rawManifest.addPath(manifestPath);
 
 			ActionBuilder versionExpansionAction = addAntAction(ATTRIBUTE_MANIFEST, TASK_EXPAND_BUNDLE_VERSION, false);
@@ -361,7 +358,7 @@ public class CSpecFromSource extends CSpecGenerator
 		{
 			// No expansion needed, use original file.
 			//
-			ArtifactBuilder rawManifest = cspec.addArtifact(ATTRIBUTE_MANIFEST, true, null, manifestFolder);
+			ArtifactBuilder rawManifest = cspec.addArtifact(ATTRIBUTE_MANIFEST, true, manifestFolder);
 			rawManifest.addPath(new Path(MANIFEST));
 			manifest = rawManifest;
 		}
@@ -431,7 +428,7 @@ public class CSpecFromSource extends CSpecGenerator
 					binIncludesSource = cspec.addGroup(IBuildEntry.BIN_INCLUDES, false);
 
 				IPath biPath = resolveLink(binInclude, projectRootReplacement);
-				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false, null,
+				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false,
 						projectRootReplacement[0]);
 				ab.addPath(biPath);
 				binIncludesSource.addLocalPrerequisite(ab);
@@ -462,7 +459,7 @@ public class CSpecFromSource extends CSpecGenerator
 					srcIncludesSource = cspec.addGroup(IBuildEntry.SRC_INCLUDES, false);
 
 				IPath biPath = resolveLink(srcInclude, projectRootReplacement);
-				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.SRC_INCLUDES + '_' + cnt++, false, null,
+				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.SRC_INCLUDES + '_' + cnt++, false,
 						projectRootReplacement[0]);
 				ab.addPath(biPath);
 				srcIncludesSource.addLocalPrerequisite(ab);
@@ -493,8 +490,7 @@ public class CSpecFromSource extends CSpecGenerator
 			buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
 			buildPlugin.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			IPath resolvedJarPath = resolveLink(jarPath, projectRootReplacement);
-			ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false, ATTRIBUTE_JAVA_BINARIES,
-					projectRootReplacement[0]);
+			ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false, projectRootReplacement[0]);
 			importedJar.addPath(resolvedJarPath);
 			buildPlugin.getPrerequisitesBuilder().addLocalPrerequisite(importedJar);
 		}
@@ -672,8 +668,7 @@ public class CSpecFromSource extends CSpecGenerator
 			// We have sources that are not input to the eclipse.build. We need some
 			// custom action here in order to deal with them.
 			// TODO: investigate
-			ArtifactBuilder rougeSources = cspec.addArtifact(PREFIX_ROUGE_SOURCE + jarFlatName, false,
-					WellKnownExports.JAVA_SOURCES, null);
+			ArtifactBuilder rougeSources = cspec.addArtifact(PREFIX_ROUGE_SOURCE + jarFlatName, false, null);
 			for(IPath notFound : missingEntries)
 				rougeSources.addPath(notFound);
 			action.addLocalPrerequisite(rougeSources);

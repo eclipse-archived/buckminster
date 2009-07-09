@@ -49,12 +49,6 @@ public class ArtifactHandler extends TopLevelAttributeHandler
 	}
 
 	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
-		return getCSpecBuilder().createArtifactBuilder();
-	}
-
-	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
@@ -65,17 +59,11 @@ public class ArtifactHandler extends TopLevelAttributeHandler
 		return ch;
 	}
 
-	final ArtifactBuilder getArtifactBuilder()
-	{
-		return (ArtifactBuilder)this.getBuilder();
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
 		ArtifactBuilder builder = this.getArtifactBuilder();
-		builder.setType(getOptionalStringValue(attrs, Artifact.ATTR_TYPE));
 		String tmp = getOptionalStringValue(attrs, Artifact.ATTR_BASE);
 		if(tmp != null)
 			builder.setBase(Path.fromPortableString(tmp));
@@ -90,5 +78,16 @@ public class ArtifactHandler extends TopLevelAttributeHandler
 			{
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
+	}
+
+	@Override
+	protected TopLevelAttributeBuilder createAttributeBuilder()
+	{
+		return getCSpecBuilder().createArtifactBuilder();
+	}
+
+	final ArtifactBuilder getArtifactBuilder()
+	{
+		return (ArtifactBuilder)this.getBuilder();
 	}
 }

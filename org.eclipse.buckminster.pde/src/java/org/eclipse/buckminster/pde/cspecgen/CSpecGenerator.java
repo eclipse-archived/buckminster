@@ -617,7 +617,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			}
 
 			CSpecBuilder cspec = getCSpec();
-			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null, null);
+			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null);
 			productConfigArtifact.addPath(Path.fromOSString(productConfigFile.getName()));
 			GroupBuilder productConfigs = cspec.getGroup(ATTRIBUTE_PRODUCT_CONFIGS);
 			if(productConfigs == null)

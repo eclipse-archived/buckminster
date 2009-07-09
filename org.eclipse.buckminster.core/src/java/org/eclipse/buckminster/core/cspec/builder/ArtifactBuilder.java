@@ -25,8 +25,6 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 
 	private final HashSet<IPath> m_paths = new HashSet<IPath>();
 
-	private String m_type;
-
 	ArtifactBuilder(CSpecBuilder cspecBuilder)
 	{
 		super(cspecBuilder);
@@ -44,7 +42,6 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 	{
 		super.clear();
 		m_base = null;
-		m_type = null;
 		m_paths.clear();
 	}
 
@@ -72,9 +69,13 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 		return m_paths;
 	}
 
+	/**
+	 * @deprecated no longer used
+	 */
+	@Deprecated
 	public String getType()
 	{
-		return m_type;
+		return null;
 	}
 
 	@Override
@@ -83,7 +84,6 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 		super.initFrom(attribute);
 		IArtifact artifact = (IArtifact)attribute;
 		m_base = artifact.getBase();
-		m_type = artifact.getType();
 		m_paths.addAll(artifact.getPaths());
 	}
 
@@ -101,8 +101,11 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 				: base.addTrailingSeparator();
 	}
 
+	/**
+	 * @deprecated type is no longer used
+	 */
+	@Deprecated
 	public void setType(String type)
 	{
-		m_type = type;
 	}
 }

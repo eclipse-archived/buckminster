@@ -122,13 +122,13 @@ public class CSpecFromSource extends CSpecGenerator
 					continue;
 
 				if(binIncludes == null)
-					binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null, null);
+					binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null);
 				binIncludes.addPath(new Path(path));
 			}
 		}
 		else
 		{
-			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null, null).addPath(new Path(BUILD_PROPERTIES_FILE));
+			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null).addPath(new Path(BUILD_PROPERTIES_FILE));
 			for(Map.Entry<String, String> entry : m_buildProperties.entrySet())
 			{
 				String key = entry.getKey();
@@ -354,7 +354,7 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 
 			if(binIncludes == null)
-				binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null, null);
+				binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null);
 
 			binIncludes.addPath(new Path(path));
 		}
@@ -426,7 +426,7 @@ public class CSpecFromSource extends CSpecGenerator
 		// Create the artifact that represents the original feature.xml file
 		//
 		IPath featureFile = new Path(FEATURE_FILE);
-		ArtifactBuilder rawManifest = getCSpec().addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null, null);
+		ArtifactBuilder rawManifest = getCSpec().addArtifact(ATTRIBUTE_RAW_MANIFEST, false, null);
 		rawManifest.addPath(featureFile);
 
 		// Create the action that creates the version expanded feature.xml
