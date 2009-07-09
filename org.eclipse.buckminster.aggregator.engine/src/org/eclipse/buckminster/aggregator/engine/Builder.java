@@ -30,7 +30,7 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -334,7 +334,7 @@ public class Builder implements IApplication
 
 	private File buildRoot;
 
-	private MetadataRepository categoriesRepo;
+	private List<InstallableUnit> categoryIUs;
 
 	private String emailFrom;
 
@@ -413,9 +413,9 @@ public class Builder implements IApplication
 		return buildRoot;
 	}
 
-	public MetadataRepository getCategoriesRepo()
+	public List<InstallableUnit> getCategoryIUs()
 	{
-		return categoriesRepo;
+		return categoryIUs;
 	}
 
 	public PackedStrategy getPackedStrategy()
@@ -723,9 +723,9 @@ public class Builder implements IApplication
 		this.buildRoot = buildRoot;
 	}
 
-	public void setCategoriesRepo(MetadataRepository categoriesRepo)
+	public void setCategoryIUs(List<InstallableUnit> categoryIUs)
 	{
-		this.categoriesRepo = categoriesRepo;
+		this.categoryIUs = categoryIUs;
 	}
 
 	public void setEmailFrom(String emailFrom)
@@ -1051,7 +1051,7 @@ public class Builder implements IApplication
 
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException
 	{
-		CategoryRepoGenerator generator = new CategoryRepoGenerator(this);
+		CategoriesGenerator generator = new CategoriesGenerator(this);
 		generator.run(monitor);
 	}
 

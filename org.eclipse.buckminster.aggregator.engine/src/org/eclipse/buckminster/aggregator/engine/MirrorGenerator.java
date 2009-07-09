@@ -380,11 +380,10 @@ public class MirrorGenerator extends BuilderPhase
 				MonitorUtils.done(contribMonitor);
 			}
 
-			MetadataRepository categoriesRepo = builder.getCategoriesRepo();
-			List<InstallableUnit> categories = categoriesRepo.getInstallableUnits();
+			List<InstallableUnit> categories = builder.getCategoryIUs();
 			if(!categories.isEmpty())
 			{
-				mirror(categories, categoriesRepo, aggregateMdr, MonitorUtils.subMonitor(childMonitor, 20));
+				mirror(categories, null, aggregateMdr, MonitorUtils.subMonitor(childMonitor, 20));
 				aggregatedMdrIsEmpty = false;
 			}
 
@@ -613,7 +612,7 @@ public class MirrorGenerator extends BuilderPhase
 		dest.addInstallableUnits(iusToMirror.toArray(new IInstallableUnit[iusToMirror.size()]));
 
 		Builder builder = getBuilder();
-		if(builder.isMirrorReferences())
+		if(source != null && builder.isMirrorReferences())
 		{
 			Logger log = Buckminster.getLogger();
 			for(RepositoryReference ref : source.getRepositoryReferences())
