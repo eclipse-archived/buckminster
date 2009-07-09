@@ -48,6 +48,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	 *             {@link Maven2ReaderType#getMetadataDocument(DocumentBuilder,URL,LocalCache,IConnectContext,IProgressMonitor)}
 	 *             instead
 	 */
+	@Deprecated
 	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,
 			IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
@@ -57,6 +58,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	/**
 	 * @deprecated Use {@link Maven2ReaderType#getSnapshotVersion(Document,String)} instead
 	 */
+	@Deprecated
 	public static String getSnapshotVersion(Document doc, String version)
 	{
 		return Maven2ReaderType.getSnapshotVersion(doc, version);
@@ -65,6 +67,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	/**
 	 * @deprecated Use {@link Maven2ReaderType#getVersions(Document)} instead
 	 */
+	@Deprecated
 	public static List<String> getVersions(Document doc)
 	{
 		return Maven2ReaderType.getVersions(doc);
