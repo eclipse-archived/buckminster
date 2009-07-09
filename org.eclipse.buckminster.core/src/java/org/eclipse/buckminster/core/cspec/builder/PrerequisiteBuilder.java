@@ -35,8 +35,6 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 
 	private Filter m_filter;
 
-	private boolean m_optional = false;
-
 	PrerequisiteBuilder(AttributeBuilder attributeBuilder)
 	{
 		super(attributeBuilder.getCSpecBuilder());
@@ -51,7 +49,6 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		m_component = null;
 		m_componentType = null;
 		m_contributor = true;
-		m_optional = false;
 		m_excludePattern = null;
 		m_includePattern = null;
 		m_filter = null;
@@ -108,7 +105,6 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		m_alias = prerequisite.getAlias();
 		m_component = prerequisite.getComponentName();
 		m_componentType = prerequisite.getComponentType();
-		m_optional = prerequisite.isOptional();
 		m_contributor = prerequisite.isContributor();
 		m_excludePattern = prerequisite.getExcludePattern();
 		m_includePattern = prerequisite.getIncludePattern();
@@ -130,9 +126,13 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return Prerequisite.isMatch(component, attribute, m_excludePattern, m_includePattern);
 	}
 
+	/**
+	 * @deprecated not used
+	 */
+	@Deprecated
 	public boolean isOptional()
 	{
-		return m_optional;
+		return false;
 	}
 
 	public void setAlias(String alias)
@@ -170,9 +170,12 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		m_includePattern = includePattern;
 	}
 
+	/**
+	 * @deprecated not used
+	 */
+	@Deprecated
 	public void setOptional(boolean optional)
 	{
-		m_optional = optional;
 	}
 
 	@Override

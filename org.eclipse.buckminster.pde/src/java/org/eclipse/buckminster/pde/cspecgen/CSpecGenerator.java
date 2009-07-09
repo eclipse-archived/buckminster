@@ -299,15 +299,24 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return m_cspecBuilder.addDependency(dependency);
 	}
 
-	protected void addExternalPrerequisite(GroupBuilder group, String component, String type, String name,
-			boolean optional) throws CoreException
+	protected void addExternalPrerequisite(GroupBuilder group, String component, String type, String name)
+			throws CoreException
 	{
 		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
 		pqBld.setComponentName(component);
 		pqBld.setComponentType(type);
 		pqBld.setName(name);
-		pqBld.setOptional(optional);
 		group.addPrerequisite(pqBld);
+	}
+
+	/**
+	 * @deprecated Use {@link #addExternalPrerequisite(GroupBuilder,String,String,String)} instead
+	 */
+	@Deprecated
+	protected void addExternalPrerequisite(GroupBuilder group, String component, String type, String name,
+			boolean optional) throws CoreException
+	{
+		addExternalPrerequisite(group, component, type, name);
 	}
 
 	protected void addProductBundles(IProductDescriptor productDescriptor) throws CoreException

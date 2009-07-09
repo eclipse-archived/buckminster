@@ -20,5 +20,9 @@ public interface IPrerequisite extends IAttributeFilter
 
 	boolean isExternal();
 
+	/**
+	 * @deprecated not used
+	 */
+	@Deprecated
 	boolean isOptional();
 }

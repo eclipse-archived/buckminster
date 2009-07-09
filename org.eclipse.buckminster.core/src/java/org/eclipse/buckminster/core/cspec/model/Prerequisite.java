@@ -39,8 +39,6 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
-	public static final String ATTR_OPTIONAL = "optional"; //$NON-NLS-1$
-
 	public static final String TAG = "attribute"; //$NON-NLS-1$
 
 	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern)
@@ -92,14 +90,11 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	private final Filter m_filter;
 
-	private final boolean m_optional;
-
 	public Prerequisite(PrerequisiteBuilder bld)
 	{
 		super(bld.getName());
 		m_alias = bld.getAlias();
 		m_contributor = bld.isContributor();
-		m_optional = bld.isOptional();
 		m_componentName = bld.getComponentName();
 		m_componentType = bld.getComponentType();
 		m_excludePattern = bld.getExcludePattern();
@@ -179,9 +174,13 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		return isMatch(component, attribute, m_excludePattern, m_includePattern);
 	}
 
+	/**
+	 * @deprecated not used
+	 */
+	@Deprecated
 	public final boolean isOptional()
 	{
-		return m_optional;
+		return false;
 	}
 
 	public boolean isPatternFilter()
@@ -210,8 +209,6 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
 		if(m_includePattern != null)
 			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
-		if(m_optional)
-			Utils.addAttribute(attrs, ATTR_OPTIONAL, "true"); //$NON-NLS-1$
 		if(m_componentName != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
 		if(m_componentType != null)

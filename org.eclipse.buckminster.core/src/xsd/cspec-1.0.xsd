@@ -460,7 +460,7 @@
 		<attribute name="optional" type="boolean" use="optional">
 			<annotation>
 				<documentation>
-					Set to true if the artifact is optional.
+					Deprecated and ignored.
 				</documentation>
 			</annotation>
 		</attribute>

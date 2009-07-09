@@ -604,16 +604,14 @@ public class CSpecFromSource extends CSpecGenerator
 				continue;
 
 			String component = dependency.getName();
-			boolean optional = pluginImport.isOptional();
-			addExternalPrerequisite(fullClean, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN, optional);
-			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS, optional);
+			addExternalPrerequisite(fullClean, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN);
+			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
 			addExternalPrerequisite(getAttributeBuildRequirements(), component, IComponentType.OSGI_BUNDLE,
-					ATTRIBUTE_JAVA_BINARIES, optional);
+					ATTRIBUTE_JAVA_BINARIES);
 			if(pluginImport.isReexported())
-				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES,
-						optional);
+				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES);
 			addExternalPrerequisite(productConfigExports, component, IComponentType.OSGI_BUNDLE,
-					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, optional);
+					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 

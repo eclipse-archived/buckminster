@@ -39,7 +39,6 @@ public class PrerequisiteHandler extends CSpecElementHandler
 		builder.setComponentName(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT));
 		builder.setComponentType(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT_TYPE));
 		builder.setContributor(getOptionalBooleanValue(attrs, Prerequisite.ATTR_CONTRIBUTOR, true));
-		builder.setOptional(getOptionalBooleanValue(attrs, Prerequisite.ATTR_OPTIONAL, false));
 		builder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
 		builder.setExcludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_EXCLUDE_PATTERN));
 		builder.setIncludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_INCLUDE_PATTERN));

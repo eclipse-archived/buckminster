@@ -278,10 +278,9 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 
 			String component = dependency.getName();
-			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS, false);
+			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
 			if(pluginImport.isReexported())
-				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES,
-						false);
+				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES);
 		}
 	}
 
