@@ -356,6 +356,14 @@ public interface AggregatorPackage extends EPackage
 		EReference MAPPED_UNIT__INSTALLABLE_UNIT = eINSTANCE.getMappedUnit_InstallableUnit();
 
 		/**
+		 * The meta object literal for the '<em><b>Valid Configurations</b></em>' reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference MAPPED_UNIT__VALID_CONFIGURATIONS = eINSTANCE.getMappedUnit_ValidConfigurations();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ProductImpl <em>Product</em>}
 		 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -873,13 +881,22 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_UNIT__INSTALLABLE_UNIT = 1;
 
 	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_UNIT__VALID_CONFIGURATIONS = 2;
+
+	/**
 	 * The number of structural features of the '<em>Mapped Unit</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_UNIT_FEATURE_COUNT = 2;
+	int MAPPED_UNIT_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl <em>Feature</em>}' class.
@@ -907,6 +924,15 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int FEATURE__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__VALID_CONFIGURATIONS = MAPPED_UNIT__VALID_CONFIGURATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Categories</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -952,6 +978,15 @@ public interface AggregatorPackage extends EPackage
 	int BUNDLE__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__VALID_CONFIGURATIONS = MAPPED_UNIT__VALID_CONFIGURATIONS;
+
+	/**
 	 * The number of structural features of the '<em>Bundle</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -985,6 +1020,15 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int PRODUCT__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__VALID_CONFIGURATIONS = MAPPED_UNIT__VALID_CONFIGURATIONS;
 
 	/**
 	 * The number of structural features of the '<em>Product</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1054,6 +1098,15 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int CATEGORY__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__VALID_CONFIGURATIONS = MAPPED_UNIT__VALID_CONFIGURATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Label Override</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1694,6 +1747,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMappedUnit_InstallableUnit();
+
+	/**
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.MappedUnit#getValidConfigurations <em>Valid Configurations</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference list '<em>Valid Configurations</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MappedUnit#getValidConfigurations()
+	 * @see #getMappedUnit()
+	 * @generated
+	 */
+	EReference getMappedUnit_ValidConfigurations();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.OperatingSystem

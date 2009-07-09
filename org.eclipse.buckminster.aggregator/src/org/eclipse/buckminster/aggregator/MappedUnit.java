@@ -7,6 +7,7 @@
 package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -19,6 +20,8 @@ import org.eclipse.emf.ecore.EObject;
  *          <ul>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#isEnabled <em>Enabled</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit <em>Installable Unit</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#getValidConfigurations <em>Valid Configurations
+ *          </em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -43,6 +46,22 @@ public interface MappedUnit extends EObject, StatusProvider
 	 * @generated
 	 */
 	InstallableUnit getInstallableUnit();
+
+	/**
+	 * Returns the value of the '<em><b>Valid Configurations</b></em>' reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.aggregator.Configuration}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Valid Configurations</em>' reference list isn't clear, there really should be more of
+	 * a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Valid Configurations</em>' reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedUnit_ValidConfigurations()
+	 * @model keys="operatingSystem windowSystem architecture"
+	 * @generated
+	 */
+	EList<Configuration> getValidConfigurations();
 
 	/**
 	 * Returns the value of the '<em><b>Enabled</b></em>' attribute. The default value is <code>"true"</code>. <!--

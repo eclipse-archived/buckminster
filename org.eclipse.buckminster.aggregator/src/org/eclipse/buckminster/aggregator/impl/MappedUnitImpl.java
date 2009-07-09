@@ -6,15 +6,19 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
+import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Mapped Unit</b></em>'. <!-- end-user-doc -->
@@ -23,6 +27,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#isEnabled <em>Enabled</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#getInstallableUnit <em>Installable Unit</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#getValidConfigurations <em>Valid Configurations
+ * </em>}</li>
  * </ul>
  * </p>
  * 
@@ -70,6 +76,16 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	protected InstallableUnit installableUnit;
 
 	/**
+	 * The cached value of the '{@link #getValidConfigurations() <em>Valid Configurations</em>}' reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getValidConfigurations()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Configuration> validConfigurations;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -106,6 +122,8 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			if(resolve)
 				return getInstallableUnit();
 			return basicGetInstallableUnit();
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			return getValidConfigurations();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -124,6 +142,8 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
 			return installableUnit != null;
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			return validConfigurations != null && !validConfigurations.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -133,6 +153,7 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	 * 
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -143,6 +164,10 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			return;
 		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
 			setInstallableUnit((InstallableUnit)newValue);
+			return;
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			getValidConfigurations().clear();
+			getValidConfigurations().addAll((Collection<? extends Configuration>)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -163,6 +188,9 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			return;
 		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
 			setInstallableUnit((InstallableUnit)null);
+			return;
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			getValidConfigurations().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -195,6 +223,21 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			return StatusProvider.BROKEN_CHILD;
 
 		return StatusProvider.OK;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<Configuration> getValidConfigurations()
+	{
+		if(validConfigurations == null)
+		{
+			validConfigurations = new EObjectResolvingEList<Configuration>(Configuration.class, this,
+					AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS);
+		}
+		return validConfigurations;
 	}
 
 	/**

@@ -80,6 +80,8 @@
         defaultValueLiteral="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnit" eType="#//p2/InstallableUnit"
         eKeys="#//p2/IInstallableUnit/id #//p2/IInstallableUnit/version"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validConfigurations" upperBound="-1"
+        eType="#//Configuration" eKeys="#//Configuration/operatingSystem #//Configuration/windowSystem #//Configuration/architecture"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Product" eSuperTypes="#//MappedUnit"/>
   <eClassifiers xsi:type="ecore:EClass" name="Property">

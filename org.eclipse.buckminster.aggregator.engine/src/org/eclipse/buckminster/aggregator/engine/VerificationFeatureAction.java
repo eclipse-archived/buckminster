@@ -13,12 +13,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -32,6 +36,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * This action creates the feature that contains all features and bundles that are listed in the build contributions.
@@ -82,13 +87,46 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 							//
 							if("true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_GROUP))
 									&& !"true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
-								addRequirementFor(riu, required);
+								addRequirementFor(riu, null, required);
 						}
 					}
 					else
 					{
 						for(MappedUnit mu : repository.getUnits(true))
-							addRequirementFor(mu.getInstallableUnit(), required);
+						{
+							// TODO: Create filter from configurations
+							//
+							Filter filter = null;
+							List<Configuration> configs = mu.getValidConfigurations();
+							if(!configs.isEmpty())
+							{
+								StringBuilder filterBld = new StringBuilder();
+								if(configs.size() > 1)
+									filterBld.append("(|");
+
+								for(Configuration config : configs)
+								{
+									filterBld.append("(&(osgi.os=");
+									filterBld.append(config.getOperatingSystem().getLiteral());
+									filterBld.append(")(osgi.ws=");
+									filterBld.append(config.getWindowSystem().getLiteral());
+									filterBld.append(")(osgi.arch=");
+									filterBld.append(config.getArchitecture().getLiteral());
+									filterBld.append("))");
+								}
+								if(configs.size() > 1)
+									filterBld.append(')');
+								try
+								{
+									filter = FilterFactory.newInstance(filterBld.toString());
+								}
+								catch(InvalidSyntaxException e)
+								{
+									throw new RuntimeException(e);
+								}
+							}
+							addRequirementFor(mu.getInstallableUnit(), filter, required);
+						}
 					}
 				}
 				if(errors.size() > 0)
@@ -111,7 +149,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		}
 	}
 
-	private void addRequirementFor(InstallableUnit iu, Collection<IRequiredCapability> requirements)
+	private void addRequirementFor(InstallableUnit iu, Filter filter, Collection<IRequiredCapability> requirements)
 	{
 		String id = iu.getId();
 		Version v = iu.getVersion();
@@ -123,7 +161,23 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		VersionRange range = null;
 		if(!Version.emptyVersion.equals(v))
 			range = new VersionRange(v, true, v, true);
+
+		Filter iuFilter = filter;
+		String iuFilterStr = Trivial.trim(iu.getFilter());
+		if(iuFilterStr != null)
+		{
+			if(filter != null)
+				try
+				{
+					iuFilter = FilterFactory.newInstance(iuFilterStr).addFilterWithAnd(filter);
+				}
+				catch(InvalidSyntaxException e)
+				{
+				}
+		}
+		if(iuFilter != null)
+			iuFilterStr = iuFilter.toString();
 		requirements.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, id, range,
-				iu.getFilter(), false, false));
+				iuFilterStr, false, false));
 	}
 }

@@ -303,6 +303,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		mappedUnitEClass = createEClass(MAPPED_UNIT);
 		createEAttribute(mappedUnitEClass, MAPPED_UNIT__ENABLED);
 		createEReference(mappedUnitEClass, MAPPED_UNIT__INSTALLABLE_UNIT);
+		createEReference(mappedUnitEClass, MAPPED_UNIT__VALID_CONFIGURATIONS);
 
 		productEClass = createEClass(PRODUCT);
 
@@ -804,6 +805,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EReference getMappedUnit_ValidConfigurations()
+	{
+		return (EReference)mappedUnitEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EEnum getOperatingSystem()
 	{
 		return operatingSystemEEnum;
@@ -1022,6 +1033,12 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getMappedUnit_InstallableUnit().getEKeys().add(theP2Package.getIInstallableUnit_Id());
 		getMappedUnit_InstallableUnit().getEKeys().add(theP2Package.getIInstallableUnit_Version());
+		initEReference(getMappedUnit_ValidConfigurations(), this.getConfiguration(), null, "validConfigurations", null,
+				0, -1, MappedUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		getMappedUnit_ValidConfigurations().getEKeys().add(this.getConfiguration_OperatingSystem());
+		getMappedUnit_ValidConfigurations().getEKeys().add(this.getConfiguration_WindowSystem());
+		getMappedUnit_ValidConfigurations().getEKeys().add(this.getConfiguration_Architecture());
 
 		initEClass(productEClass, Product.class, "Product", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

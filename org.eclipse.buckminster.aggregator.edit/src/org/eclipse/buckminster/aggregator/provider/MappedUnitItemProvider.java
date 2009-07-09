@@ -90,6 +90,7 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 
 			addEnabledPropertyDescriptor(object);
 			addInstallableUnitPropertyDescriptor(object);
+			addValidConfigurationsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -252,6 +253,22 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 				return result;
 			}
 		});
+	}
+
+	/**
+	 * This adds a property descriptor for the Valid Configurations feature. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 */
+	protected void addValidConfigurationsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MappedUnit_validConfigurations_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MappedUnit_validConfigurations_feature",
+						"_UI_MappedUnit_type"), AggregatorPackage.Literals.MAPPED_UNIT__VALID_CONFIGURATIONS, true,
+				false, true, null, null, null));
 	}
 
 	/**
