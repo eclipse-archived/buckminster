@@ -29,7 +29,7 @@ public enum WindowSystem implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	WIN32(0, "Win32", "Win32"), /**
+	WIN32(0, "Win32", "win32"), /**
 	 * The '<em><b>GTK</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -37,14 +37,14 @@ public enum WindowSystem implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	GTK(1, "GTK", "GTK"), /**
+	GTK(1, "GTK", "gtk"), /**
 	 * The '<em><b>Carbon</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #CARBON_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	CARBON(2, "Carbon", "Carbon"), /**
+	CARBON(2, "Carbon", "carbon"), /**
 	 * The '<em><b>Cocoa</b></em>' literal object. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -63,7 +63,7 @@ public enum WindowSystem implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #WIN32
-	 * @model name="Win32"
+	 * @model name="Win32" literal="win32"
 	 * @generated
 	 * @ordered
 	 */
@@ -78,7 +78,7 @@ public enum WindowSystem implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #GTK
-	 * @model
+	 * @model literal="gtk"
 	 * @generated
 	 * @ordered
 	 */
@@ -93,7 +93,7 @@ public enum WindowSystem implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #CARBON
-	 * @model name="Carbon"
+	 * @model name="Carbon" literal="carbon"
 	 * @generated
 	 * @ordered
 	 */

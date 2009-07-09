@@ -29,7 +29,7 @@ public enum OperatingSystem implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	WIN32(0, "Win32", "Win32"),
+	WIN32(0, "Win32", "win32"),
 
 	/**
 	 * The '<em><b>Linux</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -38,7 +38,7 @@ public enum OperatingSystem implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	LINUX(1, "Linux", "Linux"),
+	LINUX(1, "Linux", "linux"),
 
 	/**
 	 * The '<em><b>Mac OSX</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -47,7 +47,7 @@ public enum OperatingSystem implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	MAC_OSX(2, "MacOSX", "MacOSX");
+	MAC_OSX(2, "MacOSX", "macosx");
 
 	/**
 	 * The '<em><b>Win32</b></em>' literal value. <!-- begin-user-doc -->
@@ -58,7 +58,7 @@ public enum OperatingSystem implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #WIN32
-	 * @model name="Win32"
+	 * @model name="Win32" literal="win32"
 	 * @generated
 	 * @ordered
 	 */
@@ -73,7 +73,7 @@ public enum OperatingSystem implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #LINUX
-	 * @model name="Linux"
+	 * @model name="Linux" literal="linux"
 	 * @generated
 	 * @ordered
 	 */
@@ -88,7 +88,7 @@ public enum OperatingSystem implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #MAC_OSX
-	 * @model name="MacOSX"
+	 * @model name="MacOSX" literal="macosx"
 	 * @generated
 	 * @ordered
 	 */

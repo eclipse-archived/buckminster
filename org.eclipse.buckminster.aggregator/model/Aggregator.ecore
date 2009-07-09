@@ -95,20 +95,20 @@
     <eLiterals name="Release" value="4" literal="R"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="OperatingSystem">
-    <eLiterals name="Win32"/>
-    <eLiterals name="Linux" value="1"/>
-    <eLiterals name="MacOSX" value="2"/>
+    <eLiterals name="Win32" literal="win32"/>
+    <eLiterals name="Linux" value="1" literal="linux"/>
+    <eLiterals name="MacOSX" value="2" literal="macosx"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="WindowSystem">
-    <eLiterals name="Win32"/>
-    <eLiterals name="GTK" value="1"/>
-    <eLiterals name="Carbon" value="2"/>
+    <eLiterals name="Win32" literal="win32"/>
+    <eLiterals name="GTK" value="1" literal="gtk"/>
+    <eLiterals name="Carbon" value="2" literal="carbon"/>
     <eLiterals name="Cocoa" value="3" literal="cocoa"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="Architecture">
-    <eLiterals name="X86"/>
-    <eLiterals name="PPC" value="1"/>
-    <eLiterals name="X86_64" value="2"/>
+    <eLiterals name="X86" literal="x86"/>
+    <eLiterals name="PPC" value="1" literal="ppc"/>
+    <eLiterals name="X86_64" value="2" literal="x86_64"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="URI" instanceClassName="java.net.URI"/>
   <eClassifiers xsi:type="ecore:EClass" name="Category" eSuperTypes="#//MappedUnit">

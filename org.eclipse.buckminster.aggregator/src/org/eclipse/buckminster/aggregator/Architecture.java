@@ -29,7 +29,7 @@ public enum Architecture implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	X86(0, "X86", "X86"),
+	X86(0, "X86", "x86"),
 
 	/**
 	 * The '<em><b>PPC</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -38,7 +38,7 @@ public enum Architecture implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	PPC(1, "PPC", "PPC"),
+	PPC(1, "PPC", "ppc"),
 
 	/**
 	 * The '<em><b>X86 64</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -47,7 +47,7 @@ public enum Architecture implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	X86_64(2, "X86_64", "X86_64");
+	X86_64(2, "X86_64", "x86_64");
 
 	/**
 	 * The '<em><b>X86</b></em>' literal value. <!-- begin-user-doc -->
@@ -58,7 +58,7 @@ public enum Architecture implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #X86
-	 * @model
+	 * @model literal="x86"
 	 * @generated
 	 * @ordered
 	 */
@@ -73,7 +73,7 @@ public enum Architecture implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #PPC
-	 * @model
+	 * @model literal="ppc"
 	 * @generated
 	 * @ordered
 	 */
@@ -88,7 +88,7 @@ public enum Architecture implements Enumerator
 	 * <!-- end-user-doc -->
 	 * 
 	 * @see #X86_64
-	 * @model
+	 * @model literal="x86_64"
 	 * @generated
 	 * @ordered
 	 */
