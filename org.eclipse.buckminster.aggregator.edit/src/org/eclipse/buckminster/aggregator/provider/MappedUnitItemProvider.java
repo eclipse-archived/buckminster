@@ -234,7 +234,7 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 				// if current installable unit is not among the newly retrieved ones,
 				// add it to the choice values so that user would not be surprised by
 				// disappearing current choice after clicking on the property value
-				if(!availableUnits.contains(self.getInstallableUnit()))
+				if(self.getInstallableUnit() != null && !availableUnits.contains(self.getInstallableUnit()))
 					result.add(self.getInstallableUnit());
 
 				result.addAll(availableUnits);
