@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -89,9 +90,19 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	private int m_lastEditedRow = -1;
 
+	private Composite m_stackButtonComposite;
+
+	private StackLayout m_stackButtonLayout;
+
+	private Composite m_editButtonBox;
+
+	private Composite m_viewButtonBox;
+
 	private Button m_newButton;
 
 	private Button m_editButton;
+
+	private Button m_viewButton;
 
 	private Button m_removeButton;
 
@@ -142,9 +153,6 @@ public abstract class StructuredTableEditor<T> extends Composite
 	{
 		m_enabled = enabled;
 		enableDisableButtonGroup();
-		m_tableViewer.getTable().setForeground(enabled
-				? null
-				: m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
 	protected void createStack(Composite parent)
@@ -180,9 +188,19 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected void createTableButtons(Composite parent)
 	{
-		Composite buttonBox = createTableButtonsComposite(parent);
+		m_stackButtonComposite = new Composite(parent, SWT.NONE);
+		m_stackButtonComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		m_stackButtonLayout = new StackLayout();
+		m_stackButtonLayout.marginHeight = m_stackButtonLayout.marginWidth = 0;
+		m_stackButtonComposite.setLayout(m_stackButtonLayout);
 
-		m_newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter()
+		m_editButtonBox = new Composite(m_stackButtonComposite, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = gridLayout.marginWidth = gridLayout.verticalSpacing = 0;
+		m_editButtonBox.setLayout(gridLayout);
+		m_editButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+
+		m_newButton = UiUtils.createPushButton(m_editButtonBox, Messages.new_label, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -190,17 +208,19 @@ public abstract class StructuredTableEditor<T> extends Composite
 				newRow();
 			}
 		});
+		m_newButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter()
+		m_editButton = UiUtils.createPushButton(m_editButtonBox, Messages.edit, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editRow();
+				editRow(false, true);
 			}
 		});
+		m_editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
+		m_removeButton = UiUtils.createPushButton(m_editButtonBox, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -208,10 +228,11 @@ public abstract class StructuredTableEditor<T> extends Composite
 				removeRow();
 			}
 		});
+		m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
 		if(m_swapButtonsFlag)
 		{
-			m_moveUpButton = UiUtils.createPushButton(buttonBox, Messages.move_up, new SelectionAdapter()
+			m_moveUpButton = UiUtils.createPushButton(m_editButtonBox, Messages.move_up, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -219,8 +240,9 @@ public abstract class StructuredTableEditor<T> extends Composite
 					swapAndReselect(0, -1);
 				}
 			});
+			m_moveUpButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-			m_moveDownButton = UiUtils.createPushButton(buttonBox, Messages.move_down, new SelectionAdapter()
+			m_moveDownButton = UiUtils.createPushButton(m_editButtonBox, Messages.move_down, new SelectionAdapter()
 			{
 				@Override
 				public void widgetSelected(SelectionEvent e)
@@ -228,10 +250,25 @@ public abstract class StructuredTableEditor<T> extends Composite
 					swapAndReselect(1, 0);
 				}
 			});
+			m_moveDownButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		}
-	}
 
-	protected abstract Composite createTableButtonsComposite(Composite parent);
+		m_viewButtonBox = new Composite(m_stackButtonComposite, SWT.NONE);
+		gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = gridLayout.marginWidth = 0;
+		m_viewButtonBox.setLayout(gridLayout);
+		m_viewButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+
+		m_viewButton = UiUtils.createPushButton(m_viewButtonBox, Messages.view, new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				editRow(false, false);
+			}
+		});
+		m_viewButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+	}
 
 	protected void createTableGroup(Composite parent)
 	{
@@ -276,10 +313,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			public void doubleClick(DoubleClickEvent event)
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-				{
-					if(m_enabled)
-						editRow();
-				}
+					editRow(false, m_enabled);
 			}
 		});
 
@@ -288,9 +322,45 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected abstract Composite createTableGroupComposite(Composite parent);
 
-	protected abstract void editRow();
+	protected abstract void editRow(boolean newRow, boolean enableChanges);
 
-	protected abstract void enableDisableButtonGroup();
+	protected void enableDisableButtonGroup()
+	{
+		Table table = getTableViewer().getTable();
+		int top = table.getItemCount();
+		int idx = getSelectionIndex();
+
+		if(isEnabled())
+		{
+			m_newButton.setEnabled(true);
+			m_editButton.setEnabled(idx >= 0);
+			m_removeButton.setEnabled(idx >= 0);
+
+			if(isSwapButtonAllowed())
+			{
+				m_moveUpButton.setEnabled(idx > 0);
+				m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
+			}
+
+			m_stackButtonLayout.topControl = m_editButtonBox;
+		}
+		else
+		{
+			m_newButton.setEnabled(false);
+			m_editButton.setEnabled(false);
+			m_removeButton.setEnabled(false);
+			if(isSwapButtonAllowed())
+			{
+				m_moveUpButton.setEnabled(false);
+				m_moveDownButton.setEnabled(false);
+			}
+
+			m_stackButtonLayout.topControl = m_viewButtonBox;
+		}
+
+		m_viewButton.setEnabled(idx >= 0);
+		m_stackButtonComposite.layout();
+	}
 
 	protected void enableFields(boolean enabled)
 	{
@@ -363,6 +433,11 @@ public abstract class StructuredTableEditor<T> extends Composite
 	protected TableViewer getTableViewer()
 	{
 		return m_tableViewer;
+	}
+
+	protected Button getViewButton()
+	{
+		return m_viewButton;
 	}
 
 	protected abstract void initComposite();
@@ -462,6 +537,11 @@ public abstract class StructuredTableEditor<T> extends Composite
 		m_stackOptions.setSelection(m_stackOptions.getItem(idx));
 		m_stackLayout.topControl = m_table.getStackControl(stackKey);
 		m_stackComposite.layout();
+	}
+
+	protected void setViewButton(Button viewButton)
+	{
+		m_viewButton = viewButton;
 	}
 
 	protected void swapAndReselect(int idxOffset, int selectionOffset)

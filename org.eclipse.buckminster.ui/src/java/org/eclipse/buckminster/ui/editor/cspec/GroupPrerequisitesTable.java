@@ -48,13 +48,13 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value, boolean enableChanges)
 	{
 		if(idx < 2)
-			return super.getWidgetin(parent, idx, value);
+			return super.getWidgetin(parent, idx, value, enableChanges);
 
 		// Alias is removed here
-		return super.getWidgetin(parent, ++idx, value);
+		return super.getWidgetin(parent, ++idx, value, enableChanges);
 	}
 
 	@Override

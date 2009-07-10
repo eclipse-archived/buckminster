@@ -101,29 +101,30 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value, boolean enableChanges)
 	{
 
 		switch(idx)
 		{
 		case 0:
 			return m_componentWidgetin = getComponentWidgetin(parent, idx, value, m_editor.getComponentNames(),
-					SWT.NONE);
+					SWT.NONE, enableChanges);
 		case 1:
 			m_attributeWidgetin = getAttributeWidgetin(parent, idx, value,
-					m_editor.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
+					m_editor.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE,
+					enableChanges);
 
 			setAttributeItems();
 
 			return m_attributeWidgetin;
 		case 2:
-			return getTextWidgetin(parent, idx, value);
+			return getTextWidgetin(parent, idx, value, enableChanges);
 		case 3:
-			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value, Boolean.TRUE);
+			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value, Boolean.TRUE, enableChanges);
 		case 4:
-			return getTextWidgetin(parent, idx, value);
+			return getTextWidgetin(parent, idx, value, enableChanges);
 		default:
-			return getTextWidgetin(parent, idx, value);
+			return getTextWidgetin(parent, idx, value, enableChanges);
 		}
 	}
 
@@ -156,7 +157,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 			builder.setFilter(null);
 	}
 
-	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
+	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style,
+			boolean enableChanges)
 	{
 		final String ITEMS_KEY = "items"; //$NON-NLS-1$
 
@@ -171,6 +173,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		combo.setText(stringValue);
 		combo.setData(stringValue);
 		combo.setData(ITEMS_KEY, items);
+		combo.setEnabled(enableChanges);
 
 		combo.addModifyListener(new ModifyListener()
 		{
@@ -185,7 +188,8 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		return widgetin;
 	}
 
-	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
+	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style,
+			boolean enableChanges)
 	{
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
 		final IWidgetin widgetin = new WidgetWrapper(combo);
@@ -198,6 +202,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 		combo.setText(stringValue);
 		combo.setData(stringValue);
+		combo.setEnabled(enableChanges);
 
 		combo.addModifyListener(new ModifyListener()
 		{

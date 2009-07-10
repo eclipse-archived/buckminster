@@ -23,10 +23,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -89,9 +89,19 @@ public class SimpleTableEditor<T> extends Composite
 
 	private TableViewer m_tableViewer;
 
+	private Composite m_stackButtonComposite;
+
+	private StackLayout m_stackButtonLayout;
+
+	private Composite m_editButtonBox;
+
+	private Composite m_viewButtonBox;
+
 	private Button m_newButton;
 
 	private Button m_editButton;
+
+	private Button m_viewButton;
 
 	private Button m_removeButton;
 
@@ -139,31 +149,28 @@ public class SimpleTableEditor<T> extends Composite
 
 		// m_tableViewer.getTable().setEnabled(enabled);
 
-		if(enabled)
-		{
-			m_newButton.setEnabled(true);
-			enableDisableButtonGroup();
+		enableDisableButtonGroup();
 
-		}
-		else
-		{
-			m_newButton.setEnabled(false);
-			m_editButton.setEnabled(false);
-			m_removeButton.setEnabled(false);
-		}
-
-		m_tableViewer.getTable().setForeground(enabled
-				? null
-				: m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
+		// m_tableViewer.getTable().setForeground(enabled
+		// ? null
+		// : m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
 	private void createButtonBox(Composite parent)
 	{
-		Composite buttonBox = new Composite(parent, SWT.None);
-		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
-		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		m_stackButtonComposite = new Composite(parent, SWT.NONE);
+		m_stackButtonComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		m_stackButtonLayout = new StackLayout();
+		m_stackButtonLayout.marginHeight = m_stackButtonLayout.marginWidth = 0;
+		m_stackButtonComposite.setLayout(m_stackButtonLayout);
 
-		m_newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter()
+		m_editButtonBox = new Composite(m_stackButtonComposite, SWT.None);
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = gridLayout.marginWidth = gridLayout.verticalSpacing = 0;
+		m_editButtonBox.setLayout(gridLayout);
+		m_editButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+
+		m_newButton = UiUtils.createPushButton(m_editButtonBox, Messages.new_label, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -171,17 +178,19 @@ public class SimpleTableEditor<T> extends Composite
 				newRow();
 			}
 		});
+		m_newButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter()
+		m_editButton = UiUtils.createPushButton(m_editButtonBox, Messages.edit, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editRow();
+				editRow(true);
 			}
 		});
+		m_editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
+		m_removeButton = UiUtils.createPushButton(m_editButtonBox, Messages.remove, new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -189,14 +198,31 @@ public class SimpleTableEditor<T> extends Composite
 				removeRow();
 			}
 		});
+		m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+		m_viewButtonBox = new Composite(m_stackButtonComposite, SWT.NONE);
+		gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = gridLayout.marginWidth = 0;
+		m_viewButtonBox.setLayout(gridLayout);
+		m_viewButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+
+		m_viewButton = UiUtils.createPushButton(m_viewButtonBox, Messages.view, new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				editRow(false);
+			}
+		});
+		m_viewButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
 		enableDisableButtonGroup();
 	}
 
-	private void editRow()
+	private void editRow(boolean enableChanges)
 	{
 		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
-				m_wizardImage, m_helpURL, m_table, m_tableViewer.getTable().getSelectionIndex());
+				m_wizardImage, m_helpURL, m_table, m_tableViewer.getTable().getSelectionIndex(), enableChanges);
 
 		if(dialog.open() == IDialogConstants.OK_ID)
 		{
@@ -206,18 +232,27 @@ public class SimpleTableEditor<T> extends Composite
 
 	private void enableDisableButtonGroup()
 	{
+		boolean rowSelected = m_tableViewer.getTable().getSelectionIndex() >= 0;
+
 		if(m_enabled)
 		{
-			boolean rowSelected = false;
-
-			if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-			{
-				rowSelected = true;
-			}
-
+			m_newButton.setEnabled(true);
 			m_editButton.setEnabled(rowSelected);
 			m_removeButton.setEnabled(rowSelected);
+
+			m_stackButtonLayout.topControl = m_editButtonBox;
 		}
+		else
+		{
+			m_newButton.setEnabled(false);
+			m_editButton.setEnabled(false);
+			m_removeButton.setEnabled(false);
+
+			m_stackButtonLayout.topControl = m_viewButtonBox;
+		}
+
+		m_viewButton.setEnabled(rowSelected);
+		m_stackButtonComposite.layout();
 	}
 
 	private void initComposite()
@@ -265,10 +300,7 @@ public class SimpleTableEditor<T> extends Composite
 			public void doubleClick(DoubleClickEvent event)
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-				{
-					if(m_enabled)
-						editRow();
-				}
+					editRow(m_enabled);
 			}
 		});
 
@@ -278,7 +310,7 @@ public class SimpleTableEditor<T> extends Composite
 	private void newRow()
 	{
 		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
-				m_wizardImage, m_helpURL, m_table, -1);
+				m_wizardImage, m_helpURL, m_table, -1, true);
 
 		if(dialog.open() == IDialogConstants.OK_ID)
 		{

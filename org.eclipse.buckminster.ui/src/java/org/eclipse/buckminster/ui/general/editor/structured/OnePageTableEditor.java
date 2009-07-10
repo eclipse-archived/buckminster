@@ -106,12 +106,17 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	@Override
 	protected void createTableButtons(Composite parent)
 	{
-		Composite buttonBox = createTableButtonsComposite(parent);
+		Composite buttonBox = new Composite(parent, SWT.NONE);
+		buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		FillLayout layout = new FillLayout(SWT.VERTICAL);
+		layout.marginWidth = layout.marginHeight = 0;
+		layout.spacing = 3;
+		buttonBox.setLayout(layout);
 
 		Composite buttonBox1 = new Composite(buttonBox, SWT.NULL);
 		// buttonBox1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
 		// false));
-		FillLayout layout = new FillLayout(SWT.HORIZONTAL);
+		layout = new FillLayout(SWT.HORIZONTAL);
 		layout.marginWidth = layout.marginHeight = 0;
 		buttonBox1.setLayout(layout);
 
@@ -163,19 +168,6 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected Composite createTableButtonsComposite(Composite parent)
-	{
-		Composite buttonBox = new Composite(parent, SWT.NULL);
-		buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		FillLayout layout = new FillLayout(SWT.VERTICAL);
-		layout.marginWidth = layout.marginHeight = 0;
-		layout.spacing = 3;
-		buttonBox.setLayout(layout);
-
-		return buttonBox;
-	}
-
-	@Override
 	protected Composite createTableGroupComposite(Composite parent)
 	{
 		Composite componentTableGroup = new Composite(parent, SWT.NONE);
@@ -188,7 +180,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void editRow()
+	protected void editRow(boolean newRow, boolean enableChanges)
 	{
 		// automatic
 	}
@@ -219,10 +211,13 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 				getMoveUpButton().setEnabled(false);
 				getMoveDownButton().setEnabled(false);
 			}
-			enableFields(isEnabled());
+			enableFields(false);
 		}
 
-		getTableViewer().getTable().setEnabled(isEnabled());
+		// getTableViewer().getTable().setEnabled(isEnabled());
+		// getTableViewer().getTable().setForeground(isEnabled()
+		// ? null
+		// : getTableViewer().getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
 	@Override

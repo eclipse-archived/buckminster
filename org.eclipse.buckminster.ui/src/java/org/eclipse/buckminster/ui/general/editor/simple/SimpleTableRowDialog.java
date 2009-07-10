@@ -57,9 +57,9 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 	 *            table row number that will be edited or -1 for new row
 	 */
 	public SimpleTableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL,
-			ISimpleTable<T> table, int row)
+			ISimpleTable<T> table, int row, boolean enableChanges)
 	{
-		super(parent, windowImage, windowTitle, wizardImage, helpURL, (row == -1));
+		super(parent, windowImage, windowTitle, wizardImage, helpURL, (row == -1), enableChanges);
 
 		m_table = table;
 		m_row = row;
@@ -136,7 +136,7 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 			Arrays.fill(fields, null);
 		}
 
-		m_widgetins = m_table.fillGrid(textComposite, fields);
+		m_widgetins = m_table.fillGrid(textComposite, fields, isEnableChanges());
 
 		for(int i = 0; i < m_table.getColumns(); i++)
 		{
@@ -149,20 +149,23 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 	@Override
 	protected void enableDisableOkButton()
 	{
-		boolean valid = true;
-
-		try
+		if(getButton(IDialogConstants.OK_ID) != null)
 		{
-			for(int i = 0; i < m_table.getColumns(); i++)
+			boolean valid = true;
+
+			try
 			{
-				m_table.getFieldValidator(i).validate(m_widgetins[i].getData());
+				for(int i = 0; i < m_table.getColumns(); i++)
+				{
+					m_table.getFieldValidator(i).validate(m_widgetins[i].getData());
+				}
 			}
-		}
-		catch(ValidatorException e1)
-		{
-			valid = false;
-		}
+			catch(ValidatorException e1)
+			{
+				valid = false;
+			}
 
-		getButton(IDialogConstants.OK_ID).setEnabled(valid);
+			getButton(IDialogConstants.OK_ID).setEnabled(valid);
+		}
 	}
 }

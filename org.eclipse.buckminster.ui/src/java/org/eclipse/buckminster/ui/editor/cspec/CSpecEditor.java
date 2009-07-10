@@ -370,6 +370,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		});
 
 		createActionButtons(topComposite);
+
+		setEnabled(isSaveAsAllowed());
 	}
 
 	public void doExternalSaveAs()
@@ -533,6 +535,21 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		}
 
 		return false;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		m_componentName.setEnabled(enabled);
+		m_componentType.setEnabled(enabled);
+		m_versionString.setEnabled(enabled);
+		m_versionType.setEnabled(enabled);
+		m_actionsEditor.setEnabled(enabled);
+		m_artifactsEditor.setEnabled(enabled);
+		m_groupsEditor.setEnabled(enabled);
+		m_dependenciesEditor.setEnabled(enabled);
+		m_generatorsEditor.setEnabled(enabled);
+		m_shortDesc.setEnabled(enabled);
+		m_documentation.setEnabled(enabled);
 	}
 
 	@Override

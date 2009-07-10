@@ -13,13 +13,11 @@ import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 
 /**
  * @author Karel Brezina
@@ -30,9 +28,9 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	class EditRowDialog extends TableRowDialog
 	{
 		public EditRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage,
-				String helpURL, boolean newRow)
+				String helpURL, boolean newRow, boolean enableChanges)
 		{
-			super(parentShell, windowImage, windowTitle, wizardImage, helpURL, newRow);
+			super(parentShell, windowImage, windowTitle, wizardImage, helpURL, newRow, enableChanges);
 		}
 
 		@Override
@@ -78,13 +76,16 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 
 			focusStackComposite();
 
+			getTable().enableFields(isEnableChanges());
+
 			return rowComposite;
 		}
 
 		@Override
 		protected void enableDisableOkButton()
 		{
-			getButton(IDialogConstants.OK_ID).setEnabled(true);
+			if(isEnableChanges())
+				getButton(IDialogConstants.OK_ID).setEnabled(true);
 		}
 	}
 
@@ -124,16 +125,6 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected Composite createTableButtonsComposite(Composite parent)
-	{
-		Composite buttonBox = new Composite(parent, SWT.NONE);
-		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
-		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-
-		return buttonBox;
-	}
-
-	@Override
 	protected Composite createTableGroupComposite(Composite parent)
 	{
 		Composite componentTableGroup = new Composite(parent, SWT.NONE);
@@ -146,41 +137,10 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void editRow()
+	protected void editRow(boolean newRow, boolean enableChanges)
 	{
-		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, true).open();
-	}
-
-	@Override
-	protected void enableDisableButtonGroup()
-	{
-		if(isEnabled())
-		{
-			Table table = getTableViewer().getTable();
-			int top = table.getItemCount();
-			int idx = getSelectionIndex();
-
-			getNewButton().setEnabled(true);
-			getEditButton().setEnabled(idx >= 0);
-			getRemoveButton().setEnabled(idx >= 0);
-
-			if(isSwapButtonAllowed())
-			{
-				getMoveUpButton().setEnabled(idx > 0);
-				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
-			}
-		}
-		else
-		{
-			getNewButton().setEnabled(false);
-			getEditButton().setEnabled(false);
-			getRemoveButton().setEnabled(false);
-			if(isSwapButtonAllowed())
-			{
-				getMoveUpButton().setEnabled(false);
-				getMoveDownButton().setEnabled(false);
-			}
-		}
+		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, newRow,
+				enableChanges).open();
 	}
 
 	@Override
@@ -200,7 +160,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	{
 		getTableViewer().getTable().deselectAll();
 		updateLastRow();
-		editRow();
+		editRow(true, true);
 	}
 
 	@Override

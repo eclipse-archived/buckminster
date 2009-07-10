@@ -588,7 +588,13 @@ public class Messages extends NLS
 
 	public static String version_with_colon;
 
+	public static String view;
+
 	public static String view_cspec;
+
+	public static String view_row;
+
+	public static String view_row_fields;
 
 	public static String view_the_cspec_of_a_component;
 
@@ -609,6 +615,7 @@ public class Messages extends NLS
 	public static String xml_content_was_not_updated_due_to_errors;
 
 	public static String yes;
+
 	static
 	{
 		// initialize resource bundle

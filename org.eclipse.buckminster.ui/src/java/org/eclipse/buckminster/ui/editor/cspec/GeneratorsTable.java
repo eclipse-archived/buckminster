@@ -68,18 +68,18 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value, boolean enableChanges)
 	{
 		switch(idx)
 		{
 		case 0:
-			return getTextWidgetin(parent, idx, value);
+			return getTextWidgetin(parent, idx, value, enableChanges);
 		case 1:
-			return getComboWidgetin(parent, idx, value, m_editor.getAttributeNames(null), SWT.NONE);
+			return getComboWidgetin(parent, idx, value, m_editor.getAttributeNames(null), SWT.NONE, enableChanges);
 		case 2:
-			return getComboWidgetin(parent, idx, value, m_editor.getComponentNames(), SWT.NONE);
+			return getComboWidgetin(parent, idx, value, m_editor.getComponentNames(), SWT.NONE, enableChanges);
 		default:
-			return getTextWidgetin(parent, idx, value);
+			return getTextWidgetin(parent, idx, value, enableChanges);
 		}
 	}
 
