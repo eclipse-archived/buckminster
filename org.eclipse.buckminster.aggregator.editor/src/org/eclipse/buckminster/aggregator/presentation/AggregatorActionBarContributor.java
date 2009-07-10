@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -117,9 +118,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 										org.eclipse.emf.common.util.URI emfURI = ((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(
 												0).getURI();
 										URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
-										URI uri = fileURL.toURI();
-										if(uri.isOpaque())
-											uri = new URI(uri.getScheme() + ":/" + uri.getSchemeSpecificPart());
+										if(!"file".equals(fileURL.getProtocol()))
+											throw new Exception("URI scheme is not \"file\"");
+										URI uri = new URI(fileURL.getProtocol() + ":/" + URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll("\\+", "%20"));
 										builder.setBuildModelLocation(new File(uri));
 										builder.setVerifyOnly(m_verifyOnly);
 										builder.run(monitor);
