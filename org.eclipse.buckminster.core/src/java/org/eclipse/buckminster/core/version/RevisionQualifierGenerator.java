@@ -81,7 +81,9 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 				{
 				}
 			}
-			return VersionHelper.replaceQualifier(currentVersion, mf.format(new Object[] { new Long(revision) }));
+			String newQual = mf.format(new Object[] { new Long(revision) });
+			newQual = currentVersion.getQualifier().replace("qualifier", newQual); //$NON-NLS-1$
+			return VersionHelper.replaceQualifier(currentVersion, newQual);
 		}
 		catch(MissingComponentException e)
 		{

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -317,7 +318,7 @@ public class CSpecFromSource extends CSpecGenerator
 			}
 		}
 
-		// The manifest version may end with ".qualifier" in which case it needs to be expanded.
+		// The manifest version may end with "qualifier" in which case it needs to be expanded.
 		// The expansion will create a new copy in a different location. In case there is no
 		// expansion, we can use the original file.
 		//
@@ -327,7 +328,7 @@ public class CSpecFromSource extends CSpecGenerator
 		Version version = cspec.getVersion();
 		String versionQualifier = version.getQualifier();
 		boolean versionExpansion = versionQualifier != null
-				? versionQualifier.startsWith("qualifier") //$NON-NLS-1$
+				? versionQualifier.endsWith(VersionQualifierTask.QUALIFIER_SUFFIX)
 				: false;
 
 		// Add the build.properties artifact. We want to manage that separately since it

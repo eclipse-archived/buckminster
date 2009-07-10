@@ -159,7 +159,9 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				if(depLastMod != null && depLastMod.compareTo(lastMod) > 0)
 					lastMod = depLastMod;
 			}
-			return VersionHelper.replaceQualifier(currentVersion, mf.format(lastMod));
+			String newQual = mf.format(lastMod);
+			newQual = currentVersion.getQualifier().replace("qualifier", newQual); //$NON-NLS-1$
+			return VersionHelper.replaceQualifier(currentVersion, newQual);
 		}
 		catch(MissingComponentException e)
 		{
