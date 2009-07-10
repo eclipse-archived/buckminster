@@ -125,11 +125,18 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	public void notifyChanged(Notification notification)
 	{
 		notifyChangedGen(notification);
+		
+		boolean updateContent = false;
+		boolean updateLabel = true;
 
 		switch(notification.getFeatureID(MappedUnit.class))
 		{
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			updateContent = true;
+			updateLabel = false;
+			// no break here, it is intentional
+		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), updateContent, updateLabel));
 
 			Set<EObject> affectedNodes = new HashSet<EObject>();
 
@@ -149,9 +156,6 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 			for(EObject affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
-			return;
-		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
 	}
