@@ -158,10 +158,6 @@
 			ID="p2SiteGenerator"
 			class="org.eclipse.buckminster.pde.tasks.P2SiteGenerator"
 			name="P2 Site Generator" />
-		<actor
-			ID="p2ProductGenerator"
-			class="org.eclipse.buckminster.pde.tasks.P2ProductGenerator"
-			name="P2 Product Generator" />
  </extension>
  <extension
        point="org.eclipse.buckminster.cmdline.commands">
