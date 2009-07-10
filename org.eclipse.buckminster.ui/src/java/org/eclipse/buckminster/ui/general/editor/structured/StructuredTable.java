@@ -73,9 +73,9 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 	 * @param data
 	 *            input data that will be edited
 	 */
-	public StructuredTable(List<T> data)
+	public StructuredTable(List<T> data, boolean readOnly)
 	{
-		super(data);
+		super(data, readOnly);
 
 		// notify field listeners about row removal
 		addTableModifyListener(new ITableModifyListener<T>()

@@ -92,9 +92,9 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
 	public ActionsTable(CSpecEditor editor, List<ActionBuilder> data,
-			Map<ActionBuilder, List<ActionArtifactBuilder>> actionArtifacts, CSpecBuilder cspec)
+			Map<ActionBuilder, List<ActionArtifactBuilder>> actionArtifacts, CSpecBuilder cspec, boolean readOnly)
 	{
-		super(editor, data, cspec);
+		super(editor, data, cspec, readOnly);
 		m_actionArtifacts = actionArtifacts;
 	}
 
@@ -353,13 +353,13 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		EditorUtils.createHeaderLabel(geComposite, Messages.general, 2);
 
 		UiUtils.createGridLabel(geComposite, Messages.name_with_colon, 1, 0, SWT.NONE);
-		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
+		setNameText(UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE));
 
 		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
 
 		UiUtils.createGridLabel(geComposite, Messages.actor_name_with_colon, 1, 0, SWT.NONE);
-		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_actorNameText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.always_with_colon, 1, 0, SWT.NONE);
@@ -371,15 +371,15 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_assignConsoleSupportCheck.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.filter_with_colon, 1, 0, SWT.NONE);
-		m_actionFilter = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_actionFilter = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_actionFilter.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.prerequisites_alias_with_colon, 1, 0, SWT.NONE);
-		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_prereqNameText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.prerequisites_rebase_path_with_colon, 1, 0, SWT.NONE);
-		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_prereqRebasePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_prereqRebasePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
@@ -395,7 +395,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
 		PrerequisitesTable preTable = new PrerequisitesTable(getCSpecEditor(), this, m_prerequisites,
-				createNewRow().getPrerequisitesBuilder());
+				createNewRow().getPrerequisitesBuilder(), isReadOnly());
 		preTable.addTableModifyListener(FIELD_LISTENER);
 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null,
@@ -432,11 +432,11 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		EditorUtils.createHeaderLabel(composite, Messages.products, 2);
 
 		UiUtils.createGridLabel(composite, Messages.product_alias_with_colon, 1, 0, SWT.NONE);
-		m_prodAliasText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
+		m_prodAliasText = UiUtils.createGridText(composite, 1, 0, isReadOnly(), SWT.NONE);
 		m_prodAliasText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(composite, Messages.product_base_path_with_colon, 1, 0, SWT.NONE);
-		m_prodBaseText = UiUtils.createGridText(composite, 1, 0, SWT.NONE, null);
+		m_prodBaseText = UiUtils.createGridText(composite, 1, 0, isReadOnly(), SWT.NONE);
 		m_prodBaseText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(composite);
@@ -457,7 +457,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 			}
 		});
 
-		PathsTable table = new PathsTable(m_productPaths);
+		PathsTable table = new PathsTable(m_productPaths, isReadOnly());
 		table.addTableModifyListener(FIELD_LISTENER);
 
 		m_productPathsEditor = new SimpleTableEditor<PathWrapper>(composite, table, null,
@@ -485,7 +485,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 			}
 		});
 
-		ArtifactsTable artifactsTable = new ArtifactsTable(getCSpecEditor(), m_productArtifacts, getCSpecBuilder())
+		ArtifactsTable artifactsTable = new ArtifactsTable(getCSpecEditor(), m_productArtifacts, getCSpecBuilder(),
+				isReadOnly())
 		{
 			@Override
 			protected ArtifactBuilder createNewRow()
@@ -516,7 +517,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		EditorUtils.createHeaderLabel(composite, Messages.general_properties, 1);
 
-		PropertiesTable table = new PropertiesTable(m_properties);
+		PropertiesTable table = new PropertiesTable(m_properties, isReadOnly());
 		table.addTableModifyListener(FIELD_LISTENER);
 
 		m_propertiesEditor = new SimpleTableEditor<Property>(composite, table, null,
@@ -526,7 +527,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 
 		EditorUtils.createHeaderLabel(composite, Messages.actor_properties, 1);
 
-		table = new PropertiesTable(m_actorProperties);
+		table = new PropertiesTable(m_actorProperties, isReadOnly());
 		table.addTableModifyListener(FIELD_LISTENER);
 
 		m_actorPropertiesEditor = new SimpleTableEditor<Property>(composite, table, null,

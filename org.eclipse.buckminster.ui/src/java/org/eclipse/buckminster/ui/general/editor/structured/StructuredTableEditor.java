@@ -215,7 +215,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editRow(false, true);
+				editRow(false, false);
 			}
 		});
 		m_editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -264,7 +264,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editRow(false, false);
+				editRow(false, true);
 			}
 		});
 		m_viewButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -313,7 +313,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 			public void doubleClick(DoubleClickEvent event)
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-					editRow(false, m_enabled);
+					editRow(false, !m_enabled || m_table.isReadOnly());
 			}
 		});
 
@@ -322,7 +322,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 
 	protected abstract Composite createTableGroupComposite(Composite parent);
 
-	protected abstract void editRow(boolean newRow, boolean enableChanges);
+	protected abstract void editRow(boolean newRow, boolean readOnly);
 
 	protected void enableDisableButtonGroup()
 	{
@@ -330,7 +330,7 @@ public abstract class StructuredTableEditor<T> extends Composite
 		int top = table.getItemCount();
 		int idx = getSelectionIndex();
 
-		if(isEnabled())
+		if(isEnabled() && !m_table.isReadOnly())
 		{
 			m_newButton.setEnabled(true);
 			m_editButton.setEnabled(idx >= 0);

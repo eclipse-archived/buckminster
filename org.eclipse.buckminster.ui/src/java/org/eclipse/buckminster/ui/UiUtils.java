@@ -37,13 +37,19 @@ public class UiUtils
 {
 	public static Button createCheckButton(Composite parent, String key, SelectionListener listener)
 	{
-		Button button = new Button(parent, SWT.CHECK);
+		return createCheckButton(parent, key, listener, SWT.NONE);
+	}
+
+	public static Button createCheckButton(Composite parent, String key, SelectionListener listener, int style)
+	{
+		Button button = new Button(parent, SWT.CHECK | style);
 		if(key != null)
 			button.setText(JFaceResources.getString(key));
 		button.setFont(parent.getFont());
 		if(listener != null)
 			button.addSelectionListener(listener);
 		return button;
+
 	}
 
 	public static Label createEmptyLabel(Composite parent)
@@ -178,6 +184,21 @@ public class UiUtils
 		if(listener != null)
 			text.addModifyListener(listener);
 		return text;
+	}
+
+	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, boolean readOnly, int style)
+	{
+		return createNoBorderGridText(parent, horizontalSpan, widthHint, (readOnly
+				? SWT.READ_ONLY
+				: SWT.NONE) | SWT.BORDER | style, null);
+	}
+
+	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, boolean readOnly, int style,
+			ModifyListener listener)
+	{
+		return createNoBorderGridText(parent, horizontalSpan, widthHint, (readOnly
+				? SWT.READ_ONLY
+				: SWT.NONE) | SWT.BORDER | style, listener);
 	}
 
 	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, int style)

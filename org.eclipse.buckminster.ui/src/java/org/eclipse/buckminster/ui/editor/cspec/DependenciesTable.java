@@ -34,6 +34,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.framework.InvalidSyntaxException;
@@ -104,9 +105,9 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 	private FilterValidator m_filterValidator;
 
-	public DependenciesTable(List<ComponentRequestBuilder> data, CSpecBuilder cspecBuilder)
+	public DependenciesTable(List<ComponentRequestBuilder> data, CSpecBuilder cspecBuilder, boolean readOnly)
 	{
-		super(data);
+		super(data, readOnly);
 		m_cspecBuilder = cspecBuilder;
 		m_filterValidator = new FilterValidator();
 	}
@@ -117,23 +118,23 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 	}
 
 	@Override
-	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues, boolean enableChanges)
+	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues)
 	{
 		((GridLayout)parent.getLayout()).numColumns = 3;
 
 		IWidgetin[] widgetins = new IWidgetin[getColumns()];
 
 		UiUtils.createGridLabel(parent, getColumnHeaders()[0] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-		widgetins[0] = getWidgetin(parent, 0, fieldValues[0], enableChanges);
+		widgetins[0] = getWidgetin(parent, 0, fieldValues[0]);
 
 		UiUtils.createGridLabel(parent, getColumnHeaders()[1] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-		widgetins[1] = getWidgetin(parent, 1, fieldValues[1], enableChanges);
+		widgetins[1] = getWidgetin(parent, 1, fieldValues[1]);
 		new Label(parent, SWT.NONE);
 
-		widgetins[2] = getWidgetin(parent, 2, fieldValues[2], enableChanges);
+		widgetins[2] = getWidgetin(parent, 2, fieldValues[2]);
 
 		UiUtils.createGridLabel(parent, getColumnHeaders()[3] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-		widgetins[3] = getWidgetin(parent, 3, fieldValues[3], enableChanges);
+		widgetins[3] = getWidgetin(parent, 3, fieldValues[3]);
 
 		return widgetins;
 	}
@@ -165,24 +166,22 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value, boolean enableChanges)
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
 	{
 		switch(idx)
 		{
 		case 0:
-			return getName(parent, idx, value, enableChanges);
+			return getName(parent, idx, value);
 		case 1:
-			return getComboWidgetin(parent, idx, value, AbstractComponentType.getComponentTypeIDs(true), SWT.READ_ONLY,
-					enableChanges);
+			return getComboWidgetin(parent, idx, value, AbstractComponentType.getComponentTypeIDs(true), SWT.READ_ONLY);
 		case 2:
 			VersionDesignator designator = getVersionDesignator(parent, idx, value);
 			m_versionDesignatorValidator = new VersionDesignatorValidator(designator);
-			designator.setEnabled(enableChanges);
 			return designator;
 		case 3:
-			return getFilter(parent, idx, value, enableChanges);
+			return getFilter(parent, idx, value);
 		default:
-			return getTextWidgetin(parent, idx, value, enableChanges);
+			return getTextWidgetin(parent, idx, value);
 		}
 	}
 
@@ -206,16 +205,16 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		builder.setFilter((Filter)args[3]);
 	}
 
-	private IWidgetin getFilter(Composite parent, final int idx, Object value, boolean enableChanges)
+	private IWidgetin getFilter(Composite parent, final int idx, Object value)
 	{
-		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
+		final Text text = UiUtils.createGridText(parent, 2, 0, isReadOnly(), SWT.NONE);
 
 		final IWidgetin widgetin = new WidgetWrapper(text);
 
 		String stringValue = TextUtils.notNullString(value);
 		text.setText(stringValue);
 		text.setData(value);
-		text.setEnabled(enableChanges);
+		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		text.addModifyListener(new ModifyListener()
 		{
@@ -229,9 +228,9 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		return widgetin;
 	}
 
-	private IWidgetin getName(Composite parent, final int idx, Object value, boolean enableChanges)
+	private IWidgetin getName(Composite parent, final int idx, Object value)
 	{
-		final Text text = UiUtils.createGridText(parent, 2, 0, SWT.NONE);
+		final Text text = UiUtils.createGridText(parent, 2, 0, isReadOnly(), SWT.NONE);
 
 		final IWidgetin widgetin = new WidgetWrapper(text);
 
@@ -240,7 +239,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 		text.setText(stringValue);
 		text.setData(stringValue);
-		text.setEnabled(enableChanges);
+		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		text.addModifyListener(new ModifyListener()
 		{

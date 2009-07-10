@@ -20,7 +20,14 @@ public abstract class Table<T> implements ITable<T>
 {
 	private List<T> m_data;
 
+	private boolean m_readOnly;
+
 	private List<ITableModifyListener<T>> m_listeners = new ArrayList<ITableModifyListener<T>>();
+
+	public Table(List<T> data)
+	{
+		this(data, false);
+	}
 
 	/**
 	 * Creates Table instance
@@ -28,9 +35,10 @@ public abstract class Table<T> implements ITable<T>
 	 * @param data
 	 *            input data that will be edited
 	 */
-	public Table(List<T> data)
+	public Table(List<T> data, boolean readOnly)
 	{
 		m_data = data;
+		m_readOnly = readOnly;
 	}
 
 	public void addTableModifyListener(ITableModifyListener<T> listener)
@@ -49,6 +57,11 @@ public abstract class Table<T> implements ITable<T>
 	public List<T> getRows()
 	{
 		return m_data;
+	}
+
+	public boolean isReadOnly()
+	{
+		return m_readOnly;
 	}
 
 	// no need for refreshing

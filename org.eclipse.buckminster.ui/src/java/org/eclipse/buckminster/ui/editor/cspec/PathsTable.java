@@ -24,9 +24,9 @@ import org.eclipse.core.runtime.Path;
 public class PathsTable extends SimpleTable<PathWrapper>
 {
 
-	public PathsTable(List<PathWrapper> data)
+	public PathsTable(List<PathWrapper> data, boolean readOnly)
 	{
-		super(data);
+		super(data, readOnly);
 	}
 
 	public PathWrapper createRowClass()

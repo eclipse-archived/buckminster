@@ -35,10 +35,10 @@ public abstract class TableRowDialog extends TitleAreaDialog
 
 	private final boolean m_newRow;
 
-	private final boolean m_enableChanges;
+	private final boolean m_readOnly;
 
 	public TableRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage, String helpURL,
-			boolean newRow, boolean enableChanges)
+			boolean newRow, boolean readOnly)
 	{
 		super(parentShell);
 		m_windowImage = windowImage;
@@ -46,7 +46,7 @@ public abstract class TableRowDialog extends TitleAreaDialog
 		m_wizardImage = wizardImage;
 		m_helpURL = helpURL;
 		m_newRow = newRow;
-		m_enableChanges = enableChanges;
+		m_readOnly = readOnly;
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public abstract class TableRowDialog extends TitleAreaDialog
 	@Override
 	protected void createButtonsForButtonBar(Composite parent)
 	{
-		if(m_enableChanges)
+		if(!isReadOnly())
 		{
 			createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 			enableDisableOkButton();
@@ -88,7 +88,13 @@ public abstract class TableRowDialog extends TitleAreaDialog
 			setTitleImage(m_wizardImage);
 		}
 
-		if(m_enableChanges)
+		if(isReadOnly())
+		{
+			setTitle(Messages.view_row);
+			setMessage(Messages.view_row_fields);
+		}
+		else
+		{
 			if(m_newRow)
 			{
 				setTitle(Messages.new_row);
@@ -99,12 +105,7 @@ public abstract class TableRowDialog extends TitleAreaDialog
 				setTitle(Messages.edit_row);
 				setMessage(Messages.edit_row_fields);
 			}
-		else
-		{
-			setTitle(Messages.view_row);
-			setMessage(Messages.view_row_fields);
 		}
-
 		return contents;
 	}
 
@@ -129,8 +130,8 @@ public abstract class TableRowDialog extends TitleAreaDialog
 
 	protected abstract void enableDisableOkButton();
 
-	protected boolean isEnableChanges()
+	protected boolean isReadOnly()
 	{
-		return m_enableChanges;
+		return m_readOnly;
 	}
 }

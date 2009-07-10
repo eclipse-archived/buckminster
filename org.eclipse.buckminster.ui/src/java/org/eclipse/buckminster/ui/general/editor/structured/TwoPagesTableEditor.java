@@ -28,9 +28,9 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	class EditRowDialog extends TableRowDialog
 	{
 		public EditRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage,
-				String helpURL, boolean newRow, boolean enableChanges)
+				String helpURL, boolean newRow, boolean readOnly)
 		{
-			super(parentShell, windowImage, windowTitle, wizardImage, helpURL, newRow, enableChanges);
+			super(parentShell, windowImage, windowTitle, wizardImage, helpURL, newRow, readOnly);
 		}
 
 		@Override
@@ -76,15 +76,13 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 
 			focusStackComposite();
 
-			getTable().enableFields(isEnableChanges());
-
 			return rowComposite;
 		}
 
 		@Override
 		protected void enableDisableOkButton()
 		{
-			if(isEnableChanges())
+			if(isReadOnly())
 				getButton(IDialogConstants.OK_ID).setEnabled(true);
 		}
 	}
@@ -137,10 +135,9 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void editRow(boolean newRow, boolean enableChanges)
+	protected void editRow(boolean newRow, boolean readOnly)
 	{
-		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, newRow,
-				enableChanges).open();
+		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, newRow, readOnly).open();
 	}
 
 	@Override
@@ -160,7 +157,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	{
 		getTableViewer().getTable().deselectAll();
 		updateLastRow();
-		editRow(true, true);
+		editRow(true, false);
 	}
 
 	@Override

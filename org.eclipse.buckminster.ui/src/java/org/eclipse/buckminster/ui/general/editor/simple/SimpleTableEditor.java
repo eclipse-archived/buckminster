@@ -185,7 +185,7 @@ public class SimpleTableEditor<T> extends Composite
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editRow(true);
+				editRow(false);
 			}
 		});
 		m_editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -211,7 +211,7 @@ public class SimpleTableEditor<T> extends Composite
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				editRow(false);
+				editRow(true);
 			}
 		});
 		m_viewButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -219,10 +219,10 @@ public class SimpleTableEditor<T> extends Composite
 		enableDisableButtonGroup();
 	}
 
-	private void editRow(boolean enableChanges)
+	private void editRow(boolean readOnly)
 	{
 		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
-				m_wizardImage, m_helpURL, m_table, m_tableViewer.getTable().getSelectionIndex(), enableChanges);
+				m_wizardImage, m_helpURL, m_table, m_tableViewer.getTable().getSelectionIndex(), readOnly);
 
 		if(dialog.open() == IDialogConstants.OK_ID)
 		{
@@ -234,7 +234,7 @@ public class SimpleTableEditor<T> extends Composite
 	{
 		boolean rowSelected = m_tableViewer.getTable().getSelectionIndex() >= 0;
 
-		if(m_enabled)
+		if(m_enabled && !m_table.isReadOnly())
 		{
 			m_newButton.setEnabled(true);
 			m_editButton.setEnabled(rowSelected);
@@ -300,7 +300,7 @@ public class SimpleTableEditor<T> extends Composite
 			public void doubleClick(DoubleClickEvent event)
 			{
 				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-					editRow(m_enabled);
+					editRow(!m_enabled || m_table.isReadOnly());
 			}
 		});
 
@@ -310,7 +310,7 @@ public class SimpleTableEditor<T> extends Composite
 	private void newRow()
 	{
 		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
-				m_wizardImage, m_helpURL, m_table, -1, true);
+				m_wizardImage, m_helpURL, m_table, -1, false);
 
 		if(dialog.open() == IDialogConstants.OK_ID)
 		{

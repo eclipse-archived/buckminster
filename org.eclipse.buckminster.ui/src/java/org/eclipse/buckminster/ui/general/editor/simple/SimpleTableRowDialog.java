@@ -57,9 +57,9 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 	 *            table row number that will be edited or -1 for new row
 	 */
 	public SimpleTableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL,
-			ISimpleTable<T> table, int row, boolean enableChanges)
+			ISimpleTable<T> table, int row, boolean readOnly)
 	{
-		super(parent, windowImage, windowTitle, wizardImage, helpURL, (row == -1), enableChanges);
+		super(parent, windowImage, windowTitle, wizardImage, helpURL, (row == -1), readOnly);
 
 		m_table = table;
 		m_row = row;
@@ -136,7 +136,7 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 			Arrays.fill(fields, null);
 		}
 
-		m_widgetins = m_table.fillGrid(textComposite, fields, isEnableChanges());
+		m_widgetins = m_table.fillGrid(textComposite, fields);
 
 		for(int i = 0; i < m_table.getColumns(); i++)
 		{

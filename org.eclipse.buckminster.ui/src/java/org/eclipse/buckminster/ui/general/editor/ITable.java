@@ -10,8 +10,6 @@ package org.eclipse.buckminster.ui.general.editor;
 
 import java.util.List;
 
-import org.eclipse.buckminster.ui.general.editor.ITableModifyListener;
-
 /**
  * Data wrapped for general table editors.
  * 
@@ -42,6 +40,13 @@ public interface ITable<T>
 	 * @return all rows
 	 */
 	public List<T> getRows();
+
+	/**
+	 * Read-only data
+	 * 
+	 * @return
+	 */
+	public boolean isReadOnly();
 
 	/**
 	 * Refreshes data table

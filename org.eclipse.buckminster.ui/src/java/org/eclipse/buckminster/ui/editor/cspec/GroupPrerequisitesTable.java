@@ -30,9 +30,9 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 {
 
 	public GroupPrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable,
-			List<PrerequisiteBuilder> data, TopLevelAttributeBuilder attributeBuilder)
+			List<PrerequisiteBuilder> data, TopLevelAttributeBuilder attributeBuilder, boolean readOnly)
 	{
-		super(editor, parentAttributesTable, data, attributeBuilder);
+		super(editor, parentAttributesTable, data, attributeBuilder, readOnly);
 	}
 
 	@Override
@@ -48,13 +48,13 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value, boolean enableChanges)
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
 	{
 		if(idx < 2)
-			return super.getWidgetin(parent, idx, value, enableChanges);
+			return super.getWidgetin(parent, idx, value);
 
 		// Alias is removed here
-		return super.getWidgetin(parent, ++idx, value, enableChanges);
+		return super.getWidgetin(parent, ++idx, value);
 	}
 
 	@Override

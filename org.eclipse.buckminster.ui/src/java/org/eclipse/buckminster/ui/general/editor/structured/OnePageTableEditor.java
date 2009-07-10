@@ -180,7 +180,7 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void editRow(boolean newRow, boolean enableChanges)
+	protected void editRow(boolean newRow, boolean readOnly)
 	{
 		// automatic
 	}
@@ -188,11 +188,12 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 	@Override
 	protected void enableDisableButtonGroup()
 	{
-		if(isEnabled())
+		Table table = getTableViewer().getTable();
+		int top = table.getItemCount();
+		int idx = table.getSelectionIndex();
+
+		if(isEnabled() && !getTable().isReadOnly())
 		{
-			Table table = getTableViewer().getTable();
-			int top = table.getItemCount();
-			int idx = table.getSelectionIndex();
 			getNewButton().setEnabled(!m_disableNew);
 			getRemoveButton().setEnabled(!m_disableRemove && (idx >= 0));
 			if(isSwapButtonAllowed())
@@ -200,7 +201,6 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 				getMoveUpButton().setEnabled(idx > 0);
 				getMoveDownButton().setEnabled(idx >= 0 && idx < top - 1);
 			}
-			enableFields(idx >= 0);
 		}
 		else
 		{
@@ -211,8 +211,12 @@ public class OnePageTableEditor<T> extends StructuredTableEditor<T>
 				getMoveUpButton().setEnabled(false);
 				getMoveDownButton().setEnabled(false);
 			}
-			enableFields(false);
 		}
+
+		if(isEnabled())
+			enableFields(idx >= 0);
+		else
+			enableFields(false);
 
 		// getTableViewer().getTable().setEnabled(isEnabled());
 		// getTableViewer().getTable().setForeground(isEnabled()

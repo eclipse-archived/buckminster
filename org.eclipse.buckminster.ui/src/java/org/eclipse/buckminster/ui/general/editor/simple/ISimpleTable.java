@@ -46,11 +46,9 @@ public interface ISimpleTable<T> extends ITable<T>
 	 *            parent grid composite
 	 * @param fieldValues
 	 *            values of widget fields
-	 * @param enableChanges
-	 *            enable fields editing
 	 * @return widgets added to the composite
 	 */
-	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues, boolean enableChanges);
+	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues);
 
 	/**
 	 * Gets column headers

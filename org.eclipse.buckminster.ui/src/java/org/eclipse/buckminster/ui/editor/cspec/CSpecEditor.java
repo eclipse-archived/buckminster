@@ -370,8 +370,6 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		});
 
 		createActionButtons(topComposite);
-
-		setEnabled(isSaveAsAllowed());
 	}
 
 	public void doExternalSaveAs()
@@ -908,7 +906,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.actions);
 
-		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec);
+		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec,
+				!isSaveAsAllowed());
 		table.addFieldModifyListener(m_compoundModifyListener);
 
 		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(tabComposite, table, false, SWT.NONE);
@@ -922,7 +921,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.artifacts);
 
-		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec);
+		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec, !isSaveAsAllowed());
 		table.addFieldModifyListener(m_compoundModifyListener);
 
 		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(tabComposite, table, false, SWT.NONE);
@@ -960,7 +959,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.dependencies);
 
-		DependenciesTable table = new DependenciesTable(m_dependencyBuilders, m_cspec);
+		DependenciesTable table = new DependenciesTable(m_dependencyBuilders, m_cspec, !isSaveAsAllowed());
 		table.addTableModifyListener(m_compoundModifyListener);
 
 		m_dependenciesEditor = new SimpleTableEditor<ComponentRequestBuilder>(tabComposite, table, null,
@@ -980,12 +979,15 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		UiUtils.createGridLabel(descComposite, Messages.short_description_with_colon, 1, 0, SWT.NONE);
-		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
+		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, isSaveAsAllowed()
+				? SWT.NONE
+				: SWT.READ_ONLY, m_compoundModifyListener);
 
 		Label label = UiUtils.createGridLabel(descComposite, Messages.documentation_with_colon, 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL,
-				m_compoundModifyListener);
+		m_documentation = UiUtils.createGridText(descComposite, 1, 0, (isSaveAsAllowed()
+				? SWT.NONE
+				: SWT.READ_ONLY) | SWT.MULTI | SWT.V_SCROLL, m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return tabComposite;
@@ -996,7 +998,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.generators);
 
-		GeneratorsTable table = new GeneratorsTable(this, m_generatorBuilders, m_cspec);
+		GeneratorsTable table = new GeneratorsTable(this, m_generatorBuilders, m_cspec, !isSaveAsAllowed());
 		table.addTableModifyListener(m_compoundModifyListener);
 
 		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(tabComposite, table, null,
@@ -1009,7 +1011,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	{
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.groups);
 
-		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec);
+		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec, !isSaveAsAllowed());
 		table.addFieldModifyListener(m_compoundModifyListener);
 
 		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(tabComposite, table, false, SWT.NONE);
@@ -1034,7 +1036,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		gridData.widthHint = labelWidth;
 		label.setLayoutData(gridData);
 
-		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, SWT.NONE, m_compoundModifyListener);
+		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, isSaveAsAllowed()
+				? SWT.NONE
+				: SWT.READ_ONLY, m_compoundModifyListener);
 
 		UiUtils.createGridLabel(nameComposite, Messages.component_type_with_colon, 1, 0, SWT.NONE);
 		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
@@ -1062,7 +1066,9 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		gridData.widthHint = labelWidth - layout.marginWidth - 3;
 		versionLabel.setLayoutData(gridData);
 
-		m_versionString = UiUtils.createGridText(versionGroup, 1, 0, SWT.NONE, m_compoundModifyListener);
+		m_versionString = UiUtils.createGridText(versionGroup, 1, 0, isSaveAsAllowed()
+				? SWT.NONE
+				: SWT.READ_ONLY, m_compoundModifyListener);
 		/*
 		 * gridData = (GridData)m_versionString.getLayoutData(); gridData.widthHint = textWidth;
 		 * m_versionString.setLayoutData(gridData);

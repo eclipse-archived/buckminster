@@ -31,9 +31,9 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
 
-	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec)
+	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec, boolean readOnly)
 	{
-		super(editor, data, cspec);
+		super(editor, data, cspec, readOnly);
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 				? null
 				: rebasePath.toOSString()));
 
-		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites, CSpecEditorUtils
-				.getPrerequisiteComparator());
+		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites,
+				CSpecEditorUtils.getPrerequisiteComparator());
 		m_prerequisitesEditor.refresh();
 	}
 
@@ -123,7 +123,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.name_with_colon, 1, 0, SWT.NONE);
 
-		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
+		setNameText(UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE));
 
 		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 
@@ -131,7 +131,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.release_path_with_colon, 1, 0, SWT.NONE);
 
-		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_rebasePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
@@ -147,7 +147,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
 		GroupPrerequisitesTable preTable = new GroupPrerequisitesTable(getCSpecEditor(), this, m_prerequisites,
-				createNewRow());
+				createNewRow(), isReadOnly());
 		preTable.addTableModifyListener(FIELD_LISTENER);
 
 		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null,

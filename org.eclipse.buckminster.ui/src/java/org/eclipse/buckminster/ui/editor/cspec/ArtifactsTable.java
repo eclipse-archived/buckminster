@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -43,9 +44,9 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 	private SimpleTableEditor<PathWrapper> m_pathsEditor;
 
-	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec)
+	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec, boolean readOnly)
 	{
-		super(editor, data, cspec);
+		super(editor, data, cspec, readOnly);
 	}
 
 	@Override
@@ -134,7 +135,8 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.name_with_colon, 1, 0, SWT.NONE);
 
-		setNameText(UiUtils.createGridText(geComposite, 1, 0, SWT.NONE));
+		setNameText(UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE));
+		getNameText().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 
@@ -142,8 +144,9 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.base_path_with_colon, 1, 0, SWT.NONE);
 
-		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_basePathText.addModifyListener(FIELD_LISTENER);
+		m_basePathText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
@@ -153,7 +156,7 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		gridData.horizontalSpan = 2;
 		label.setLayoutData(gridData);
 
-		PathsTable phTable = new PathsTable(m_paths);
+		PathsTable phTable = new PathsTable(m_paths, isReadOnly());
 		phTable.addTableModifyListener(FIELD_LISTENER);
 
 		m_pathsEditor = new SimpleTableEditor<PathWrapper>(geComposite, phTable, null,

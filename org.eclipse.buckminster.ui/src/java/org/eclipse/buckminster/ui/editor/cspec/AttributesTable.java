@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -47,9 +48,9 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 
 	private T m_currentBuilder;
 
-	public AttributesTable(CSpecEditor editor, List<T> data, CSpecBuilder cspec)
+	public AttributesTable(CSpecEditor editor, List<T> data, CSpecBuilder cspec, boolean readOnly)
 	{
-		super(data);
+		super(data, readOnly);
 		m_editor = editor;
 		m_cspec = cspec;
 	}
@@ -103,9 +104,10 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 
 		EditorUtils.createHeaderLabel(docComposite, Messages.documentation, 1);
 
-		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, SWT.MULTI);
+		m_documentationText = UiUtils.createGridText(docComposite, 1, 0, isReadOnly(), SWT.MULTI);
 		m_documentationText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		m_documentationText.addModifyListener(FIELD_LISTENER);
+		m_documentationText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		docComposite.setData("focusControl", m_documentationText); //$NON-NLS-1$
 

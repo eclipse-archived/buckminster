@@ -21,9 +21,9 @@ import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
  */
 public class PropertiesTable extends SimpleTable<Property>
 {
-	public PropertiesTable(List<Property> data)
+	public PropertiesTable(List<Property> data, boolean readOnly)
 	{
-		super(data);
+		super(data, readOnly);
 	}
 
 	public Property createRowClass()

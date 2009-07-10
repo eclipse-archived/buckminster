@@ -25,12 +25,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
 /**
  * Data wrapped for general table editor. If you need a table editor wrap your data into this instance (preferably use
- * intance of Table instead ITable) and start using TableEditor
+ * instance of Table instead ITable) and start using TableEditor
  * 
  * @author Karel Brezina
  */
@@ -79,9 +80,9 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 	 * @param data
 	 *            input data that will be edited
 	 */
-	public SimpleTable(List<T> data)
+	public SimpleTable(List<T> data, boolean readOnly)
 	{
-		super(data);
+		super(data, readOnly);
 	}
 
 	public void addRow(Object[] tableRow) throws ValidatorException
@@ -93,7 +94,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		notifyListeners(TableModifyEventType.ADD_ROW, getRows().size() - 1, newTableRow);
 	}
 
-	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues, boolean enableChanges)
+	public IWidgetin[] fillGrid(Composite parent, Object[] fieldValues)
 	{
 		((GridLayout)parent.getLayout()).numColumns = 2;
 
@@ -102,7 +103,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		for(int i = 0; i < getColumns(); i++)
 		{
 			UiUtils.createGridLabel(parent, getColumnHeaders()[i] + ":", 1, 0, SWT.NONE); //$NON-NLS-1$
-			widgetins[i] = getWidgetin(parent, i, fieldValues[i], enableChanges);
+			widgetins[i] = getWidgetin(parent, i, fieldValues[i]);
 		}
 
 		return widgetins;
@@ -161,13 +162,12 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		return t;
 	}
 
-	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value, boolean enableChanges)
+	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value)
 	{
-		return getBooleanCheckBoxWidgetin(parent, idx, value, Boolean.FALSE, enableChanges);
+		return getBooleanCheckBoxWidgetin(parent, idx, value, Boolean.FALSE);
 	}
 
-	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value,
-			Boolean defaultValue, boolean enableChanges)
+	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value, Boolean defaultValue)
 	{
 		final Button checkBox = new Button(parent, SWT.CHECK);
 		final IWidgetin widgetin = new WidgetWrapper(checkBox);
@@ -181,7 +181,6 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 		checkBox.setSelection(realValue.booleanValue());
 		checkBox.setData(realValue);
-		checkBox.setEnabled(enableChanges);
 
 		checkBox.addSelectionListener(new SelectionAdapter()
 		{
@@ -197,8 +196,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		return widgetin;
 	}
 
-	protected IWidgetin getComboWidgetin(Composite parent, final int idx, Object value, String[] items, int style,
-			boolean enableChanges)
+	protected IWidgetin getComboWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
 	{
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
 		final IWidgetin widgetin = new WidgetWrapper(combo);
@@ -210,7 +208,6 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 		combo.setText(stringValue);
 		combo.setData(stringValue);
-		combo.setEnabled(enableChanges);
 
 		combo.addModifyListener(new ModifyListener()
 		{
@@ -225,9 +222,9 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		return widgetin;
 	}
 
-	protected IWidgetin getTextWidgetin(Composite parent, final int idx, Object value, boolean enableChanges)
+	protected IWidgetin getTextWidgetin(Composite parent, final int idx, Object value)
 	{
-		final Text text = UiUtils.createGridText(parent, 1, 0, SWT.NONE, null);
+		final Text text = UiUtils.createGridText(parent, 1, 0, isReadOnly(), SWT.NONE, null);
 
 		final IWidgetin widgetin = new WidgetWrapper(text);
 
@@ -236,7 +233,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 		text.setText(stringValue);
 		text.setData(stringValue);
-		text.setEnabled(enableChanges);
+		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		text.addModifyListener(new ModifyListener()
 		{
@@ -251,9 +248,9 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 		return widgetin;
 	}
 
-	protected IWidgetin getWidgetin(Composite parent, final int idx, Object value, boolean enableChanges)
+	protected IWidgetin getWidgetin(Composite parent, final int idx, Object value)
 	{
-		return getTextWidgetin(parent, idx, value, enableChanges);
+		return getTextWidgetin(parent, idx, value);
 	}
 
 	protected void validateFieldInFieldListener(IWidgetin fieldControl, IValidator fieldValidator, Object fieldValue)
@@ -281,4 +278,5 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 			getFieldValidator(i).validate(tableRow[i]);
 		}
 	}
+
 }
