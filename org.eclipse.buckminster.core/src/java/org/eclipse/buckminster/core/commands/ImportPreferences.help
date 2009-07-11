@@ -4,17 +4,14 @@ usage: importpreferences
        [{ -? | --help }]
        [{ -F | --file } <filename> ]
        [{ -S | --scope } <scope> ]
-       [ <rootKey>[#<subKeys>] [ <rootKey>[#<subKeys>] ... ] ]
+       [ <rootKey>[#<subKey>[,<subKey> ...]] [ <rootKey>[#<subKey>[,<subKey> ...]] ... ]]
  -?
 --help
   Show this help text
 <filename>
   The name of the file from which to import the preferences.
-<rootKey>
-  Import only preferences that matches this root node
-<subKeys>
-  Qualifies a root key with the name of a sub key
 <scope>
   Import this scope only. Valid values are 'configuration' and 'instance'.
-
-TBD
+<rootKey>[#<subKey>[,<subKey> ...]]
+  Import only matching preferences. The match can be for a root only or a root
+  qualified with one or several subKeys.

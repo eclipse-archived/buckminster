@@ -4,17 +4,14 @@ usage: exportpreferences
        [{ -? | --help }]
        [{ -F | --file } <filename> ]
        [{ -S | --scope } <scope> ]
-       [ <rootKey>[#<subKeys>] [ <rootKey>[#<subKeys>] ... ] ]
+        [ <rootKey>[#<subKey>[,<subKey> ...]] [ <rootKey>[#<subKey>[,<subKey> ...]] ... ]]
  -?
 --help
   Show this help text
 <filename>
   The name of the file that receives the exported preferences.
-<rootKey>
-  Qualifies with the key to a root node to include
-<subKeys>
-  Qualifies a root key with the name of a sub key
 <scope>
-  Qualifies with scope. Valid values are 'configuration' and 'instance'.
-
-TBD
+  Export this scope. Valid values are 'configuration' and 'instance'.
+<rootKey>[#<subKey>[,<subKey> ...]]
+  Export only matching preferences. The match can be for a root only or a root
+  qualified with one or several subKeys.
