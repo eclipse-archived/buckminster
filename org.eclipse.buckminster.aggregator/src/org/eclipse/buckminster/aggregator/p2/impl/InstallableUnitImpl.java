@@ -1104,11 +1104,13 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public ITouchpointType getTouchpointType()
 	{
-		return touchpointType;
+		return touchpointType != null
+				? touchpointType
+				: ITouchpointType.NONE;
 	}
 
 	/**

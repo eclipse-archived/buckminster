@@ -209,6 +209,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	protected static final int GREEDY_EFLAG = 1 << 2;
 
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -437,11 +439,13 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public String[] getSelectors()
 	{
-		return selectors;
+		return selectors != null
+				? selectors
+				: EMPTY_STRING_ARRAY;
 	}
 
 	public int hashCode()
