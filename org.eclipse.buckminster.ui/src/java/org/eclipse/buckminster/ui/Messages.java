@@ -570,6 +570,8 @@ public class Messages extends NLS
 
 	public static String unresolved_node;
 
+	public static String uptodate_policy;
+
 	public static String url_for_query_with_colon;
 
 	public static String url_path_is_not_valid;

@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
@@ -37,6 +38,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -58,6 +60,8 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private Button m_assignConsoleSupportCheck;
 
 	private Text m_actionFilter;
+
+	private Combo m_upToDatePolicy;
 
 	private Text m_prodAliasText;
 
@@ -107,6 +111,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_alwaysCheck.setEnabled(enabled);
 		m_assignConsoleSupportCheck.setEnabled(enabled);
 		m_actionFilter.setEnabled(enabled);
+		m_upToDatePolicy.setEnabled(enabled);
 		m_prodAliasText.setEnabled(enabled);
 		m_prodBaseText.setEnabled(enabled);
 		m_actorPropertiesEditor.setEnabled(enabled);
@@ -144,6 +149,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_alwaysCheck.setSelection(builder.isAlways());
 		m_assignConsoleSupportCheck.setSelection(builder.isAssignConsoleSupport());
 		m_actionFilter.setText(TextUtils.notNullString(builder.getFilter()));
+		m_upToDatePolicy.select(builder.getUpToDatePolicy().ordinal());
 		m_prodAliasText.setText(TextUtils.notNullString(builder.getProductAlias()));
 
 		IPath prodBasePath = builder.getProductBase();
@@ -204,6 +210,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		else
 			builder.setFilter(null);
 
+		builder.setUpToDatePolicy(UpToDatePolicy.values()[m_upToDatePolicy.getSelectionIndex()]);
 		builder.setProductAlias(UiUtils.trimmedValue(m_prodAliasText));
 
 		String prodBasePathString = UiUtils.trimmedValue(m_prodBaseText);
@@ -373,6 +380,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createGridLabel(geComposite, Messages.filter_with_colon, 1, 0, SWT.NONE);
 		m_actionFilter = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_actionFilter.addModifyListener(FIELD_LISTENER);
+
+		UiUtils.createGridLabel(geComposite, Messages.uptodate_policy, 1, 0, SWT.NONE);
+		m_upToDatePolicy = UiUtils.createGridEnumCombo(geComposite, 1, 0, UpToDatePolicy.values(), isReadOnly(), null,
+				FIELD_LISTENER, SWT.DROP_DOWN | SWT.READ_ONLY);
 
 		UiUtils.createGridLabel(geComposite, Messages.prerequisites_alias_with_colon, 1, 0, SWT.NONE);
 		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
