@@ -495,7 +495,8 @@ public class MirrorGenerator extends BuilderPhase
 
 			// Remove the aggregation in case it's now empty.
 			//
-			if(aggregateDestination.list().length == 0)
+			String[] content = aggregateDestination.list();
+			if(content != null && content.length == 0)
 				aggregateDestination.delete();
 
 			MonitorUtils.done(childMonitor);
