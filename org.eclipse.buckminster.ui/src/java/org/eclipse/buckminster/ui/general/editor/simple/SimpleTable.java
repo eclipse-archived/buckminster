@@ -25,7 +25,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
@@ -169,7 +168,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 	protected IWidgetin getBooleanCheckBoxWidgetin(Composite parent, final int idx, Boolean value, Boolean defaultValue)
 	{
-		final Button checkBox = new Button(parent, SWT.CHECK);
+		final Button checkBox = UiUtils.createCheckButton(parent, null, isReadOnly(), null);
 		final IWidgetin widgetin = new WidgetWrapper(checkBox);
 
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, false, false);
@@ -198,7 +197,7 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 	protected IWidgetin getComboWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
 	{
-		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
+		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, isReadOnly(), null, null, style);
 		final IWidgetin widgetin = new WidgetWrapper(combo);
 
 		combo.setItems(items);
@@ -233,7 +232,6 @@ public abstract class SimpleTable<T> extends Table<T> implements ISimpleTable<T>
 
 		text.setText(stringValue);
 		text.setData(stringValue);
-		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		text.addModifyListener(new ModifyListener()
 		{

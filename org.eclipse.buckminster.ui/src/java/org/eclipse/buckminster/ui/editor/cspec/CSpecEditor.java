@@ -1041,8 +1041,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				: SWT.READ_ONLY, m_compoundModifyListener);
 
 		UiUtils.createGridLabel(nameComposite, Messages.component_type_with_colon, 1, 0, SWT.NONE);
-		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SIMPLE);
+		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, !isSaveAsAllowed(), null, null, SWT.DROP_DOWN
+				| SWT.READ_ONLY | SWT.SIMPLE);
 
 		m_componentType.setItems(AbstractComponentType.getComponentTypeIDs(true));
 		m_componentType.addModifyListener(m_compoundModifyListener);
@@ -1076,8 +1076,8 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		 * UiUtils.createEmptyPanel(versionGroup);
 		 */
 		UiUtils.createGridLabel(versionGroup, Messages.type_with_colon, 1, 0, SWT.NONE);
-		m_versionType = UiUtils.createGridCombo(versionGroup, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SIMPLE);
+		m_versionType = UiUtils.createGridCombo(versionGroup, 1, 0, !isSaveAsAllowed(), null, null, SWT.DROP_DOWN
+				| SWT.READ_ONLY | SWT.SIMPLE);
 
 		List<VersionType> knownTypes = VersionHelper.getKnownTypes();
 		int idx = knownTypes.size();

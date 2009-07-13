@@ -122,6 +122,8 @@ public class Messages extends NLS
 
 	public static String component;
 
+	public static String component_cannot_be_empty;
+
 	public static String component_information;
 
 	public static String component_query;

@@ -34,7 +34,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.framework.InvalidSyntaxException;
@@ -214,7 +213,6 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 		String stringValue = TextUtils.notNullString(value);
 		text.setText(stringValue);
 		text.setData(value);
-		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		text.addModifyListener(new ModifyListener()
 		{
@@ -239,7 +237,6 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 		text.setText(stringValue);
 		text.setData(stringValue);
-		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		text.addModifyListener(new ModifyListener()
 		{
@@ -256,8 +253,8 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 
 	private VersionDesignator getVersionDesignator(Composite parent, final int idx, Object value)
 	{
-		final VersionDesignator designator = new VersionDesignator(parent);
-		designator.refreshValues((VersionRange)value);
+		final VersionDesignator designator = new VersionDesignator(parent, isReadOnly());
+		designator.refreshValues(new VersionRange((String)value));
 
 		designator.setData(value);
 

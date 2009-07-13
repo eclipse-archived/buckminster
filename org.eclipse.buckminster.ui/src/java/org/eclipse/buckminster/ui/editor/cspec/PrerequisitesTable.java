@@ -160,7 +160,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 	{
 		final String ITEMS_KEY = "items"; //$NON-NLS-1$
 
-		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
+		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, isReadOnly(), null, null, style);
 
 		final IWidgetin widgetin = new WidgetWrapper(combo);
 
@@ -187,7 +187,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 
 	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
 	{
-		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, null, null, style);
+		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, isReadOnly(), null, null, style);
 		final IWidgetin widgetin = new WidgetWrapper(combo);
 
 		combo.setItems(items);

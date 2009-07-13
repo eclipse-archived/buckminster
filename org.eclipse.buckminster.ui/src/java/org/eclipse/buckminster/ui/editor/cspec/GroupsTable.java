@@ -127,7 +127,7 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
 
-		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
+		setPublicCheck(UiUtils.createCheckButton(geComposite, null, isReadOnly(), null));
 
 		UiUtils.createGridLabel(geComposite, Messages.release_path_with_colon, 1, 0, SWT.NONE);
 

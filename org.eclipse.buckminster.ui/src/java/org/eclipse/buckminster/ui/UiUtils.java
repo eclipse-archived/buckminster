@@ -10,6 +10,10 @@
 
 package org.eclipse.buckminster.ui;
 
+import java.util.NoSuchElementException;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.internal.LabeledCombo;
 import org.eclipse.core.runtime.CoreException;
@@ -18,7 +22,10 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -27,6 +34,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -35,21 +43,84 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public class UiUtils
 {
-	public static Button createCheckButton(Composite parent, String key, SelectionListener listener)
+	/**
+	 * Combined ModifyListener and SelectionListener that sets combo to its original value. Note: read only combo should
+	 * be created with SWT.READ_ONLY flag
+	 * 
+	 * @author Karel Brezina
+	 */
+	static class ReadOnlyComboSelectionListener implements SelectionListener, ModifyListener
 	{
-		return createCheckButton(parent, key, listener, SWT.NONE);
+		SortedMap<Integer, Integer> m_lastSelectionIndexes = new TreeMap<Integer, Integer>();
+
+		// triggered programmatically and by users - user events need to be filtered out
+		public void modifyText(ModifyEvent e)
+		{
+			m_lastSelectionIndexes.put(Integer.valueOf(e.time), Integer.valueOf(((Combo)e.widget).getSelectionIndex()));
+		}
+
+		public void widgetDefaultSelected(SelectionEvent e)
+		{
+			// do nothing
+		}
+
+		// triggered by users
+		public void widgetSelected(SelectionEvent e)
+		{
+			Integer timeInteger = Integer.valueOf(e.time);
+			if(m_lastSelectionIndexes.get(timeInteger) != null)
+			{
+				// recorded by ModifyListener at the same time - the same event - remove it
+				m_lastSelectionIndexes.remove(timeInteger);
+			}
+
+			int lastSelectionIndex = 0;
+			Integer lastTimeInteger = null;
+
+			try
+			{
+				lastTimeInteger = m_lastSelectionIndexes.lastKey();
+			}
+			catch(NoSuchElementException e1)
+			{
+				// nothing - lastSelectionIndex is set to null
+			}
+
+			if(lastTimeInteger != null)
+			{
+				lastSelectionIndex = m_lastSelectionIndexes.get(lastTimeInteger).intValue();
+			}
+
+			((Combo)e.widget).select(lastSelectionIndex);
+		}
 	}
 
-	public static Button createCheckButton(Composite parent, String key, SelectionListener listener, int style)
+	public static Button createCheckButton(Composite parent, String key, boolean readOnly, SelectionListener listener)
 	{
-		Button button = new Button(parent, SWT.CHECK | style);
+		final Button button = new Button(parent, SWT.CHECK);
 		if(key != null)
 			button.setText(JFaceResources.getString(key));
 		button.setFont(parent.getFont());
 		if(listener != null)
 			button.addSelectionListener(listener);
+
+		if(readOnly)
+			button.addSelectionListener(new SelectionAdapter()
+			{
+
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					button.setSelection(!button.getSelection());
+				}
+			});
 		return button;
 
+	}
+
+	public static Button createCheckButton(Composite parent, String key, SelectionListener listener)
+	{
+		return createCheckButton(parent, key, false, listener);
 	}
 
 	public static Label createEmptyLabel(Composite parent)
@@ -91,10 +162,14 @@ public class UiUtils
 		return combo;
 	}
 
-	public static Combo createGridCombo(Composite parent, int horizontalSpan, int widthHint,
+	public static Combo createGridCombo(Composite parent, int horizontalSpan, int widthHint, boolean readOnly,
 			SelectionListener selectionListener, ModifyListener modifyListener, int style)
 	{
-		Combo combo = new Combo(parent, style);
+		style = (readOnly
+				? SWT.READ_ONLY
+				: SWT.NONE) | style;
+
+		final Combo combo = new Combo(parent, style);
 
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
 
@@ -120,14 +195,39 @@ public class UiUtils
 			combo.addModifyListener(modifyListener);
 		}
 
+		if(readOnly)
+		{
+			ReadOnlyComboSelectionListener readOnlyListener = new ReadOnlyComboSelectionListener();
+			combo.addSelectionListener(readOnlyListener);
+			combo.addModifyListener(readOnlyListener);
+		}
+
+		return combo;
+	}
+
+	public static Combo createGridCombo(Composite parent, int horizontalSpan, int widthHint,
+			SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		return createGridCombo(parent, horizontalSpan, widthHint, false, selectionListener, modifyListener, style);
+	}
+
+	public static Combo createGridEnumCombo(Composite parent, int horizontalSpan, int widthHint, Enum<?>[] values,
+			boolean readOnly, SelectionListener selectionListener, ModifyListener modifyListener, int style)
+	{
+		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, readOnly, selectionListener,
+				modifyListener, style);
+		for(Enum<?> value : values)
+			combo.add(value.toString());
+		combo.select(0);
+
 		return combo;
 	}
 
 	public static Combo createGridEnumCombo(Composite parent, int horizontalSpan, int widthHint, Enum<?>[] values,
 			SelectionListener selectionListener, ModifyListener modifyListener, int style)
 	{
-		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, selectionListener, modifyListener,
-				style);
+		Combo combo = UiUtils.createGridCombo(parent, horizontalSpan, widthHint, false, selectionListener,
+				modifyListener, style);
 		for(Enum<?> value : values)
 			combo.add(value.toString());
 		combo.select(0);
@@ -188,17 +288,27 @@ public class UiUtils
 
 	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, boolean readOnly, int style)
 	{
-		return createNoBorderGridText(parent, horizontalSpan, widthHint, (readOnly
+		Text text = createNoBorderGridText(parent, horizontalSpan, widthHint, (readOnly
 				? SWT.READ_ONLY
 				: SWT.NONE) | SWT.BORDER | style, null);
+
+		if(readOnly)
+			text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+
+		return text;
 	}
 
 	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, boolean readOnly, int style,
 			ModifyListener listener)
 	{
-		return createNoBorderGridText(parent, horizontalSpan, widthHint, (readOnly
+		Text text = createNoBorderGridText(parent, horizontalSpan, widthHint, (readOnly
 				? SWT.READ_ONLY
 				: SWT.NONE) | SWT.BORDER | style, listener);
+
+		if(readOnly)
+			text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+
+		return text;
 	}
 
 	public static Text createGridText(Composite parent, int horizontalSpan, int widthHint, int style)

@@ -62,6 +62,8 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 			return SimpleTable.createNotEmptyStringValidator(Messages.generator_name_cannot_be_empty);
 		case 1:
 			return SimpleTable.createNotEmptyStringValidator(Messages.attribute_cannot_be_empty);
+		case 2:
+			return SimpleTable.createNotEmptyStringValidator(Messages.component_cannot_be_empty);
 		default:
 			return SimpleTable.getEmptyValidator();
 		}

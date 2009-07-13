@@ -356,18 +356,18 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		setNameText(UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE));
 
 		UiUtils.createGridLabel(geComposite, Messages.public_with_colon, 1, 0, SWT.NONE);
-		setPublicCheck(UiUtils.createCheckButton(geComposite, null, null));
+		setPublicCheck(UiUtils.createCheckButton(geComposite, null, isReadOnly(), null));
 
 		UiUtils.createGridLabel(geComposite, Messages.actor_name_with_colon, 1, 0, SWT.NONE);
 		m_actorNameText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
 		m_actorNameText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.always_with_colon, 1, 0, SWT.NONE);
-		m_alwaysCheck = UiUtils.createCheckButton(geComposite, null, null);
+		m_alwaysCheck = UiUtils.createCheckButton(geComposite, null, isReadOnly(), null);
 		m_alwaysCheck.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.assign_console_support_with_colon, 1, 0, SWT.NONE);
-		m_assignConsoleSupportCheck = UiUtils.createCheckButton(geComposite, null, null);
+		m_assignConsoleSupportCheck = UiUtils.createCheckButton(geComposite, null, isReadOnly(), null);
 		m_assignConsoleSupportCheck.addSelectionListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.filter_with_colon, 1, 0, SWT.NONE);

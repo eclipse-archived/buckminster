@@ -52,6 +52,12 @@ public class VersionDesignator extends Widgetin
 		EQUALS
 		{
 			@Override
+			public String toString()
+			{
+				return Messages.equal_to_version;
+			}
+
+			@Override
 			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
 				Version tmp = VersionHelper.createVersion(versionType, UiUtils.trimmedValue(version));
@@ -59,15 +65,15 @@ public class VersionDesignator extends Widgetin
 						? null
 						: VersionHelper.exactRange(tmp);
 			}
-
-			@Override
-			public String toString()
-			{
-				return Messages.equal_to_version;
-			}
 		},
 		GREATER_OR_EQUAL
 		{
+			@Override
+			public String toString()
+			{
+				return Messages.grater_or_equal_to_version;
+			}
+
 			@Override
 			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
@@ -76,69 +82,73 @@ public class VersionDesignator extends Widgetin
 						? null
 						: VersionHelper.greaterOrEqualRange(tmp);
 			}
-
-			@Override
-			public String toString()
-			{
-				return Messages.grater_or_equal_to_version;
-			}
 		},
 		RANGE_IE
 		{
-			@Override
-			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
-			{
-				return createRange(from, to, versionType, '[', ')');
-			}
-
 			@Override
 			public String toString()
 			{
 				return Messages.from_incl_to_excl_version;
 			}
-		},
-		RANGE_II
-		{
+
 			@Override
 			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
-				return createRange(from, to, versionType, '[', ']');
+				return createRange(from, to, versionType, '[', ')');
 			}
-
+		},
+		RANGE_II
+		{
 			@Override
 			public String toString()
 			{
 				return Messages.from_incl_to_incl_version;
 			}
-		},
-		RANGE_EE
-		{
+
 			@Override
 			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
-				return createRange(from, to, versionType, '(', ')');
+				return createRange(from, to, versionType, '[', ']');
 			}
-
+		},
+		RANGE_EE
+		{
 			@Override
 			public String toString()
 			{
 				return Messages.from_excl_to_excl_version;
 			}
-		},
-		RANGE_EI
-		{
+
 			@Override
 			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
 			{
-				return createRange(from, to, versionType, '(', ']');
+				return createRange(from, to, versionType, '(', ')');
 			}
-
+		},
+		RANGE_EI
+		{
 			@Override
 			public String toString()
 			{
 				return Messages.from_excl_to_incl_version;
 			}
+
+			@Override
+			VersionRange createDesignator(String versionType, Text version, Text from, Text to) throws CoreException
+			{
+				return createRange(from, to, versionType, '(', ']');
+			}
 		};
+
+		static String[] getStrings()
+		{
+			DesignatorType[] dsTypes = values();
+			int idx = dsTypes.length;
+			String[] strings = new String[idx];
+			while(--idx >= 0)
+				strings[idx] = dsTypes[idx].toString();
+			return strings;
+		}
 
 		private static VersionRange createRange(Text from, Text to, String versionType, char start, char end)
 				throws CoreException
@@ -149,16 +159,6 @@ public class VersionDesignator extends Widgetin
 				return null;
 
 			return VersionHelper.createRange(versionType, start + tmp + ',' + tmp2 + end);
-		}
-
-		static String[] getStrings()
-		{
-			DesignatorType[] dsTypes = values();
-			int idx = dsTypes.length;
-			String[] strings = new String[idx];
-			while(--idx >= 0)
-				strings[idx] = dsTypes[idx].toString();
-			return strings;
 		}
 
 		abstract VersionRange createDesignator(String versionType, Text version, Text from, Text to)
@@ -200,6 +200,11 @@ public class VersionDesignator extends Widgetin
 
 	public VersionDesignator(Composite parent)
 	{
+		this(parent, false);
+	}
+
+	public VersionDesignator(Composite parent, final boolean readOnly)
+	{
 		m_parentComposite = parent;
 
 		m_versionDsTypeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.designator_with_colon, 1, 0,
@@ -214,15 +219,17 @@ public class VersionDesignator extends Widgetin
 			}
 		};
 
-		m_versionDsType = UiUtils.createGridEnumCombo(m_parentComposite, 1, 0, DesignatorType.values(),
-				versionDSListener, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
+		m_versionDsType = UiUtils.createGridEnumCombo(m_parentComposite, 1, 0, DesignatorType.values(), readOnly,
+				readOnly
+						? null
+						: versionDSListener, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
 
 		m_versionDsType.addSelectionListener(m_notifier);
 		UiUtils.createEmptyLabel(m_parentComposite);
 
 		m_rangeLabel = UiUtils.createGridLabel(m_parentComposite, Messages.version_with_colon, 1, 0, SWT.NONE);
 
-		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, SWT.NONE, m_notifier);
+		m_fromVersion = UiUtils.createGridText(m_parentComposite, 1, 0, readOnly, SWT.NONE, m_notifier);
 
 		m_toComposite = new Composite(m_parentComposite, SWT.NONE);
 		m_toComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -231,11 +238,11 @@ public class VersionDesignator extends Widgetin
 
 		m_toEmptyLabel = UiUtils.createEmptyLabel(m_toComposite);
 
-		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, SWT.NONE, m_notifier);
+		m_toVersion = UiUtils.createGridText(m_toComposite, 1, 0, readOnly, SWT.NONE, m_notifier);
 
 		UiUtils.createGridLabel(m_parentComposite, Messages.type_with_colon, 1, 0, SWT.NONE);
-		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SIMPLE);
+		m_versionType = UiUtils.createGridCombo(m_parentComposite, 1, 0, readOnly, null, null, SWT.DROP_DOWN
+				| SWT.READ_ONLY | SWT.SIMPLE);
 
 		List<VersionType> knownTypes = VersionHelper.getKnownTypes();
 		int idx = knownTypes.size();
@@ -255,34 +262,6 @@ public class VersionDesignator extends Widgetin
 	{
 		if(!m_listeners.contains(listener))
 			m_listeners.add(listener);
-	}
-
-	private void dsTypeIndexChanged(int idx)
-	{
-		if(idx < 0)
-			return;
-
-		Control current = m_toStackLayout.topControl;
-		Control toBe = idx < 2
-				? m_toEmptyLabel
-				: m_toVersion;
-		if(current != toBe)
-		{
-			if(current != null)
-			{
-				if(idx < 2)
-				{
-					m_rangeLabel.setText(Messages.version_with_colon);
-				}
-				else
-				{
-					m_rangeLabel.setText(Messages.from_to_with_colon);
-				}
-			}
-			m_toStackLayout.topControl = toBe;
-			m_toComposite.layout();
-		}
-
 	}
 
 	public VersionRange getDirectVersionDesignator() throws CoreException
@@ -393,5 +372,33 @@ public class VersionDesignator extends Widgetin
 		m_fromVersion.setEnabled(flag);
 		m_toVersion.setEnabled(flag);
 		m_versionType.setEnabled(flag);
+	}
+
+	private void dsTypeIndexChanged(int idx)
+	{
+		if(idx < 0)
+			return;
+
+		Control current = m_toStackLayout.topControl;
+		Control toBe = idx < 2
+				? m_toEmptyLabel
+				: m_toVersion;
+		if(current != toBe)
+		{
+			if(current != null)
+			{
+				if(idx < 2)
+				{
+					m_rangeLabel.setText(Messages.version_with_colon);
+				}
+				else
+				{
+					m_rangeLabel.setText(Messages.from_to_with_colon);
+				}
+			}
+			m_toStackLayout.topControl = toBe;
+			m_toComposite.layout();
+		}
+
 	}
 }
