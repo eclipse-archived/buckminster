@@ -731,17 +731,34 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		if(!(obj instanceof IInstallableUnit))
 			return false;
 		final IInstallableUnit other = (IInstallableUnit)obj;
-		if(id == null)
+		String thisId = Trivial.trim(id);
+		String otherId = Trivial.trim(other.getId());
+
+		if(thisId == null)
 		{
-			if(other.getId() != null)
+			if(otherId != null)
 				return false;
 		}
-		else if(!id.equals(other.getId()))
+		else if(!thisId.equals(otherId))
 			return false;
 		if(getVersion() == null)
 		{
 			if(other.getVersion() != null)
 				return false;
+			
+			if(other instanceof InstallableUnitImpl)
+			{
+				VersionedName thisVn = getVersionedNameFromProxy();
+				VersionedName otherVn = ((InstallableUnit)other).getVersionedNameFromProxy();
+				
+				if(thisVn == null)
+				{
+					if(otherVn != null)
+						return false;
+				}
+				else if(!thisVn.equals(otherVn))
+					return false;
+			}
 		}
 		else if(!getVersion().equals(other.getVersion()))
 			return false;
