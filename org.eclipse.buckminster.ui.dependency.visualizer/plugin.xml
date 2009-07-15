@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.buckminster.ui.dependency.visualizer.DependencyVisualizer"
+            default="true"
+            extensions="bom"
+            filenames="*.test"
+            id="org.eclipse.buckminster.dependency.visualizer.editor1"
+            name="Dependency Visualizer">
+      </editor>
+   </extension>
+
+</plugin>
