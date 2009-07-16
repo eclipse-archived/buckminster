@@ -745,12 +745,12 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		{
 			if(other.getVersion() != null)
 				return false;
-			
+
 			if(other instanceof InstallableUnitImpl)
 			{
 				VersionedName thisVn = getVersionedNameFromProxy();
 				VersionedName otherVn = ((InstallableUnit)other).getVersionedNameFromProxy();
-				
+
 				if(thisVn == null)
 				{
 					if(otherVn != null)

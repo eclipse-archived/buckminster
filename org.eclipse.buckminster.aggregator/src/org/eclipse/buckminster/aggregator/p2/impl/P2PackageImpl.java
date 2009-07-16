@@ -1851,7 +1851,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEAttribute(getIRequiredCapability_Range(), this.getVersionRange(), "range", null, 0, 1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Selectors(), this.getStringArray(), "selectors", null, 0, 1,
+		initEAttribute(getIRequiredCapability_Selectors(), this.getStringArray(), "selectors", "[]", 0, 1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIRequiredCapability_Multiple(), ecorePackage.getEBoolean(), "multiple", null, 0, 1,

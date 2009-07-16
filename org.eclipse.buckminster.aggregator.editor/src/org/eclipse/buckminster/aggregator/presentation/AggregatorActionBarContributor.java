@@ -120,7 +120,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 										URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
 										if(!"file".equals(fileURL.getProtocol()))
 											throw new Exception("URI scheme is not \"file\"");
-										URI uri = new URI(fileURL.getProtocol() + ":/" + URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll("\\+", "%20"));
+										URI uri = new URI(
+												fileURL.getProtocol()
+														+ ":/"
+														+ URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll(
+																"\\+", "%20"));
 										builder.setBuildModelLocation(new File(uri));
 										builder.setVerifyOnly(m_verifyOnly);
 										builder.run(monitor);

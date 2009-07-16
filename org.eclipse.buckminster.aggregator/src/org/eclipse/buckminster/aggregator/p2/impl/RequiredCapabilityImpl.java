@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2.impl;
 
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 
@@ -137,7 +138,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String[] SELECTORS_EDEFAULT = null;
+	protected static final String[] SELECTORS_EDEFAULT = (String[])P2Factory.eINSTANCE.createFromString(
+			P2Package.eINSTANCE.getStringArray(), "[]");
 
 	/**
 	 * The cached value of the '{@link #getSelectors() <em>Selectors</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -208,8 +210,6 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * @ordered
 	 */
 	protected static final int GREEDY_EFLAG = 1 << 2;
-
-	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -439,13 +439,11 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	public String[] getSelectors()
 	{
-		return selectors != null
-				? selectors
-				: EMPTY_STRING_ARRAY;
+		return selectors;
 	}
 
 	public int hashCode()

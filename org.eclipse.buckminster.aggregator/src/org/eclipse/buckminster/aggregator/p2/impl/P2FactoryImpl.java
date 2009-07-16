@@ -9,6 +9,8 @@ package org.eclipse.buckminster.aggregator.p2.impl;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.p2.*;
+import org.eclipse.buckminster.core.helpers.SmartArrayList;
+import org.eclipse.buckminster.runtime.Trivial;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -36,6 +38,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
  */
 public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 {
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -143,11 +147,17 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public String convertStringArrayToString(EDataType eDataType, Object instanceValue)
 	{
-		return super.convertToString(instanceValue);
+		String result = Trivial.trim(instanceValue != null
+				? new SmartArrayList<String>((String[])instanceValue).toString()
+				: null);
+
+		return "[" + (result != null
+				? result
+				: "") + "]";
 	}
 
 	/**
@@ -480,11 +490,31 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public String[] createStringArrayFromString(EDataType eDataType, String initialValue)
 	{
-		return (String[])super.createFromString(initialValue);
+		try
+		{
+			initialValue = Trivial.trim(initialValue);
+			if(initialValue != null)
+			{
+				int len = initialValue.length();
+				if(len >= 2 && initialValue.charAt(0) == '[' && initialValue.charAt(len - 1) == ']')
+					return SmartArrayList.fromCommaSeparatedStrings(initialValue.substring(0, len)).toArray(
+							new String[0]);
+
+				throw new IllegalArgumentException("Unable to initialize StringArray from " + initialValue
+						+ ": initial value must begin with '[' and end with ']'");
+			}
+
+			return EMPTY_STRING_ARRAY;
+		}
+		catch(Exception e)
+		{
+			throw new IllegalArgumentException("Unable to initialize StringArray from " + initialValue + ": "
+					+ e.getMessage(), e);
+		}
 	}
 
 	/**
