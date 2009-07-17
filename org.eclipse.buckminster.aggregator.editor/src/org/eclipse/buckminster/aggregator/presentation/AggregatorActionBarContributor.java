@@ -15,15 +15,21 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
+import org.eclipse.buckminster.aggregator.engine.Builder.PackedStrategy;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.ui.action.ControlAction;
@@ -32,6 +38,7 @@ import org.eclipse.emf.edit.ui.action.CreateSiblingAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.action.LoadResourceAction;
 import org.eclipse.emf.edit.ui.action.ValidateAction;
+import org.eclipse.equinox.app.IApplication;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -43,9 +50,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.SubContributionItem;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -69,7 +73,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 {
 	class BuildRepoAction extends Action
 	{
-
 		private boolean m_verifyOnly;
 
 		public BuildRepoAction(boolean verifyOnly)
@@ -103,55 +106,56 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 			if(saveModel())
 			{
-				try
+				new Job("Buckminster Aggregator")
 				{
-					new ProgressMonitorDialog(getActiveEditor().getSite().getShell()).run(true, true,
-							new IRunnableWithProgress()
-							{
+					{
+						setUser(true);
+						setPriority(Job.LONG);
+					}
 
-								public void run(IProgressMonitor monitor) throws InvocationTargetException,
-										InterruptedException
-								{
-									try
-									{
-										Builder builder = new Builder();
-										org.eclipse.emf.common.util.URI emfURI = ((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(
-												0).getURI();
-										URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
-										if(!"file".equals(fileURL.getProtocol()))
-											throw new Exception("URI scheme is not \"file\"");
-										URI uri = new URI(
-												fileURL.getProtocol()
-														+ ":/"
-														+ URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll(
-																"\\+", "%20"));
-										builder.setBuildModelLocation(new File(uri));
-										builder.setVerifyOnly(m_verifyOnly);
-										builder.run(monitor);
-									}
-									catch(Throwable e)
-									{
-										throw new InvocationTargetException(e);
-									}
-								}
-							});
-				}
-				catch(InvocationTargetException e)
-				{
-					Throwable cause = unwind(e);
-					IStatus status = (cause instanceof CoreException)
-							? ((CoreException)cause).getStatus()
-							: new Status(IStatus.ERROR, Engine.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
+					@Override
+					protected IStatus run(IProgressMonitor monitor)
+					{
+						try
+						{
+							Builder builder = new Builder();
+							Resource resource = ((IEditingDomainProvider)activeEditorPart).getEditingDomain().getResourceSet().getResources().get(
+									0);
+							org.eclipse.emf.common.util.URI emfURI = resource.getURI();
+							URL fileURL = FileLocator.toFileURL(new URI(emfURI.toString()).toURL());
+							if(!"file".equals(fileURL.getProtocol()))
+								throw new Exception("URI scheme is not \"file\"");
+							URI uri = new URI(fileURL.getProtocol() + ":/"
+									+ URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll("\\+", "%20"));
+							builder.setBuildModelLocation(new File(uri));
+							builder.setVerifyOnly(m_verifyOnly);
 
-					ErrorDialog dialog = new ErrorDialog(null, "Error",
-							"Repository builder has not finished successfully", status, IStatus.OK | IStatus.INFO
-									| IStatus.WARNING | IStatus.ERROR);
-					dialog.open();
-				}
-				catch(InterruptedException e)
-				{
-					// interrupted by user
-				}
+							EList<EObject> content = resource.getContents();
+							if(content.size() != 1)
+								throw new IllegalArgumentException(
+										"ECore Resource did not contain one resource. It had "
+												+ Integer.valueOf(content.size()));
+
+							Aggregator aggregator = (Aggregator)content.get(0);
+							builder.setPackedStrategy(PackedStrategy.valueOf(aggregator.getPackedStrategy().getLiteral()));
+
+							if(builder.run(monitor) != IApplication.EXIT_OK)
+								throw new Exception("Build failed (see log for more details)");
+						}
+						catch(Throwable e)
+						{
+							Throwable cause = unwind(e);
+							IStatus status = (cause instanceof CoreException)
+									? ((CoreException)cause).getStatus()
+									: new Status(IStatus.ERROR, Engine.PLUGIN_ID, IStatus.OK, cause.getMessage(), cause);
+
+							return status;
+						}
+
+						return Status.OK_STATUS;
+					}
+
+				}.schedule();
 			}
 
 		}

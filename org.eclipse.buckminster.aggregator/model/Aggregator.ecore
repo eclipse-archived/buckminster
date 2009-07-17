@@ -19,6 +19,7 @@
         eType="#//Contact" containment="true" eOpposite="#//Contact/aggregator" eKeys="#//Contact/email"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="customCategories" upperBound="-1"
         eType="#//CustomCategory" containment="true" eKeys="#//CustomCategory/identifier"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packedStrategy" eType="#//PackedStrategy"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MappedRepository">
     <eOperations name="getUnits" upperBound="-1" eType="#//MappedUnit">
@@ -111,6 +112,13 @@
     <eLiterals name="X86" literal="x86"/>
     <eLiterals name="PPC" value="1" literal="ppc"/>
     <eLiterals name="X86_64" value="2" literal="x86_64"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PackedStrategy">
+    <eLiterals name="Copy" literal="COPY"/>
+    <eLiterals name="Verify" value="1" literal="VERIFY"/>
+    <eLiterals name="UnpackAsSibling" value="2" literal="UNPACK_AS_SIBLING"/>
+    <eLiterals name="Unpack" value="3" literal="UNPACK"/>
+    <eLiterals name="Skip" value="4" literal="SKIP"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="URI" instanceClassName="java.net.URI"/>
   <eClassifiers xsi:type="ecore:EClass" name="Category" eSuperTypes="#//MappedUnit">
@@ -349,7 +357,11 @@
     <eClassifiers xsi:type="ecore:EClass" name="IAdaptable" instanceClassName="org.eclipse.core.runtime.IAdaptable"
         abstract="true" interface="true">
       <eOperations name="getAdapter" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//AnySimpleType">
-        <eParameters name="adapter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass"/>
+        <eParameters name="adapter">
+          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+            <eTypeArguments/>
+          </eGenericType>
+        </eParameters>
       </eOperations>
     </eClassifiers>
   </eSubpackages>

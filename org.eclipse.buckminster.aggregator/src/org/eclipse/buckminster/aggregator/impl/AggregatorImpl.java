@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -41,6 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContacts <em>Contacts</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getCustomCategories <em>Custom Categories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getPackedStrategy <em>Packed Strategy</em>}</li>
  * </ul>
  * </p>
  * 
@@ -215,6 +217,53 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected EList<CustomCategory> customCategories;
 
 	/**
+	 * The default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @see #getPackedStrategy()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final PackedStrategy PACKED_STRATEGY_EDEFAULT = PackedStrategy.COPY;
+
+	/**
+	 * The offset of the flags representing the value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int PACKED_STRATEGY_EFLAG_OFFSET = 4;
+
+	/**
+	 * The flags representing the default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int PACKED_STRATEGY_EFLAG_DEFAULT = PACKED_STRATEGY_EDEFAULT.ordinal() << PACKED_STRATEGY_EFLAG_OFFSET;
+
+	/**
+	 * The array of enumeration values for '{@link PackedStrategy Packed Strategy}' <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	private static final PackedStrategy[] PACKED_STRATEGY_EFLAG_VALUES = PackedStrategy.values();
+
+	/**
+	 * The flags representing the value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getPackedStrategy()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int PACKED_STRATEGY_EFLAG = 0x7 << PACKED_STRATEGY_EFLAG_OFFSET;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -264,6 +313,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return getContacts();
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return getCustomCategories();
+		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+			return getPackedStrategy();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -339,6 +390,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return contacts != null && !contacts.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return customCategories != null && !customCategories.isEmpty();
+		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+			return (eFlags & PACKED_STRATEGY_EFLAG) != PACKED_STRATEGY_EFLAG_DEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -385,6 +438,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			getCustomCategories().clear();
 			getCustomCategories().addAll((Collection<? extends CustomCategory>)newValue);
 			return;
+		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+			setPackedStrategy((PackedStrategy)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -425,6 +481,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return;
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			getCustomCategories().clear();
+			return;
+		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+			setPackedStrategy(PACKED_STRATEGY_EDEFAULT);
 			return;
 		}
 		super.eUnset(featureID);
@@ -531,6 +590,16 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		return label;
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public PackedStrategy getPackedStrategy()
+	{
+		return PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET];
+	}
+
 	public int getStatus()
 	{
 		for(Contribution contribution : getContributions())
@@ -607,6 +676,22 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * 
 	 * @generated
 	 */
+	public void setPackedStrategy(PackedStrategy newPackedStrategy)
+	{
+		PackedStrategy oldPackedStrategy = PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET];
+		if(newPackedStrategy == null)
+			newPackedStrategy = PACKED_STRATEGY_EDEFAULT;
+		eFlags = eFlags & ~PACKED_STRATEGY_EFLAG | newPackedStrategy.ordinal() << PACKED_STRATEGY_EFLAG_OFFSET;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__PACKED_STRATEGY,
+					oldPackedStrategy, newPackedStrategy));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setSendmail(boolean newSendmail)
 	{
 		boolean oldSendmail = (eFlags & SENDMAIL_EFLAG) != 0;
@@ -654,6 +739,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		result.append(label);
 		result.append(", sendmail: ");
 		result.append((eFlags & SENDMAIL_EFLAG) != 0);
+		result.append(", packedStrategy: ");
+		result.append(PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET]);
 		result.append(')');
 		return result.toString();
 	}

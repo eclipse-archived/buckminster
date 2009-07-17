@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -152,6 +153,24 @@ public interface Aggregator extends EObject, StatusProvider
 	String getLabel();
 
 	/**
+	 * Returns the value of the '<em><b>Packed Strategy</b></em>' attribute. The literals are from the enumeration
+	 * {@link org.eclipse.buckminster.aggregator.PackedStrategy}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Packed Strategy</em>' attribute isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Packed Strategy</em>' attribute.
+	 * @see org.eclipse.buckminster.aggregator.PackedStrategy
+	 * @see #setPackedStrategy(PackedStrategy)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_PackedStrategy()
+	 * @model
+	 * @generated
+	 */
+	PackedStrategy getPackedStrategy();
+
+	/**
 	 * Returns the value of the '<em><b>Type</b></em>' attribute. The literals are from the enumeration
 	 * {@link org.eclipse.buckminster.aggregator.AggregateType}. <!-- begin-user-doc -->
 	 * <p>
@@ -216,6 +235,18 @@ public interface Aggregator extends EObject, StatusProvider
 	 * @generated
 	 */
 	void setLabel(String value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy
+	 * <em>Packed Strategy</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Packed Strategy</em>' attribute.
+	 * @see org.eclipse.buckminster.aggregator.PackedStrategy
+	 * @see #getPackedStrategy()
+	 * @generated
+	 */
+	void setPackedStrategy(PackedStrategy value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}'

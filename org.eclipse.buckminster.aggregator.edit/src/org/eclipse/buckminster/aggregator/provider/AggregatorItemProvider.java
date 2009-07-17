@@ -95,6 +95,7 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 			addLabelPropertyDescriptor(object);
 			addBuildmasterPropertyDescriptor(object);
 			addSendmailPropertyDescriptor(object);
+			addPackedStrategyPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -143,6 +144,7 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 		case AggregatorPackage.AGGREGATOR__LABEL:
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
@@ -196,6 +198,21 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 				getString("_UI_Aggregator_label_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Aggregator_label_feature", "_UI_Aggregator_type"),
 				AggregatorPackage.Literals.AGGREGATOR__LABEL, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Packed Strategy feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addPackedStrategyPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Aggregator_packedStrategy_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Aggregator_packedStrategy_feature", "_UI_Aggregator_type"),
+				AggregatorPackage.Literals.AGGREGATOR__PACKED_STRATEGY, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 

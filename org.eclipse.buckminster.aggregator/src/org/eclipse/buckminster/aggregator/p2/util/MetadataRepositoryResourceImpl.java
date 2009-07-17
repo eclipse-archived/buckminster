@@ -46,7 +46,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			super("Repository Loader");
 			this.repository = repository;
 			this.location = location;
-			setUser(true);
+			setUser(false);
 			setPriority(Job.SHORT);
 		}
 

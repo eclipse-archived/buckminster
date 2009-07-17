@@ -21,6 +21,7 @@ import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.OperatingSystem;
+import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.WindowSystem;
@@ -205,6 +206,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EEnum packedStrategyEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EDataType uriEDataType = null;
 
 	/**
@@ -269,6 +277,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEAttribute(aggregatorEClass, AGGREGATOR__SENDMAIL);
 		createEReference(aggregatorEClass, AGGREGATOR__CONTACTS);
 		createEReference(aggregatorEClass, AGGREGATOR__CUSTOM_CATEGORIES);
+		createEAttribute(aggregatorEClass, AGGREGATOR__PACKED_STRATEGY);
 
 		mappedRepositoryEClass = createEClass(MAPPED_REPOSITORY);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__PRODUCTS);
@@ -325,6 +334,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		operatingSystemEEnum = createEEnum(OPERATING_SYSTEM);
 		windowSystemEEnum = createEEnum(WINDOW_SYSTEM);
 		architectureEEnum = createEEnum(ARCHITECTURE);
+		packedStrategyEEnum = createEEnum(PACKED_STRATEGY);
 
 		// Create data types
 		uriEDataType = createEDataType(URI);
@@ -418,6 +428,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EAttribute getAggregator_Label()
 	{
 		return (EAttribute)aggregatorEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getAggregator_PackedStrategy()
+	{
+		return (EAttribute)aggregatorEClass.getEStructuralFeatures().get(9);
 	}
 
 	/**
@@ -825,6 +845,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EEnum getPackedStrategy()
+	{
+		return packedStrategyEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EClass getProduct()
 	{
 		return productEClass;
@@ -944,6 +974,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				-1, Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getAggregator_CustomCategories().getEKeys().add(this.getCustomCategory_Identifier());
+		initEAttribute(getAggregator_PackedStrategy(), this.getPackedStrategy(), "packedStrategy", null, 0, 1,
+				Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
 
 		initEClass(mappedRepositoryEClass, MappedRepository.class, "MappedRepository", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
@@ -1091,6 +1124,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEEnumLiteral(architectureEEnum, Architecture.X86);
 		addEEnumLiteral(architectureEEnum, Architecture.PPC);
 		addEEnumLiteral(architectureEEnum, Architecture.X86_64);
+
+		initEEnum(packedStrategyEEnum, PackedStrategy.class, "PackedStrategy");
+		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.COPY);
+		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.VERIFY);
+		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.UNPACK_AS_SIBLING);
+		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.UNPACK);
+		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.SKIP);
 
 		// Initialize data types
 		initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

@@ -126,6 +126,14 @@ public interface AggregatorPackage extends EPackage
 		EReference AGGREGATOR__CUSTOM_CATEGORIES = eINSTANCE.getAggregator_CustomCategories();
 
 		/**
+		 * The meta object literal for the '<em><b>Packed Strategy</b></em>' attribute feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute AGGREGATOR__PACKED_STRATEGY = eINSTANCE.getAggregator_PackedStrategy();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.MappedRepositoryImpl
 		 * <em>Mapped Repository</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -500,6 +508,16 @@ public interface AggregatorPackage extends EPackage
 		EEnum ARCHITECTURE = eINSTANCE.getArchitecture();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy
+		 * <em>Packed Strategy</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.PackedStrategy
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
+		 * @generated
+		 */
+		EEnum PACKED_STRATEGY = eINSTANCE.getPackedStrategy();
+
+		/**
 		 * The meta object literal for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @see java.net.URI
@@ -625,13 +643,21 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR__CUSTOM_CATEGORIES = 8;
 
 	/**
+	 * The feature id for the '<em><b>Packed Strategy</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__PACKED_STRATEGY = 9;
+
+	/**
 	 * The number of structural features of the '<em>Aggregator</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR_FEATURE_COUNT = 9;
+	int AGGREGATOR_FEATURE_COUNT = 10;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MappedRepositoryImpl
@@ -1216,13 +1242,23 @@ public interface AggregatorPackage extends EPackage
 	int ARCHITECTURE = 15;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
+	 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.PackedStrategy
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
+	 * @generated
+	 */
+	int PACKED_STRATEGY = 16;
+
+	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see java.net.URI
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 16;
+	int URI = 17;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -1324,6 +1360,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getAggregator_Label();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Packed Strategy</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy()
+	 * @see #getAggregator()
+	 * @generated
+	 */
+	EAttribute getAggregator_PackedStrategy();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail
@@ -1769,6 +1817,16 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EEnum getOperatingSystem();
+
+	/**
+	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.PackedStrategy
+	 * <em>Packed Strategy</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for enum '<em>Packed Strategy</em>'.
+	 * @see org.eclipse.buckminster.aggregator.PackedStrategy
+	 * @generated
+	 */
+	EEnum getPackedStrategy();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.Product <em>Product</em>}'. <!--

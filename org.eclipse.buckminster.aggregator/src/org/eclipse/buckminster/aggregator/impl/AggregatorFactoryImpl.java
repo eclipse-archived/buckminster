@@ -108,6 +108,18 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	 * 
 	 * @generated
 	 */
+	public String convertPackedStrategyToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue)
 	{
@@ -121,6 +133,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return convertWindowSystemToString(eDataType, instanceValue);
 		case AggregatorPackage.ARCHITECTURE:
 			return convertArchitectureToString(eDataType, instanceValue);
+		case AggregatorPackage.PACKED_STRATEGY:
+			return convertPackedStrategyToString(eDataType, instanceValue);
 		case AggregatorPackage.URI:
 			return convertURIToString(eDataType, instanceValue);
 		default:
@@ -321,6 +335,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createWindowSystemFromString(eDataType, initialValue);
 		case AggregatorPackage.ARCHITECTURE:
 			return createArchitectureFromString(eDataType, initialValue);
+		case AggregatorPackage.PACKED_STRATEGY:
+			return createPackedStrategyFromString(eDataType, initialValue);
 		case AggregatorPackage.URI:
 			return createURIFromString(eDataType, initialValue);
 		default:
@@ -347,6 +363,20 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	public OperatingSystem createOperatingSystemFromString(EDataType eDataType, String initialValue)
 	{
 		OperatingSystem result = OperatingSystem.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public PackedStrategy createPackedStrategyFromString(EDataType eDataType, String initialValue)
+	{
+		PackedStrategy result = PackedStrategy.get(initialValue);
 		if(result == null)
 			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
 					+ eDataType.getName() + "'");
