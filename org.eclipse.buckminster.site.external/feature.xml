@@ -17,10 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <url>
-      <update label="Buckminster External (non EPL)" url="http://download.cloudsmith.com/buckminster/external/"/>
-   </url>
-
    <includes
          id="org.eclipse.buckminster.subclipse.headless.feature"
          version="0.0.0"/>
