@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
@@ -119,9 +118,9 @@ public class P2Materializer extends AbstractMaterializer
 	}
 
 	@Override
-	public String getMaterializerRootDir()
+	public String getMaterializerRootDir() throws CoreException
 	{
-		return Platform.getLocation().toOSString();
+		return TargetPlatform.getInstance().getLocation().getAbsolutePath();
 	}
 
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,

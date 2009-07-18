@@ -47,14 +47,7 @@ public class TargetPlatformMaterializer extends AbstractSiteMaterializer
 
 	private static IPath getDefaultInstallRoot() throws CoreException
 	{
-		try
-		{
-			return Path.fromOSString(TargetPlatform.getPlatformInstallLocation().getCanonicalPath());
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
+		return Path.fromOSString(TargetPlatform.getInstance().getLocation().getAbsolutePath());
 	}
 
 	private static ISite getDefaultInstallSite() throws CoreException

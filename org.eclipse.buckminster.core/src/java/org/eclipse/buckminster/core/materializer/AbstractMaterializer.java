@@ -144,7 +144,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		return resolution.getProvider().getReaderType();
 	}
 
-	public abstract String getMaterializerRootDir();
+	public abstract String getMaterializerRootDir() throws CoreException;
 
 	public void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated,
 			Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
