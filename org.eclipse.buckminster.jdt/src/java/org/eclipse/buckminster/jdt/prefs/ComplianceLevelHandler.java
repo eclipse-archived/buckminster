@@ -7,8 +7,12 @@
  *****************************************************************************/
 package org.eclipse.buckminster.jdt.prefs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.JavaCore;
@@ -23,42 +27,22 @@ public class ComplianceLevelHandler extends BasicPreferenceHandler
 		// and the default java changes (which it does on the first build if the JVM is
 		// not a 1.4) then all settings that where equal to the default will change.
 		//
-		IEclipsePreferences prefs = new InstanceScope().getNode(JavaCore.PLUGIN_ID);
-		if(JavaCore.VERSION_1_6.equals(compliance))
-		{
-			prefs.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_6);
-			prefs.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
-			prefs.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_6);
-			prefs.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-			prefs.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.ERROR);
-		}
-		else if(JavaCore.VERSION_1_5.equals(compliance))
-		{
-			prefs.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-			prefs.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-			prefs.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-			prefs.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-			prefs.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.ERROR);
-		}
-		else if(JavaCore.VERSION_1_4.equals(compliance))
-		{
-			prefs.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_4);
-			prefs.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_4);
-			prefs.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
-			prefs.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.WARNING);
-			prefs.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.WARNING);
-		}
-		else if(JavaCore.VERSION_1_3.equals(compliance))
-		{
-			prefs.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_3);
-			prefs.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_3);
-			prefs.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_1);
-			prefs.put(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.IGNORE);
-			prefs.put(JavaCore.COMPILER_PB_ENUM_IDENTIFIER, JavaCore.IGNORE);
-		}
-		else
-		{
+		HashMap<String, String> options = new HashMap<String, String>();
+		JavaCore.setComplianceOptions(compliance, options);
+		if(options.isEmpty())
 			throw new IllegalArgumentException("Unsupported compliance: " + compliance); //$NON-NLS-1$
+
+		IEclipsePreferences prefs = new InstanceScope().getNode(JavaCore.PLUGIN_ID);
+		IEclipsePreferences defaults = new DefaultScope().getNode(JavaCore.PLUGIN_ID);
+		for(Map.Entry<String, String> entry : options.entrySet())
+		{
+			String key = entry.getKey();
+			String value = entry.getValue();
+			String defaultValue = defaults.get(key, null);
+			if(value == null || (defaultValue != null && defaultValue.equals(value)))
+				prefs.remove(key);
+			else
+				prefs.put(key, value);
 		}
 		prefs.flush();
 	}
