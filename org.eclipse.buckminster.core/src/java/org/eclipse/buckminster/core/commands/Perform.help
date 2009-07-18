@@ -38,4 +38,4 @@ usage: perform
 <component>#<action>
   The component name and the action name to perform.
   Can be given multiple times in order to perform many actions in the most
-  optimized way. (NOTE: the multiplicity is not yet implemented!)
+  optimized way.
