@@ -246,8 +246,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 			{
 				// We allow missing properties but we log it nevertheless
 				//
-				CorePlugin.getLogger()
-						.info(NLS.bind(Messages.Unable_to_read_property_file_0_1, propsURL, e.toString()));
+				CorePlugin.getLogger().info(NLS.bind(Messages.Unable_to_read_property_file_0_1, propsURL, e.toString()));
 			}
 			finally
 			{
@@ -371,14 +370,18 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 
 	public URL getResolvedPropertiesURL()
 	{
-		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
-				m_propertiesURL, 0));
+		return m_propertiesURL == null
+				? null
+				: URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
+						m_propertiesURL, 0));
 	}
 
 	public URL getResolvedResourceMapURL()
 	{
-		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
-				m_resourceMapURL, 0));
+		return m_resourceMapURL == null
+				? null
+				: URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
+						m_resourceMapURL, 0));
 	}
 
 	public String getResourceMapURL()

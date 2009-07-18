@@ -163,7 +163,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException
 	{
-		if(isOverrideQueryURL())
+		if(url == null || isOverrideQueryURL())
 			url = getResourceMapURL();
 		return getCachedResourceMap(context, url, cctx);
 	}
