@@ -12,7 +12,7 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.engine.Builder.PackedStrategy;
+import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -528,7 +528,7 @@ public class MirrorGenerator extends BuilderPhase
 
 			log.info("- mirroring artifact %s", key);
 
-			PackedStrategy strategy = getBuilder().getPackedStrategy();
+			PackedStrategy strategy = getBuilder().getAggregator().getPackedStrategy();
 			if(!"osgi.bundle".equals(key.getClassifier()))
 				strategy = PackedStrategy.SKIP;
 

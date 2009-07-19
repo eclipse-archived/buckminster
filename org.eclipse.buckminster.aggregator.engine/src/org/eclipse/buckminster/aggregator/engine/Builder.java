@@ -71,35 +71,6 @@ import org.xml.sax.SAXParseException;
 
 public class Builder implements IApplication
 {
-
-	public static enum PackedStrategy
-	{
-		/**
-		 * If the source contains packed artifacts, copy and store only the them. This is the default strategy.
-		 */
-		COPY,
-
-		/**
-		 * Same as {@link #COPY} but unpack and then discard the unpacked.
-		 */
-		VERIFY,
-
-		/**
-		 * Same as {@link #COPY} but unpack and store as sibling.
-		 */
-		UNPACK_AS_SIBLING,
-
-		/**
-		 * Use the packed artifacts for the transfer but only store the unpacked artifact.
-		 */
-		UNPACK,
-
-		/**
-		 * Don't consider packed artifacts at all.
-		 */
-		SKIP
-	}
-
 	private static class EmailAddress
 	{
 		private final String address;
@@ -356,8 +327,6 @@ public class Builder implements IApplication
 
 	private boolean production = false;
 
-	private PackedStrategy packedStrategy = PackedStrategy.COPY;
-
 	private ResourceSet resourceSet;
 
 	private boolean sendmail = false;
@@ -416,11 +385,6 @@ public class Builder implements IApplication
 	public List<InstallableUnit> getCategoryIUs()
 	{
 		return categoryIUs;
-	}
-
-	public PackedStrategy getPackedStrategy()
-	{
-		return packedStrategy;
 	}
 
 	public CompositeMetadataRepository getSourceComposite()
@@ -763,11 +727,6 @@ public class Builder implements IApplication
 		this.mockEmailTo = mockEmailTo;
 	}
 
-	public void setPackedStrategy(PackedStrategy packedStrategy)
-	{
-		this.packedStrategy = packedStrategy;
-	}
-
 	public void setProduction(boolean production)
 	{
 		this.production = production;
@@ -890,28 +849,6 @@ public class Builder implements IApplication
 			if("-production".equalsIgnoreCase(arg))
 			{
 				setProduction(true);
-				continue;
-			}
-			if("-packedStrategy".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				String strategyStr = args[idx];
-				PackedStrategy strategy;
-				if("copy".equalsIgnoreCase(strategyStr))
-					strategy = PackedStrategy.COPY;
-				else if("verify".equalsIgnoreCase(strategyStr))
-					strategy = PackedStrategy.VERIFY;
-				else if("unpackAsSibling".equalsIgnoreCase(strategyStr))
-					strategy = PackedStrategy.UNPACK_AS_SIBLING;
-				else if("unpack".equalsIgnoreCase(strategyStr))
-					strategy = PackedStrategy.UNPACK;
-				else if("skip".equalsIgnoreCase(strategyStr))
-					strategy = PackedStrategy.SKIP;
-				else
-					throw new IllegalArgumentException(String.format("%s is not a valid packed strategy", strategyStr));
-
-				setPackedStrategy(strategy);
 				continue;
 			}
 			if("-logLevel".equalsIgnoreCase(arg))
