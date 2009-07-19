@@ -8,22 +8,31 @@ package org.eclipse.buckminster.aggregator.p2.impl;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.aggregator.p2.*;
-import org.eclipse.buckminster.core.helpers.SmartArrayList;
+import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
+import org.eclipse.buckminster.aggregator.p2.Copyright;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
+import org.eclipse.buckminster.aggregator.p2.License;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
+import org.eclipse.buckminster.aggregator.p2.P2Package;
+import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
+import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
+import org.eclipse.buckminster.aggregator.p2.TouchpointData;
+import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
+import org.eclipse.buckminster.aggregator.p2.TouchpointType;
+import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
 import org.eclipse.buckminster.runtime.Trivial;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
+import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment;
@@ -151,13 +160,24 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	 */
 	public String convertStringArrayToString(EDataType eDataType, Object instanceValue)
 	{
-		String result = Trivial.trim(instanceValue != null
-				? new SmartArrayList<String>((String[])instanceValue).toString()
-				: null);
-
-		return "[" + (result != null
-				? result
-				: "") + "]";
+		if(instanceValue instanceof String[])
+		{
+			String[] array = (String[])instanceValue;
+			if(array.length > 0)
+			{
+				StringBuilder bld = new StringBuilder();
+				bld.append('[');
+				bld.append(array[0]);
+				for(int idx = 1; idx < array.length; ++idx)
+				{
+					bld.append(", ");
+					bld.append(array[idx]);
+				}
+				bld.append(']');
+				return bld.toString();
+			}
+		}
+		return "[]";
 	}
 
 	/**
@@ -501,8 +521,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 			{
 				int len = initialValue.length();
 				if(len >= 2 && initialValue.charAt(0) == '[' && initialValue.charAt(len - 1) == ']')
-					return SmartArrayList.fromCommaSeparatedStrings(initialValue.substring(0, len)).toArray(
-							new String[0]);
+					return StringHelper.getArrayFromString(initialValue.substring(1, len - 1), ',');
 
 				throw new IllegalArgumentException("Unable to initialize StringArray from " + initialValue
 						+ ": initial value must begin with '[' and end with ']'");
