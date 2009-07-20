@@ -1,14 +1,11 @@
 package org.eclipse.buckminster.aggregator.provider;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.edit.provider.ComposedImage;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
@@ -90,24 +87,16 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 
 		if(object instanceof StatusProvider && ((StatusProvider)object).getStatus() == StatusProvider.BROKEN_CHILD)
 		{
-			try
-			{
-				Object[] images = new Object[2];
-				int[] positions = new int[2];
+			Object[] images = new Object[2];
+			int[] positions = new int[2];
 
-				images[0] = image;
-				positions[0] = OverlaidImage.BASIC;
+			images[0] = image;
+			positions[0] = OverlaidImage.BASIC;
 
-				images[1] = new URL(URI.createPlatformPluginURI("/org.eclipse.update.ui/icons/ovr16/warning_co.gif",
-						false).toString());
-				positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
+			images[1] = getResourceLocator().getImage("full/ovr16/Warning");
+			positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
 
-				image = new OverlaidImage(images, positions);
-			}
-			catch(MalformedURLException e)
-			{
-				// the original image will be used
-			}
+			image = new OverlaidImage(images, positions);
 		}
 
 		return image;
