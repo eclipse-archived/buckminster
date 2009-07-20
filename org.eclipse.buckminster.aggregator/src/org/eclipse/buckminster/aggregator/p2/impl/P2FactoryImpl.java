@@ -23,14 +23,12 @@ import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
 import org.eclipse.buckminster.aggregator.p2.TouchpointType;
 import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
@@ -47,8 +45,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
  */
 public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 {
-	private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -156,28 +152,11 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	public String convertStringArrayToString(EDataType eDataType, Object instanceValue)
 	{
-		if(instanceValue instanceof String[])
-		{
-			String[] array = (String[])instanceValue;
-			if(array.length > 0)
-			{
-				StringBuilder bld = new StringBuilder();
-				bld.append('[');
-				bld.append(array[0]);
-				for(int idx = 1; idx < array.length; ++idx)
-				{
-					bld.append(", ");
-					bld.append(array[idx]);
-				}
-				bld.append(']');
-				return bld.toString();
-			}
-		}
-		return "[]";
+		return super.convertToString(instanceValue);
 	}
 
 	/**
@@ -510,30 +489,11 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	public String[] createStringArrayFromString(EDataType eDataType, String initialValue)
 	{
-		try
-		{
-			initialValue = Trivial.trim(initialValue);
-			if(initialValue != null)
-			{
-				int len = initialValue.length();
-				if(len >= 2 && initialValue.charAt(0) == '[' && initialValue.charAt(len - 1) == ']')
-					return StringHelper.getArrayFromString(initialValue.substring(1, len - 1), ',');
-
-				throw new IllegalArgumentException("Unable to initialize StringArray from " + initialValue
-						+ ": initial value must begin with '[' and end with ']'");
-			}
-
-			return EMPTY_STRING_ARRAY;
-		}
-		catch(Exception e)
-		{
-			throw new IllegalArgumentException("Unable to initialize StringArray from " + initialValue + ": "
-					+ e.getMessage(), e);
-		}
+		return (String[])super.createFromString(initialValue);
 	}
 
 	/**

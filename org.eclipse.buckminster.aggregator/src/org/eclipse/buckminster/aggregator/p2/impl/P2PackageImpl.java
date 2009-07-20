@@ -503,7 +503,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__NAME);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__NAMESPACE);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__RANGE);
-		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__SELECTORS);
+		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__SELECTOR_LIST);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__MULTIPLE);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__OPTIONAL);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__GREEDY);
@@ -1279,7 +1279,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 * 
 	 * @generated
 	 */
-	public EAttribute getIRequiredCapability_Selectors()
+	public EAttribute getIRequiredCapability_SelectorList()
 	{
 		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(4);
 	}
@@ -1852,7 +1852,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEAttribute(getIRequiredCapability_Range(), this.getVersionRange(), "range", null, 0, 1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Selectors(), this.getStringArray(), "selectors", "[]", 0, 1,
+		initEAttribute(getIRequiredCapability_SelectorList(), ecorePackage.getEString(), "selectorList", null, 0, -1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIRequiredCapability_Multiple(), ecorePackage.getEBoolean(), "multiple", null, 0, 1,
@@ -1864,6 +1864,11 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEAttribute(getIRequiredCapability_Greedy(), ecorePackage.getEBoolean(), "greedy", null, 0, 1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		addEOperation(iRequiredCapabilityEClass, this.getStringArray(), "getSelectors", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(iRequiredCapabilityEClass, null, "setSelectors", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getStringArray(), "selectors", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(iTouchpointDataEClass, ITouchpointData.class, "ITouchpointData", IS_ABSTRACT, IS_INTERFACE,
 				!IS_GENERATED_INSTANCE_CLASS);

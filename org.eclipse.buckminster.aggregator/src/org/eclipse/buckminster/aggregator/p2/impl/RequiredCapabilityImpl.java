@@ -6,17 +6,19 @@
  */
 package org.eclipse.buckminster.aggregator.p2.impl;
 
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
+import java.util.Collection;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
@@ -30,7 +32,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getName <em>Name</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getNamespace <em>Namespace</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getRange <em>Range</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getSelectors <em>Selectors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getSelectorList <em>Selector List</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isMultiple <em>Multiple</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isOptional <em>Optional</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isGreedy <em>Greedy</em>}</li>
@@ -131,25 +133,14 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected VersionRange range = RANGE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getSelectors() <em>Selectors</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getSelectorList() <em>Selector List</em>}' attribute list. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
-	 * @see #getSelectors()
+	 * @see #getSelectorList()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String[] SELECTORS_EDEFAULT = (String[])P2Factory.eINSTANCE.createFromString(
-			P2Package.eINSTANCE.getStringArray(), "[]");
-
-	/**
-	 * The cached value of the '{@link #getSelectors() <em>Selectors</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getSelectors()
-	 * @generated
-	 * @ordered
-	 */
-	protected String[] selectors = SELECTORS_EDEFAULT;
+	protected EList<String> selectorList;
 
 	/**
 	 * The default value of the '{@link #isMultiple() <em>Multiple</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -239,8 +230,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return getNamespace();
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
 			return getRange();
-		case P2Package.REQUIRED_CAPABILITY__SELECTORS:
-			return getSelectors();
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			return getSelectorList();
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 			return isMultiple();
 		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
@@ -277,10 +268,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return RANGE_EDEFAULT == null
 					? range != null
 					: !RANGE_EDEFAULT.equals(range);
-		case P2Package.REQUIRED_CAPABILITY__SELECTORS:
-			return SELECTORS_EDEFAULT == null
-					? selectors != null
-					: !SELECTORS_EDEFAULT.equals(selectors);
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			return selectorList != null && !selectorList.isEmpty();
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 			return ((eFlags & MULTIPLE_EFLAG) != 0) != MULTIPLE_EDEFAULT;
 		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
@@ -325,6 +314,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -342,8 +332,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
 			setRange((VersionRange)newValue);
 			return;
-		case P2Package.REQUIRED_CAPABILITY__SELECTORS:
-			setSelectors((String[])newValue);
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			getSelectorList().clear();
+			getSelectorList().addAll((Collection<? extends String>)newValue);
 			return;
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 			setMultiple((Boolean)newValue);
@@ -380,8 +371,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
 			setRange(RANGE_EDEFAULT);
 			return;
-		case P2Package.REQUIRED_CAPABILITY__SELECTORS:
-			setSelectors(SELECTORS_EDEFAULT);
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			getSelectorList().clear();
 			return;
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 			setMultiple(MULTIPLE_EDEFAULT);
@@ -441,9 +432,24 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 * @generated
 	 */
+	public EList<String> getSelectorList()
+	{
+		if(selectorList == null)
+		{
+			selectorList = new EDataTypeUniqueEList<String>(String.class, this,
+					P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST);
+		}
+		return selectorList;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public String[] getSelectors()
 	{
-		return selectors;
+		return getSelectorList().toArray(new String[selectorList.size()]);
 	}
 
 	public int hashCode()
@@ -603,15 +609,14 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	public void setSelectors(String[] newSelectors)
+	public void setSelectors(String[] selectors)
 	{
-		String[] oldSelectors = selectors;
-		selectors = newSelectors;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__SELECTORS,
-					oldSelectors, selectors));
+		getSelectorList().clear();
+
+		for(String selector : selectors)
+			getSelectorList().add(selector);
 	}
 
 	/**
@@ -634,8 +639,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		result.append(namespace);
 		result.append(", range: ");
 		result.append(range);
-		result.append(", selectors: ");
-		result.append(selectors);
+		result.append(", selectorList: ");
+		result.append(selectorList);
 		result.append(", multiple: ");
 		result.append((eFlags & MULTIPLE_EFLAG) != 0);
 		result.append(", optional: ");

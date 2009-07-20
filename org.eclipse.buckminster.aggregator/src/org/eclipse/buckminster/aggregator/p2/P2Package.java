@@ -325,12 +325,12 @@ public interface P2Package extends EPackage
 		EAttribute IREQUIRED_CAPABILITY__RANGE = eINSTANCE.getIRequiredCapability_Range();
 
 		/**
-		 * The meta object literal for the '<em><b>Selectors</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Selector List</b></em>' attribute list feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EAttribute IREQUIRED_CAPABILITY__SELECTORS = eINSTANCE.getIRequiredCapability_Selectors();
+		EAttribute IREQUIRED_CAPABILITY__SELECTOR_LIST = eINSTANCE.getIRequiredCapability_SelectorList();
 
 		/**
 		 * The meta object literal for the '<em><b>Multiple</b></em>' attribute feature. <!-- begin-user-doc --> <!--
@@ -1432,12 +1432,13 @@ public interface P2Package extends EPackage
 	int IREQUIRED_CAPABILITY__RANGE = 3;
 
 	/**
-	 * The feature id for the '<em><b>Selectors</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Selector List</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IREQUIRED_CAPABILITY__SELECTORS = 4;
+	int IREQUIRED_CAPABILITY__SELECTOR_LIST = 4;
 
 	/**
 	 * The feature id for the '<em><b>Multiple</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2344,12 +2345,13 @@ public interface P2Package extends EPackage
 	int REQUIRED_CAPABILITY__RANGE = IREQUIRED_CAPABILITY__RANGE;
 
 	/**
-	 * The feature id for the '<em><b>Selectors</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Selector List</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int REQUIRED_CAPABILITY__SELECTORS = IREQUIRED_CAPABILITY__SELECTORS;
+	int REQUIRED_CAPABILITY__SELECTOR_LIST = IREQUIRED_CAPABILITY__SELECTOR_LIST;
 
 	/**
 	 * The feature id for the '<em><b>Multiple</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -3645,16 +3647,16 @@ public interface P2Package extends EPackage
 	EAttribute getIRequiredCapability_Range();
 
 	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability#getSelectors <em>Selectors</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute list '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability#getSelectorList
+	 * <em>Selector List</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the attribute '<em>Selectors</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability#getSelectors()
+	 * @return the meta object for the attribute list '<em>Selector List</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability#getSelectorList()
 	 * @see #getIRequiredCapability()
 	 * @generated
 	 */
-	EAttribute getIRequiredCapability_Selectors();
+	EAttribute getIRequiredCapability_SelectorList();
 
 	/**
 	 * Returns the meta object for data type '<em>IRequired Capability Array</em>'. <!-- begin-user-doc --> <!--

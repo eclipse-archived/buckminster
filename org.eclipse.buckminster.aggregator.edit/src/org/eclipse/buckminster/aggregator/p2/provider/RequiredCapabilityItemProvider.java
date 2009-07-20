@@ -77,7 +77,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 			addNamePropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
 			addRangePropertyDescriptor(object);
-			addSelectorsPropertyDescriptor(object);
+			addSelectorListPropertyDescriptor(object);
 			addMultiplePropertyDescriptor(object);
 			addOptionalPropertyDescriptor(object);
 			addGreedyPropertyDescriptor(object);
@@ -128,7 +128,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 		case P2Package.REQUIRED_CAPABILITY__NAME:
 		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
-		case P2Package.REQUIRED_CAPABILITY__SELECTORS:
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
 		case P2Package.REQUIRED_CAPABILITY__GREEDY:
@@ -244,18 +244,18 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	}
 
 	/**
-	 * This adds a property descriptor for the Selectors feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Selector List feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addSelectorsPropertyDescriptor(Object object)
+	protected void addSelectorListPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_selectors_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_selectors_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__SELECTORS, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getString("_UI_IRequiredCapability_selectorList_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_selectorList_feature",
+						"_UI_IRequiredCapability_type"), P2Package.Literals.IREQUIRED_CAPABILITY__SELECTOR_LIST, true,
+				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
