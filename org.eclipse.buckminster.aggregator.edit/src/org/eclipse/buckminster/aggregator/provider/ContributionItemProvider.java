@@ -7,14 +7,20 @@
 package org.eclipse.buckminster.aggregator.provider;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -123,10 +129,47 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public void notifyChanged(Notification notification)
+	{
+		notifyChangedGen(notification);
+
+		// If a repository is removed, update possible warning overlays
+		if(notification.getEventType() == Notification.REMOVE && notification.getOldValue() instanceof MappedRepository)
+		{
+			Set<EObject> affectedNodes = new HashSet<EObject>();
+
+			// Go through all direct ancestors first
+			EObject container = ((EObject)notification.getNotifier());
+			while(container != null)
+			{
+				affectedNodes.add(container);
+				container = container.eContainer();
+			}
+
+			for(Feature mappedFeature : ((MappedRepository)notification.getOldValue()).getFeatures())
+				// And now, find all categories which may contain the feature or the repository just being removed
+				for(CustomCategory category : mappedFeature.getCategories())
+					affectedNodes.add(category);
+
+			for(EObject affectedNode : affectedNodes)
+				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
+
+			return;
+		}
+
+	}
+
+	/**
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
+	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 */
+	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
 
