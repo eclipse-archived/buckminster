@@ -161,14 +161,17 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 	@Override
 	public String getText(Object object)
 	{
-		String label = Trivial.trim(((InstallableUnit)object).getId());
+		InstallableUnit iu = (InstallableUnit)object;
+		String label = Trivial.trim(iu.getId());
 
 		if(label == null)
 		{
-			VersionedName vn = ((InstallableUnit)object).getVersionedNameFromProxy();
+			VersionedName vn = iu.getVersionedNameFromProxy();
 			if(vn != null)
-				label = vn.getId() + " (broken)";
+				label = vn.getId() + "/" + vn.getVersion() + " (broken)";
 		}
+		else
+			label += "/" + iu.getVersion();
 
 		return label == null || label.length() == 0
 				? getString("_UI_InstallableUnit_type")
