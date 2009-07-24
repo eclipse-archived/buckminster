@@ -9,6 +9,8 @@
 package org.eclipse.buckminster.ui.editor.cspec;
 
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
@@ -38,13 +40,14 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	@Override
 	public String[] getColumnHeaders()
 	{
-		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.filter };
+		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.filter,
+				Messages.include_pattern, Messages.exclude_pattern };
 	}
 
 	@Override
 	public int[] getColumnWeights()
 	{
-		return new int[] { 20, 10, 0, 0 };
+		return new int[] { 20, 10, 0, 0, 0, 0 };
 	}
 
 	@Override
@@ -61,7 +64,8 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	public Object[] toRowArray(PrerequisiteBuilder t)
 	{
 		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()),
-				TextUtils.notNullString(t.getFilter()) };
+				TextUtils.notNullString(t.getFilter()), TextUtils.notNullString(t.getIncludePattern()),
+				TextUtils.notNullString(t.getExcludePattern()) };
 	}
 
 	@Override
@@ -85,5 +89,35 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 		}
 		else
 			builder.setFilter(null);
+
+		String includePatternStr = TextUtils.notEmptyString((String)args[4]);
+		if(includePatternStr != null)
+		{
+			try
+			{
+				builder.setIncludePattern(Pattern.compile(includePatternStr));
+			}
+			catch(PatternSyntaxException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+		else
+			builder.setIncludePattern(null);
+
+		String excludePatternStr = TextUtils.notEmptyString((String)args[5]);
+		if(excludePatternStr != null)
+		{
+			try
+			{
+				builder.setExcludePattern(Pattern.compile(excludePatternStr));
+			}
+			catch(PatternSyntaxException e)
+			{
+				throw new ValidatorException(e.getMessage());
+			}
+		}
+		else
+			builder.setExcludePattern(null);
 	}
 }

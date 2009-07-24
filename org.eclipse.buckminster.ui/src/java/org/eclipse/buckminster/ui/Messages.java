@@ -222,6 +222,8 @@ public class Messages extends NLS
 
 	public static String errors_during_loading;
 
+	public static String exclude_pattern;
+
 	public static String expand;
 
 	public static String extensions;
@@ -287,6 +289,8 @@ public class Messages extends NLS
 	public static String group_prerequisite_with_dash;
 
 	public static String groups;
+
+	public static String include_pattern;
 
 	public static String info_with_colon;
 
