@@ -36,13 +36,13 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 	{
 		public void modifyTable(TableModifyEvent e)
 		{
-			notifyFieldListeners();
+			notifyFieldListeners(e);
 		}
 
 		public void modifyText(ModifyEvent e)
 		{
 			if(!m_suppressFieldListener)
-				notifyFieldListeners();
+				notifyFieldListeners(e);
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e)
@@ -53,7 +53,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		public void widgetSelected(SelectionEvent e)
 		{
 			if(!m_suppressFieldListener)
-				notifyFieldListeners();
+				notifyFieldListeners(e);
 		}
 	}
 
@@ -83,7 +83,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 			public void modifyTable(TableModifyEvent<T> e)
 			{
 				if(e.getEventType() == TableModifyEventType.REMOVE_ROW)
-					notifyFieldListeners();
+					notifyFieldListeners(e);
 			}
 		});
 	}
@@ -222,9 +222,9 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 	 */
 	protected abstract void fillStack(Composite stackComposite);
 
-	protected void notifyFieldListeners()
+	protected void notifyFieldListeners(Object originalEvent)
 	{
-		FieldModifyEvent e = new FieldModifyEvent();
+		FieldModifyEvent e = new FieldModifyEvent(originalEvent);
 		for(IFieldModifyListener listener : m_fieldListeners)
 			listener.modifyField(e);
 	}

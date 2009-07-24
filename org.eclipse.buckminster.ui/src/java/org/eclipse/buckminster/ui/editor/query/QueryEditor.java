@@ -1152,7 +1152,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 
 		createNodeFields(advisorComposite);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private String getCQueryXML()
@@ -1190,7 +1190,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 				m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getMainTabControl(CTabFolder parent)
@@ -1384,7 +1384,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		m_requestURLCheckbox.addSelectionListener(new CheckboxSelectionListener(new Control[] { label, m_requestURL,
 				browseButton }));
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getPropertiesTabControl(Composite parent)
@@ -1402,7 +1402,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		m_properties = new Properties(tabComposite, SWT.NONE);
 		m_properties.addPropertiesModifyListener(m_compoundModifyListener);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private AdvisorNodeBuilder getSelectedNode()
@@ -1432,7 +1432,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 				null);
 		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private void initStackControl()

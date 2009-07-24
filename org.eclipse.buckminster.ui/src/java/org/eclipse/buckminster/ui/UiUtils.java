@@ -256,8 +256,8 @@ public class UiUtils
 		return lbl;
 	}
 
-	public static Text createGridLabeledText(Composite parent, String label, int labelCols, int textCols, int style,
-			ModifyListener listener)
+	public static Text createGridLabeledText(Composite parent, String label, int labelCols, int textCols,
+			boolean readOnly, int style, ModifyListener listener)
 	{
 		if(labelCols < 1 || textCols < 1)
 			throw new IllegalArgumentException();
@@ -266,7 +266,9 @@ public class UiUtils
 		lbl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, labelCols, 1));
 		lbl.setText(label);
 
-		Text text = new Text(parent, SWT.BORDER | style)
+		Text text = new Text(parent, (readOnly
+				? SWT.READ_ONLY
+				: SWT.NONE) | SWT.BORDER | style | style)
 		{
 			@Override
 			public void setEnabled(boolean flag)
@@ -322,9 +324,15 @@ public class UiUtils
 		return createNoBorderGridText(parent, horizontalSpan, widthHint, SWT.BORDER | style, listener);
 	}
 
-	public static Text createLabeledText(Composite parent, String label, int style, ModifyListener listener)
+	public static Text createLabeledText(Composite parent, String label, boolean readOnly, int style)
 	{
-		return createGridLabeledText(parent, label, 1, 1, style, listener);
+		return createGridLabeledText(parent, label, 1, 1, readOnly, style, null);
+	}
+
+	public static Text createLabeledText(Composite parent, String label, boolean readOnly, int style,
+			ModifyListener listener)
+	{
+		return createGridLabeledText(parent, label, 1, 1, readOnly, style, listener);
 	}
 
 	public static ListViewer createListViewer(Composite c, String[] lines, Font font, int maxHeightHintInLines,

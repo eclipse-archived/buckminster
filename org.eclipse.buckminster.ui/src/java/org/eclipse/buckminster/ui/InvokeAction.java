@@ -206,8 +206,8 @@ public class InvokeAction extends AbstractCSpecAction
 			layout.marginWidth = 3;
 			propertiesGroup.setLayout(layout);
 			propertiesGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-			m_propertiesFileText = UiUtils.createLabeledText(propertiesGroup, Messages.file_with_colon, SWT.NONE,
-					new ModifyListener()
+			m_propertiesFileText = UiUtils.createLabeledText(propertiesGroup, Messages.file_with_colon, false,
+					SWT.NONE, new ModifyListener()
 					{
 						public void modifyText(ModifyEvent e)
 						{
@@ -237,8 +237,7 @@ public class InvokeAction extends AbstractCSpecAction
 			});
 			m_errorMessageText = new Text(composite, SWT.READ_ONLY);
 			m_errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-			m_errorMessageText.setBackground(m_errorMessageText.getDisplay()
-					.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+			m_errorMessageText.setBackground(m_errorMessageText.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 			return composite;
 		}
 

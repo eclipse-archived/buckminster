@@ -272,7 +272,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				}
 			});
 
-			m_installLocation = UiUtils.createGridLabeledText(myParent, Messages.parnet_folder_with_colon, 2, 2,
+			m_installLocation = UiUtils.createGridLabeledText(myParent, Messages.parnet_folder_with_colon, 2, 2, false,
 					SWT.NONE, null);
 			UiUtils.createPushButton(myParent, Messages.browse_with_dots, new SelectionAdapter()
 			{
@@ -286,8 +286,8 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				}
 			}).setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 
-			m_leafArtifact = UiUtils.createGridLabeledText(myParent, Messages.leaf_artifact_with_colon, 2, 3, SWT.NONE,
-					null);
+			m_leafArtifact = UiUtils.createGridLabeledText(myParent, Messages.leaf_artifact_with_colon, 2, 3, false,
+					SWT.NONE, null);
 
 			UiUtils.createGridLabel(myParent, Messages.on_non_empty_install_location_with_colon, 2, 0, SWT.NONE);
 			m_conflictResolution = UiUtils.createGridCombo(myParent, 2, 0, null, null, SWT.DROP_DOWN | SWT.READ_ONLY
@@ -306,8 +306,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				}
 			});
 			m_expandButton = UiUtils.createCheckButton(myParent, Messages.expand, null);
-			m_defaultSuffixLabel = UiUtils
-					.createGridLabel(myParent, Messages.default_suffix_with_colon, 1, 0, SWT.NONE);
+			m_defaultSuffixLabel = UiUtils.createGridLabel(myParent, Messages.default_suffix_with_colon, 1, 0, SWT.NONE);
 			m_defaultSuffix = UiUtils.createGridText(myParent, 2, 0, SWT.NONE);
 
 			m_workspaceLocationLabel = UiUtils.createGridLabel(myParent, Messages.workspace_with_colon, 2, 0, SWT.NONE);
@@ -590,7 +589,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			}
 		});
 
-		m_globalInstallLocation = UiUtils.createLabeledText(globalSettings, Messages.location_with_colon, 0,
+		m_globalInstallLocation = UiUtils.createLabeledText(globalSettings, Messages.location_with_colon, false, 0,
 				new ModifyListener()
 				{
 					public void modifyText(ModifyEvent me)

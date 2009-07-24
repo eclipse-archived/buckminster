@@ -29,10 +29,13 @@ import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTableEditor;
+import org.eclipse.buckminster.ui.general.editor.structured.FieldModifyEvent;
+import org.eclipse.buckminster.ui.general.editor.structured.IFieldModifyListener;
 import org.eclipse.buckminster.ui.general.editor.structured.TwoPagesTableEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -62,6 +65,10 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	private Text m_actionFilter;
 
 	private Combo m_upToDatePolicy;
+
+	private Text m_fileCountText;
+
+	private Text m_additionalFileCountText;
 
 	private Text m_prodAliasText;
 
@@ -112,6 +119,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_assignConsoleSupportCheck.setEnabled(enabled);
 		m_actionFilter.setEnabled(enabled);
 		m_upToDatePolicy.setEnabled(enabled);
+		refreshFileCountFields();
 		m_prodAliasText.setEnabled(enabled);
 		m_prodBaseText.setEnabled(enabled);
 		m_actorPropertiesEditor.setEnabled(enabled);
@@ -150,6 +158,22 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		m_assignConsoleSupportCheck.setSelection(builder.isAssignConsoleSupport());
 		m_actionFilter.setText(TextUtils.notNullString(builder.getFilter()));
 		m_upToDatePolicy.select(builder.getUpToDatePolicy().ordinal());
+		switch(builder.getUpToDatePolicy())
+		{
+		case COUNT:
+			m_fileCountText.setText(String.valueOf(builder.getProductFileCount()));
+			m_additionalFileCountText.setText("");
+			break;
+		case MAPPER:
+			m_fileCountText.setText("");
+			m_additionalFileCountText.setText(String.valueOf(builder.getProductFileCount()));
+			break;
+		default:
+			m_fileCountText.setText("");
+			m_additionalFileCountText.setText("");
+		}
+		refreshFileCountFields();
+
 		m_prodAliasText.setText(TextUtils.notNullString(builder.getProductAlias()));
 
 		IPath prodBasePath = builder.getProductBase();
@@ -211,6 +235,29 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 			builder.setFilter(null);
 
 		builder.setUpToDatePolicy(UpToDatePolicy.values()[m_upToDatePolicy.getSelectionIndex()]);
+
+		Text validFileCountField = null;
+
+		switch(builder.getUpToDatePolicy())
+		{
+		case COUNT:
+			validFileCountField = m_fileCountText;
+			break;
+		case MAPPER:
+			validFileCountField = m_additionalFileCountText;
+			break;
+		}
+		String fileCount = UiUtils.trimmedValue(validFileCountField);
+		if(fileCount != null)
+			try
+			{
+				builder.setProductFileCount(Integer.valueOf(fileCount).intValue());
+			}
+			catch(NumberFormatException e)
+			{
+				throw new ValidatorException(Messages.invalid_number + ": " + fileCount);
+			}
+
 		builder.setProductAlias(UiUtils.trimmedValue(m_prodAliasText));
 
 		String prodBasePathString = UiUtils.trimmedValue(m_prodBaseText);
@@ -384,6 +431,22 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		UiUtils.createGridLabel(geComposite, Messages.uptodate_policy, 1, 0, SWT.NONE);
 		m_upToDatePolicy = UiUtils.createGridEnumCombo(geComposite, 1, 0, UpToDatePolicy.values(), isReadOnly(), null,
 				FIELD_LISTENER, SWT.DROP_DOWN | SWT.READ_ONLY);
+		addFieldModifyListener(new IFieldModifyListener()
+		{
+			public void modifyField(FieldModifyEvent e)
+			{
+				if(e.getOriginalEvent() instanceof ModifyEvent
+						&& ((ModifyEvent)e.getOriginalEvent()).getSource() == m_upToDatePolicy)
+					refreshFileCountFields();
+			}
+		});
+
+		m_fileCountText = UiUtils.createLabeledText(geComposite, Messages.file_count, isReadOnly(), SWT.NONE);
+		m_fileCountText.addModifyListener(FIELD_LISTENER);
+
+		m_additionalFileCountText = UiUtils.createLabeledText(geComposite, Messages.additional_file_count,
+				isReadOnly(), SWT.NONE);
+		m_additionalFileCountText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createGridLabel(geComposite, Messages.prerequisites_alias_with_colon, 1, 0, SWT.NONE);
 		m_prereqNameText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
@@ -551,5 +614,27 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 	{
 		m_productPathsEditor.setEnabled(enable);
 		m_productArtifactsEditor.setEnabled(!enable);
+	}
+
+	private void refreshFileCountFields()
+	{
+		boolean fileCountEnabled = false;
+		boolean additionalFileCountEnabled = false;
+
+		if(m_upToDatePolicy.isEnabled())
+		{
+			switch(UpToDatePolicy.values()[m_upToDatePolicy.getSelectionIndex()])
+			{
+			case COUNT:
+				fileCountEnabled = true;
+				break;
+			case MAPPER:
+				additionalFileCountEnabled = true;
+				break;
+			}
+		}
+
+		m_fileCountText.setEnabled(fileCountEnabled);
+		m_additionalFileCountText.setEnabled(additionalFileCountEnabled);
 	}
 }

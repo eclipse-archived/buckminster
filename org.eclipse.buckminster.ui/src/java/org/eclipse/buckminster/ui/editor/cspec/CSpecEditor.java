@@ -914,7 +914,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		m_actionsTable = table;
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getArtifactsTabControl(Composite parent)
@@ -926,7 +926,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(tabComposite, table, false, SWT.NONE);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getAttributesTabControl(Composite parent)
@@ -935,7 +935,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		m_attributesView = new AllAttributesView(tabComposite, SWT.NONE, this);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private String getCSpecXML()
@@ -965,7 +965,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		m_dependenciesEditor = new SimpleTableEditor<ComponentRequestBuilder>(tabComposite, table, null,
 				Messages.cspec_editor_dependency, null, null, SWT.NONE);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getDocumentationTabControl(Composite parent)
@@ -990,7 +990,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				: SWT.READ_ONLY) | SWT.MULTI | SWT.V_SCROLL, m_compoundModifyListener);
 		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1004,7 +1004,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(tabComposite, table, null,
 				Messages.cspec_editor_generator, null, null, SWT.NONE);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getGroupsTabControl(Composite parent)
@@ -1016,7 +1016,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(tabComposite, table, false, SWT.NONE);
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getMainTabControl(CTabFolder parent)
@@ -1091,7 +1091,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		/*
 		 * UiUtils.createEmptyPanel(versionGroup);
 		 */
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private Control getXMLTabControl(Composite parent)
@@ -1108,7 +1108,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 				null);
 		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		return tabComposite;
+		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	private void refreshValues()

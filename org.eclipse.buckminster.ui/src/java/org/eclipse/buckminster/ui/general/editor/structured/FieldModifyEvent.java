@@ -15,5 +15,15 @@ package org.eclipse.buckminster.ui.general.editor.structured;
  */
 public class FieldModifyEvent
 {
+	private final Object m_originalEvent;
 
+	public FieldModifyEvent(Object originalEvent)
+	{
+		this.m_originalEvent = originalEvent;
+	}
+
+	public Object getOriginalEvent()
+	{
+		return m_originalEvent;
+	}
 }

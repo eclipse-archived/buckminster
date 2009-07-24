@@ -42,6 +42,8 @@ public class Messages extends NLS
 
 	public static String add_with_arrow_left;
 
+	public static String additional_file_count;
+
 	public static String advanced_with_dots;
 
 	public static String advisor_nodes;
@@ -236,6 +238,8 @@ public class Messages extends NLS
 
 	public static String file_container_must_exist;
 
+	public static String file_count;
+
 	public static String file_does_not_exist;
 
 	public static String file_extension_must_be_0;
@@ -293,6 +297,8 @@ public class Messages extends NLS
 	public static String internal_problem_when_generating_opml_xml;
 
 	public static String invalid_input;
+
+	public static String invalid_number;
 
 	public static String invalid_url_or_filename;
 
