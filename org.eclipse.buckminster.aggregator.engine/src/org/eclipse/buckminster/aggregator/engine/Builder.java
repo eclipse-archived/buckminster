@@ -1037,7 +1037,10 @@ public class Builder implements IApplication
 			}
 
 			if(buildRoot == null)
-				buildRoot = new File(PROPERTY_REPLACER.replaceProperties(aggregator.getBuildRoot()));
+				setBuildRoot(new File(PROPERTY_REPLACER.replaceProperties(aggregator.getBuildRoot())));
+
+			if(!buildRoot.isAbsolute())
+				buildRoot = new File(buildModelLocation.getParent(), buildRoot.getPath());
 
 			if(!update)
 			{
