@@ -2,11 +2,14 @@ package org.eclipse.buckminster.aggregator.p2.util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
@@ -56,6 +59,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		protected IStatus run(IProgressMonitor monitor)
 		{
 			exception = null;
@@ -75,15 +79,15 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				repository.setProvider(repo.getProvider());
 				repository.setType(repo.getType());
 				repository.setVersion(repo.getVersion());
-				@SuppressWarnings("unchecked")
-				Map<String, String> props = repo.getProperties();
-				repository.getPropertyMap().putAll(props);
+				repository.getPropertyMap().putAll(repo.getProperties());
 
 				Collector collector = repo.query(QUERY_ALL_IUS, new Collector(), MonitorUtils.subMonitor(monitor, 20));
-				@SuppressWarnings("unchecked")
 				Iterator<IInstallableUnit> itor = collector.iterator();
+				ArrayList<InstallableUnit> ius = new ArrayList<InstallableUnit>();
 				while(itor.hasNext())
-					repository.getInstallableUnits().add(InstallableUnitImpl.importToModel(itor.next()));
+					ius.add(InstallableUnitImpl.importToModel(itor.next()));
+				Collections.sort(ius);
+				repository.getInstallableUnits().addAll(ius);
 
 				repository.addRepositoryReferences(mdrMgr, repo);
 				log.debug("Done. Took %d millisecs", Long.valueOf(System.currentTimeMillis() - start));
