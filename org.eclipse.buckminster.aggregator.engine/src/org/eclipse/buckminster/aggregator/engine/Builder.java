@@ -311,8 +311,6 @@ public class Builder implements IApplication
 
 	private String emailFromName;
 
-	private int logLevel = Logger.INFO;
-
 	private String logURL;
 
 	private String mockEmailCC;
@@ -704,7 +702,7 @@ public class Builder implements IApplication
 
 	public void setLogLevel(int level)
 	{
-		logLevel = level;
+		Logger.setConsoleLevelThreshold(level);
 	}
 
 	public void setLogURL(String logURL)
@@ -797,7 +795,6 @@ public class Builder implements IApplication
 		try
 		{
 			parseCommandLineArgs(args);
-			Logger.setConsoleLevelThreshold(logLevel);
 			log.debug(msg);
 		}
 		catch(Exception e)

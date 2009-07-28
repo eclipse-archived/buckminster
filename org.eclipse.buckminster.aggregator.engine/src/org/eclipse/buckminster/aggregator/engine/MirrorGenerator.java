@@ -530,6 +530,10 @@ public class MirrorGenerator extends BuilderPhase
 
 			PackedStrategy strategy = getBuilder().getAggregator().getPackedStrategy();
 			if(!"osgi.bundle".equals(key.getClassifier()))
+				//
+				// Only osgi.bundles will contain .class files so we get rid of
+				// excessive use of pack200 here.
+				//
 				strategy = PackedStrategy.SKIP;
 
 			try
@@ -569,6 +573,7 @@ public class MirrorGenerator extends BuilderPhase
 								dest.getLocation());
 					log.debug("    doing copy of canonical artifact");
 					mirror(source, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+					break;
 				case COPY:
 					log.debug("    doing copy of optimized artifact");
 					mirror(source, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 90));
