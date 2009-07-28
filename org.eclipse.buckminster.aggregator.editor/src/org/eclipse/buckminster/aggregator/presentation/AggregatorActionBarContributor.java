@@ -17,6 +17,7 @@ import java.util.Collection;
 
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -124,6 +125,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 							URI uri = new URI(fileURL.getProtocol() + ":/"
 									+ URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll("\\+", "%20"));
 							builder.setBuildModelLocation(new File(uri));
+							builder.setLogLevel(Logger.DEBUG);
 							builder.setVerifyOnly(m_verifyOnly);
 
 							if(builder.run(monitor) != IApplication.EXIT_OK)
