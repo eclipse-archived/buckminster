@@ -16,6 +16,7 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -117,9 +118,13 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 
 					bmodel.setEnabled(true);
 					bmodel.setBundleModel(model);
+					IPluginBase plugin = bmodel.getPluginBase();
+					if(plugin.getId() == null)
+						throw BuckminsterException.fromMessage(
+								"Unable to extract feature.xml or a valid OSGi bundle manifest from %s", //$NON-NLS-1$
+								featureOrBundle.getAbsolutePath());
 
 					FeaturePlugin fp = new FeaturePlugin();
-					IPluginBase plugin = bmodel.getPluginBase();
 					fp.loadFrom(plugin);
 					fp.setModel(featureModel);
 					fp.setUnpack(false);
