@@ -45,7 +45,7 @@
 
 	<searchPath name="org.eclipse.platform.RBUILD">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="http://download.eclipse.org/eclipse/updates/3.4?importType=binary"/>
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5?importType=binary"/>
 		</provider>
 	</searchPath>
 
