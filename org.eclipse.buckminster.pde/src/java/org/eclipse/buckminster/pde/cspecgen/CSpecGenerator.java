@@ -161,6 +161,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		StringBuilder vbld = new StringBuilder();
 		switch(pdeMatchRule)
 		{
+		case IMatchRules.NONE:
 		case IMatchRules.PERFECT:
 			vbld.append('[');
 			vbld.append(v);
