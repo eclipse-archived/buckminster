@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.aggregator.engine;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -53,6 +55,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
@@ -339,13 +342,50 @@ public class Builder implements IApplication
 
 	private Set<IInstallableUnit> unverifiedUnits;
 
+	private HashMap<MappedRepository, List<VersionedName>> exclusions;
+
 	private boolean update = false;
 
 	private boolean verifyOnly = false;
 
 	private CompositeMetadataRepository sourceComposite;
 
-	public boolean discardAsUnverified(IInstallableUnit iu)
+	/**
+	 * Prevent that the {@link IInstallableUnit} identified by <code>versionedName</code> is mapped from
+	 * <code>repository</code>.
+	 * 
+	 * @param repository
+	 *            The repository for which to exclude a mapping
+	 * @param versionedName
+	 *            Identifies the IInstallableUnit to exclude.
+	 */
+	public void addMappingExclusion(MappedRepository repository, VersionedName versionedName)
+	{
+		List<VersionedName> exclInRepo = null;
+		if(exclusions == null)
+			exclusions = new HashMap<MappedRepository, List<VersionedName>>();
+		else
+			exclInRepo = exclusions.get(repository);
+
+		if(exclInRepo == null)
+		{
+			exclInRepo = new ArrayList<VersionedName>();
+			exclusions.put(repository, exclInRepo);
+		}
+		exclInRepo.add(versionedName);
+	}
+
+	/**
+	 * Checks if the <code>iu</code> has a required capability with a name space equal to
+	 * {@link #PDE_TARGET_PLATFORM_NAMESPACE}. If it has, the <code>iu</code> is only intended for target platforms and
+	 * should never be installed in a runtime environment. Consequently, it should not participate in the P2 planner
+	 * verification phase.
+	 * 
+	 * @param iu
+	 *            The installable unit to check
+	 * @return <code>true</code> if a matching required capability was found.
+	 */
+	public boolean excludeFromVerification(IInstallableUnit iu)
 	{
 		for(IRequiredCapability rq : iu.getRequiredCapabilities())
 		{
@@ -407,9 +447,18 @@ public class Builder implements IApplication
 				: unverifiedUnits;
 	}
 
+	/**
+	 * Checks if the repository can be included verbatim. If it can, the builder will include a reference to it in a
+	 * composite repository instead of copying everything into an aggregate
+	 * 
+	 * @param repo
+	 *            The repository to check
+	 * @return true if the repository is mapped verbatim.
+	 */
 	public boolean isMapVerbatim(MappedRepository repo)
 	{
-		return repo.isMapEverything() && !repo.isMirrorArtifacts() && Trivial.trim(repo.getCategoryPrefix()) == null;
+		return repo.isMapEverything() && !repo.isMirrorArtifacts() && Trivial.trim(repo.getCategoryPrefix()) == null
+				&& !exclusions.containsKey(repo);
 	}
 
 	public boolean isMatchedReference(String reference)
@@ -522,7 +571,7 @@ public class Builder implements IApplication
 					Map<String, String> props = new HashMap<String, String>();
 					props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
 					props.put(IProfile.PROP_NAME, aggregator.getLabel());
-					props.put(IProfile.PROP_DESCRIPTION, String.format("Default profile during %s build",
+					props.put(IProfile.PROP_DESCRIPTION, format("Default profile during %s build",
 							aggregator.getLabel()));
 					props.put(IProfile.PROP_CACHE, instArea);
 					props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
@@ -617,7 +666,7 @@ public class Builder implements IApplication
 			if(subjectPrefix == null)
 				subjectPrefix = buildLabel;
 
-			String subject = String.format("[%s] Failed for build %s", subjectPrefix, buildID);
+			String subject = format("[%s] Failed for build %s", subjectPrefix, buildID);
 
 			msgBld.setLength(0);
 			msgBld.append("Sending email to: ");
@@ -863,7 +912,7 @@ public class Builder implements IApplication
 				else if("error".equalsIgnoreCase(levelStr))
 					level = Logger.WARNING;
 				else
-					throw new IllegalArgumentException(String.format("%s is not a valid logLevel", levelStr));
+					throw new IllegalArgumentException(format("%s is not a valid logLevel", levelStr));
 
 				setLogLevel(level);
 				continue;
@@ -940,7 +989,7 @@ public class Builder implements IApplication
 					requiresArgument(arg);
 				File buildModel = new File(args[idx]);
 				if(!buildModel.canRead())
-					throw new IllegalArgumentException(String.format("Unable to read %s", buildModel));
+					throw new IllegalArgumentException(format("Unable to read %s", buildModel));
 				setBuildModelLocation(buildModel);
 				continue;
 			}
@@ -977,7 +1026,7 @@ public class Builder implements IApplication
 				setReferenceExcludePattern(args[idx]);
 				continue;
 			}
-			String msg = String.format("Unknown option %s", arg);
+			String msg = format("Unknown option %s", arg);
 			Buckminster.getLogger().error(msg);
 			throw new IllegalArgumentException(msg);
 		}
@@ -1094,10 +1143,10 @@ public class Builder implements IApplication
 		{
 			String msg;
 			if(e instanceof SAXParseException)
-				msg = String.format("Unable to parse file: %s: Error at line %s: %s", buildModelLocation,
+				msg = format("Unable to parse file: %s: Error at line %s: %s", buildModelLocation,
 						Integer.valueOf(((SAXParseException)e).getLineNumber()), e.getMessage());
 			else
-				msg = String.format("Unable to parse file: %s: %s", buildModelLocation, e.getMessage());
+				msg = format("Unable to parse file: %s: %s", buildModelLocation, e.getMessage());
 			throw BuckminsterException.fromMessage(msg);
 		}
 
@@ -1137,10 +1186,10 @@ public class Builder implements IApplication
 			{
 				String msg;
 				if(e instanceof SAXParseException)
-					msg = String.format("Unable to parse file: %s: Error at line %s: %s", buildFile,
+					msg = format("Unable to parse file: %s: Error at line %s: %s", buildFile,
 							Integer.valueOf(((SAXParseException)e).getLineNumber()), e.getMessage());
 				else
-					msg = String.format("Unable to parse file: %s: %s", buildFile, e.getMessage());
+					msg = format("Unable to parse file: %s: %s", buildFile, e.getMessage());
 				Buckminster.getLogger().error(e, msg);
 				errors.add(msg);
 			}

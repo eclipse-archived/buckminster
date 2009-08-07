@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.aggregator.engine;
 
+import static java.lang.String.format;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,7 +108,7 @@ public class RepositoryVerifier extends BuilderPhase
 			for(Configuration config : configs)
 			{
 				String configName = config.getName();
-				String info = String.format("Verifying config: %s", configName); //$NON-NLS-1$
+				String info = format("Verifying config: %s", configName); //$NON-NLS-1$
 				log.info(info);
 				monitor.subTask(info);
 

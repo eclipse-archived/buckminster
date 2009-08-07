@@ -7,11 +7,15 @@
  ******************************************************************************/
 package org.eclipse.buckminster.aggregator.engine;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
@@ -21,6 +25,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +33,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
@@ -45,6 +51,13 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class VerificationFeatureAction extends AbstractPublisherAction
 {
+	static class Requirement
+	{
+		MappedRepository repository;
+
+		IRequiredCapability capability;
+	}
+
 	private final Builder builder;
 
 	private final IMetadataRepository mdr;
@@ -64,13 +77,14 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		iu.setProperty(IInstallableUnit.PROP_TYPE_GROUP, Boolean.TRUE.toString());
 		iu.addProvidedCapabilities(Collections.singletonList(createSelfCapability(iu.getId(), iu.getVersion())));
 
-		HashSet<IRequiredCapability> required = new HashSet<IRequiredCapability>();
+		Map<String, Requirement> required = new HashMap<String, Requirement>();
 
 		boolean errorsFound = false;
 		List<Contribution> contribs = builder.getAggregator().getContributions();
 		MonitorUtils.begin(monitor, 2 + contribs.size());
 		try
 		{
+			Set<String> explicit = new HashSet<String>();
 			for(Contribution contrib : builder.getAggregator().getContributions())
 			{
 				ArrayList<String> errors = new ArrayList<String>();
@@ -87,7 +101,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 							//
 							if("true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_GROUP))
 									&& !"true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
-								addRequirementFor(riu, null, required);
+								addRequirementFor(repository, riu, null, required, errors, explicit, false);
 						}
 					}
 					else
@@ -125,7 +139,8 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 									throw new RuntimeException(e);
 								}
 							}
-							addRequirementFor(mu.getInstallableUnit(), filter, required);
+							addRequirementFor(repository, mu.getInstallableUnit(), filter, required, errors, explicit,
+									true);
 						}
 					}
 				}
@@ -139,7 +154,11 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 			if(errorsFound)
 				return new Status(IStatus.ERROR, Engine.PLUGIN_ID, "Features without repositories");
 
-			iu.addRequiredCapabilities(required);
+			IRequiredCapability[] rcArr = new IRequiredCapability[required.size()];
+			int idx = 0;
+			for(Requirement rc : required.values())
+				rcArr[idx++] = rc.capability;
+			iu.setRequiredCapabilities(rcArr);
 			mdr.addInstallableUnits(new IInstallableUnit[] { MetadataFactory.createInstallableUnit(iu) });
 			return Status.OK_STATUS;
 		}
@@ -149,15 +168,18 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		}
 	}
 
-	private void addRequirementFor(InstallableUnit iu, Filter filter, Collection<IRequiredCapability> requirements)
+	private void addRequirementFor(MappedRepository mr, InstallableUnit iu, Filter filter,
+			Map<String, Requirement> requirements, List<String> errors, Set<String> explicit, boolean isExplicit)
 	{
+		Logger log = Buckminster.getLogger();
 		String id = iu.getId();
 		Version v = iu.getVersion();
-		if(builder.discardAsUnverified(iu))
+		if(builder.excludeFromVerification(iu))
 		{
-			Buckminster.getLogger().debug("%s/%s excluded from verification", id, v);
+			log.debug("%s/%s excluded from verification", id, v);
 			return;
 		}
+
 		VersionRange range = null;
 		if(!Version.emptyVersion.equals(v))
 			range = new VersionRange(v, true, v, true);
@@ -177,7 +199,66 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		}
 		if(iuFilter != null)
 			iuFilterStr = iuFilter.toString();
-		requirements.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, id, range,
-				iuFilterStr, false, false));
+		IRequiredCapability rc = MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, id, range,
+				iuFilterStr, false, false);
+
+		Requirement rq = new Requirement();
+		rq.repository = mr;
+		rq.capability = rc;
+		Requirement old = requirements.put(id, rq);
+		if(old == null || old.capability.equals(rc))
+		{
+			if(isExplicit)
+				explicit.add(id);
+			return;
+		}
+
+		Version oldVersion = old.capability.getRange().getMinimum();
+		if(explicit.contains(id))
+		{
+			if(!isExplicit)
+			{
+				log.debug("%s/%s excluded since version %s is explicitly mapped", id, v, oldVersion);
+				builder.addMappingExclusion(mr, new VersionedName(id, v));
+				// Reinstate the old one
+				requirements.put(id, old);
+			}
+			else
+			{
+				String error;
+				if(v.equals(oldVersion))
+					error = format("%s/%s is explicitly mapped more then once but with differnet configurations", id, v);
+				else
+					error = format("%s is explicitly mapped using both version %s and %s", id, v, oldVersion);
+				errors.add(error);
+				log.error(error);
+			}
+			return;
+		}
+
+		if(isExplicit)
+		{
+			log.debug("%s/%s excluded since version %s is explicitly mapped", id, oldVersion, v);
+			builder.addMappingExclusion(old.repository, new VersionedName(id, oldVersion));
+			explicit.add(id);
+			return;
+		}
+
+		int cmp = v.compareTo(oldVersion);
+		if(cmp < 0)
+		{
+			// The previous version was higher
+			//
+			builder.addMappingExclusion(mr, new VersionedName(id, v));
+			log.debug("%s/%s excluded since a higher version (%s) was found", id, v, oldVersion);
+
+			// Reinstate the old one
+			requirements.put(id, old);
+		}
+		else
+		{
+			builder.addMappingExclusion(old.repository, new VersionedName(id, oldVersion));
+			log.debug("%s/%s excluded since a higher version (%s) was found", id, oldVersion, v);
+		}
 	}
 }

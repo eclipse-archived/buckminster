@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.aggregator.engine;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -351,7 +353,7 @@ public class MirrorGenerator extends BuilderPhase
 
 					if(iusToMirror != null)
 					{
-						String msg = String.format("Mirroring meta-data from from %s", childMdr.getLocation());
+						String msg = format("Mirroring meta-data from from %s", childMdr.getLocation());
 						log.info(msg);
 						contribMonitor.subTask(msg);
 						IProgressMonitor repoMonitor = MonitorUtils.subMonitor(contribMonitor, 5);
@@ -363,7 +365,7 @@ public class MirrorGenerator extends BuilderPhase
 
 					if(keysToMirror != null)
 					{
-						String msg = String.format("Mirroring artifacts from from %s", childMdr.getLocation());
+						String msg = format("Mirroring artifacts from from %s", childMdr.getLocation());
 						log.info(msg);
 						contribMonitor.subTask(msg);
 						IArtifactRepository childAr = arMgr.loadRepository(childMdr.getLocation(),
