@@ -120,7 +120,13 @@ public class P2Materializer extends AbstractMaterializer
 	@Override
 	public String getMaterializerRootDir() throws CoreException
 	{
-		return TargetPlatform.getInstance().getLocation().getAbsolutePath();
+		String location = TargetPlatform.getInstance().getLocation().getAbsolutePath();
+		// bug 285449: throw exception if we cannot determine the target location
+		if(location == null)
+		{
+			throw BuckminsterException.fromMessage(Messages.Unable_to_determine_platform_install_location);
+		}
+		return location;
 	}
 
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
@@ -131,7 +137,7 @@ public class P2Materializer extends AbstractMaterializer
 
 		IPath installRoot = mspec.getInstallLocation();
 		if(installRoot == null)
-			installRoot = Path.fromOSString(TargetPlatform.getInstance().getLocation().getAbsolutePath());
+			installRoot = Path.fromOSString(getMaterializerRootDir());
 		else
 			installRoot = Path.fromOSString(ExpandingProperties.expand(context, installRoot.toOSString(), 0));
 

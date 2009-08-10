@@ -560,6 +560,8 @@ public class Messages extends NLS
 
 	public static String Unable_to_create_folder_link_from_workspace_0_to_1_2_already_in_use;
 
+	public static String Unable_to_determine_platform_install_location;
+
 	public static String Unable_to_determine_project_root_when_binding_0_to_workspace_1;
 
 	public static String Unable_to_obtain_resource_0_from_workspace_1;

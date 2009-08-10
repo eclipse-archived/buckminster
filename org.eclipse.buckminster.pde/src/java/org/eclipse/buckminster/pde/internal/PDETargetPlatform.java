@@ -93,6 +93,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 					return null;
 				for(IBundleContainer container : containers)
 				{
+					// bug 285449: the directory bundle container is actually the only we one we can use
 					if(container instanceof DirectoryBundleContainer)
 					{
 						return new File(((DirectoryBundleContainer)container).getLocation(true));
@@ -101,12 +102,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 				return null;
 			}
 		});
-		if(location == null)
-		{
-			String locationStr = TargetPlatform.getLocation();
-			if(locationStr != null)
-				location = new File(locationStr);
-		}
+		// bug 285449: don't fall back on deprecated TargetPlatform.getLocation() setting
 		return location;
 	}
 
@@ -167,7 +163,6 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		}
 		catch(CoreException e)
 		{
-			// TODO: handle this correctly
 			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
 			return null;
 		}
