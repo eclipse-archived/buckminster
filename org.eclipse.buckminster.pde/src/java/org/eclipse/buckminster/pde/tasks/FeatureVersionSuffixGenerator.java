@@ -101,6 +101,22 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 	// The 64 characters that are legal in a version qualifier, in lexicographical order.
 	private static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 
+	private static int computeNameSum(String name)
+	{
+		int sum = 0;
+		int top = name.length();
+		int lshift = 20;
+		for(int idx = 0; idx < top; ++idx)
+		{
+			int c = name.charAt(idx) & 0xffff;
+			if(c == '.' && lshift > 0)
+				lshift -= 4;
+			else
+				sum += c << lshift;
+		}
+		return sum;
+	}
+
 	private final int m_maxVersionSuffixLength;
 
 	private final int m_significantDigits;
@@ -142,6 +158,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		long majorSum = 0L;
 		long minorSum = 0L;
 		long serviceSum = 0L;
+		long nameCharsSum = 0L;
 
 		// Include the version of this algorithm as part of the suffix, so that
 		// we have a way to make sure all suffixes increase when the algorithm
@@ -189,6 +206,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 				qualifier = qualifier.substring(contextLength);
 
 			qualifiers[idx++] = qualifier;
+			nameCharsSum = computeNameSum(refFeature.getId());
 		}
 
 		// Loop through the included plug-ins and fragments, adding the version
@@ -244,6 +262,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		result.append(lengthPrefixBase64(majorSum));
 		result.append(lengthPrefixBase64(minorSum));
 		result.append(lengthPrefixBase64(serviceSum));
+		result.append(lengthPrefixBase64(nameCharsSum));
 
 		if(longestQualifier > 0)
 		{
