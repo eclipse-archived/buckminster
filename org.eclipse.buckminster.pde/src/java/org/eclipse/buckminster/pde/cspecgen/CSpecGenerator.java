@@ -45,7 +45,6 @@ import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
-import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.pde.tasks.P2SiteGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -72,8 +71,6 @@ import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
-import org.eclipse.pde.internal.core.ifeature.IFeature;
-import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -648,24 +645,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
 				featureExports.addLocalPrerequisite(createCopyPluginsAction());
 				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-
-				IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE, null, null);
-				if(launcherFeature == null)
-					launcherFeature = EclipsePlatformReaderType.getBestFeature(LAUNCHER_FEATURE_3_2, null, null);
-
-				if(launcherFeature != null)
-				{
-					IFeature feature = launcherFeature.getFeature();
-					Version version = Version.parseVersion(feature.getVersion());
-					ComponentRequestBuilder dep = createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE,
-							version.toString(), IMatchRules.PERFECT, null);
-
-					// Ensure that a dependency exists to the executable feature.
-					//
-					if(addDependency(dep))
-						featureExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-								ATTRIBUTE_FEATURE_EXPORTS);
-				}
 			}
 			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);
 			createSiteSignAction(ATTRIBUTE_FEATURE_EXPORTS);

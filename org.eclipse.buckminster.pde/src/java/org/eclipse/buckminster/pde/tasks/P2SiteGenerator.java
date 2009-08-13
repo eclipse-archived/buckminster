@@ -33,7 +33,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
-import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -52,8 +51,6 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
@@ -69,7 +66,6 @@ import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 @SuppressWarnings("restriction")
@@ -175,47 +171,21 @@ public class P2SiteGenerator extends AbstractActor
 			flavor = "tooling"; //$NON-NLS-1$
 
 		File exeFeature = null;
+
+		IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE, null,
+				null);
+		if(launcherFeature == null)
+			launcherFeature = EclipsePlatformReaderType.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE_3_2, null, null);
+
+		if(launcherFeature != null)
+			exeFeature = new File(launcherFeature.getInstallLocation());
+
 		if(product.useFeatures())
 		{
 			List<VersionedName> features = TypedCollections.getProductFeatures(product);
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, features));
-
-			int idx = features.size();
-			while(--idx >= 0)
-			{
-				VersionedName feature = features.get(idx);
-				Version v = feature.getVersion();
-				exeFeature = getExeFeatureFileIfReferenced(feature.getId(), v == null
-						? null
-						: v.toString());
-				if(exeFeature != null)
-					break;
-			}
 		}
 		actions.add(new ProductAction(null, product, flavor, exeFeature));
-	}
-
-	private static File getExeFeatureFileIfReferenced(String featureId, String featureVersion) throws CoreException
-	{
-		Version v = VersionHelper.parseVersion(featureVersion);
-		VersionRange vd = null;
-		if(v != null)
-			vd = VersionHelper.exactRange(v);
-		IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(featureId, vd, null);
-		File eff = null;
-		if(feature != null)
-		{
-			if(CSpecGenerator.LAUNCHER_FEATURE.equals(featureId))
-				eff = new File(feature.getInstallLocation());
-			else
-				for(IFeatureChild child : feature.getFeature().getIncludedFeatures())
-				{
-					eff = getExeFeatureFileIfReferenced(child.getId(), child.getVersion());
-					if(eff != null)
-						break;
-				}
-		}
-		return eff;
 	}
 
 	private static IProductDescriptor getProductDescriptor(File productFile) throws CoreException
