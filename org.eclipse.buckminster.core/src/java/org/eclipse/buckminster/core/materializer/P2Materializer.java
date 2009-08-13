@@ -132,7 +132,7 @@ public class P2Materializer extends AbstractMaterializer
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
 			IProgressMonitor monitor) throws CoreException
 	{
-		Map<IPath, List<Resolution>> resPerLocation = new HashMap<IPath, List<Resolution>>();
+		Map<File, List<Resolution>> resPerLocation = new HashMap<File, List<Resolution>>();
 		IMaterializationSpec mspec = context.getMaterializationSpec();
 
 		IPath installRoot = mspec.getInstallLocation();
@@ -162,11 +162,12 @@ public class P2Materializer extends AbstractMaterializer
 			if(installLocation == null)
 				installLocation = installRoot;
 
-			List<Resolution> rss = resPerLocation.get(installLocation);
+			File locationKey = installLocation.toFile();
+			List<Resolution> rss = resPerLocation.get(locationKey);
 			if(rss == null)
 			{
 				rss = new ArrayList<Resolution>();
-				resPerLocation.put(installLocation, rss);
+				resPerLocation.put(locationKey, rss);
 			}
 			rss.add(res);
 		}
@@ -183,13 +184,11 @@ public class P2Materializer extends AbstractMaterializer
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
 		try
 		{
-			for(Map.Entry<IPath, List<Resolution>> entry : resPerLocation.entrySet())
+			for(Map.Entry<File, List<Resolution>> entry : resPerLocation.entrySet())
 			{
-				IPath installLocation = entry.getKey();
-
 				// ensure the user-specified artifact repos will be consulted by loading them
 
-				File destDir = installLocation.toFile();
+				File destDir = entry.getKey();
 
 				// do a create here to ensure that we don't default to a #load later and grab a repo which is the wrong
 				// type
@@ -230,7 +229,7 @@ public class P2Materializer extends AbstractMaterializer
 									Messages.p2_materializer_cannot_process_readertype_0, rType));
 
 						IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
-						IPath location = installLocation;
+						IPath location = Path.fromOSString(destDir.getAbsolutePath());
 						IPath ctypeRelative = ctype.getRelativeLocation();
 						if(ctypeRelative != null)
 							location = location.append(ctypeRelative);
@@ -344,10 +343,17 @@ public class P2Materializer extends AbstractMaterializer
 				// call the engine with only the "collect" phase so all we do is download
 
 				String destDirStr = destDir.toString();
-				Map<String, String> properties = new HashMap<String, String>();
-				properties.put(IProfile.PROP_CACHE, destDirStr);
-				properties.put(IProfile.PROP_INSTALL_FOLDER, destDirStr);
-				IProfile profile = registry.addProfile(System.currentTimeMillis() + "-" + Math.random(), properties); //$NON-NLS-1$
+				if(!registry.containsProfile(destDirStr))
+				{
+					Map<String, String> properties = new HashMap<String, String>();
+					properties.put(IProfile.PROP_SHARED_CACHE, Boolean.toString(false));
+					properties.put(IProfile.PROP_INSTALL_FEATURES, Boolean.toString(true));
+					properties.put(IProfile.PROP_CACHE, destDirStr);
+					properties.put(IProfile.PROP_INSTALL_FOLDER, destDirStr);
+					registry.addProfile(destDirStr, properties);
+				}
+
+				IProfile profile = registry.getProfile(destDirStr);
 				try
 				{
 					PhaseSet phaseSet = new PhaseSet(new Phase[] { new Collect(100) })
@@ -367,6 +373,7 @@ public class P2Materializer extends AbstractMaterializer
 					registry.removeProfile(profile.getProfileId());
 				}
 			}
+			TargetPlatform.getInstance().locationsChanged(resPerLocation.keySet());
 		}
 		finally
 		{

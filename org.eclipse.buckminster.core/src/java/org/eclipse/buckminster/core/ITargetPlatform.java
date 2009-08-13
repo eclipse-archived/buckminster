@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.core.runtime.CoreException;
@@ -47,4 +48,12 @@ public interface ITargetPlatform
 	 * Returns the target windowing system.
 	 */
 	String getWS();
+
+	/**
+	 * Perform any refresh actions needed after the content of the given locations has been altered.
+	 * 
+	 * @param locations
+	 *            A set of files denoting absolute paths in the local file system
+	 */
+	void locationsChanged(Set<File> locations);
 }

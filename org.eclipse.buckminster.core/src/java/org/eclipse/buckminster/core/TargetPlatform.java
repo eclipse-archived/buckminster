@@ -11,6 +11,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
@@ -77,8 +78,7 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 			}
 
 			if(candidate == null)
-				throw BuckminsterException
-						.fromMessage(Messages.No_targetPlatformProvider_registered_with_targetPlatformProviders_extension_point);
+				throw BuckminsterException.fromMessage(Messages.No_targetPlatformProvider_registered_with_targetPlatformProviders_extension_point);
 			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class"); //$NON-NLS-1$
 			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass()); //$NON-NLS-1$
 		}
@@ -127,5 +127,10 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 	public String getWS()
 	{
 		return Platform.getWS();
+	}
+
+	public void locationsChanged(Set<File> locations)
+	{
+		// Nothing to do here.
 	}
 }

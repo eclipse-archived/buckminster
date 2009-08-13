@@ -10,6 +10,7 @@ package org.eclipse.buckminster.pde.internal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
@@ -18,6 +19,8 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -30,6 +33,7 @@ import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
+import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
 
 /**
  * @author Thomas Hallgren
@@ -146,6 +150,56 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return ws == null
 				? TargetPlatform.getWS()
 				: ws;
+	}
+
+	public void locationsChanged(Set<File> locations)
+	{
+		// Check if the given location is contained in the active TP. If that's the case, refresh.
+		//
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = null;
+		try
+		{
+			service = bucky.getService(ITargetPlatformService.class);
+			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+			if(activeHandle == null)
+				return;
+
+			ITargetDefinition target = activeHandle.getTargetDefinition();
+			IBundleContainer[] containers = target.getBundleContainers();
+			if(containers == null)
+				return;
+
+			boolean found = false;
+			for(IBundleContainer container : containers)
+			{
+				if(container instanceof DirectoryBundleContainer
+						&& locations.contains(new File(((DirectoryBundleContainer)container).getLocation(true))))
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if(!found)
+				return;
+
+			target.resolve(new NullProgressMonitor());
+			IStatus cmpStatus = service.compareWithTargetPlatform(target);
+			if(!cmpStatus.isOK())
+			{
+				LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
+				loadTP.schedule();
+			}
+		}
+		catch(CoreException e)
+		{
+			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
+		}
+		finally
+		{
+			bucky.ungetService(service);
+		}
 	}
 
 	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation)
