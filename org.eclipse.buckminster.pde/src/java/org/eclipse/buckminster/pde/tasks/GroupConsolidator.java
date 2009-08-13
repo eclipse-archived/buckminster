@@ -51,34 +51,27 @@ import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 @SuppressWarnings("restriction")
 abstract class GroupConsolidator extends VersionQualifierTask implements IPDEConstants, IBuildPropertiesConstants
 {
-	static void appendEncodedCharacter(StringBuilder buffer, int c)
+	static void addVersion(Map<String, Version[]> versionMap, String id, String versionStr)
 	{
-		while(c > 62)
+		if(versionStr == null)
+			return;
+
+		Version version = Version.parseVersion(versionStr);
+		Version[] arr = versionMap.get(id);
+		if(arr == null)
+			arr = new Version[] { version };
+		else
 		{
-			buffer.append('z');
-			c -= 63;
+			for(Version old : arr)
+				if(old.equals(version))
+					return;
+
+			Version[] newArr = new Version[arr.length + 1];
+			System.arraycopy(arr, 0, newArr, 0, arr.length);
+			newArr[arr.length] = version;
+			arr = newArr;
 		}
-		buffer.append(base64Character(c));
-	}
-
-	// Integer to character conversion in our base-64 encoding scheme. If the
-	// input is out of range, an illegal character will be returned.
-	//
-	static char base64Character(int number)
-	{
-		return (number < 0 || number > 63)
-				? ' '
-				: BASE_64_ENCODING.charAt(number);
-	}
-
-	static int charValue(char c)
-	{
-		int index = BASE_64_ENCODING.indexOf(c);
-		// The "+ 1" is very intentional. For a blank (or anything else that
-		// is not a legal character), we want to return 0. For legal
-		// characters, we want to return one greater than their position, so
-		// that a blank is correctly distinguished from '-'.
-		return index + 1;
+		versionMap.put(id, arr);
 	}
 
 	static Version findBestVersion(Map<String, Version[]> versionMap, String id, String componentType, String refId,
@@ -180,84 +173,9 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		}
 	}
 
-	// Encode a non-negative number as a variable length string, with the
-	// property that if X > Y then the encoding of X is lexicographically
-	// greater than the enocding of Y. This is accomplished by encoding the
-	// length of the string at the beginning of the string. The string is a
-	// series of base 64 (6-bit) characters. The first three bits of the first
-	// character indicate the number of additional characters in the string.
-	// The last three bits of the first character and all of the rest of the
-	// characters encode the actual value of the number. Examples:
-	// 0 --> 000 000 --> "-"
-	// 7 --> 000 111 --> "6"
-	// 8 --> 001 000 001000 --> "77"
-	// 63 --> 001 000 111111 --> "7z"
-	// 64 --> 001 001 000000 --> "8-"
-	// 511 --> 001 111 111111 --> "Dz"
-	// 512 --> 010 000 001000 000000 --> "E7-"
-	// 2^32 - 1 --> 101 011 111111 ... 111111 --> "fzzzzz"
-	// 2^45 - 1 --> 111 111 111111 ... 111111 --> "zzzzzzzz"
-	// (There are some wasted values in this encoding. For example,
-	// "7-" through "76" and "E--" through "E6z" are not legal encodings of
-	// any number. But the benefit of filling in those wasted ranges would not
-	// be worth the added complexity.)
-	static String lengthPrefixBase64(long number)
-	{
-		int length = 7;
-		for(int i = 0; i < 7; ++i)
-		{
-			if(number < (1L << ((i * 6) + 3)))
-			{
-				length = i;
-				break;
-			}
-		}
-		StringBuilder result = new StringBuilder(length + 1);
-		result.append(base64Character((length << 3) + (int)((number >> (6 * length)) & 0x7)));
-		while(--length >= 0)
-		{
-			result.append(base64Character((int)((number >> (6 * length)) & 0x3f)));
-		}
-		return result.toString();
-	}
-
-	private final Map<String, Integer> m_contextQualifierLengths = new HashMap<String, Integer>();
-
-	static final int QUALIFIER_SUFFIX_VERSION = 1;
-
-	// The 64 characters that are legal in a version qualifier, in lexicographical order.
-	static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
-
-	static void addVersion(Map<String, Version[]> versionMap, String id, String versionStr)
-	{
-		if(versionStr == null)
-			return;
-
-		Version version = Version.parseVersion(versionStr);
-		Version[] arr = versionMap.get(id);
-		if(arr == null)
-			arr = new Version[] { version };
-		else
-		{
-			for(Version old : arr)
-				if(old.equals(version))
-					return;
-
-			Version[] newArr = new Version[arr.length + 1];
-			System.arraycopy(arr, 0, newArr, 0, arr.length);
-			newArr[arr.length] = version;
-			arr = newArr;
-		}
-		versionMap.put(id, arr);
-	}
-
 	private final File m_outputFile;
 
-	private final boolean m_generateVersionSuffix;
-
-	private final int m_maxVersionSuffixLength;
-
-	private final int m_significantDigits;
+	private final FeatureVersionSuffixGenerator m_suffixGenerator;
 
 	private final Map<String, Version[]> m_pluginVersions = new HashMap<String, Version[]>();
 
@@ -268,16 +186,11 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	{
 		super(propertiesFile, qualifier);
 		m_outputFile = outputFile;
-		m_generateVersionSuffix = generateVersionSuffix;
-
-		if(significantDigits == -1)
-			significantDigits = Integer.MAX_VALUE;
-
-		if(maxVersionSuffixLength == -1)
-			maxVersionSuffixLength = 28;
-
-		m_significantDigits = getIntProperty(PROPERTY_SIGNIFICANT_VERSION_DIGITS, significantDigits);
-		m_maxVersionSuffixLength = getIntProperty(PROPERTY_GENERATED_VERSION_LENGTH, maxVersionSuffixLength);
+		if(generateVersionSuffix)
+			m_suffixGenerator = new FeatureVersionSuffixGenerator(getIntProperty(PROPERTY_GENERATED_VERSION_LENGTH,
+					maxVersionSuffixLength), getIntProperty(PROPERTY_SIGNIFICANT_VERSION_DIGITS, significantDigits));
+		else
+			m_suffixGenerator = null;
 
 		for(File featureOrBundle : featuresAndBundles)
 		{
@@ -299,7 +212,8 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 						input = getInput(featureOrBundle, FEATURE_FILE);
 						ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
 					}
-					m_contextQualifierLengths.put(id, Integer.valueOf(ctxQualLen));
+					if(m_suffixGenerator != null)
+						m_suffixGenerator.addContextQualifierLength(id, ctxQualLen);
 					addVersion(m_featureVersions, id, version);
 					continue;
 				}
@@ -366,158 +280,9 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	 */
 	String generateFeatureVersionSuffix(List<VersionedName> features, List<VersionedName> bundles) throws CoreException
 	{
-		if(!m_generateVersionSuffix || m_maxVersionSuffixLength <= 0)
-			return null; // do nothing
-
-		long majorSum = 0L;
-		long minorSum = 0L;
-		long serviceSum = 0L;
-
-		// Include the version of this algorithm as part of the suffix, so that
-		// we have a way to make sure all suffixes increase when the algorithm
-		// changes.
-		//
-		majorSum += QUALIFIER_SUFFIX_VERSION;
-
-		int numElements = features.size() + bundles.size();
-		if(numElements == 0)
-			//
-			// This feature is empty so there will be no suffix
-			//
-			return null;
-
-		String[] qualifiers = new String[numElements];
-
-		// Loop through the included features, adding the version number parts
-		// to the running totals and storing the qualifier suffixes.
-		//
-		int idx = 0;
-		for(VersionedName refFeature : features)
-		{
-			Version version = refFeature.getVersion();
-			majorSum += version.getMajor();
-			minorSum += version.getMinor();
-			serviceSum += version.getMicro();
-
-			String qualifier = version.getQualifier();
-			Integer ctxLen = m_contextQualifierLengths.get(refFeature.getId());
-			int contextLength = (ctxLen == null)
-					? -1
-					: ctxLen.intValue();
-			++contextLength; // account for the '-' separating the context qualifier and suffix
-
-			// The entire qualifier of the nested feature is often too long to
-			// include in the suffix computation for the containing feature,
-			// and using it would result in extremely long qualifiers for
-			// umbrella features. So instead we want to use just the suffix
-			// part of the qualifier, or just the context part (if there is no
-			// suffix part). See bug #162022.
-			//
-			if(qualifier != null && qualifier.length() > contextLength)
-				qualifier = qualifier.substring(contextLength);
-
-			qualifiers[idx++] = qualifier;
-		}
-
-		// Loop through the included plug-ins and fragments, adding the version
-		// number parts to the running totals and storing the qualifiers.
-		//
-		for(VersionedName refBundle : bundles)
-		{
-			Version version = refBundle.getVersion();
-			majorSum += version.getMajor();
-			minorSum += version.getMinor();
-			serviceSum += version.getMicro();
-
-			String qualifier = version.getQualifier();
-			if(qualifier != null && qualifier.endsWith(PROPERTY_QUALIFIER))
-			{
-				int resultingLength = qualifier.length() - PROPERTY_QUALIFIER.length();
-				if(resultingLength > 0)
-				{
-					if(qualifier.charAt(resultingLength - 1) == '.')
-						resultingLength--;
-					qualifier = resultingLength > 0
-							? qualifier.substring(0, resultingLength)
-							: null;
-				}
-				else
-					qualifier = null;
-			}
-			qualifiers[idx++] = qualifier;
-		}
-
-		// Limit the qualifiers to the specified number of significant digits,
-		// and figure out what the longest qualifier is.
-		//
-		int longestQualifier = 0;
-		while(--idx >= 0)
-		{
-			String qualifier = qualifiers[idx];
-			if(qualifier == null)
-				continue;
-
-			if(qualifier.length() > m_significantDigits)
-			{
-				qualifier = qualifier.substring(0, m_significantDigits);
-				qualifiers[idx] = qualifier;
-			}
-			if(qualifier.length() > longestQualifier)
-				longestQualifier = qualifier.length();
-		}
-
-		StringBuilder result = new StringBuilder();
-
-		// Encode the sums of the first three parts of the version numbers.
-		result.append(lengthPrefixBase64(majorSum));
-		result.append(lengthPrefixBase64(minorSum));
-		result.append(lengthPrefixBase64(serviceSum));
-
-		if(longestQualifier > 0)
-		{
-			// Calculate the sum at each position of the qualifiers.
-			int[] qualifierSums = new int[longestQualifier];
-			for(idx = 0; idx < numElements; ++idx)
-			{
-				String qualifier = qualifiers[idx];
-				if(qualifier == null)
-					continue;
-
-				int top = qualifier.length();
-				for(int j = 0; j < top; ++j)
-					qualifierSums[j] += charValue(qualifier.charAt(j));
-			}
-
-			// Normalize the sums to be base 65.
-			int carry = 0;
-			for(int k = longestQualifier - 1; k >= 1; --k)
-			{
-				qualifierSums[k] += carry;
-				carry = qualifierSums[k] / 65;
-				qualifierSums[k] = qualifierSums[k] % 65;
-			}
-			qualifierSums[0] += carry;
-
-			// Always use one character for overflow. This will be handled
-			// correctly even when the overflow character itself overflows.
-			result.append(lengthPrefixBase64(qualifierSums[0]));
-			for(int m = 1; m < longestQualifier; ++m)
-				appendEncodedCharacter(result, qualifierSums[m]);
-		}
-
-		// If the resulting suffix is too long, shorten it to the designed length.
-		//
-		if(result.length() > m_maxVersionSuffixLength)
-			result.setLength(m_maxVersionSuffixLength);
-
-		// It is safe to strip any '-' characters from the end of the suffix.
-		// (This won't happen very often, but it will save us a character or
-		// two when it does.)
-		//
-		int len = result.length();
-		while(len > 0 && result.charAt(len - 1) == '-')
-			result.setLength(--len);
-		return result.toString();
+		return m_suffixGenerator == null
+				? null
+				: m_suffixGenerator.generateSuffix(features, bundles);
 	}
 
 	Map<String, Version[]> getFeatureVersions()

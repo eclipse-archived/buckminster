@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -200,17 +201,27 @@ public class CategoriesAction extends AbstractPublisherAction
 		cat.setSingleton(true);
 		String categoryId = category.getName();
 		cat.setId(categoryId);
-		cat.setVersion(Version.emptyVersion);
 		cat.setProperty(IInstallableUnit.PROP_NAME, category.getLabel());
 		cat.setProperty(IInstallableUnit.PROP_DESCRIPTION, category.getDescription());
 
+		ArrayList<VersionedName> fts = new ArrayList<VersionedName>(featureIUs.size());
+		ArrayList<VersionedName> bds = new ArrayList<VersionedName>(featureIUs.size());
 		ArrayList<IRequiredCapability> reqsConfigurationUnits = new ArrayList<IRequiredCapability>(featureIUs.size());
 		for(IInstallableUnit iu : featureIUs)
 		{
+			VersionedName vn = new VersionedName(iu.getId(), iu.getVersion());
+			if(iu.getId().endsWith(IPDEConstants.FEATURE_GROUP))
+				fts.add(vn);
+			else
+				bds.add(vn);
 			VersionRange range = new VersionRange(iu.getVersion(), true, iu.getVersion(), true);
 			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID,
 					iu.getId(), range, iu.getFilter(), false, false));
 		}
+		FeatureVersionSuffixGenerator suffixGen = new FeatureVersionSuffixGenerator(-1, -1);
+		Version categoryVersion = Version.createOSGi(0, 0, 1, suffixGen.generateSuffix(fts, bds));
+		cat.setVersion(categoryVersion);
+
 		// note that update sites don't currently support nested categories, but it may be useful to add in the future
 		if(parentCategory != null)
 		{
@@ -221,7 +232,7 @@ public class CategoriesAction extends AbstractPublisherAction
 
 		// Create set of provided capabilities
 		ArrayList<IProvidedCapability> providedCapabilities = new ArrayList<IProvidedCapability>();
-		providedCapabilities.add(PublisherHelper.createSelfCapability(categoryId, Version.emptyVersion));
+		providedCapabilities.add(PublisherHelper.createSelfCapability(categoryId, categoryVersion));
 
 		for(Map.Entry<Locale, Properties> locEntry : m_localizations.entrySet())
 		{
