@@ -65,7 +65,9 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
+import org.eclipse.pde.internal.core.IPluginModelListener;
 import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.internal.core.PluginModelDelta;
 import org.eclipse.pde.internal.core.feature.FeaturePlugin;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -88,6 +90,26 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 	private static final String TEMP_FEATURE_VERSION = "'0.1.0.'yyyyMMddHHmmss"; //$NON-NLS-1$
 
 	private static final Map<String, IPluginModelBase[]> s_activeMap = new HashMap<String, IPluginModelBase[]>();
+
+	static
+	{
+		PDECore.getDefault().getModelManager().addPluginModelListener(new IPluginModelListener()
+		{
+			public void modelsChanged(PluginModelDelta delta)
+			{
+				if(delta.getKind() != 0)
+					clearCache();
+			}
+		});
+	}
+
+	public static void clearCache()
+	{
+		synchronized(s_activeMap)
+		{
+			s_activeMap.clear();
+		}
+	}
 
 	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query)
 	{
