@@ -229,7 +229,9 @@ public class RMContext extends ExpandingProperties<Object>
 			additions.put(TargetPlatform.TARGET_WS, tf.getWS());
 			additions.put(TargetPlatform.TARGET_ARCH, tf.getArch());
 			additions.put(TargetPlatform.TARGET_NL, tf.getNL());
-			additions.put(TargetPlatform.TARGET_LOCATION, tf.getLocation().toString());
+			File location = tf.getLocation();
+			if(location != null)
+				additions.put(TargetPlatform.TARGET_LOCATION, location.getAbsolutePath());
 		}
 		catch(CoreException e)
 		{
