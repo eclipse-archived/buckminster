@@ -373,7 +373,7 @@ public class VersionHelper
 			else
 				stringForm = stringForm.substring(0, stringForm.length() - (qual.length() + 1));
 		}
-		else
+		else if(qualifier != null)
 			stringForm = stringForm + '.' + qualifier;
 		return version.getFormat().parse(stringForm);
 	}
