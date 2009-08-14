@@ -3,6 +3,8 @@ package org.eclipse.buckminster.pde.tasks;
 import java.io.File;
 
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
@@ -30,13 +32,33 @@ public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.ec
 		if(root == null)
 			return TextUtils.concat(iconsArr, ","); //$NON-NLS-1$
 
+		IPath rootPath = Path.fromOSString(root.getAbsolutePath());
 		int idx = iconsArr.length;
 		while(--idx >= 0)
 		{
 			File iconFile = new File(iconsArr[idx]);
 			if(!iconFile.isFile())
 			{
-				iconFile = new File(root, iconFile.getPath());
+				IPath iconPath = Path.fromOSString(iconFile.getPath());
+				if(rootPath.isPrefixOf(iconPath))
+				{
+					// The iconPath is bogus since it is relative to the project files parent
+					// rather than to the project parent (the workspace). This happens on Windows
+					// platforms. So we strip one more segment then the root has and then we
+					// prepend the root again.
+					//
+					iconPath = iconPath.removeFirstSegments(rootPath.segmentCount() + 1).setDevice(null).makeRelative();
+					iconPath = rootPath.append(iconPath);
+				}
+				else
+				{
+					// The iconPath was considered absolute and hence not altered. The problem
+					// is that it should be relative to the workspace root. This happens on
+					// *nix systems.
+					//
+					iconPath = rootPath.append(iconPath.makeRelative());
+				}
+				iconFile = iconPath.toFile();
 				if(iconFile.isFile())
 					iconsArr[idx] = iconFile.getAbsolutePath();
 			}
