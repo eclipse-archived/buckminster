@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 
 @SuppressWarnings("restriction")
@@ -17,6 +18,8 @@ public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.
 
 	private final String m_flavor;
 
+	private final File m_location;
+
 	public ApplicationLauncherAction(String id, Version version, String flavor, String executableName, File location,
 			String[] configSpecs)
 	{
@@ -24,6 +27,19 @@ public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.
 		m_id = id;
 		m_version = version;
 		m_flavor = flavor;
+		m_location = location;
+	}
+
+	@Override
+	protected ExecutablesDescriptor computeExecutables(String configSpec)
+	{
+		// See if we know about an executables feature then use it as the source
+		ExecutablesDescriptor result = ExecutablesDescriptor.createExecutablesFromFeature(m_location, configSpec);
+		if(result != null)
+			return result;
+		// otherwise, assume that we are running against an Eclipse install and do the default thing
+		String os = AbstractPublisherAction.parseConfigSpec(configSpec)[1];
+		return ExecutablesDescriptor.createDescriptor(os, "eclipse", m_location); //$NON-NLS-1$
 	}
 
 	@Override
@@ -39,4 +55,5 @@ public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.
 		}
 		return actions;
 	}
+
 }
