@@ -70,11 +70,13 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 {
 	class BuildRepoAction extends Action
 	{
-		private boolean m_verifyOnly;
+		private final boolean m_verifyOnly;
+		private final boolean m_update;
 
-		public BuildRepoAction(boolean verifyOnly)
+		public BuildRepoAction(boolean verifyOnly, boolean update)
 		{
 			m_verifyOnly = verifyOnly;
+			m_update = update;
 
 			if(m_verifyOnly)
 			{
@@ -82,7 +84,10 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			}
 			else
 			{
-				setText("Build Repository");
+				if(update)
+					setText("Update Repository");
+				else
+					setText("Build Repository");
 				Object imageURL = AggregatorEditorPlugin.INSTANCE.getImage("full/obj16/start_task.gif");
 
 				if(imageURL != null && imageURL instanceof URL)
@@ -127,6 +132,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 							builder.setBuildModelLocation(new File(uri));
 							builder.setLogLevel(Logger.DEBUG);
 							builder.setVerifyOnly(m_verifyOnly);
+							builder.setUpdate(m_update);
 
 							if(builder.run(monitor) != IApplication.EXIT_OK)
 								throw new Exception("Build failed (see log for more details)");
@@ -294,6 +300,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected BuildRepoAction m_buildRepoAction;
 
+	protected BuildRepoAction m_updateRepoAction;
+
 	protected BuildRepoAction m_verifyRepoAction;
 
 	/**
@@ -307,8 +315,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();
 		controlAction = new ControlAction();
-		m_buildRepoAction = new BuildRepoAction(false);
-		m_verifyRepoAction = new BuildRepoAction(true);
+		m_buildRepoAction = new BuildRepoAction(false, false);
+		m_updateRepoAction = new BuildRepoAction(false, true);
+		m_verifyRepoAction = new BuildRepoAction(true, false);
 	}
 
 	/**
@@ -480,6 +489,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	protected void addGlobalActions(IMenuManager menuManager)
 	{
 		menuManager.insertBefore("additions", new ActionContributionItem(m_buildRepoAction));
+		menuManager.insertBefore("additions", new ActionContributionItem(m_updateRepoAction));
 		menuManager.insertBefore("additions", new ActionContributionItem(m_verifyRepoAction));
 		menuManager.insertBefore("additions", new Separator());
 

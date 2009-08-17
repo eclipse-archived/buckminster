@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.aggregator.p2.util;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
@@ -67,22 +70,24 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			Buckminster bucky = Buckminster.getDefault();
 			Logger log = Buckminster.getLogger();
 			IMetadataRepositoryManager mdrMgr = null;
-			MonitorUtils.begin(monitor, 100);
+			SubMonitor subMon = SubMonitor.convert(monitor, 100);
 			try
 			{
 				mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-				log.debug("Loading repository %s", location);
+				String msg = format("Loading repository %s", location);
+				log.debug(msg);
+				subMon.setTaskName(msg);
 				long start = System.currentTimeMillis();
 				IMetadataRepository repo;
 				try
 				{
-					repo = mdrMgr.loadRepository(location, MonitorUtils.subMonitor(monitor, 80));
+					repo = mdrMgr.loadRepository(location, subMon.newChild(80));
 				}
 				catch(ProvisionException e)
 				{
 					if(!mdrMgr.contains(location))
 						throw e;
-					repo = mdrMgr.refreshRepository(location, MonitorUtils.subMonitor(monitor, 80));
+					repo = mdrMgr.refreshRepository(location, subMon.newChild(80));
 				}
 				repository.setName(repo.getName());
 				repository.setLocation(repo.getLocation());
@@ -92,7 +97,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				repository.setVersion(repo.getVersion());
 				repository.getPropertyMap().putAll(repo.getProperties());
 
-				Collector collector = repo.query(QUERY_ALL_IUS, new Collector(), MonitorUtils.subMonitor(monitor, 20));
+				Collector collector = repo.query(QUERY_ALL_IUS, new Collector(), subMon.newChild(20));
 				Iterator<IInstallableUnit> itor = collector.iterator();
 				ArrayList<InstallableUnit> ius = new ArrayList<InstallableUnit>();
 				while(itor.hasNext())
@@ -110,7 +115,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			finally
 			{
 				bucky.ungetService(mdrMgr);
-				MonitorUtils.done(monitor);
+				MonitorUtils.done(subMon);
 			}
 			return Status.OK_STATUS;
 		}

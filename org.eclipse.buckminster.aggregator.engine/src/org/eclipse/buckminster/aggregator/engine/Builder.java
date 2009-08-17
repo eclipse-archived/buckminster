@@ -1095,27 +1095,30 @@ public class Builder implements IApplication
 
 			// Loose prior knowledge of the repositories that we are about to create or update
 			//
-			Buckminster bucky = Buckminster.getDefault();
-			IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-			IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
-			try
+			if(!verifyOnly)
 			{
-				File destination = new File(buildRoot, Builder.REPO_FOLDER_FINAL);
-				URI destURI = Builder.createURI(destination);
-				URI aggrURI = Builder.createURI(new File(destination, Builder.REPO_FOLDER_AGGREGATE));
+				Buckminster bucky = Buckminster.getDefault();
+				IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+				IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+				try
+				{
+					File destination = new File(buildRoot, Builder.REPO_FOLDER_FINAL);
+					URI destURI = Builder.createURI(destination);
+					URI aggrURI = Builder.createURI(new File(destination, Builder.REPO_FOLDER_AGGREGATE));
 
-				mdrMgr.removeRepository(destURI);
-				arMgr.removeRepository(destURI);
-				mdrMgr.removeRepository(aggrURI);
-				arMgr.removeRepository(aggrURI);
-			}
-			finally
-			{
-				bucky.ungetService(mdrMgr);
-				bucky.ungetService(arMgr);
+					mdrMgr.removeRepository(destURI);
+					arMgr.removeRepository(destURI);
+					mdrMgr.removeRepository(aggrURI);
+					arMgr.removeRepository(aggrURI);
+				}
+				finally
+				{
+					bucky.ungetService(mdrMgr);
+					bucky.ungetService(arMgr);
+				}
 			}
 
-			if(!update)
+			if(!(update || verifyOnly))
 			{
 				if(buildRoot.exists())
 				{

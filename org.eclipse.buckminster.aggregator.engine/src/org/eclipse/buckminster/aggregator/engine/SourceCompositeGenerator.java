@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.aggregator.engine;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
@@ -50,8 +52,11 @@ public class SourceCompositeGenerator extends BuilderPhase
 		Buckminster bucky = Buckminster.getDefault();
 		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 
-		URI locationURI = getBuilder().getSourceCompositeURI();
+		Builder builder = getBuilder();
+		URI locationURI = builder.getSourceCompositeURI();
 		mdrMgr.removeRepository(locationURI);
+		FileUtils.deleteAll(new File(builder.getBuildRoot(), Builder.REPO_FOLDER_INTERIM));
+
 		CompositeMetadataRepository compositeMdr = (CompositeMetadataRepository)mdrMgr.createRepository(locationURI,
 				name, Builder.COMPOSITE_METADATA_TYPE, properties);
 
