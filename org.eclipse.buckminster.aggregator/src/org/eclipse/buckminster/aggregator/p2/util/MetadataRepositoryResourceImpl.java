@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
@@ -72,7 +73,17 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 				log.debug("Loading repository %s", location);
 				long start = System.currentTimeMillis();
-				IMetadataRepository repo = mdrMgr.loadRepository(location, MonitorUtils.subMonitor(monitor, 80));
+				IMetadataRepository repo;
+				try
+				{
+					repo = mdrMgr.loadRepository(location, MonitorUtils.subMonitor(monitor, 80));
+				}
+				catch(ProvisionException e)
+				{
+					if(!mdrMgr.contains(location))
+						throw e;
+					repo = mdrMgr.refreshRepository(location, MonitorUtils.subMonitor(monitor, 80));
+				}
 				repository.setName(repo.getName());
 				repository.setLocation(repo.getLocation());
 				repository.setDescription(repo.getDescription());
@@ -156,27 +167,31 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			warnings.clear();
 		}
 
-		MetadataRepositoryImpl repository = (MetadataRepositoryImpl)P2Factory.eINSTANCE.createMetadataRepository();
-		RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location);
-		job.schedule();
-		try
+		P2Factory factory = P2Factory.eINSTANCE;
+		synchronized(factory)
 		{
-			job.join();
-			Exception e = job.getException();
-			if(e != null)
-				throw new Resource.IOWrappedException(e);
+			MetadataRepositoryImpl repository = (MetadataRepositoryImpl)factory.createMetadataRepository();
+			RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location);
+			job.schedule();
+			try
+			{
+				job.join();
+				Exception e = job.getException();
+				if(e != null)
+					throw new Resource.IOWrappedException(e);
 
-			getContents().add(repository);
-		}
-		catch(InterruptedException e)
-		{
-		}
-		finally
-		{
-			isLoading = false;
-			if(notification != null)
-				eNotify(notification);
-			setModified(false);
+				getContents().add(repository);
+			}
+			catch(InterruptedException e)
+			{
+			}
+			finally
+			{
+				isLoading = false;
+				if(notification != null)
+					eNotify(notification);
+				setModified(false);
+			}
 		}
 	}
 

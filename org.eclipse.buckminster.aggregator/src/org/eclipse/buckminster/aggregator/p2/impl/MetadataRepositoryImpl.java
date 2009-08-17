@@ -11,6 +11,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -27,6 +29,7 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -262,6 +265,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	 * @ordered
 	 */
 	protected EMap<String, String> propertyMap;
+
+	private static final Pattern categoryRefPattern = Pattern.compile("^(@installableUnits\\[id='.*'),version='0\\.0\\.0\\.[0-9]{14}'\\]$");
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -509,6 +514,18 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 			return propertyMap != null && !propertyMap.isEmpty();
 		}
 		return super.eIsSet(featureID);
+	}
+
+	@Override
+	public EObject eObjectForURIFragmentSegment(String uriFragmentSegment)
+	{
+		// Strip off the version part of the fragment if this is a category
+		// reference. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=286736
+		//
+		Matcher m = categoryRefPattern.matcher(uriFragmentSegment);
+		if(m.matches())
+			uriFragmentSegment = m.group(1) + ']';
+		return super.eObjectForURIFragmentSegment(uriFragmentSegment);
 	}
 
 	/**
