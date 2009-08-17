@@ -260,13 +260,15 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	public boolean satisfies(IRequiredCapability requirement)
+	public boolean satisfies(IRequiredCapability candidate)
 	{
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		if(getName() == null || !getName().equals(candidate.getName()))
+			return false;
+		if(getNamespace() == null || !getNamespace().equals(candidate.getNamespace()))
+			return false;
+		return candidate.getRange().isIncluded(version);
 	}
 
 	/**
@@ -313,7 +315,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String toString()
@@ -322,13 +324,11 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", namespace: ");
 		result.append(namespace);
-		result.append(", version: ");
-		result.append(version);
-		result.append(')');
+		result.append('/');
+		result.append(name);
+		result.append('/');
+		version.toString(result);
 		return result.toString();
 	}
 

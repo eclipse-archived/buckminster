@@ -121,6 +121,14 @@ public interface Aggregator extends EObject, StatusProvider
 	EList<Contribution> getContributions();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	EList<Contribution> getContributions(boolean enabledOnly);
+
+	/**
 	 * Returns the value of the '<em><b>Custom Categories</b></em>' containment reference list. The list contents are of
 	 * type {@link org.eclipse.buckminster.aggregator.CustomCategory}. <!-- begin-user-doc -->
 	 * <p>

@@ -80,6 +80,14 @@ public interface Contribution extends EObject, StatusProvider
 	EList<MappedRepository> getRepositories();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	EList<MappedRepository> getRepositories(boolean enabledOnly);
+
+	/**
 	 * Returns the value of the '<em><b>Enabled</b></em>' attribute. The default value is <code>"true"</code>. <!--
 	 * begin-user-doc -->
 	 * <p>

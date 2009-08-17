@@ -36,6 +36,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit} object. <!--
@@ -169,6 +170,14 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 			VersionedName vn = iu.getVersionedNameFromProxy();
 			if(vn != null)
 				label = vn.getId() + "/" + vn.getVersion() + " (broken)";
+		}
+		else if("true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
+		{
+			// The id and version are meaningless in categories. We display the name
+			// instead.
+			String name = iu.getProperty(IInstallableUnit.PROP_NAME);
+			if(name != null)
+				label = name;
 		}
 		else
 			label += "/" + iu.getVersion();

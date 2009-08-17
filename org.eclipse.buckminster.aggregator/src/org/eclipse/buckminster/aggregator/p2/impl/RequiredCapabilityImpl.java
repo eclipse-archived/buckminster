@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
 /**
@@ -622,7 +623,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String toString()
@@ -630,24 +631,26 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		if(eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (filter: ");
-		result.append(filter);
-		result.append(", name: ");
-		result.append(name);
-		result.append(", namespace: ");
-		result.append(namespace);
-		result.append(", range: ");
-		result.append(range);
-		result.append(", selectorList: ");
-		result.append(selectorList);
-		result.append(", multiple: ");
-		result.append((eFlags & MULTIPLE_EFLAG) != 0);
-		result.append(", optional: ");
-		result.append((eFlags & OPTIONAL_EFLAG) != 0);
-		result.append(", greedy: ");
-		result.append((eFlags & GREEDY_EFLAG) != 0);
-		result.append(')');
+		StringBuffer result = new StringBuffer();
+		if("osgi.bundle".equals(getNamespace())) //$NON-NLS-1$
+			result.append("bundle"); //$NON-NLS-1$
+		else if("java.package".equals(getNamespace())) //$NON-NLS-1$
+			result.append("package"); //$NON-NLS-1$
+		else if(!IInstallableUnit.NAMESPACE_IU_ID.equals(getNamespace()))
+			result.append(getNamespace());
+		if(result.length() > 0)
+			result.append(' ');
+		result.append(getName());
+		result.append(' ');
+		// for an exact version match, print a simpler expression
+		if(range.getMinimum().equals(range.getMaximum()))
+		{
+			result.append('[');
+			range.getMinimum().toString(result, true);
+			result.append(']');
+		}
+		else
+			range.toString(result);
 		return result.toString();
 	}
 

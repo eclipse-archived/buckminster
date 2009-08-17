@@ -4,6 +4,9 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="aggregator"
     nsURI="http://www.eclipse.org/buckminster/2009/aggregator" nsPrefix="aggregator">
   <eClassifiers xsi:type="ecore:EClass" name="Aggregator">
+    <eOperations name="getContributions" upperBound="-1" eType="#//Contribution">
+      <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//AggregateType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="buildRoot" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral="${user.home}/build"/>
@@ -61,6 +64,9 @@
         eType="#//Architecture"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Contribution">
+    <eOperations name="getRepositories" upperBound="-1" eType="#//MappedRepository">
+      <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="repositories" upperBound="-1"
         eType="#//MappedRepository" containment="true"/>

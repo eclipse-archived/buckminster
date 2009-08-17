@@ -17,6 +17,7 @@ import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -279,6 +280,41 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 					AggregatorPackage.CONTRIBUTION__REPOSITORIES);
 		}
 		return repositories;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<MappedRepository> getRepositories(boolean enabledOnly)
+	{
+		EList<MappedRepository> repos = getRepositories();
+		if(enabledOnly)
+		{
+			EList<MappedRepository> enabledRepos = null;
+			int top = repos.size();
+			for(int idx = 0; idx < top; ++idx)
+			{
+				MappedRepository repo = repos.get(idx);
+				if(repo.isEnabled())
+				{
+					if(enabledRepos != null)
+						enabledRepos.add(repo);
+					continue;
+				}
+
+				if(enabledRepos == null)
+				{
+					enabledRepos = new BasicEList<MappedRepository>(repos.size() - 1);
+					for(int sdx = 0; sdx < idx; ++sdx)
+						enabledRepos.add(repos.get(sdx));
+				}
+			}
+			if(enabledRepos != null)
+				repos = enabledRepos;
+		}
+		return repos;
 	}
 
 	public int getStatus()

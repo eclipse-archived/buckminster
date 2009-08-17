@@ -19,6 +19,7 @@ import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -563,6 +564,41 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 					AggregatorPackage.AGGREGATOR__CONTRIBUTIONS);
 		}
 		return contributions;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<Contribution> getContributions(boolean enabledOnly)
+	{
+		EList<Contribution> contribs = getContributions();
+		if(enabledOnly)
+		{
+			EList<Contribution> enabledContribs = null;
+			int top = contribs.size();
+			for(int idx = 0; idx < top; ++idx)
+			{
+				Contribution contrib = contribs.get(idx);
+				if(contrib.isEnabled())
+				{
+					if(enabledContribs != null)
+						enabledContribs.add(contrib);
+					continue;
+				}
+
+				if(enabledContribs == null)
+				{
+					enabledContribs = new BasicEList<Contribution>(contribs.size() - 1);
+					for(int sdx = 0; sdx < idx; ++sdx)
+						enabledContribs.add(contribs.get(sdx));
+				}
+			}
+			if(enabledContribs != null)
+				contribs = enabledContribs;
+		}
+		return contribs;
 	}
 
 	/**
