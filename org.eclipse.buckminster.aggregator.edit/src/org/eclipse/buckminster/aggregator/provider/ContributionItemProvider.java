@@ -95,6 +95,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 
 			addLabelPropertyDescriptor(object);
 			addContactsPropertyDescriptor(object);
+			addEnabledPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -177,6 +178,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
+		case AggregatorPackage.CONTRIBUTION__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
@@ -198,6 +200,21 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				getString("_UI_Contribution_contacts_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Contribution_contacts_feature", "_UI_Contribution_type"),
 				AggregatorPackage.Literals.CONTRIBUTION__CONTACTS, true, false, false, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Enabled feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addEnabledPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Contribution_enabled_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Contribution_enabled_feature", "_UI_Contribution_type"),
+				AggregatorPackage.Literals.CONTRIBUTION__ENABLED, true, false, false,
+				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

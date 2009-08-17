@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isEnabled <em>Enabled</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -160,6 +161,23 @@ public interface MappedRepository extends EObject, StatusProvider
 	EList<MappedUnit> getUnits(boolean enabledOnly);
 
 	/**
+	 * Returns the value of the '<em><b>Enabled</b></em>' attribute. The default value is <code>"true"</code>. <!--
+	 * begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Enabled</em>' attribute isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Enabled</em>' attribute.
+	 * @see #setEnabled(boolean)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_Enabled()
+	 * @model default="true"
+	 * @generated
+	 */
+	boolean isEnabled();
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc --> Returns <code>true</code> if the container
 	 * has no MappedUnit children. <!-- end-model-doc -->
 	 * 
@@ -195,6 +213,17 @@ public interface MappedRepository extends EObject, StatusProvider
 	 * @generated
 	 */
 	void setCategoryPrefix(String value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#isEnabled <em>Enabled</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Enabled</em>' attribute.
+	 * @see #isEnabled()
+	 * @generated
+	 */
+	void setEnabled(boolean value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}'

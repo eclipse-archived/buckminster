@@ -101,6 +101,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			addLocationPropertyDescriptor(object);
 			addMirrorArtifactsPropertyDescriptor(object);
 			addCategoryPrefixPropertyDescriptor(object);
+			addEnabledPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -187,6 +188,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
@@ -212,6 +214,21 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_categoryPrefix_feature",
 						"_UI_MappedRepository_type"), AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORY_PREFIX,
 				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Enabled feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addEnabledPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MappedRepository_enabled_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_MappedRepository_enabled_feature", "_UI_MappedRepository_type"),
+				AggregatorPackage.Literals.MAPPED_REPOSITORY__ENABLED, true, false, false,
+				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

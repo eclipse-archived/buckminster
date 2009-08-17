@@ -184,6 +184,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute MAPPED_REPOSITORY__CATEGORY_PREFIX = eINSTANCE.getMappedRepository_CategoryPrefix();
 
 		/**
+		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAPPED_REPOSITORY__ENABLED = eINSTANCE.getMappedRepository_Enabled();
+
+		/**
 		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature. <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
 		 * 
@@ -274,6 +282,14 @@ public interface AggregatorPackage extends EPackage
 		 * @generated
 		 */
 		EReference CONTRIBUTION__CONTACTS = eINSTANCE.getContribution_Contacts();
+
+		/**
+		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute CONTRIBUTION__ENABLED = eINSTANCE.getContribution_Enabled();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ContactImpl <em>Contact</em>}
@@ -740,13 +756,21 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY__CATEGORY_PREFIX = 7;
 
 	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__ENABLED = 8;
+
+	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = 8;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -848,13 +872,21 @@ public interface AggregatorPackage extends EPackage
 	int CONTRIBUTION__CONTACTS = 2;
 
 	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CONTRIBUTION__ENABLED = 3;
+
+	/**
 	 * The number of structural features of the '<em>Contribution</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION_FEATURE_COUNT = 3;
+	int CONTRIBUTION_FEATURE_COUNT = 4;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1557,6 +1589,17 @@ public interface AggregatorPackage extends EPackage
 	EReference getContribution_Contacts();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Contribution#isEnabled
+	 * <em>Enabled</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Enabled</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Contribution#isEnabled()
+	 * @see #getContribution()
+	 * @generated
+	 */
+	EAttribute getContribution_Enabled();
+
+	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Contribution#getLabel
 	 * <em>Label</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1702,6 +1745,17 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getMappedRepository_CategoryPrefix();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MappedRepository#isEnabled
+	 * <em>Enabled</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Enabled</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MappedRepository#isEnabled()
+	 * @see #getMappedRepository()
+	 * @generated
+	 */
+	EAttribute getMappedRepository_Enabled();
 
 	/**
 	 * Returns the meta object for the containment reference list '

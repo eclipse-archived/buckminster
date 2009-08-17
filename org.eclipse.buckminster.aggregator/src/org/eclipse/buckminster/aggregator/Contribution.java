@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getRepositories <em>Repositories</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getContacts <em>Contacts</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#isEnabled <em>Enabled</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -77,6 +78,34 @@ public interface Contribution extends EObject, StatusProvider
 	 * @generated
 	 */
 	EList<MappedRepository> getRepositories();
+
+	/**
+	 * Returns the value of the '<em><b>Enabled</b></em>' attribute. The default value is <code>"true"</code>. <!--
+	 * begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Enabled</em>' attribute isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Enabled</em>' attribute.
+	 * @see #setEnabled(boolean)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution_Enabled()
+	 * @model default="true"
+	 * @generated
+	 */
+	boolean isEnabled();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Contribution#isEnabled <em>Enabled</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Enabled</em>' attribute.
+	 * @see #isEnabled()
+	 * @generated
+	 */
+	void setEnabled(boolean value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}'
