@@ -497,7 +497,7 @@ public class Builder implements IApplication
 
 	public boolean isTopLevelCategory(IInstallableUnit iu)
 	{
-		return "true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY))
+		return iu != null && "true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY))
 				&& !"true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_GROUP));
 	}
 
