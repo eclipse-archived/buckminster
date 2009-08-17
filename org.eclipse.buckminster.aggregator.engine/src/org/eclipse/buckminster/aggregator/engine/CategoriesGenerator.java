@@ -51,10 +51,9 @@ public class CategoriesGenerator extends BuilderPhase
 				results.add(createCategoryIU(category));
 
 			MonitorUtils.worked(monitor, 5);
-			for(Contribution contrib : aggregator.getContributions())
-				for(MappedRepository repo : contrib.getRepositories())
+			for(Contribution contrib : aggregator.getContributions(true))
+				for(MappedRepository repo : contrib.getRepositories(true))
 					results.addAll(getRepositoryCategories(repo));
-
 			getBuilder().setCategoryIUs(results);
 		}
 		finally
@@ -122,9 +121,12 @@ public class CategoriesGenerator extends BuilderPhase
 		{
 			for(Category category : repo.getCategories())
 			{
-				InstallableUnit iu = category.getInstallableUnit();
-				if(builder.isTopLevelCategory(iu))
-					categoryIUs.add(iu);
+				if(category.isEnabled())
+				{
+					InstallableUnit iu = category.getInstallableUnit();
+					if(builder.isTopLevelCategory(iu))
+						categoryIUs.add(iu);
+				}
 			}
 		}
 

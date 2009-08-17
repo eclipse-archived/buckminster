@@ -54,6 +54,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
@@ -63,6 +64,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -612,7 +614,7 @@ public class Builder implements IApplication
 	public void sendEmail(Contribution contrib, List<String> errors)
 	{
 		boolean useMock = (mockEmailTo != null);
-		if(!(production || useMock) && sendmail)
+		if(!((production || useMock) && sendmail))
 			return;
 
 		Logger log = Buckminster.getLogger();
@@ -1090,6 +1092,28 @@ public class Builder implements IApplication
 
 			if(!buildRoot.isAbsolute())
 				buildRoot = new File(buildModelLocation.getParent(), buildRoot.getPath());
+
+			// Loose prior knowledge of the repositories that we are about to create or update
+			//
+			Buckminster bucky = Buckminster.getDefault();
+			IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+			IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+			try
+			{
+				File destination = new File(buildRoot, Builder.REPO_FOLDER_FINAL);
+				URI destURI = Builder.createURI(destination);
+				URI aggrURI = Builder.createURI(new File(destination, Builder.REPO_FOLDER_AGGREGATE));
+
+				mdrMgr.removeRepository(destURI);
+				arMgr.removeRepository(destURI);
+				mdrMgr.removeRepository(aggrURI);
+				arMgr.removeRepository(aggrURI);
+			}
+			finally
+			{
+				bucky.ungetService(mdrMgr);
+				bucky.ungetService(arMgr);
+			}
 
 			if(!update)
 			{

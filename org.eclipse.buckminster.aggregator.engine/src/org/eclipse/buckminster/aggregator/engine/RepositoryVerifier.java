@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
 import org.eclipse.equinox.internal.p2.director.Explanation;
 import org.eclipse.equinox.internal.p2.director.Explanation.HardRequirement;
@@ -90,7 +91,7 @@ public class RepositoryVerifier extends BuilderPhase
 		Builder builder = getBuilder();
 		Aggregator aggregator = builder.getAggregator();
 		List<Configuration> configs = aggregator.getConfigurations();
-		MonitorUtils.begin(monitor, configs.size() * 100);
+		SubMonitor subMon = SubMonitor.convert(monitor, configs.size() * 100);
 
 		Logger log = Buckminster.getLogger();
 		log.info("Starting planner verification"); //$NON-NLS-1$
@@ -108,9 +109,9 @@ public class RepositoryVerifier extends BuilderPhase
 			for(Configuration config : configs)
 			{
 				String configName = config.getName();
-				String info = format("Verifying config: %s", configName); //$NON-NLS-1$
+				String info = format("Verifying config %s...", configName); //$NON-NLS-1$
 				log.info(info);
-				monitor.subTask(info);
+				subMon.setTaskName(info);
 
 				Map<String, String> props = new HashMap<String, String>();
 				props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
@@ -126,7 +127,7 @@ public class RepositoryVerifier extends BuilderPhase
 					profile = profileRegistry.addProfile(profileId, props);
 
 				IInstallableUnit[] rootArr = getRootIUs(repoLocation, profile, Builder.ALL_CONTRIBUTED_CONTENT_FEATURE,
-						Builder.ALL_CONTRIBUTED_CONTENT_VERSION, MonitorUtils.subMonitor(monitor, 10));
+						Builder.ALL_CONTRIBUTED_CONTENT_VERSION, subMon.newChild(10));
 
 				// Add as root IU's to a request
 				ProfileChangeRequest request = new ProfileChangeRequest(profile);
@@ -135,7 +136,7 @@ public class RepositoryVerifier extends BuilderPhase
 							Boolean.TRUE.toString());
 				request.addInstallableUnits(rootArr);
 				ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation),
-						MonitorUtils.subMonitor(monitor, 90));
+						subMon.newChild(90, SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 
 				IStatus status = plan.getStatus();
 				if(status.getSeverity() == IStatus.ERROR)
@@ -164,7 +165,7 @@ public class RepositoryVerifier extends BuilderPhase
 		}
 		finally
 		{
-			MonitorUtils.done(monitor);
+			MonitorUtils.done(subMon);
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
 		}

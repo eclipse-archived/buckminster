@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.artifact.repository.MirrorRequest;
 import org.eclipse.equinox.internal.p2.artifact.repository.RawMirrorRequest;
-import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.director.PermissiveSlicer;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
@@ -217,7 +217,7 @@ public class MirrorGenerator extends BuilderPhase
 		List<Contribution> contribs = aggregator.getContributions();
 		for(Contribution contrib : contribs)
 		{
-			for(MappedRepository repo : contrib.getRepositories())
+			for(MappedRepository repo : contrib.getRepositories(true))
 			{
 				if(repo.isMirrorArtifacts())
 					continue;
@@ -247,28 +247,34 @@ public class MirrorGenerator extends BuilderPhase
 
 		mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		arMgr = bucky.getService(IArtifactRepositoryManager.class);
-		MonitorUtils.begin(monitor, 1000);
+		SubMonitor subMon = SubMonitor.convert(monitor, 1000);
 		boolean artifactErrors = false;
 		try
 		{
 			boolean isUpdate = builder.isUpdate();
 			Aggregator aggregator = builder.getAggregator();
 
-			MonitorUtils.subTask(monitor, "Initializing mirroring");
+			subMon.setTaskName("Mirroring meta-data and artifacts...");
+			MonitorUtils.subTask(subMon, "Initializing");
 			IArtifactRepository aggregateAr = null;
 			IMetadataRepository aggregateMdr = null;
-			if(!isUpdate)
+			if(isUpdate)
 			{
-				FileUtils.deleteAll(destination);
 				mdrMgr.removeRepository(finalURI);
-				arMgr.removeRepository(aggregateURI);
-				MonitorUtils.worked(monitor, 10);
-			}
-			else
-			{
+				arMgr.removeRepository(finalURI);
+				new File(destination, "compositeContent.jar").delete();
+				new File(destination, "compositeArtifacts.jar").delete();
+				aggregateDestination.mkdirs();
+				for(File oldLocation : destination.listFiles())
+				{
+					if(oldLocation.equals(aggregateDestination))
+						continue;
+					oldLocation.renameTo(new File(aggregateDestination, oldLocation.getName()));
+				}
+
 				try
 				{
-					aggregateAr = arMgr.loadRepository(aggregateURI, MonitorUtils.subMonitor(monitor, 5));
+					aggregateAr = arMgr.loadRepository(aggregateURI, subMon.newChild(5));
 				}
 				catch(ProvisionException e)
 				{
@@ -276,7 +282,7 @@ public class MirrorGenerator extends BuilderPhase
 
 				try
 				{
-					aggregateMdr = mdrMgr.loadRepository(aggregateURI, MonitorUtils.subMonitor(monitor, 5));
+					aggregateMdr = mdrMgr.loadRepository(aggregateURI, subMon.newChild(5));
 				}
 				catch(ProvisionException e)
 				{
@@ -292,7 +298,7 @@ public class MirrorGenerator extends BuilderPhase
 				aggregateAr = arMgr.createRepository(aggregateURI,
 						label + " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, properties); //$NON-NLS-1$
 			}
-			MonitorUtils.worked(monitor, 5);
+			MonitorUtils.worked(subMon, 5);
 
 			if(aggregateMdr == null)
 			{
@@ -301,21 +307,22 @@ public class MirrorGenerator extends BuilderPhase
 				String label = aggregator.getLabel();
 				aggregateMdr = mdrMgr.createRepository(aggregateURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
 			}
-			MonitorUtils.worked(monitor, 5);
+			MonitorUtils.worked(subMon, 5);
 
-			addUnverifiedRoots(MonitorUtils.subMonitor(monitor, 5));
+			addUnverifiedRoots(subMon.newChild(5));
 			Set<IInstallableUnit> unitsToAggregate = builder.getUnitsToAggregate();
 			Set<IArtifactKey> keysToExclude = getArtifactKeysToExclude();
 
-			IProgressMonitor childMonitor = MonitorUtils.subMonitor(monitor, 900);
-			List<Contribution> contribs = aggregator.getContributions();
+			SubMonitor childMonitor = subMon.newChild(900, SubMonitor.SUPPRESS_BEGINTASK
+					| SubMonitor.SUPPRESS_SETTASKNAME);
+			List<Contribution> contribs = aggregator.getContributions(true);
 			MonitorUtils.begin(childMonitor, contribs.size() * 100);
 			boolean aggregatedMdrIsEmpty = true;
 			boolean aggregatedArIsEmpty = true;
 			for(Contribution contrib : contribs)
 			{
-				IProgressMonitor contribMonitor = MonitorUtils.subMonitor(childMonitor, 100);
-				List<MappedRepository> repos = contrib.getRepositories();
+				SubMonitor contribMonitor = childMonitor.newChild(100);
+				List<MappedRepository> repos = contrib.getRepositories(true);
 				List<String> errors = new ArrayList<String>();
 				MonitorUtils.begin(contribMonitor, repos.size() * 100);
 				for(MappedRepository repo : repos)
@@ -356,8 +363,8 @@ public class MirrorGenerator extends BuilderPhase
 						String msg = format("Mirroring meta-data from from %s", childMdr.getLocation());
 						log.info(msg);
 						contribMonitor.subTask(msg);
-						IProgressMonitor repoMonitor = MonitorUtils.subMonitor(contribMonitor, 5);
-						mirror(iusToMirror, childMdr, aggregateMdr, repoMonitor);
+						mirror(iusToMirror, childMdr, aggregateMdr, contribMonitor.newChild(5,
+								SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 						aggregatedMdrIsEmpty = false;
 					}
 					else
@@ -369,9 +376,10 @@ public class MirrorGenerator extends BuilderPhase
 						log.info(msg);
 						contribMonitor.subTask(msg);
 						IArtifactRepository childAr = arMgr.loadRepository(childMdr.getLocation(),
-								MonitorUtils.subMonitor(childMonitor, 1));
-						IProgressMonitor repoMonitor = MonitorUtils.subMonitor(contribMonitor, 95);
-						mirror(keysToMirror, childAr, aggregateAr, errors, repoMonitor);
+								contribMonitor.newChild(1, SubMonitor.SUPPRESS_BEGINTASK
+										| SubMonitor.SUPPRESS_SETTASKNAME));
+						mirror(keysToMirror, childAr, aggregateAr, errors, contribMonitor.newChild(94,
+								SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 						aggregatedArIsEmpty = false;
 					}
 					else
@@ -385,7 +393,7 @@ public class MirrorGenerator extends BuilderPhase
 			List<InstallableUnit> categories = builder.getCategoryIUs();
 			if(!categories.isEmpty())
 			{
-				mirror(categories, null, aggregateMdr, MonitorUtils.subMonitor(childMonitor, 20));
+				mirror(categories, null, aggregateMdr, childMonitor.newChild(20));
 				aggregatedMdrIsEmpty = false;
 			}
 
@@ -398,9 +406,9 @@ public class MirrorGenerator extends BuilderPhase
 			List<MappedRepository> reposWithReferencedArtifacts = new ArrayList<MappedRepository>();
 			List<MappedRepository> reposWithReferencedMetadata = new ArrayList<MappedRepository>();
 
-			for(Contribution contrib : aggregator.getContributions())
+			for(Contribution contrib : aggregator.getContributions(true))
 			{
-				for(MappedRepository repo : contrib.getRepositories())
+				for(MappedRepository repo : contrib.getRepositories(true))
 				{
 					if(builder.isMapVerbatim(repo))
 					{
@@ -509,7 +517,7 @@ public class MirrorGenerator extends BuilderPhase
 			mdrMgr = null;
 			bucky.ungetService(arMgr);
 			arMgr = null;
-			MonitorUtils.done(monitor);
+			MonitorUtils.done(subMon);
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 		if(artifactErrors)

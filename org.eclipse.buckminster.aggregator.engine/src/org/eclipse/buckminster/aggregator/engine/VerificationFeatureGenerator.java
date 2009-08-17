@@ -30,7 +30,7 @@ public class VerificationFeatureGenerator extends BuilderPhase
 	{
 		Logger log = Buckminster.getLogger();
 		long now = System.currentTimeMillis();
-		MonitorUtils.begin(monitor, 100);
+		MonitorUtils.begin(monitor, "Verifying Features", 100);
 		String info = "Starting generation of verification feature";
 		log.info(info);
 		MonitorUtils.subTask(monitor, info);

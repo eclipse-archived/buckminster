@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -31,6 +32,7 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
@@ -81,20 +83,21 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 
 		boolean errorsFound = false;
 		List<Contribution> contribs = builder.getAggregator().getContributions();
-		MonitorUtils.begin(monitor, 2 + contribs.size());
+		SubMonitor subMon = SubMonitor.convert(monitor, 2 + contribs.size());
 		try
 		{
 			Set<String> explicit = new HashSet<String>();
-			for(Contribution contrib : builder.getAggregator().getContributions())
+			for(Contribution contrib : builder.getAggregator().getContributions(true))
 			{
 				ArrayList<String> errors = new ArrayList<String>();
-				for(MappedRepository repository : contrib.getRepositories())
+				for(MappedRepository repository : contrib.getRepositories(true))
 				{
+					List<InstallableUnit> allIUs = repository.getMetadataRepository().getInstallableUnits();
 					if(repository.isMapEverything())
 					{
 						// Verify that all products and features can be installed.
 						//
-						for(InstallableUnit riu : repository.getMetadataRepository().getInstallableUnits())
+						for(InstallableUnit riu : allIUs)
 						{
 							// We assume that all groups that are not categories are either products or
 							// features.
@@ -108,8 +111,12 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 					{
 						for(MappedUnit mu : repository.getUnits(true))
 						{
-							// TODO: Create filter from configurations
-							//
+							if(mu instanceof Category)
+							{
+								addCategoryContent(mu.getInstallableUnit(), repository, allIUs, required, errors,
+										explicit);
+								continue;
+							}
 							Filter filter = null;
 							List<Configuration> configs = mu.getValidConfigurations();
 							if(!configs.isEmpty())
@@ -149,7 +156,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 					errorsFound = true;
 					builder.sendEmail(contrib, errors);
 				}
-				MonitorUtils.worked(monitor, 1);
+				MonitorUtils.worked(subMon, 1);
 			}
 			if(errorsFound)
 				return new Status(IStatus.ERROR, Engine.PLUGIN_ID, "Features without repositories");
@@ -164,7 +171,52 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		}
 		finally
 		{
-			MonitorUtils.done(monitor);
+			MonitorUtils.done(subMon);
+		}
+	}
+
+	private void addCategoryContent(InstallableUnit category, MappedRepository repository,
+			List<InstallableUnit> allIUs, Map<String, Requirement> required, List<String> errors, Set<String> explicit)
+	{
+		// We don't map categories verbatim here. They are added elsewhere. We do
+		// map their contents though.
+		requirements: for(IRequiredCapability rc : category.getRequiredCapabilities())
+		{
+			for(InstallableUnit riu : allIUs)
+			{
+				if(riu.satisfies(rc))
+				{
+					if("true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
+					{
+						// Nested category
+						addCategoryContent(riu, repository, allIUs, required, errors, explicit);
+						continue requirements;
+					}
+
+					String filterStr = rc.getFilter();
+					Filter filter = null;
+					if(filterStr != null)
+					{
+						try
+						{
+							filter = FilterFactory.newInstance(filterStr);
+						}
+						catch(InvalidSyntaxException e)
+						{
+							throw new RuntimeException(e);
+						}
+					}
+					addRequirementFor(repository, riu, filter, required, errors, explicit, false);
+					continue requirements;
+				}
+			}
+
+			// Categorized IU is not found
+			//
+			String error = format("Category %s includes a requirement for %s that cannot be fulfilled",
+					category.getId(), rc);
+			errors.add(error);
+			Buckminster.getLogger().error(error);
 		}
 	}
 
