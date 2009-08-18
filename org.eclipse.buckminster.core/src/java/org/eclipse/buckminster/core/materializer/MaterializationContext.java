@@ -111,7 +111,35 @@ public class MaterializationContext extends RMContext
 	 */
 	public IPath getInstallLocation(Resolution resolution) throws CoreException
 	{
-		IPath relativeLocation = getRelativeInstallLocation(resolution);
+		ComponentIdentifier ci = resolution.getComponentIdentifier();
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IPath relativeLocation = null;
+		boolean useRootDefault = true;
+		if(node != null)
+		{
+			relativeLocation = node.getInstallLocation();
+			String materializerId = node.getMaterializerID();
+			useRootDefault = (materializerId == null || materializerId.equals(m_materializationSpec.getMaterializerID()));
+		}
+		else
+		{
+			IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
+			relativeLocation = rd.getInstallLocation(resolution, this);
+
+			IComponentType cType = resolution.getComponentType();
+			if(cType != null)
+			{
+				IPath ctypeRelative = cType.getRelativeLocation();
+				if(ctypeRelative != null)
+				{
+					if(relativeLocation == null)
+						relativeLocation = ctypeRelative;
+					else
+						relativeLocation = relativeLocation.append(ctypeRelative);
+				}
+			}
+		}
+
 		if(relativeLocation != null)
 		{
 			IPath tmp = expand(relativeLocation);
@@ -119,7 +147,12 @@ public class MaterializationContext extends RMContext
 				return tmp;
 		}
 
-		IPath location = getRootInstallLocation(resolution);
+		IPath location = null;
+		if(useRootDefault)
+			location = m_materializationSpec.getInstallLocation();
+
+		if(location == null)
+			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
 		if(relativeLocation != null)
 			location = location.append(relativeLocation);
 		return expand(location);
@@ -323,42 +356,5 @@ public class MaterializationContext extends RMContext
 	private IPath expand(IPath path)
 	{
 		return Path.fromOSString(ExpandingProperties.expand(this, path.toOSString(), 0));
-	}
-
-	private IPath getRelativeInstallLocation(Resolution resolution) throws CoreException
-	{
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-		IPath location = null;
-		if(node != null)
-		{
-			location = node.getInstallLocation();
-			if(location != null)
-				return location;
-		}
-
-		IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
-		location = rd.getInstallLocation(resolution, this);
-		IComponentType cType = resolution.getComponentType();
-		if(cType != null)
-		{
-			IPath ctypeRelative = cType.getRelativeLocation();
-			if(ctypeRelative != null)
-			{
-				if(location == null)
-					location = ctypeRelative;
-				else
-					location = location.append(ctypeRelative);
-			}
-		}
-		return location;
-	}
-
-	private IPath getRootInstallLocation(Resolution resolution) throws CoreException
-	{
-		IPath location = m_materializationSpec.getInstallLocation();
-		if(location == null)
-			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
-		return location;
 	}
 }
