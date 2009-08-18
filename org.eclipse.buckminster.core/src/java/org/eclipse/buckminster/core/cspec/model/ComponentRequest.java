@@ -203,20 +203,20 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 		VersionRange thisVD = getVersionRange();
 		VersionRange thatVD = that.getVersionRange();
+		VersionRange mergedVD;
 		if(thisVD == null)
-			return thatVD == null
-					? this
-					: that;
-
-		if(thatVD == null)
-			return this;
-
-		VersionRange mergedVD = thisVD.intersect(thatVD);
-		if(mergedVD == thisVD)
-			return this;
-
-		if(mergedVD == null)
-			throw new ComponentRequestConflictException(this, that);
+			mergedVD = thatVD;
+		else
+		{
+			if(thatVD == null)
+				mergedVD = thisVD;
+			else
+			{
+				mergedVD = thisVD.intersect(thatVD);
+				if(mergedVD == null)
+					throw new ComponentRequestConflictException(this, that);
+			}
+		}
 
 		Filter thisFilter = getFilter();
 		Filter thatFilter = that.getFilter();
@@ -229,6 +229,24 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 			if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
 				throw new ComponentRequestConflictException(this, that);
 		}
+
+		// Never allow an optional request to qualify one that is not
+		// optional
+		//
+		if(isOptional())
+		{
+			if(!that.isOptional())
+				return that;
+		}
+		else if(that.isOptional())
+			return this;
+
+		if(Trivial.equalsAllowNull(mergedVD, thisVD) && Trivial.equalsAllowNull(thisCType, getComponentTypeID()))
+			return this;
+
+		if(Trivial.equalsAllowNull(mergedVD, thatVD) && Trivial.equalsAllowNull(thisCType, that.getComponentTypeID()))
+			return that;
+
 		return new ComponentRequest(getName(), thisCType, mergedVD, thisFilter);
 	}
 
