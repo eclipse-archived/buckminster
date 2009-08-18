@@ -99,7 +99,8 @@ public class SelectBOMPage extends AbstractQueryPage
 		if(m_bomOrMSpecURL != null && !qw.hasBOM())
 		{
 			loadBomOrMSpec();
-			m_fileNameText.setText(m_bomOrMSpecURL.toString());
+			if(m_bomOrMSpecURL != null)
+				m_fileNameText.setText(m_bomOrMSpecURL.toString());
 		}
 	}
 
@@ -326,6 +327,7 @@ public class SelectBOMPage extends AbstractQueryPage
 
 	void setBomOrMSpecFile(final String bomFile)
 	{
+		URL oldBomOrMSPecURL = m_bomOrMSpecURL;
 		m_bomOrMSpecURL = null;
 		if(bomFile == null)
 		{
@@ -371,7 +373,8 @@ public class SelectBOMPage extends AbstractQueryPage
 			if(file.isFile() && file.canRead())
 			{
 				m_bomOrMSpecURL = url;
-				loadBomOrMSpec();
+				if(!oldBomOrMSPecURL.equals(m_bomOrMSpecURL))
+					loadBomOrMSpec();
 			}
 			else
 				setErrorMessage(Messages.file_does_not_exist);
