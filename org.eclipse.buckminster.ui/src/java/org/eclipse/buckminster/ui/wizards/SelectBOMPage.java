@@ -373,7 +373,7 @@ public class SelectBOMPage extends AbstractQueryPage
 			if(file.isFile() && file.canRead())
 			{
 				m_bomOrMSpecURL = url;
-				if(!oldBomOrMSPecURL.equals(m_bomOrMSpecURL))
+				if(!oldBomOrMSPecURL.toExternalForm().equals(m_bomOrMSpecURL.toExternalForm()))
 					loadBomOrMSpec();
 			}
 			else
