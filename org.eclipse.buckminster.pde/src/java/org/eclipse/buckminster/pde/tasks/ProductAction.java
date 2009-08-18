@@ -10,6 +10,8 @@ package org.eclipse.buckminster.pde.tasks;
 import java.io.File;
 
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -18,20 +20,23 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
+import org.eclipse.equinox.internal.provisional.frameworkadmin.ConfigData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.PublisherResult;
+import org.eclipse.equinox.p2.publisher.eclipse.ConfigAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.EquinoxLauncherCUAction;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.build.IPDEBuildConstants;
 
 /**
  * Action that generates version adjusted products
  */
 @SuppressWarnings("restriction")
-public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction
+public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction implements IPDEBuildConstants
 {
 	public ProductAction(String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation)
 	{
@@ -61,11 +66,11 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 					availConfigFound = true;
 					continue;
 				}
-				log.warning(NLS.bind("Missing executable launcher for configuration {0}", config));
+				log.warning(NLS.bind(Messages.Missing_exe_launcher_for_config_0, config));
 				warningsPrinted = true;
 			}
 			if(warningsPrinted)
-				log.warning("Perhaps you should install the Platform Executable Launchers feature into your target platform");
+				log.warning(Messages.Suggest_install_launchers_feature);
 
 			if(!availConfigFound)
 				return Status.OK_STATUS;
@@ -76,7 +81,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 				String ilProp = System.getProperty("eclipse.host.location"); //$NON-NLS-1$
 				if(ilProp == null)
 				{
-					log.warning("Please use vmarg -Declipse.host.location=${eclipse_home} when running product builds self hosted without the equinox executable feature");
+					log.warning(Messages.Please_use_selfhost_vmargs);
 				}
 				else
 					source = ilProp;
@@ -96,6 +101,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		// The inner result must see the launchers since the EquinoxLauncherCUAction created by the
 		// ApplicationLauncherAction must find them in order to generate the correct CU's
 		//
+		ConfigData dfltStartInfos = new ConfigData(null, null, null, null);
 		for(Object iu : results.getIUs(null, IPublisherResult.ROOT))
 		{
 			IInstallableUnit tmp = (IInstallableUnit)iu;
@@ -105,15 +111,28 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 				continue;
 			}
 
-			for(Object bi : product.getBundleInfos())
+			for(BundleInfo bi : TypedCollections.getBundleInfos(product))
 			{
-				if(tmp.getId().equals(((BundleInfo)bi).getSymbolicName()))
+				if(tmp.getId().equals(bi.getSymbolicName()))
 				{
 					innerResult.addIU(tmp, IPublisherResult.ROOT);
 					break;
 				}
 			}
+
+			for(BundleInfo bi : getDefaultStartInfo())
+			{
+				if(tmp.getId().equals(bi.getSymbolicName()))
+				{
+					innerResult.addIU(tmp, IPublisherResult.ROOT);
+					dfltStartInfos.addBundle(bi);
+					break;
+				}
+			}
 		}
+		if(dfltStartInfos.getBundles().length > 0)
+			for(String configSpec : innerInfo.getConfigurations())
+				innerInfo.addAdvice(new ConfigAdvice(dfltStartInfos, configSpec));
 
 		IStatus status = super.perform(innerInfo, innerResult, monitor);
 		if(status.getSeverity() != IStatus.ERROR)
@@ -141,4 +160,15 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		return new ApplicationLauncherAction(id, version, flavor, executableName, getExecutablesLocation(), configSpecs);
 	}
 
+	private BundleInfo[] getDefaultStartInfo()
+	{
+		BundleInfo[] defaults = new BundleInfo[6];
+		defaults[0] = new BundleInfo(BUNDLE_SIMPLE_CONFIGURATOR, null, null, 1, true);
+		defaults[1] = new BundleInfo(BUNDLE_EQUINOX_COMMON, null, null, 2, true);
+		defaults[2] = new BundleInfo(BUNDLE_OSGI, null, null, -1, true);
+		defaults[3] = new BundleInfo(BUNDLE_UPDATE_CONFIGURATOR, null, null, 4, true);
+		defaults[4] = new BundleInfo(BUNDLE_CORE_RUNTIME, null, null, 4, true);
+		defaults[5] = new BundleInfo(BUNDLE_DS, null, null, 1, true);
+		return defaults;
+	}
 }
