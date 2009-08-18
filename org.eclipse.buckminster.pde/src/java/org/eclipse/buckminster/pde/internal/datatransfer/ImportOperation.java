@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.dialogs.ContainerGenerator;
 import org.eclipse.buckminster.pde.internal.dialogs.IOverwriteQuery;
@@ -112,8 +113,8 @@ public class ImportOperation extends WorkspaceJob
 	 * @param filesToImport
 	 *            the list of file system objects to be imported (element type: <code>Object</code>)
 	 */
-	public ImportOperation(IPath containerPath, IImportStructureProvider provd,
-			IOverwriteQuery overwriteImplementor, List filesToImport)
+	public ImportOperation(IPath containerPath, IImportStructureProvider provd, IOverwriteQuery overwriteImplementor,
+			List filesToImport)
 	{
 		this(containerPath, null, provd, overwriteImplementor);
 		setFilesToImport(filesToImport);
@@ -207,8 +208,8 @@ public class ImportOperation extends WorkspaceJob
 	{
 		IStatus[] errors = new IStatus[errorTable.size()];
 		errorTable.toArray(errors);
-		return new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, errors,
-				DataTransferMessages.ImportOperation_importProblems, null);
+		return new MultiStatus(PDEPlugin.getPluginId(), IStatus.OK, errors, Messages.ImportOperation_importProblems,
+				null);
 	}
 
 	/*
@@ -226,7 +227,7 @@ public class ImportOperation extends WorkspaceJob
 			if(selectedFiles == null)
 			{
 				// Set the amount to 1000 as we have no idea of how long this will take
-				monitor.beginTask(DataTransferMessages.DataTransfer_importTask, 1000);
+				monitor.beginTask(Messages.DataTransfer_importTask, 1000);
 				ContainerGenerator generator = new ContainerGenerator(destinationPath);
 				monitor.worked(30);
 				validateFiles(Arrays.asList(new Object[] { source }));
@@ -240,7 +241,7 @@ public class ImportOperation extends WorkspaceJob
 			{
 				// Choose twice the selected files size to take folders into account
 				int creationCount = selectedFiles.size();
-				monitor.beginTask(DataTransferMessages.DataTransfer_importTask, creationCount + 100);
+				monitor.beginTask(Messages.DataTransfer_importTask, creationCount + 100);
 				ContainerGenerator generator = new ContainerGenerator(destinationPath);
 				monitor.worked(30);
 				validateFiles(selectedFiles);
@@ -563,8 +564,7 @@ public class ImportOperation extends WorkspaceJob
 		catch(CoreException e)
 		{
 			IStatus coreStatus = e.getStatus();
-			String newMessage = NLS.bind(DataTransferMessages.ImportOperation_coreImportError, fileObject, coreStatus
-					.getMessage());
+			String newMessage = NLS.bind(Messages.ImportOperation_coreImportError, fileObject, coreStatus.getMessage());
 			IStatus status = new Status(coreStatus.getSeverity(), coreStatus.getPlugin(), coreStatus.getCode(),
 					newMessage, null);
 			errorTable.add(status);
@@ -587,7 +587,7 @@ public class ImportOperation extends WorkspaceJob
 		if(targetPath != null && (targetPath.toFile().equals(new File(fileObjectPath))))
 		{
 			errorTable.add(new Status(IStatus.ERROR, PDEPlugin.getPluginId(), 0, NLS.bind(
-					DataTransferMessages.ImportOperation_targetSameAsSourceError, fileObjectPath), null));
+					Messages.ImportOperation_targetSameAsSourceError, fileObjectPath), null));
 			return;
 		}
 
@@ -595,7 +595,7 @@ public class ImportOperation extends WorkspaceJob
 		if(contentStream == null)
 		{
 			errorTable.add(new Status(IStatus.ERROR, PDEPlugin.getPluginId(), 0, NLS.bind(
-					DataTransferMessages.ImportOperation_openStreamError, fileObjectPath), null));
+					Messages.ImportOperation_openStreamError, fileObjectPath), null));
 			return;
 		}
 
@@ -631,7 +631,7 @@ public class ImportOperation extends WorkspaceJob
 			catch(IOException e)
 			{
 				errorTable.add(new Status(IStatus.ERROR, PDEPlugin.getPluginId(), 0, NLS.bind(
-						DataTransferMessages.ImportOperation_closeStreamError, fileObjectPath), e));
+						Messages.ImportOperation_closeStreamError, fileObjectPath), e));
 			}
 		}
 	}
@@ -661,7 +661,7 @@ public class ImportOperation extends WorkspaceJob
 					// file systems root. Roots can't copied (at least not
 					// under windows).
 					errorTable.add(new Status(IStatus.INFO, PDEPlugin.getPluginId(), 0,
-							DataTransferMessages.ImportOperation_cannotCopy, null));
+							Messages.ImportOperation_cannotCopy, null));
 					continue;
 				}
 				source = sourcePath.toFile();
@@ -783,7 +783,7 @@ public class ImportOperation extends WorkspaceJob
 
 		if(overwriteAnswer.equals(IOverwriteQuery.CANCEL))
 		{
-			throw new OperationCanceledException(DataTransferMessages.DataTransfer_emptyString);
+			throw new OperationCanceledException();
 		}
 
 		if(overwriteAnswer.equals(IOverwriteQuery.NO))

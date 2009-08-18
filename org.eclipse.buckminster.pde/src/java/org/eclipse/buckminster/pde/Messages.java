@@ -97,6 +97,8 @@ public class Messages extends NLS
 
 	public static String PDEMapProvider_0_for_1_unable_to_find_2_in_map;
 
+	public static String Please_use_selfhost_vmargs;
+
 	public static String provider_0_for_1_score_below_treshold;
 
 	public static String copying_imported_source;
@@ -109,8 +111,6 @@ public class Messages extends NLS
 
 	public static String linking_imported_plugin;
 
-	public static String _0_is_not_valid_setting_for_target_1_pref;
-
 	public static String artifact_not_found_0;
 
 	public static String Active_target_0_has_no_containers;
@@ -119,9 +119,27 @@ public class Messages extends NLS
 
 	public static String Found_no_target_definition_named_0;
 
+	public static String Missing_exe_launcher_for_config_0;
+
 	public static String No_active_target_platform;
 
+	public static String Suggest_install_launchers_feature;
+
 	public static String Unable_to_determine_path_for_active_target_0;
+
+	public static String DataTransfer_importTask;
+
+	public static String ImportOperation_cannotCopy;
+
+	public static String ImportOperation_importProblems;
+
+	public static String ImportOperation_openStreamError;
+
+	public static String ImportOperation_closeStreamError;
+
+	public static String ImportOperation_coreImportError;
+
+	public static String ImportOperation_targetSameAsSourceError;
 
 	static
 	{
