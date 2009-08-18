@@ -66,7 +66,10 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public ComponentRequest(ComponentRequestBuilder bld)
 	{
 		super(bld.getName(), bld.getComponentTypeID());
-		m_versionRange = bld.getVersionRange();
+		VersionRange vr = bld.getVersionRange();
+		if(vr != null && vr.equals(VersionRange.emptyRange))
+			vr = null;
+		m_versionRange = vr;
 		m_filter = bld.getFilter();
 	}
 
@@ -90,6 +93,8 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	public ComponentRequest(String name, String componentType, VersionRange versionRange, Filter filter)
 	{
 		super(name, componentType);
+		if(versionRange != null && versionRange.equals(VersionRange.emptyRange))
+			versionRange = null;
 		m_versionRange = versionRange;
 		m_filter = filter;
 	}
