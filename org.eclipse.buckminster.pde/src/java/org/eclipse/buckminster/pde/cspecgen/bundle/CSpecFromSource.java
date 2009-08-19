@@ -370,16 +370,9 @@ public class CSpecFromSource extends CSpecGenerator
 		if(jarsToCompile != null)
 		{
 			for(String jarName : jarsToCompile)
-				derivedArtifacts.add(createJarAction(jarName, classPath, build));
-
-			if(simpleBundle)
-			{
-				// Remove the eclipse build products that we can identify as
-				// covered by the createJarActions
-				//
-				for(IPath derivedArtifact : derivedArtifacts)
-					eclipseBuildProducts.remove(derivedArtifact);
-			}
+				derivedArtifacts.add(createJarAction(jarName, classPath, build, simpleBundle
+						? eclipseBuildProducts
+						: null));
 		}
 
 		if(simpleBundle)
@@ -640,7 +633,8 @@ public class CSpecFromSource extends CSpecGenerator
 		return resolveLink(classpathEntryPath.removeFirstSegments(1).addTrailingSeparator(), projectRootReplacement);
 	}
 
-	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build) throws CoreException
+	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build,
+			Map<IPath, ArtifactBuilder> eclipseBuildProducts) throws CoreException
 	{
 		CSpecBuilder cspec = getCSpec();
 		IPath jarPath = new Path(jarName);
@@ -694,7 +688,10 @@ public class CSpecFromSource extends CSpecGenerator
 			//
 			String artifactName = getArtifactName(output);
 			if(action.getPrerequisite(artifactName) == null)
+			{
 				action.addLocalPrerequisite(artifactName);
+				eclipseBuildProducts.remove(output);
+			}
 		}
 		return jarPath;
 	}
