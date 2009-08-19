@@ -641,7 +641,9 @@ public class WorkspaceInfo
 
 	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException
 	{
-		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier.toString());
+		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier == null
+				? null
+				: identifier.toString());
 	}
 
 	public static void validateMaterializations() throws CoreException

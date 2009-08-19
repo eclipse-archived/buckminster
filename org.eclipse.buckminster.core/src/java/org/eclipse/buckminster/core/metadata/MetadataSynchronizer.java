@@ -141,8 +141,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 							if(s_default != null && project.isAccessible())
 								CorePlugin.getLogger().error(
 										e,
-										NLS.bind(Messages.Project_refresh_on_0_failed_1, project.getName(), e
-												.getMessage()));
+										NLS.bind(Messages.Project_refresh_on_0_failed_1, project.getName(),
+												e.getMessage()));
 						}
 					}
 				}
@@ -217,8 +217,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			}
 			catch(Throwable e)
 			{
-				CorePlugin.getLogger()
-						.warning(e, NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
+				CorePlugin.getLogger().warning(e, NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
 			}
 			finally
 			{
@@ -233,9 +232,12 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		public boolean visit(IResourceDelta delta) throws CoreException
 		{
 			int kind = delta.getKind();
+			IResource resource = delta.getResource();
 			if(kind == IResourceDelta.REMOVED)
 			{
-				IResource resource = delta.getResource();
+				if((delta.getFlags() & IResourceDelta.MOVED_TO) != 0)
+					return false;
+
 				if(resource == null)
 					return false;
 
@@ -275,12 +277,20 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				}
 			}
 
+			if(kind == IResourceDelta.ADDED && (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)
+			{
+				synchronized(MetadataSynchronizer.this)
+				{
+					WorkspaceInfo.setComponentIdentifier(resource, null);
+					m_projectsNeedingUpdate.add(resource.getProject());
+				}
+				return false;
+			}
+
 			if(kind == IResourceDelta.ADDED
 					|| (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) != 0)
 			{
-				IResource resource = delta.getResource();
-				IPath path = resource.getProjectRelativePath();
-				if((path.isEmpty() && resource instanceof IProject) || isCSpecSource(resource, path))
+				if(resource instanceof IProject || isCSpecSource(resource, resource.getProjectRelativePath()))
 				{
 					synchronized(MetadataSynchronizer.this)
 					{
@@ -464,8 +474,8 @@ public class MetadataSynchronizer implements IResourceChangeListener
 				IProject refdProj = (IProject)resource;
 				if(!refdProj.isOpen())
 				{
-					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1, project.getName(), cref
-							.getName()));
+					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1, project.getName(),
+							cref.getName()));
 				}
 				else if(!oldSet.contains(refdProj.getName()))
 				{
@@ -666,8 +676,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 		if(path.equals(Path.fromPortableString(tmp)))
 			return true;
 
-		tmp = AbstractResolutionBuilder
-				.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
+		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
 		if(path.equals(Path.fromPortableString(tmp)))
 			return true;
 
