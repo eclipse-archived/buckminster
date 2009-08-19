@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
 /**
  * The LocalResolver will attempt to resolve the query using locally available resources. This includes:
@@ -77,7 +76,7 @@ import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "serial", "restriction" })
+@SuppressWarnings( { "serial" })
 public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implements IResolver
 {
 	public static final Provider INSTALLED_BUNDLE_PROVIDER;
@@ -460,27 +459,25 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			{
 				// We don't want a version conflict is one of the ranges are optional.
 				//
-				VersionRange newRqRange = request.getVersionRange();
-				if(newRqRange != null)
+				try
 				{
-					VersionRange oldRqRange = oldRq.getVersionRange();
-					if(oldRqRange != null && oldRqRange.intersect(newRqRange) == null)
+					request.mergeDesignator(oldRq);
+				}
+				catch(ComponentRequestConflictException e)
+				{
+					if(oldRq.isOptional())
 					{
-						if(oldRq.isOptional())
-							//
-							// Previous request now in conflict and must be discarded.
-							//
-							nr.forceUnresolved();
-						else
-						{
-							// New request is optional and in conflict. Invalidate the
-							// new infant.
-							//
-							invalidateInfant = true;
-							break;
-						}
+						// Previous request now in conflict and must be discarded.
+						//
+						nr.forceUnresolved();
 						continue;
 					}
+
+					// New request is optional and in conflict. Invalidate the
+					// new infant.
+					//
+					invalidateInfant = true;
+					break;
 				}
 			}
 
