@@ -1127,7 +1127,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			}
 			else
 			{
-				m_versionString.setText(TextUtils.notNullString(version.getOriginal()));
+				m_versionString.setText(TextUtils.notNullString(VersionHelper.getHumanReadable(version)));
 				m_versionType.select(m_versionType.indexOf(VersionHelper.getVersionType(version.getFormat()).getId()));
 			}
 
