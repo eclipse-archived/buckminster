@@ -12,10 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
@@ -63,7 +61,6 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
@@ -549,22 +546,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected abstract String getProductOutputFolder(String productId);
 
 	protected abstract String getPropertyFileName();
-
-	protected Set<String> getRequiredBundleNames(BundleDescription bundleDesc)
-	{
-		HashSet<String> requiredBundles = null;
-		if(bundleDesc != null)
-		{
-			BundleSpecification[] rqBundles = bundleDesc.getRequiredBundles();
-			if(rqBundles != null && rqBundles.length > 0)
-			{
-				requiredBundles = new HashSet<String>();
-				for(BundleSpecification rqBundle : rqBundles)
-					requiredBundles.add(rqBundle.getName());
-			}
-		}
-		return requiredBundles;
-	}
 
 	protected boolean isFeature()
 	{

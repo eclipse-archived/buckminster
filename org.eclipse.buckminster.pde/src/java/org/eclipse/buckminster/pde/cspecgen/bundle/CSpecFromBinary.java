@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -34,6 +33,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -230,9 +230,11 @@ public class CSpecFromBinary extends CSpecGenerator
 	private void addImports() throws CoreException
 	{
 		IPluginModelBase model = m_plugin.getPluginModel();
-		Set<String> requiredBundles = getRequiredBundleNames(model.getBundleDescription());
+		BundleDescription bundleDesc = model.getBundleDescription();
 
-		BundleSpecification[] imports = model.getBundleDescription().getRequiredBundles();
+		BundleSpecification[] imports = null;
+		if(bundleDesc != null)
+			imports = bundleDesc.getRequiredBundles();
 		boolean isFragment = model.isFragmentModel();
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
@@ -264,14 +266,6 @@ public class CSpecFromBinary extends CSpecGenerator
 			String pluginId = pluginImport.getName();
 			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
-
-			if(requiredBundles != null && !requiredBundles.contains(pluginId))
-			{
-				// This bundle is imported via package import. We don't treat that
-				// as a bundle dependency
-				//
-				continue;
-			}
 
 			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(skipComponent(query, dependency) || !addDependency(dependency))

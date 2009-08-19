@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
@@ -565,11 +566,13 @@ public class CSpecFromSource extends CSpecGenerator
 
 	protected void addImports() throws CoreException
 	{
-		BundleSpecification[] imports = m_plugin.getPluginModel().getBundleDescription().getRequiredBundles();
-		if(imports == null || imports.length == 0)
+		BundleDescription bundleDesc = m_plugin.getPluginModel().getBundleDescription();
+		if(bundleDesc == null)
 			return;
 
-		Set<String> requiredBundles = getRequiredBundleNames(m_plugin.getPluginModel().getBundleDescription());
+		BundleSpecification[] imports = bundleDesc.getRequiredBundles();
+		if(imports == null || imports.length == 0)
+			return;
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
@@ -584,14 +587,6 @@ public class CSpecFromSource extends CSpecGenerator
 			String pluginId = pluginImport.getName();
 			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
-
-			if(requiredBundles != null && !requiredBundles.contains(pluginId))
-			{
-				// This bundle is imported via package import. We don't treat that
-				// as a bundle dependency
-				//
-				continue;
-			}
 
 			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if(skipComponent(query, dependency) || !addDependency(dependency))
