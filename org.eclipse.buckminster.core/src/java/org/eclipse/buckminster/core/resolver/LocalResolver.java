@@ -583,6 +583,14 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			res = depNode.getResolution();
 			if(res == null)
 				return node;
+
+			// There is one case when the depNode is actually not OK. That is when
+			// an optional request has been supplanted by a required request with a less
+			// stringent range and the final result doesn't fit the optional request.
+			//
+			ComponentRequest rq = query.getComponentRequest();
+			if(rq.isOptional() && !rq.designates(res.getComponentIdentifier()))
+				return node;
 		}
 
 		context = node.startResolvingChildren(depNode);
