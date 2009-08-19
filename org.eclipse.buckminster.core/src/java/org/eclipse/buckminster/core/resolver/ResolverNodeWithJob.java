@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -90,7 +89,10 @@ class ResolverNodeWithJob extends ResolverNode
 	protected IStatus run(IProgressMonitor monitor)
 	{
 		if(isForceUnresolved())
+		{
+			m_resolver.resolutionPartDone();
 			return Status.OK_STATUS;
+		}
 
 		clearInvalidationFlag();
 		m_resolver.addJobMonitor(monitor);
@@ -101,20 +103,6 @@ class ResolverNodeWithJob extends ResolverNode
 			if(node != null)
 			{
 				m_resolver.resolutionPartDone();
-				Resolution res = node.getResolution();
-				if(res != null)
-				{
-					// There is one case when the node is actually not OK. That is when
-					// an optional request has been supplanted by a required request with a less
-					// stringent range and the final result doesn't fit the optional request.
-					//
-					ComponentRequest rq = node.getRequest();
-					if(rq.isOptional() && !rq.designates(res.getComponentIdentifier()))
-					{
-						node = null;
-						return Status.OK_STATUS;
-					}
-				}
 				buildTree(node);
 			}
 		}

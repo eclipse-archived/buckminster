@@ -194,60 +194,111 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		if(!Trivial.equalsAllowNull(getName(), that.getName()))
 			throw new ComponentRequestConflictException(this, that);
 
-		String thisCType = getComponentTypeID();
-		String thatCType = that.getComponentTypeID();
-		if(thisCType == null)
-			thisCType = thatCType;
-		else if(thatCType != null && !thisCType.equals(thatCType))
-			throw new ComponentRequestConflictException(this, that);
-
-		VersionRange thisVD = getVersionRange();
-		VersionRange thatVD = that.getVersionRange();
-		VersionRange mergedVD;
+		int cmp = 0;
+		final VersionRange thisVD = getVersionRange();
+		final VersionRange thatVD = that.getVersionRange();
+		VersionRange mergedVD = null;
 		if(thisVD == null)
-			mergedVD = thatVD;
+		{
+			if(thatVD != null)
+			{
+				cmp = 1; // limited by that
+				mergedVD = thatVD;
+			}
+		}
 		else
 		{
 			if(thatVD == null)
+			{
+				cmp = -1; // limited by this
 				mergedVD = thisVD;
+			}
 			else
 			{
 				mergedVD = thisVD.intersect(thatVD);
 				if(mergedVD == null)
 					throw new ComponentRequestConflictException(this, that);
+
+				if(mergedVD.equals(thisVD))
+				{
+					if(!mergedVD.equals(thatVD))
+						cmp = -1; // limited by this
+				}
+				else
+				{
+					if(mergedVD.equals(thatVD))
+						cmp = 1; // limited by that
+					else
+						cmp = 2; // Limited by both
+				}
 			}
 		}
 
-		Filter thisFilter = getFilter();
-		Filter thatFilter = that.getFilter();
+		final String thisCType = getComponentTypeID();
+		final String thatCType = that.getComponentTypeID();
+		String mergedCType = null;
+		if(thisCType == null)
+		{
+			if(thatCType != null)
+			{
+				if(cmp == 0)
+					cmp = 1;
+				mergedCType = thatCType;
+			}
+		}
+		else
+		{
+			if(thatCType != null)
+			{
+				if(!thisCType.equals(thatCType))
+					throw new ComponentRequestConflictException(this, that);
+			}
+			else
+			{
+				if(cmp == 0)
+					cmp = -1;
+			}
+			mergedCType = thisCType;
+		}
+
+		final Filter thisFilter = getFilter();
+		final Filter thatFilter = that.getFilter();
 		if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
 		{
-			if(thisFilter != null)
-				thisFilter = thisFilter.stripFilter(P2_OPTIONAL_FILTER);
-			if(thatFilter != null)
-				thatFilter = thatFilter.stripFilter(P2_OPTIONAL_FILTER);
-			if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
+			if(thisFilter == null || thatFilter == null
+					|| !thisFilter.stripFilter(P2_OPTIONAL_FILTER).equals(thatFilter.stripFilter(P2_OPTIONAL_FILTER)))
 				throw new ComponentRequestConflictException(this, that);
 		}
 
 		// Never allow an optional request to qualify one that is not
-		// optional
+		// optional. The opposite is OK though.
 		//
 		if(isOptional())
 		{
 			if(!that.isOptional())
+			{
+				if(cmp == -1 || cmp == 2)
+					// Qualified by this
+					throw new ComponentRequestConflictException(this, that);
+
 				return that;
+			}
 		}
 		else if(that.isOptional())
+		{
+			if(cmp > 0)
+				// Qualified by that
+				throw new ComponentRequestConflictException(this, that);
+			return this;
+		}
+
+		if(Trivial.equalsAllowNull(mergedVD, thisVD) && Trivial.equalsAllowNull(mergedCType, thisCType))
 			return this;
 
-		if(Trivial.equalsAllowNull(mergedVD, thisVD) && Trivial.equalsAllowNull(thisCType, getComponentTypeID()))
-			return this;
-
-		if(Trivial.equalsAllowNull(mergedVD, thatVD) && Trivial.equalsAllowNull(thisCType, that.getComponentTypeID()))
+		if(Trivial.equalsAllowNull(mergedVD, thatVD) && Trivial.equalsAllowNull(mergedCType, thatCType))
 			return that;
 
-		return new ComponentRequest(getName(), thisCType, mergedVD, thisFilter);
+		return new ComponentRequest(getName(), mergedCType, mergedVD, thisFilter);
 	}
 
 	@Override

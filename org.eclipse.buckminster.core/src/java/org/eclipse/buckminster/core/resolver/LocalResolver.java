@@ -457,7 +457,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			ComponentRequest oldRq = nr.getQuery().getComponentRequest();
 			if(newRqOptional != oldRq.isOptional())
 			{
-				// We don't want a version conflict is one of the ranges are optional.
+				// We don't want a version conflict if one of the ranges are optional.
 				//
 				try
 				{
@@ -582,14 +582,6 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 			res = depNode.getResolution();
 			if(res == null)
-				return node;
-
-			// There is one case when the depNode is actually not OK. That is when
-			// an optional request has been supplanted by a required request with a less
-			// stringent range and the final result doesn't fit the optional request.
-			//
-			ComponentRequest rq = query.getComponentRequest();
-			if(rq.isOptional() && !rq.designates(res.getComponentIdentifier()))
 				return node;
 		}
 
