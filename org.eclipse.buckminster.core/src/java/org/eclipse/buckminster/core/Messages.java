@@ -566,6 +566,8 @@ public class Messages extends NLS
 
 	public static String Unable_to_obtain_resource_0_from_workspace_1;
 
+	public static String Unable_to_obtain_value_0;
+
 	public static String Cannot_materialize;
 
 	public static String Unable_to_resolve_0_1_in_MDR_2;

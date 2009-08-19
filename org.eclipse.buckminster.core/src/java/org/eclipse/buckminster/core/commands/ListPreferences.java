@@ -20,6 +20,7 @@ import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
@@ -90,7 +91,15 @@ public class ListPreferences extends AbstractCommand
 				out.print(Messages.Key);
 				out.println(bph.getKey());
 			}
-			String v = bph.get(null);
+			String v;
+			try
+			{
+				v = bph.get(null);
+			}
+			catch(CoreException e)
+			{
+				v = NLS.bind(Messages.Unable_to_obtain_value_0, e.getMessage());
+			}
 			if(v == null)
 				out.println(Messages.No_value_set);
 			else
