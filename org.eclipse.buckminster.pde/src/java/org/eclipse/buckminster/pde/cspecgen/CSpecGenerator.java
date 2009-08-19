@@ -68,7 +68,6 @@ import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IMatchRules;
-import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -401,14 +400,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return copyPlugins;
 	}
 
-	protected ComponentRequestBuilder createDependency(IPluginImport pluginImport, String category)
+	protected ComponentRequestBuilder createDependency(BundleSpecification pluginImport, String category)
 			throws CoreException
 	{
 		Filter filter = null;
 		if(pluginImport.isOptional())
 			filter = ComponentRequest.P2_OPTIONAL_FILTER;
-		return createDependency(pluginImport.getId(), category, pluginImport.getVersion(), pluginImport.getMatch(),
-				filter);
+		return createDependency(pluginImport.getName(), category,
+				VersionRange.fromOSGiVersionRange(pluginImport.getVersionRange()), filter);
 	}
 
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
@@ -417,19 +416,25 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		versionDesignator = Trivial.trim(versionDesignator);
 		if(versionDesignator != null && versionDesignator.equals("0.0.0")) //$NON-NLS-1$
 			versionDesignator = null;
-
-		ComponentRequestBuilder bld = getCSpec().createDependencyBuilder();
-		bld.setName(name);
-		bld.setComponentTypeID(componentType);
-		bld.setVersionRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, versionDesignator));
-		bld.setFilter(filter);
-		return bld;
+		return createDependency(name, componentType, VersionHelper.createRange(VersionFormat.OSGI_FORMAT,
+				versionDesignator), filter);
 	}
 
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String version,
 			int pdeMatchRule, Filter filter) throws CoreException
 	{
 		return createDependency(name, componentType, convertMatchRule(pdeMatchRule, version), filter);
+	}
+
+	protected ComponentRequestBuilder createDependency(String name, String componentType, VersionRange versionRange,
+			Filter filter) throws CoreException
+	{
+		ComponentRequestBuilder bld = getCSpec().createDependencyBuilder();
+		bld.setName(name);
+		bld.setComponentTypeID(componentType);
+		bld.setVersionRange(versionRange);
+		bld.setFilter(filter);
+		return bld;
 	}
 
 	protected ComponentRequestBuilder createDependency(VersionedName versionedName, String componentType)

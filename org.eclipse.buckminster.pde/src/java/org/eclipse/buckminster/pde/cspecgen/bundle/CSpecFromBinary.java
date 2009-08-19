@@ -34,9 +34,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
-import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.bundle.BundlePluginBase;
@@ -232,7 +232,7 @@ public class CSpecFromBinary extends CSpecGenerator
 		IPluginModelBase model = m_plugin.getPluginModel();
 		Set<String> requiredBundles = getRequiredBundleNames(model.getBundleDescription());
 
-		IPluginImport[] imports = m_plugin.getImports();
+		BundleSpecification[] imports = model.getBundleDescription().getRequiredBundles();
 		boolean isFragment = model.isFragmentModel();
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
@@ -247,11 +247,11 @@ public class CSpecFromBinary extends CSpecGenerator
 			// that bundle defines the execution environments.
 			//
 			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName()) || query.skipComponent(SYSTEM_BUNDLE_CNAME)))
-				cspec.addDependency(createDependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, null, null));
+				cspec.addDependency(createDependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, (String)null, null));
 			return;
 		}
 
-		for(IPluginImport pluginImport : imports)
+		for(BundleSpecification pluginImport : imports)
 		{
 			if(pluginImport.isOptional())
 				//
@@ -261,7 +261,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				//
 				continue;
 
-			String pluginId = pluginImport.getId();
+			String pluginId = pluginImport.getName();
 			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
 
@@ -279,7 +279,7 @@ public class CSpecFromBinary extends CSpecGenerator
 
 			String component = dependency.getName();
 			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
-			if(pluginImport.isReexported())
+			if(pluginImport.isExported())
 				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES);
 		}
 	}

@@ -50,12 +50,12 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
+import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.build.IBuildModel;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
-import org.eclipse.pde.core.plugin.IPluginImport;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
@@ -565,7 +565,7 @@ public class CSpecFromSource extends CSpecGenerator
 
 	protected void addImports() throws CoreException
 	{
-		IPluginImport[] imports = m_plugin.getImports();
+		BundleSpecification[] imports = m_plugin.getPluginModel().getBundleDescription().getRequiredBundles();
 		if(imports == null || imports.length == 0)
 			return;
 
@@ -579,9 +579,9 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 
-		for(IPluginImport pluginImport : imports)
+		for(BundleSpecification pluginImport : imports)
 		{
-			String pluginId = pluginImport.getId();
+			String pluginId = pluginImport.getName();
 			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
 
@@ -602,7 +602,7 @@ public class CSpecFromSource extends CSpecGenerator
 			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
 			addExternalPrerequisite(getAttributeBuildRequirements(), component, IComponentType.OSGI_BUNDLE,
 					ATTRIBUTE_JAVA_BINARIES);
-			if(pluginImport.isReexported())
+			if(pluginImport.isExported())
 				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES);
 			addExternalPrerequisite(productConfigExports, component, IComponentType.OSGI_BUNDLE,
 					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
@@ -690,7 +690,8 @@ public class CSpecFromSource extends CSpecGenerator
 			if(action.getPrerequisite(artifactName) == null)
 			{
 				action.addLocalPrerequisite(artifactName);
-				eclipseBuildProducts.remove(output);
+				if(eclipseBuildProducts != null)
+					eclipseBuildProducts.remove(output);
 			}
 		}
 		return jarPath;
