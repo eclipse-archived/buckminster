@@ -28,6 +28,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
+import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
+import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
+import org.eclipse.equinox.internal.p2.updatesite.UpdateSite;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
@@ -175,12 +179,15 @@ public class CategoriesAction extends AbstractPublisherAction
 
 	private final List<VersionedName> m_featureEntries;
 
+	private final File m_projectRoot;
+
 	public CategoriesAction(File projectRoot, Map<String, String> buildProperties, List<VersionedName> featureEntries)
 			throws CoreException
 	{
 		m_buildProperties = buildProperties;
 		m_localizations = getLocalizations(buildProperties, projectRoot);
 		m_featureEntries = featureEntries;
+		m_projectRoot = projectRoot;
 	}
 
 	/**
@@ -262,8 +269,15 @@ public class CategoriesAction extends AbstractPublisherAction
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
 		Map<Category, Set<IInstallableUnit>> categoriesToFeatureIUs = new HashMap<Category, Set<IInstallableUnit>>();
-		Map<IInstallableUnit, List<Category>> featuresToCategories = getFeatureToCategoryMappings(publisherInfo,
-				results, monitor);
+		Map<IInstallableUnit, List<Category>> featuresToCategories;
+		try
+		{
+			featuresToCategories = getFeatureToCategoryMappings(publisherInfo, results, monitor);
+		}
+		catch(CoreException e)
+		{
+			return e.getStatus();
+		}
 		for(Map.Entry<IInstallableUnit, List<Category>> entry : featuresToCategories.entrySet())
 		{
 			IInstallableUnit iu = entry.getKey();
@@ -336,7 +350,7 @@ public class CategoriesAction extends AbstractPublisherAction
 	}
 
 	private Map<IInstallableUnit, List<Category>> getFeatureToCategoryMappings(IPublisherInfo publisherInfo,
-			IPublisherResult results, IProgressMonitor monitor)
+			IPublisherResult results, IProgressMonitor monitor) throws CoreException
 	{
 		HashMap<IInstallableUnit, List<Category>> mappings = new HashMap<IInstallableUnit, List<Category>>();
 
@@ -415,6 +429,47 @@ public class CategoriesAction extends AbstractPublisherAction
 				defaultCategoryList = Collections.singletonList(cat);
 		}
 
+		File categoryFile = new File(m_projectRoot, "category.xml"); //$NON-NLS-1$
+		if(categoryFile.canRead())
+		{
+			UpdateSite categoryDef = UpdateSite.loadCategoryFile(categoryFile.toURI(), monitor);
+			SiteModel site = categoryDef.getSite();
+			if(site != null)
+			{
+				for(SiteFeature feature : site.getFeatures())
+				{
+					IInstallableUnit iu = getFeatureIU(feature.getFeatureIdentifier(),
+							Version.create(feature.getFeatureVersion()), publisherInfo, results, monitor);
+					if(iu == null)
+						continue;
+
+					for(String id : feature.getCategoryNames())
+					{
+						Category cat = categories.get(id);
+						if(cat == null)
+						{
+							SiteCategory siteCat = site.getCategory(id);
+							if(siteCat == null)
+								continue;
+
+							cat = new Category(id);
+							cat.setDescription(siteCat.getDescription());
+							cat.setLabel(siteCat.getLabel());
+							categories.put(id, cat);
+						}
+						List<Category> catList = mappings.get(iu);
+						if(catList == null)
+						{
+							catList = new ArrayList<Category>();
+							mappings.put(iu, catList);
+							catList.add(cat);
+						}
+						else if(!catList.contains(cat))
+							catList.add(cat);
+					}
+				}
+			}
+		}
 		for(VersionedName fe : m_featureEntries)
 		{
 			IInstallableUnit iu = getFeatureIU(fe.getId(), fe.getVersion(), publisherInfo, results, monitor);
