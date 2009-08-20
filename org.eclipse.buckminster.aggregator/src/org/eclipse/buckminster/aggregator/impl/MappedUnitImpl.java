@@ -9,6 +9,8 @@ package org.eclipse.buckminster.aggregator.impl;
 import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Configuration;
+import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -196,12 +198,30 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		super.eUnset(featureID);
 	}
 
+	public InstallableUnit getInstallableUnit()
+	{
+		if(!isBranchEnabled())
+			return null;
+
+		return getInstallableUnitGen();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public InstallableUnit getInstallableUnit(boolean forceResolve)
+	{
+		return basicGetInstallableUnit();
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public InstallableUnit getInstallableUnit()
+	public InstallableUnit getInstallableUnitGen()
 	{
 		if(installableUnit != null && installableUnit.eIsProxy())
 		{
@@ -238,6 +258,27 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 					AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS);
 		}
 		return validConfigurations;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isBranchEnabled()
+	{
+		if(!isEnabled())
+			return false;
+
+		MappedRepository mappedRepository = (MappedRepository)eContainer();
+		if(!mappedRepository.isEnabled())
+			return false;
+
+		Contribution contribution = (Contribution)mappedRepository.eContainer();
+		if(!contribution.isEnabled())
+			return false;
+
+		return true;
 	}
 
 	/**

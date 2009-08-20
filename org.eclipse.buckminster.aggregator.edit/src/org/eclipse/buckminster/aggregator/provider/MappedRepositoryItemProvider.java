@@ -7,7 +7,10 @@
 package org.eclipse.buckminster.aggregator.provider;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
@@ -16,13 +19,19 @@ import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.command.RemoveCommand;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -77,12 +86,27 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	/**
 	 * This returns MappedRepository.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/MappedRepository"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/MappedRepository" + (((MappedRepository)object).isBranchEnabled()
+						? ""
+						: "Disabled")));
+	}
+
+	/**
+	 * Allow adding children only if the repository enabled
+	 */
+	@Override
+	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling)
+	{
+		if(!(((MappedRepository)object).isBranchEnabled()))
+			return Collections.emptySet();
+
+		return super.getNewChildDescriptors(object, editingDomain, sibling);
 	}
 
 	/**
@@ -97,11 +121,11 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		{
 			super.getPropertyDescriptors(object);
 
+			addEnabledPropertyDescriptor(object);
 			addMetadataRepositoryPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
 			addMirrorArtifactsPropertyDescriptor(object);
 			addCategoryPrefixPropertyDescriptor(object);
-			addEnabledPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -141,6 +165,10 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		}
 		else
 			bld.append("not mapped");
+
+		if(!mappedRepository.isEnabled())
+			bld.append(" (disabled)");
+
 		return bld.toString();
 	}
 
@@ -154,21 +182,42 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		if(notification.getEventType() != Notification.SET)
 			return;
 
-		Object feature = notification.getFeature();
-		if(!(feature instanceof EAttribute))
-			return;
-
-		String name = ((EAttribute)feature).getName();
-		if("location".equals(name))
-			onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
-		else if("mapVerbatim".equals(name))
+		switch(notification.getFeatureID(MappedRepository.class))
 		{
-			for(Feature mappedFeature : ((MappedRepository)notification.getNotifier()).getFeatures())
-				for(CustomCategory category : mappedFeature.getCategories())
-					category.eNotify(ViewerNotification.wrapNotification(notification, category));
+		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+			onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
+			break;
 
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+
+			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
+			Set<EObject> affectedNodes = new HashSet<EObject>();
+
+			// Go through all direct ancestors first
+			EObject container = ((EObject)notification.getNotifier());
+			while(container != null)
+			{
+				affectedNodeLabels.add(container);
+				container = container.eContainer();
+			}
+
+			// Browse all mapped units which may have changed their virtual status (inherently enabled/disabled)
+			for(MappedUnit unit : ((MappedRepository)notification.getNotifier()).getUnits(!notification.getNewBooleanValue()))
+			{
+				affectedNodes.add(unit);
+				// And now, find all categories which may contain the feature just being enabled/disabled
+				if(unit instanceof Feature)
+					for(CustomCategory category : ((Feature)unit).getCategories())
+						affectedNodes.add(category);
+			}
+
+			for(EObject affectedNode : affectedNodes)
+				fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
+			for(EObject affectedNode : affectedNodeLabels)
+				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 		}
+
 	}
 
 	/**
@@ -184,11 +233,11 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 		switch(notification.getFeatureID(MappedRepository.class))
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
 		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
@@ -225,9 +274,9 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MappedRepository_enabled_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MappedRepository_enabled_feature", "_UI_MappedRepository_type"),
-				AggregatorPackage.Literals.MAPPED_REPOSITORY__ENABLED, true, false, false,
+				getString("_UI_EnabledStatusProvider_enabled_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_EnabledStatusProvider_enabled_feature", "_UI_EnabledStatusProvider_type"),
+				AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED, true, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
@@ -254,7 +303,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	 */
 	protected void addMetadataRepositoryPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(new ItemPropertyDescriptor(
+		itemPropertyDescriptors.add(new ContributionItemProvider.DynamicItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_MappedRepository_metadataRepository_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_metadataRepository_feature",
@@ -322,6 +371,51 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES,
 				AggregatorFactory.eINSTANCE.createCategory()));
+	}
+
+	/**
+	 * Creates a dynamic property descriptor which alters the readonly attribute according to the "enabled" flag
+	 */
+	@Override
+	protected ItemPropertyDescriptor createItemPropertyDescriptor(AdapterFactory adapterFactory,
+			ResourceLocator resourceLocator, String displayName, String description, EStructuralFeature feature,
+			boolean isSettable, boolean multiLine, boolean sortChoices, Object staticImage, String category,
+			String[] filterFlags)
+	{
+		return new ContributionItemProvider.DynamicItemPropertyDescriptor(adapterFactory, resourceLocator, displayName,
+				description, feature, isSettable, multiLine, sortChoices, staticImage, category, filterFlags);
+	}
+
+	/**
+	 * Allow deleting a child from mapped repository only if the mapped repository is enabled
+	 */
+	@Override
+	@Deprecated
+	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EReference feature,
+			Collection<?> collection)
+	{
+		if(((MappedRepository)owner).isBranchEnabled())
+			return new RemoveCommand(domain, owner, feature, collection);
+
+		return UnexecutableCommand.INSTANCE;
+	}
+
+	/**
+	 * Allow deleting a child from mapped repository only if the mapped repository is enabled
+	 */
+	@Override
+	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EStructuralFeature feature,
+			Collection<?> collection)
+	{
+		if(feature instanceof EReference)
+		{
+			return createRemoveCommand(domain, owner, (EReference)feature, collection);
+		}
+
+		if(((MappedRepository)owner).isEnabled() && ((Contribution)owner.eContainer()).isEnabled())
+			return new RemoveCommand(domain, owner, feature, collection);
+
+		return UnexecutableCommand.INSTANCE;
 	}
 
 	/**

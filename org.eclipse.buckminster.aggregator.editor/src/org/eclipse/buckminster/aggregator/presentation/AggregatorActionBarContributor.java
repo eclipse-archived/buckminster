@@ -14,7 +14,12 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.runtime.Logger;
@@ -26,7 +31,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.ui.action.ControlAction;
@@ -71,6 +79,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	class BuildRepoAction extends Action
 	{
 		private final boolean m_verifyOnly;
+
 		private final boolean m_update;
 
 		public BuildRepoAction(boolean verifyOnly, boolean update)
@@ -201,6 +210,76 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	}
 
+	class EnabledStatusAction extends Action
+	{
+		private EnabledStatusProvider m_ref;
+
+		@Override
+		public String getText()
+		{
+			if(m_ref == null)
+				return null;
+
+			return m_ref.isEnabled()
+					? AggregatorEditorPlugin.INSTANCE.getString("_UI_Disable_menu_item")
+					: AggregatorEditorPlugin.INSTANCE.getString("_UI_Enable_menu_item");
+		}
+
+		@Override
+		public void run()
+		{
+			int featureId = AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED;
+
+			EStructuralFeature feature = ((EObject)m_ref).eClass().getEStructuralFeature(featureId);
+			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
+			SetCommand command = (SetCommand)SetCommand.create(domain, m_ref, feature,
+					Boolean.valueOf(!m_ref.isEnabled()));
+			command.setLabel(getText());
+			domain.getCommandStack().execute(command);
+			updateContextMenu(new IStructuredSelection()
+			{
+
+				public Object getFirstElement()
+				{
+					return m_ref;
+				}
+
+				public boolean isEmpty()
+				{
+					return false;
+				}
+
+				@SuppressWarnings("unchecked")
+				public Iterator iterator()
+				{
+					return Collections.singleton(m_ref).iterator();
+				}
+
+				public int size()
+				{
+					return 1;
+				}
+
+				public Object[] toArray()
+				{
+					return new Object[] { m_ref };
+				}
+
+				@SuppressWarnings("unchecked")
+				public List toList()
+				{
+					return Collections.singletonList(m_ref);
+				}
+
+			});
+		}
+
+		public void setReference(EnabledStatusProvider ref)
+		{
+			m_ref = ref;
+		}
+	}
+
 	/**
 	 * This keeps track of the active editor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -298,6 +377,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 */
 	protected IMenuManager createSiblingMenuManager;
 
+	protected ActionContributionItem m_enabledStatusMenuItem;
+
 	protected BuildRepoAction m_buildRepoAction;
 
 	protected BuildRepoAction m_updateRepoAction;
@@ -315,6 +396,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();
 		controlAction = new ControlAction();
+		m_enabledStatusMenuItem = new ActionContributionItem(new EnabledStatusAction());
+		m_enabledStatusMenuItem.setVisible(false);
 		m_buildRepoAction = new BuildRepoAction(false, false);
 		m_updateRepoAction = new BuildRepoAction(false, true);
 		m_verifyRepoAction = new BuildRepoAction(true, false);
@@ -394,6 +477,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		submenuManager = new MenuManager(AggregatorEditorPlugin.INSTANCE.getString("_UI_CreateSibling_menu_item"));
 		populateManager(submenuManager, createSiblingActions, null);
 		menuManager.insertBefore("edit", submenuManager);
+
+		menuManager.insertBefore("edit", m_enabledStatusMenuItem);
 	}
 
 	/**
@@ -401,52 +486,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 * {@link org.eclipse.jface.viewers.SelectionChangedEvent}s by querying for the children and siblings that can be
 	 * added to the selected object and updating the menus accordingly. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public void selectionChanged(SelectionChangedEvent event)
 	{
-		// Remove any menu items for old selection.
-		//
-		if(createChildMenuManager != null)
-		{
-			depopulateManager(createChildMenuManager, createChildActions);
-		}
-		if(createSiblingMenuManager != null)
-		{
-			depopulateManager(createSiblingMenuManager, createSiblingActions);
-		}
-
-		// Query the new selection for appropriate new child/sibling descriptors
-		//
-		Collection<?> newChildDescriptors = null;
-		Collection<?> newSiblingDescriptors = null;
-
-		ISelection selection = event.getSelection();
-		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
-		{
-			Object object = ((IStructuredSelection)selection).getFirstElement();
-
-			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
-
-			newChildDescriptors = domain.getNewChildDescriptors(object, null);
-			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
-		}
-
-		// Generate actions for selection; populate and redraw the menus.
-		//
-		createChildActions = generateCreateChildActions(newChildDescriptors, selection);
-		createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
-
-		if(createChildMenuManager != null)
-		{
-			populateManager(createChildMenuManager, createChildActions, null);
-			createChildMenuManager.update(true);
-		}
-		if(createSiblingMenuManager != null)
-		{
-			populateManager(createSiblingMenuManager, createSiblingActions, null);
-			createSiblingMenuManager.update(true);
-		}
+		updateContextMenu(event.getSelection());
 	}
 
 	/**
@@ -482,6 +526,78 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			{
 				selectionChanged(new SelectionChangedEvent(selectionProvider, selectionProvider.getSelection()));
 			}
+		}
+	}
+
+	public void updateContextMenu(ISelection selection)
+	{
+		// Remove any menu items for old selection.
+		//
+		if(createChildMenuManager != null)
+		{
+			depopulateManager(createChildMenuManager, createChildActions);
+		}
+		if(createSiblingMenuManager != null)
+		{
+			depopulateManager(createSiblingMenuManager, createSiblingActions);
+		}
+
+		// Query the new selection for appropriate new child/sibling descriptors
+		//
+		Collection<?> newChildDescriptors = null;
+		Collection<?> newSiblingDescriptors = null;
+
+		m_enabledStatusMenuItem.setVisible(false);
+
+		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
+		{
+			Object object = ((IStructuredSelection)selection).getFirstElement();
+
+			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
+
+			newChildDescriptors = domain.getNewChildDescriptors(object, null);
+			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+
+			if(object instanceof EnabledStatusProvider)
+			{
+				EnabledStatusAction action = (EnabledStatusAction)m_enabledStatusMenuItem.getAction();
+				EnabledStatusProvider item = (EnabledStatusProvider)object;
+				action.setReference(item);
+
+				boolean ancestorDisabled = false;
+				EObject ancestor = ((EObject)object).eContainer();
+				while(ancestor != null)
+				{
+					if(ancestor instanceof EnabledStatusProvider && !((EnabledStatusProvider)ancestor).isEnabled())
+					{
+						ancestorDisabled = true;
+						break;
+					}
+
+					ancestor = ancestor.eContainer();
+				}
+
+				action.setEnabled(!ancestorDisabled);
+
+				m_enabledStatusMenuItem.update();
+				m_enabledStatusMenuItem.setVisible(true);
+			}
+		}
+
+		// Generate actions for selection; populate and redraw the menus.
+		//
+		createChildActions = generateCreateChildActions(newChildDescriptors, selection);
+		createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
+
+		if(createChildMenuManager != null)
+		{
+			populateManager(createChildMenuManager, createChildActions, null);
+			createChildMenuManager.update(true);
+		}
+		if(createSiblingMenuManager != null)
+		{
+			populateManager(createSiblingMenuManager, createSiblingActions, null);
+			createSiblingMenuManager.update(true);
 		}
 	}
 

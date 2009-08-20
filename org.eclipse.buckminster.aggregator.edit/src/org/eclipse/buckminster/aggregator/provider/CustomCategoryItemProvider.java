@@ -11,10 +11,15 @@ import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -215,6 +220,27 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	/**
+	 * Don't allow deletion of children
+	 */
+	@Override
+	@Deprecated
+	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EReference feature,
+			Collection<?> collection)
+	{
+		return UnexecutableCommand.INSTANCE;
+	}
+
+	/**
+	 * Don't allow deletion of children
+	 */
+	@Override
+	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EStructuralFeature feature,
+			Collection<?> collection)
+	{
+		return UnexecutableCommand.INSTANCE;
 	}
 
 	/**

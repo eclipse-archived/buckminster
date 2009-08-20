@@ -1127,7 +1127,9 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		return touchpointType != null
 				? touchpointType
-				: ITouchpointType.NONE;
+				: eIsProxy()
+						? null
+						: ITouchpointType.NONE;
 	}
 
 	/**

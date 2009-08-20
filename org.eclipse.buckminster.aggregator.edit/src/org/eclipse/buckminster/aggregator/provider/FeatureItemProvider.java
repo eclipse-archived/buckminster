@@ -58,9 +58,10 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Feature" + (((Feature)object).isEnabled()
-				? ""
-				: "Disabled")));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/Feature" + (((Feature)object).isBranchEnabled()
+						? ""
+						: "Disabled")));
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	public String getText(Object object)
 	{
 		Feature feature = (Feature)object;
-		InstallableUnit iu = feature.getInstallableUnit();
+		InstallableUnit iu = feature.getInstallableUnit(false);
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Feature_type"));
 		bld.append(' ');

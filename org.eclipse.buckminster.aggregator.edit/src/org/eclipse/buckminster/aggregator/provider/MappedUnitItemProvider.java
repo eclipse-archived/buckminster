@@ -193,9 +193,9 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MappedUnit_enabled_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MappedUnit_enabled_feature", "_UI_MappedUnit_type"),
-				AggregatorPackage.Literals.MAPPED_UNIT__ENABLED, true, false, false,
+				getString("_UI_EnabledStatusProvider_enabled_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_EnabledStatusProvider_enabled_feature", "_UI_EnabledStatusProvider_type"),
+				AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED, true, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
@@ -206,7 +206,7 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	 */
 	protected void addInstallableUnitPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(new ItemPropertyDescriptor(
+		itemPropertyDescriptors.add(new ContributionItemProvider.DynamicItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_MappedUnit_installableUnit_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_MappedUnit_installableUnit_feature", "_UI_MappedUnit_type"),
@@ -286,6 +286,19 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	/**
+	 * Creates a dynamic property descriptor which alters the readonly attribute according to the "enabled" flag
+	 */
+	@Override
+	protected ItemPropertyDescriptor createItemPropertyDescriptor(AdapterFactory adapterFactory,
+			ResourceLocator resourceLocator, String displayName, String description, EStructuralFeature feature,
+			boolean isSettable, boolean multiLine, boolean sortChoices, Object staticImage, String category,
+			String[] filterFlags)
+	{
+		return new ContributionItemProvider.DynamicItemPropertyDescriptor(adapterFactory, resourceLocator, displayName,
+				description, feature, isSettable, multiLine, sortChoices, staticImage, category, filterFlags);
 	}
 
 	/**

@@ -664,8 +664,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				final Set<MappedRepository> repositoriesToLoad = new HashSet<MappedRepository>();
 
 				for(Contribution contribution : aggregator.getContributions())
-					for(MappedRepository mappedRepository : contribution.getRepositories())
-						repositoriesToLoad.add(mappedRepository);
+					if(contribution.isEnabled())
+						for(MappedRepository mappedRepository : contribution.getRepositories())
+							if(mappedRepository.isEnabled())
+								repositoriesToLoad.add(mappedRepository);
 
 				try
 				{

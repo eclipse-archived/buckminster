@@ -8,7 +8,6 @@ package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Mapped Unit</b></em>'.
@@ -18,7 +17,6 @@ import org.eclipse.emf.ecore.EObject;
  *          <p>
  *          The following features are supported:
  *          <ul>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#isEnabled <em>Enabled</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit <em>Installable Unit</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedUnit#getValidConfigurations <em>Valid Configurations
  *          </em>}</li>
@@ -29,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface MappedUnit extends EObject, StatusProvider
+public interface MappedUnit extends EnabledStatusProvider, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc -->
@@ -48,6 +46,14 @@ public interface MappedUnit extends EObject, StatusProvider
 	InstallableUnit getInstallableUnit();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	InstallableUnit getInstallableUnit(boolean forceResolve);
+
+	/**
 	 * Returns the value of the '<em><b>Valid Configurations</b></em>' reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.aggregator.Configuration}. <!-- begin-user-doc -->
 	 * <p>
@@ -64,32 +70,12 @@ public interface MappedUnit extends EObject, StatusProvider
 	EList<Configuration> getValidConfigurations();
 
 	/**
-	 * Returns the value of the '<em><b>Enabled</b></em>' attribute. The default value is <code>"true"</code>. <!--
-	 * begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Enabled</em>' attribute isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Enabled</em>' attribute.
-	 * @see #setEnabled(boolean)
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedUnit_Enabled()
-	 * @model default="true"
+	 * @model kind="operation"
 	 * @generated
 	 */
-	boolean isEnabled();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedUnit#isEnabled <em>Enabled</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Enabled</em>' attribute.
-	 * @see #isEnabled()
-	 * @generated
-	 */
-	void setEnabled(boolean value);
+	boolean isBranchEnabled();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit

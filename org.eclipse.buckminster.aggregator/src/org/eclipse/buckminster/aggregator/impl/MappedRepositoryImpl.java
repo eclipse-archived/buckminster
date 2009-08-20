@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
+import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -57,6 +58,26 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #isEnabled()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean ENABLED_EDEFAULT = true;
+
+	/**
+	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @see #isEnabled()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int ENABLED_EFLAG = 1 << 0;
 
 	/**
 	 * The cached value of the '{@link #getProducts() <em>Products</em>}' containment reference list. <!--
@@ -146,7 +167,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 0;
+	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 1;
 
 	/**
 	 * The default value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute. <!-- begin-user-doc
@@ -169,26 +190,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected String categoryPrefix = CATEGORY_PREFIX_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #isEnabled()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean ENABLED_EDEFAULT = true;
-
-	/**
-	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @see #isEnabled()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int ENABLED_EFLAG = 1 << 1;
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -196,8 +197,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected MappedRepositoryImpl()
 	{
 		super();
-		eFlags |= MIRROR_ARTIFACTS_EFLAG;
 		eFlags |= ENABLED_EFLAG;
+		eFlags |= MIRROR_ARTIFACTS_EFLAG;
 	}
 
 	/**
@@ -220,6 +221,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+			return isEnabled();
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			return getProducts();
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -238,8 +241,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return isMirrorArtifacts();
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			return getCategoryPrefix();
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			return isEnabled();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -276,6 +277,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			return products != null && !products.isEmpty();
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -296,8 +299,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return CATEGORY_PREFIX_EDEFAULT == null
 					? categoryPrefix != null
 					: !CATEGORY_PREFIX_EDEFAULT.equals(categoryPrefix);
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -313,6 +314,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+			setEnabled((Boolean)newValue);
+			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			getProducts().clear();
 			getProducts().addAll((Collection<? extends Product>)newValue);
@@ -341,9 +345,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			setCategoryPrefix((String)newValue);
 			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			setEnabled((Boolean)newValue);
-			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -358,6 +359,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+			setEnabled(ENABLED_EDEFAULT);
+			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			getProducts().clear();
 			return;
@@ -381,9 +385,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			setCategoryPrefix(CATEGORY_PREFIX_EDEFAULT);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			setEnabled(ENABLED_EDEFAULT);
 			return;
 		}
 		super.eUnset(featureID);
@@ -571,6 +572,16 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public boolean isBranchEnabled()
+	{
+		return isEnabled() && ((Contribution)eContainer()).isEnabled();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isEnabled()
@@ -687,14 +698,14 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (location: ");
+		result.append(" (enabled: ");
+		result.append((eFlags & ENABLED_EFLAG) != 0);
+		result.append(", location: ");
 		result.append(location);
 		result.append(", mirrorArtifacts: ");
 		result.append((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0);
 		result.append(", categoryPrefix: ");
 		result.append(categoryPrefix);
-		result.append(", enabled: ");
-		result.append((eFlags & ENABLED_EFLAG) != 0);
 		result.append(')');
 		return result.toString();
 	}

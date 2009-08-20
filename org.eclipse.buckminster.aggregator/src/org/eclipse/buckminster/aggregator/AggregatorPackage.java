@@ -184,14 +184,6 @@ public interface AggregatorPackage extends EPackage
 		EAttribute MAPPED_REPOSITORY__CATEGORY_PREFIX = eINSTANCE.getMappedRepository_CategoryPrefix();
 
 		/**
-		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute MAPPED_REPOSITORY__ENABLED = eINSTANCE.getMappedRepository_Enabled();
-
-		/**
 		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature. <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
 		 * 
@@ -284,14 +276,6 @@ public interface AggregatorPackage extends EPackage
 		EReference CONTRIBUTION__CONTACTS = eINSTANCE.getContribution_Contacts();
 
 		/**
-		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute CONTRIBUTION__ENABLED = eINSTANCE.getContribution_Enabled();
-
-		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ContactImpl <em>Contact</em>}
 		 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -362,14 +346,6 @@ public interface AggregatorPackage extends EPackage
 		 * @generated
 		 */
 		EClass MAPPED_UNIT = eINSTANCE.getMappedUnit();
-
-		/**
-		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute MAPPED_UNIT__ENABLED = eINSTANCE.getMappedUnit_Enabled();
 
 		/**
 		 * The meta object literal for the '<em><b>Installable Unit</b></em>' reference feature. <!-- begin-user-doc -->
@@ -482,6 +458,24 @@ public interface AggregatorPackage extends EPackage
 		 * @generated
 		 */
 		EReference CUSTOM_CATEGORY__FEATURES = eINSTANCE.getCustomCategory_Features();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
+		 * <em>Enabled Status Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.EnabledStatusProvider
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getEnabledStatusProvider()
+		 * @generated
+		 */
+		EClass ENABLED_STATUS_PROVIDER = eINSTANCE.getEnabledStatusProvider();
+
+		/**
+		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute ENABLED_STATUS_PROVIDER__ENABLED = eINSTANCE.getEnabledStatusProvider_Enabled();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -676,6 +670,33 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR_FEATURE_COUNT = 10;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
+	 * <em>Enabled Status Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.EnabledStatusProvider
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getEnabledStatusProvider()
+	 * @generated
+	 */
+	int ENABLED_STATUS_PROVIDER = 12;
+
+	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int ENABLED_STATUS_PROVIDER__ENABLED = 0;
+
+	/**
+	 * The number of structural features of the '<em>Enabled Status Provider</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int ENABLED_STATUS_PROVIDER_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MappedRepositoryImpl
 	 * <em>Mapped Repository</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -686,13 +707,21 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY = 1;
 
 	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
+
+	/**
 	 * The feature id for the '<em><b>Products</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__PRODUCTS = 0;
+	int MAPPED_REPOSITORY__PRODUCTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Bundles</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -701,7 +730,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__BUNDLES = 1;
+	int MAPPED_REPOSITORY__BUNDLES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Features</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -710,7 +739,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__FEATURES = 2;
+	int MAPPED_REPOSITORY__FEATURES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Metadata Repository</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -719,7 +748,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__METADATA_REPOSITORY = 3;
+	int MAPPED_REPOSITORY__METADATA_REPOSITORY = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Categories</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -728,7 +757,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORIES = 4;
+	int MAPPED_REPOSITORY__CATEGORIES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -736,7 +765,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__LOCATION = 5;
+	int MAPPED_REPOSITORY__LOCATION = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Mirror Artifacts</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -745,7 +774,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = 6;
+	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Category Prefix</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -753,15 +782,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORY_PREFIX = 7;
-
-	/**
-	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__ENABLED = 8;
+	int MAPPED_REPOSITORY__CATEGORY_PREFIX = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
@@ -770,7 +791,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = 9;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 8;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -847,12 +868,20 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_UNIT = 7;
 
 	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CONTRIBUTION__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
+
+	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION__LABEL = 0;
+	int CONTRIBUTION__LABEL = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Repositories</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -861,7 +890,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION__REPOSITORIES = 1;
+	int CONTRIBUTION__REPOSITORIES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Contacts</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -869,15 +898,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION__CONTACTS = 2;
-
-	/**
-	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int CONTRIBUTION__ENABLED = 3;
+	int CONTRIBUTION__CONTACTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Contribution</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -886,7 +907,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION_FEATURE_COUNT = 4;
+	int CONTRIBUTION_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -927,7 +948,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_UNIT__ENABLED = 0;
+	int MAPPED_UNIT__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -936,7 +957,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_UNIT__INSTALLABLE_UNIT = 1;
+	int MAPPED_UNIT__INSTALLABLE_UNIT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -945,7 +966,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_UNIT__VALID_CONFIGURATIONS = 2;
+	int MAPPED_UNIT__VALID_CONFIGURATIONS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Mapped Unit</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -954,7 +975,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_UNIT_FEATURE_COUNT = 3;
+	int MAPPED_UNIT_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl <em>Feature</em>}' class.
@@ -1241,7 +1262,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 12;
+	int AGGREGATE_TYPE = 13;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1251,7 +1272,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 13;
+	int OPERATING_SYSTEM = 14;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1261,7 +1282,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 14;
+	int WINDOW_SYSTEM = 15;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1271,7 +1292,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 15;
+	int ARCHITECTURE = 16;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1281,7 +1302,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 16;
+	int PACKED_STRATEGY = 17;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1290,7 +1311,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 17;
+	int URI = 18;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -1589,17 +1610,6 @@ public interface AggregatorPackage extends EPackage
 	EReference getContribution_Contacts();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Contribution#isEnabled
-	 * <em>Enabled</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Enabled</em>'.
-	 * @see org.eclipse.buckminster.aggregator.Contribution#isEnabled()
-	 * @see #getContribution()
-	 * @generated
-	 */
-	EAttribute getContribution_Enabled();
-
-	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Contribution#getLabel
 	 * <em>Label</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1680,6 +1690,28 @@ public interface AggregatorPackage extends EPackage
 	EAttribute getCustomCategory_Label();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
+	 * <em>Enabled Status Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Enabled Status Provider</em>'.
+	 * @see org.eclipse.buckminster.aggregator.EnabledStatusProvider
+	 * @generated
+	 */
+	EClass getEnabledStatusProvider();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.EnabledStatusProvider#isEnabled <em>Enabled</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Enabled</em>'.
+	 * @see org.eclipse.buckminster.aggregator.EnabledStatusProvider#isEnabled()
+	 * @see #getEnabledStatusProvider()
+	 * @generated
+	 */
+	EAttribute getEnabledStatusProvider_Enabled();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.Feature <em>Feature</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1745,17 +1777,6 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getMappedRepository_CategoryPrefix();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MappedRepository#isEnabled
-	 * <em>Enabled</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Enabled</em>'.
-	 * @see org.eclipse.buckminster.aggregator.MappedRepository#isEnabled()
-	 * @see #getMappedRepository()
-	 * @generated
-	 */
-	EAttribute getMappedRepository_Enabled();
 
 	/**
 	 * Returns the meta object for the containment reference list '
@@ -1826,17 +1847,6 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EClass getMappedUnit();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MappedUnit#isEnabled
-	 * <em>Enabled</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Enabled</em>'.
-	 * @see org.eclipse.buckminster.aggregator.MappedUnit#isEnabled()
-	 * @see #getMappedUnit()
-	 * @generated
-	 */
-	EAttribute getMappedUnit_Enabled();
 
 	/**
 	 * Returns the meta object for the reference '

@@ -150,6 +150,22 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Enabled Status Provider</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Enabled Status Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEnabledStatusProvider(EnabledStatusProvider object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Feature</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -299,6 +315,8 @@ public class AggregatorSwitch<T>
 			MappedRepository mappedRepository = (MappedRepository)theEObject;
 			T result = caseMappedRepository(mappedRepository);
 			if(result == null)
+				result = caseEnabledStatusProvider(mappedRepository);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -314,6 +332,8 @@ public class AggregatorSwitch<T>
 		{
 			Contribution contribution = (Contribution)theEObject;
 			T result = caseContribution(contribution);
+			if(result == null)
+				result = caseEnabledStatusProvider(contribution);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -333,6 +353,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseMappedUnit(feature);
 			if(result == null)
+				result = caseEnabledStatusProvider(feature);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -343,6 +365,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseMappedUnit(bundle);
 			if(result == null)
+				result = caseEnabledStatusProvider(bundle);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -350,6 +374,8 @@ public class AggregatorSwitch<T>
 		{
 			MappedUnit mappedUnit = (MappedUnit)theEObject;
 			T result = caseMappedUnit(mappedUnit);
+			if(result == null)
+				result = caseEnabledStatusProvider(mappedUnit);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -360,6 +386,8 @@ public class AggregatorSwitch<T>
 			T result = caseProduct(product);
 			if(result == null)
 				result = caseMappedUnit(product);
+			if(result == null)
+				result = caseEnabledStatusProvider(product);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -379,6 +407,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseMappedUnit(category);
 			if(result == null)
+				result = caseEnabledStatusProvider(category);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -386,6 +416,14 @@ public class AggregatorSwitch<T>
 		{
 			CustomCategory customCategory = (CustomCategory)theEObject;
 			T result = caseCustomCategory(customCategory);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.ENABLED_STATUS_PROVIDER:
+		{
+			EnabledStatusProvider enabledStatusProvider = (EnabledStatusProvider)theEObject;
+			T result = caseEnabledStatusProvider(enabledStatusProvider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
