@@ -459,13 +459,20 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		toolBarManager.add(new Separator("aggregator-additions"));
 	}
 
+	@Override
+	public void menuAboutToShow(IMenuManager menuManager)
+	{
+		menuAboutToShowGen(menuManager);
+
+		menuManager.insertBefore("edit", m_enabledStatusMenuItem);
+	}
+
 	/**
 	 * This populates the pop-up menu before it appears. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void menuAboutToShow(IMenuManager menuManager)
+	public void menuAboutToShowGen(IMenuManager menuManager)
 	{
 		super.menuAboutToShow(menuManager);
 		MenuManager submenuManager = null;
@@ -477,8 +484,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		submenuManager = new MenuManager(AggregatorEditorPlugin.INSTANCE.getString("_UI_CreateSibling_menu_item"));
 		populateManager(submenuManager, createSiblingActions, null);
 		menuManager.insertBefore("edit", submenuManager);
-
-		menuManager.insertBefore("edit", m_enabledStatusMenuItem);
 	}
 
 	/**

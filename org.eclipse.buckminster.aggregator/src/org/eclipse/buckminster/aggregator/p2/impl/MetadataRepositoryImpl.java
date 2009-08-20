@@ -8,6 +8,7 @@ package org.eclipse.buckminster.aggregator.p2.impl;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -267,6 +268,8 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	protected EMap<String, String> propertyMap;
 
 	private static final Pattern categoryRefPattern = Pattern.compile("^(@installableUnits\\[id='.*'),version='0\\.0\\.0\\.[0-9]{14}'\\]$");
+
+	private static final Pattern proxyFragmentPattern = Pattern.compile("^p2:(.*)#\\/$");
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -665,6 +668,21 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 		return location;
 	}
 
+	public URI getLocationFromProxy()
+	{
+		Matcher m = proxyFragmentPattern.matcher(eProxyURI().toString());
+		try
+		{
+			return m.matches()
+					? new URI(m.group(1))
+					: null;
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
+		}
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -673,6 +691,12 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 	public String getName()
 	{
 		return name;
+	}
+
+	public String getNameFromProxy()
+	{
+		// no way to retrieve name from location
+		return null;
 	}
 
 	/**

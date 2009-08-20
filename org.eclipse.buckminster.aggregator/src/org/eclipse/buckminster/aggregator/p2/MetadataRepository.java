@@ -6,6 +6,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
+import java.net.URI;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EObject;
@@ -47,6 +49,16 @@ public interface MetadataRepository extends EObject, IMetadataRepository
 	EList<InstallableUnit> getInstallableUnits();
 
 	/**
+	 * Obtains the URI information from the proxy URI fragment
+	 */
+	URI getLocationFromProxy();
+
+	/**
+	 * Obtains the name information from the proxy URI fragment
+	 */
+	String getNameFromProxy();
+
+	/**
 	 * Returns the value of the '<em><b>Property Map</b></em>' map. The key is of type {@link java.lang.String}, and the
 	 * value is of type {@link java.lang.String}, <!-- begin-user-doc -->
 	 * <p>
@@ -78,5 +90,4 @@ public interface MetadataRepository extends EObject, IMetadataRepository
 	 * @generated
 	 */
 	EList<RepositoryReference> getRepositoryReferences();
-
 } // MetadataRepository

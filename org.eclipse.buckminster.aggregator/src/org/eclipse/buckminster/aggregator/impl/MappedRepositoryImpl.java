@@ -484,11 +484,37 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	}
 
 	/**
+	 * Prevent MDR from being loaded if the mapping is disabled
+	 * 
+	 * @generated NOT
+	 */
+	public MetadataRepository getMetadataRepository()
+	{
+		if(!isBranchEnabled())
+			return getMetadataRepository(false);
+
+		return getMetadataRepositoryGen();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public MetadataRepository getMetadataRepository(boolean forceResolve)
+	{
+		if(forceResolve)
+			return getMetadataRepositoryGen();
+
+		return basicGetMetadataRepository();
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public MetadataRepository getMetadataRepository()
+	public MetadataRepository getMetadataRepositoryGen()
 	{
 		if(metadataRepository != null && metadataRepository.eIsProxy())
 		{

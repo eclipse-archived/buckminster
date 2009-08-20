@@ -213,6 +213,9 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	 */
 	public InstallableUnit getInstallableUnit(boolean forceResolve)
 	{
+		if(forceResolve)
+			return getInstallableUnit();
+
 		return basicGetInstallableUnit();
 	}
 

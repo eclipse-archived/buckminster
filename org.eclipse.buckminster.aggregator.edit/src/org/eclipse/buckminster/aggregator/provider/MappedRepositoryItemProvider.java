@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -150,18 +151,37 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	public String getText(Object object)
 	{
 		MappedRepository mappedRepository = (MappedRepository)object;
-		MetadataRepository mdr = mappedRepository.getMetadataRepository();
+		MetadataRepository mdr = mappedRepository.getMetadataRepository(mappedRepository.isBranchEnabled());
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_MappedRepository_type"));
 		bld.append(' ');
 		if(mdr != null)
 		{
-			if(mdr.getName() != null)
+			String name;
+			URI location;
+
+			if(!mdr.eIsProxy())
 			{
-				bld.append(mdr.getName());
+				name = mdr.getName();
+				location = mdr.getLocation();
+			}
+			else
+			{
+				name = mdr.getNameFromProxy();
+				location = mdr.getLocationFromProxy();
+			}
+
+			if(name != null)
+			{
+				bld.append(name);
 				bld.append(' ');
 			}
-			bld.append(mdr.getLocation());
+
+			if(location != null)
+				bld.append(location);
+			else
+				bld.append("not mapped");
+
 		}
 		else
 			bld.append("not mapped");

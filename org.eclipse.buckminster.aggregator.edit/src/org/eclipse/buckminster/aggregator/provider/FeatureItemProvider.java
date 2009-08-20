@@ -90,7 +90,7 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	public String getText(Object object)
 	{
 		Feature feature = (Feature)object;
-		InstallableUnit iu = feature.getInstallableUnit(false);
+		InstallableUnit iu = feature.getInstallableUnit(feature.isBranchEnabled());
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Feature_type"));
 		bld.append(' ');

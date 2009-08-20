@@ -1041,6 +1041,10 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEOperation(mappedRepositoryEClass, ecorePackage.getEBoolean(), "isBranchEnabled", 0, 1, IS_UNIQUE,
 				IS_ORDERED);
 
+		op = addEOperation(mappedRepositoryEClass, theP2Package.getMetadataRepository(), "getMetadataRepository", 0, 1,
+				IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEBoolean(), "forceResolve", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(configurationEClass, Configuration.class, "Configuration", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConfiguration_OperatingSystem(), this.getOperatingSystem(), "operatingSystem", null, 1, 1,

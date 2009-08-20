@@ -132,6 +132,14 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	MetadataRepository getMetadataRepository();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	MetadataRepository getMetadataRepository(boolean forceResolve);
+
+	/**
 	 * Returns the value of the '<em><b>Products</b></em>' containment reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.aggregator.Product}. <!-- begin-user-doc -->
 	 * <p>
