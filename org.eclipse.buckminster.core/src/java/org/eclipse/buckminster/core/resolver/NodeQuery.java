@@ -19,13 +19,13 @@ import java.util.Set;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
@@ -58,9 +58,32 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 
 	public NodeQuery(NodeQuery query, Map<String, ? extends Object> additionalProperties)
 	{
+		this(query, additionalProperties, true);
+	}
+
+	public NodeQuery(NodeQuery query, Map<String, ? extends Object> additionalProperties, boolean additionalPrioritized)
+	{
 		m_context = query.getContext();
 		m_qDep = query.getQualifiedDependency();
-		m_properties = new UnmodifiableMapUnion<String, Object>(additionalProperties, query.getProperties());
+
+		Map<String, ? extends Object> qprops = query.getProperties();
+		if(additionalProperties.isEmpty())
+			m_properties = qprops;
+		else
+		{
+			Map<String, Object> propUnion = new ExpandingProperties<Object>(qprops.size() + additionalProperties.size());
+			if(additionalPrioritized)
+			{
+				propUnion.putAll(qprops);
+				propUnion.putAll(additionalProperties);
+			}
+			else
+			{
+				propUnion.putAll(additionalProperties);
+				propUnion.putAll(qprops);
+			}
+			m_properties = propUnion;
+		}
 	}
 
 	public NodeQuery(RMContext context, ComponentRequest request, Set<String> attributes)

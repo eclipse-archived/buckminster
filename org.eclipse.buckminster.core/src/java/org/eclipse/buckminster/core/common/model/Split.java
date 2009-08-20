@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.common.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,8 @@ public class Split extends AbstractSplit
 	protected List<String> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard)
 	{
 		String source = checkedGetSourceValue(properties, recursionGuard);
-		return Arrays.asList(getPattern().split(source, m_limit));
+		return source == null
+				? Collections.<String> emptyList()
+				: Arrays.asList(getPattern().split(source, m_limit));
 	}
 }

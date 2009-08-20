@@ -209,15 +209,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable
 		Map<String, ? extends Object> props = query.getProperties();
 		if(!m_properties.isEmpty())
 		{
-			if(props.isEmpty())
-				props = m_properties;
-			else
-			{
-				Map<String, Object> propUnion = new HashMap<String, Object>(m_properties.size() + props.size());
-				propUnion.putAll(m_properties);
-				propUnion.putAll(props);
-				props = propUnion;
-			}
+			query = new NodeQuery(query, m_properties, false);
+			props = query.getProperties();
 		}
 
 		String componentName = request.getName();
