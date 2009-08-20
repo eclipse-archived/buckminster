@@ -35,11 +35,9 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
-import org.eclipse.equinox.internal.p2.updatesite.UpdateSite;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -84,10 +82,7 @@ public class UpdateSiteGenerator extends VersionConsolidator
 		m_features = features;
 		m_actionContext = AbstractActor.getActiveContext();
 		if(template != null)
-		{
-			UpdateSite us = UpdateSite.load(template.toURI(), new NullProgressMonitor());
-			m_saxableSite = new SaxableSite(us.getSite());
-		}
+			m_saxableSite = new SaxableSite(SiteReader.getSite(template));
 		else
 			m_saxableSite = new SaxableSite(new SiteModel());
 	}

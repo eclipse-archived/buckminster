@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -22,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,7 +33,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
-import org.eclipse.equinox.internal.p2.updatesite.UpdateSite;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
@@ -319,14 +320,24 @@ public class CategoriesAction extends AbstractPublisherAction
 		String id = name + ".feature.group"; //$NON-NLS-1$
 		Query query = null;
 		Collector collector = null;
-		if(version.equals(Version.emptyVersion))
+		if(version == null || version.equals(Version.emptyVersion))
 		{
 			query = new CompositeQuery(new Query[] { new InstallableUnitQuery(id), new LatestIUVersionQuery() });
 			collector = new Collector();
 		}
 		else
 		{
-			query = new InstallableUnitQuery(id, version);
+			if(version.getQualifier().contains("qualifier")) //$NON-NLS-1$
+			{
+				// We won't find an IU that matches this version. We need to use a version range.
+				//
+				Version low = VersionHelper.replaceQualifier(version, "0"); //$NON-NLS-1$
+				Version high = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro() + 1);
+				query = new InstallableUnitQuery(id, new VersionRange(low, true, high, false));
+			}
+			else
+				query = new InstallableUnitQuery(id, version);
+
 			collector = new Collector()
 			{
 				@Override
@@ -392,15 +403,13 @@ public class CategoriesAction extends AbstractPublisherAction
 
 				for(String name : TextUtils.splitAndTrim(entry.getValue(), ",")) //$NON-NLS-1$
 				{
-					Version version;
+					Version version = null;
 					Matcher m = s_idAndVersionPattern.matcher(name);
 					if(m.matches())
 					{
 						name = m.group(1);
-						version = Version.parseVersion(m.group(2));
+						version = Version.create(m.group(2));
 					}
-					else
-						version = Version.emptyVersion;
 
 					IInstallableUnit iu = getFeatureIU(name, version, publisherInfo, results, monitor);
 					if(iu == null)
@@ -429,47 +438,47 @@ public class CategoriesAction extends AbstractPublisherAction
 				defaultCategoryList = Collections.singletonList(cat);
 		}
 
-		File categoryFile = new File(m_projectRoot, "category.xml"); //$NON-NLS-1$
-		if(categoryFile.canRead())
+		try
 		{
-			UpdateSite categoryDef = UpdateSite.loadCategoryFile(categoryFile.toURI(), monitor);
-			SiteModel site = categoryDef.getSite();
-			if(site != null)
+			SiteModel site = SiteReader.getSite(new File(m_projectRoot, "category.xml")); //$NON-NLS-1$
+			for(SiteFeature feature : site.getFeatures())
 			{
-				for(SiteFeature feature : site.getFeatures())
+				IInstallableUnit iu = getFeatureIU(feature.getFeatureIdentifier(),
+						Version.create(feature.getFeatureVersion()), publisherInfo, results, monitor);
+				if(iu == null)
+					continue;
+
+				for(String id : feature.getCategoryNames())
 				{
-					IInstallableUnit iu = getFeatureIU(feature.getFeatureIdentifier(),
-							Version.create(feature.getFeatureVersion()), publisherInfo, results, monitor);
-					if(iu == null)
-						continue;
-
-					for(String id : feature.getCategoryNames())
+					Category cat = categories.get(id);
+					if(cat == null)
 					{
-						Category cat = categories.get(id);
-						if(cat == null)
-						{
-							SiteCategory siteCat = site.getCategory(id);
-							if(siteCat == null)
-								continue;
+						SiteCategory siteCat = site.getCategory(id);
+						if(siteCat == null)
+							continue;
 
-							cat = new Category(id);
-							cat.setDescription(siteCat.getDescription());
-							cat.setLabel(siteCat.getLabel());
-							categories.put(id, cat);
-						}
-						List<Category> catList = mappings.get(iu);
-						if(catList == null)
-						{
-							catList = new ArrayList<Category>();
-							mappings.put(iu, catList);
-							catList.add(cat);
-						}
-						else if(!catList.contains(cat))
-							catList.add(cat);
+						cat = new Category(id);
+						cat.setDescription(siteCat.getDescription());
+						cat.setLabel(siteCat.getLabel());
+						categories.put(id, cat);
 					}
+					List<Category> catList = mappings.get(iu);
+					if(catList == null)
+					{
+						catList = new ArrayList<Category>();
+						mappings.put(iu, catList);
+						catList.add(cat);
+					}
+					else if(!catList.contains(cat))
+						catList.add(cat);
 				}
 			}
 		}
+		catch(FileNotFoundException e)
+		{
+			// This is expected. Just ignore
+		}
+
 		for(VersionedName fe : m_featureEntries)
 		{
 			IInstallableUnit iu = getFeatureIU(fe.getId(), fe.getVersion(), publisherInfo, results, monitor);
