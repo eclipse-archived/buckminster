@@ -234,4 +234,58 @@
 		<basename property="jar.output.folder" file="${jar.input.file}" suffix=".jar"/>		
 		<unjar dest="${jar.output.folder}" src="${jar.input.file}"/>
 	</target>
+
+	<!--Performs the initial site copy operations. The ${buckminster.temp} is used as output location -->
+	<target name="create.legacy.site.common">
+		<property name="site.xml" location="${buckminster.temp}/site.xml"/>
+		<property name="site.extra.suffix" value=""/> <!-- for things like _incubation -->
+
+		<mkdir dir="${buckminster.temp}/features"/>
+		<mkdir dir="${buckminster.temp}/plugins"/>
+
+		<buckminster.copy todir="${buckminster.temp}/features" overwrite="true">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.copy>
+
+		<buckminster.copy todir="${buckminster.temp}/plugins" overwrite="true">
+			<buckminster.filesetgroup value="${fs:plugins}"/>
+		</buckminster.copy>
+
+		<buckminster.copy todir="${buckminster.temp}" overwrite="true">
+			<buckminster.filesetgroup value="${fs:rootFiles}"/>
+		</buckminster.copy>
+
+		<mkdir dir="${sp:action.output}"/>
+	</target>
+
+	<!--Create a complete site. The site.xml file is created from a template and 
+		filesetgroup that appoints feature jar files
+	-->
+	<target name="create.legacy.site" depends="create.legacy.site.common">
+		<buckminster.updateSiteGenerator versionProperty="site.version" outputfile="${site.xml}" template="${sp:template}">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.updateSiteGenerator>
+
+		<property name="site.file" location="${sp:action.output}/${site.name}-${site.version}${site.extra.suffix}.zip"/>
+		<buckminster.zip zipfile="${site.file}">
+			<fileset dir="${buckminster.temp}"/>
+		</buckminster.zip>
+	</target>
+
+	<!--Create a site without generating the site.xml. It is assumed that any site.xml files
+		are included in the fs:rootFiles filesetgroup. Use this target in conjunction with
+		the create.site.xml target when several site.xml files exists.
+	-->
+	<target name="create.complex.legacy.site" depends="create.legacy.site.common">
+		<buckminster.updateSiteGenerator versionProperty="site.version">
+			<buckminster.filesetgroup value="${fs:features}"/>
+		</buckminster.updateSiteGenerator>
+
+		<property name="site.file" location="${sp:action.output}/${site.name}-${site.version}${site.extra.suffix}.zip"/>
+		<buckminster.zip zipfile="${site.file}">
+			<fileset dir="${buckminster.temp}"/>
+		</buckminster.zip>
+	</target>
+
+
 </project>
