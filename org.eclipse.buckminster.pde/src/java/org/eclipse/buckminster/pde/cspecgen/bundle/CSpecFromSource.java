@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
@@ -566,12 +565,8 @@ public class CSpecFromSource extends CSpecGenerator
 
 	protected void addImports() throws CoreException
 	{
-		BundleDescription bundleDesc = m_plugin.getPluginModel().getBundleDescription();
-		if(bundleDesc == null)
-			return;
-
-		BundleSpecification[] imports = bundleDesc.getRequiredBundles();
-		if(imports == null || imports.length == 0)
+		BundleSpecification[] imports = getImports(m_plugin);
+		if(imports.length == 0)
 			return;
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();

@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -230,11 +229,6 @@ public class CSpecFromBinary extends CSpecGenerator
 	private void addImports() throws CoreException
 	{
 		IPluginModelBase model = m_plugin.getPluginModel();
-		BundleDescription bundleDesc = model.getBundleDescription();
-
-		BundleSpecification[] imports = null;
-		if(bundleDesc != null)
-			imports = bundleDesc.getRequiredBundles();
 		boolean isFragment = model.isFragmentModel();
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
@@ -243,7 +237,8 @@ public class CSpecFromBinary extends CSpecGenerator
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 
-		if(imports == null || imports.length == 0)
+		BundleSpecification[] imports = getImports(m_plugin);
+		if(imports.length == 0)
 		{
 			// Just add the mandatory system bundle. It's needed since
 			// that bundle defines the execution environments.

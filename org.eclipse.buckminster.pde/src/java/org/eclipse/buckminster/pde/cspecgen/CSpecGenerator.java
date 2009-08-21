@@ -61,12 +61,23 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
+import org.eclipse.osgi.service.resolver.StateObjectFactory;
+import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IMatchRules;
+import org.eclipse.pde.core.plugin.IPluginBase;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
+import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
+import org.eclipse.pde.internal.core.ibundle.IBundleModel;
+import org.eclipse.pde.internal.core.text.bundle.ManifestHeader;
+import org.eclipse.pde.internal.core.text.bundle.RequireBundleObject;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -132,6 +143,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			throw new ExceptionInInitializerError(e);
 		}
 	}
+
+	private static final BundleSpecification[] s_noRequiredBundles = new BundleSpecification[0];
 
 	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
@@ -232,6 +245,53 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		else
 			bld.append('/');
 		return bld.toString();
+	}
+
+	protected static BundleSpecification[] getImports(IPluginBase plugin) throws CoreException
+	{
+		IPluginModelBase model = plugin.getPluginModel();
+		BundleDescription bundleDesc = model.getBundleDescription();
+		BundleSpecification[] imports;
+		if(bundleDesc != null)
+		{
+			imports = bundleDesc.getRequiredBundles();
+			return (imports == null || imports.length == 0)
+					? s_noRequiredBundles
+					: imports;
+		}
+
+		if(!(model instanceof BundlePluginModel))
+			return s_noRequiredBundles;
+
+		IBundleModel bundleModel = ((BundlePluginModel)model).getBundleModel();
+		ManifestHeader header = (ManifestHeader)bundleModel.getBundle().getManifestHeader(Constants.REQUIRE_BUNDLE);
+		if(header == null)
+			return s_noRequiredBundles;
+
+		ManifestElement[] elems = null;
+		try
+		{
+			elems = ManifestElement.parseHeader(header.getKey(), header.getValue());
+		}
+		catch(BundleException e)
+		{
+		}
+		if(elems == null)
+			return s_noRequiredBundles;
+
+		int sz = elems.length;
+		if(sz == 0)
+			return s_noRequiredBundles;
+
+		imports = new BundleSpecification[sz];
+		while(--sz >= 0)
+		{
+			RequireBundleObject r = new RequireBundleObject(header, elems[sz]);
+			imports[sz] = StateObjectFactory.defaultFactory.createBundleSpecification(r.getId(),
+					new org.eclipse.osgi.service.resolver.VersionRange(r.getVersion()), r.isReexported(),
+					r.isOptional());
+		}
+		return imports;
 	}
 
 	private final CSpecBuilder m_cspecBuilder;
