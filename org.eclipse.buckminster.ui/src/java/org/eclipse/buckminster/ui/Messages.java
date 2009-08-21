@@ -204,6 +204,8 @@ public class Messages extends NLS
 
 	public static String edit_row_fields;
 
+	public static String enable_support_for_component_bookmarks;
+
 	public static String enter_new_row_fields;
 
 	public static String enter_url_of_mspec_bom_cquery;

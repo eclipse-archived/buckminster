@@ -240,8 +240,8 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage implements 
 				getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_CONSOLE, Messages.console_logger_level_with_colon, LogLevel.values(),
 				getFieldEditorParent()));
-		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, Messages.eclipse_logger_level_with_colon, LogLevel
-				.values(), getFieldEditorParent()));
+		addField(new EnumFieldEditor(LOG_LEVEL_ECLIPSE_LOGGER, Messages.eclipse_logger_level_with_colon,
+				LogLevel.values(), getFieldEditorParent()));
 		addField(new EnumFieldEditor(LOG_LEVEL_ANT_LOGGER, Messages.ant_logger_level_with_colon, LogLevel.values(),
 				getFieldEditorParent()));
 		addField(new BooleanFieldEditor(LOG_ECLIPSE_TO_CONSOLE, Messages.copy_eclipse_log_events_to_console,
@@ -297,6 +297,8 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage implements 
 			m_resolversParent.setLayout(m_resolversStack);
 			m_resolversParent.setVisible(false);
 		}
+		addField(new BooleanFieldEditor(OPML_SUPPORT, Messages.enable_support_for_component_bookmarks,
+				getFieldEditorParent()));
 
 		Group tsGroup = new Group(getFieldEditorParent(), SWT.NONE);
 		tsGroup.setLayout(new GridLayout(2, false));

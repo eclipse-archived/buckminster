@@ -46,4 +46,9 @@ public interface IBuckminsterPreferenceConstants
 	public static final String CONNECTION_RETRY_DELAY = "connectionRetryDelay"; //$NON-NLS-1$
 
 	public static final int CONNECTION_RETRY_DELAY_DEFAULT = 1;
+
+	public static final String OPML_SUPPORT = "opmlSupport"; //$NON-NLS-1$
+
+	public static final boolean OPML_SUPPORT_DEFAULT = false;
+
 }

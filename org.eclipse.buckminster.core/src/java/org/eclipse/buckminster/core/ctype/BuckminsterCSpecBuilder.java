@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,16 +54,19 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 						MonitorUtils.subMonitor(monitor, 100));
 				cspecBld.initFrom(catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100)));
 
-				fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, null);
-				try
+				if(!forResolutionAidOnly && BuckminsterPreferences.isOPMLSupport())
 				{
-					OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 100));
-					opmlBld = new OPMLBuilder();
-					opmlBld.initFrom(opml);
-				}
-				catch(FileNotFoundException e)
-				{
-					// This is OK, the OPML is optional
+					fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, null);
+					try
+					{
+						OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 100));
+						opmlBld = new OPMLBuilder();
+						opmlBld.initFrom(opml);
+					}
+					catch(FileNotFoundException e)
+					{
+						// This is OK, the OPML is optional
+					}
 				}
 			}
 			else

@@ -30,6 +30,7 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -86,7 +87,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			applyExtensions(cspecBuilder, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 200));
 
 			OPMLBuilder opmlBld = null;
-			if(!forResolutionAidOnly)
+			if(!forResolutionAidOnly && BuckminsterPreferences.isOPMLSupport())
 			{
 				String fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE,
 						MonitorUtils.subMonitor(monitor, 200));
