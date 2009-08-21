@@ -3,12 +3,13 @@
     <cs:dependencies>
         <cs:dependency name="org.apache.commons.net" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.bootstrap" componentType="buckminster"/>
-        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.jnlp.p2.director.product" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.product" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.testfragments.feature" componentType="eclipse.feature"/>
+        <cs:dependency name="org.junit4" componentType="osgi.bundle" versionDesignator="4.5.0"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="clean" actor="ant">
