@@ -132,8 +132,26 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator)
 	{
+		return loadRepository(repositoryURI, aggregator, false);
+	}
+
+	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator, boolean force)
+	{
 		ResourceSet topSet = aggregator.eResource().getResourceSet();
 		Resource mdr = topSet.getResource(URI.createGenericURI("p2", repositoryURI, null), true);
+		if(force)
+		{
+			mdr.unload();
+			try
+			{
+				mdr.load(Collections.emptyMap());
+			}
+			catch(IOException e)
+			{
+				throw new RuntimeException(String.format("Unable to reload repository %s", repositoryURI));
+			}
+		}
+
 		List<EObject> contents = mdr.getContents();
 		if(contents.size() != 1)
 			throw new RuntimeException(String.format("Unable to load repository %s", repositoryURI));
