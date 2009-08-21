@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -165,7 +166,7 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 			@Override
 			public boolean isMatch(Object candidate)
 			{
-				return "true".equalsIgnoreCase(((IInstallableUnit)candidate).getProperty(IInstallableUnit.PROP_TYPE_CATEGORY));
+				return ((InstallableUnit)candidate).getType() == InstallableUnitType.CATEGORY;
 			}
 		};
 	}

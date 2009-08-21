@@ -201,6 +201,20 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		eFlags |= MIRROR_ARTIFACTS_EFLAG;
 	}
 
+	public void addUnit(MappedUnit unit)
+	{
+		if(unit instanceof Feature)
+			getFeatures().add((Feature)unit);
+		else if(unit instanceof Category)
+			getCategories().add((Category)unit);
+		else if(unit instanceof Bundle)
+			getBundles().add((Bundle)unit);
+		else if(unit instanceof Product)
+			getProducts().add((Product)unit);
+		else
+			throw new IllegalArgumentException("Unknown IU type");
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -636,6 +650,20 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		return (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
 	}
 
+	public void removeUnit(MappedUnit unit)
+	{
+		if(unit instanceof Feature)
+			getFeatures().remove(unit);
+		else if(unit instanceof Category)
+			getCategories().remove(unit);
+		else if(unit instanceof Bundle)
+			getBundles().remove(unit);
+		else if(unit instanceof Product)
+			getProducts().remove(unit);
+		else
+			throw new IllegalArgumentException("Unknown IU type");
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -746,5 +774,4 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		return AggregatorPackage.Literals.MAPPED_REPOSITORY;
 	}
-
 } // MappedRepositoryImpl

@@ -274,6 +274,11 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 			return false;
 
 		MappedRepository mappedRepository = (MappedRepository)eContainer();
+
+		// a new MappedUnit without any container is enabled - used by commands that add MappedUnits
+		if(mappedRepository == null)
+			return true;
+
 		if(!mappedRepository.isEnabled())
 			return false;
 

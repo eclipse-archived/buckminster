@@ -9,11 +9,11 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -22,7 +22,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
@@ -138,10 +137,7 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 			@Override
 			public boolean isMatch(Object candidate)
 			{
-				IInstallableUnit iu = (IInstallableUnit)candidate;
-				return "true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_GROUP))
-						&& !"true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY))
-						&& !iu.getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX);
+				return ((InstallableUnit)candidate).getType() == InstallableUnitType.PRODUCT;
 			}
 		};
 	}

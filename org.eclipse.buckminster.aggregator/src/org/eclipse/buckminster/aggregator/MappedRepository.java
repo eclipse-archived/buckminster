@@ -36,6 +36,14 @@ import org.eclipse.emf.common.util.EList;
 public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 {
 	/**
+	 * Adds MappedUnit to the collection of either features, categories, bundles or products
+	 * 
+	 * @param mu
+	 *            MappedUnit
+	 */
+	void addUnit(MappedUnit unit);
+
+	/**
 	 * Returns the value of the '<em><b>Bundles</b></em>' containment reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.aggregator.Bundle}. <!-- begin-user-doc -->
 	 * <p>
@@ -198,6 +206,14 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	 * @generated
 	 */
 	boolean isMirrorArtifacts();
+
+	/**
+	 * Removes MappedUnit from the collection of either features, categories, bundles or products
+	 * 
+	 * @param mu
+	 *            MappedUnit
+	 */
+	void removeUnit(MappedUnit unit);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix

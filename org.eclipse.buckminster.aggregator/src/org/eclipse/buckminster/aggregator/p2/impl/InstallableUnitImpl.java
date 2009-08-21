@@ -12,10 +12,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.Copyright;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.License;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
@@ -1132,6 +1134,20 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 						: ITouchpointType.NONE;
 	}
 
+	public InstallableUnitType getType()
+	{
+		if(getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX))
+			return InstallableUnitType.FEATURE;
+		else if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
+			return InstallableUnitType.CATEGORY;
+		else if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_GROUP)))
+			return InstallableUnitType.PRODUCT;
+		else if(isBundle())
+			return InstallableUnitType.BUNDLE;
+
+		return InstallableUnitType.OTHER;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1462,6 +1478,15 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	protected EClass eStaticClass()
 	{
 		return P2Package.Literals.INSTALLABLE_UNIT;
+	}
+
+	private boolean isBundle()
+	{
+		for(IProvidedCapability rc : getProvidedCapabilityList())
+			if(IAggregatorConstants.NAMESPACE_TYPE.equals(rc.getNamespace())
+					&& (IAggregatorConstants.CAPABILITY_TYPE_BUNDLE.equals(rc.getName()) || IAggregatorConstants.CAPABILITY_TYPE_SOURCE.equals(rc.getName())))
+				return true;
+		return false;
 	}
 
 } // InstallableUnitImpl

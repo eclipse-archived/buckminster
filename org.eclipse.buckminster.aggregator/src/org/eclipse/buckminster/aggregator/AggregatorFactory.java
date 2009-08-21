@@ -6,6 +6,8 @@
  */
 package org.eclipse.buckminster.aggregator;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.ecore.EFactory;
 
 /**
@@ -95,6 +97,22 @@ public interface AggregatorFactory extends EFactory
 	 * @generated
 	 */
 	MappedRepository createMappedRepository();
+
+	/**
+	 * Returns a new object of class '<em>Mapped Repository</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Mapped Repository</em>'.
+	 * @generated NOT
+	 */
+	MappedRepository createMappedRepository(MetadataRepository mdr);
+
+	/**
+	 * Returns a new object of class '<em>Mapped Unit</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Mapped Unit</em>'.
+	 * @generated NOT
+	 */
+	MappedUnit createMappedUnit(InstallableUnit iu);
 
 	/**
 	 * Returns a new object of class '<em>Product</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->

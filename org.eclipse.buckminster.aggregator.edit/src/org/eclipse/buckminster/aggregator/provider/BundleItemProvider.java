@@ -10,10 +10,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.Bundle;
-import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -22,7 +22,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
@@ -138,11 +137,7 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 			@Override
 			public boolean isMatch(Object candidate)
 			{
-				for(IProvidedCapability rc : ((InstallableUnit)candidate).getProvidedCapabilityList())
-					if(IAggregatorConstants.NAMESPACE_TYPE.equals(rc.getNamespace())
-							&& IAggregatorConstants.CAPABILITY_TYPE_BUNDLE.equals(rc.getName()))
-						return true;
-				return false;
+				return ((InstallableUnit)candidate).getType() == InstallableUnitType.BUNDLE;
 			}
 		};
 	}

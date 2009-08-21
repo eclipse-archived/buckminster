@@ -146,7 +146,13 @@ public interface InstallableUnit extends EObject, IInstallableUnit, StatusProvid
 	EList<TouchpointData> getTouchpointDataList();
 
 	/**
+	 * Gets IU type - BUNDLE, FEATURE, PRODUCT, CATEGORY, UNKNOWN
+	 */
+	InstallableUnitType getType();
+
+	/**
 	 * Obtains the name and version information from the proxy URI fragment
 	 */
 	VersionedName getVersionedNameFromProxy();
+
 } // InstallableUnit

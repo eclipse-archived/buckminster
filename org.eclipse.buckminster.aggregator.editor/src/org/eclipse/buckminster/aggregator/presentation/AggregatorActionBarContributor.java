@@ -17,15 +17,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
-import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
+import org.eclipse.buckminster.aggregator.util.ItemUtils;
+import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -289,6 +296,34 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
+	class MapToContributionAction extends Action
+	{
+		private EditingDomain m_domain;
+
+		private MapToContributionCommand m_command;
+
+		public MapToContributionAction(EditingDomain domain, Contribution contribution,
+				List<MetadataRepository> selectedMDRs, List<InstallableUnit> selectedIUs)
+		{
+			Object imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Contribution.gif");
+
+			if(imageURL != null && imageURL instanceof URL)
+				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
+
+			m_domain = domain;
+			m_command = new MapToContributionCommand(contribution, selectedMDRs, selectedIUs);
+
+			setText(m_command.getLabel());
+			setEnabled(m_command.canExecute());
+		}
+
+		@Override
+		public void run()
+		{
+			m_domain.getCommandStack().execute(m_command);
+		}
+	}
+
 	class ReloadRepoAction extends Action
 	{
 		private MappedRepository m_mappedRepository;
@@ -440,6 +475,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected BuildRepoAction m_verifyRepoAction;
 
+	protected List<IAction> m_mapToContributionActions = new ArrayList<IAction>();
+
 	private Aggregator m_aggregator;
 
 	/**
@@ -522,6 +559,17 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		menuAboutToShowGen(menuManager);
 
+		if(m_mapToContributionActions != null && m_mapToContributionActions.size() > 0)
+			if(m_mapToContributionActions.size() == 1)
+				menuManager.insertBefore("edit", m_mapToContributionActions.get(0));
+			else
+			{
+				MenuManager submenuManager = new MenuManager(
+						AggregatorEditorPlugin.INSTANCE.getString("_UI_Map_to_menu_item"));
+				populateManager(submenuManager, m_mapToContributionActions, null);
+				menuManager.insertBefore("edit", submenuManager);
+			}
+
 		menuManager.insertBefore("edit", m_enabledStatusMenuItem);
 		menuManager.insertBefore("edit", m_reloadRepoMenuItem);
 	}
@@ -553,6 +601,18 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 * @generated NOT
 	 */
 	public void selectionChanged(SelectionChangedEvent event)
+	{
+		updateContextMenu(event.getSelection());
+	}
+
+	/**
+	 * This implements {@link org.eclipse.jface.viewers.ISelectionChangedListener}, handling
+	 * {@link org.eclipse.jface.viewers.SelectionChangedEvent}s by querying for the children and siblings that can be
+	 * added to the selected object and updating the menus accordingly. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void selectionChangedGen(SelectionChangedEvent event)
 	{
 		updateContextMenu(event.getSelection());
 	}
@@ -678,6 +738,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			populateManager(createSiblingMenuManager, createSiblingActions, null);
 			createSiblingMenuManager.update(true);
 		}
+
+		m_mapToContributionActions = generateMapToContributionActions(selection);
 	}
 
 	@Override
@@ -820,6 +882,33 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	protected boolean removeAllReferencesOnDelete()
 	{
 		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<IAction> generateMapToContributionActions(ISelection selection)
+	{
+		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() > 0)
+		{
+			Map<String, List<?>> selectionGroups = ItemUtils.groupItems(((IStructuredSelection)selection).toList());
+
+			List<MetadataRepository> selectedMDRs = (List<MetadataRepository>)selectionGroups.get(ItemUtils.GROUP_MDR);
+			List<InstallableUnit> selectedIUs = (List<InstallableUnit>)selectionGroups.get(ItemUtils.GROUP_IU);
+			List<Object> selectedOthers = (List<Object>)selectionGroups.get(ItemUtils.GROUP_OTHER);
+
+			List<IAction> mapToActions = new ArrayList<IAction>();
+
+			if(selectedOthers.size() == 0 && (selectedMDRs.size() > 0 || selectedIUs.size() > 0))
+			{
+				for(Contribution contribution : m_aggregator.getContributions())
+					mapToActions.add(new MapToContributionAction(
+							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution, selectedMDRs,
+							selectedIUs));
+			}
+
+			return mapToActions;
+		}
+
+		return Collections.emptyList();
 	}
 
 }

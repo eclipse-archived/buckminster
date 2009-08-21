@@ -9,6 +9,8 @@ package org.eclipse.buckminster.aggregator.impl;
 import java.net.URI;
 
 import org.eclipse.buckminster.aggregator.*;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -353,6 +355,42 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		MappedRepositoryImpl mappedRepository = new MappedRepositoryImpl();
 		return mappedRepository;
+	}
+
+	public MappedRepository createMappedRepository(MetadataRepository mdr)
+	{
+		MappedRepository mappedRepo = createMappedRepository();
+		mappedRepo.setMetadataRepository(mdr);
+		mappedRepo.setLocation(mdr.getLocation().toString());
+
+		return mappedRepo;
+	}
+
+	public MappedUnit createMappedUnit(InstallableUnit iu)
+	{
+		MappedUnit mu = null;
+
+		switch(iu.getType())
+		{
+		case FEATURE:
+			mu = createFeature();
+			break;
+		case CATEGORY:
+			mu = createCategory();
+			break;
+		case BUNDLE:
+			mu = createBundle();
+			break;
+		case PRODUCT:
+			mu = createProduct();
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown IU type");
+		}
+
+		mu.setInstallableUnit(iu);
+
+		return mu;
 	}
 
 	/**
