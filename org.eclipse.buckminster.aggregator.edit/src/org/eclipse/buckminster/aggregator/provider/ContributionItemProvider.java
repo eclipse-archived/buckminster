@@ -74,7 +74,9 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 			if(result)
 			{
 				if(object instanceof Contribution)
-					result = AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName().equals(getId(object));
+					result = ((Contribution)object).isEnabled()
+							|| AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName().equals(
+									getId(object));
 				else
 				{
 					MappedRepository mappedRepository = findMappedRepository(object);
