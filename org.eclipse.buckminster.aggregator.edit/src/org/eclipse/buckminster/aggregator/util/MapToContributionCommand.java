@@ -20,7 +20,6 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.emf.common.command.AbstractCommand;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.command.DragAndDropFeedback;
 
@@ -63,7 +62,7 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 		for(MetadataRepository mdr : m_selectedMDRs)
 		{
 			MappedRepository mappedRepo = AggregatorFactory.eINSTANCE.createMappedRepository(mdr);
-			if(findMappedRepository(m_contribution.getRepositories(), mappedRepo) == null)
+			if(ItemUtils.findMappedRepository(m_contribution.getRepositories(), mappedRepo) == null)
 			{
 				m_contribution.getRepositories().add(mappedRepo);
 				m_addedMappedRepos.add(mappedRepo);
@@ -78,7 +77,8 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 			MetadataRepository mdr = (MetadataRepository)((EObject)iu).eContainer();
 
 			MappedRepository newMappedRepo = AggregatorFactory.eINSTANCE.createMappedRepository(mdr);
-			MappedRepository mappedRepo = findMappedRepository(m_contribution.getRepositories(), newMappedRepo);
+			MappedRepository mappedRepo = ItemUtils.findMappedRepository(m_contribution.getRepositories(),
+					newMappedRepo);
 			if(mappedRepo == null)
 			{
 				m_contribution.getRepositories().add(newMappedRepo);
@@ -87,7 +87,7 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 			}
 
 			MappedUnit newMU = AggregatorFactory.eINSTANCE.createMappedUnit(iu);
-			MappedUnit mu = findMappedUnit(mappedRepo.getUnits(false), newMU);
+			MappedUnit mu = ItemUtils.findMappedUnit(mappedRepo.getUnits(false), newMU);
 			if(mu == null)
 			{
 				mappedRepo.addUnit(newMU);
@@ -123,9 +123,9 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 		m_contribution.getRepositories().removeAll(m_addedMappedRepos);
 	}
 
+	// validated prior command creation
 	public boolean validate(Object owner, float location, int operations, int operation, Collection<?> collection)
 	{
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -133,32 +133,8 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 	protected boolean prepare()
 	{
 		return m_contribution != null
+				&& m_contribution.isEnabled()
 				&& (m_selectedMDRs != null && m_selectedMDRs.size() > 0 || m_selectedIUs != null
 						&& m_selectedIUs.size() > 0);
 	}
-
-	private MappedRepository findMappedRepository(List<MappedRepository> mappedRepos, MappedRepository mappedRepo)
-	{
-		for(MappedRepository repo : mappedRepos)
-			if(mappedRepo == repo || mappedRepo.getLocation() != null && repo.getLocation() != null
-					&& mappedRepo.getLocation().equalsIgnoreCase(repo.getLocation()))
-				return repo;
-
-		return null;
-	}
-
-	private MappedUnit findMappedUnit(EList<MappedUnit> mappedUnits, MappedUnit mappedUnit)
-	{
-		for(MappedUnit unit : mappedUnits)
-			if(mappedUnit == unit
-					|| mappedUnit.getInstallableUnit() != null
-					&& unit.getInstallableUnit() != null
-					&& (mappedUnit.getInstallableUnit() == unit.getInstallableUnit() || mappedUnit.getInstallableUnit().getId() != null
-							&& unit.getInstallableUnit().getId() != null
-							&& mappedUnit.getInstallableUnit().getId().equals(unit.getInstallableUnit().getId())))
-				return unit;
-
-		return null;
-	}
-
 }

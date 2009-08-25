@@ -21,8 +21,13 @@ import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.util.ItemSorter;
+import org.eclipse.buckminster.aggregator.util.ItemUtils;
+import org.eclipse.buckminster.aggregator.util.MapToMappedRepositoryCommand;
+import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -391,6 +396,27 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES,
 				AggregatorFactory.eINSTANCE.createCategory()));
+	}
+
+	/**
+	 * Supports DnD from IUs to MappedRepo
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
+			int operation, Collection<?> collection)
+	{
+		ItemSorter itemSorter = new ItemSorter(collection);
+
+		if(((MappedRepository)owner).isEnabled()
+				&& itemSorter.getTotalItemCount() > 0
+				&& itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.IU).size()
+				&& ItemUtils.haveSameLocation((MappedRepository)owner,
+						(List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU)))
+			return new MapToMappedRepositoryCommand((MappedRepository)owner,
+					(List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+
+		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}
 
 	/**

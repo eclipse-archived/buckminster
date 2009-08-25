@@ -10,20 +10,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.util.ItemUtils;
+import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -32,8 +33,6 @@ import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.command.CommandParameter;
-import org.eclipse.emf.edit.command.DragAndDropCommand;
 import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -125,24 +124,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	public ContributionItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Command createCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass,
-			CommandParameter commandParameter)
-	{
-		if(commandClass == DragAndDropCommand.class)
-		{
-			Map<String, List<?>> itemGroups = ItemUtils.groupItems(commandParameter.getCollection());
-
-			if(itemGroups.get(ItemUtils.GROUP_OTHER).size() == 0
-					&& (itemGroups.get(ItemUtils.GROUP_MDR).size() > 0 || itemGroups.get(ItemUtils.GROUP_IU).size() > 0))
-				return new MapToContributionCommand((Contribution)commandParameter.getEOwner(),
-						(List<MetadataRepository>)itemGroups.get(ItemUtils.GROUP_MDR),
-						(List<InstallableUnit>)itemGroups.get(ItemUtils.GROUP_IU));
-		}
-
-		return super.createCommand(object, domain, commandClass, commandParameter);
 	}
 
 	/**
@@ -394,6 +375,27 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES,
 				AggregatorFactory.eINSTANCE.createMappedRepository()));
+	}
+
+	/**
+	 * Supports DnD from MDRs and IUs to Contribution
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
+			int operation, Collection<?> collection)
+	{
+		ItemSorter itemSorter = new ItemSorter(collection);
+
+		if(((EnabledStatusProvider)owner).isEnabled()
+				&& itemSorter.getTotalItemCount() > 0
+				&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(
+						ItemGroup.IU).size())))
+			return new MapToContributionCommand((Contribution)owner,
+					(List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR),
+					(List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+
+		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}
 
 	/**

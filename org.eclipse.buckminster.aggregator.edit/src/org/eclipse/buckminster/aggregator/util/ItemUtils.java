@@ -8,15 +8,13 @@
 
 package org.eclipse.buckminster.aggregator.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -25,41 +23,70 @@ import org.eclipse.emf.ecore.EObject;
  */
 public class ItemUtils
 {
-	public static final String GROUP_MDR = "MDR";
 
-	public static final String GROUP_IU = "IU";
-
-	public static final String GROUP_OTHER = "OTHER";
-
-	public static Map<String, List<?>> groupItems(Collection<?> items)
+	/**
+	 * Searches for a MappedRepository with the same location
+	 * 
+	 * @param mappedRepos
+	 * @param mappedRepo
+	 * @return
+	 */
+	public static MappedRepository findMappedRepository(List<MappedRepository> mappedRepos, MappedRepository mappedRepo)
 	{
-		List<InstallableUnit> selectedIUs = new ArrayList<InstallableUnit>();
-		List<MetadataRepository> selectedMDRs = new ArrayList<MetadataRepository>();
-		List<Object> selectedOthers = new ArrayList<Object>();
+		for(MappedRepository repo : mappedRepos)
+			if(mappedRepo == repo || mappedRepo.getLocation() != null && repo.getLocation() != null
+					&& mappedRepo.getLocation().equalsIgnoreCase(repo.getLocation()))
+				return repo;
 
-		for(Object item : items)
-		{
-			if(item instanceof InstallableUnit)
-			{
-				InstallableUnit iu = (InstallableUnit)item;
-				if(((EObject)iu).eContainer() instanceof MetadataRepository
-						&& iu.getType() != InstallableUnitType.OTHER)
-					selectedIUs.add((InstallableUnit)item);
-				else
-					selectedOthers.add(item);
-			}
-			else if(item instanceof MetadataRepository)
-				selectedMDRs.add((MetadataRepository)item);
-			else
-				selectedOthers.add(item);
-		}
-
-		Map<String, List<?>> selectionGroups = new HashMap<String, List<?>>();
-		selectionGroups.put(GROUP_MDR, selectedMDRs);
-		selectionGroups.put(GROUP_IU, selectedIUs);
-		selectionGroups.put(GROUP_OTHER, selectedOthers);
-
-		return selectionGroups;
+		return null;
 	}
 
+	/**
+	 * Searches for a MappedUnit with the same ID
+	 * 
+	 * @param mappedUnits
+	 * @param mappedUnit
+	 * @return
+	 */
+	public static MappedUnit findMappedUnit(EList<MappedUnit> mappedUnits, MappedUnit mappedUnit)
+	{
+		for(MappedUnit unit : mappedUnits)
+			if(mappedUnit == unit
+					|| mappedUnit.getInstallableUnit() != null
+					&& unit.getInstallableUnit() != null
+					&& (mappedUnit.getInstallableUnit() == unit.getInstallableUnit() || mappedUnit.getInstallableUnit().getId() != null
+							&& unit.getInstallableUnit().getId() != null
+							&& mappedUnit.getInstallableUnit().getId().equals(unit.getInstallableUnit().getId())))
+				return unit;
+
+		return null;
+	}
+
+	/**
+	 * Tests if selectedUIs come from a MDR with the same location as mappedRepo
+	 * 
+	 * @param mappedRepo
+	 * @param selectedIUs
+	 * @return
+	 */
+	public static boolean haveSameLocation(MappedRepository mappedRepo, List<InstallableUnit> selectedIUs)
+	{
+		String location = mappedRepo.getLocation();
+
+		if(location == null)
+			return false;
+
+		for(InstallableUnit iu : selectedIUs)
+		{
+			if(!(((EObject)iu).eContainer() instanceof MetadataRepository))
+				return false;
+			MetadataRepository mdr = (MetadataRepository)((EObject)iu).eContainer();
+			if(mdr.getLocation() == null)
+				return false;
+			if(!(location.equalsIgnoreCase(mdr.getLocation().toString())))
+				return false;
+		}
+
+		return true;
+	}
 }

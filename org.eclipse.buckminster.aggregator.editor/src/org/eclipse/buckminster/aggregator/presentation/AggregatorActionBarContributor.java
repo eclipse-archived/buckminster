@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
@@ -30,8 +29,9 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
-import org.eclipse.buckminster.aggregator.util.ItemUtils;
+import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -889,20 +889,21 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() > 0)
 		{
-			Map<String, List<?>> selectionGroups = ItemUtils.groupItems(((IStructuredSelection)selection).toList());
+			ItemSorter itemSorter = new ItemSorter(((IStructuredSelection)selection).toList());
 
-			List<MetadataRepository> selectedMDRs = (List<MetadataRepository>)selectionGroups.get(ItemUtils.GROUP_MDR);
-			List<InstallableUnit> selectedIUs = (List<InstallableUnit>)selectionGroups.get(ItemUtils.GROUP_IU);
-			List<Object> selectedOthers = (List<Object>)selectionGroups.get(ItemUtils.GROUP_OTHER);
+			List<MetadataRepository> selectedMDRs = (List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR);
+			List<InstallableUnit> selectedIUs = (List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU);
 
 			List<IAction> mapToActions = new ArrayList<IAction>();
 
-			if(selectedOthers.size() == 0 && (selectedMDRs.size() > 0 || selectedIUs.size() > 0))
+			if(itemSorter.getTotalItemCount() > 0
+					&& itemSorter.getTotalItemCount() == (selectedMDRs.size() + selectedIUs.size()))
 			{
 				for(Contribution contribution : m_aggregator.getContributions())
-					mapToActions.add(new MapToContributionAction(
-							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution, selectedMDRs,
-							selectedIUs));
+					if(contribution.isEnabled())
+						mapToActions.add(new MapToContributionAction(
+								((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution,
+								selectedMDRs, selectedIUs));
 			}
 
 			return mapToActions;
