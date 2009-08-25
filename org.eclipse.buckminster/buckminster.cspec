@@ -9,7 +9,6 @@
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.testfragments.feature" componentType="eclipse.feature"/>
-        <cs:dependency name="org.junit4" componentType="osgi.bundle" versionDesignator="4.5.0"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="clean" actor="ant">
