@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.buckminster.ui.ComboInputDialog;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.UiUtils;
@@ -24,7 +25,6 @@ import org.eclipse.buckminster.ui.editor.ExternalFileEditorInput;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
@@ -60,7 +60,12 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		}
 	}
 
+	// just for backward compatibility
 	private static final String LAST_CQUERY_URL = "lastCQueryURL"; //$NON-NLS-1$
+
+	private static final String LAST_CQUERY_URLS = "lastCQueryURLs"; //$NON-NLS-1$
+
+	private static final int MAX_REMEMBERED_CQUERIES = 5;
 
 	private IWorkbenchWindow m_workbenchWindow;
 
@@ -77,8 +82,24 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 	{
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		Shell shell = m_workbenchWindow.getShell();
-		InputDialog askURL = new InputDialog(shell, null, Messages.url_for_query_with_colon,
-				preferences.getString(LAST_CQUERY_URL), new URLValidator());
+
+		String lastURLsString = preferences.getString(LAST_CQUERY_URLS);
+		String[] lastURLs = null;
+
+		if(lastURLsString != null && lastURLsString.length() > 0)
+			lastURLs = lastURLsString.split(";");
+		else
+		{
+			String lastURLString = preferences.getString(LAST_CQUERY_URL);
+
+			if(lastURLString != null)
+				lastURLs = new String[] { lastURLString };
+		}
+
+		ComboInputDialog askURL = new ComboInputDialog(shell, null, Messages.url_for_query_with_colon, lastURLs,
+				lastURLs.length > 0
+						? lastURLs[0]
+						: null, new URLValidator());
 
 		if(askURL.open() != Window.OK)
 			return;
@@ -91,7 +112,25 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		if(urlStr.length() == 0)
 			return;
 
-		preferences.setValue(LAST_CQUERY_URL, urlStr);
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(urlStr);
+
+		int cnt = 1;
+		for(String str : lastURLs)
+		{
+			if(cnt >= MAX_REMEMBERED_CQUERIES)
+				break;
+
+			if(!urlStr.equals(str))
+			{
+				sb.append(';');
+				sb.append(str);
+				cnt++;
+			}
+		}
+
+		preferences.setValue(LAST_CQUERY_URLS, sb.toString());
 		try
 		{
 			URL url = URLUtils.normalizeToURL(urlStr);
