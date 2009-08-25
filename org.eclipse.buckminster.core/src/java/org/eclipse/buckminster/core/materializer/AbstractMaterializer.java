@@ -112,6 +112,10 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
 	{
+		IPath rootDir = Path.fromOSString(getMaterializerRootDir());
+		if(rootDir.isAbsolute())
+			return rootDir;
+
 		if(Platform.OS_WIN32.equals(Platform.getOS()))
 		{
 			File userDir = null;
@@ -119,7 +123,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			if(appDataEnv != null)
 			{
 				userDir = new File(appDataEnv + "\\buckminster"); //$NON-NLS-1$
-				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
+				return Path.fromOSString(new File(userDir, rootDir.toOSString()).toString());
 			}
 		}
 
@@ -133,7 +137,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 					userDir = new File(userDir, "Application Data\\buckminster"); //$NON-NLS-1$
 				else
 					userDir = new File(userDir, "buckminster"); //$NON-NLS-1$
-				return Path.fromOSString(new File(userDir, getMaterializerRootDir()).toString());
+				return Path.fromOSString(new File(userDir, rootDir.toOSString()).toString());
 			}
 		}
 		throw BuckminsterException.fromMessage(Messages.Unable_to_determine_users_home_directory);

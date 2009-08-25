@@ -112,39 +112,48 @@ public class MaterializationContext extends RMContext
 	public IPath getInstallLocation(Resolution resolution) throws CoreException
 	{
 		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
-		IPath relativeLocation = null;
-		boolean useRootDefault = true;
-		if(node != null)
-		{
-			relativeLocation = node.getInstallLocation();
-			String materializerId = node.getMaterializerID();
-			useRootDefault = (materializerId == null || materializerId.equals(m_materializationSpec.getMaterializerID()));
-		}
-		else
-		{
-			IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
-			relativeLocation = rd.getInstallLocation(resolution, this);
+		IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
+		IPath relativeLocation = rd.getInstallLocation(resolution, this);
 
-			IComponentType cType = resolution.getComponentType();
-			if(cType != null)
+		IComponentType cType = resolution.getComponentType();
+		if(cType != null)
+		{
+			IPath ctypeRelative = cType.getRelativeLocation();
+			if(ctypeRelative != null)
 			{
-				IPath ctypeRelative = cType.getRelativeLocation();
-				if(ctypeRelative != null)
-				{
-					if(relativeLocation == null)
-						relativeLocation = ctypeRelative;
-					else
-						relativeLocation = relativeLocation.append(ctypeRelative);
-				}
+				if(relativeLocation == null)
+					relativeLocation = ctypeRelative;
+				else
+					relativeLocation = relativeLocation.append(ctypeRelative);
 			}
 		}
-
 		if(relativeLocation != null)
 		{
 			IPath tmp = expand(relativeLocation);
 			if(tmp.isAbsolute())
 				return tmp;
+		}
+
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IPath nodeLocation = null;
+		boolean useRootDefault = true;
+		if(node != null)
+		{
+			nodeLocation = node.getInstallLocation();
+			String materializerId = node.getMaterializerID();
+			useRootDefault = (materializerId == null || materializerId.equals(m_materializationSpec.getMaterializerID()));
+
+			if(nodeLocation != null)
+			{
+				if(relativeLocation != null)
+					relativeLocation = nodeLocation.append(relativeLocation);
+				else
+					relativeLocation = nodeLocation;
+
+				IPath tmp = expand(relativeLocation);
+				if(tmp.isAbsolute())
+					return tmp;
+			}
 		}
 
 		IPath location = null;
@@ -153,6 +162,7 @@ public class MaterializationContext extends RMContext
 
 		if(location == null)
 			location = m_materializationSpec.getMaterializer(resolution).getDefaultInstallRoot(this, resolution);
+
 		if(relativeLocation != null)
 			location = location.append(relativeLocation);
 		return expand(location);
