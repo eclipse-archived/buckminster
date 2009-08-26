@@ -123,8 +123,7 @@ final class EclipseImportBase
 	{
 		synchronized(ctxUserCache)
 		{
-			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>)ctxUserCache
-					.get(CACHE_IMPORT_BASE_CACHE);
+			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>)ctxUserCache.get(CACHE_IMPORT_BASE_CACHE);
 			if(listCache == null)
 			{
 				listCache = Collections.synchronizedMap(new HashMap<Key, EclipseImportBase>());
@@ -167,7 +166,7 @@ final class EclipseImportBase
 			{
 				if(!(path.endsWith("/") || path.endsWith(".map") || path.endsWith(".xml") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					path += '/';
-				remoteLocation = new URL(scheme, uri.getHost(), path);
+				remoteLocation = new URL(scheme, uri.getHost(), uri.getPort(), path);
 			}
 			catch(MalformedURLException e)
 			{
