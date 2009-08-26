@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,11 +32,13 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.version.BuildTimestampQualifierGenerator;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -237,6 +240,8 @@ public class RMContext extends ExpandingProperties<Object>
 		{
 			e.printStackTrace();
 		}
+		additions.put(BuildTimestampQualifierGenerator.FORMAT_PROPERTY, DateAndTimeUtils.toISOFormat(new Date()));
+
 		for(IValueVariable var : varMgr.getValueVariables())
 		{
 			Object value = var.getValue();

@@ -52,6 +52,10 @@
           class="org.eclipse.buckminster.core.version.TimestampQualifierGenerator"
           id="lastModified">
     </qualifierGenerator>
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.BuildTimestampQualifierGenerator"
+          id="buildTimestamp">
+    </qualifierGenerator>
  </extension>
 	<extension point="org.eclipse.buckminster.core.readerTypes">
 		<readerType

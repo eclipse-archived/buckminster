@@ -584,6 +584,8 @@ public class Messages extends NLS
 
 	public static String product_for_action_0_must_be_single_path;
 
+	public static String property_0_not_ISO_8601_conformant_timestamp_string;
+
 	static
 	{
 		// initialize resource bundle
