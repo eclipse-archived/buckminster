@@ -7,6 +7,8 @@
 ***************************************************************************/
 package org.eclipse.buckminster.ant.taskdefs;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 
@@ -53,7 +55,13 @@ public class ContextProperty extends Task
 		IActionContext ctx = AbstractActor.getActiveContext();
 		Object v = null;
 		if(ctx != null)
-			v = ctx.getProperties().get(m_name);
-		getProject().setProperty(m_receivingProperty, v == null ? null : v.toString());
+		{
+			Map<String,? extends Object> props = ctx.getProperties();
+			if(props.containsKey(m_name))
+			{
+				v = ctx.getProperties().get(m_name);
+				getProject().setProperty(m_receivingProperty, v == null ? null : v.toString());
+			}
+		}
 	}
 }
