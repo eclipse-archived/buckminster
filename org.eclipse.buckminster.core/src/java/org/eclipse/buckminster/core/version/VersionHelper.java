@@ -177,11 +177,10 @@ public class VersionHelper
 
 		StringBuffer buf = new StringBuffer();
 		getOriginal(version, buf);
-		VersionFormat fmt = version.getFormat();
-		if(!VersionFormat.OSGI_FORMAT.equals(fmt))
+		if(!VersionFormat.OSGI_FORMAT.equals(version.getFormat()))
 		{
 			buf.append('#');
-			buf.append(getVersionType(fmt).getId());
+			buf.append(getVersionType(version).getId());
 		}
 		return buf.toString();
 	}
@@ -191,9 +190,8 @@ public class VersionHelper
 		if(range == null)
 			return null;
 
-		VersionFormat fmt = range.getFormat();
 		StringBuffer buf = new StringBuffer();
-		if(VersionFormat.OSGI_FORMAT.equals(fmt))
+		if(VersionFormat.OSGI_FORMAT.equals(range.getFormat()))
 			range.toString(buf);
 		else
 		{
@@ -215,7 +213,7 @@ public class VersionHelper
 						: ')');
 			}
 			buf.append('#');
-			buf.append(getVersionType(fmt).getId());
+			buf.append(getVersionType(range).getId());
 		}
 		return buf.toString();
 	}
@@ -274,6 +272,17 @@ public class VersionHelper
 		throw new MissingVersionTypeException(id);
 	}
 
+	public static VersionType getVersionType(Version version)
+	{
+		VersionFormat format = version.getFormat();
+
+		// format is not set if the version is in the raw format
+		if(format == null)
+			format = VersionFormat.RAW_FORMAT;
+
+		return getVersionType(format);
+	}
+
 	public static VersionType getVersionType(VersionFormat format)
 	{
 		if(format == null)
@@ -294,6 +303,17 @@ public class VersionHelper
 			}
 			return vt;
 		}
+	}
+
+	public static VersionType getVersionType(VersionRange range)
+	{
+		VersionFormat format = range.getFormat();
+
+		// format is not set if the version range is in the raw format
+		if(format == null)
+			format = VersionFormat.RAW_FORMAT;
+
+		return getVersionType(format);
 	}
 
 	public static VersionRange greaterOrEqualRange(Version version)

@@ -391,7 +391,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			return vds;
 
 		IComponentType ctype = getComponentType();
-		if(ctype == null && VersionHelper.getVersionType(vds.getMinimum().getFormat()).equals(VersionType.TRIPLET))
+		if(ctype == null && VersionHelper.getVersionType(vds.getMinimum()).equals(VersionType.TRIPLET))
 		{
 			try
 			{

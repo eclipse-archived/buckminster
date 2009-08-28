@@ -351,7 +351,7 @@ public class VersionDesignator extends Widgetin
 				else
 					m_toVersion.setText(maxVer.getOriginal());
 			}
-			m_versionType.select(m_versionType.indexOf(VersionHelper.getVersionType(versionDesignator.getFormat()).getId()));
+			m_versionType.select(m_versionType.indexOf(VersionHelper.getVersionType(versionDesignator).getId()));
 		}
 		else
 		{

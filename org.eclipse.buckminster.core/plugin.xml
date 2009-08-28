@@ -87,6 +87,9 @@
 		<versionType
           format="n[.n=0;[.n=0;]][d?S=M;]"
           id="Triplet"/>
+		<versionType
+          format="r(.r)*p?"
+          id="Raw Omni Version"/>
 	</extension>
 	<!-- Declare known readerTypes -->
  <extension
