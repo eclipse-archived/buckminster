@@ -3,6 +3,9 @@
     <cs:dependencies>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.site.eclipse.tools" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.platform" componentType="eclipse.feature"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="clear.site.eclipse" actor="ant" always="true">
@@ -44,6 +47,7 @@
         <cs:public name="site.zips">
             <cs:attribute name="site.p2.zip" component="org.eclipse.buckminster.site.eclipse"/>
             <cs:attribute name="site.p2.zip" component="org.eclipse.buckminster.site.eclipse.headless"/>
+            <cs:attribute name="site.p2.zip" component="org.eclipse.buckminster.site.eclipse.tools"/>
         </cs:public>
     </cs:groups>
 </cs:cspec>
