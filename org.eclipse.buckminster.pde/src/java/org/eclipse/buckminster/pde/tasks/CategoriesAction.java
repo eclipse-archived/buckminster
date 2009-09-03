@@ -327,7 +327,7 @@ public class CategoriesAction extends AbstractPublisherAction
 		}
 		else
 		{
-			if(version.getQualifier().contains("qualifier")) //$NON-NLS-1$
+			if(version.getQualifier() != null && version.getQualifier().contains("qualifier")) //$NON-NLS-1$
 			{
 				// We won't find an IU that matches this version. We need to use a version range.
 				//
