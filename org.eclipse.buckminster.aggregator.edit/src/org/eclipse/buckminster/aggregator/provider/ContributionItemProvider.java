@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
@@ -24,6 +25,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
@@ -90,9 +92,9 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 											getId(mappedRepository)) || mappedRepository.isEnabled();
 
 							if(result && object instanceof MappedUnit)
-								result = AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName().equals(
-										getId(object))
-										|| ((MappedUnit)object).isEnabled();
+								result = (AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName().equals(
+										getId(object)) || ((MappedUnit)object).isEnabled())
+										&& !((MappedUnit)object).isMappedRepositoryBroken();
 						}
 						else
 							result = false;
@@ -245,9 +247,13 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				container = container.eContainer();
 			}
 
+			boolean newValue = notification.getNewBooleanValue();
 			// Browse all mapped repositories which may have changed their virtual status (inherently enabled/disabled)
-			for(MappedRepository mappedRepository : ((Contribution)notification.getNotifier()).getRepositories(!notification.getNewBooleanValue()))
+			for(MappedRepository mappedRepository : ((Contribution)notification.getNotifier()).getRepositories(!newValue))
 			{
+				if(newValue)
+					ResourceUtils.loadResourceForMappedRepository(mappedRepository);
+
 				affectedNodes.add(mappedRepository);
 
 				// Browse all mapped units which may have changed their virtual status (inherently enabled/disabled)
@@ -265,6 +271,9 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
 			for(EObject affectedNode : affectedNodeLabels)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
+
+			if(!newValue)
+				ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
 		}
 		// If a repository is removed, update possible warning overlays
 		else if(notification.getEventType() == Notification.REMOVE
@@ -288,6 +297,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 			for(EObject affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
+			ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
 			return;
 		}
 

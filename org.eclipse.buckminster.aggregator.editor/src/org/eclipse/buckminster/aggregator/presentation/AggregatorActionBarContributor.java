@@ -614,7 +614,48 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 */
 	public void selectionChangedGen(SelectionChangedEvent event)
 	{
-		updateContextMenu(event.getSelection());
+		// Remove any menu items for old selection.
+		//
+		if(createChildMenuManager != null)
+		{
+			depopulateManager(createChildMenuManager, createChildActions);
+		}
+		if(createSiblingMenuManager != null)
+		{
+			depopulateManager(createSiblingMenuManager, createSiblingActions);
+		}
+
+		// Query the new selection for appropriate new child/sibling descriptors
+		//
+		Collection<?> newChildDescriptors = null;
+		Collection<?> newSiblingDescriptors = null;
+
+		ISelection selection = event.getSelection();
+		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
+		{
+			Object object = ((IStructuredSelection)selection).getFirstElement();
+
+			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
+
+			newChildDescriptors = domain.getNewChildDescriptors(object, null);
+			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+		}
+
+		// Generate actions for selection; populate and redraw the menus.
+		//
+		createChildActions = generateCreateChildActions(newChildDescriptors, selection);
+		createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
+
+		if(createChildMenuManager != null)
+		{
+			populateManager(createChildMenuManager, createChildActions, null);
+			createChildMenuManager.update(true);
+		}
+		if(createSiblingMenuManager != null)
+		{
+			populateManager(createSiblingMenuManager, createSiblingActions, null);
+			createSiblingMenuManager.update(true);
+		}
 	}
 
 	@Override

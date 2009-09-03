@@ -78,6 +78,14 @@ public interface MappedUnit extends EnabledStatusProvider, StatusProvider
 	boolean isBranchEnabled();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	boolean isMappedRepositoryBroken();
+
+	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit
 	 * <em>Installable Unit</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

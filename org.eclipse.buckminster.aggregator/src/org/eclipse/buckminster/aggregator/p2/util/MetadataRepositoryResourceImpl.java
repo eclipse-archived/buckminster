@@ -111,6 +111,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			catch(Exception e)
 			{
 				exception = e;
+				log.error(e, "Unable to load repository %s", location);
 			}
 			finally
 			{
@@ -138,24 +139,40 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator, boolean force)
 	{
 		ResourceSet topSet = aggregator.eResource().getResourceSet();
-		Resource mdr = topSet.getResource(URI.createGenericURI("p2", repositoryURI, null), true);
-		if(force)
+		URI repoURI = URI.createGenericURI("p2", repositoryURI, null);
+		Resource mdr = topSet.getResource(repoURI, !force);
+
+		if(mdr == null)
 		{
-			mdr.unload();
-			try
-			{
-				mdr.load(Collections.emptyMap());
-			}
-			catch(IOException e)
-			{
-				throw new RuntimeException(String.format("Unable to reload repository %s", repositoryURI));
-			}
+			force = false;
+			mdr = topSet.getResource(repoURI, true);
 		}
 
-		List<EObject> contents = mdr.getContents();
-		if(contents.size() != 1)
-			throw new RuntimeException(String.format("Unable to load repository %s", repositoryURI));
-		return (MetadataRepository)contents.get(0);
+		try
+		{
+			if(mdr != null)
+			{
+				if(force)
+				{
+					mdr.unload();
+					mdr.load(Collections.emptyMap());
+				}
+
+				List<EObject> contents = mdr.getContents();
+				if(contents.size() != 1 || ((MetadataRepository)contents.get(0)).getLocation() == null)
+					throw new Exception(String.format("Unable to load repository %s", repositoryURI));
+
+				return (MetadataRepository)contents.get(0);
+			}
+			else
+				throw new Exception(String.format("Unable to obtain a resource for repository %s", repositoryURI));
+		}
+		catch(Exception e)
+		{
+			if(mdr != null)
+				topSet.getResources().remove(mdr);
+			return null;
+		}
 	}
 
 	public MetadataRepositoryResourceImpl(URI uri)
@@ -200,10 +217,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			{
 				job.join();
 				Exception e = job.getException();
-				if(e != null)
-					throw new Resource.IOWrappedException(e);
+				// if(e != null)
+				// throw new Resource.IOWrappedException(e);
 
-				getContents().add(repository);
+				if(e == null)
+					getContents().add(repository);
 			}
 			catch(InterruptedException e)
 			{

@@ -18,8 +18,8 @@ import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
-import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -27,6 +27,7 @@ import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToMappedRepositoryCommand;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
@@ -109,7 +110,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	@Override
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling)
 	{
-		if(!(((MappedRepository)object).isBranchEnabled()))
+		if(!(((MappedRepository)object).isBranchEnabled()) || ((MappedRepository)object).getMetadataRepository() == null)
 			return Collections.emptySet();
 
 		return super.getNewChildDescriptors(object, editingDomain, sibling);
@@ -189,7 +190,12 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 		}
 		else
-			bld.append("not mapped");
+		{
+			if(mappedRepository.getLocation() != null)
+				bld.append(mappedRepository.getLocation());
+			else
+				bld.append("not mapped");
+		}
 
 		if(!mappedRepository.isEnabled())
 			bld.append(" (disabled)");
@@ -207,13 +213,20 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		if(notification.getEventType() != Notification.SET)
 			return;
 
+		Boolean potentiallyAffectedUnitStatusIsEnabled = null;
+		MappedRepository mappedRepository = (MappedRepository)notification.getNotifier();
+
 		switch(notification.getFeatureID(MappedRepository.class))
 		{
 		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 			onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
-			break;
+			potentiallyAffectedUnitStatusIsEnabled = Boolean.valueOf(true);
+			// no 'break' here is an intention - refresh nodes that may have been affected
 
 		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+			if(potentiallyAffectedUnitStatusIsEnabled == null)
+				potentiallyAffectedUnitStatusIsEnabled = Boolean.valueOf(!notification.getNewBooleanValue());
+
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 
 			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
@@ -228,8 +241,12 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			}
 
 			// Browse all mapped units which may have changed their virtual status (inherently enabled/disabled)
-			for(MappedUnit unit : ((MappedRepository)notification.getNotifier()).getUnits(!notification.getNewBooleanValue()))
+			for(MappedUnit unit : mappedRepository.getUnits(false))
 			{
+				if(unit.isEnabled() && !potentiallyAffectedUnitStatusIsEnabled.booleanValue() || !unit.isEnabled()
+						&& potentiallyAffectedUnitStatusIsEnabled.booleanValue())
+					continue;
+
 				affectedNodes.add(unit);
 				// And now, find all categories which may contain the feature just being enabled/disabled
 				if(unit instanceof Feature)
@@ -241,6 +258,14 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
 			for(EObject affectedNode : affectedNodeLabels)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
+
+			Aggregator aggregator = (Aggregator)mappedRepository.eContainer().eContainer();
+			ResourceUtils.cleanUpResources(aggregator);
+
+			if(notification.getFeatureID(MappedRepository.class) == AggregatorPackage.MAPPED_REPOSITORY__ENABLED
+					&& notification.getNewBooleanValue())
+				ResourceUtils.loadResourceForMappedRepository(mappedRepository);
+			break;
 		}
 
 	}
@@ -440,7 +465,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EReference feature,
 			Collection<?> collection)
 	{
-		if(((MappedRepository)owner).isBranchEnabled())
+		if(((MappedRepository)owner).isBranchEnabled() && ((MappedRepository)owner).getMetadataRepository() != null)
 			return new RemoveCommand(domain, owner, feature, collection);
 
 		return UnexecutableCommand.INSTANCE;
@@ -458,7 +483,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			return createRemoveCommand(domain, owner, (EReference)feature, collection);
 		}
 
-		if(((MappedRepository)owner).isEnabled() && ((Contribution)owner.eContainer()).isEnabled())
+		if(((MappedRepository)owner).isBranchEnabled() && ((MappedRepository)owner).getMetadataRepository() != null)
 			return new RemoveCommand(domain, owner, feature, collection);
 
 		return UnexecutableCommand.INSTANCE;
@@ -481,9 +506,9 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	private void onLocationChange(MappedRepository repository, String location)
 	{
 		MetadataRepository repo = null;
+		Aggregator aggregator = (Aggregator)repository.eContainer().eContainer();
 		try
 		{
-			Aggregator aggregator = (Aggregator)repository.eContainer().eContainer();
 			repo = MetadataRepositoryResourceImpl.loadRepository(location, aggregator);
 		}
 		finally
@@ -491,4 +516,5 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			repository.setMetadataRepository(repo);
 		}
 	}
+
 }

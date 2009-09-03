@@ -200,7 +200,7 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 
 	public InstallableUnit getInstallableUnit()
 	{
-		if(!isBranchEnabled())
+		if(!isBranchEnabled() || isMappedRepositoryBroken())
 			return null;
 
 		return getInstallableUnitGen();
@@ -242,7 +242,11 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 
 	public int getStatus()
 	{
-		if(isEnabled() && getInstallableUnit() != null && getInstallableUnit().getStatus() == StatusProvider.BROKEN)
+		if(isMappedRepositoryBroken())
+			return StatusProvider.BROKEN_CHILD;
+
+		if(isBranchEnabled() && getInstallableUnit() != null
+				&& getInstallableUnit().getStatus() == StatusProvider.BROKEN)
 			return StatusProvider.BROKEN_CHILD;
 
 		return StatusProvider.OK;
@@ -297,6 +301,16 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	public boolean isEnabled()
 	{
 		return (eFlags & ENABLED_EFLAG) != 0;
+	}
+
+	public boolean isMappedRepositoryBroken()
+	{
+		MappedRepository mappedRepository = (MappedRepository)eContainer();
+
+		if(isBranchEnabled() && mappedRepository.getMetadataRepository() == null)
+			return true;
+
+		return false;
 	}
 
 	/**

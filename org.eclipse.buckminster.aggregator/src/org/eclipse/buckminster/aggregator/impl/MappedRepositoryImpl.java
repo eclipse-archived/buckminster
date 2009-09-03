@@ -562,9 +562,15 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	public int getStatus()
 	{
-		for(MappedUnit unit : getEnabledUnits())
+		if(isBranchEnabled())
 		{
-			if(unit.getStatus() != StatusProvider.OK)
+			if(getMetadataRepository() != null)
+				for(MappedUnit unit : getEnabledUnits())
+				{
+					if(unit.getStatus() != StatusProvider.OK)
+						return StatusProvider.BROKEN_CHILD;
+				}
+			else
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;
