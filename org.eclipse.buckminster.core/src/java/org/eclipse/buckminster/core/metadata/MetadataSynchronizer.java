@@ -181,7 +181,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			// We need very high prio on this since we wait
 			// for it to complete during plug-in activation
 			//
-			setPriority(Job.INTERACTIVE);
+			setPriority(Job.SHORT);
 		}
 
 		@Override

@@ -87,16 +87,6 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 				properties, getNextTimestamp());
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
-		Utils.addAttribute(attrs, ATTR_WS_LOCATION, m_workspaceRoot.toPortableString());
-		Utils.addAttribute(attrs, ATTR_TIMESTAMP, Long.toString(m_timestamp));
-		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
-	}
-
 	public int compareTo(WorkspaceBinding o)
 	{
 		return m_timestamp < o.m_timestamp
@@ -104,13 +94,6 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 				: (m_timestamp == o.m_timestamp
 						? 0
 						: 1);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(receiver, namespace, prefix);
-		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
 	}
 
 	@Override
@@ -160,5 +143,22 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 	public void store(StorageManager sm) throws CoreException
 	{
 		sm.getWorkspaceBindings().putElement(this);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_WS_RELATIVE_PATH, m_workspaceRelativePath.toPortableString());
+		Utils.addAttribute(attrs, ATTR_WS_LOCATION, m_workspaceRoot.toPortableString());
+		Utils.addAttribute(attrs, ATTR_TIMESTAMP, Long.toString(m_timestamp));
+		Utils.addAttribute(attrs, ATTR_RESOLUTION_ID, m_resolutionId.toString());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(receiver, namespace, prefix);
+		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
 	}
 }

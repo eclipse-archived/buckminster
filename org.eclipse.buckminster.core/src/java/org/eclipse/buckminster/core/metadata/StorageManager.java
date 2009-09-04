@@ -57,23 +57,20 @@ public class StorageManager
 		// NOTE: The order in which these entries are created and cleared
 		// in case of changes is important. It is in depencency order.
 		//
-		m_providers = new FileStorage<Provider>(new File(baseLocation, Provider.TAG), pf.getProviderParser(false),
-				Provider.class, Provider.SEQUENCE_NUMBER);
+		m_providers = new MemoryStorage<Provider>(Provider.class);
 
-		m_cspecs = new FileStorage<CSpec>(new File(baseLocation, CSpec.TAG), pf.getCSpecParser(false), CSpec.class,
-				CSpec.SEQUENCE_NUMBER);
+		m_cspecs = new MemoryStorage<CSpec>(CSpec.class);
 
-		m_resolutions = new FileStorage<Resolution>(new File(baseLocation, Resolution.TAG), pf.getResolutionParser(),
-				Resolution.class, Resolution.SEQUENCE_NUMBER);
+		m_resolutions = new MemoryStorage<Resolution>(Resolution.class);
 
-		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG), pf
-				.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
+		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
+				pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
 
 		m_opmls = new FileStorage<OPML>(new File(baseLocation, OPML.TAG), pf.getOPMLParser(false), OPML.class,
 				OPML.SEQUENCE_NUMBER);
 
-		m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG), pf
-				.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
+		m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
+				pf.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
 	}
 
 	public ISaxableStorage<CSpec> getCSpecs() throws CoreException

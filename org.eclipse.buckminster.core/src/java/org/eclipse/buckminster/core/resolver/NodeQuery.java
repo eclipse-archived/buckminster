@@ -71,15 +71,16 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			m_properties = qprops;
 		else
 		{
-			Map<String, Object> propUnion = new ExpandingProperties<Object>(qprops.size() + additionalProperties.size());
+			ExpandingProperties<Object> propUnion = new ExpandingProperties<Object>(qprops.size()
+					+ additionalProperties.size());
 			if(additionalPrioritized)
 			{
-				propUnion.putAll(qprops);
+				propUnion.putAll(qprops, true);
 				propUnion.putAll(additionalProperties);
 			}
 			else
 			{
-				propUnion.putAll(additionalProperties);
+				propUnion.putAll(additionalProperties, true);
 				propUnion.putAll(qprops);
 			}
 			m_properties = propUnion;
