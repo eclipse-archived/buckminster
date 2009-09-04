@@ -39,11 +39,15 @@
 			<propertyref name="line.separator"/>
 			<propertyref name="path.separator"/>
 			<propertyref prefix="ant."/>
-			<propertyref prefix="eclipse."/>
 			<propertyref prefix="file."/>
+			<propertyref prefix="eclipse."/>
 			<propertyref prefix="java."/>
 			<propertyref prefix="sun."/>
 			<propertyref prefix="user."/>
+		</propertyset>
+		<propertyset negate="false">
+			<propertyref name="eclipse.staging.area"/>
+			<propertyref prefix="eclipse.committer."/>
 		</propertyset>
 	</echoproperties>
 
@@ -110,6 +114,7 @@
 		<echo message="Configuring headless buckminster with needed features"/>
 		<eclipse.launch app="director">
 			<args>
+				<jvmarg value="-Declipse.p2.mirrors=false"/>
 				<arg value="-r"/>
 				<arg value="${bm.headless.site}"/>
 				<arg value="-r"/>
@@ -122,8 +127,6 @@
 				<arg value="org.eclipse.buckminster.cmdline.product"/>
 				<arg value="-i"/>
 				<arg value="org.eclipse.buckminster.core.headless.feature.feature.group" />
-				<arg value="-i"/>
-				<arg value="org.eclipse.buckminster.cvs.headless.feature.feature.group" />
 				<arg value="-i"/>
 				<arg value="org.eclipse.buckminster.pde.headless.feature.feature.group" />
 				<arg value="-i"/>
@@ -144,32 +147,29 @@
 		<untar src="${local.workspace.gzip}" compression="gzip" dest="${workspace}" />
 	</target>
 
-	<available file="${targetPlatformPath}/artifacts.xml" property="targetPlatformPath.exists" />
-	<target name="build.tp" unless="tp.exists" depends="install.buckminster,init.workspace">
-		<echo message="Importing binaries into target platform ${targetPlatformPath}"/>
-		<buckminster command="import">
-			<cmdargs>
-				<arg value="${basedir}/tp.mspec" />
-			</cmdargs>
-		</buckminster>
-		<echo message="Setting target platform path to ${targetPlatformPath}"/>
+	<target name="provision" depends="init.workspace,install.buckminster">
+		<echo message="Importing projects into workspace ${workspace} and binaries into target platform ${targetPlatformPath}"/>
 		<buckminster command="setpref">
 			<cmdargs>
 				<arg value="targetPlatformPath=${targetPlatformPath}" />
 			</cmdargs>
 		</buckminster>
-	</target>
-
-	<target name="build.site.ws" depends="init.workspace,install.buckminster,build.tp">
-		<echo message="Importing projects into workspace ${workspace}"/>
 		<buckminster command="import">
+			<globargs>
+				<arg value="--loglevel"/>
+				<arg value="DEBUG"/>
+			</globargs>
 			<cmdargs>
-				<arg value="${basedir}/build.cquery" />
+				<arg value="-P"/>
+				<arg value="${basedir}/build.properties"/>
+				<arg value="--bomfile"/>
+				<arg value="${basedir}/bomfile.bom"/>
+				<arg value="${basedir}/build.mspec" />
 			</cmdargs>
 		</buckminster>
 	</target>
 
-	<target name="build.sites" depends="build.site.ws">
+	<target name="build.sites" depends="provision">
 		<echo message="Building all projects in workspace ${workspace}"/>
 		<buckminster command="build"/>
 

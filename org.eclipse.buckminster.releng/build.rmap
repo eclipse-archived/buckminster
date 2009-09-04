@@ -4,7 +4,7 @@
 	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
 
-	<searchPath name="org.eclipse.buckminster">
+	<searchPath name="buckminster">
 		<provider readerType="svn" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true"
 			source="true">
 			<uri
@@ -14,16 +14,58 @@
 		</provider>
 	</searchPath>
 
-	<searchPath name="org.eclipse.platform">
+	<searchPath name="platform_3.5.R">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="http://download.eclipse.org/eclipse/updates/3.5milestones/S-3.5RC3-200905282000?importType=binary"/>
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="platform_3.5.M">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.5.x?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="platform_3.6.I">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.6-I-Builds?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="platform_3.6.M">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/eclipse/updates/3.6milestones?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="simultanious.release_3.5.R">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/releases/galileo?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="simultanious.release_3.5.M">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/releases/maintenance?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="simultanious.release_3.6.M">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/releases/helios?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="simultanious.release_3.6.I">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/releases/helios?importType=binary"/>
 		</provider>
 	</searchPath>
 
 	<searchPath name="subclipse">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
 			source="true">
-			<uri format="http://subclipse.tigris.org/update_1.4.x?importType=binary" />
+			<uri format="http://subclipse.tigris.org/update_1.6.x?importType=binary" />
 		</provider>
 	</searchPath>
 
@@ -41,23 +83,20 @@
 		</provider>
 	</searchPath>
 
-	<searchPath name="org.eclipse.team.svn">
+	<searchPath name="amalgam">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
-			source="true">
-			<uri format="http://download.eclipse.org/technology/subversive/0.7/update-site?importType=binary" />
+			source="false">
+			<uri format="http://download.eclipse.org/modeling/amalgam/dsltk/downloads/drops/S20090703-0844?importType=binary" />
 		</provider>
 	</searchPath>
 
-	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
-	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.slf4j\.extendable$" />
-	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.product$" />
-	<locator searchPathRef="org.eclipse.buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.feature$" />
-
-	<locator searchPathRef="polarion" pattern="^org\.polarion(\..+)?" />
-	<locator searchPathRef="org.eclipse.team.svn" pattern="^org\.eclipse\.team\.svn(\..+)?$" />
-
+	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
+	<locator searchPathRef="buckminster" pattern="^org\.slf4j\.extendable$" />
+	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" />
+	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
+	<locator searchPathRef="platform_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="svnkit" pattern="^org\.tmatesoft\.svnkit(\..+)?" />
 	<locator searchPathRef="subclipse" pattern="^org\.tigris\.subversion(\..+)?" />
-
-	<locator searchPathRef="org.eclipse.platform"/>
+	<locator searchPathRef="polarion" pattern="^org\.polarion(\..+)?" />
+	<locator searchPathRef="amalgam" failOnError="false"/>
 </rmap>
