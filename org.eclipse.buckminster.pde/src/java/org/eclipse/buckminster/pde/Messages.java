@@ -141,6 +141,8 @@ public class Messages extends NLS
 
 	public static String ImportOperation_targetSameAsSourceError;
 
+	public static String resetting_target_platform_0;
+
 	static
 	{
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

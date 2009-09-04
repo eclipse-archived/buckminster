@@ -17,12 +17,14 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.PDECore;
@@ -156,19 +158,27 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	{
 		// Check if the given location is contained in the active TP. If that's the case, refresh.
 		//
+		Logger log = Buckminster.getLogger();
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = null;
 		try
 		{
+			log.debug("Processing changes in target platform locations..."); //$NON-NLS-1$
 			service = bucky.getService(ITargetPlatformService.class);
 			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
 			if(activeHandle == null)
+			{
+				log.debug("Found no active target handle"); //$NON-NLS-1$
 				return;
+			}
 
 			ITargetDefinition target = activeHandle.getTargetDefinition();
 			IBundleContainer[] containers = target.getBundleContainers();
-			if(containers == null)
+			if(containers == null || containers.length == 0)
+			{
+				log.debug("Active target handle has no containers"); //$NON-NLS-1$
 				return;
+			}
 
 			boolean found = false;
 			for(IBundleContainer container : containers)
@@ -182,23 +192,24 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 			}
 
 			if(!found)
-				return;
-
-			target.resolve(new NullProgressMonitor());
-			IStatus cmpStatus = service.compareWithTargetPlatform(target);
-			if(!cmpStatus.isOK())
 			{
-				LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
-				loadTP.schedule();
+				log.debug("Active target handle has no containers of type DirectoryBundleContainer that matches the given locations"); //$NON-NLS-1$
+				return;
 			}
+
+			log.info(NLS.bind(Messages.resetting_target_platform_0, target.getName()));
+			target.resolve(new NullProgressMonitor());
+			LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
+			loadTP.run(new NullProgressMonitor());
 		}
 		catch(CoreException e)
 		{
-			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
+			log.warning(e, e.getLocalizedMessage());
 		}
 		finally
 		{
 			bucky.ungetService(service);
+			log.debug("Done processing changes in target platform locations"); //$NON-NLS-1$
 		}
 	}
 
