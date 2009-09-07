@@ -223,27 +223,6 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
-	 * Don't allow deletion of children
-	 */
-	@Override
-	@Deprecated
-	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EReference feature,
-			Collection<?> collection)
-	{
-		return UnexecutableCommand.INSTANCE;
-	}
-
-	/**
-	 * Don't allow deletion of children
-	 */
-	@Override
-	protected Command createRemoveCommand(EditingDomain domain, EObject owner, EStructuralFeature feature,
-			Collection<?> collection)
-	{
-		return UnexecutableCommand.INSTANCE;
-	}
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated

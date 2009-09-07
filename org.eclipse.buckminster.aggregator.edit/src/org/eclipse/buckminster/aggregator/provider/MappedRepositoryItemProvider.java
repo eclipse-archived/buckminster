@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -210,11 +211,26 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	public void notifyChanged(Notification notification)
 	{
 		notifyChangedGen(notification);
+
+		MappedRepository mappedRepository = (MappedRepository)notification.getNotifier();
+
+		if(notification.getEventType() == Notification.REMOVE)
+		{
+			if(notification.getFeatureID(MappedRepository.class) == AggregatorPackage.MAPPED_REPOSITORY__FEATURES)
+			{
+				Iterator<CustomCategory> categoryIterator = ((Feature)notification.getOldValue()).getCategories().iterator();
+				while(categoryIterator.hasNext())
+				{
+					categoryIterator.next();
+					//categoryIterator.remove();
+				}
+			}
+		}
+
 		if(notification.getEventType() != Notification.SET)
 			return;
 
 		Boolean potentiallyAffectedUnitStatusIsEnabled = null;
-		MappedRepository mappedRepository = (MappedRepository)notification.getNotifier();
 
 		switch(notification.getFeatureID(MappedRepository.class))
 		{
