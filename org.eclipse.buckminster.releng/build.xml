@@ -121,7 +121,8 @@
 		<get src="${template.workspace.site}/${workspace.gzip}" dest="${local.workspace.gzip}" />
 	</target>
 
-	<target name="init.workspace" depends="get.workspace">
+	<available file="${workspace}" type="dir" property="workspace.exists" />
+	<target name="init.workspace" depends="get.workspace" unless="workspace.exists">
 		<mkdir dir="${workspace}" />
 		<untar src="${local.workspace.gzip}" compression="gzip" dest="${workspace}" />
 	</target>
