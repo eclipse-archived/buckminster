@@ -214,7 +214,10 @@
 		</exec>
 		<fail message="${sign.output}">
 			<condition>
-				<contains string="${sign.output}" substring="ERROR"/>
+				<or>
+					<contains string="${sign.output}" substring="ERROR"/>
+					<contains string="${sign.output}" substring="Usage:"/>
+				</or>
 			</condition>
 		</fail>
 		<echo message="${sign.output}"/>
