@@ -74,6 +74,8 @@
 				<args>
 					<arg value="-data" />
 					<arg value="@{workspace}" />
+					<arg value="--loglevel" />
+					<arg value="WARNING" />
 					<globargs />
 					<arg value="@{command}" />
 					<arg value="-P" />
@@ -166,10 +168,6 @@
 			</cmdargs>
 		</buckminster>
 		<buckminster command="import">
-			<globargs>
-				<arg value="--loglevel" />
-				<arg value="DEBUG" />
-			</globargs>
 			<cmdargs>
 				<arg value="-P" />
 				<arg value="${basedir}/build.properties" />
