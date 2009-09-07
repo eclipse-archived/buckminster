@@ -184,10 +184,10 @@
 		<echo message="Building all projects in workspace ${workspace}" />
 		<buckminster command="build" />
 
-		<echo message="Performing org.eclipse.buckminster.releng#site.zips" />
+		<echo message="Performing org.eclipse.buckminster.releng#promote" />
 		<buckminster command="perform">
 			<cmdargs>
-				<arg value="org.eclipse.buckminster.releng#site.zips" />
+				<arg value="org.eclipse.buckminster.releng#promote" />
 			</cmdargs>
 		</buckminster>
 	</target>
