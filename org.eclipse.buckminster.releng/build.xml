@@ -181,7 +181,7 @@
 		</buckminster>
 	</target>
 
-	<target name="build.sites" depends="provision">
+	<target name="promote.sites" depends="provision">
 		<echo message="Building all projects in workspace ${workspace}" />
 		<buckminster command="build" />
 
