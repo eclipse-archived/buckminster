@@ -86,7 +86,13 @@
 		</sequential>
 	</macrodef>
 
-	<available file="${tools}/director/director" property="director.exists" />
+	<target name="init.checks">
+		<available file="${tools}/director/director" property="director.exists" />
+		<available file="${tools}/buckminster/buckminster" property="buckminster.exists" />
+		<available file="${local.workspace.gzip}" property="workspace.gzip.exists" />
+		<available file="${workspace}" type="dir" property="workspace.exists" />
+	</target>
+
 	<target name="get.director" unless="director.exists">
 		<echo message="Fetching headless director application" />
 		<tempfile destdir="${java.io.tmpdir}" prefix="director-" suffix=".zip" property="director.zip" deleteonexit="true" />
@@ -96,7 +102,6 @@
 		<delete file="${director.zip}" />
 	</target>
 
-	<available file="${tools}/buckminster/buckminster" property="buckminster.exists" />
 	<target name="install.buckminster" unless="buckminster.exists" depends="get.director">
 		<echo message="Configuring headless buckminster with needed features" />
 		<eclipse.launch app="director">
@@ -122,14 +127,12 @@
 		</eclipse.launch>
 	</target>
 
-	<available file="${local.workspace.gzip}" property="workspace.gzip.exists" />
 	<target name="get.workspace" unless="workspace.gzip.exists">
 		<echo message="Fetching workspace template from ${template.workspace.site}/${workspace.gzip}" />
 		<mkdir dir="${template.dir}" />
 		<get src="${template.workspace.site}/${workspace.gzip}" dest="${local.workspace.gzip}" />
 	</target>
 
-	<available file="${workspace}" type="dir" property="workspace.exists" />
 	<target name="init.workspace" depends="get.workspace" unless="workspace.exists">
 		<mkdir dir="${workspace}" />
 		<untar src="${local.workspace.gzip}" compression="gzip" dest="${workspace}" />
@@ -160,7 +163,7 @@
 		</echoproperties>
 	</target>
 
-	<target name="provision" depends="init.workspace,install.buckminster,init.build.properties">
+	<target name="provision" depends="init.checks,init.workspace,install.buckminster,init.build.properties">
 		<echo message="Importing projects into workspace ${workspace} and binaries into target platform ${targetPlatformPath}" />
 		<buckminster command="setpref">
 			<cmdargs>
