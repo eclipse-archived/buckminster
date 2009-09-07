@@ -40,6 +40,8 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 public class MetadataRepositoryResourceImpl extends ResourceImpl
 {
+	private Exception m_lastException = null;
+
 	class RepositoryLoaderJob extends Job
 	{
 		private final MetadataRepositoryImpl repository;
@@ -180,8 +182,15 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		super(uri);
 	}
 
+	public Exception getLastException()
+	{
+		return m_lastException;
+	}
+
 	public void load(Map<?, ?> options) throws IOException
 	{
+		m_lastException = null;
+
 		if(isLoaded)
 			return;
 
@@ -193,7 +202,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 		catch(URISyntaxException e)
 		{
-			throw new Resource.IOWrappedException(e);
+			m_lastException = new Resource.IOWrappedException(e);
+			return;
 		}
 
 		isLoading = true;
@@ -217,11 +227,13 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			{
 				job.join();
 				Exception e = job.getException();
-				// if(e != null)
-				// throw new Resource.IOWrappedException(e);
+				if(e != null)
+				{
+					m_lastException = new Resource.IOWrappedException(e);
+					return;
+				}
 
-				if(e == null)
-					getContents().add(repository);
+				getContents().add(repository);
 			}
 			catch(InterruptedException e)
 			{

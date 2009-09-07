@@ -505,7 +505,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	public MetadataRepository getMetadataRepository()
 	{
 		if(!isBranchEnabled())
-			return getMetadataRepository(false);
+			return null;
 
 		return getMetadataRepositoryGen();
 	}

@@ -11,6 +11,7 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -69,7 +70,7 @@ public class SourceCompositeGenerator extends BuilderPhase
 			List<String> errors = new ArrayList<String>();
 			for(MappedRepository repo : repos)
 			{
-				MetadataRepository mdr = repo.getMetadataRepository();
+				MetadataRepository mdr = ResourceUtils.getMetadataRepository(repo);
 				try
 				{
 					URI childLocation = mdr.getLocation();

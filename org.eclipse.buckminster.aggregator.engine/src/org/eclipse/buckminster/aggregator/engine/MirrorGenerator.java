@@ -19,6 +19,7 @@ import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -208,7 +209,7 @@ public class MirrorGenerator extends BuilderPhase
 		}
 	}
 
-	public Set<IArtifactKey> getArtifactKeysToExclude()
+	public Set<IArtifactKey> getArtifactKeysToExclude() throws CoreException
 	{
 		Builder builder = getBuilder();
 		Aggregator aggregator = builder.getAggregator();
@@ -222,7 +223,7 @@ public class MirrorGenerator extends BuilderPhase
 				if(repo.isMirrorArtifacts())
 					continue;
 
-				for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
+				for(InstallableUnit iu : ResourceUtils.getMetadataRepository(repo).getInstallableUnits())
 					keysToExclude.addAll(iu.getArtifactList());
 			}
 		}
@@ -333,7 +334,7 @@ public class MirrorGenerator extends BuilderPhase
 						continue;
 					}
 
-					MetadataRepository childMdr = repo.getMetadataRepository();
+					MetadataRepository childMdr = ResourceUtils.getMetadataRepository(repo);
 					ArrayList<InstallableUnit> iusToMirror = null;
 					ArrayList<ArtifactKey> keysToMirror = null;
 					for(InstallableUnit iu : childMdr.getInstallableUnits())

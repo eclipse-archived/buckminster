@@ -23,12 +23,14 @@ import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -92,7 +94,18 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 				ArrayList<String> errors = new ArrayList<String>();
 				for(MappedRepository repository : contrib.getRepositories(true))
 				{
-					List<InstallableUnit> allIUs = repository.getMetadataRepository().getInstallableUnits();
+					List<InstallableUnit> allIUs;
+
+					try
+					{
+						allIUs = ResourceUtils.getMetadataRepository(repository).getInstallableUnits();
+					}
+					catch(CoreException e)
+					{
+						errors.add(e.getMessage());
+						continue;
+					}
+
 					if(repository.isMapEverything())
 					{
 						// Verify that all products and features can be installed.
