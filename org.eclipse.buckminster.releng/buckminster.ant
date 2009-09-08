@@ -4,7 +4,7 @@
 		<matches pattern="^/[^/]+/.*" string="${directory}"/>
 	</condition>
 	<target name="do.clear.directory" if="legal.directory">
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" quiet="true">
 			<fileset dir="${directory}" includes="**/*" defaultexcludes="false"/>
 		</delete>
 	</target>
