@@ -93,8 +93,8 @@
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
 	<locator searchPathRef="buckminster" pattern="^org\.slf4j\.extendable$" />
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" />
-	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="platform_${eclipse.release}.${build.type}" failOnError="false"/>
+	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="svnkit" pattern="^org\.tmatesoft\.svnkit(\..+)?" />
 	<locator searchPathRef="subclipse" pattern="^org\.tigris\.subversion(\..+)?" />
 	<locator searchPathRef="polarion" pattern="^org\.polarion(\..+)?" />
