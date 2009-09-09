@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -52,8 +53,11 @@ import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -65,6 +69,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * The LocalResolver will attempt to resolve the query using locally available resources. This includes:
@@ -290,46 +295,49 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	protected BOMNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
+		Logger log = Buckminster.getLogger();
 		ComponentRequest request = query.getComponentRequest();
+		IProject existingProject = null;
 		if(query.useMaterialization() || query.useWorkspace())
 		{
+			query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "materialized"); //$NON-NLS-1$
 			try
 			{
-				Resolution res = WorkspaceInfo.getResolution(request, true);
-				if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-				{
-					// Resolution is from target platform.
-					//
-					if(!query.useTargetPlatform())
-						res = null;
-				}
+				Materialization mat = WorkspaceInfo.getMaterialization(request);
+				if(mat == null)
+					log.debug("No materialization found for %s", request); //$NON-NLS-1$
 				else
 				{
-					Materialization mat = WorkspaceInfo.getMaterialization(res);
-					if(mat == null)
+
+					log.debug("Materialization found for %s", request); //$NON-NLS-1$
+					existingProject = WorkspaceInfo.getProject(mat);
+					if(existingProject == null)
 					{
-						// Resolution is not materialized so don't use it
-						//
-						res = null;
+						log.debug("No workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
+						Resolution res = fromPath(query, mat.getComponentLocation(), null);
+						query.logDecision(ResolverDecisionType.MATCH_FOUND, mat.getComponentIdentifier());
+
+						Filter[] failingFilter = new Filter[1];
+						if(res.isFilterMatchFor(query, failingFilter))
+
+						{
+							MonitorUtils.complete(monitor);
+							return new ResolvedNode(query, res);
+						}
+						query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(), NLS.bind(
+								Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
 					}
-					else if(!query.useWorkspace() && WorkspaceInfo.getProject(mat) != null)
-					{
-						// This component is bound to the workspace and we
-						// are not allowed to use it when we resolve
-						//
-						res = null;
-					}
-				}
-				if(res != null && res.isFilterMatchFor(query))
-				{
-					MonitorUtils.complete(monitor);
-					return new ResolvedNode(query, res);
+					else
+						log.debug("Workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
 				}
 			}
 			catch(MissingComponentException e)
 			{
 			}
 		}
+		else
+			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "materialized", //$NON-NLS-1$
+					Messages.materializations_disabled_in_query);
 
 		// If we get to this point, we didn't find any existing resolution that
 		// could be used.
@@ -338,36 +346,56 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		{
 			// Generate the resolution from a project in the workspace
 			//
-			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-			IProject existingProject = null;
-			try
+			if(existingProject == null)
 			{
-				existingProject = wsRoot.getProject(request.getProjectName());
-			}
-			catch(IllegalArgumentException e)
-			{
-				// Query did not produce a name that is valid for a project
+				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "workspace"); //$NON-NLS-1$
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				try
+				{
+					existingProject = wsRoot.getProject(request.getProjectName());
+				}
+				catch(IllegalArgumentException e)
+				{
+					// Query did not produce a name that is valid for a project
+				}
 			}
 			if(existingProject != null && existingProject.isOpen())
 			{
+				log.debug("Found workspace project for %s", request.getProjectName()); //$NON-NLS-1$
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				ComponentIdentifier ci = resolution.getComponentIdentifier();
-				if(request.designates(ci) && resolution.isFilterMatchFor(query))
+				if(request.designates(ci))
 				{
-					// Make sure we have a materialization for the project.
-					//
-					StorageManager sm = StorageManager.getDefault();
-					Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(), ci);
-					mat.store(sm);
-					resolution.store(sm);
-					MonitorUtils.complete(monitor);
-					return new ResolvedNode(query, resolution);
+					query.logDecision(ResolverDecisionType.MATCH_FOUND, ci);
+					Filter[] failingFilter = new Filter[1];
+					if(resolution.isFilterMatchFor(query, failingFilter))
+					{
+						// Make sure we have a materialization for the project.
+						//
+						StorageManager sm = StorageManager.getDefault();
+						Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(),
+								ci);
+						mat.store(sm);
+						resolution.store(sm);
+						MonitorUtils.complete(monitor);
+						return new ResolvedNode(query, resolution);
+					}
+					query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci, NLS.bind(
+							Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
 				}
+				else
+					log.debug("Workspace project for %s is not designated by %s", request.getProjectName(), request); //$NON-NLS-1$
 			}
+			else
+				log.debug("No open workspace project found that corresponds to %s", request); //$NON-NLS-1$
 		}
+		else
+			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "workspace", //$NON-NLS-1$
+					Messages.workspace_disable_in_query);
 
 		if(query.useTargetPlatform())
 		{
+			query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "target"); //$NON-NLS-1$
 			// Generate the resolution from the target platform
 			//
 			Provider provider;
@@ -396,6 +424,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				Resolution res = node.getResolution();
 				if(res.isFilterMatchFor(query))
 				{
+					query.logDecision(ResolverDecisionType.MATCH_FOUND, res.getComponentIdentifier());
 					res.store(StorageManager.getDefault());
 					return node;
 				}
@@ -405,6 +434,10 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				monitor.done();
 			}
 		}
+		else
+			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "target", //$NON-NLS-1$
+					Messages.target_platform_disabled_in_query);
+
 		return null;
 	}
 

@@ -124,6 +124,15 @@ public enum ResolverDecisionType
 		}
 	},
 
+	RESOLVER_REJECTED
+	{
+		@Override
+		public String toString()
+		{
+			return Messages.Rejecting_resolver_0;
+		}
+	},
+
 	REVISION_REJECTED
 	{
 		@Override

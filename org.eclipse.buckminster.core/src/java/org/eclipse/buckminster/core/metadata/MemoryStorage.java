@@ -121,12 +121,12 @@ public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T
 		putElement(element.getId(), element);
 	}
 
-	public void putElement(UUID id, T element) throws CoreException
+	public synchronized void putElement(UUID id, T element) throws CoreException
 	{
 		m_elements.put(id, new TimestampedElement<T>(element));
 	}
 
-	public void removeElement(UUID elementId) throws CoreException
+	public synchronized void removeElement(UUID elementId) throws CoreException
 	{
 		m_elements.remove(elementId);
 	}

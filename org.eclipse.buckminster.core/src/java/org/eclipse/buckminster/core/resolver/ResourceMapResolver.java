@@ -213,9 +213,15 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		{
 			BOMNode node = null;
 			if(m_factory.isLocalResolve())
+			{
+				query.logDecision(ResolverDecisionType.USING_RESOLVER, "Local resolver"); //$NON-NLS-1$
 				node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
+			}
 			else
+			{
+				query.logDecision(ResolverDecisionType.RESOLVER_REJECTED, "All local resolvers"); //$NON-NLS-1$
 				MonitorUtils.worked(monitor, 5);
+			}
 
 			if(node == null && query.useResolutionService())
 			{

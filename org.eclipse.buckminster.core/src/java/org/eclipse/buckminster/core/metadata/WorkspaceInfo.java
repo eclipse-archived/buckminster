@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,7 +38,6 @@ import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -310,6 +310,33 @@ public class WorkspaceInfo
 		return generators;
 	}
 
+	public static Materialization getMaterialization(ComponentRequest request) throws CoreException
+	{
+		// Add all components for which we have a materialization
+		//
+		StorageManager sm = StorageManager.getDefault();
+		checkFirstUse();
+
+		Materialization bestFit = null;
+		for(Materialization mat : sm.getMaterializations().getElements())
+		{
+			ComponentIdentifier ci = mat.getComponentIdentifier();
+			if(!request.designates(ci))
+				continue;
+
+			if(!mat.getComponentLocation().toFile().exists())
+			{
+				mat.remove(StorageManager.getDefault());
+				mat = null;
+				continue;
+			}
+
+			if(bestFit == null || ci.compareTo(bestFit.getComponentIdentifier()) > 0)
+				bestFit = mat;
+		}
+		return bestFit;
+	}
+
 	public static Materialization getMaterialization(IComponentIdentifier cid) throws CoreException
 	{
 		// Add all components for which we have a materialization
@@ -372,6 +399,11 @@ public class WorkspaceInfo
 
 	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException
 	{
+		return getResolution(wanted, false);
+	}
+
+	public static Resolution getResolution(ComponentIdentifier wanted, boolean fromResolver) throws CoreException
+	{
 		// Obtain the storage manager outside of the synchronization to avoid
 		// possible deadlock.
 		//
@@ -426,17 +458,19 @@ public class WorkspaceInfo
 				return candidate;
 			}
 		}
-
-		Version v = wanted.getVersion();
-		VersionRange vd = VersionHelper.exactRange(v);
-		try
+		if(!fromResolver)
 		{
-			return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
+			Version v = wanted.getVersion();
+			VersionRange vd = VersionHelper.exactRange(v);
+			try
+			{
+				return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
+			}
+			catch(CoreException e)
+			{
+			}
 		}
-		catch(CoreException e)
-		{
-			throw new MissingComponentException(wanted.toString());
-		}
+		throw new MissingComponentException(wanted.toString());
 	}
 
 	/**
@@ -452,7 +486,6 @@ public class WorkspaceInfo
 	 * @throws CoreException
 	 *             for other persistent storage related issues
 	 */
-	@SuppressWarnings("unchecked")
 	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException
 	{
 		StorageManager sm = StorageManager.getDefault();
@@ -463,45 +496,9 @@ public class WorkspaceInfo
 		for(Resolution res : activeRess)
 		{
 			ComponentIdentifier id = res.getCSpec().getComponentIdentifier();
-			if(!request.designates(id))
-				continue;
-
-			if(candidate != null)
-			{
-				// Compare versions
-				//
-				try
-				{
-					ComponentIdentifier candCid = candidate.getCSpec().getComponentIdentifier();
-					int cmp = Trivial.compareAllowNull(id.getVersion(), candCid.getVersion());
-					if(cmp == 0)
-					{
-						// One with a specified component type takes precedence
-						//
-						if(id.getComponentType() == null)
-						{
-							if(candCid.getComponentType() == null)
-								throw new AmbigousComponentException(id.toString());
-							cmp = -1;
-						}
-						else
-						{
-							if(candCid.getComponentType() != null)
-								throw new AmbigousComponentException(id.toString());
-							cmp = 1;
-						}
-					}
-					if(cmp < 0)
-						continue;
-				}
-				catch(IllegalArgumentException e)
-				{
-					// Versions were not of the same type
-					//
-					continue;
-				}
-			}
-			candidate = res;
+			if(request.designates(id)
+					&& (candidate == null || id.compareTo(candidate.getCSpec().getComponentIdentifier()) > 0))
+				candidate = res;
 		}
 
 		if(candidate == null)
@@ -578,16 +575,16 @@ public class WorkspaceInfo
 		return allFound;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static IResource[] getResources(Materialization mat) throws CoreException
 	{
 		checkFirstUse();
 
 		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IPath location = mat.getComponentLocation();
+		URI locationURI = location.toFile().toURI();
 		return location.hasTrailingSeparator()
-				? wsRoot.findContainersForLocation(location)
-				: wsRoot.findFilesForLocation(location);
+				? wsRoot.findContainersForLocationURI(locationURI)
+				: wsRoot.findFilesForLocationURI(locationURI);
 	}
 
 	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException

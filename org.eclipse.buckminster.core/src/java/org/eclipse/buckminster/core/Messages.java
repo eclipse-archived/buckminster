@@ -390,6 +390,8 @@ public class Messages extends NLS
 
 	public static String Rejecting_provider_0_1_2;
 
+	public static String Rejecting_resolver_0;
+
 	public static String Resolution_attempt_ended_with_exception_0;
 
 	public static String Revision_0_rejected_1;
@@ -578,6 +580,8 @@ public class Messages extends NLS
 
 	public static String input_of_action_0_must_be_folder;
 
+	public static String materializations_disabled_in_query;
+
 	public static String no_suitable_provider_for_0_was_found_in_resourceMap_1;
 
 	public static String output_of_action_0_must_be_folder;
@@ -585,6 +589,10 @@ public class Messages extends NLS
 	public static String product_for_action_0_must_be_single_path;
 
 	public static String property_0_not_ISO_8601_conformant_timestamp_string;
+
+	public static String target_platform_disabled_in_query;
+
+	public static String workspace_disable_in_query;
 
 	static
 	{

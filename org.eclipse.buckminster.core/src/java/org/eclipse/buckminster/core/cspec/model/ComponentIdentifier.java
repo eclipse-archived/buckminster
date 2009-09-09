@@ -73,11 +73,15 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 	@Override
 	public int compareTo(IComponentName o)
 	{
-		int cmp = super.compareTo(o);
+		int cmp = Trivial.compareAllowNull(getName(), o.getName());
 		if(cmp == 0)
+		{
 			cmp = o instanceof IComponentIdentifier
 					? Trivial.compareAllowNull(m_version, ((IComponentIdentifier)o).getVersion())
 					: 1;
+			if(cmp == 0)
+				cmp = Trivial.compareAllowNull(getComponentTypeID(), o.getComponentTypeID());
+		}
 		return cmp;
 	}
 
