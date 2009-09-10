@@ -15,7 +15,7 @@
          point="org.eclipse.buckminster.cmdline.commands">
       <command
             addhelpflags="true"
-            class="org.eclipse.buckminster.junit.internal.JUnitCommand"
+            class="org.eclipse.buckminster.junit.JUnitCommand"
             name="junit"
             status="NORMAL">
       </command>

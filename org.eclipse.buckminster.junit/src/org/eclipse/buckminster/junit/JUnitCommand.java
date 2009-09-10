@@ -8,7 +8,7 @@
  * Contributors:
  *     Achim Demelt - initial API and implementation
  *******************************************************************************/
-package org.eclipse.buckminster.junit.internal;
+package org.eclipse.buckminster.junit;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -25,6 +25,8 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.core.commands.Launch;
+import org.eclipse.buckminster.junit.internal.ResultSerializer;
+import org.eclipse.buckminster.junit.internal.TestListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.junit.JUnitCore;
 import org.xml.sax.InputSource;

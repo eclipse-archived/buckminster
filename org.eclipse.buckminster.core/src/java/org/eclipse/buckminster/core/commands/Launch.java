@@ -103,6 +103,13 @@ public class Launch extends WorkspaceCommand
 
 	private List<StreamListener> m_listeners = new ArrayList<StreamListener>();
 
+	private ILaunch m_launch;
+
+	public ILaunch getLaunch()
+	{
+		return m_launch;
+	}
+
 	/**
 	 * Returns the content of the standard error streams of all processes launch by the configuration.
 	 * 
@@ -113,9 +120,7 @@ public class Launch extends WorkspaceCommand
 	{
 		StringBuffer content = new StringBuffer();
 		for(IStreamMonitor err : m_stdErr)
-		{
 			content.append(err.getContents());
-		}
 		return content.toString();
 	}
 
@@ -129,9 +134,7 @@ public class Launch extends WorkspaceCommand
 	{
 		StringBuffer content = new StringBuffer();
 		for(IStreamMonitor out : m_stdOut)
-		{
 			content.append(out.getContents());
-		}
 		return content.toString();
 	}
 
@@ -184,10 +187,10 @@ public class Launch extends WorkspaceCommand
 
 		ILaunchConfiguration launchConfiguration = DebugPlugin.getDefault().getLaunchManager().getLaunchConfiguration(
 				(IFile)launchFile);
-		ILaunch launch = launchConfiguration.launch(getLaunchMode(), monitor);
+		m_launch = launchConfiguration.launch(getLaunchMode(), monitor);
 
 		// capture stdout/stderr streams
-		IProcess[] processes = launch.getProcesses();
+		IProcess[] processes = m_launch.getProcesses();
 		m_stdOut = new IStreamMonitor[processes.length];
 		m_stdErr = new IStreamMonitor[processes.length];
 		for(int i = 0; i < processes.length; i++)
@@ -203,7 +206,7 @@ public class Launch extends WorkspaceCommand
 		try
 		{
 			// TODO: wait for a configurable, finite time and terminate process if overdue
-			while(!launch.isTerminated())
+			while(!m_launch.isTerminated())
 				Thread.sleep(500);
 
 			// check for process exit status
