@@ -590,6 +590,14 @@ public class Messages extends NLS
 
 	public static String property_0_not_ISO_8601_conformant_timestamp_string;
 
+	public static String Launch_Cannot_open_launch_config;
+
+	public static String Launch_Cannot_open_stream;
+
+	public static String Launch_No_launch_config;
+
+	public static String Launch_Terminated_with_exit_status;
+
 	public static String target_platform_disabled_in_query;
 
 	public static String workspace_disable_in_query;
