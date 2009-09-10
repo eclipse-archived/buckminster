@@ -57,17 +57,6 @@ public class ResourceUtils
 	}
 
 	/**
-	 * Loads resource for specified repository
-	 * 
-	 * @param mappedRepository
-	 */
-	public static void loadResourceForMappedRepository(MappedRepository mappedRepository)
-	{
-		Aggregator aggregator = (Aggregator)mappedRepository.eContainer().eContainer();
-		MetadataRepositoryResourceImpl.loadRepository(mappedRepository.getLocation(), aggregator);
-	}
-	
-	/**
 	 * Tries to get metadata repository from mapped repository. If it fails to load, an exception is thrown.
 	 * 
 	 * @param mappedRepository
@@ -77,17 +66,28 @@ public class ResourceUtils
 	public static MetadataRepository getMetadataRepository(MappedRepository mappedRepository) throws CoreException
 	{
 		MetadataRepository mdr = mappedRepository.getMetadataRepository();
-		
+
 		if(mdr == null)
 		{
 			Resource resource = mappedRepository.eResource();
 			if(resource != null && resource instanceof MetadataRepositoryResourceImpl
 					&& ((MetadataRepositoryResourceImpl)resource).getLastException() != null)
 				throw BuckminsterException.wrap(((MetadataRepositoryResourceImpl)resource).getLastException());
-	
+
 			throw BuckminsterException.fromMessage("Unable to load repository " + mappedRepository.getLocation());
 		}
-		
+
 		return mdr;
+	}
+
+	/**
+	 * Loads resource for specified repository
+	 * 
+	 * @param mappedRepository
+	 */
+	public static void loadResourceForMappedRepository(MappedRepository mappedRepository)
+	{
+		Aggregator aggregator = (Aggregator)mappedRepository.eContainer().eContainer();
+		MetadataRepositoryResourceImpl.loadRepository(mappedRepository.getLocation(), aggregator);
 	}
 }

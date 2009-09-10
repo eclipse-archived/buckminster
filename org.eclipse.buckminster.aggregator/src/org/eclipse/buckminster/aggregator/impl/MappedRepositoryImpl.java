@@ -10,9 +10,10 @@ import java.util.Collection;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
+import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
@@ -190,6 +191,16 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected String categoryPrefix = CATEGORY_PREFIX_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getMapRules() <em>Map Rules</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getMapRules()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<MapRule> mapRules;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -255,6 +266,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return isMirrorArtifacts();
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			return getCategoryPrefix();
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+			return getMapRules();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -277,6 +290,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 			return ((InternalEList<?>)getCategories()).basicRemove(otherEnd, msgs);
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+			return ((InternalEList<?>)getMapRules()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -313,6 +328,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return CATEGORY_PREFIX_EDEFAULT == null
 					? categoryPrefix != null
 					: !CATEGORY_PREFIX_EDEFAULT.equals(categoryPrefix);
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+			return mapRules != null && !mapRules.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -359,6 +376,10 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			setCategoryPrefix((String)newValue);
 			return;
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+			getMapRules().clear();
+			getMapRules().addAll((Collection<? extends MapRule>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -399,6 +420,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			setCategoryPrefix(CATEGORY_PREFIX_EDEFAULT);
+			return;
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+			getMapRules().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -495,6 +519,21 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	public String getLocation()
 	{
 		return location;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<MapRule> getMapRules()
+	{
+		if(mapRules == null)
+		{
+			mapRules = new EObjectContainmentEList<MapRule>(MapRule.class, this,
+					AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES);
+		}
+		return mapRules;
 	}
 
 	/**
@@ -640,10 +679,10 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated NOT
 	 */
-	public boolean isMapEverything()
+	public boolean isMapExclusive()
 	{
-		return getFeatures().size() == 0 && getCategories().size() == 0 && getProducts().size() == 0
-				&& getBundles().size() == 0;
+		return getFeatures().size() > 0 || getCategories().size() > 0 || getProducts().size() > 0
+				|| getBundles().size() > 0;
 	}
 
 	/**

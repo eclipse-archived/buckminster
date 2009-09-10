@@ -1138,13 +1138,12 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		if(getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX))
 			return InstallableUnitType.FEATURE;
-		else if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
+		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
 			return InstallableUnitType.CATEGORY;
-		else if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_GROUP)))
+		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_GROUP)))
 			return InstallableUnitType.PRODUCT;
-		else if(isBundle())
+		if(isBundle())
 			return InstallableUnitType.BUNDLE;
-
 		return InstallableUnitType.OTHER;
 	}
 

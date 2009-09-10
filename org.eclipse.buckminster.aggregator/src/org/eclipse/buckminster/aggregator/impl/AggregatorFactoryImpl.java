@@ -198,6 +198,10 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createCategory();
 		case AggregatorPackage.CUSTOM_CATEGORY:
 			return createCustomCategory();
+		case AggregatorPackage.EXCLUSION_RULE:
+			return createExclusionRule();
+		case AggregatorPackage.VALID_CONFIGURATIONS_RULE:
+			return createValidConfigurationsRule();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -306,6 +310,17 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		CustomCategoryImpl customCategory = new CustomCategoryImpl();
 		return customCategory;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public ExclusionRule createExclusionRule()
+	{
+		ExclusionRuleImpl exclusionRule = new ExclusionRuleImpl();
+		return exclusionRule;
 	}
 
 	/**
@@ -451,6 +466,17 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	public URI createURIFromString(EDataType eDataType, String initialValue)
 	{
 		return (URI)super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public ValidConfigurationsRule createValidConfigurationsRule()
+	{
+		ValidConfigurationsRuleImpl validConfigurationsRule = new ValidConfigurationsRuleImpl();
+		return validConfigurationsRule;
 	}
 
 	/**

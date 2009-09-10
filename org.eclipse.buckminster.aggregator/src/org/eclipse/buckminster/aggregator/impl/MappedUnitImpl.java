@@ -10,6 +10,7 @@ import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.StatusProvider;
@@ -17,9 +18,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
@@ -28,7 +27,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#isEnabled <em>Enabled</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#getInstallableUnit <em>Installable Unit</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#getValidConfigurations <em>Valid Configurations
  * </em>}</li>
  * </ul>
@@ -36,17 +34,8 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * 
  * @generated
  */
-public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implements MappedUnit
+public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implements MappedUnit
 {
-	/**
-	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	protected int eFlags = 0;
-
 	/**
 	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
@@ -66,16 +55,6 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	 * @ordered
 	 */
 	protected static final int ENABLED_EFLAG = 1 << 0;
-
-	/**
-	 * The cached value of the '{@link #getInstallableUnit() <em>Installable Unit</em>}' reference. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @see #getInstallableUnit()
-	 * @generated
-	 * @ordered
-	 */
-	protected InstallableUnit installableUnit;
 
 	/**
 	 * The cached value of the '{@link #getValidConfigurations() <em>Valid Configurations</em>}' reference list. <!--
@@ -103,9 +82,41 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 	 * 
 	 * @generated
 	 */
-	public InstallableUnit basicGetInstallableUnit()
+	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
-		return installableUnit;
+		if(baseClass == EnabledStatusProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.MAPPED_UNIT__ENABLED:
+				return AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == EnabledStatusProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED:
+				return AggregatorPackage.MAPPED_UNIT__ENABLED;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
 	/**
@@ -120,10 +131,6 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		{
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
 			return isEnabled();
-		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
-			if(resolve)
-				return getInstallableUnit();
-			return basicGetInstallableUnit();
 		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
 			return getValidConfigurations();
 		}
@@ -142,8 +149,6 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		{
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
 			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
-		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
-			return installableUnit != null;
 		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
 			return validConfigurations != null && !validConfigurations.isEmpty();
 		}
@@ -163,9 +168,6 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		{
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
 			setEnabled((Boolean)newValue);
-			return;
-		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
-			setInstallableUnit((InstallableUnit)newValue);
 			return;
 		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
 			getValidConfigurations().clear();
@@ -188,9 +190,6 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
 			setEnabled(ENABLED_EDEFAULT);
 			return;
-		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
-			setInstallableUnit((InstallableUnit)null);
-			return;
 		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
 			getValidConfigurations().clear();
 			return;
@@ -198,46 +197,12 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		super.eUnset(featureID);
 	}
 
+	@Override
 	public InstallableUnit getInstallableUnit()
 	{
-		if(!isBranchEnabled() || isMappedRepositoryBroken())
-			return null;
-
-		return getInstallableUnitGen();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public InstallableUnit getInstallableUnit(boolean forceResolve)
-	{
-		if(forceResolve)
-			return getInstallableUnit();
-
-		return basicGetInstallableUnit();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public InstallableUnit getInstallableUnitGen()
-	{
-		if(installableUnit != null && installableUnit.eIsProxy())
-		{
-			InternalEObject oldInstallableUnit = (InternalEObject)installableUnit;
-			installableUnit = (InstallableUnit)eResolveProxy(oldInstallableUnit);
-			if(installableUnit != oldInstallableUnit)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT, oldInstallableUnit, installableUnit));
-			}
-		}
-		return installableUnit;
+		return isBranchEnabled()
+				? super.getInstallableUnit()
+				: null;
 	}
 
 	public int getStatus()
@@ -303,14 +268,12 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		return (eFlags & ENABLED_EFLAG) != 0;
 	}
 
+	@Override
 	public boolean isMappedRepositoryBroken()
 	{
-		MappedRepository mappedRepository = (MappedRepository)eContainer();
-
-		if(isBranchEnabled() && mappedRepository.getMetadataRepository() == null)
-			return true;
-
-		return false;
+		return isBranchEnabled()
+				? super.isMappedRepositoryBroken()
+				: false;
 	}
 
 	/**
@@ -328,20 +291,6 @@ public abstract class MappedUnitImpl extends MinimalEObjectImpl.Container implem
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_UNIT__ENABLED, oldEnabled,
 					newEnabled));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setInstallableUnit(InstallableUnit newInstallableUnit)
-	{
-		InstallableUnit oldInstallableUnit = installableUnit;
-		installableUnit = newInstallableUnit;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT,
-					oldInstallableUnit, installableUnit));
 	}
 
 	/**

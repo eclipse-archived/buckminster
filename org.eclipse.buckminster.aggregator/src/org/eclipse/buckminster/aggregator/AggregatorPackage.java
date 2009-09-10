@@ -184,6 +184,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute MAPPED_REPOSITORY__CATEGORY_PREFIX = eINSTANCE.getMappedRepository_CategoryPrefix();
 
 		/**
+		 * The meta object literal for the '<em><b>Map Rules</b></em>' containment reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference MAPPED_REPOSITORY__MAP_RULES = eINSTANCE.getMappedRepository_MapRules();
+
+		/**
 		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature. <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
 		 * 
@@ -348,14 +356,6 @@ public interface AggregatorPackage extends EPackage
 		EClass MAPPED_UNIT = eINSTANCE.getMappedUnit();
 
 		/**
-		 * The meta object literal for the '<em><b>Installable Unit</b></em>' reference feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference MAPPED_UNIT__INSTALLABLE_UNIT = eINSTANCE.getMappedUnit_InstallableUnit();
-
-		/**
 		 * The meta object literal for the '<em><b>Valid Configurations</b></em>' reference list feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -478,6 +478,62 @@ public interface AggregatorPackage extends EPackage
 		EAttribute ENABLED_STATUS_PROVIDER__ENABLED = eINSTANCE.getEnabledStatusProvider_Enabled();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.MapRuleImpl
+		 * <em>Map Rule</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.MapRuleImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMapRule()
+		 * @generated
+		 */
+		EClass MAP_RULE = eINSTANCE.getMapRule();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl
+		 * <em>Installable Unit Reference</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getInstallableUnitReference()
+		 * @generated
+		 */
+		EClass INSTALLABLE_UNIT_REFERENCE = eINSTANCE.getInstallableUnitReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Installable Unit</b></em>' reference feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT = eINSTANCE.getInstallableUnitReference_InstallableUnit();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ExclusionRuleImpl
+		 * <em>Exclusion Rule</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.ExclusionRuleImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getExclusionRule()
+		 * @generated
+		 */
+		EClass EXCLUSION_RULE = eINSTANCE.getExclusionRule();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ValidConfigurationsRuleImpl
+		 * <em>Valid Configurations Rule</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.ValidConfigurationsRuleImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getValidConfigurationsRule()
+		 * @generated
+		 */
+		EClass VALID_CONFIGURATIONS_RULE = eINSTANCE.getValidConfigurationsRule();
+
+		/**
+		 * The meta object literal for the '<em><b>Valid Configurations</b></em>' reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS = eINSTANCE.getValidConfigurationsRule_ValidConfigurations();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -577,29 +633,13 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR = 0;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int AGGREGATOR__TYPE = 0;
-
-	/**
-	 * The feature id for the '<em><b>Build Root</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int AGGREGATOR__BUILD_ROOT = 1;
-
-	/**
 	 * The feature id for the '<em><b>Configurations</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CONFIGURATIONS = 2;
+	int AGGREGATOR__CONFIGURATIONS = 0;
 
 	/**
 	 * The feature id for the '<em><b>Contributions</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -608,15 +648,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CONTRIBUTIONS = 3;
-
-	/**
-	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int AGGREGATOR__LABEL = 4;
+	int AGGREGATOR__CONTRIBUTIONS = 1;
 
 	/**
 	 * The feature id for the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -624,15 +656,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__BUILDMASTER = 5;
-
-	/**
-	 * The feature id for the '<em><b>Sendmail</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int AGGREGATOR__SENDMAIL = 6;
+	int AGGREGATOR__BUILDMASTER = 2;
 
 	/**
 	 * The feature id for the '<em><b>Contacts</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -641,7 +665,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CONTACTS = 7;
+	int AGGREGATOR__CONTACTS = 3;
 
 	/**
 	 * The feature id for the '<em><b>Custom Categories</b></em>' containment reference list. <!-- begin-user-doc -->
@@ -650,7 +674,23 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CUSTOM_CATEGORIES = 8;
+	int AGGREGATOR__CUSTOM_CATEGORIES = 4;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__LABEL = 5;
+
+	/**
+	 * The feature id for the '<em><b>Build Root</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__BUILD_ROOT = 6;
 
 	/**
 	 * The feature id for the '<em><b>Packed Strategy</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -658,7 +698,23 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__PACKED_STRATEGY = 9;
+	int AGGREGATOR__PACKED_STRATEGY = 7;
+
+	/**
+	 * The feature id for the '<em><b>Sendmail</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__SENDMAIL = 8;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__TYPE = 9;
 
 	/**
 	 * The number of structural features of the '<em>Aggregator</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -785,13 +841,22 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY__CATEGORY_PREFIX = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 7;
 
 	/**
+	 * The feature id for the '<em><b>Map Rules</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__MAP_RULES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 8;
+
+	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 8;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -943,41 +1008,6 @@ public interface AggregatorPackage extends EPackage
 	int CONTACT_FEATURE_COUNT = 3;
 
 	/**
-	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_UNIT__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_UNIT__INSTALLABLE_UNIT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_UNIT__VALID_CONFIGURATIONS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Mapped Unit</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_UNIT_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
-
-	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl <em>Feature</em>}' class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -988,12 +1018,117 @@ public interface AggregatorPackage extends EPackage
 	int FEATURE = 5;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.BundleImpl <em>Bundle</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.BundleImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getBundle()
+	 * @generated
+	 */
+	int BUNDLE = 6;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ProductImpl <em>Product</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.ProductImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getProduct()
+	 * @generated
+	 */
+	int PRODUCT = 8;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.PropertyImpl <em>Property</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.PropertyImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getProperty()
+	 * @generated
+	 */
+	int PROPERTY = 9;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.CategoryImpl <em>Category</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.CategoryImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getCategory()
+	 * @generated
+	 */
+	int CATEGORY = 10;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl
+	 * <em>Custom Category</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getCustomCategory()
+	 * @generated
+	 */
+	int CUSTOM_CATEGORY = 11;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl
+	 * <em>Installable Unit Reference</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getInstallableUnitReference()
+	 * @generated
+	 */
+	int INSTALLABLE_UNIT_REFERENCE = 14;
+
+	/**
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT = 0;
+
+	/**
+	 * The number of structural features of the '<em>Installable Unit Reference</em>' class. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT = 1;
+
+	/**
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_UNIT__INSTALLABLE_UNIT = INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT;
+
+	/**
 	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__ENABLED = MAPPED_UNIT__ENABLED;
+	int MAPPED_UNIT__ENABLED = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_UNIT__VALID_CONFIGURATIONS = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Mapped Unit</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_UNIT_FEATURE_COUNT = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1003,6 +1138,14 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int FEATURE__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__ENABLED = MAPPED_UNIT__ENABLED;
 
 	/**
 	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -1030,14 +1173,13 @@ public interface AggregatorPackage extends EPackage
 	int FEATURE_FEATURE_COUNT = MAPPED_UNIT_FEATURE_COUNT + 1;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.BundleImpl <em>Bundle</em>}' class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
-	 * @see org.eclipse.buckminster.aggregator.impl.BundleImpl
-	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getBundle()
 	 * @generated
+	 * @ordered
 	 */
-	int BUNDLE = 6;
+	int BUNDLE__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
 	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1046,15 +1188,6 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int BUNDLE__ENABLED = MAPPED_UNIT__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int BUNDLE__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
 	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -1074,14 +1207,13 @@ public interface AggregatorPackage extends EPackage
 	int BUNDLE_FEATURE_COUNT = MAPPED_UNIT_FEATURE_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ProductImpl <em>Product</em>}' class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
-	 * @see org.eclipse.buckminster.aggregator.impl.ProductImpl
-	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getProduct()
 	 * @generated
+	 * @ordered
 	 */
-	int PRODUCT = 8;
+	int PRODUCT__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
 	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1090,15 +1222,6 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int PRODUCT__ENABLED = MAPPED_UNIT__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int PRODUCT__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
 	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -1116,16 +1239,6 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int PRODUCT_FEATURE_COUNT = MAPPED_UNIT_FEATURE_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.PropertyImpl <em>Property</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.impl.PropertyImpl
-	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getProperty()
-	 * @generated
-	 */
-	int PROPERTY = 9;
 
 	/**
 	 * The feature id for the '<em><b>Key</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1152,14 +1265,13 @@ public interface AggregatorPackage extends EPackage
 	int PROPERTY_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.CategoryImpl <em>Category</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
-	 * @see org.eclipse.buckminster.aggregator.impl.CategoryImpl
-	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getCategory()
 	 * @generated
+	 * @ordered
 	 */
-	int CATEGORY = 10;
+	int CATEGORY__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
 	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1168,15 +1280,6 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int CATEGORY__ENABLED = MAPPED_UNIT__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int CATEGORY__INSTALLABLE_UNIT = MAPPED_UNIT__INSTALLABLE_UNIT;
 
 	/**
 	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -1202,16 +1305,6 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int CATEGORY_FEATURE_COUNT = MAPPED_UNIT_FEATURE_COUNT + 1;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl
-	 * <em>Custom Category</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl
-	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getCustomCategory()
-	 * @generated
-	 */
-	int CUSTOM_CATEGORY = 11;
 
 	/**
 	 * The feature id for the '<em><b>Identifier</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1255,6 +1348,98 @@ public interface AggregatorPackage extends EPackage
 	int CUSTOM_CATEGORY_FEATURE_COUNT = 4;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MapRuleImpl <em>Map Rule</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.MapRuleImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMapRule()
+	 * @generated
+	 */
+	int MAP_RULE = 13;
+
+	/**
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAP_RULE__INSTALLABLE_UNIT = INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT;
+
+	/**
+	 * The number of structural features of the '<em>Map Rule</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAP_RULE_FEATURE_COUNT = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ExclusionRuleImpl
+	 * <em>Exclusion Rule</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.ExclusionRuleImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getExclusionRule()
+	 * @generated
+	 */
+	int EXCLUSION_RULE = 15;
+
+	/**
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int EXCLUSION_RULE__INSTALLABLE_UNIT = MAP_RULE__INSTALLABLE_UNIT;
+
+	/**
+	 * The number of structural features of the '<em>Exclusion Rule</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int EXCLUSION_RULE_FEATURE_COUNT = MAP_RULE_FEATURE_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ValidConfigurationsRuleImpl
+	 * <em>Valid Configurations Rule</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.ValidConfigurationsRuleImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getValidConfigurationsRule()
+	 * @generated
+	 */
+	int VALID_CONFIGURATIONS_RULE = 16;
+
+	/**
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int VALID_CONFIGURATIONS_RULE__INSTALLABLE_UNIT = MAP_RULE__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS = MAP_RULE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Valid Configurations Rule</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int VALID_CONFIGURATIONS_RULE_FEATURE_COUNT = MAP_RULE_FEATURE_COUNT + 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.AggregateType <em>Aggregate Type</em>}'
 	 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1262,7 +1447,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 13;
+	int AGGREGATE_TYPE = 17;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1272,7 +1457,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 14;
+	int OPERATING_SYSTEM = 18;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1282,7 +1467,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 15;
+	int WINDOW_SYSTEM = 19;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1292,7 +1477,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 16;
+	int ARCHITECTURE = 20;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1302,7 +1487,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 17;
+	int PACKED_STRATEGY = 21;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1311,7 +1496,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 18;
+	int URI = 22;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -1712,6 +1897,16 @@ public interface AggregatorPackage extends EPackage
 	EAttribute getEnabledStatusProvider_Enabled();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.ExclusionRule
+	 * <em>Exclusion Rule</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Exclusion Rule</em>'.
+	 * @see org.eclipse.buckminster.aggregator.ExclusionRule
+	 * @generated
+	 */
+	EClass getExclusionRule();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.Feature <em>Feature</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1731,6 +1926,28 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getFeature_Categories();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.InstallableUnitReference
+	 * <em>Installable Unit Reference</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Installable Unit Reference</em>'.
+	 * @see org.eclipse.buckminster.aggregator.InstallableUnitReference
+	 * @generated
+	 */
+	EClass getInstallableUnitReference();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.InstallableUnitReference#getInstallableUnit <em>Installable Unit</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Installable Unit</em>'.
+	 * @see org.eclipse.buckminster.aggregator.InstallableUnitReference#getInstallableUnit()
+	 * @see #getInstallableUnitReference()
+	 * @generated
+	 */
+	EReference getInstallableUnitReference_InstallableUnit();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MappedRepository
@@ -1803,6 +2020,18 @@ public interface AggregatorPackage extends EPackage
 	EAttribute getMappedRepository_Location();
 
 	/**
+	 * Returns the meta object for the containment reference list '
+	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#getMapRules <em>Map Rules</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference list '<em>Map Rules</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MappedRepository#getMapRules()
+	 * @see #getMappedRepository()
+	 * @generated
+	 */
+	EReference getMappedRepository_MapRules();
+
+	/**
 	 * Returns the meta object for the reference '
 	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1849,18 +2078,6 @@ public interface AggregatorPackage extends EPackage
 	EClass getMappedUnit();
 
 	/**
-	 * Returns the meta object for the reference '
-	 * {@link org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit <em>Installable Unit</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the reference '<em>Installable Unit</em>'.
-	 * @see org.eclipse.buckminster.aggregator.MappedUnit#getInstallableUnit()
-	 * @see #getMappedUnit()
-	 * @generated
-	 */
-	EReference getMappedUnit_InstallableUnit();
-
-	/**
 	 * Returns the meta object for the reference list '
 	 * {@link org.eclipse.buckminster.aggregator.MappedUnit#getValidConfigurations <em>Valid Configurations</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -1871,6 +2088,16 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMappedUnit_ValidConfigurations();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MapRule <em>Map Rule</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Map Rule</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MapRule
+	 * @generated
+	 */
+	EClass getMapRule();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.OperatingSystem
@@ -1944,6 +2171,28 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EDataType getURI();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule
+	 * <em>Valid Configurations Rule</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Valid Configurations Rule</em>'.
+	 * @see org.eclipse.buckminster.aggregator.ValidConfigurationsRule
+	 * @generated
+	 */
+	EClass getValidConfigurationsRule();
+
+	/**
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule#getValidConfigurations
+	 * <em>Valid Configurations</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference list '<em>Valid Configurations</em>'.
+	 * @see org.eclipse.buckminster.aggregator.ValidConfigurationsRule#getValidConfigurations()
+	 * @see #getValidConfigurationsRule()
+	 * @generated
+	 */
+	EReference getValidConfigurationsRule_ValidConfigurations();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}

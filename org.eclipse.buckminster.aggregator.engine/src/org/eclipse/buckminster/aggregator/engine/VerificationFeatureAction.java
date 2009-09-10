@@ -20,9 +20,13 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
@@ -60,6 +64,38 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		MappedRepository repository;
 
 		IRequiredCapability capability;
+	}
+
+	private static Filter createFilter(List<Configuration> configs)
+	{
+		if(!(configs == null || configs.isEmpty()))
+		{
+			StringBuilder filterBld = new StringBuilder();
+			if(configs.size() > 1)
+				filterBld.append("(|");
+
+			for(Configuration config : configs)
+			{
+				filterBld.append("(&(osgi.os=");
+				filterBld.append(config.getOperatingSystem().getLiteral());
+				filterBld.append(")(osgi.ws=");
+				filterBld.append(config.getWindowSystem().getLiteral());
+				filterBld.append(")(osgi.arch=");
+				filterBld.append(config.getArchitecture().getLiteral());
+				filterBld.append("))");
+			}
+			if(configs.size() > 1)
+				filterBld.append(')');
+			try
+			{
+				return FilterFactory.newInstance(filterBld.toString());
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+		return null;
 	}
 
 	private final Builder builder;
@@ -106,21 +142,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 						continue;
 					}
 
-					if(repository.isMapEverything())
-					{
-						// Verify that all products and features can be installed.
-						//
-						for(InstallableUnit riu : allIUs)
-						{
-							// We assume that all groups that are not categories are either products or
-							// features.
-							//
-							if("true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_GROUP))
-									&& !"true".equalsIgnoreCase(riu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
-								addRequirementFor(repository, riu, null, required, errors, explicit, false);
-						}
-					}
-					else
+					if(repository.isMapExclusive())
 					{
 						for(MappedUnit mu : repository.getUnits(true))
 						{
@@ -130,37 +152,43 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 										explicit);
 								continue;
 							}
-							Filter filter = null;
-							List<Configuration> configs = mu.getValidConfigurations();
-							if(!configs.isEmpty())
-							{
-								StringBuilder filterBld = new StringBuilder();
-								if(configs.size() > 1)
-									filterBld.append("(|");
-
-								for(Configuration config : configs)
-								{
-									filterBld.append("(&(osgi.os=");
-									filterBld.append(config.getOperatingSystem().getLiteral());
-									filterBld.append(")(osgi.ws=");
-									filterBld.append(config.getWindowSystem().getLiteral());
-									filterBld.append(")(osgi.arch=");
-									filterBld.append(config.getArchitecture().getLiteral());
-									filterBld.append("))");
-								}
-								if(configs.size() > 1)
-									filterBld.append(')');
-								try
-								{
-									filter = FilterFactory.newInstance(filterBld.toString());
-								}
-								catch(InvalidSyntaxException e)
-								{
-									throw new RuntimeException(e);
-								}
-							}
+							Filter filter = createFilter(mu.getValidConfigurations());
 							addRequirementFor(repository, mu.getInstallableUnit(), filter, required, errors, explicit,
 									true);
+						}
+					}
+					else
+					{
+						// Verify that all products and features can be installed.
+						//
+						List<MapRule> mapRules = repository.getMapRules();
+						allIUs: for(InstallableUnit riu : allIUs)
+						{
+							// We assume that all groups that are not categories are either products or
+							// features.
+							//
+							InstallableUnitType riuType = riu.getType();
+							if(riuType == InstallableUnitType.PRODUCT || riuType == InstallableUnitType.FEATURE)
+							{
+								Filter filter = null;
+								for(MapRule rule : mapRules)
+								{
+									if(rule.getInstallableUnit() == riu)
+									{
+										if(rule instanceof ExclusionRule)
+										{
+											builder.addMappingExclusion(repository, new VersionedName(riu.getId(),
+													riu.getVersion()));
+											continue allIUs;
+										}
+										if(rule instanceof ValidConfigurationsRule)
+										{
+											filter = createFilter(((ValidConfigurationsRule)rule).getValidConfigurations());
+										}
+									}
+								}
+								addRequirementFor(repository, riu, filter, required, errors, explicit, false);
+							}
 						}
 					}
 				}

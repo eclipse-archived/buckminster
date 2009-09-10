@@ -9,7 +9,9 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
@@ -111,13 +113,7 @@ public class CategoriesGenerator extends BuilderPhase
 			return Collections.emptyList();
 
 		ArrayList<InstallableUnit> categoryIUs = new ArrayList<InstallableUnit>();
-		if(repo.isMapEverything())
-		{
-			for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
-				if(builder.isTopLevelCategory(iu))
-					categoryIUs.add(iu);
-		}
-		else
+		if(repo.isMapExclusive())
 		{
 			for(Category category : repo.getCategories())
 			{
@@ -126,6 +122,20 @@ public class CategoriesGenerator extends BuilderPhase
 					InstallableUnit iu = category.getInstallableUnit();
 					if(builder.isTopLevelCategory(iu))
 						categoryIUs.add(iu);
+				}
+			}
+		}
+		else
+		{
+			List<MapRule> mapRules = repo.getMapRules();
+			allIUs: for(InstallableUnit iu : repo.getMetadataRepository().getInstallableUnits())
+			{
+				if(builder.isTopLevelCategory(iu))
+				{
+					for(MapRule mapRule : mapRules)
+						if(mapRule instanceof ExclusionRule && mapRule.getInstallableUnit() == iu)
+							continue allIUs;
+					categoryIUs.add(iu);
 				}
 			}
 		}

@@ -26,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMapRules <em>Map Rules</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -124,6 +125,22 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	String getLocation();
 
 	/**
+	 * Returns the value of the '<em><b>Map Rules</b></em>' containment reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.aggregator.MapRule}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Map Rules</em>' containment reference list isn't clear, there really should be more of
+	 * a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Map Rules</em>' containment reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_MapRules()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<MapRule> getMapRules();
+
+	/**
 	 * Returns the value of the '<em><b>Metadata Repository</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Metadata Repository</em>' reference isn't clear, there really should be more of a
@@ -183,12 +200,12 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc --> Returns <code>true</code> if the container
-	 * has no MappedUnit children. <!-- end-model-doc -->
+	 * has MappedUnit children. <!-- end-model-doc -->
 	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
-	boolean isMapEverything();
+	boolean isMapExclusive();
 
 	/**
 	 * Returns the value of the '<em><b>Mirror Artifacts</b></em>' attribute. The default value is <code>"true"</code>.

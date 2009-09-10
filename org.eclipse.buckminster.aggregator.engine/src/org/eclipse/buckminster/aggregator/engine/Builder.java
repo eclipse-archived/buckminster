@@ -459,7 +459,7 @@ public class Builder implements IApplication
 	 */
 	public boolean isMapVerbatim(MappedRepository repo)
 	{
-		return repo.isMapEverything() && !repo.isMirrorArtifacts() && Trivial.trim(repo.getCategoryPrefix()) == null
+		return !(repo.isMapExclusive() || repo.isMirrorArtifacts()) && Trivial.trim(repo.getCategoryPrefix()) == null
 				&& !(exclusions != null && exclusions.containsKey(repo));
 	}
 

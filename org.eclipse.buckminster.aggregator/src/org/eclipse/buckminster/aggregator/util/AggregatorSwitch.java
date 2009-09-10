@@ -166,6 +166,22 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Exclusion Rule</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Exclusion Rule</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseExclusionRule(ExclusionRule object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Feature</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -176,6 +192,22 @@ public class AggregatorSwitch<T>
 	 * @generated
 	 */
 	public T caseFeature(Feature object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Installable Unit Reference</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Installable Unit Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseInstallableUnitReference(InstallableUnitReference object)
 	{
 		return null;
 	}
@@ -212,6 +244,21 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Map Rule</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Map Rule</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMapRule(MapRule object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Product</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -237,6 +284,22 @@ public class AggregatorSwitch<T>
 	 * @generated
 	 */
 	public T caseProperty(Property object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Valid Configurations Rule</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Valid Configurations Rule</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseValidConfigurationsRule(ValidConfigurationsRule object)
 	{
 		return null;
 	}
@@ -353,6 +416,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseMappedUnit(feature);
 			if(result == null)
+				result = caseInstallableUnitReference(feature);
+			if(result == null)
 				result = caseEnabledStatusProvider(feature);
 			if(result == null)
 				result = defaultCase(theEObject);
@@ -365,6 +430,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseMappedUnit(bundle);
 			if(result == null)
+				result = caseInstallableUnitReference(bundle);
+			if(result == null)
 				result = caseEnabledStatusProvider(bundle);
 			if(result == null)
 				result = defaultCase(theEObject);
@@ -374,6 +441,8 @@ public class AggregatorSwitch<T>
 		{
 			MappedUnit mappedUnit = (MappedUnit)theEObject;
 			T result = caseMappedUnit(mappedUnit);
+			if(result == null)
+				result = caseInstallableUnitReference(mappedUnit);
 			if(result == null)
 				result = caseEnabledStatusProvider(mappedUnit);
 			if(result == null)
@@ -386,6 +455,8 @@ public class AggregatorSwitch<T>
 			T result = caseProduct(product);
 			if(result == null)
 				result = caseMappedUnit(product);
+			if(result == null)
+				result = caseInstallableUnitReference(product);
 			if(result == null)
 				result = caseEnabledStatusProvider(product);
 			if(result == null)
@@ -407,6 +478,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseMappedUnit(category);
 			if(result == null)
+				result = caseInstallableUnitReference(category);
+			if(result == null)
 				result = caseEnabledStatusProvider(category);
 			if(result == null)
 				result = defaultCase(theEObject);
@@ -424,6 +497,48 @@ public class AggregatorSwitch<T>
 		{
 			EnabledStatusProvider enabledStatusProvider = (EnabledStatusProvider)theEObject;
 			T result = caseEnabledStatusProvider(enabledStatusProvider);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.MAP_RULE:
+		{
+			MapRule mapRule = (MapRule)theEObject;
+			T result = caseMapRule(mapRule);
+			if(result == null)
+				result = caseInstallableUnitReference(mapRule);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE:
+		{
+			InstallableUnitReference installableUnitReference = (InstallableUnitReference)theEObject;
+			T result = caseInstallableUnitReference(installableUnitReference);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.EXCLUSION_RULE:
+		{
+			ExclusionRule exclusionRule = (ExclusionRule)theEObject;
+			T result = caseExclusionRule(exclusionRule);
+			if(result == null)
+				result = caseMapRule(exclusionRule);
+			if(result == null)
+				result = caseInstallableUnitReference(exclusionRule);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.VALID_CONFIGURATIONS_RULE:
+		{
+			ValidConfigurationsRule validConfigurationsRule = (ValidConfigurationsRule)theEObject;
+			T result = caseValidConfigurationsRule(validConfigurationsRule);
+			if(result == null)
+				result = caseMapRule(validConfigurationsRule);
+			if(result == null)
+				result = caseInstallableUnitReference(validConfigurationsRule);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

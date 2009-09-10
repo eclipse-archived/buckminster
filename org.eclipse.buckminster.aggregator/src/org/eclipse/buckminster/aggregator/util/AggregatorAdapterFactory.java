@@ -84,9 +84,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseExclusionRule(ExclusionRule object)
+		{
+			return createExclusionRuleAdapter();
+		}
+
+		@Override
 		public Adapter caseFeature(Feature object)
 		{
 			return createFeatureAdapter();
+		}
+
+		@Override
+		public Adapter caseInstallableUnitReference(InstallableUnitReference object)
+		{
+			return createInstallableUnitReferenceAdapter();
 		}
 
 		@Override
@@ -102,6 +114,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseMapRule(MapRule object)
+		{
+			return createMapRuleAdapter();
+		}
+
+		@Override
 		public Adapter caseProduct(Product object)
 		{
 			return createProductAdapter();
@@ -111,6 +129,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseProperty(Property object)
 		{
 			return createPropertyAdapter();
+		}
+
+		@Override
+		public Adapter caseValidConfigurationsRule(ValidConfigurationsRule object)
+		{
+			return createValidConfigurationsRuleAdapter();
 		}
 
 		@Override
@@ -278,6 +302,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.ExclusionRule
+	 * <em>Exclusion Rule</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.ExclusionRule
+	 * @generated
+	 */
+	public Adapter createExclusionRuleAdapter()
+	{
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Feature <em>Feature</em>}
 	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
@@ -287,6 +326,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createFeatureAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.InstallableUnitReference
+	 * <em>Installable Unit Reference</em>}'. <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.InstallableUnitReference
+	 * @generated
+	 */
+	public Adapter createInstallableUnitReferenceAdapter()
 	{
 		return null;
 	}
@@ -322,6 +376,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MapRule
+	 * <em>Map Rule</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.MapRule
+	 * @generated
+	 */
+	public Adapter createMapRuleAdapter()
+	{
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Product <em>Product</em>}
 	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
@@ -346,6 +415,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createPropertyAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule
+	 * <em>Valid Configurations Rule</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.ValidConfigurationsRule
+	 * @generated
+	 */
+	public Adapter createValidConfigurationsRuleAdapter()
 	{
 		return null;
 	}

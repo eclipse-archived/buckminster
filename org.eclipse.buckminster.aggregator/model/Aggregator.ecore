@@ -7,22 +7,22 @@
     <eOperations name="getContributions" upperBound="-1" eType="#//Contribution">
       <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//AggregateType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="buildRoot" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="${user.home}/build"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configurations" lowerBound="1"
         upperBound="-1" eType="#//Configuration" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contributions" upperBound="-1"
         eType="#//Contribution" containment="true" eKeys="#//Contribution/label"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="buildmaster" eType="#//Contact"
         eKeys="#//Contact/email"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sendmail" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contacts" upperBound="-1"
         eType="#//Contact" containment="true" eOpposite="#//Contact/aggregator" eKeys="#//Contact/email"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="customCategories" upperBound="-1"
         eType="#//CustomCategory" containment="true" eKeys="#//CustomCategory/identifier"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="buildRoot" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="${user.home}/build"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="packedStrategy" eType="#//PackedStrategy"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sendmail" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//AggregateType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MappedRepository" eSuperTypes="#//EnabledStatusProvider">
     <eOperations name="getUnits" upperBound="-1" eType="#//MappedUnit">
@@ -31,9 +31,9 @@
       </eAnnotations>
       <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
-    <eOperations name="isMapEverything" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+    <eOperations name="isMapExclusive" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Returns &lt;code>true&lt;/code> if the container has no MappedUnit children."/>
+        <details key="documentation" value="Returns &lt;code>true&lt;/code> if the container has MappedUnit children."/>
       </eAnnotations>
     </eOperations>
     <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -54,6 +54,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="mirrorArtifacts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="categoryPrefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mapRules" upperBound="-1"
+        eType="#//MapRule" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Configuration">
     <eOperations name="getName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -86,14 +88,8 @@
         eType="#//CustomCategory" eOpposite="#//CustomCategory/features"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Bundle" eSuperTypes="#//MappedUnit"/>
-  <eClassifiers xsi:type="ecore:EClass" name="MappedUnit" abstract="true" eSuperTypes="#//EnabledStatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="MappedUnit" abstract="true" eSuperTypes="#//InstallableUnitReference #//EnabledStatusProvider">
     <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eOperations name="getInstallableUnit" eType="#//p2/InstallableUnit">
-      <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    </eOperations>
-    <eOperations name="isMappedRepositoryBroken" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnit" eType="#//p2/InstallableUnit"
-        eKeys="#//p2/IInstallableUnit/id #//p2/IInstallableUnit/version"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="validConfigurations" upperBound="-1"
         eType="#//Configuration" eKeys="#//Configuration/operatingSystem #//Configuration/windowSystem #//Configuration/architecture"/>
   </eClassifiers>
@@ -149,6 +145,20 @@
       interface="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="enabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MapRule" abstract="true" eSuperTypes="#//InstallableUnitReference"/>
+  <eClassifiers xsi:type="ecore:EClass" name="InstallableUnitReference" abstract="true">
+    <eOperations name="getInstallableUnit" eType="#//p2/InstallableUnit">
+      <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
+    <eOperations name="isMappedRepositoryBroken" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnit" eType="#//p2/InstallableUnit"
+        eKeys="#//p2/IInstallableUnit/id #//p2/IInstallableUnit/version"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExclusionRule" eSuperTypes="#//MapRule"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ValidConfigurationsRule" eSuperTypes="#//MapRule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validConfigurations" upperBound="-1"
+        eType="#//Configuration"/>
   </eClassifiers>
   <eSubpackages name="p2" nsURI="http://www.eclipse.org/buckminster/2009/p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EClass" name="IArtifactKey" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey"

@@ -9,8 +9,8 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
@@ -124,7 +124,7 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 	}
 
 	@Override
-	protected List<? extends MappedUnit> getContainerChildren(MappedRepository container)
+	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
 	{
 		return container.getProducts();
 	}

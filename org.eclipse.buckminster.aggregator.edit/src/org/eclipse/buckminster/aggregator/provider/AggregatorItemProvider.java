@@ -90,12 +90,12 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 		{
 			super.getPropertyDescriptors(object);
 
-			addTypePropertyDescriptor(object);
-			addBuildRootPropertyDescriptor(object);
-			addLabelPropertyDescriptor(object);
 			addBuildmasterPropertyDescriptor(object);
-			addSendmailPropertyDescriptor(object);
+			addLabelPropertyDescriptor(object);
+			addBuildRootPropertyDescriptor(object);
 			addPackedStrategyPropertyDescriptor(object);
+			addSendmailPropertyDescriptor(object);
+			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -139,12 +139,12 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 
 		switch(notification.getFeatureID(Aggregator.class))
 		{
-		case AggregatorPackage.AGGREGATOR__TYPE:
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-		case AggregatorPackage.AGGREGATOR__LABEL:
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+		case AggregatorPackage.AGGREGATOR__LABEL:
+		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
 		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+		case AggregatorPackage.AGGREGATOR__TYPE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:

@@ -83,6 +83,14 @@ public interface AggregatorFactory extends EFactory
 	CustomCategory createCustomCategory();
 
 	/**
+	 * Returns a new object of class '<em>Exclusion Rule</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Exclusion Rule</em>'.
+	 * @generated
+	 */
+	ExclusionRule createExclusionRule();
+
+	/**
 	 * Returns a new object of class '<em>Feature</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Feature</em>'.
@@ -129,6 +137,14 @@ public interface AggregatorFactory extends EFactory
 	 * @generated
 	 */
 	Property createProperty();
+
+	/**
+	 * Returns a new object of class '<em>Valid Configurations Rule</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Valid Configurations Rule</em>'.
+	 * @generated
+	 */
+	ValidConfigurationsRule createValidConfigurationsRule();
 
 	/**
 	 * Returns the package supported by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->

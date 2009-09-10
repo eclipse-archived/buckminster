@@ -1,6 +1,9 @@
 /**
- * <copyright>
- * </copyright>
+ * Copyright (c) 2006-2009, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
  *
  * $Id$
  */
@@ -9,35 +12,27 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.Feature} object. <!--
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.MapRule} object. <!--
  * begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class FeatureItemProvider extends MappedUnitItemProvider implements IEditingDomainItemProvider,
+public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
@@ -45,23 +40,20 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	 * 
 	 * @generated
 	 */
-	public FeatureItemProvider(AdapterFactory adapterFactory)
+	public MapRuleItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
 
 	/**
-	 * This returns Feature.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns MapRule.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage(
-				"full/obj16/Feature" + (((Feature)object).isBranchEnabled()
-						? ""
-						: "Disabled")));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/MapRule"));
 	}
 
 	/**
@@ -76,7 +68,6 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 		{
 			super.getPropertyDescriptors(object);
 
-			addCategoriesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -84,48 +75,12 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		Feature feature = (Feature)object;
-		InstallableUnit iu = feature.getInstallableUnit(feature.isBranchEnabled()
-				&& !feature.isMappedRepositoryBroken());
-		StringBuilder bld = new StringBuilder();
-		bld.append(getString("_UI_Feature_type"));
-		bld.append(' ');
-		String id = null;
-		Version version = null;
-		if(iu != null)
-		{
-			id = Trivial.trim(iu.getId());
-			if(id == null)
-			{
-				VersionedName vn = iu.getVersionedNameFromProxy();
-				if(vn != null)
-				{
-					id = vn.getId();
-					version = vn.getVersion();
-				}
-			}
-			else
-				version = iu.getVersion();
-		}
-
-		if(id == null)
-			bld.append("not mapped");
-		else
-		{
-			id = id.substring(0, id.length() - IAggregatorConstants.FEATURE_SUFFIX.length());
-			bld.append(id);
-			bld.append('/');
-			bld.append(version);
-			if(!feature.isEnabled())
-				bld.append(" (disabled)");
-		}
-
-		return bld.toString();
+		return getString("_UI_MapRule_type");
 	}
 
 	/**
@@ -143,20 +98,6 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	}
 
 	/**
-	 * This adds a property descriptor for the Categories feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addCategoriesPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Feature_categories_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Feature_categories_feature", "_UI_Feature_type"),
-				AggregatorPackage.Literals.FEATURE__CATEGORIES, true, false, true, null, null, null));
-	}
-
-	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -171,7 +112,7 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
 	{
-		return container.getFeatures();
+		return container.getMapRules();
 	}
 
 	@Override
@@ -182,7 +123,15 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 			@Override
 			public boolean isMatch(Object candidate)
 			{
-				return ((InstallableUnit)candidate).getType() == InstallableUnitType.FEATURE;
+				switch(((InstallableUnit)candidate).getType())
+				{
+				case PRODUCT:
+				case FEATURE:
+				case BUNDLE:
+				case CATEGORY:
+					return true;
+				}
+				return false;
 			}
 		};
 	}

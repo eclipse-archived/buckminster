@@ -6,9 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +14,7 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
@@ -34,8 +29,6 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.MappedUnit} object. <!--
@@ -43,7 +36,7 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
  * 
  * @generated
  */
-public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
+public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 
 {
@@ -55,25 +48,6 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 	public MappedUnitItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
-	}
-
-	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
-	{
-		if(childrenFeatures == null)
-		{
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_UNIT__INSTALLABLE_UNIT);
-		}
-		return childrenFeatures;
 	}
 
 	/**
@@ -89,21 +63,9 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 			super.getPropertyDescriptors(object);
 
 			addEnabledPropertyDescriptor(object);
-			addInstallableUnitPropertyDescriptor(object);
 			addValidConfigurationsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return AggregatorEditPlugin.INSTANCE;
 	}
 
 	/**
@@ -177,9 +139,6 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 		case AggregatorPackage.MAPPED_UNIT__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
-		case AggregatorPackage.MAPPED_UNIT__INSTALLABLE_UNIT:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-			return;
 		}
 		super.notifyChanged(notification);
 	}
@@ -197,67 +156,6 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 						"_UI_EnabledStatusProvider_enabled_feature", "_UI_EnabledStatusProvider_type"),
 				AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED, true, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Installable Unit feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	protected void addInstallableUnitPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(new ContributionItemProvider.DynamicItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MappedUnit_installableUnit_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MappedUnit_installableUnit_feature", "_UI_MappedUnit_type"),
-				AggregatorPackage.Literals.MAPPED_UNIT__INSTALLABLE_UNIT, true, false, true, null, null, null)
-		{
-			@SuppressWarnings("unchecked")
-			public Collection<?> getChoiceOfValues(Object object)
-			{
-				MappedUnit self = (MappedUnit)object;
-				MappedRepository container = (MappedRepository)self.eContainer();
-				MetadataRepository repo = container.getMetadataRepository();
-				if(repo == null)
-					return Collections.singleton(null);
-
-				// Build a list of IU's that correspond to the given type of MappedUnit
-				//
-				Collector collector = repo.query(getInstallableUnitQuery(), new Collector(), null);
-				if(collector.isEmpty())
-					return Collections.singleton(null);
-
-				List<InstallableUnit> result = new ArrayList<InstallableUnit>();
-				result.add(null);
-
-				Collection availableUnits = collector.toCollection();
-
-				// if current installable unit is not among the newly retrieved ones,
-				// add it to the choice values so that user would not be surprised by
-				// disappearing current choice after clicking on the property value
-				if(self.getInstallableUnit() != null && !availableUnits.contains(self.getInstallableUnit()))
-					result.add(self.getInstallableUnit());
-
-				result.addAll(availableUnits);
-
-				// Exclude IU's that are already mapped
-				//
-				for(MappedUnit mu : getContainerChildren(container))
-				{
-					if(mu == self)
-						continue;
-
-					InstallableUnit iu = mu.getInstallableUnit();
-					if(iu == null)
-						continue;
-
-					int idx = result.indexOf(iu);
-					if(idx >= 0)
-						result.remove(idx);
-				}
-				return result;
-			}
-		});
 	}
 
 	/**
@@ -300,30 +198,4 @@ public class MappedUnitItemProvider extends AggregatorItemProviderAdapter implem
 		return new ContributionItemProvider.DynamicItemPropertyDescriptor(adapterFactory, resourceLocator, displayName,
 				description, feature, isSettable, multiLine, sortChoices, staticImage, category, filterFlags);
 	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child)
-	{
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	protected List<? extends MappedUnit> getContainerChildren(MappedRepository container)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	// Must be implemented by subclass.
-	protected Query getInstallableUnitQuery()
-	{
-		throw new UnsupportedOperationException();
-	}
-
 }

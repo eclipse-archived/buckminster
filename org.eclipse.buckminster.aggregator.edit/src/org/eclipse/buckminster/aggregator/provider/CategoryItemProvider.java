@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -153,7 +153,7 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 	}
 
 	@Override
-	protected List<? extends MappedUnit> getContainerChildren(MappedRepository container)
+	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
 	{
 		return container.getCategories();
 	}

@@ -18,16 +18,16 @@ import org.eclipse.emf.ecore.EObject;
  *          <p>
  *          The following features are supported:
  *          <ul>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildRoot <em>Build Root</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getConfigurations <em>Configurations</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContributions <em>Contributions</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getLabel <em>Label</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getLabel <em>Label</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildRoot <em>Build Root</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
  *          </ul>
  *          </p>
  * 

@@ -34,16 +34,16 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getType <em>Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildRoot <em>Build Root</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getConfigurations <em>Configurations</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContributions <em>Contributions</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildmaster <em>Buildmaster</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContacts <em>Contacts</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getCustomCategories <em>Custom Categories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getLabel <em>Label</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildRoot <em>Build Root</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getPackedStrategy <em>Packed Strategy</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getType <em>Type</em>}</li>
  * </ul>
  * </p>
  * 
@@ -59,73 +59,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * @ordered
 	 */
 	protected int eFlags = 0;
-
-	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final AggregateType TYPE_EDEFAULT = AggregateType.STABLE;
-
-	/**
-	 * The offset of the flags representing the value of the '{@link #getType() <em>Type</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int TYPE_EFLAG_OFFSET = 0;
-
-	/**
-	 * The flags representing the default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int TYPE_EFLAG_DEFAULT = TYPE_EDEFAULT.ordinal() << TYPE_EFLAG_OFFSET;
-
-	/**
-	 * The array of enumeration values for '{@link AggregateType Aggregate Type}' <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	private static final AggregateType[] TYPE_EFLAG_VALUES = AggregateType.values();
-
-	/**
-	 * The flags representing the value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int TYPE_EFLAG = 0x7 << TYPE_EFLAG_OFFSET;
-
-	/**
-	 * The default value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getBuildRoot()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String BUILD_ROOT_EDEFAULT = "${user.home}/build";
-
-	/**
-	 * The cached value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getBuildRoot()
-	 * @generated
-	 * @ordered
-	 */
-	protected String buildRoot = BUILD_ROOT_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getConfigurations() <em>Configurations</em>}' containment reference list. <!--
@@ -148,26 +81,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected EList<Contribution> contributions;
 
 	/**
-	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getLabel()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String LABEL_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @see #getLabel()
-	 * @generated
-	 * @ordered
-	 */
-	protected String label = LABEL_EDEFAULT;
-
-	/**
 	 * The cached value of the '{@link #getBuildmaster() <em>Buildmaster</em>}' containment reference. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -176,26 +89,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * @ordered
 	 */
 	protected Contact buildmaster;
-
-	/**
-	 * The default value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #isSendmail()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean SENDMAIL_EDEFAULT = false;
-
-	/**
-	 * The flag representing the value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @see #isSendmail()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int SENDMAIL_EFLAG = 1 << 3;
 
 	/**
 	 * The cached value of the '{@link #getContacts() <em>Contacts</em>}' containment reference list. <!--
@@ -218,6 +111,46 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected EList<CustomCategory> customCategories;
 
 	/**
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LABEL_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected String label = LABEL_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getBuildRoot()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String BUILD_ROOT_EDEFAULT = "${user.home}/build";
+
+	/**
+	 * The cached value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getBuildRoot()
+	 * @generated
+	 * @ordered
+	 */
+	protected String buildRoot = BUILD_ROOT_EDEFAULT;
+
+	/**
 	 * The default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -234,7 +167,7 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int PACKED_STRATEGY_EFLAG_OFFSET = 4;
+	protected static final int PACKED_STRATEGY_EFLAG_OFFSET = 0;
 
 	/**
 	 * The flags representing the default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}'
@@ -263,6 +196,73 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	 * @ordered
 	 */
 	protected static final int PACKED_STRATEGY_EFLAG = 0x7 << PACKED_STRATEGY_EFLAG_OFFSET;
+
+	/**
+	 * The default value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #isSendmail()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean SENDMAIL_EDEFAULT = false;
+
+	/**
+	 * The flag representing the value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @see #isSendmail()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int SENDMAIL_EFLAG = 1 << 3;
+
+	/**
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final AggregateType TYPE_EDEFAULT = AggregateType.STABLE;
+
+	/**
+	 * The offset of the flags representing the value of the '{@link #getType() <em>Type</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int TYPE_EFLAG_OFFSET = 4;
+
+	/**
+	 * The flags representing the default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int TYPE_EFLAG_DEFAULT = TYPE_EDEFAULT.ordinal() << TYPE_EFLAG_OFFSET;
+
+	/**
+	 * The array of enumeration values for '{@link AggregateType Aggregate Type}' <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	private static final AggregateType[] TYPE_EFLAG_VALUES = AggregateType.values();
+
+	/**
+	 * The flags representing the value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int TYPE_EFLAG = 0x7 << TYPE_EFLAG_OFFSET;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -294,28 +294,28 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			return getType();
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			return getBuildRoot();
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return getConfigurations();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 			return getContributions();
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			return getLabel();
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 			if(resolve)
 				return getBuildmaster();
 			return basicGetBuildmaster();
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			return isSendmail();
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			return getContacts();
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return getCustomCategories();
+		case AggregatorPackage.AGGREGATOR__LABEL:
+			return getLabel();
+		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+			return getBuildRoot();
 		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
 			return getPackedStrategy();
+		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+			return isSendmail();
+		case AggregatorPackage.AGGREGATOR__TYPE:
+			return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -369,30 +369,30 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			return BUILD_ROOT_EDEFAULT == null
-					? buildRoot != null
-					: !BUILD_ROOT_EDEFAULT.equals(buildRoot);
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return configurations != null && !configurations.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 			return contributions != null && !contributions.isEmpty();
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			return LABEL_EDEFAULT == null
-					? label != null
-					: !LABEL_EDEFAULT.equals(label);
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 			return buildmaster != null;
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			return contacts != null && !contacts.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return customCategories != null && !customCategories.isEmpty();
+		case AggregatorPackage.AGGREGATOR__LABEL:
+			return LABEL_EDEFAULT == null
+					? label != null
+					: !LABEL_EDEFAULT.equals(label);
+		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+			return BUILD_ROOT_EDEFAULT == null
+					? buildRoot != null
+					: !BUILD_ROOT_EDEFAULT.equals(buildRoot);
 		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
 			return (eFlags & PACKED_STRATEGY_EFLAG) != PACKED_STRATEGY_EFLAG_DEFAULT;
+		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+			return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
+		case AggregatorPackage.AGGREGATOR__TYPE:
+			return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -408,12 +408,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			setType((AggregateType)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			setBuildRoot((String)newValue);
-			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			getConfigurations().clear();
 			getConfigurations().addAll((Collection<? extends Configuration>)newValue);
@@ -422,14 +416,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			getContributions().clear();
 			getContributions().addAll((Collection<? extends Contribution>)newValue);
 			return;
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			setLabel((String)newValue);
-			return;
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 			setBuildmaster((Contact)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			setSendmail((Boolean)newValue);
 			return;
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			getContacts().clear();
@@ -439,8 +427,20 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			getCustomCategories().clear();
 			getCustomCategories().addAll((Collection<? extends CustomCategory>)newValue);
 			return;
+		case AggregatorPackage.AGGREGATOR__LABEL:
+			setLabel((String)newValue);
+			return;
+		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+			setBuildRoot((String)newValue);
+			return;
 		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
 			setPackedStrategy((PackedStrategy)newValue);
+			return;
+		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+			setSendmail((Boolean)newValue);
+			return;
+		case AggregatorPackage.AGGREGATOR__TYPE:
+			setType((AggregateType)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -456,26 +456,14 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			setType(TYPE_EDEFAULT);
-			return;
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			setBuildRoot(BUILD_ROOT_EDEFAULT);
-			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			getConfigurations().clear();
 			return;
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 			getContributions().clear();
 			return;
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			setLabel(LABEL_EDEFAULT);
-			return;
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 			setBuildmaster((Contact)null);
-			return;
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			setSendmail(SENDMAIL_EDEFAULT);
 			return;
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 			getContacts().clear();
@@ -483,8 +471,20 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			getCustomCategories().clear();
 			return;
+		case AggregatorPackage.AGGREGATOR__LABEL:
+			setLabel(LABEL_EDEFAULT);
+			return;
+		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+			setBuildRoot(BUILD_ROOT_EDEFAULT);
+			return;
 		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
 			setPackedStrategy(PACKED_STRATEGY_EDEFAULT);
+			return;
+		case AggregatorPackage.AGGREGATOR__SENDMAIL:
+			setSendmail(SENDMAIL_EDEFAULT);
+			return;
+		case AggregatorPackage.AGGREGATOR__TYPE:
+			setType(TYPE_EDEFAULT);
 			return;
 		}
 		super.eUnset(featureID);
@@ -767,16 +767,16 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (type: ");
-		result.append(TYPE_EFLAG_VALUES[(eFlags & TYPE_EFLAG) >>> TYPE_EFLAG_OFFSET]);
+		result.append(" (label: ");
+		result.append(label);
 		result.append(", buildRoot: ");
 		result.append(buildRoot);
-		result.append(", label: ");
-		result.append(label);
-		result.append(", sendmail: ");
-		result.append((eFlags & SENDMAIL_EFLAG) != 0);
 		result.append(", packedStrategy: ");
 		result.append(PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET]);
+		result.append(", sendmail: ");
+		result.append((eFlags & SENDMAIL_EFLAG) != 0);
+		result.append(", type: ");
+		result.append(TYPE_EFLAG_VALUES[(eFlags & TYPE_EFLAG) >>> TYPE_EFLAG_OFFSET]);
 		result.append(')');
 		return result.toString();
 	}

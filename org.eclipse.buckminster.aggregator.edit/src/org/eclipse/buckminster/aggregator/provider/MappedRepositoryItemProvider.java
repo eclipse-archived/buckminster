@@ -87,6 +87,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__BUNDLES);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__FEATURES);
 			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES);
+			childrenFeatures.add(AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_RULES);
 		}
 		return childrenFeatures;
 	}
@@ -111,7 +112,8 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	@Override
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling)
 	{
-		if(!(((MappedRepository)object).isBranchEnabled()) || ((MappedRepository)object).getMetadataRepository() == null)
+		if(!(((MappedRepository)object).isBranchEnabled())
+				|| ((MappedRepository)object).getMetadataRepository() == null)
 			return Collections.emptySet();
 
 		return super.getNewChildDescriptors(object, editingDomain, sibling);
@@ -222,7 +224,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 				while(categoryIterator.hasNext())
 				{
 					categoryIterator.next();
-					//categoryIterator.remove();
+					// categoryIterator.remove();
 				}
 			}
 		}
@@ -310,6 +312,7 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
 		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -437,6 +440,12 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORIES,
 				AggregatorFactory.eINSTANCE.createCategory()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_RULES,
+				AggregatorFactory.eINSTANCE.createExclusionRule()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.MAPPED_REPOSITORY__MAP_RULES,
+				AggregatorFactory.eINSTANCE.createValidConfigurationsRule()));
 	}
 
 	/**

@@ -40,8 +40,6 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 public class MetadataRepositoryResourceImpl extends ResourceImpl
 {
-	private Exception m_lastException = null;
-
 	class RepositoryLoaderJob extends Job
 	{
 		private final MetadataRepositoryImpl repository;
@@ -123,6 +121,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			return Status.OK_STATUS;
 		}
 	}
+
+	private Exception m_lastException = null;
 
 	public static final Query QUERY_ALL_IUS = new MatchQuery()
 	{

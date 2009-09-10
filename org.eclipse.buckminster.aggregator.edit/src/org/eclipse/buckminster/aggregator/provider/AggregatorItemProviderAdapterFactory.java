@@ -149,6 +149,23 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	protected CustomCategoryItemProvider customCategoryItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.ExclusionRule}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ExclusionRuleItemProvider exclusionRuleItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule} instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ValidConfigurationsRuleItemProvider validConfigurationsRuleItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -324,6 +341,23 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.ExclusionRule}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createExclusionRuleAdapter()
+	{
+		if(exclusionRuleItemProvider == null)
+		{
+			exclusionRuleItemProvider = new ExclusionRuleItemProvider(this);
+		}
+
+		return exclusionRuleItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.Feature}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -392,6 +426,23 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createValidConfigurationsRuleAdapter()
+	{
+		if(validConfigurationsRuleItemProvider == null)
+		{
+			validConfigurationsRuleItemProvider = new ValidConfigurationsRuleItemProvider(this);
+		}
+
+		return validConfigurationsRuleItemProvider;
+	}
+
+	/**
 	 * This disposes all of the item providers created by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -420,6 +471,10 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 			categoryItemProvider.dispose();
 		if(customCategoryItemProvider != null)
 			customCategoryItemProvider.dispose();
+		if(exclusionRuleItemProvider != null)
+			exclusionRuleItemProvider.dispose();
+		if(validConfigurationsRuleItemProvider != null)
+			validConfigurationsRuleItemProvider.dispose();
 	}
 
 	/**
