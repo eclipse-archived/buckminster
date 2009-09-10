@@ -272,8 +272,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				if(files.length == 0)
 					continue;
 
-				IInstallableUnit iu = (IInstallableUnit)createFeatureRootFileIU(feature.getId(), feature.getVersion(),
-						null, configAdvice.getDescriptor())[0];
+				IInstallableUnit iu = createFeatureRootFileIU(feature.getId(), feature.getVersion(), null,
+						configAdvice.getDescriptor());
 
 				IArtifactKey artifactKey = iu.getArtifacts()[0];
 				ArtifactDescriptor artifactDescriptor = new ArtifactDescriptor(artifactKey);

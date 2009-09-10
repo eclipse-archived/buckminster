@@ -554,7 +554,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		ActionBuilder siteZip = addAntAction(ATTRIBUTE_SITE_ZIP, TASK_CREATE_SITE_ZIP, true);
 		siteZip.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
 		siteZip.addLocalPrerequisite(ATTRIBUTE_SITE_P2, ALIAS_REQUIREMENTS);
-		siteZip.setProductBase(OUTPUT_DIR);
+		siteZip.setProductBase(OUTPUT_DIR_SITE_ZIP);
 		siteZip.setProductAlias(ALIAS_OUTPUT);
 	}
 
