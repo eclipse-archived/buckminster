@@ -25,4 +25,8 @@
          id="org.eclipse.buckminster.subversive.headless.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.buckminster.emma.headless.feature"
+         version="0.0.0"/>
+
 </feature>
