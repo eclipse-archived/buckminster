@@ -122,6 +122,8 @@
 				<arg value="-i" />
 				<arg value="org.eclipse.buckminster.pde.headless.feature.feature.group" />
 				<arg value="-i" />
+				<arg value="org.eclipse.buckminster.cvs.headless.feature.feature.group" />
+				<arg value="-i" />
 				<arg value="org.eclipse.buckminster.subversive.headless.feature.feature.group" />
 			</args>
 		</eclipse.launch>
