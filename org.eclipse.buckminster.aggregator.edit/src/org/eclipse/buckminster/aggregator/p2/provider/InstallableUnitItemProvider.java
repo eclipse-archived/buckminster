@@ -189,7 +189,7 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 
 		return label == null || label.length() == 0
 				? getString("_UI_InstallableUnit_type")
-				: getString("_UI_InstallableUnit_type") + " " + label;
+				: label;
 	}
 
 	/**

@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -79,21 +78,10 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	public String getText(Object object)
 	{
-		Product product = (Product)object;
-		InstallableUnit iu = product.getInstallableUnit();
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Product_type"));
 		bld.append(' ');
-		if(iu != null)
-		{
-			bld.append(iu.getId());
-			bld.append('/');
-			bld.append(iu.getVersion());
-			if(!product.isEnabled())
-				bld.append(" - disabled");
-		}
-		else
-			bld.append("not mapped");
+		appendIUText(object, bld);
 		return bld.toString();
 	}
 

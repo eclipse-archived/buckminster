@@ -11,12 +11,10 @@ import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -26,8 +24,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
@@ -89,42 +85,10 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	public String getText(Object object)
 	{
-		Feature feature = (Feature)object;
-		InstallableUnit iu = feature.getInstallableUnit(feature.isBranchEnabled()
-				&& !feature.isMappedRepositoryBroken());
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Feature_type"));
 		bld.append(' ');
-		String id = null;
-		Version version = null;
-		if(iu != null)
-		{
-			id = Trivial.trim(iu.getId());
-			if(id == null)
-			{
-				VersionedName vn = iu.getVersionedNameFromProxy();
-				if(vn != null)
-				{
-					id = vn.getId();
-					version = vn.getVersion();
-				}
-			}
-			else
-				version = iu.getVersion();
-		}
-
-		if(id == null)
-			bld.append("not mapped");
-		else
-		{
-			id = id.substring(0, id.length() - IAggregatorConstants.FEATURE_SUFFIX.length());
-			bld.append(id);
-			bld.append('/');
-			bld.append(version);
-			if(!feature.isEnabled())
-				bld.append(" (disabled)");
-		}
-
+		appendIUText(object, bld);
 		return bld.toString();
 	}
 

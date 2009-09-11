@@ -13,10 +13,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-
+import org.eclipse.buckminster.aggregator.Configuration;
+import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -74,12 +74,31 @@ public class ValidConfigurationsRuleItemProvider extends MapRuleItemProvider imp
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		return getString("_UI_ValidConfigurationsRule_type");
+		StringBuilder bld = new StringBuilder();
+		bld.append(getString("_UI_ValidConfigurationsRule_type"));
+		bld.append(' ');
+		if(appendIUText(object, bld))
+		{
+			ValidConfigurationsRule vcRule = (ValidConfigurationsRule)object;
+			List<Configuration> configs = vcRule.getValidConfigurations();
+			int top = configs.size();
+			if(top > 0)
+			{
+				bld.append(' ');
+				bld.append(configs.get(0).getName());
+				for(int idx = 1; idx < top; ++idx)
+				{
+					bld.append('|');
+					bld.append(configs.get(idx).getName());
+				}
+			}
+		}
+		return bld.toString();
 	}
 
 	/**

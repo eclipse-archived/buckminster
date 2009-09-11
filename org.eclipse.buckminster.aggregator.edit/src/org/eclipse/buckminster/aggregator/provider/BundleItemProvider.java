@@ -9,7 +9,6 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -79,21 +78,10 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 	@Override
 	public String getText(Object object)
 	{
-		Bundle bundle = (Bundle)object;
-		InstallableUnit iu = bundle.getInstallableUnit();
 		StringBuilder bld = new StringBuilder();
 		bld.append(getString("_UI_Bundle_type"));
 		bld.append(' ');
-		if(iu != null)
-		{
-			bld.append(iu.getId());
-			bld.append('/');
-			bld.append(iu.getVersion());
-			if(!bundle.isEnabled())
-				bld.append(" - disabled");
-		}
-		else
-			bld.append("not mapped");
+		appendIUText(object, bld);
 		return bld.toString();
 	}
 

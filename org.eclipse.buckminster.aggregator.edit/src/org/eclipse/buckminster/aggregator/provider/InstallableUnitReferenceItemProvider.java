@@ -15,10 +15,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
@@ -29,6 +31,8 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
@@ -189,5 +193,45 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	protected Query getInstallableUnitQuery()
 	{
 		throw new UnsupportedOperationException();
+	}
+
+	protected boolean appendIUText(Object iuRef, StringBuilder bld)
+	{
+		InstallableUnit iu = getInstallableUnit((InstallableUnitReference)iuRef);
+		String id = null;
+		Version version = null;
+		if(iu != null)
+		{
+			id = Trivial.trim(iu.getId());
+			if(id == null)
+			{
+				VersionedName vn = iu.getVersionedNameFromProxy();
+				if(vn != null)
+				{
+					id = vn.getId();
+					version = vn.getVersion();
+				}
+			}
+			else
+				version = iu.getVersion();
+		}
+
+		if(id == null)
+		{
+			bld.append("not mapped");
+			return false;
+		}
+
+		if(id.endsWith(IAggregatorConstants.FEATURE_SUFFIX))
+			id = id.substring(0, id.length() - IAggregatorConstants.FEATURE_SUFFIX.length());
+		bld.append(id);
+		bld.append('/');
+		bld.append(version);
+		return true;
+	}
+
+	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
+	{
+		return iuRef.getInstallableUnit(!iuRef.isMappedRepositoryBroken());
 	}
 }

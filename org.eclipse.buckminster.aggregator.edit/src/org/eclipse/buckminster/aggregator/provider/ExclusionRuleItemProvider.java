@@ -71,12 +71,16 @@ public class ExclusionRuleItemProvider extends MapRuleItemProvider implements IE
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		return getString("_UI_ExclusionRule_type");
+		StringBuilder bld = new StringBuilder();
+		bld.append(getString("_UI_ExclusionRule_type"));
+		bld.append(' ');
+		appendIUText(object, bld);
+		return bld.toString();
 	}
 
 	/**

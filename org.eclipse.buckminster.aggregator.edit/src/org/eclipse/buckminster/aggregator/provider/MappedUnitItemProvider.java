@@ -14,7 +14,9 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
@@ -211,5 +213,23 @@ public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider
 	{
 		return new ContributionItemProvider.DynamicItemPropertyDescriptor(adapterFactory, resourceLocator, displayName,
 				description, feature, isSettable, multiLine, sortChoices, staticImage, category, filterFlags);
+	}
+
+	@Override
+	protected boolean appendIUText(Object iuRef, StringBuilder bld)
+	{
+		if(super.appendIUText(iuRef, bld))
+		{
+			if(((MappedUnit)iuRef).isEnabled())
+				return true;
+			bld.append(" (disabled)");
+		}
+		return false;
+	}
+
+	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
+	{
+		MappedUnit mu = (MappedUnit)iuRef;
+		return mu.getInstallableUnit(mu.isBranchEnabled() && !mu.isMappedRepositoryBroken());
 	}
 }

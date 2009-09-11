@@ -116,8 +116,6 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 				{
 				case PRODUCT:
 				case FEATURE:
-				case BUNDLE:
-				case CATEGORY:
 					return true;
 				}
 				return false;
