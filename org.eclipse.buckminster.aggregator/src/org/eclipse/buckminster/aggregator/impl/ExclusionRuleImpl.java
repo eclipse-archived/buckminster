@@ -18,14 +18,13 @@ import org.eclipse.emf.ecore.EClass;
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Exclusion Rule</b></em>'. <!-- end-user-doc -->
  * <p>
  * </p>
- * 
+ *
  * @generated
  */
 public class ExclusionRuleImpl extends MapRuleImpl implements ExclusionRule
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected ExclusionRuleImpl()
@@ -35,7 +34,6 @@ public class ExclusionRuleImpl extends MapRuleImpl implements ExclusionRule
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

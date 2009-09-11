@@ -25,6 +25,8 @@ import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
 import org.eclipse.buckminster.aggregator.p2.TouchpointType;
 import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
+import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
+import org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
@@ -57,315 +59,270 @@ import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
- * 
  * @generated
  */
 public class P2PackageImpl extends EPackageImpl implements P2Package
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iArtifactKeyEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iCopyrightEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iInstallableUnitEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iInstallableUnitFragmentEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iLicenseEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iProvidedCapabilityEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iRequiredCapabilityEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iTouchpointDataEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iTouchpointInstructionEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iTouchpointTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iUpdateDescriptorEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass artifactKeyEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass copyrightEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass metadataRepositoryEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass installableUnitEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass installableUnitFragmentEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass licenseEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass providedCapabilityEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass requiredCapabilityEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass touchpointDataEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass touchpointInstructionEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass touchpointTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass updateDescriptorEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass propertyEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass instructionMapEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iQueryableEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iMetadataRepositoryEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iRepositoryEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass repositoryReferenceEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EClass iAdaptableEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType versionEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType versionRangeEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iInstallableUnitArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iRequiredCapabilityArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iProvidedCapabilityArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iInstallableUnitFragmentArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iArtifactKeyArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iTouchpointDataArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType stringArrayEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType untypedMapEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType queryEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType collectorEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private EDataType iProgressMonitorEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private static boolean isInited = false;
@@ -373,11 +330,10 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
-	 * <p>
-	 * This method is used to initialize {@link P2Package#eINSTANCE} when that field is accessed. Clients should not
-	 * invoke it directly. Instead, they should simply access that field to obtain the package. <!-- begin-user-doc -->
+	 * <p>This method is used to initialize {@link P2Package#eINSTANCE} when that field is accessed.
+	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
@@ -385,13 +341,10 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public static P2Package init()
 	{
-		if(isInited)
-			return (P2Package)EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI);
+		if (isInited) return (P2Package)EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI);
 
 		// Obtain or create and register package
-		P2PackageImpl theP2Package = (P2PackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof P2PackageImpl
-				? EPackage.Registry.INSTANCE.get(eNS_URI)
-				: new P2PackageImpl());
+		P2PackageImpl theP2Package = (P2PackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof P2PackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new P2PackageImpl());
 
 		isInited = true;
 
@@ -399,21 +352,23 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		XMLTypePackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
-		AggregatorPackageImpl theAggregatorPackage = (AggregatorPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI) instanceof AggregatorPackageImpl
-				? EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI)
-				: AggregatorPackage.eINSTANCE);
+		AggregatorPackageImpl theAggregatorPackage = (AggregatorPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI) instanceof AggregatorPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI) : AggregatorPackage.eINSTANCE);
+		P2viewPackageImpl theP2viewPackage = (P2viewPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(P2viewPackage.eNS_URI) instanceof P2viewPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(P2viewPackage.eNS_URI) : P2viewPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theP2Package.createPackageContents();
 		theAggregatorPackage.createPackageContents();
+		theP2viewPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theP2Package.initializePackageContents();
 		theAggregatorPackage.initializePackageContents();
+		theP2viewPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theP2Package.freeze();
 
+  
 		// Update the registry and return the package
 		EPackage.Registry.INSTANCE.put(P2Package.eNS_URI, theP2Package);
 		return theP2Package;
@@ -421,14 +376,12 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private boolean isCreated = false;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private boolean isInitialized = false;
@@ -452,15 +405,14 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
-	 * Creates the meta-model objects for the package. This method is guarded to have no affect on any invocation but
-	 * its first. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Creates the meta-model objects for the package.  This method is
+	 * guarded to have no affect on any invocation but its first.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public void createPackageContents()
 	{
-		if(isCreated)
-			return;
+		if (isCreated) return;
 		isCreated = true;
 
 		// Create classes and their features
@@ -606,7 +558,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getArtifactKey()
@@ -616,7 +567,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getCollector()
@@ -626,7 +576,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getCopyright()
@@ -636,7 +585,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIAdaptable()
@@ -646,7 +594,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIArtifactKey()
@@ -656,7 +603,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIArtifactKey_Classifier()
@@ -666,7 +612,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIArtifactKey_Id()
@@ -676,7 +621,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIArtifactKey_Version()
@@ -686,7 +630,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getIArtifactKeyArray()
@@ -696,7 +639,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getICopyright()
@@ -706,7 +648,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getICopyright_Body()
@@ -716,7 +657,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getICopyright_Location()
@@ -726,7 +666,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIInstallableUnit()
@@ -736,7 +675,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getIInstallableUnit_Copyright()
@@ -746,7 +684,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnit_Filter()
@@ -756,7 +693,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnit_Fragment()
@@ -766,7 +702,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnit_Id()
@@ -776,7 +711,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getIInstallableUnit_License()
@@ -786,7 +720,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnit_Resolved()
@@ -796,7 +729,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnit_Singleton()
@@ -806,7 +738,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getIInstallableUnit_TouchpointType()
@@ -816,7 +747,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getIInstallableUnit_UpdateDescriptor()
@@ -826,7 +756,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnit_Version()
@@ -836,7 +765,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getIInstallableUnitArray()
@@ -846,7 +774,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIInstallableUnitFragment()
@@ -856,7 +783,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIInstallableUnitFragment_Host()
@@ -866,7 +792,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getIInstallableUnitFragmentArray()
@@ -876,7 +801,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getILicense()
@@ -886,7 +810,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getILicense_Body()
@@ -896,7 +819,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getILicense_Digest()
@@ -906,7 +828,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getILicense_Location()
@@ -916,7 +837,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIMetadataRepository()
@@ -926,7 +846,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getInstallableUnit()
@@ -936,7 +855,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnit_ArtifactList()
@@ -946,7 +864,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnit_MetaRequiredCapabilityList()
@@ -956,7 +873,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnit_PropertyMap()
@@ -966,7 +882,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnit_ProvidedCapabilityList()
@@ -976,7 +891,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnit_RequiredCapabilityList()
@@ -986,7 +900,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnit_TouchpointDataList()
@@ -996,7 +909,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getInstallableUnitFragment()
@@ -1006,7 +918,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstallableUnitFragment_HostList()
@@ -1016,7 +927,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getInstructionMap()
@@ -1026,7 +936,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getInstructionMap_Key()
@@ -1036,7 +945,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getInstructionMap_Value()
@@ -1046,7 +954,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getIProgressMonitor()
@@ -1056,7 +963,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIProvidedCapability()
@@ -1066,7 +972,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIProvidedCapability_Name()
@@ -1076,7 +981,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIProvidedCapability_Namespace()
@@ -1086,7 +990,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIProvidedCapability_Version()
@@ -1096,7 +999,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getIProvidedCapabilityArray()
@@ -1106,7 +1008,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIQueryable()
@@ -1116,7 +1017,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIRepository()
@@ -1126,7 +1026,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Description()
@@ -1136,7 +1035,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Location()
@@ -1146,7 +1044,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Modifiable()
@@ -1156,7 +1053,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Name()
@@ -1166,7 +1062,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Provider()
@@ -1176,7 +1071,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Type()
@@ -1186,7 +1080,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRepository_Version()
@@ -1196,7 +1089,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIRequiredCapability()
@@ -1206,7 +1098,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Filter()
@@ -1216,7 +1107,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Greedy()
@@ -1226,7 +1116,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Multiple()
@@ -1236,7 +1125,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Name()
@@ -1246,7 +1134,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Namespace()
@@ -1256,7 +1143,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Optional()
@@ -1266,7 +1152,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_Range()
@@ -1276,7 +1161,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIRequiredCapability_SelectorList()
@@ -1286,7 +1170,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getIRequiredCapabilityArray()
@@ -1296,7 +1179,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getITouchpointData()
@@ -1306,7 +1188,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getITouchpointDataArray()
@@ -1316,7 +1197,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getITouchpointInstruction()
@@ -1326,7 +1206,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getITouchpointInstruction_Body()
@@ -1336,7 +1215,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getITouchpointInstruction_ImportAttribute()
@@ -1346,7 +1224,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getITouchpointType()
@@ -1356,7 +1233,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getITouchpointType_Id()
@@ -1366,7 +1242,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getITouchpointType_Version()
@@ -1376,7 +1251,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getIUpdateDescriptor()
@@ -1386,7 +1260,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIUpdateDescriptor_Description()
@@ -1396,7 +1269,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIUpdateDescriptor_Id()
@@ -1406,7 +1278,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIUpdateDescriptor_Range()
@@ -1416,7 +1287,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getIUpdateDescriptor_Severity()
@@ -1426,7 +1296,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getLicense()
@@ -1436,7 +1305,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getMetadataRepository()
@@ -1446,7 +1314,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getMetadataRepository_InstallableUnits()
@@ -1456,7 +1323,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getMetadataRepository_PropertyMap()
@@ -1466,7 +1332,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getMetadataRepository_RepositoryReferences()
@@ -1476,7 +1341,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public P2Factory getP2Factory()
@@ -1486,7 +1350,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getProperty()
@@ -1496,7 +1359,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getProperty_Key()
@@ -1506,7 +1368,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getProperty_Value()
@@ -1516,7 +1377,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getProvidedCapability()
@@ -1526,7 +1386,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getQuery()
@@ -1536,7 +1395,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getRepositoryReference()
@@ -1546,7 +1404,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getRepositoryReference_Location()
@@ -1556,7 +1413,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getRepositoryReference_Nickname()
@@ -1566,7 +1422,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getRepositoryReference_Options()
@@ -1576,7 +1431,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EAttribute getRepositoryReference_Type()
@@ -1586,7 +1440,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getRequiredCapability()
@@ -1596,7 +1449,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getStringArray()
@@ -1606,7 +1458,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getTouchpointData()
@@ -1616,7 +1467,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EReference getTouchpointData_InstructionMap()
@@ -1626,7 +1476,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getTouchpointInstruction()
@@ -1636,7 +1485,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getTouchpointType()
@@ -1646,7 +1494,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getUntypedMap()
@@ -1656,7 +1503,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EClass getUpdateDescriptor()
@@ -1666,7 +1512,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getVersion()
@@ -1676,7 +1521,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EDataType getVersionRange()
@@ -1685,15 +1529,14 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
-	 * Complete the initialization of the package and its meta-model. This method is guarded to have no affect on any
-	 * invocation but its first. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Complete the initialization of the package and its meta-model.  This
+	 * method is guarded to have no affect on any invocation but its first.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public void initializePackageContents()
 	{
-		if(isInitialized)
-			return;
+		if (isInitialized) return;
 		isInitialized = true;
 
 		// Initialize package
@@ -1729,288 +1572,162 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		iRepositoryEClass.getESuperTypes().add(this.getIAdaptable());
 
 		// Initialize classes and features; add operations and parameters
-		initEClass(iArtifactKeyEClass, IArtifactKey.class, "IArtifactKey", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIArtifactKey_Classifier(), ecorePackage.getEString(), "classifier", null, 1, 1,
-				IArtifactKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIArtifactKey_Id(), ecorePackage.getEString(), "id", null, 1, 1, IArtifactKey.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIArtifactKey_Version(), this.getVersion(), "version", null, 0, 1, IArtifactKey.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iArtifactKeyEClass, IArtifactKey.class, "IArtifactKey", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIArtifactKey_Classifier(), ecorePackage.getEString(), "classifier", null, 1, 1, IArtifactKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIArtifactKey_Id(), ecorePackage.getEString(), "id", null, 1, 1, IArtifactKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIArtifactKey_Version(), this.getVersion(), "version", null, 0, 1, IArtifactKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(iArtifactKeyEClass, ecorePackage.getEString(), "toExternalForm", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iCopyrightEClass, ICopyright.class, "ICopyright", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getICopyright_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1,
-				ICopyright.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getICopyright_Body(), ecorePackage.getEString(), "body", null, 0, 1, ICopyright.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iCopyrightEClass, ICopyright.class, "ICopyright", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getICopyright_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, ICopyright.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getICopyright_Body(), ecorePackage.getEString(), "body", null, 0, 1, ICopyright.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(iInstallableUnitEClass, IInstallableUnit.class, "IInstallableUnit", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIInstallableUnit_Filter(), ecorePackage.getEString(), "filter", "", 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIInstallableUnit_Id(), ecorePackage.getEString(), "id", "", 0, 1, IInstallableUnit.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIInstallableUnit_TouchpointType(), this.getITouchpointType(), null, "touchpointType", null,
-				0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIInstallableUnit_Version(), this.getVersion(), "version", null, 0, 1, IInstallableUnit.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIInstallableUnit_Fragment(), ecorePackage.getEBoolean(), "fragment", null, 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIInstallableUnit_Resolved(), ecorePackage.getEBoolean(), "resolved", null, 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIInstallableUnit_Singleton(), ecorePackage.getEBoolean(), "singleton", null, 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEReference(getIInstallableUnit_UpdateDescriptor(), this.getIUpdateDescriptor(), null, "updateDescriptor",
-				null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIInstallableUnit_License(), this.getILicense(), null, "license", null, 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIInstallableUnit_Copyright(), this.getICopyright(), null, "copyright", null, 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iInstallableUnitEClass, IInstallableUnit.class, "IInstallableUnit", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIInstallableUnit_Filter(), ecorePackage.getEString(), "filter", "", 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIInstallableUnit_Id(), ecorePackage.getEString(), "id", "", 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIInstallableUnit_TouchpointType(), this.getITouchpointType(), null, "touchpointType", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIInstallableUnit_Version(), this.getVersion(), "version", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIInstallableUnit_Fragment(), ecorePackage.getEBoolean(), "fragment", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIInstallableUnit_Resolved(), ecorePackage.getEBoolean(), "resolved", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIInstallableUnit_Singleton(), ecorePackage.getEBoolean(), "singleton", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIInstallableUnit_UpdateDescriptor(), this.getIUpdateDescriptor(), null, "updateDescriptor", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIInstallableUnit_License(), this.getILicense(), null, "license", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIInstallableUnit_Copyright(), this.getICopyright(), null, "copyright", null, 0, 1, IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(iInstallableUnitEClass, this.getIArtifactKeyArray(), "getArtifacts", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(iInstallableUnitEClass, this.getIInstallableUnitFragmentArray(), "getFragments", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
+		addEOperation(iInstallableUnitEClass, this.getIInstallableUnitFragmentArray(), "getFragments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		EOperation op = addEOperation(iInstallableUnitEClass, ecorePackage.getEString(), "getProperty", 0, 1,
-				IS_UNIQUE, IS_ORDERED);
+		EOperation op = addEOperation(iInstallableUnitEClass, ecorePackage.getEString(), "getProperty", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "key", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(iInstallableUnitEClass, this.getUntypedMap(), "getProperties", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(iInstallableUnitEClass, this.getIRequiredCapabilityArray(), "getMetaRequiredCapabilities", 0, 1,
-				IS_UNIQUE, IS_ORDERED);
+		addEOperation(iInstallableUnitEClass, this.getIRequiredCapabilityArray(), "getMetaRequiredCapabilities", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(iInstallableUnitEClass, this.getIRequiredCapabilityArray(), "getRequiredCapabilities", 0, 1,
-				IS_UNIQUE, IS_ORDERED);
+		addEOperation(iInstallableUnitEClass, this.getIRequiredCapabilityArray(), "getRequiredCapabilities", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(iInstallableUnitEClass, this.getIProvidedCapabilityArray(), "getProvidedCapabilities", 0, 1,
-				IS_UNIQUE, IS_ORDERED);
+		addEOperation(iInstallableUnitEClass, this.getIProvidedCapabilityArray(), "getProvidedCapabilities", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(iInstallableUnitEClass, this.getITouchpointDataArray(), "getTouchpointData", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
+		addEOperation(iInstallableUnitEClass, this.getITouchpointDataArray(), "getTouchpointData", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = addEOperation(iInstallableUnitEClass, ecorePackage.getEBoolean(), "satisfies", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIRequiredCapability(), "candidate", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(iInstallableUnitEClass, this.getIInstallableUnit(), "unresolved", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iInstallableUnitFragmentEClass, IInstallableUnitFragment.class, "IInstallableUnitFragment",
-				IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIInstallableUnitFragment_Host(), this.getIRequiredCapabilityArray(), "host", null, 0, 1,
-				IInstallableUnitFragment.class, IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEClass(iInstallableUnitFragmentEClass, IInstallableUnitFragment.class, "IInstallableUnitFragment", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIInstallableUnitFragment_Host(), this.getIRequiredCapabilityArray(), "host", null, 0, 1, IInstallableUnitFragment.class, IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(iLicenseEClass, ILicense.class, "ILicense", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getILicense_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, ILicense.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getILicense_Body(), ecorePackage.getEString(), "body", null, 0, 1, ILicense.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getILicense_Digest(), ecorePackage.getEBigInteger(), "digest", null, 0, 1, ILicense.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getILicense_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, ILicense.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getILicense_Body(), ecorePackage.getEString(), "body", null, 0, 1, ILicense.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getILicense_Digest(), ecorePackage.getEBigInteger(), "digest", null, 0, 1, ILicense.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(iProvidedCapabilityEClass, IProvidedCapability.class, "IProvidedCapability", IS_ABSTRACT,
-				IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIProvidedCapability_Name(), ecorePackage.getEString(), "name", null, 0, 1,
-				IProvidedCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIProvidedCapability_Namespace(), ecorePackage.getEString(), "namespace", null, 0, 1,
-				IProvidedCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIProvidedCapability_Version(), this.getVersion(), "version", null, 0, 1,
-				IProvidedCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iProvidedCapabilityEClass, IProvidedCapability.class, "IProvidedCapability", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIProvidedCapability_Name(), ecorePackage.getEString(), "name", null, 0, 1, IProvidedCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIProvidedCapability_Namespace(), ecorePackage.getEString(), "namespace", null, 0, 1, IProvidedCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIProvidedCapability_Version(), this.getVersion(), "version", null, 0, 1, IProvidedCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = addEOperation(iProvidedCapabilityEClass, ecorePackage.getEBoolean(), "satisfies", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
+		op = addEOperation(iProvidedCapabilityEClass, ecorePackage.getEBoolean(), "satisfies", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIRequiredCapability(), "requirement", 1, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iRequiredCapabilityEClass, IRequiredCapability.class, "IRequiredCapability", IS_ABSTRACT,
-				IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIRequiredCapability_Filter(), ecorePackage.getEString(), "filter", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Name(), ecorePackage.getEString(), "name", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Namespace(), ecorePackage.getEString(), "namespace", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Range(), this.getVersionRange(), "range", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_SelectorList(), ecorePackage.getEString(), "selectorList", null, 0, -1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Multiple(), ecorePackage.getEBoolean(), "multiple", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Optional(), ecorePackage.getEBoolean(), "optional", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRequiredCapability_Greedy(), ecorePackage.getEBoolean(), "greedy", null, 0, 1,
-				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iRequiredCapabilityEClass, IRequiredCapability.class, "IRequiredCapability", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIRequiredCapability_Filter(), ecorePackage.getEString(), "filter", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Name(), ecorePackage.getEString(), "name", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Namespace(), ecorePackage.getEString(), "namespace", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Range(), this.getVersionRange(), "range", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_SelectorList(), ecorePackage.getEString(), "selectorList", null, 0, -1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Multiple(), ecorePackage.getEBoolean(), "multiple", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Optional(), ecorePackage.getEBoolean(), "optional", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Greedy(), ecorePackage.getEBoolean(), "greedy", null, 0, 1, IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(iRequiredCapabilityEClass, this.getStringArray(), "getSelectors", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = addEOperation(iRequiredCapabilityEClass, null, "setSelectors", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getStringArray(), "selectors", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iTouchpointDataEClass, ITouchpointData.class, "ITouchpointData", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
+		initEClass(iTouchpointDataEClass, ITouchpointData.class, "ITouchpointData", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
 
-		op = addEOperation(iTouchpointDataEClass, this.getITouchpointInstruction(), "getInstruction", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
+		op = addEOperation(iTouchpointDataEClass, this.getITouchpointInstruction(), "getInstruction", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theXMLTypePackage.getString(), "instructionKey", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(iTouchpointDataEClass, this.getUntypedMap(), "getInstructions", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iTouchpointInstructionEClass, ITouchpointInstruction.class, "ITouchpointInstruction", IS_ABSTRACT,
-				IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getITouchpointInstruction_Body(), ecorePackage.getEString(), "body", null, 0, 1,
-				ITouchpointInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getITouchpointInstruction_ImportAttribute(), ecorePackage.getEString(), "importAttribute", null,
-				0, 1, ITouchpointInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iTouchpointInstructionEClass, ITouchpointInstruction.class, "ITouchpointInstruction", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getITouchpointInstruction_Body(), ecorePackage.getEString(), "body", null, 0, 1, ITouchpointInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getITouchpointInstruction_ImportAttribute(), ecorePackage.getEString(), "importAttribute", null, 0, 1, ITouchpointInstruction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(iTouchpointTypeEClass, ITouchpointType.class, "ITouchpointType", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getITouchpointType_Id(), ecorePackage.getEString(), "id", null, 0, 1, ITouchpointType.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getITouchpointType_Version(), this.getVersion(), "version", null, 0, 1, ITouchpointType.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(iTouchpointTypeEClass, ITouchpointType.class, "ITouchpointType", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getITouchpointType_Id(), ecorePackage.getEString(), "id", null, 0, 1, ITouchpointType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getITouchpointType_Version(), this.getVersion(), "version", null, 0, 1, ITouchpointType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(iUpdateDescriptorEClass, IUpdateDescriptor.class, "IUpdateDescriptor", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIUpdateDescriptor_Id(), ecorePackage.getEString(), "id", null, 0, 1, IUpdateDescriptor.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIUpdateDescriptor_Range(), this.getVersionRange(), "range", null, 0, 1,
-				IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIUpdateDescriptor_Description(), ecorePackage.getEString(), "description", null, 0, 1,
-				IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIUpdateDescriptor_Severity(), ecorePackage.getEInt(), "severity", null, 0, 1,
-				IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
+		initEClass(iUpdateDescriptorEClass, IUpdateDescriptor.class, "IUpdateDescriptor", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIUpdateDescriptor_Id(), ecorePackage.getEString(), "id", null, 0, 1, IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIUpdateDescriptor_Range(), this.getVersionRange(), "range", null, 0, 1, IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIUpdateDescriptor_Description(), ecorePackage.getEString(), "description", null, 0, 1, IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIUpdateDescriptor_Severity(), ecorePackage.getEInt(), "severity", null, 0, 1, IUpdateDescriptor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = addEOperation(iUpdateDescriptorEClass, ecorePackage.getEBoolean(), "isUpdateOf", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
+		op = addEOperation(iUpdateDescriptorEClass, ecorePackage.getEBoolean(), "isUpdateOf", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIInstallableUnit(), "iu", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(artifactKeyEClass, ArtifactKey.class, "ArtifactKey", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
+		initEClass(artifactKeyEClass, ArtifactKey.class, "ArtifactKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(copyrightEClass, Copyright.class, "Copyright", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
+		initEClass(copyrightEClass, Copyright.class, "Copyright", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(metadataRepositoryEClass, MetadataRepository.class, "MetadataRepository", !IS_ABSTRACT,
-				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMetadataRepository_InstallableUnits(), this.getInstallableUnit(), null, "installableUnits",
-				null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(metadataRepositoryEClass, MetadataRepository.class, "MetadataRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getMetadataRepository_InstallableUnits(), this.getInstallableUnit(), null, "installableUnits", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		getMetadataRepository_InstallableUnits().getEKeys().add(this.getIInstallableUnit_Id());
 		getMetadataRepository_InstallableUnits().getEKeys().add(this.getIInstallableUnit_Version());
-		initEReference(getMetadataRepository_RepositoryReferences(), this.getRepositoryReference(), null,
-				"repositoryReferences", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getMetadataRepository_PropertyMap(), this.getProperty(), null, "propertyMap", null, 0, -1,
-				MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMetadataRepository_RepositoryReferences(), this.getRepositoryReference(), null, "repositoryReferences", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMetadataRepository_PropertyMap(), this.getProperty(), null, "propertyMap", null, 0, -1, MetadataRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(installableUnitEClass, InstallableUnit.class, "InstallableUnit", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInstallableUnit_ArtifactList(), this.getArtifactKey(), null, "artifactList", null, 0, -1,
-				InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstallableUnit_ProvidedCapabilityList(), this.getProvidedCapability(), null,
-				"providedCapabilityList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstallableUnit_RequiredCapabilityList(), this.getRequiredCapability(), null,
-				"requiredCapabilityList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstallableUnit_MetaRequiredCapabilityList(), this.getRequiredCapability(), null,
-				"metaRequiredCapabilityList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstallableUnit_PropertyMap(), this.getProperty(), null, "propertyMap", null, 0, -1,
-				InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstallableUnit_TouchpointDataList(), this.getTouchpointData(), null, "touchpointDataList",
-				null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(installableUnitEClass, InstallableUnit.class, "InstallableUnit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInstallableUnit_ArtifactList(), this.getArtifactKey(), null, "artifactList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstallableUnit_ProvidedCapabilityList(), this.getProvidedCapability(), null, "providedCapabilityList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstallableUnit_RequiredCapabilityList(), this.getRequiredCapability(), null, "requiredCapabilityList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstallableUnit_MetaRequiredCapabilityList(), this.getRequiredCapability(), null, "metaRequiredCapabilityList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstallableUnit_PropertyMap(), this.getProperty(), null, "propertyMap", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstallableUnit_TouchpointDataList(), this.getTouchpointData(), null, "touchpointDataList", null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(installableUnitEClass, ecorePackage.getEInt(), "compareTo", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theXMLTypePackage.getAnySimpleType(), "other", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(installableUnitFragmentEClass, InstallableUnitFragment.class, "InstallableUnitFragment",
-				!IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInstallableUnitFragment_HostList(), this.getRequiredCapability(), null, "hostList", null, 0,
-				-1, InstallableUnitFragment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(installableUnitFragmentEClass, InstallableUnitFragment.class, "InstallableUnitFragment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInstallableUnitFragment_HostList(), this.getRequiredCapability(), null, "hostList", null, 0, -1, InstallableUnitFragment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(licenseEClass, License.class, "License", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(providedCapabilityEClass, ProvidedCapability.class, "ProvidedCapability", !IS_ABSTRACT,
-				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(providedCapabilityEClass, ProvidedCapability.class, "ProvidedCapability", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(requiredCapabilityEClass, RequiredCapability.class, "RequiredCapability", !IS_ABSTRACT,
-				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(requiredCapabilityEClass, RequiredCapability.class, "RequiredCapability", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(touchpointDataEClass, TouchpointData.class, "TouchpointData", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTouchpointData_InstructionMap(), this.getInstructionMap(), null, "instructionMap", null, 0,
-				-1, TouchpointData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(touchpointDataEClass, TouchpointData.class, "TouchpointData", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getTouchpointData_InstructionMap(), this.getInstructionMap(), null, "instructionMap", null, 0, -1, TouchpointData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(touchpointInstructionEClass, TouchpointInstruction.class, "TouchpointInstruction", !IS_ABSTRACT,
-				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(touchpointInstructionEClass, TouchpointInstruction.class, "TouchpointInstruction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(touchpointTypeEClass, TouchpointType.class, "TouchpointType", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
+		initEClass(touchpointTypeEClass, TouchpointType.class, "TouchpointType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(updateDescriptorEClass, UpdateDescriptor.class, "UpdateDescriptor", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
+		initEClass(updateDescriptorEClass, UpdateDescriptor.class, "UpdateDescriptor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(propertyEClass, Map.Entry.class, "Property", !IS_ABSTRACT, !IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getProperty_Key(), ecorePackage.getEString(), "key", null, 1, 1, Map.Entry.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getProperty_Value(), ecorePackage.getEString(), "value", null, 0, 1, Map.Entry.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(propertyEClass, Map.Entry.class, "Property", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getProperty_Key(), ecorePackage.getEString(), "key", null, 1, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getProperty_Value(), ecorePackage.getEString(), "value", null, 0, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(instructionMapEClass, Map.Entry.class, "InstructionMap", !IS_ABSTRACT, !IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInstructionMap_Key(), ecorePackage.getEString(), "key", null, 1, 1, Map.Entry.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstructionMap_Value(), this.getTouchpointInstruction(), null, "value", null, 0, 1,
-				Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(instructionMapEClass, Map.Entry.class, "InstructionMap", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getInstructionMap_Key(), ecorePackage.getEString(), "key", null, 1, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstructionMap_Value(), this.getTouchpointInstruction(), null, "value", null, 0, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(iQueryableEClass, IQueryable.class, "IQueryable", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
+		initEClass(iQueryableEClass, IQueryable.class, "IQueryable", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
 
 		op = addEOperation(iQueryableEClass, this.getCollector(), "query", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getQuery(), "query", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getCollector(), "collector", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIProgressMonitor(), "progress", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iMetadataRepositoryEClass, IMetadataRepository.class, "IMetadataRepository", IS_ABSTRACT,
-				IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEClass(iMetadataRepositoryEClass, IMetadataRepository.class, "IMetadataRepository", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
 
 		op = addEOperation(iMetadataRepositoryEClass, null, "addInstallableUnits", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIInstallableUnitArray(), "installableUnits", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -2021,32 +1738,20 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		addEParameter(op, ecorePackage.getEInt(), "type", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEInt(), "options", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		op = addEOperation(iMetadataRepositoryEClass, ecorePackage.getEBoolean(), "removeInstallableUnits", 0, 1,
-				IS_UNIQUE, IS_ORDERED);
+		op = addEOperation(iMetadataRepositoryEClass, ecorePackage.getEBoolean(), "removeInstallableUnits", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getQuery(), "query", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIProgressMonitor(), "monitor", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(iMetadataRepositoryEClass, null, "removeAll", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(iRepositoryEClass, IRepository.class, "IRepository", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIRepository_Location(), theAggregatorPackage.getURI(), "location", null, 1, 1,
-				IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRepository_Name(), ecorePackage.getEString(), "name", null, 0, 1, IRepository.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRepository_Type(), ecorePackage.getEString(), "type", null, 0, 1, IRepository.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRepository_Version(), ecorePackage.getEString(), "version", null, 0, 1, IRepository.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRepository_Description(), ecorePackage.getEString(), "description", null, 0, 1,
-				IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRepository_Provider(), ecorePackage.getEString(), "provider", null, 0, 1, IRepository.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIRepository_Modifiable(), ecorePackage.getEBoolean(), "modifiable", null, 0, 1,
-				IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
+		initEClass(iRepositoryEClass, IRepository.class, "IRepository", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIRepository_Location(), theAggregatorPackage.getURI(), "location", null, 1, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Name(), ecorePackage.getEString(), "name", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Type(), ecorePackage.getEString(), "type", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Version(), ecorePackage.getEString(), "version", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Description(), ecorePackage.getEString(), "description", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Provider(), ecorePackage.getEString(), "provider", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRepository_Modifiable(), ecorePackage.getEBoolean(), "modifiable", null, 0, 1, IRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(iRepositoryEClass, this.getUntypedMap(), "getProperties", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -2054,26 +1759,15 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		addEParameter(op, ecorePackage.getEString(), "key", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "value", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(repositoryReferenceEClass, RepositoryReference.class, "RepositoryReference", !IS_ABSTRACT,
-				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRepositoryReference_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1,
-				RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRepositoryReference_Type(), ecorePackage.getEInt(), "type", null, 0, 1,
-				RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRepositoryReference_Options(), ecorePackage.getEInt(), "options", null, 0, 1,
-				RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRepositoryReference_Nickname(), ecorePackage.getEString(), "nickname", null, 0, 1,
-				RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(repositoryReferenceEClass, RepositoryReference.class, "RepositoryReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getRepositoryReference_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRepositoryReference_Type(), ecorePackage.getEInt(), "type", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRepositoryReference_Options(), ecorePackage.getEInt(), "options", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRepositoryReference_Nickname(), ecorePackage.getEString(), "nickname", null, 0, 1, RepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(iAdaptableEClass, IAdaptable.class, "IAdaptable", IS_ABSTRACT, IS_INTERFACE,
-				!IS_GENERATED_INSTANCE_CLASS);
+		initEClass(iAdaptableEClass, IAdaptable.class, "IAdaptable", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
 
-		op = addEOperation(iAdaptableEClass, theXMLTypePackage.getAnySimpleType(), "getAdapter", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
+		op = addEOperation(iAdaptableEClass, theXMLTypePackage.getAnySimpleType(), "getAdapter", 0, 1, IS_UNIQUE, IS_ORDERED);
 		EGenericType g1 = createEGenericType(ecorePackage.getEJavaClass());
 		EGenericType g2 = createEGenericType();
 		g1.getETypeArguments().add(g2);
@@ -2081,27 +1775,18 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 		// Initialize data types
 		initEDataType(versionEDataType, Version.class, "Version", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(versionRangeEDataType, VersionRange.class, "VersionRange", IS_SERIALIZABLE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iInstallableUnitArrayEDataType, IInstallableUnit[].class, "IInstallableUnitArray",
-				IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iRequiredCapabilityArrayEDataType, IRequiredCapability[].class, "IRequiredCapabilityArray",
-				IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iProvidedCapabilityArrayEDataType, IProvidedCapability[].class, "IProvidedCapabilityArray",
-				IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iInstallableUnitFragmentArrayEDataType, IInstallableUnitFragment[].class,
-				"IInstallableUnitFragmentArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iArtifactKeyArrayEDataType, IArtifactKey[].class, "IArtifactKeyArray", IS_SERIALIZABLE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iTouchpointDataArrayEDataType, ITouchpointData[].class, "ITouchpointDataArray", IS_SERIALIZABLE,
-				!IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(stringArrayEDataType, String[].class, "StringArray", IS_SERIALIZABLE,
-				!IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(versionRangeEDataType, VersionRange.class, "VersionRange", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iInstallableUnitArrayEDataType, IInstallableUnit[].class, "IInstallableUnitArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iRequiredCapabilityArrayEDataType, IRequiredCapability[].class, "IRequiredCapabilityArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iProvidedCapabilityArrayEDataType, IProvidedCapability[].class, "IProvidedCapabilityArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iInstallableUnitFragmentArrayEDataType, IInstallableUnitFragment[].class, "IInstallableUnitFragmentArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iArtifactKeyArrayEDataType, IArtifactKey[].class, "IArtifactKeyArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iTouchpointDataArrayEDataType, ITouchpointData[].class, "ITouchpointDataArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(stringArrayEDataType, String[].class, "StringArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(untypedMapEDataType, Map.class, "UntypedMap", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(queryEDataType, Query.class, "Query", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(collectorEDataType, Collector.class, "Collector", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(iProgressMonitorEDataType, IProgressMonitor.class, "IProgressMonitor", !IS_SERIALIZABLE,
-				!IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iProgressMonitorEDataType, IProgressMonitor.class, "IProgressMonitor", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create annotations
 		// http:///org/eclipse/emf/ecore/util/ExtendedMetaData
@@ -2109,15 +1794,20 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
-	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>. <!-- begin-user-doc
+	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected void createExtendedMetaDataAnnotations()
 	{
-		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
-		addAnnotation(getRepositoryReference_Location(), source, new String[] {});
+		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";		
+		addAnnotation
+		  (getRepositoryReference_Location(), 
+		   source, 
+		   new String[] 
+		   {
+		   });
 	}
 
 } // P2PackageImpl

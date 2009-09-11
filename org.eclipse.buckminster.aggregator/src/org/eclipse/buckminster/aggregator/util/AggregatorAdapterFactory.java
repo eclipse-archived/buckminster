@@ -15,153 +15,134 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * <!-- begin-user-doc --> The <b>Adapter Factory</b> for the model. It provides an adapter <code>createXXX</code>
  * method for each class of the model. <!-- end-user-doc -->
- * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage
  * @generated
  */
 public class AggregatorAdapterFactory extends AdapterFactoryImpl
 {
 	/**
-	 * The cached model package. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached model package.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected static AggregatorPackage modelPackage;
 
 	/**
-	 * The switch that delegates to the <code>createXXX</code> methods. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The switch that delegates to the <code>createXXX</code> methods.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected AggregatorSwitch<Adapter> modelSwitch = new AggregatorSwitch<Adapter>()
-	{
-		@Override
-		public Adapter caseAggregator(Aggregator object)
 		{
-			return createAggregatorAdapter();
-		}
-
-		@Override
-		public Adapter caseBundle(Bundle object)
-		{
-			return createBundleAdapter();
-		}
-
-		@Override
-		public Adapter caseCategory(Category object)
-		{
-			return createCategoryAdapter();
-		}
-
-		@Override
-		public Adapter caseConfiguration(Configuration object)
-		{
-			return createConfigurationAdapter();
-		}
-
-		@Override
-		public Adapter caseContact(Contact object)
-		{
-			return createContactAdapter();
-		}
-
-		@Override
-		public Adapter caseContribution(Contribution object)
-		{
-			return createContributionAdapter();
-		}
-
-		@Override
-		public Adapter caseCustomCategory(CustomCategory object)
-		{
-			return createCustomCategoryAdapter();
-		}
-
-		@Override
-		public Adapter caseEnabledStatusProvider(EnabledStatusProvider object)
-		{
-			return createEnabledStatusProviderAdapter();
-		}
-
-		@Override
-		public Adapter caseExclusionRule(ExclusionRule object)
-		{
-			return createExclusionRuleAdapter();
-		}
-
-		@Override
-		public Adapter caseFeature(Feature object)
-		{
-			return createFeatureAdapter();
-		}
-
-		@Override
-		public Adapter caseInstallableUnitReference(InstallableUnitReference object)
-		{
-			return createInstallableUnitReferenceAdapter();
-		}
-
-		@Override
-		public Adapter caseMappedRepository(MappedRepository object)
-		{
-			return createMappedRepositoryAdapter();
-		}
-
-		@Override
-		public Adapter caseMappedUnit(MappedUnit object)
-		{
-			return createMappedUnitAdapter();
-		}
-
-		@Override
-		public Adapter caseMapRule(MapRule object)
-		{
-			return createMapRuleAdapter();
-		}
-
-		@Override
-		public Adapter caseProduct(Product object)
-		{
-			return createProductAdapter();
-		}
-
-		@Override
-		public Adapter caseProperty(Property object)
-		{
-			return createPropertyAdapter();
-		}
-
-		@Override
-		public Adapter caseValidConfigurationsRule(ValidConfigurationsRule object)
-		{
-			return createValidConfigurationsRuleAdapter();
-		}
-
-		@Override
-		public Adapter defaultCase(EObject object)
-		{
-			return createEObjectAdapter();
-		}
-	};
+			@Override
+			public Adapter caseAggregator(Aggregator object)
+			{
+				return createAggregatorAdapter();
+			}
+			@Override
+			public Adapter caseMappedRepository(MappedRepository object)
+			{
+				return createMappedRepositoryAdapter();
+			}
+			@Override
+			public Adapter caseConfiguration(Configuration object)
+			{
+				return createConfigurationAdapter();
+			}
+			@Override
+			public Adapter caseContribution(Contribution object)
+			{
+				return createContributionAdapter();
+			}
+			@Override
+			public Adapter caseContact(Contact object)
+			{
+				return createContactAdapter();
+			}
+			@Override
+			public Adapter caseFeature(Feature object)
+			{
+				return createFeatureAdapter();
+			}
+			@Override
+			public Adapter caseBundle(Bundle object)
+			{
+				return createBundleAdapter();
+			}
+			@Override
+			public Adapter caseMappedUnit(MappedUnit object)
+			{
+				return createMappedUnitAdapter();
+			}
+			@Override
+			public Adapter caseProduct(Product object)
+			{
+				return createProductAdapter();
+			}
+			@Override
+			public Adapter caseProperty(Property object)
+			{
+				return createPropertyAdapter();
+			}
+			@Override
+			public Adapter caseCategory(Category object)
+			{
+				return createCategoryAdapter();
+			}
+			@Override
+			public Adapter caseCustomCategory(CustomCategory object)
+			{
+				return createCustomCategoryAdapter();
+			}
+			@Override
+			public Adapter caseEnabledStatusProvider(EnabledStatusProvider object)
+			{
+				return createEnabledStatusProviderAdapter();
+			}
+			@Override
+			public Adapter caseMapRule(MapRule object)
+			{
+				return createMapRuleAdapter();
+			}
+			@Override
+			public Adapter caseInstallableUnitReference(InstallableUnitReference object)
+			{
+				return createInstallableUnitReferenceAdapter();
+			}
+			@Override
+			public Adapter caseExclusionRule(ExclusionRule object)
+			{
+				return createExclusionRuleAdapter();
+			}
+			@Override
+			public Adapter caseValidConfigurationsRule(ValidConfigurationsRule object)
+			{
+				return createValidConfigurationsRuleAdapter();
+			}
+			@Override
+			public Adapter defaultCase(EObject object)
+			{
+				return createEObjectAdapter();
+			}
+		};
 
 	/**
-	 * Creates an instance of the adapter factory. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Creates an instance of the adapter factory.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public AggregatorAdapterFactory()
 	{
-		if(modelPackage == null)
+		if (modelPackage == null)
 		{
 			modelPackage = AggregatorPackage.eINSTANCE;
 		}
 	}
 
 	/**
-	 * Creates an adapter for the <code>target</code>. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param target
-	 *            the object to adapt.
+	 * Creates an adapter for the <code>target</code>.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param target the object to adapt.
 	 * @return the adapter for the <code>target</code>.
 	 * @generated
 	 */
@@ -190,7 +171,6 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Bundle <em>Bundle</em>}'.
 	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful
 	 * to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.Bundle
 	 * @generated
@@ -231,10 +211,9 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Contact <em>Contact</em>}
-	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Contact <em>Contact</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.Contact
 	 * @generated
@@ -260,11 +239,10 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.CustomCategory
-	 * <em>Custom Category</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.CustomCategory <em>Custom Category</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can
 	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
 	 * end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.CustomCategory
 	 * @generated
@@ -275,11 +253,10 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
-	 * <em>Enabled Status Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider <em>Enabled Status Provider</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we
 	 * can easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
 	 * end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.EnabledStatusProvider
 	 * @generated
@@ -290,9 +267,9 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for the default case. <!-- begin-user-doc --> This default implementation returns null.
+	 * Creates a new adapter for the default case.
+	 * <!-- begin-user-doc --> This default implementation returns null.
 	 * <!-- end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @generated
 	 */
@@ -317,10 +294,9 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Feature <em>Feature</em>}
-	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Feature <em>Feature</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.Feature
 	 * @generated
@@ -331,11 +307,10 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.InstallableUnitReference
-	 * <em>Installable Unit Reference</em>}'. <!-- begin-user-doc --> This default implementation returns null so that
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.InstallableUnitReference <em>Installable Unit Reference</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
 	 * we can easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
 	 * end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.InstallableUnitReference
 	 * @generated
@@ -346,11 +321,10 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MappedRepository
-	 * <em>Mapped Repository</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MappedRepository <em>Mapped Repository</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can
 	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
 	 * end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.MappedRepository
 	 * @generated
@@ -391,10 +365,9 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Product <em>Product</em>}
-	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Product <em>Product</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.Product
 	 * @generated
@@ -420,11 +393,10 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule
-	 * <em>Valid Configurations Rule</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule <em>Valid Configurations Rule</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we
 	 * can easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
 	 * end-user-doc -->
-	 * 
 	 * @return the new adapter.
 	 * @see org.eclipse.buckminster.aggregator.ValidConfigurationsRule
 	 * @generated
@@ -435,21 +407,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Returns whether this factory is applicable for the type of the object. <!-- begin-user-doc --> This
+	 * Returns whether this factory is applicable for the type of the object.
+	 * <!-- begin-user-doc --> This
 	 * implementation returns <code>true</code> if the object is either the model's package or is an instance object of
 	 * the model. <!-- end-user-doc -->
-	 * 
 	 * @return whether this factory is applicable for the type of the object.
 	 * @generated
 	 */
 	@Override
 	public boolean isFactoryForType(Object object)
 	{
-		if(object == modelPackage)
+		if (object == modelPackage)
 		{
 			return true;
 		}
-		if(object instanceof EObject)
+		if (object instanceof EObject)
 		{
 			return ((EObject)object).eClass().getEPackage() == modelPackage;
 		}

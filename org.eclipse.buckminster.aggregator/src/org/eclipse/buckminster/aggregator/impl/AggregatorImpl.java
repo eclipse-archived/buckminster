@@ -34,19 +34,19 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getConfigurations <em>Configurations</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContributions <em>Contributions</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildmaster <em>Buildmaster</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContacts <em>Contacts</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getCustomCategories <em>Custom Categories</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getLabel <em>Label</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildRoot <em>Build Root</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getPackedStrategy <em>Packed Strategy</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getConfigurations <em>Configurations</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContributions <em>Contributions</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildmaster <em>Buildmaster</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContacts <em>Contacts</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getCustomCategories <em>Custom Categories</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getLabel <em>Label</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildRoot <em>Build Root</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getPackedStrategy <em>Packed Strategy</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getType <em>Type</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggregator
@@ -54,7 +54,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 * @ordered
 	 */
@@ -103,7 +102,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	/**
 	 * The cached value of the '{@link #getCustomCategories() <em>Custom Categories</em>}' containment reference list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getCustomCategories()
 	 * @generated
 	 * @ordered
@@ -111,9 +109,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected EList<CustomCategory> customCategories;
 
 	/**
-	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getLabel()
 	 * @generated
 	 * @ordered
@@ -131,9 +129,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected String label = LABEL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getBuildRoot()
 	 * @generated
 	 * @ordered
@@ -141,9 +139,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected static final String BUILD_ROOT_EDEFAULT = "${user.home}/build";
 
 	/**
-	 * The cached value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getBuildRoot() <em>Build Root</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getBuildRoot()
 	 * @generated
 	 * @ordered
@@ -151,9 +149,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected String buildRoot = BUILD_ROOT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute. <!-- begin-user-doc
+	 * The default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #getPackedStrategy()
 	 * @generated
 	 * @ordered
@@ -161,27 +159,25 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected static final PackedStrategy PACKED_STRATEGY_EDEFAULT = PackedStrategy.COPY;
 
 	/**
-	 * The offset of the flags representing the value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The offset of the flags representing the value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
 	protected static final int PACKED_STRATEGY_EFLAG_OFFSET = 0;
 
 	/**
-	 * The flags representing the default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The flags representing the default value of the '{@link #getPackedStrategy() <em>Packed Strategy</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
 	protected static final int PACKED_STRATEGY_EFLAG_DEFAULT = PACKED_STRATEGY_EDEFAULT.ordinal() << PACKED_STRATEGY_EFLAG_OFFSET;
 
 	/**
-	 * The array of enumeration values for '{@link PackedStrategy Packed Strategy}' <!-- begin-user-doc --> <!--
+	 * The array of enumeration values for '{@link PackedStrategy Packed Strategy}'
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 * @ordered
 	 */
@@ -198,9 +194,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected static final int PACKED_STRATEGY_EFLAG = 0x7 << PACKED_STRATEGY_EFLAG_OFFSET;
 
 	/**
-	 * The default value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #isSendmail()
 	 * @generated
 	 * @ordered
@@ -208,9 +204,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected static final boolean SENDMAIL_EDEFAULT = false;
 
 	/**
-	 * The flag representing the value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute. <!-- begin-user-doc
+	 * The flag representing the value of the '{@link #isSendmail() <em>Sendmail</em>}' attribute.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #isSendmail()
 	 * @generated
 	 * @ordered
@@ -237,27 +233,27 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected static final int TYPE_EFLAG_OFFSET = 4;
 
 	/**
-	 * The flags representing the default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc
+	 * The flags representing the default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected static final int TYPE_EFLAG_DEFAULT = TYPE_EDEFAULT.ordinal() << TYPE_EFLAG_OFFSET;
 
 	/**
-	 * The array of enumeration values for '{@link AggregateType Aggregate Type}' <!-- begin-user-doc --> <!--
+	 * The array of enumeration values for '{@link AggregateType Aggregate Type}'
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 * @ordered
 	 */
 	private static final AggregateType[] TYPE_EFLAG_VALUES = AggregateType.values();
 
 	/**
-	 * The flags representing the value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc -->
+	 * The flags representing the value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -266,7 +262,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected AggregatorImpl()
@@ -276,7 +271,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Contact basicGetBuildmaster()
@@ -286,226 +280,213 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
-			return getConfigurations();
-		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
-			return getContributions();
-		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-			if(resolve)
-				return getBuildmaster();
-			return basicGetBuildmaster();
-		case AggregatorPackage.AGGREGATOR__CONTACTS:
-			return getContacts();
-		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
-			return getCustomCategories();
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			return getLabel();
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			return getBuildRoot();
-		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
-			return getPackedStrategy();
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			return isSendmail();
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			return getType();
+			case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
+				return getConfigurations();
+			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
+				return getContributions();
+			case AggregatorPackage.AGGREGATOR__BUILDMASTER:
+				if (resolve) return getBuildmaster();
+				return basicGetBuildmaster();
+			case AggregatorPackage.AGGREGATOR__CONTACTS:
+				return getContacts();
+			case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
+				return getCustomCategories();
+			case AggregatorPackage.AGGREGATOR__LABEL:
+				return getLabel();
+			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+				return getBuildRoot();
+			case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+				return getPackedStrategy();
+			case AggregatorPackage.AGGREGATOR__SENDMAIL:
+				return isSendmail();
+			case AggregatorPackage.AGGREGATOR__TYPE:
+				return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__CONTACTS:
-			return ((InternalEList<InternalEObject>)(InternalEList<?>)getContacts()).basicAdd(otherEnd, msgs);
+			case AggregatorPackage.AGGREGATOR__CONTACTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getContacts()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
-			return ((InternalEList<?>)getConfigurations()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
-			return ((InternalEList<?>)getContributions()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.AGGREGATOR__CONTACTS:
-			return ((InternalEList<?>)getContacts()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
-			return ((InternalEList<?>)getCustomCategories()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
+				return ((InternalEList<?>)getConfigurations()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
+				return ((InternalEList<?>)getContributions()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.AGGREGATOR__CONTACTS:
+				return ((InternalEList<?>)getContacts()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
+				return ((InternalEList<?>)getCustomCategories()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
-			return configurations != null && !configurations.isEmpty();
-		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
-			return contributions != null && !contributions.isEmpty();
-		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-			return buildmaster != null;
-		case AggregatorPackage.AGGREGATOR__CONTACTS:
-			return contacts != null && !contacts.isEmpty();
-		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
-			return customCategories != null && !customCategories.isEmpty();
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			return LABEL_EDEFAULT == null
-					? label != null
-					: !LABEL_EDEFAULT.equals(label);
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			return BUILD_ROOT_EDEFAULT == null
-					? buildRoot != null
-					: !BUILD_ROOT_EDEFAULT.equals(buildRoot);
-		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
-			return (eFlags & PACKED_STRATEGY_EFLAG) != PACKED_STRATEGY_EFLAG_DEFAULT;
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
+			case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
+				return configurations != null && !configurations.isEmpty();
+			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
+				return contributions != null && !contributions.isEmpty();
+			case AggregatorPackage.AGGREGATOR__BUILDMASTER:
+				return buildmaster != null;
+			case AggregatorPackage.AGGREGATOR__CONTACTS:
+				return contacts != null && !contacts.isEmpty();
+			case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
+				return customCategories != null && !customCategories.isEmpty();
+			case AggregatorPackage.AGGREGATOR__LABEL:
+				return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
+			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+				return BUILD_ROOT_EDEFAULT == null ? buildRoot != null : !BUILD_ROOT_EDEFAULT.equals(buildRoot);
+			case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+				return (eFlags & PACKED_STRATEGY_EFLAG) != PACKED_STRATEGY_EFLAG_DEFAULT;
+			case AggregatorPackage.AGGREGATOR__SENDMAIL:
+				return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
+			case AggregatorPackage.AGGREGATOR__TYPE:
+				return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
-			getConfigurations().clear();
-			getConfigurations().addAll((Collection<? extends Configuration>)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
-			getContributions().clear();
-			getContributions().addAll((Collection<? extends Contribution>)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-			setBuildmaster((Contact)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__CONTACTS:
-			getContacts().clear();
-			getContacts().addAll((Collection<? extends Contact>)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
-			getCustomCategories().clear();
-			getCustomCategories().addAll((Collection<? extends CustomCategory>)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			setLabel((String)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			setBuildRoot((String)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
-			setPackedStrategy((PackedStrategy)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			setSendmail((Boolean)newValue);
-			return;
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			setType((AggregateType)newValue);
-			return;
+			case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
+				getConfigurations().clear();
+				getConfigurations().addAll((Collection<? extends Configuration>)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
+				getContributions().clear();
+				getContributions().addAll((Collection<? extends Contribution>)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__BUILDMASTER:
+				setBuildmaster((Contact)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__CONTACTS:
+				getContacts().clear();
+				getContacts().addAll((Collection<? extends Contact>)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
+				getCustomCategories().clear();
+				getCustomCategories().addAll((Collection<? extends CustomCategory>)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__LABEL:
+				setLabel((String)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+				setBuildRoot((String)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+				setPackedStrategy((PackedStrategy)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__SENDMAIL:
+				setSendmail((Boolean)newValue);
+				return;
+			case AggregatorPackage.AGGREGATOR__TYPE:
+				setType((AggregateType)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
-			getConfigurations().clear();
-			return;
-		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
-			getContributions().clear();
-			return;
-		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
-			setBuildmaster((Contact)null);
-			return;
-		case AggregatorPackage.AGGREGATOR__CONTACTS:
-			getContacts().clear();
-			return;
-		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
-			getCustomCategories().clear();
-			return;
-		case AggregatorPackage.AGGREGATOR__LABEL:
-			setLabel(LABEL_EDEFAULT);
-			return;
-		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
-			setBuildRoot(BUILD_ROOT_EDEFAULT);
-			return;
-		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
-			setPackedStrategy(PACKED_STRATEGY_EDEFAULT);
-			return;
-		case AggregatorPackage.AGGREGATOR__SENDMAIL:
-			setSendmail(SENDMAIL_EDEFAULT);
-			return;
-		case AggregatorPackage.AGGREGATOR__TYPE:
-			setType(TYPE_EDEFAULT);
-			return;
+			case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
+				getConfigurations().clear();
+				return;
+			case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
+				getContributions().clear();
+				return;
+			case AggregatorPackage.AGGREGATOR__BUILDMASTER:
+				setBuildmaster((Contact)null);
+				return;
+			case AggregatorPackage.AGGREGATOR__CONTACTS:
+				getContacts().clear();
+				return;
+			case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
+				getCustomCategories().clear();
+				return;
+			case AggregatorPackage.AGGREGATOR__LABEL:
+				setLabel(LABEL_EDEFAULT);
+				return;
+			case AggregatorPackage.AGGREGATOR__BUILD_ROOT:
+				setBuildRoot(BUILD_ROOT_EDEFAULT);
+				return;
+			case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
+				setPackedStrategy(PACKED_STRATEGY_EDEFAULT);
+				return;
+			case AggregatorPackage.AGGREGATOR__SENDMAIL:
+				setSendmail(SENDMAIL_EDEFAULT);
+				return;
+			case AggregatorPackage.AGGREGATOR__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Contact getBuildmaster()
 	{
-		if(buildmaster != null && buildmaster.eIsProxy())
+		if (buildmaster != null && buildmaster.eIsProxy())
 		{
 			InternalEObject oldBuildmaster = (InternalEObject)buildmaster;
 			buildmaster = (Contact)eResolveProxy(oldBuildmaster);
-			if(buildmaster != oldBuildmaster)
+			if (buildmaster != oldBuildmaster)
 			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							AggregatorPackage.AGGREGATOR__BUILDMASTER, oldBuildmaster, buildmaster));
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.AGGREGATOR__BUILDMASTER, oldBuildmaster, buildmaster));
 			}
 		}
 		return buildmaster;
@@ -513,7 +494,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getBuildRoot()
@@ -523,45 +503,39 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Configuration> getConfigurations()
 	{
-		if(configurations == null)
+		if (configurations == null)
 		{
-			configurations = new EObjectContainmentEList<Configuration>(Configuration.class, this,
-					AggregatorPackage.AGGREGATOR__CONFIGURATIONS);
+			configurations = new EObjectContainmentEList<Configuration>(Configuration.class, this, AggregatorPackage.AGGREGATOR__CONFIGURATIONS);
 		}
 		return configurations;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Contact> getContacts()
 	{
-		if(contacts == null)
+		if (contacts == null)
 		{
-			contacts = new EObjectContainmentWithInverseEList<Contact>(Contact.class, this,
-					AggregatorPackage.AGGREGATOR__CONTACTS, AggregatorPackage.CONTACT__AGGREGATOR);
+			contacts = new EObjectContainmentWithInverseEList<Contact>(Contact.class, this, AggregatorPackage.AGGREGATOR__CONTACTS, AggregatorPackage.CONTACT__AGGREGATOR);
 		}
 		return contacts;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Contribution> getContributions()
 	{
-		if(contributions == null)
+		if (contributions == null)
 		{
-			contributions = new EObjectContainmentEList<Contribution>(Contribution.class, this,
-					AggregatorPackage.AGGREGATOR__CONTRIBUTIONS);
+			contributions = new EObjectContainmentEList<Contribution>(Contribution.class, this, AggregatorPackage.AGGREGATOR__CONTRIBUTIONS);
 		}
 		return contributions;
 	}
@@ -603,22 +577,19 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<CustomCategory> getCustomCategories()
 	{
-		if(customCategories == null)
+		if (customCategories == null)
 		{
-			customCategories = new EObjectContainmentEList<CustomCategory>(CustomCategory.class, this,
-					AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES);
+			customCategories = new EObjectContainmentEList<CustomCategory>(CustomCategory.class, this, AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES);
 		}
 		return customCategories;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getLabel()
@@ -628,7 +599,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public PackedStrategy getPackedStrategy()
@@ -648,7 +618,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public AggregateType getType()
@@ -658,7 +627,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isSendmail()
@@ -668,103 +636,86 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setBuildmaster(Contact newBuildmaster)
 	{
 		Contact oldBuildmaster = buildmaster;
 		buildmaster = newBuildmaster;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__BUILDMASTER,
-					oldBuildmaster, buildmaster));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__BUILDMASTER, oldBuildmaster, buildmaster));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setBuildRoot(String newBuildRoot)
 	{
 		String oldBuildRoot = buildRoot;
 		buildRoot = newBuildRoot;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__BUILD_ROOT,
-					oldBuildRoot, buildRoot));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__BUILD_ROOT, oldBuildRoot, buildRoot));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setLabel(String newLabel)
 	{
 		String oldLabel = label;
 		label = newLabel;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__LABEL, oldLabel, label));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setPackedStrategy(PackedStrategy newPackedStrategy)
 	{
 		PackedStrategy oldPackedStrategy = PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET];
-		if(newPackedStrategy == null)
-			newPackedStrategy = PACKED_STRATEGY_EDEFAULT;
+		if (newPackedStrategy == null) newPackedStrategy = PACKED_STRATEGY_EDEFAULT;
 		eFlags = eFlags & ~PACKED_STRATEGY_EFLAG | newPackedStrategy.ordinal() << PACKED_STRATEGY_EFLAG_OFFSET;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__PACKED_STRATEGY,
-					oldPackedStrategy, newPackedStrategy));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__PACKED_STRATEGY, oldPackedStrategy, newPackedStrategy));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setSendmail(boolean newSendmail)
 	{
 		boolean oldSendmail = (eFlags & SENDMAIL_EFLAG) != 0;
-		if(newSendmail)
-			eFlags |= SENDMAIL_EFLAG;
-		else
-			eFlags &= ~SENDMAIL_EFLAG;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__SENDMAIL, oldSendmail,
-					newSendmail));
+		if (newSendmail) eFlags |= SENDMAIL_EFLAG; else eFlags &= ~SENDMAIL_EFLAG;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__SENDMAIL, oldSendmail, newSendmail));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setType(AggregateType newType)
 	{
 		AggregateType oldType = TYPE_EFLAG_VALUES[(eFlags & TYPE_EFLAG) >>> TYPE_EFLAG_OFFSET];
-		if(newType == null)
-			newType = TYPE_EDEFAULT;
+		if (newType == null) newType = TYPE_EDEFAULT;
 		eFlags = eFlags & ~TYPE_EFLAG | newType.ordinal() << TYPE_EFLAG_OFFSET;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__TYPE, oldType, newType));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if(eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (label: ");
@@ -783,7 +734,6 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

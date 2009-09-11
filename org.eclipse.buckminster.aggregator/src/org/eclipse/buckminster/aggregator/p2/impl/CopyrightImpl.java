@@ -23,11 +23,11 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.CopyrightImpl#getLocation <em>Location</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.CopyrightImpl#getBody <em>Body</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.CopyrightImpl#getLocation <em>Location</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.CopyrightImpl#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyright
@@ -35,16 +35,15 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The default value of the '{@link #getLocation() <em>Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getLocation() <em>Location</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getLocation()
 	 * @generated
 	 * @ordered
@@ -52,9 +51,9 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 	protected static final URI LOCATION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getLocation() <em>Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getLocation() <em>Location</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getLocation()
 	 * @generated
 	 * @ordered
@@ -83,7 +82,6 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected CopyrightImpl()
@@ -93,87 +91,78 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.COPYRIGHT__LOCATION:
-			return getLocation();
-		case P2Package.COPYRIGHT__BODY:
-			return getBody();
+			case P2Package.COPYRIGHT__LOCATION:
+				return getLocation();
+			case P2Package.COPYRIGHT__BODY:
+				return getBody();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.COPYRIGHT__LOCATION:
-			return LOCATION_EDEFAULT == null
-					? location != null
-					: !LOCATION_EDEFAULT.equals(location);
-		case P2Package.COPYRIGHT__BODY:
-			return BODY_EDEFAULT == null
-					? body != null
-					: !BODY_EDEFAULT.equals(body);
+			case P2Package.COPYRIGHT__LOCATION:
+				return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
+			case P2Package.COPYRIGHT__BODY:
+				return BODY_EDEFAULT == null ? body != null : !BODY_EDEFAULT.equals(body);
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.COPYRIGHT__LOCATION:
-			setLocation((URI)newValue);
-			return;
-		case P2Package.COPYRIGHT__BODY:
-			setBody((String)newValue);
-			return;
+			case P2Package.COPYRIGHT__LOCATION:
+				setLocation((URI)newValue);
+				return;
+			case P2Package.COPYRIGHT__BODY:
+				setBody((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.COPYRIGHT__LOCATION:
-			setLocation(LOCATION_EDEFAULT);
-			return;
-		case P2Package.COPYRIGHT__BODY:
-			setBody(BODY_EDEFAULT);
-			return;
+			case P2Package.COPYRIGHT__LOCATION:
+				setLocation(LOCATION_EDEFAULT);
+				return;
+			case P2Package.COPYRIGHT__BODY:
+				setBody(BODY_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getBody()
@@ -183,7 +172,6 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public URI getLocation()
@@ -193,40 +181,36 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setBody(String newBody)
 	{
 		String oldBody = body;
 		body = newBody;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.COPYRIGHT__BODY, oldBody, body));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setLocation(URI newLocation)
 	{
 		URI oldLocation = location;
 		location = newLocation;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.COPYRIGHT__LOCATION, oldLocation, location));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if(eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (location: ");
@@ -239,7 +223,6 @@ public class CopyrightImpl extends MinimalEObjectImpl.Container implements Copyr
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

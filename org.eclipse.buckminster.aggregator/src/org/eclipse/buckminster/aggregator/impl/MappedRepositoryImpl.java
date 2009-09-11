@@ -54,16 +54,15 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #isEnabled()
 	 * @generated
 	 * @ordered
@@ -71,9 +70,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected static final boolean ENABLED_EDEFAULT = true;
 
 	/**
-	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc -->
+	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #isEnabled()
 	 * @generated
 	 * @ordered
@@ -91,9 +90,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected EList<Product> products;
 
 	/**
-	 * The cached value of the '{@link #getBundles() <em>Bundles</em>}' containment reference list. <!-- begin-user-doc
+	 * The cached value of the '{@link #getBundles() <em>Bundles</em>}' containment reference list.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #getBundles()
 	 * @generated
 	 * @ordered
@@ -131,9 +130,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected EList<Category> categories;
 
 	/**
-	 * The default value of the '{@link #getLocation() <em>Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getLocation() <em>Location</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getLocation()
 	 * @generated
 	 * @ordered
@@ -141,9 +140,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected static final String LOCATION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getLocation() <em>Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getLocation() <em>Location</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getLocation()
 	 * @generated
 	 * @ordered
@@ -151,9 +150,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected String location = LOCATION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isMirrorArtifacts() <em>Mirror Artifacts</em>}' attribute. <!-- begin-user-doc
+	 * The default value of the '{@link #isMirrorArtifacts() <em>Mirror Artifacts</em>}' attribute.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #isMirrorArtifacts()
 	 * @generated
 	 * @ordered
@@ -171,9 +170,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected static final int MIRROR_ARTIFACTS_EFLAG = 1 << 1;
 
 	/**
-	 * The default value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute. <!-- begin-user-doc
+	 * The default value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #getCategoryPrefix()
 	 * @generated
 	 * @ordered
@@ -181,9 +180,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected static final String CATEGORY_PREFIX_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute. <!-- begin-user-doc
+	 * The cached value of the '{@link #getCategoryPrefix() <em>Category Prefix</em>}' attribute.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #getCategoryPrefix()
 	 * @generated
 	 * @ordered
@@ -202,7 +201,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected MappedRepositoryImpl()
@@ -228,7 +226,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public MetadataRepository basicGetMetadataRepository()
@@ -238,229 +235,214 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			return isEnabled();
-		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
-			return getProducts();
-		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
-			return getBundles();
-		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
-			return getFeatures();
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			if(resolve)
-				return getMetadataRepository();
-			return basicGetMetadataRepository();
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
-			return getCategories();
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			return getLocation();
-		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
-			return isMirrorArtifacts();
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
-			return getCategoryPrefix();
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
-			return getMapRules();
+			case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+				return isEnabled();
+			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
+				return getProducts();
+			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
+				return getBundles();
+			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
+				return getFeatures();
+			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
+				if (resolve) return getMetadataRepository();
+				return basicGetMetadataRepository();
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+				return getCategories();
+			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+				return getLocation();
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				return isMirrorArtifacts();
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+				return getCategoryPrefix();
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+				return getMapRules();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
-			return ((InternalEList<?>)getProducts()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
-			return ((InternalEList<?>)getBundles()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
-			return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
-			return ((InternalEList<?>)getCategories()).basicRemove(otherEnd, msgs);
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
-			return ((InternalEList<?>)getMapRules()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
+				return ((InternalEList<?>)getProducts()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
+				return ((InternalEList<?>)getBundles()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
+				return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+				return ((InternalEList<?>)getCategories()).basicRemove(otherEnd, msgs);
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+				return ((InternalEList<?>)getMapRules()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
-		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
-			return products != null && !products.isEmpty();
-		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
-			return bundles != null && !bundles.isEmpty();
-		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
-			return features != null && !features.isEmpty();
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			return metadataRepository != null;
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
-			return categories != null && !categories.isEmpty();
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			return LOCATION_EDEFAULT == null
-					? location != null
-					: !LOCATION_EDEFAULT.equals(location);
-		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
-			return ((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0) != MIRROR_ARTIFACTS_EDEFAULT;
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
-			return CATEGORY_PREFIX_EDEFAULT == null
-					? categoryPrefix != null
-					: !CATEGORY_PREFIX_EDEFAULT.equals(categoryPrefix);
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
-			return mapRules != null && !mapRules.isEmpty();
+			case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+				return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
+			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
+				return products != null && !products.isEmpty();
+			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
+				return bundles != null && !bundles.isEmpty();
+			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
+				return features != null && !features.isEmpty();
+			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
+				return metadataRepository != null;
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+				return categories != null && !categories.isEmpty();
+			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+				return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				return ((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0) != MIRROR_ARTIFACTS_EDEFAULT;
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+				return CATEGORY_PREFIX_EDEFAULT == null ? categoryPrefix != null : !CATEGORY_PREFIX_EDEFAULT.equals(categoryPrefix);
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+				return mapRules != null && !mapRules.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			setEnabled((Boolean)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
-			getProducts().clear();
-			getProducts().addAll((Collection<? extends Product>)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
-			getBundles().clear();
-			getBundles().addAll((Collection<? extends Bundle>)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
-			getFeatures().clear();
-			getFeatures().addAll((Collection<? extends Feature>)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			setMetadataRepository((MetadataRepository)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
-			getCategories().clear();
-			getCategories().addAll((Collection<? extends Category>)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			setLocation((String)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
-			setMirrorArtifacts((Boolean)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
-			setCategoryPrefix((String)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
-			getMapRules().clear();
-			getMapRules().addAll((Collection<? extends MapRule>)newValue);
-			return;
+			case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+				setEnabled((Boolean)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
+				getProducts().clear();
+				getProducts().addAll((Collection<? extends Product>)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
+				getBundles().clear();
+				getBundles().addAll((Collection<? extends Bundle>)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
+				getFeatures().clear();
+				getFeatures().addAll((Collection<? extends Feature>)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
+				setMetadataRepository((MetadataRepository)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+				getCategories().clear();
+				getCategories().addAll((Collection<? extends Category>)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+				setLocation((String)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				setMirrorArtifacts((Boolean)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+				setCategoryPrefix((String)newValue);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+				getMapRules().clear();
+				getMapRules().addAll((Collection<? extends MapRule>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			setEnabled(ENABLED_EDEFAULT);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
-			getProducts().clear();
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
-			getBundles().clear();
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
-			getFeatures().clear();
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			setMetadataRepository((MetadataRepository)null);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
-			getCategories().clear();
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			setLocation(LOCATION_EDEFAULT);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
-			setMirrorArtifacts(MIRROR_ARTIFACTS_EDEFAULT);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
-			setCategoryPrefix(CATEGORY_PREFIX_EDEFAULT);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
-			getMapRules().clear();
-			return;
+			case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
+				setEnabled(ENABLED_EDEFAULT);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
+				getProducts().clear();
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
+				getBundles().clear();
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
+				getFeatures().clear();
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
+				setMetadataRepository((MetadataRepository)null);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
+				getCategories().clear();
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
+				setLocation(LOCATION_EDEFAULT);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
+				setMirrorArtifacts(MIRROR_ARTIFACTS_EDEFAULT);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
+				setCategoryPrefix(CATEGORY_PREFIX_EDEFAULT);
+				return;
+			case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
+				getMapRules().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Bundle> getBundles()
 	{
-		if(bundles == null)
+		if (bundles == null)
 		{
-			bundles = new EObjectContainmentEList<Bundle>(Bundle.class, this,
-					AggregatorPackage.MAPPED_REPOSITORY__BUNDLES);
+			bundles = new EObjectContainmentEList<Bundle>(Bundle.class, this, AggregatorPackage.MAPPED_REPOSITORY__BUNDLES);
 		}
 		return bundles;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Category> getCategories()
 	{
-		if(categories == null)
+		if (categories == null)
 		{
-			categories = new EObjectContainmentEList<Category>(Category.class, this,
-					AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES);
+			categories = new EObjectContainmentEList<Category>(Category.class, this, AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES);
 		}
 		return categories;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getCategoryPrefix()
@@ -498,22 +480,19 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Feature> getFeatures()
 	{
-		if(features == null)
+		if (features == null)
 		{
-			features = new EObjectContainmentEList<Feature>(Feature.class, this,
-					AggregatorPackage.MAPPED_REPOSITORY__FEATURES);
+			features = new EObjectContainmentEList<Feature>(Feature.class, this, AggregatorPackage.MAPPED_REPOSITORY__FEATURES);
 		}
 		return features;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getLocation()
@@ -523,15 +502,13 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<MapRule> getMapRules()
 	{
-		if(mapRules == null)
+		if (mapRules == null)
 		{
-			mapRules = new EObjectContainmentEList<MapRule>(MapRule.class, this,
-					AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES);
+			mapRules = new EObjectContainmentEList<MapRule>(MapRule.class, this, AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES);
 		}
 		return mapRules;
 	}
@@ -564,21 +541,18 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public MetadataRepository getMetadataRepositoryGen()
 	{
-		if(metadataRepository != null && metadataRepository.eIsProxy())
+		if (metadataRepository != null && metadataRepository.eIsProxy())
 		{
 			InternalEObject oldMetadataRepository = (InternalEObject)metadataRepository;
 			metadataRepository = (MetadataRepository)eResolveProxy(oldMetadataRepository);
-			if(metadataRepository != oldMetadataRepository)
+			if (metadataRepository != oldMetadataRepository)
 			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository,
-							metadataRepository));
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository, metadataRepository));
 			}
 		}
 		return metadataRepository;
@@ -586,15 +560,13 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Product> getProducts()
 	{
-		if(products == null)
+		if (products == null)
 		{
-			products = new EObjectContainmentEList<Product>(Product.class, this,
-					AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS);
+			products = new EObjectContainmentEList<Product>(Product.class, this, AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS);
 		}
 		return products;
 	}
@@ -666,7 +638,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isEnabled()
@@ -687,7 +658,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isMirrorArtifacts()
@@ -711,90 +681,72 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setCategoryPrefix(String newCategoryPrefix)
 	{
 		String oldCategoryPrefix = categoryPrefix;
 		categoryPrefix = newCategoryPrefix;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX,
-					oldCategoryPrefix, categoryPrefix));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX, oldCategoryPrefix, categoryPrefix));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setEnabled(boolean newEnabled)
 	{
 		boolean oldEnabled = (eFlags & ENABLED_EFLAG) != 0;
-		if(newEnabled)
-			eFlags |= ENABLED_EFLAG;
-		else
-			eFlags &= ~ENABLED_EFLAG;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__ENABLED,
-					oldEnabled, newEnabled));
+		if (newEnabled) eFlags |= ENABLED_EFLAG; else eFlags &= ~ENABLED_EFLAG;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__ENABLED, oldEnabled, newEnabled));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setLocation(String newLocation)
 	{
 		String oldLocation = location;
 		location = newLocation;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__LOCATION,
-					oldLocation, location));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__LOCATION, oldLocation, location));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setMetadataRepository(MetadataRepository newMetadataRepository)
 	{
 		MetadataRepository oldMetadataRepository = metadataRepository;
 		metadataRepository = newMetadataRepository;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository, metadataRepository));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository, metadataRepository));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setMirrorArtifacts(boolean newMirrorArtifacts)
 	{
 		boolean oldMirrorArtifacts = (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
-		if(newMirrorArtifacts)
-			eFlags |= MIRROR_ARTIFACTS_EFLAG;
-		else
-			eFlags &= ~MIRROR_ARTIFACTS_EFLAG;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS, oldMirrorArtifacts, newMirrorArtifacts));
+		if (newMirrorArtifacts) eFlags |= MIRROR_ARTIFACTS_EFLAG; else eFlags &= ~MIRROR_ARTIFACTS_EFLAG;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS, oldMirrorArtifacts, newMirrorArtifacts));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if(eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (enabled: ");
@@ -811,7 +763,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

@@ -6,16 +6,27 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.buckminster.aggregator.p2.impl.MetadataRepositoryImpl;
+import org.eclipse.buckminster.aggregator.p2view.Bundle;
+import org.eclipse.buckminster.aggregator.p2view.Categories;
+import org.eclipse.buckminster.aggregator.p2view.Category;
+import org.eclipse.buckminster.aggregator.p2view.Feature;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
+import org.eclipse.buckminster.aggregator.p2view.OtherIU;
+import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
+import org.eclipse.buckminster.aggregator.p2view.Product;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -31,7 +42,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
@@ -46,13 +60,17 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 		private final java.net.URI location;
 
+		private final MetadataRepositoryStructuredView repoView;
+
 		private Exception exception;
 
-		public RepositoryLoaderJob(MetadataRepositoryImpl repository, java.net.URI location)
+		public RepositoryLoaderJob(MetadataRepositoryImpl repository, java.net.URI location,
+				MetadataRepositoryStructuredView repoView)
 		{
 			super("Repository Loader");
 			this.repository = repository;
 			this.location = location;
+			this.repoView = repoView;
 			setUser(false);
 			setPriority(Job.SHORT);
 		}
@@ -106,6 +124,9 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				repository.getInstallableUnits().addAll(ius);
 
 				repository.addRepositoryReferences(mdrMgr, repo);
+
+				createStructuredView();
+
 				log.debug("Done. Took %d millisecs", Long.valueOf(System.currentTimeMillis() - start));
 			}
 			catch(Exception e)
@@ -119,6 +140,125 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				MonitorUtils.done(subMon);
 			}
 			return Status.OK_STATUS;
+		}
+
+		private void createStructuredView()
+		{
+			repoView.setName(repository.getName());
+			repoView.setInstallableUnitList(P2viewFactory.eINSTANCE.createInstallableUnits());
+
+			Map<String, Map<Version, IUPresentation>> iuMap = new HashMap<String, Map<Version, IUPresentation>>();
+
+			for(InstallableUnit iu : repository.getInstallableUnits())
+			{
+				IUPresentation iuPresentation;
+
+				switch(iu.getType())
+				{
+				case CATEGORY:
+					iuPresentation = P2viewFactory.eINSTANCE.createCategory();
+					((Category)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
+					repoView.getInstallableUnitList().getNotNullCategoryContainer().getCategories().add(
+							(Category)iuPresentation);
+					break;
+				case FEATURE:
+					iuPresentation = P2viewFactory.eINSTANCE.createFeature();
+					((Feature)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
+					repoView.getInstallableUnitList().getNotNullFeatureContainer().getFeatures().add(
+							(Feature)iuPresentation);
+					break;
+				case PRODUCT:
+					iuPresentation = P2viewFactory.eINSTANCE.createProduct();
+					((Product)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
+					repoView.getInstallableUnitList().getNotNullProductContainer().getProducts().add(
+							(Product)iuPresentation);
+					break;
+				case BUNDLE:
+					iuPresentation = P2viewFactory.eINSTANCE.createBundle();
+					((Bundle)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
+					repoView.getInstallableUnitList().getNotNullBundleContainer().getBundles().add(
+							(Bundle)iuPresentation);
+					break;
+				default:
+					iuPresentation = P2viewFactory.eINSTANCE.createOtherIU();
+					((OtherIU)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
+					repoView.getInstallableUnitList().getNotNullMiscellaneousContainer().getOthers().add(
+							(OtherIU)iuPresentation);
+				}
+
+				iuPresentation.setId(iu.getId());
+				iuPresentation.setVersion(iu.getVersion());
+
+				String name = getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
+				if(name == null)
+					name = iu.getId();
+
+				if(iu.getType() == InstallableUnitType.CATEGORY || iu.getVersion() == null)
+					iuPresentation.setName(name);
+				else
+					iuPresentation.setName(name + " / " + iu.getVersion().toString());
+				iuPresentation.setDescription(getLocalizedProperty(iu, IInstallableUnit.PROP_DESCRIPTION));
+
+				Map<Version, IUPresentation> versionMap = iuMap.get(iu.getId());
+				if(versionMap == null)
+					iuMap.put(iu.getId(), versionMap = new HashMap<Version, IUPresentation>());
+				versionMap.put(iu.getVersion(), iuPresentation);
+			}
+
+			Categories categoryContainer = repoView.getInstallableUnitList().getCategoryContainer();
+			if(categoryContainer != null)
+				for(Category category : categoryContainer.getCategories())
+					exploreCategory(category, iuMap);
+
+			repoView.setProperties(P2viewFactory.eINSTANCE.createProperties());
+			for(Map.Entry<String, String> entry : repository.getPropertyMap())
+				repoView.getProperties().getPropertyMap().put(entry.getKey(), entry.getValue());
+		}
+
+		private void exploreCategory(Category category, Map<String, Map<Version, IUPresentation>> iuMap)
+		{
+			for(IRequiredCapability requiredCapability : category.getDetails().getInstallableUnit().getRequiredCapabilityList())
+			{
+				VersionRange range = requiredCapability.getRange();
+				if(!range.getMinimum().equals(range.getMaximum()) || !range.getIncludeMinimum()
+						|| !range.getIncludeMaximum())
+					continue;
+				Map<Version, IUPresentation> iuCandidates = iuMap.get(requiredCapability.getName());
+				if(iuCandidates == null)
+					continue;
+
+				IUPresentation iuPresentation = iuCandidates.get(range.getMinimum());
+				if(iuPresentation == null)
+					continue;
+
+				if(iuPresentation instanceof Category)
+				{
+					category.getNotNullCategoryContainer().getCategories().add((Category)iuPresentation);
+					exploreCategory((Category)iuPresentation, iuMap);
+				}
+				else if(iuPresentation instanceof Feature)
+					category.getNotNullFeatureContainer().getFeatures().add((Feature)iuPresentation);
+				else if(iuPresentation instanceof Product)
+					category.getNotNullProductContainer().getProducts().add((Product)iuPresentation);
+				else if(iuPresentation instanceof Bundle)
+					category.getNotNullBundleContainer().getBundles().add((Bundle)iuPresentation);
+			}
+		}
+
+		private String getLocalizedProperty(InstallableUnit iu, String key)
+		{
+			String value = iu.getProperty(key);
+
+			if(value != null && value.startsWith("%"))
+			{
+				String localizedKey = "df_LT." + value.substring(1);
+				String localizedValue = iu.getProperty(localizedKey);
+
+				if(localizedValue != null)
+					value = localizedValue;
+			}
+
+			return value;
 		}
 	}
 
@@ -161,7 +301,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				}
 
 				List<EObject> contents = mdr.getContents();
-				if(contents.size() != 1 || ((MetadataRepository)contents.get(0)).getLocation() == null)
+				if(contents.size() != 2 || ((MetadataRepository)contents.get(0)).getLocation() == null)
 					throw new Exception(String.format("Unable to load repository %s", repositoryURI));
 
 				return (MetadataRepository)contents.get(0);
@@ -221,7 +361,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		synchronized(factory)
 		{
 			MetadataRepositoryImpl repository = (MetadataRepositoryImpl)factory.createMetadataRepository();
-			RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location);
+			MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView();
+			RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, repoView);
 			job.schedule();
 			try
 			{
@@ -234,6 +375,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				}
 
 				getContents().add(repository);
+				getContents().add(repoView);
 			}
 			catch(InterruptedException e)
 			{

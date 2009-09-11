@@ -41,8 +41,8 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 		IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This constructs an instance from a factory and a notifier.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public RequiredCapabilityItemProvider(AdapterFactory adapterFactory)
@@ -51,8 +51,8 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	}
 
 	/**
-	 * This returns RequiredCapability.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns RequiredCapability.gif.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -62,14 +62,14 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns the property descriptors for the adapted class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if(itemPropertyDescriptors == null)
+		if (itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -86,8 +86,8 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -97,17 +97,17 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
 		String label = ((RequiredCapability)object).getName();
-		return label == null || label.length() == 0
-				? getString("_UI_RequiredCapability_type")
-				: getString("_UI_RequiredCapability_type") + " " + label;
+		return label == null || label.length() == 0 ?
+			getString("_UI_RequiredCapability_type") :
+			getString("_UI_RequiredCapability_type") + " " + label;
 	}
 
 	/**
@@ -122,146 +122,202 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	{
 		updateChildren(notification);
 
-		switch(notification.getFeatureID(RequiredCapability.class))
+		switch (notification.getFeatureID(RequiredCapability.class))
 		{
-		case P2Package.REQUIRED_CAPABILITY__FILTER:
-		case P2Package.REQUIRED_CAPABILITY__NAME:
-		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
-		case P2Package.REQUIRED_CAPABILITY__RANGE:
-		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
-		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
-		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
-		case P2Package.REQUIRED_CAPABILITY__GREEDY:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-			return;
+			case P2Package.REQUIRED_CAPABILITY__FILTER:
+			case P2Package.REQUIRED_CAPABILITY__NAME:
+			case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
+			case P2Package.REQUIRED_CAPABILITY__RANGE:
+			case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
+			case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
+			case P2Package.REQUIRED_CAPABILITY__GREEDY:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds a property descriptor for the Filter feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Filter feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addFilterPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_filter_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_filter_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__FILTER, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_filter_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_filter_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__FILTER,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Greedy feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Greedy feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addGreedyPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_greedy_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_greedy_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__GREEDY, false, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_greedy_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_greedy_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__GREEDY,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Multiple feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Multiple feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addMultiplePropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_multiple_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_multiple_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__MULTIPLE, false, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_multiple_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_multiple_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__MULTIPLE,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Name feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Name feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addNamePropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_name_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_name_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__NAME, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_name_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_name_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__NAME,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Namespace feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Namespace feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addNamespacePropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_namespace_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_namespace_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__NAMESPACE, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_namespace_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_namespace_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__NAMESPACE,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Optional feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Optional feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addOptionalPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_optional_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_optional_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__OPTIONAL, false, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_optional_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_optional_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__OPTIONAL,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Range feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Range feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addRangePropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_range_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IRequiredCapability_range_feature", "_UI_IRequiredCapability_type"),
-				P2Package.Literals.IREQUIRED_CAPABILITY__RANGE, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_range_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_range_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__RANGE,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Selector List feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Selector List feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addSelectorListPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IRequiredCapability_selectorList_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_selectorList_feature",
-						"_UI_IRequiredCapability_type"), P2Package.Literals.IREQUIRED_CAPABILITY__SELECTOR_LIST, true,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_IRequiredCapability_selectorList_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_IRequiredCapability_selectorList_feature", "_UI_IRequiredCapability_type"),
+				 P2Package.Literals.IREQUIRED_CAPABILITY__SELECTOR_LIST,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
-	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
+	 * that can be created under this object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override

@@ -27,11 +27,10 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.impl.ValidConfigurationsRuleImpl#getValidConfigurations <em>Valid
- * Configurations</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.impl.ValidConfigurationsRuleImpl#getValidConfigurations <em>Valid Configurations</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class ValidConfigurationsRuleImpl extends MapRuleImpl implements ValidConfigurationsRule
@@ -48,7 +47,6 @@ public class ValidConfigurationsRuleImpl extends MapRuleImpl implements ValidCon
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected ValidConfigurationsRuleImpl()
@@ -58,90 +56,83 @@ public class ValidConfigurationsRuleImpl extends MapRuleImpl implements ValidCon
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
-			return getValidConfigurations();
+			case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
+				return getValidConfigurations();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
-			return validConfigurations != null && !validConfigurations.isEmpty();
+			case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
+				return validConfigurations != null && !validConfigurations.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
-			getValidConfigurations().clear();
-			getValidConfigurations().addAll((Collection<? extends Configuration>)newValue);
-			return;
+			case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
+				getValidConfigurations().clear();
+				getValidConfigurations().addAll((Collection<? extends Configuration>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
-			getValidConfigurations().clear();
-			return;
+			case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
+				getValidConfigurations().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Configuration> getValidConfigurations()
 	{
-		if(validConfigurations == null)
+		if (validConfigurations == null)
 		{
-			validConfigurations = new EObjectResolvingEList<Configuration>(Configuration.class, this,
-					AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS);
+			validConfigurations = new EObjectResolvingEList<Configuration>(Configuration.class, this, AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS);
 		}
 		return validConfigurations;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

@@ -42,8 +42,8 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This constructs an instance from a factory and a notifier.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public LicenseItemProvider(AdapterFactory adapterFactory)
@@ -52,8 +52,8 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This returns License.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns License.gif.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -63,14 +63,14 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns the property descriptors for the adapted class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if(itemPropertyDescriptors == null)
+		if (itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -82,8 +82,8 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -93,20 +93,18 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
 		URI labelValue = ((License)object).getLocation();
-		String label = labelValue == null
-				? null
-				: labelValue.toString();
-		return label == null || label.length() == 0
-				? getString("_UI_License_type")
-				: getString("_UI_License_type") + " " + label;
+		String label = labelValue == null ? null : labelValue.toString();
+		return label == null || label.length() == 0 ?
+			getString("_UI_License_type") :
+			getString("_UI_License_type") + " " + label;
 	}
 
 	/**
@@ -121,63 +119,87 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 	{
 		updateChildren(notification);
 
-		switch(notification.getFeatureID(License.class))
+		switch (notification.getFeatureID(License.class))
 		{
-		case P2Package.LICENSE__LOCATION:
-		case P2Package.LICENSE__BODY:
-		case P2Package.LICENSE__DIGEST:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-			return;
+			case P2Package.LICENSE__LOCATION:
+			case P2Package.LICENSE__BODY:
+			case P2Package.LICENSE__DIGEST:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds a property descriptor for the Body feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Body feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addBodyPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_ILicense_body_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ILicense_body_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__BODY, false,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ILicense_body_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ILicense_body_feature", "_UI_ILicense_type"),
+				 P2Package.Literals.ILICENSE__BODY,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Digest feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Digest feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addDigestPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_ILicense_digest_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ILicense_digest_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__DIGEST,
-				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ILicense_digest_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ILicense_digest_feature", "_UI_ILicense_type"),
+				 P2Package.Literals.ILICENSE__DIGEST,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Location feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Location feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addLocationPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_ILicense_location_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ILicense_location_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__LOCATION,
-				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ILicense_location_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ILicense_location_feature", "_UI_ILicense_type"),
+				 P2Package.Literals.ILICENSE__LOCATION,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
-	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
+	 * that can be created under this object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override

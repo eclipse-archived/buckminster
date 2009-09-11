@@ -31,11 +31,11 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitFragmentImpl#getHost <em>Host</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitFragmentImpl#getHostList <em>Host List</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitFragmentImpl#getHost <em>Host</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitFragmentImpl#getHostList <em>Host List</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements InstallableUnitFragment
@@ -72,7 +72,6 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected InstallableUnitFragmentImpl()
@@ -82,20 +81,17 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
-		if(baseClass == IInstallableUnitFragment.class)
+		if (baseClass == IInstallableUnitFragment.class)
 		{
-			switch(derivedFeatureID)
+			switch (derivedFeatureID)
 			{
-			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
-				return P2Package.IINSTALLABLE_UNIT_FRAGMENT__HOST;
-			default:
-				return -1;
+				case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST: return P2Package.IINSTALLABLE_UNIT_FRAGMENT__HOST;
+				default: return -1;
 			}
 		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
@@ -103,20 +99,17 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
 	{
-		if(baseClass == IInstallableUnitFragment.class)
+		if (baseClass == IInstallableUnitFragment.class)
 		{
-			switch(baseFeatureID)
+			switch (baseFeatureID)
 			{
-			case P2Package.IINSTALLABLE_UNIT_FRAGMENT__HOST:
-				return P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST;
-			default:
-				return -1;
+				case P2Package.IINSTALLABLE_UNIT_FRAGMENT__HOST: return P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST;
+				default: return -1;
 			}
 		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
@@ -124,97 +117,89 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
-			return getHost();
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
-			return getHostList();
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
+				return getHost();
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
+				return getHostList();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
-			return ((InternalEList<?>)getHostList()).basicRemove(otherEnd, msgs);
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
+				return ((InternalEList<?>)getHostList()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
-			return HOST_EDEFAULT == null
-					? host != null
-					: !HOST_EDEFAULT.equals(host);
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
-			return hostList != null && !hostList.isEmpty();
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
+				return HOST_EDEFAULT == null ? host != null : !HOST_EDEFAULT.equals(host);
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
+				return hostList != null && !hostList.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
-			getHostList().clear();
-			getHostList().addAll((Collection<? extends RequiredCapability>)newValue);
-			return;
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
+				getHostList().clear();
+				getHostList().addAll((Collection<? extends RequiredCapability>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
+		switch (featureID)
 		{
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
-			getHostList().clear();
-			return;
+			case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
+				getHostList().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public IRequiredCapability[] getHost()
@@ -224,29 +209,25 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<RequiredCapability> getHostList()
 	{
-		if(hostList == null)
+		if (hostList == null)
 		{
-			hostList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this,
-					P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST);
+			hostList = new EObjectContainmentEList<RequiredCapability>(RequiredCapability.class, this, P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST);
 		}
 		return hostList;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if(eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (host: ");
@@ -257,7 +238,6 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

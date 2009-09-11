@@ -40,8 +40,8 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This constructs an instance from a factory and a notifier.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public TouchpointTypeItemProvider(AdapterFactory adapterFactory)
@@ -50,8 +50,8 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
-	 * This returns TouchpointType.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns TouchpointType.gif.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -61,14 +61,14 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns the property descriptors for the adapted class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if(itemPropertyDescriptors == null)
+		if (itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -79,8 +79,8 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
@@ -90,17 +90,17 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
 		String label = ((TouchpointType)object).getId();
-		return label == null || label.length() == 0
-				? getString("_UI_TouchpointType_type")
-				: getString("_UI_TouchpointType_type") + " " + label;
+		return label == null || label.length() == 0 ?
+			getString("_UI_TouchpointType_type") :
+			getString("_UI_TouchpointType_type") + " " + label;
 	}
 
 	/**
@@ -115,50 +115,64 @@ public class TouchpointTypeItemProvider extends AggregatorItemProviderAdapter im
 	{
 		updateChildren(notification);
 
-		switch(notification.getFeatureID(TouchpointType.class))
+		switch (notification.getFeatureID(TouchpointType.class))
 		{
-		case P2Package.TOUCHPOINT_TYPE__ID:
-		case P2Package.TOUCHPOINT_TYPE__VERSION:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-			return;
+			case P2Package.TOUCHPOINT_TYPE__ID:
+			case P2Package.TOUCHPOINT_TYPE__VERSION:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds a property descriptor for the Id feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Id feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addIdPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_ITouchpointType_id_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ITouchpointType_id_feature", "_UI_ITouchpointType_type"),
-				P2Package.Literals.ITOUCHPOINT_TYPE__ID, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ITouchpointType_id_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ITouchpointType_id_feature", "_UI_ITouchpointType_type"),
+				 P2Package.Literals.ITOUCHPOINT_TYPE__ID,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Version feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Version feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected void addVersionPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_ITouchpointType_version_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ITouchpointType_version_feature", "_UI_ITouchpointType_type"),
-				P2Package.Literals.ITOUCHPOINT_TYPE__VERSION, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ITouchpointType_version_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ITouchpointType_version_feature", "_UI_ITouchpointType_type"),
+				 P2Package.Literals.ITOUCHPOINT_TYPE__VERSION,
+				 false,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
-	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
+	 * that can be created under this object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
