@@ -17,11 +17,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -109,24 +109,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		for(MaterializationNodeBuilder nodeBuilder : builder.getNodeBuilders())
 			nodes.add(nodeBuilder.createMaterializationNode());
 		m_nodes = Utils.createUnmodifiableList(nodes);
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		Utils.addAttribute(attrs, ATTR_URL, m_url);
-		if(m_shortDesc != null)
-			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		super.emitElements(receiver, namespace, prefix);
-		for(MaterializationNode node : m_nodes)
-			node.toSax(receiver, namespace, prefix, node.getDefaultTag());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -246,8 +228,8 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public URL getResolvedURL()
 	{
-		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(), m_url,
-				0));
+		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(),
+				m_url, 0));
 	}
 
 	public IPath getResourcePath(IComponentName cName)
@@ -299,5 +281,23 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		handler.startDocument();
 		toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		handler.endDocument();
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_NAME, m_name);
+		Utils.addAttribute(attrs, ATTR_URL, m_url);
+		if(m_shortDesc != null)
+			Utils.addAttribute(attrs, ATTR_SHORT_DESC, m_shortDesc);
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		super.emitElements(receiver, namespace, prefix);
+		for(MaterializationNode node : m_nodes)
+			node.toSax(receiver, namespace, prefix, node.getDefaultTag());
 	}
 }

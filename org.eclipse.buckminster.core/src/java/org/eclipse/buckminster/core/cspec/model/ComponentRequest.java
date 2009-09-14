@@ -265,9 +265,54 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		final Filter thatFilter = that.getFilter();
 		if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
 		{
-			if(thisFilter == null || thatFilter == null
-					|| !thisFilter.stripFilter(P2_OPTIONAL_FILTER).equals(thatFilter.stripFilter(P2_OPTIONAL_FILTER)))
-				throw new ComponentRequestConflictException(this, that);
+			Filter strippedThis = thisFilter;
+			if(strippedThis != null)
+				strippedThis = strippedThis.stripFilter(P2_OPTIONAL_FILTER);
+
+			Filter strippedThat = thatFilter;
+			if(strippedThat != null)
+				strippedThat = strippedThat.stripFilter(P2_OPTIONAL_FILTER);
+
+			if(strippedThis == null)
+			{
+				if(strippedThat != null)
+				{
+					if(cmp == 0)
+						cmp = 1;
+					else if(cmp == -1)
+						cmp = 2;
+				}
+			}
+			else
+			{
+				if(strippedThat == null)
+				{
+					if(cmp == 0)
+						cmp = -1;
+					else if(cmp == 1)
+						cmp = 2;
+				}
+				else
+				{
+					Filter merged = strippedThat.addFilterWithAnd(strippedThis);
+					if(strippedThat.equals(merged))
+					{
+						if(cmp == 0)
+							cmp = 1;
+						else if(cmp == -1)
+							cmp = 2;
+					}
+					else if(strippedThis.equals(merged))
+					{
+						if(cmp == 0)
+							cmp = -1;
+						else if(cmp == 1)
+							cmp = 2;
+					}
+					else
+						throw new ComponentRequestConflictException(this, that);
+				}
+			}
 		}
 
 		// Never allow an optional request to qualify one that is not
