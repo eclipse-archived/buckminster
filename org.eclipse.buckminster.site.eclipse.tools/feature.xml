@@ -21,10 +21,6 @@
    </url>
 
    <includes
-         id="org.eclipse.buckminster.galileo.builder.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.buckminster.aggregator.editor.feature"
          version="0.0.0"/>
 
