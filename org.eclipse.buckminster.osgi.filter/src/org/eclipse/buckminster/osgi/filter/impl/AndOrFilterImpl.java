@@ -16,9 +16,9 @@ class AndOrFilterImpl extends FilterImpl
 {
 	private final FilterImpl[] m_filters;
 
-	AndOrFilterImpl(boolean topLevel, int operation, FilterImpl[] filters)
+	AndOrFilterImpl(int operation, FilterImpl[] filters)
 	{
-		super(topLevel, operation, null);
+		super(operation, null);
 		m_filters = filters;
 	}
 
@@ -29,9 +29,57 @@ class AndOrFilterImpl extends FilterImpl
 			m_filters[i].addConsultedAttributes(propertyChoices);
 	}
 
-	public Filter[] getFilters()
+	public int compareTo(FilterImpl o)
 	{
-		return m_filters;
+		int cmp = internalCompareTo(o);
+		if(cmp != 0)
+			return cmp;
+
+		FilterImpl[] o_filters = ((AndOrFilterImpl)o).m_filters;
+		int top = m_filters.length;
+		if(top > o_filters.length)
+			return 1;
+
+		if(top < o_filters.length)
+			return -1;
+
+		for(int idx = 0; idx < top; ++idx)
+		{
+			cmp = m_filters[idx].compareTo(o_filters[idx]);
+			if(cmp != 0)
+				return cmp;
+		}
+		return 0;
+	}
+
+	@Override
+	public FilterImpl stripFilter(Filter subFilter)
+	{
+		ArrayList<FilterImpl> newList = new ArrayList<FilterImpl>(m_filters.length);
+		boolean change = false;
+		for(int idx = 0; idx < m_filters.length; ++idx)
+		{
+			FilterImpl child = m_filters[idx];
+			if(child.equals(subFilter))
+			{
+				change = true;
+				continue;
+			}
+
+			if(child instanceof AndOrFilterImpl)
+			{
+				FilterImpl newChild = ((AndOrFilterImpl)child).stripFilter(subFilter);
+				if(child != newChild)
+					change = true;
+				if(newChild != null)
+					newList.add(newChild);
+			}
+			else
+				newList.add(child);
+		}
+		return change
+				? Parser.normalize(newList, getOp())
+				: this;
 	}
 
 	@Override
@@ -47,14 +95,21 @@ class AndOrFilterImpl extends FilterImpl
 				if(m_filters[idx].equals(subFilter))
 					return this;
 
-			FilterImpl[] newArray = new FilterImpl[top + 1];
-			System.arraycopy(m_filters, 0, newArray, 0, top);
-			newArray[top] = subFilter;
-			result = new AndOrFilterImpl(true, op, newArray);
+			ArrayList<FilterImpl> filters = new ArrayList<FilterImpl>(top + 1);
+			for(int idx = 0; idx < top; ++idx)
+				filters.add(m_filters[idx]);
+			filters.add(subFilter);
+			result = Parser.normalize(filters, getOp());
 		}
 		else
 			result = super.addFilter(subFilter, op);
 		return result;
+	}
+
+	@Override
+	FilterImpl[] getFilterImpls()
+	{
+		return m_filters;
 	}
 
 	@Override
@@ -74,43 +129,6 @@ class AndOrFilterImpl extends FilterImpl
 			return false;
 		}
 		return false;
-	}
-
-	@Override
-	FilterImpl stripFilter(Filter subFilter, boolean topLevel)
-	{
-		ArrayList<FilterImpl> newList = new ArrayList<FilterImpl>(m_filters.length);
-		boolean change = false;
-		for(int idx = 0; idx < m_filters.length; ++idx)
-		{
-			FilterImpl child = m_filters[idx];
-			if(child.equals(subFilter))
-			{
-				change = true;
-				continue;
-			}
-
-			if(child instanceof AndOrFilterImpl)
-			{
-				FilterImpl newChild = ((AndOrFilterImpl)child).stripFilter(subFilter, false);
-				if(child != newChild)
-					change = true;
-				if(newChild != null)
-					newList.add(newChild);
-			}
-			else
-				newList.add(child);
-		}
-
-		if(!change)
-			return this;
-
-		int newSize = newList.size();
-		if(newSize == 0)
-			return null;
-		if(newSize == 1)
-			return newList.get(0);
-		return new AndOrFilterImpl(topLevel, getOp(), newList.toArray(new FilterImpl[newSize]));
 	}
 
 	@Override

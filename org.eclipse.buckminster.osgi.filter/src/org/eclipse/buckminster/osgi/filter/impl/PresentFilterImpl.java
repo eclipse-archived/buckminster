@@ -11,9 +11,14 @@ import java.util.Map;
 
 class PresentFilterImpl extends FilterImpl
 {
-	PresentFilterImpl(boolean topLevel, String attr)
+	PresentFilterImpl(String attr)
 	{
-		super(topLevel, FilterImpl.PRESENT, attr);
+		super(FilterImpl.PRESENT, attr);
+	}
+
+	public int compareTo(FilterImpl o)
+	{
+		return internalCompareTo(o);
 	}
 
 	@Override

@@ -263,14 +263,17 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 		final Filter thisFilter = getFilter();
 		final Filter thatFilter = that.getFilter();
+		boolean thisOptional = isOptional();
+		boolean thatOptional = that.isOptional();
+		Filter mergedFilter = null;
 		if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
 		{
 			Filter strippedThis = thisFilter;
-			if(strippedThis != null)
+			if(thisOptional && !thatOptional)
 				strippedThis = strippedThis.stripFilter(P2_OPTIONAL_FILTER);
 
 			Filter strippedThat = thatFilter;
-			if(strippedThat != null)
+			if(thatOptional && !thisOptional)
 				strippedThat = strippedThat.stripFilter(P2_OPTIONAL_FILTER);
 
 			if(strippedThis == null)
@@ -294,15 +297,15 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 				}
 				else
 				{
-					Filter merged = strippedThat.addFilterWithAnd(strippedThis);
-					if(strippedThat.equals(merged))
+					mergedFilter = strippedThat.addFilterWithAnd(strippedThis);
+					if(strippedThat.equals(mergedFilter))
 					{
 						if(cmp == 0)
 							cmp = 1;
 						else if(cmp == -1)
 							cmp = 2;
 					}
-					else if(strippedThis.equals(merged))
+					else if(strippedThis.equals(mergedFilter))
 					{
 						if(cmp == 0)
 							cmp = -1;
@@ -310,7 +313,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 							cmp = 2;
 					}
 					else
-						throw new ComponentRequestConflictException(this, that);
+						cmp = 2;
 				}
 			}
 		}
@@ -318,9 +321,9 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		// Never allow an optional request to qualify one that is not
 		// optional. The opposite is OK though.
 		//
-		if(isOptional())
+		if(thisOptional)
 		{
-			if(!that.isOptional())
+			if(!thatOptional)
 			{
 				if(cmp == -1 || cmp == 2)
 					// Qualified by this
@@ -329,7 +332,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 				return that;
 			}
 		}
-		else if(that.isOptional())
+		else if(thatOptional)
 		{
 			if(cmp > 0)
 				// Qualified by that
@@ -337,13 +340,15 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 			return this;
 		}
 
-		if(Trivial.equalsAllowNull(mergedVD, thisVD) && Trivial.equalsAllowNull(mergedCType, thisCType))
+		if(Trivial.equalsAllowNull(mergedVD, thisVD) && Trivial.equalsAllowNull(mergedCType, thisCType)
+				&& Trivial.equalsAllowNull(thisFilter, mergedFilter))
 			return this;
 
-		if(Trivial.equalsAllowNull(mergedVD, thatVD) && Trivial.equalsAllowNull(mergedCType, thatCType))
+		if(Trivial.equalsAllowNull(mergedVD, thatVD) && Trivial.equalsAllowNull(mergedCType, thatCType)
+				&& Trivial.equalsAllowNull(thatFilter, mergedFilter))
 			return that;
 
-		return new ComponentRequest(getName(), mergedCType, mergedVD, thisFilter);
+		return new ComponentRequest(getName(), mergedCType, mergedVD, mergedFilter);
 	}
 
 	@Override

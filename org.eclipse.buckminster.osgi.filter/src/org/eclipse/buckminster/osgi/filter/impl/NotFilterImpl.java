@@ -15,9 +15,9 @@ class NotFilterImpl extends FilterImpl
 {
 	private final FilterImpl m_filter;
 
-	NotFilterImpl(boolean topLevel, FilterImpl value)
+	NotFilterImpl(FilterImpl value)
 	{
-		super(topLevel, FilterImpl.NOT, null);
+		super(FilterImpl.NOT, null);
 		m_filter = value;
 	}
 
@@ -27,26 +27,39 @@ class NotFilterImpl extends FilterImpl
 		m_filter.addConsultedAttributes(propertyChoices);
 	}
 
-	@Override
-	boolean match0(Map<String, ? extends Object> properties)
+	public int compareTo(FilterImpl filter)
 	{
-		return !m_filter.match0(properties);
+		int cmp = internalCompareTo(filter);
+		if(cmp == 0)
+			cmp = m_filter.compareTo(((NotFilterImpl)filter).m_filter);
+		return cmp;
 	}
 
 	@Override
-	FilterImpl stripFilter(Filter subFilter, boolean topLevel)
+	public FilterImpl stripFilter(Filter subFilter)
 	{
 		if(equals(subFilter))
 			return null;
 
-		FilterImpl newFilter = m_filter.stripFilter(subFilter, false);
+		FilterImpl newFilter = (FilterImpl)m_filter.stripFilter(subFilter);
 		if(newFilter == m_filter)
 			return this;
 
 		if(newFilter == null)
 			return null;
 
-		return new NotFilterImpl(topLevel, newFilter);
+		return new NotFilterImpl(newFilter);
+	}
+
+	FilterImpl getFilter()
+	{
+		return m_filter;
+	}
+
+	@Override
+	boolean match0(Map<String, ? extends Object> properties)
+	{
+		return !m_filter.match0(properties);
 	}
 
 	@Override

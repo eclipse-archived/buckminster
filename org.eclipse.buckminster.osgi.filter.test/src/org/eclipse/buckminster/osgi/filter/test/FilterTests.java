@@ -284,11 +284,40 @@ public class FilterTests extends TestCase
 			assertEquals("not equal", f1, f2); //$NON-NLS-1$
 			assertEquals("not equal", f2, f1); //$NON-NLS-1$
 			assertEquals("not equal", f1.hashCode(), f2.hashCode()); //$NON-NLS-1$
+
+			f1 = FilterFactory.newInstance("(|(a=1)(&(a=1)(b=1)))"); //$NON-NLS-1$
+			f2 = FilterFactory.newInstance("(a=1)"); //$NON-NLS-1$
+			System.out.println(f2.toString());
+			System.out.println(f1.toString());
+
+			f1 = FilterFactory.newInstance("(|(&(os=macos)(ws=cocoa)(arch=x86))(&(ws=cocoa)(os=macos)(arch=ppc)))"); //$NON-NLS-1$
+			f2 = FilterFactory.newInstance("(&(os=macos)(ws=cocoa)(|(arch=x86)(arch=ppc)))"); //$NON-NLS-1$
+			System.out.println(f2.toString());
+			System.out.println(f1.toString());
+			assertEquals("not equal", f1, f2); //$NON-NLS-1$
+
+			f1 = FilterFactory.newInstance("(&(|(x=a)(y=b)(z=a))(|(x=a)(y=b)(z=b)))"); //$NON-NLS-1$
+			f2 = FilterFactory.newInstance("(|(x=a)(y=b)(&(z=a)(z=b)))"); //$NON-NLS-1$
+			System.out.println(f2.toString());
+			System.out.println(f1.toString());
+			assertEquals("not equal", f1, f2); //$NON-NLS-1$
+
+			f1 = FilterFactory.newInstance("(&(a=1)(|(a=1)(b=1)))"); //$NON-NLS-1$
+			f2 = FilterFactory.newInstance("(a=1)"); //$NON-NLS-1$
+			System.out.println(f2.toString());
+			System.out.println(f1.toString());
+
+			f1 = FilterFactory.newInstance("(|(a=1)(&(a=1)(b=1)))"); //$NON-NLS-1$
+			f2 = FilterFactory.newInstance("(a=1)"); //$NON-NLS-1$
+			System.out.println(f2.toString());
+			System.out.println(f1.toString());
+			assertEquals("not equal", f1, f2); //$NON-NLS-1$
 		}
 		catch(InvalidSyntaxException e)
 		{
 			fail("unexpected invalid syntax: " + e); //$NON-NLS-1$
 		}
+
 	}
 
 	private void testFilter(String query, Dictionary props, int expect)

@@ -37,10 +37,18 @@ class StringFilterImpl extends FilterImpl
 
 	private final String m_value;
 
-	StringFilterImpl(boolean topLevel, int operation, String attr, String value)
+	StringFilterImpl(int operation, String attr, String value)
 	{
-		super(topLevel, operation, attr);
+		super(operation, attr);
 		m_value = value;
+	}
+
+	public int compareTo(FilterImpl filter)
+	{
+		int cmp = internalCompareTo(filter);
+		if(cmp == 0)
+			cmp = m_value.compareTo(((StringFilterImpl)filter).m_value);
+		return cmp;
 	}
 
 	@Override

@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.osgi.filter.impl;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -20,7 +21,7 @@ import java.util.Set;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.osgi.framework.ServiceReference;
 
-abstract class FilterImpl implements Filter
+abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 {
 	/**
 	 * A Map that performs case insensitive String lookups on the Map that it contains.
@@ -239,15 +240,8 @@ abstract class FilterImpl implements Filter
 	/** filter attribute or null if operation AND, OR or NOT */
 	private final String m_attr;
 
-	/* normalized filter string for topLevel Filter object */
-	private transient volatile String m_filterString;
-
-	/* true if root Filter object */
-	private final boolean m_topLevel;
-
-	FilterImpl(boolean topLevel, int operation, String attr)
+	FilterImpl(int operation, String attr)
 	{
-		m_topLevel = topLevel;
 		m_op = operation;
 		m_attr = attr;
 	}
@@ -298,7 +292,8 @@ abstract class FilterImpl implements Filter
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj == this || (obj instanceof Filter && toString().equals(obj.toString()));
+		return obj == this || (obj instanceof FilterImpl && compareTo((FilterImpl)obj) == 0)
+				|| (obj instanceof Filter && toString().equals(obj.toString()));
 	}
 
 	public int getOp()
@@ -347,29 +342,29 @@ abstract class FilterImpl implements Filter
 
 	public Filter stripFilter(Filter subFilter)
 	{
-		return stripFilter(subFilter, true);
+		return equals(subFilter)
+				? null
+				: this;
 	}
 
 	@Override
 	public String toString()
 	{
-		String result = m_filterString;
-		if(result == null)
-		{
-			StringBuilder bld = new StringBuilder();
-			toString(bld);
-			result = bld.toString();
-			if(m_topLevel)
-				m_filterString = result;
-		}
-		return result;
+		StringBuilder bld = new StringBuilder();
+		toString(bld);
+		return bld.toString();
 	}
 
 	FilterImpl addFilter(FilterImpl subFilter, int op)
 	{
-		if(equals(subFilter))
+		int cmp = compareTo(subFilter);
+		if(cmp == 0)
 			return this;
-		return new AndOrFilterImpl(true, op, new FilterImpl[] { this, subFilter });
+
+		ArrayList<FilterImpl> filters = new ArrayList<FilterImpl>(2);
+		filters.add(this);
+		filters.add(subFilter);
+		return Parser.normalize(filters, op);
 	}
 
 	final boolean compare(Object value1)
@@ -401,6 +396,11 @@ abstract class FilterImpl implements Filter
 		return m_attr;
 	}
 
+	FilterImpl[] getFilterImpls()
+	{
+		return new FilterImpl[] { this };
+	}
+
 	String getValueAsString()
 	{
 		return null;
@@ -411,14 +411,31 @@ abstract class FilterImpl implements Filter
 		return false;
 	}
 
-	abstract boolean match0(Map<String, ? extends Object> properties);
-
-	FilterImpl stripFilter(Filter subFilter, boolean topLevel)
+	int internalCompareTo(FilterImpl o)
 	{
-		return equals(subFilter)
-				? null
-				: this;
+		int cmp = m_op > o.m_op
+				? 1
+				: (m_op < o.m_op
+						? -1
+						: 0);
+		if(cmp == 0)
+		{
+			if(m_attr == null)
+			{
+				if(o.m_attr != null)
+					cmp = -1;
+			}
+			else
+			{
+				cmp = o.m_attr == null
+						? 1
+						: m_attr.compareTo(o.m_attr);
+			}
+		}
+		return cmp;
 	}
+
+	abstract boolean match0(Map<String, ? extends Object> properties);
 
 	abstract void toString(StringBuilder bld);
 

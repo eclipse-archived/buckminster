@@ -13,10 +13,46 @@ class SubstringFilterImpl extends FilterImpl
 {
 	private final String[] m_value;
 
-	SubstringFilterImpl(boolean topLevel, String attr, String[] value)
+	SubstringFilterImpl(String attr, String[] value)
 	{
-		super(topLevel, FilterImpl.SUBSTRING, attr);
+		super(FilterImpl.SUBSTRING, attr);
 		m_value = value;
+	}
+
+	public int compareTo(FilterImpl filter)
+	{
+		int cmp = internalCompareTo(filter);
+		if(cmp != 0)
+			return cmp;
+
+		String[] o_value = ((SubstringFilterImpl)filter).m_value;
+		int top = m_value.length;
+		if(top > o_value.length)
+			return 1;
+
+		if(top < o_value.length)
+			return -1;
+
+		for(int idx = 0; idx < top; ++idx)
+		{
+			String m = m_value[idx];
+			String o = o_value[idx];
+			if(m == null)
+			{
+				if(o != null)
+					return -1;
+			}
+			else
+			{
+				if(o == null)
+					return 1;
+
+				cmp = m.compareTo(o);
+				if(cmp != 0)
+					return cmp;
+			}
+		}
+		return 0;
 	}
 
 	@Override
