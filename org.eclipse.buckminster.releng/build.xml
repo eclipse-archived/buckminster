@@ -75,7 +75,7 @@
 					<arg value="-data" />
 					<arg value="@{workspace}" />
 					<arg value="--loglevel" />
-					<arg value="WARNING" />
+					<arg value="DEBUG" />
 					<globargs />
 					<arg value="@{command}" />
 					<arg value="-P" />
@@ -148,19 +148,15 @@
 			<!-- We don't want these. basedir in particular will cause problems if passed explicitly -->
 			<propertyset negate="true">
 				<propertyref name="basedir" />
+				<propertyref name="eclipse.home" />
 				<propertyref name="properties.tmp" />
 				<propertyref name="line.separator" />
 				<propertyref name="path.separator" />
 				<propertyref prefix="ant." />
 				<propertyref prefix="file." />
-				<propertyref prefix="eclipse." />
 				<propertyref prefix="java." />
 				<propertyref prefix="sun." />
 				<propertyref prefix="user." />
-			</propertyset>
-			<propertyset negate="false">
-				<propertyref name="eclipse.staging.area" />
-				<propertyref prefix="eclipse.committer." />
 			</propertyset>
 		</echoproperties>
 	</target>
