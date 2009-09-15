@@ -248,7 +248,7 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
