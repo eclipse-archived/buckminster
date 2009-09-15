@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.Copyright;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.License;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
@@ -32,6 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
@@ -273,6 +275,13 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 * @generated
 	 */
 	private EClass iAdaptableEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	private EEnum installableUnitTypeEEnum = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -547,6 +556,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEReference(installableUnitEClass, INSTALLABLE_UNIT__META_REQUIRED_CAPABILITY_LIST);
 		createEReference(installableUnitEClass, INSTALLABLE_UNIT__PROPERTY_MAP);
 		createEReference(installableUnitEClass, INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST);
+		createEAttribute(installableUnitEClass, INSTALLABLE_UNIT__TYPE);
 
 		installableUnitFragmentEClass = createEClass(INSTALLABLE_UNIT_FRAGMENT);
 		createEReference(installableUnitFragmentEClass, INSTALLABLE_UNIT_FRAGMENT__HOST_LIST);
@@ -594,6 +604,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEAttribute(repositoryReferenceEClass, REPOSITORY_REFERENCE__NICKNAME);
 
 		iAdaptableEClass = createEClass(IADAPTABLE);
+
+		// Create enums
+		installableUnitTypeEEnum = createEEnum(INSTALLABLE_UNIT_TYPE);
 
 		// Create data types
 		versionEDataType = createEDataType(VERSION);
@@ -1002,6 +1015,16 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public EAttribute getInstallableUnit_Type()
+	{
+		return (EAttribute)installableUnitEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -1019,6 +1042,16 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	public EReference getInstallableUnitFragment_HostList()
 	{
 		return (EReference)installableUnitFragmentEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public EEnum getInstallableUnitType()
+	{
+		return installableUnitTypeEEnum;
 	}
 
 	/**
@@ -1960,6 +1993,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEReference(getInstallableUnit_TouchpointDataList(), this.getTouchpointData(), null, "touchpointDataList",
 				null, 0, -1, InstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
 				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInstallableUnit_Type(), this.getInstallableUnitType(), "type", "", 1, 1,
+				InstallableUnit.class, !IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(installableUnitEClass, ecorePackage.getEInt(), "compareTo", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theXMLTypePackage.getAnySimpleType(), "other", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -2085,6 +2121,14 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		EGenericType g2 = createEGenericType();
 		g1.getETypeArguments().add(g2);
 		addEParameter(op, g1, "adapter", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		// Initialize enums and add enum literals
+		initEEnum(installableUnitTypeEEnum, InstallableUnitType.class, "InstallableUnitType");
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.BUNDLE);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.FEATURE);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.PRODUCT);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.CATEGORY);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.OTHER);
 
 		// Initialize data types
 		initEDataType(versionEDataType, Version.class, "Version", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

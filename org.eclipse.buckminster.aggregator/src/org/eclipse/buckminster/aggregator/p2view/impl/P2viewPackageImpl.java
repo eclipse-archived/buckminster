@@ -262,6 +262,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		createEReference(metadataRepositoryStructuredViewEClass,
 				METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST);
 		createEReference(metadataRepositoryStructuredViewEClass, METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES);
+		createEReference(metadataRepositoryStructuredViewEClass, METADATA_REPOSITORY_STRUCTURED_VIEW__MDR);
 
 		installableUnitsEClass = createEClass(INSTALLABLE_UNITS);
 		createEReference(installableUnitsEClass, INSTALLABLE_UNITS__CATEGORY_CONTAINER);
@@ -290,6 +291,8 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__VERSION);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__NAME);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__DESCRIPTION);
+		createEAttribute(iuPresentationEClass, IU_PRESENTATION__TYPE);
+		createEReference(iuPresentationEClass, IU_PRESENTATION__IU);
 
 		categoryEClass = createEClass(CATEGORY);
 		createEReference(categoryEClass, CATEGORY__CATEGORY_CONTAINER);
@@ -612,6 +615,16 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public EReference getIUPresentation_Iu()
+	{
+		return (EReference)iuPresentationEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -619,6 +632,16 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	public EAttribute getIUPresentation_Name()
 	{
 		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public EAttribute getIUPresentation_Type()
+	{
+		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -649,6 +672,16 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	public EReference getMetadataRepositoryStructuredView_InstallableUnitList()
 	{
 		return (EReference)metadataRepositoryStructuredViewEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public EReference getMetadataRepositoryStructuredView_Mdr()
+	{
+		return (EReference)metadataRepositoryStructuredViewEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -844,6 +877,9 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		initEReference(getMetadataRepositoryStructuredView_Properties(), this.getProperties(), null, "properties",
 				null, 0, 1, MetadataRepositoryStructuredView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMetadataRepositoryStructuredView_Mdr(), theP2Package.getMetadataRepository(), null, "mdr",
+				null, 1, 1, MetadataRepositoryStructuredView.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+				!IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(installableUnitsEClass, InstallableUnits.class, "InstallableUnits", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
@@ -917,6 +953,12 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		initEAttribute(getIUPresentation_Description(), ecorePackage.getEString(), "description", null, 0, 1,
 				IUPresentation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
 				!IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIUPresentation_Type(), theP2Package.getInstallableUnitType(), "type", "", 1, 1,
+				IUPresentation.class, !IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEReference(getIUPresentation_Iu(), theP2Package.getInstallableUnit(), null, "iu", null, 0, 1,
+				IUPresentation.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(categoryEClass, Category.class, "Category", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getCategory_CategoryContainer(), this.getCategories(), null, "categoryContainer", null, 0, 1,

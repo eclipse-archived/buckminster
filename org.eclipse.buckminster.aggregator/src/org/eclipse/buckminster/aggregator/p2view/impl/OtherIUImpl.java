@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Details;
 import org.eclipse.buckminster.aggregator.p2view.OtherIU;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
@@ -52,6 +54,16 @@ public class OtherIUImpl extends IUPresentationImpl implements OtherIU
 	protected OtherIUImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	protected OtherIUImpl(InstallableUnit iu)
+	{
+		super(iu);
 	}
 
 	/**
@@ -164,6 +176,11 @@ public class OtherIUImpl extends IUPresentationImpl implements OtherIU
 			setDetails(P2viewFactory.eINSTANCE.createDetails());
 
 		return getDetails();
+	}
+
+	public InstallableUnitType getType()
+	{
+		return InstallableUnitType.OTHER;
 	}
 
 	/**

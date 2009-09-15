@@ -68,6 +68,8 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 			addVersionPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
+			addTypePropertyDescriptor(object);
+			addIuPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -115,6 +117,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 		case P2viewPackage.IU_PRESENTATION__VERSION:
 		case P2viewPackage.IU_PRESENTATION__NAME:
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
+		case P2viewPackage.IU_PRESENTATION__TYPE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
@@ -152,6 +155,20 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 	}
 
 	/**
+	 * This adds a property descriptor for the Iu feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addIuPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUPresentation_iu_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUPresentation_iu_feature", "_UI_IUPresentation_type"),
+				P2viewPackage.Literals.IU_PRESENTATION__IU, false, false, false, null, null, null));
+	}
+
+	/**
 	 * This adds a property descriptor for the Name feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -163,6 +180,21 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				getString("_UI_IUPresentation_name_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_name_feature", "_UI_IUPresentation_type"),
 				P2viewPackage.Literals.IU_PRESENTATION__NAME, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addTypePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUPresentation_type_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUPresentation_type_feature", "_UI_IUPresentation_type"),
+				P2viewPackage.Literals.IU_PRESENTATION__TYPE, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 

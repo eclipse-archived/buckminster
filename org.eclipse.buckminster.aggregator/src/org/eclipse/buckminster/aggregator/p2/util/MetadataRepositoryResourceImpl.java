@@ -156,31 +156,31 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				switch(iu.getType())
 				{
 				case CATEGORY:
-					iuPresentation = P2viewFactory.eINSTANCE.createCategory();
+					iuPresentation = P2viewFactory.eINSTANCE.createCategory(iu);
 					((Category)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					repoView.getInstallableUnitList().getNotNullCategoryContainer().getCategories().add(
 							(Category)iuPresentation);
 					break;
 				case FEATURE:
-					iuPresentation = P2viewFactory.eINSTANCE.createFeature();
+					iuPresentation = P2viewFactory.eINSTANCE.createFeature(iu);
 					((Feature)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					repoView.getInstallableUnitList().getNotNullFeatureContainer().getFeatures().add(
 							(Feature)iuPresentation);
 					break;
 				case PRODUCT:
-					iuPresentation = P2viewFactory.eINSTANCE.createProduct();
+					iuPresentation = P2viewFactory.eINSTANCE.createProduct(iu);
 					((Product)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					repoView.getInstallableUnitList().getNotNullProductContainer().getProducts().add(
 							(Product)iuPresentation);
 					break;
 				case BUNDLE:
-					iuPresentation = P2viewFactory.eINSTANCE.createBundle();
+					iuPresentation = P2viewFactory.eINSTANCE.createBundle(iu);
 					((Bundle)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					repoView.getInstallableUnitList().getNotNullBundleContainer().getBundles().add(
 							(Bundle)iuPresentation);
 					break;
 				default:
-					iuPresentation = P2viewFactory.eINSTANCE.createOtherIU();
+					iuPresentation = P2viewFactory.eINSTANCE.createOtherIU(iu);
 					((OtherIU)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					repoView.getInstallableUnitList().getNotNullMiscellaneousContainer().getOthers().add(
 							(OtherIU)iuPresentation);
@@ -361,7 +361,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		synchronized(factory)
 		{
 			MetadataRepositoryImpl repository = (MetadataRepositoryImpl)factory.createMetadataRepository();
-			MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView();
+			MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView(repository);
 			RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, repoView);
 			job.schedule();
 			try

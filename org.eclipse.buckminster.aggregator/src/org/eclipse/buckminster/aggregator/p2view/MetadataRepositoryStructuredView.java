@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  * Installable Unit List</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getProperties <em>Properties
  * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMdr <em>Mdr</em>}</li>
  * </ul>
  * </p>
  * 
@@ -49,7 +51,22 @@ public interface MetadataRepositoryStructuredView extends EObject
 	InstallableUnits getInstallableUnitList();
 
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Mdr</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Mdr</em>' reference isn't clear, there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Mdr</em>' reference.
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_Mdr()
+	 * @model resolveProxies="false" required="true" changeable="false" ordered="false"
+	 * @generated
+	 */
+	MetadataRepository getMdr();
+
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value of
+	 * the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> >>>>>>> .r10620
 	 * <p>
 	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really should be more of a description here...
 	 * </p>

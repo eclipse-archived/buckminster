@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 
@@ -126,6 +128,25 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final InstallableUnitType TYPE_EDEFAULT = InstallableUnitType.BUNDLE;
+
+	/**
+	 * The cached value of the '{@link #getIu() <em>Iu</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getIu()
+	 * @generated
+	 * @ordered
+	 */
+	protected InstallableUnit iu;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -133,6 +154,17 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	protected IUPresentationImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	protected IUPresentationImpl(InstallableUnit iu)
+	{
+		super();
+		this.iu = iu;
 	}
 
 	/**
@@ -153,6 +185,10 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return getName();
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			return getDescription();
+		case P2viewPackage.IU_PRESENTATION__TYPE:
+			return getType();
+		case P2viewPackage.IU_PRESENTATION__IU:
+			return getIu();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -183,6 +219,10 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return DESCRIPTION_EDEFAULT == null
 					? description != null
 					: !DESCRIPTION_EDEFAULT.equals(description);
+		case P2viewPackage.IU_PRESENTATION__TYPE:
+			return getType() != TYPE_EDEFAULT;
+		case P2viewPackage.IU_PRESENTATION__IU:
+			return iu != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -260,6 +300,16 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public InstallableUnit getIu()
+	{
+		return iu;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -268,6 +318,13 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	{
 		return name;
 	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	abstract public InstallableUnitType getType();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

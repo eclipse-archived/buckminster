@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.Copyright;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.License;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
@@ -120,6 +121,18 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public String convertInstallableUnitTypeToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -169,6 +182,8 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	{
 		switch(eDataType.getClassifierID())
 		{
+		case P2Package.INSTALLABLE_UNIT_TYPE:
+			return convertInstallableUnitTypeToString(eDataType, instanceValue);
 		case P2Package.VERSION:
 			return convertVersionToString(eDataType, instanceValue);
 		case P2Package.VERSION_RANGE:
@@ -301,6 +316,8 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	{
 		switch(eDataType.getClassifierID())
 		{
+		case P2Package.INSTALLABLE_UNIT_TYPE:
+			return createInstallableUnitTypeFromString(eDataType, initialValue);
 		case P2Package.VERSION:
 			return createVersionFromString(eDataType, initialValue);
 		case P2Package.VERSION_RANGE:
@@ -377,6 +394,20 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	{
 		InstallableUnitFragmentImpl installableUnitFragment = new InstallableUnitFragmentImpl();
 		return installableUnitFragment;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public InstallableUnitType createInstallableUnitTypeFromString(EDataType eDataType, String initialValue)
+	{
+		InstallableUnitType result = InstallableUnitType.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
 	}
 
 	/**

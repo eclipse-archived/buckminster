@@ -8,13 +8,18 @@
 
 package org.eclipse.buckminster.aggregator.util;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -25,41 +30,104 @@ public class ItemUtils
 {
 
 	/**
+	 * Tries to add an InstallableUnit to a MappedRepository
+	 * 
+	 * @param mappedRepo
+	 *            mapped repository
+	 * @param iu
+	 *            installable unit
+	 * @return null if the MappedRepository already contains the InstallableUnit or MappedUnit (created from the IU) if
+	 *         the InstallableUnit was added
+	 */
+	public static MappedUnit addIU(MappedRepository mappedRepo, InstallableUnit iu)
+	{
+		if(iu == null)
+			return null;
+
+		MappedUnit foundUnit = null;
+
+		for(MappedUnit unit : mappedRepo.getUnits(false))
+			if(unit.getInstallableUnit() != null
+					&& (iu == unit.getInstallableUnit() || iu.getId() != null
+							&& unit.getInstallableUnit().getId() != null
+							&& iu.getId().equals(unit.getInstallableUnit().getId())))
+			{
+				foundUnit = unit;
+			}
+
+		if(foundUnit != null)
+			return null;
+
+		MappedUnit newMU = AggregatorFactory.eINSTANCE.createMappedUnit(iu);
+		mappedRepo.addUnit(newMU);
+
+		return newMU;
+	}
+
+	/**
+	 * Tries to add a MetadataRepository to a Contribution
+	 * 
+	 * @param contribution
+	 *            contribution
+	 * @param mdr
+	 *            metadata repository
+	 * @return null if the Contribution already contains the MetadataRepository or MappedRepository (created from the
+	 *         MDR) if the MetadataRepository was added
+	 */
+	public static MappedRepository addMDR(Contribution contribution, MetadataRepository mdr)
+	{
+		if(mdr == null)
+			return null;
+
+		if(findMappedRepository(contribution, mdr) != null)
+			return null;
+
+		MappedRepository newMappedRepo = AggregatorFactory.eINSTANCE.createMappedRepository(mdr);
+		contribution.getRepositories().add(newMappedRepo);
+
+		return newMappedRepo;
+	}
+
+	/**
 	 * Searches for a MappedRepository with the same location
 	 * 
 	 * @param mappedRepos
 	 * @param mappedRepo
 	 * @return
 	 */
-	public static MappedRepository findMappedRepository(List<MappedRepository> mappedRepos, MappedRepository mappedRepo)
+	public static MappedRepository findMappedRepository(Contribution contribution, MetadataRepository mdr)
 	{
-		for(MappedRepository repo : mappedRepos)
-			if(mappedRepo == repo || mappedRepo.getLocation() != null && repo.getLocation() != null
-					&& mappedRepo.getLocation().equalsIgnoreCase(repo.getLocation()))
+		if(mdr == null)
+			return null;
+
+		for(MappedRepository repo : contribution.getRepositories())
+			if(mdr.getLocation() != null && repo.getLocation() != null
+					&& mdr.getLocation().toString().equalsIgnoreCase(repo.getLocation()))
 				return repo;
 
 		return null;
 	}
 
-	/**
-	 * Searches for a MappedUnit with the same ID
-	 * 
-	 * @param mappedUnits
-	 * @param mappedUnit
-	 * @return
-	 */
-	public static MappedUnit findMappedUnit(EList<MappedUnit> mappedUnits, MappedUnit mappedUnit)
+	public static Collection<InstallableUnit> getIUs(Collection<? extends IUPresentation> iups)
 	{
-		for(MappedUnit unit : mappedUnits)
-			if(mappedUnit == unit
-					|| mappedUnit.getInstallableUnit() != null
-					&& unit.getInstallableUnit() != null
-					&& (mappedUnit.getInstallableUnit() == unit.getInstallableUnit() || mappedUnit.getInstallableUnit().getId() != null
-							&& unit.getInstallableUnit().getId() != null
-							&& mappedUnit.getInstallableUnit().getId().equals(unit.getInstallableUnit().getId())))
-				return unit;
+		Set<InstallableUnit> set = new HashSet<InstallableUnit>();
 
-		return null;
+		for(IUPresentation iup : iups)
+			if(iup.getIu() != null)
+				set.add(iup.getIu());
+
+		return set;
+	}
+
+	public static Collection<MetadataRepository> getMDRs(Collection<? extends MetadataRepositoryStructuredView> mdrsvs)
+	{
+		Set<MetadataRepository> set = new HashSet<MetadataRepository>();
+
+		for(MetadataRepositoryStructuredView mdrsv : mdrsvs)
+			if(mdrsv.getMdr() != null)
+				set.add(mdrsv.getMdr());
+
+		return set;
 	}
 
 	/**
@@ -69,7 +137,8 @@ public class ItemUtils
 	 * @param selectedIUs
 	 * @return
 	 */
-	public static boolean haveSameLocation(MappedRepository mappedRepo, List<InstallableUnit> selectedIUs)
+	public static boolean haveSameLocation(MappedRepository mappedRepo,
+			Collection<? extends InstallableUnit> selectedIUs)
 	{
 		String location = mappedRepo.getLocation();
 

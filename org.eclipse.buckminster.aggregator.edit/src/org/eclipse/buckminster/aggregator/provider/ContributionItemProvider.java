@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,7 +24,10 @@ import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
+import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
@@ -402,10 +406,19 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		if(((EnabledStatusProvider)owner).isEnabled()
 				&& itemSorter.getTotalItemCount() > 0
 				&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(
-						ItemGroup.IU).size())))
-			return new MapToContributionCommand((Contribution)owner,
-					(List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR),
-					(List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+						ItemGroup.IU).size()) || itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(
+						ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size())))
+		{
+			List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
+			List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
+
+			mdrs.addAll((List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR));
+			mdrs.addAll(ItemUtils.getMDRs((List<MetadataRepositoryStructuredView>)itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED)));
+			ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+			ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
+
+			return new MapToContributionCommand((Contribution)owner, mdrs, ius);
+		}
 
 		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}

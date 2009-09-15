@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2view.InstallableUnits;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
@@ -35,6 +36,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <em>Installable Unit List</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getProperties <em>
  * Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getMdr <em>Mdr</em>}</li>
  * </ul>
  * </p>
  * 
@@ -93,6 +95,15 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	protected Properties properties;
 
 	/**
+	 * The cached value of the '{@link #getMdr() <em>Mdr</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getMdr()
+	 * @generated
+	 * @ordered
+	 */
+	protected MetadataRepository mdr;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -100,6 +111,17 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	protected MetadataRepositoryStructuredViewImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	protected MetadataRepositoryStructuredViewImpl(MetadataRepository mdr)
+	{
+		super();
+		this.mdr = mdr;
 	}
 
 	/**
@@ -161,6 +183,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return getInstallableUnitList();
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			return getProperties();
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__MDR:
+			return getMdr();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -201,6 +225,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return installableUnitList != null;
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			return properties != null;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__MDR:
+			return mdr != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -210,7 +236,6 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -260,6 +285,16 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	public InstallableUnits getInstallableUnitList()
 	{
 		return installableUnitList;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated
+	 */
+	public MetadataRepository getMdr()
+	{
+		return mdr;
 	}
 
 	/**

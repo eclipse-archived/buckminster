@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
@@ -23,6 +25,8 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getVersion <em>Version</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getName <em>Name</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getDescription <em>Description</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIu <em>Iu</em>}</li>
  * </ul>
  * </p>
  * 
@@ -64,7 +68,22 @@ public interface IUPresentation extends EObject
 	String getId();
 
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Iu</em>' reference isn't clear, there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Iu</em>' reference.
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUPresentation_Iu()
+	 * @model resolveProxies="false" changeable="false"
+	 * @generated
+	 */
+	InstallableUnit getIu();
+
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value of
+	 * the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> >>>>>>> .r10620
 	 * <p>
 	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really should be more of a description here...
 	 * </p>
@@ -79,7 +98,25 @@ public interface IUPresentation extends EObject
 	String getName();
 
 	/**
-	 * Returns the value of the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc -->
+	 * <<<<<<< .mine Returns the value of the '<em><b>Type</b></em>' attribute. The default value is <code>""</code>.
+	 * The literals are from the enumeration {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType}. <!--
+	 * begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Type</em>' attribute isn't clear, there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Type</em>' attribute.
+	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUPresentation_Type()
+	 * @model default="" required="true" changeable="false" volatile="true"
+	 * @generated
+	 */
+	InstallableUnitType getType();
+
+	/**
+	 * Returns the value of the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value
+	 * of the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> >>>>>>> .r10620
 	 * <p>
 	 * If the meaning of the '<em>Version</em>' attribute isn't clear, there really should be more of a description
 	 * here...

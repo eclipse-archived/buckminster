@@ -45,16 +45,16 @@
     </genEnums>
     <genDataTypes ecoreDataType="Aggregator.ecore#//URI"/>
     <genClasses ecoreClass="Aggregator.ecore#//Aggregator" labelFeature="#//aggregator/Aggregator/label">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/buildRoot"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/configurations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/contributions"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/label"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/buildmaster"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/sendmail"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/contacts"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/customCategories"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/buildRoot"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/packedStrategy"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/sendmail"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/type"/>
       <genOperations ecoreOperation="Aggregator.ecore#//Aggregator/getContributions">
         <genParameters ecoreParameter="Aggregator.ecore#//Aggregator/getContributions/enabledOnly"/>
       </genOperations>
@@ -68,10 +68,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/location"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/mirrorArtifacts"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MappedRepository/categoryPrefix"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedRepository/mapRules"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MappedRepository/getUnits">
         <genParameters ecoreParameter="Aggregator.ecore#//MappedRepository/getUnits/enabledOnly"/>
       </genOperations>
-      <genOperations ecoreOperation="Aggregator.ecore#//MappedRepository/isMapEverything"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//MappedRepository/isMapExclusive"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MappedRepository/isBranchEnabled"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MappedRepository/getMetadataRepository">
         <genParameters ecoreParameter="Aggregator.ecore#//MappedRepository/getMetadataRepository/forceResolve"/>
@@ -102,14 +103,8 @@
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Bundle"/>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//MappedUnit">
-      <genFeatures children="true" createChild="false" propertySortChoices="true"
-          ecoreFeature="ecore:EReference Aggregator.ecore#//MappedUnit/installableUnit"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//MappedUnit/validConfigurations"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MappedUnit/isBranchEnabled"/>
-      <genOperations ecoreOperation="Aggregator.ecore#//MappedUnit/getInstallableUnit">
-        <genParameters ecoreParameter="Aggregator.ecore#//MappedUnit/getInstallableUnit/forceResolve"/>
-      </genOperations>
-      <genOperations ecoreOperation="Aggregator.ecore#//MappedUnit/isMappedRepositoryBroken"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Product"/>
     <genClasses ecoreClass="Aggregator.ecore#//Property">
@@ -129,7 +124,26 @@
     <genClasses image="false" ecoreClass="Aggregator.ecore#//EnabledStatusProvider">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//EnabledStatusProvider/enabled"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="Aggregator.ecore#//MapRule"/>
+    <genClasses image="false" ecoreClass="Aggregator.ecore#//InstallableUnitReference">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//InstallableUnitReference/installableUnit"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//InstallableUnitReference/getInstallableUnit">
+        <genParameters ecoreParameter="Aggregator.ecore#//InstallableUnitReference/getInstallableUnit/forceResolve"/>
+      </genOperations>
+      <genOperations ecoreOperation="Aggregator.ecore#//InstallableUnitReference/isMappedRepositoryBroken"/>
+    </genClasses>
+    <genClasses ecoreClass="Aggregator.ecore#//ExclusionRule"/>
+    <genClasses ecoreClass="Aggregator.ecore#//ValidConfigurationsRule">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//ValidConfigurationsRule/validConfigurations"/>
+    </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" ecorePackage="Aggregator.ecore#//p2">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="Aggregator.ecore#//p2/InstallableUnitType">
+        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/BUNDLE"/>
+        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/FEATURE"/>
+        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/PRODUCT"/>
+        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/CATEGORY"/>
+        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/OTHER"/>
+      </genEnums>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/Version"/>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/VersionRange"/>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/IInstallableUnitArray"/>
@@ -249,6 +263,7 @@
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/metaRequiredCapabilityList"/>
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/propertyMap"/>
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/touchpointDataList"/>
+        <genFeatures property="Readonly" createChild="false" propertyCategory="" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/InstallableUnit/type"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/InstallableUnit/compareTo">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/InstallableUnit/compareTo/other"/>
         </genOperations>

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
@@ -61,12 +60,9 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 
 		for(MetadataRepository mdr : m_selectedMDRs)
 		{
-			MappedRepository mappedRepo = AggregatorFactory.eINSTANCE.createMappedRepository(mdr);
-			if(ItemUtils.findMappedRepository(m_contribution.getRepositories(), mappedRepo) == null)
-			{
-				m_contribution.getRepositories().add(mappedRepo);
-				m_addedMappedRepos.add(mappedRepo);
-			}
+			MappedRepository newMappedRepo = ItemUtils.addMDR(m_contribution, mdr);
+			if(newMappedRepo != null)
+				m_addedMappedRepos.add(newMappedRepo);
 		}
 
 		for(InstallableUnit iu : m_selectedIUs)
@@ -76,23 +72,20 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 
 			MetadataRepository mdr = (MetadataRepository)((EObject)iu).eContainer();
 
-			MappedRepository newMappedRepo = AggregatorFactory.eINSTANCE.createMappedRepository(mdr);
-			MappedRepository mappedRepo = ItemUtils.findMappedRepository(m_contribution.getRepositories(),
-					newMappedRepo);
+			MappedRepository mappedRepo = ItemUtils.findMappedRepository(m_contribution, mdr);
 			if(mappedRepo == null)
 			{
-				m_contribution.getRepositories().add(newMappedRepo);
-				m_addedMappedRepos.add(newMappedRepo);
-				mappedRepo = newMappedRepo;
+				MappedRepository newMappedRepo = ItemUtils.addMDR(m_contribution, mdr);
+				if(newMappedRepo != null)
+				{
+					m_addedMappedRepos.add(newMappedRepo);
+					mappedRepo = newMappedRepo;
+				}
 			}
 
-			MappedUnit newMU = AggregatorFactory.eINSTANCE.createMappedUnit(iu);
-			MappedUnit mu = ItemUtils.findMappedUnit(mappedRepo.getUnits(false), newMU);
-			if(mu == null)
-			{
-				mappedRepo.addUnit(newMU);
+			MappedUnit newMU = ItemUtils.addIU(mappedRepo, iu);
+			if(newMU != null)
 				m_addedMappedUnits.add(newMU);
-			}
 		}
 	}
 

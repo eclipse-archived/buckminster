@@ -17,6 +17,8 @@ import java.util.Map;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -28,7 +30,7 @@ public class ItemSorter
 {
 	public static enum ItemGroup
 	{
-		MDR, IU, OTHER
+		MDR, IU, MDR_STRUCTURED, IU_STRUCTURED, OTHER
 	}
 
 	private final Map<ItemGroup, List<?>> m_groups = new HashMap<ItemGroup, List<?>>();
@@ -39,6 +41,8 @@ public class ItemSorter
 	{
 		List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
 		List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
+		List<IUPresentation> iups = new ArrayList<IUPresentation>();
+		List<MetadataRepositoryStructuredView> mdrsvs = new ArrayList<MetadataRepositoryStructuredView>();
 		List<Object> others = new ArrayList<Object>();
 
 		for(Object item : items)
@@ -50,18 +54,30 @@ public class ItemSorter
 				InstallableUnit iu = (InstallableUnit)item;
 				if(((EObject)iu).eContainer() instanceof MetadataRepository
 						&& iu.getType() != InstallableUnitType.OTHER)
-					ius.add((InstallableUnit)item);
+					ius.add(iu);
 				else
 					others.add(item);
 			}
 			else if(item instanceof MetadataRepository)
 				mdrs.add((MetadataRepository)item);
+			else if(item instanceof IUPresentation)
+			{
+				IUPresentation iup = (IUPresentation)item;
+				if(iup.getType() != InstallableUnitType.OTHER)
+					iups.add(iup);
+				else
+					others.add(item);
+			}
+			else if(item instanceof MetadataRepositoryStructuredView)
+				mdrsvs.add((MetadataRepositoryStructuredView)item);
 			else
 				others.add(item);
 		}
 
 		m_groups.put(ItemGroup.MDR, mdrs);
 		m_groups.put(ItemGroup.IU, ius);
+		m_groups.put(ItemGroup.MDR_STRUCTURED, mdrsvs);
+		m_groups.put(ItemGroup.IU_STRUCTURED, iups);
 		m_groups.put(ItemGroup.OTHER, others);
 	}
 

@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
 import org.eclipse.buckminster.aggregator.p2view.Details;
 import org.eclipse.buckminster.aggregator.p2view.Feature;
@@ -77,6 +79,16 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 	protected FeatureImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	protected FeatureImpl(InstallableUnit iu)
+	{
+		super(iu);
 	}
 
 	/**
@@ -301,6 +313,11 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 			setFeatureContainer(P2viewFactory.eINSTANCE.createFeatures());
 
 		return getFeatureContainer();
+	}
+
+	public InstallableUnitType getType()
+	{
+		return InstallableUnitType.FEATURE;
 	}
 
 	/**

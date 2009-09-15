@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.ecore.EFactory;
 
 /**
@@ -36,6 +38,14 @@ public interface P2viewFactory extends EFactory
 	Bundle createBundle();
 
 	/**
+	 * <<<<<<< .mine Returns a new object of class '<em>Bundle</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Bundle</em>'.
+	 * @generated NOT
+	 */
+	Bundle createBundle(InstallableUnit iu);
+
+	/**
 	 * Returns a new object of class '<em>Bundles</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Bundles</em>'.
@@ -60,6 +70,14 @@ public interface P2viewFactory extends EFactory
 	Category createCategory();
 
 	/**
+	 * <<<<<<< .mine Returns a new object of class '<em>Category</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Category</em>'.
+	 * @generated NOT
+	 */
+	Category createCategory(InstallableUnit iu);
+
+	/**
 	 * Returns a new object of class '<em>Details</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Details</em>'.
@@ -74,6 +92,14 @@ public interface P2viewFactory extends EFactory
 	 * @generated
 	 */
 	Feature createFeature();
+
+	/**
+	 * <<<<<<< .mine Returns a new object of class '<em>Feature</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Feature</em>'.
+	 * @generated NOT
+	 */
+	Feature createFeature(InstallableUnit iu);
 
 	/**
 	 * Returns a new object of class '<em>Features</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -101,6 +127,15 @@ public interface P2viewFactory extends EFactory
 	MetadataRepositoryStructuredView createMetadataRepositoryStructuredView();
 
 	/**
+	 * <<<<<<< .mine Returns a new object of class '<em>Metadata Repository Structured View</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Metadata Repository Structured View</em>'.
+	 * @generated NOT
+	 */
+	MetadataRepositoryStructuredView createMetadataRepositoryStructuredView(MetadataRepository mdr);
+
+	/**
 	 * Returns a new object of class '<em>Miscellaneous</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Miscellaneous</em>'.
@@ -117,12 +152,28 @@ public interface P2viewFactory extends EFactory
 	OtherIU createOtherIU();
 
 	/**
+	 * <<<<<<< .mine Returns a new object of class '<em>Other IU</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Other IU</em>'.
+	 * @generated NOT
+	 */
+	OtherIU createOtherIU(InstallableUnit iu);
+
+	/**
 	 * Returns a new object of class '<em>Product</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Product</em>'.
 	 * @generated
 	 */
 	Product createProduct();
+
+	/**
+	 * <<<<<<< .mine Returns a new object of class '<em>Product</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Product</em>'.
+	 * @generated NOT
+	 */
+	Product createProduct(InstallableUnit iu);
 
 	/**
 	 * Returns a new object of class '<em>Products</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->

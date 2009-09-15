@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2view.*;
 
 import org.eclipse.emf.ecore.EClass;
@@ -125,6 +127,17 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	public Bundle createBundle(InstallableUnit iu)
+	{
+		BundleImpl bundle = new BundleImpl(iu);
+		return bundle;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -158,6 +171,17 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	public Category createCategory(InstallableUnit iu)
+	{
+		CategoryImpl category = new CategoryImpl(iu);
+		return category;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -176,6 +200,17 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	public Feature createFeature()
 	{
 		FeatureImpl feature = new FeatureImpl();
+		return feature;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	public Feature createFeature(InstallableUnit iu)
+	{
+		FeatureImpl feature = new FeatureImpl(iu);
 		return feature;
 	}
 
@@ -213,6 +248,18 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	public MetadataRepositoryStructuredView createMetadataRepositoryStructuredView(MetadataRepository mdr)
+	{
+		MetadataRepositoryStructuredViewImpl metadataRepositoryStructuredView = new MetadataRepositoryStructuredViewImpl(
+				mdr);
+		return metadataRepositoryStructuredView;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -235,6 +282,17 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	public OtherIU createOtherIU(InstallableUnit iu)
+	{
+		OtherIUImpl otherIU = new OtherIUImpl(iu);
+		return otherIU;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -242,6 +300,17 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	public Product createProduct()
 	{
 		ProductImpl product = new ProductImpl();
+		return product;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	public Product createProduct(InstallableUnit iu)
+	{
+		ProductImpl product = new ProductImpl(iu);
 		return product;
 	}
 

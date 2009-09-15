@@ -16,7 +16,26 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit</b></em>'.
  * 
- * @extends StatusProvider <!-- end-user-doc -->
+ * @extends StatusProvider <!-- end-user-doc --> <<<<<<< .mine
+ * 
+ *          <p>
+ *          The following features are supported:
+ *          <ul>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getArtifactList <em>Artifact List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getProvidedCapabilityList <em>Provided
+ *          Capability List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getRequiredCapabilityList <em>Required
+ *          Capability List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getMetaRequiredCapabilityList <em>Meta
+ *          Required Capability List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getPropertyMap <em>Property Map</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getTouchpointDataList <em>Touchpoint Data
+ *          List</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getType <em>Type</em>}</li>
+ *          </ul>
+ *          </p>
+ * 
+ *          =======
  * 
  *          <p>
  *          The following features are supported:
@@ -34,6 +53,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
  *          </ul>
  *          </p>
  * 
+ *          >>>>>>> .r10620
  * @see org.eclipse.buckminster.aggregator.p2.P2Package#getInstallableUnit()
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IInstallableUnit"
  * @generated
@@ -146,7 +166,18 @@ public interface InstallableUnit extends EObject, IInstallableUnit, StatusProvid
 	EList<TouchpointData> getTouchpointDataList();
 
 	/**
-	 * Gets IU type - BUNDLE, FEATURE, PRODUCT, CATEGORY, UNKNOWN
+	 * Returns the value of the '<em><b>Type</b></em>' attribute. The default value is <code>""</code>. The literals are
+	 * from the enumeration {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Type</em>' attribute isn't clear, there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Type</em>' attribute.
+	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
+	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getInstallableUnit_Type()
+	 * @model default="" required="true" changeable="false" volatile="true"
+	 * @generated
 	 */
 	InstallableUnitType getType();
 

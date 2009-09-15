@@ -144,6 +144,7 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 			addMetaRequiredCapabilityListPropertyDescriptor(object);
 			addPropertyMapPropertyDescriptor(object);
 			addTouchpointDataListPropertyDescriptor(object);
+			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -212,6 +213,7 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 		case P2Package.INSTALLABLE_UNIT__FRAGMENT:
 		case P2Package.INSTALLABLE_UNIT__RESOLVED:
 		case P2Package.INSTALLABLE_UNIT__SINGLETON:
+		case P2Package.INSTALLABLE_UNIT__TYPE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_TYPE:
@@ -439,6 +441,21 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 						"_UI_PropertyDescriptor_description", "_UI_IInstallableUnit_touchpointType_feature",
 						"_UI_IInstallableUnit_type"), P2Package.Literals.IINSTALLABLE_UNIT__TOUCHPOINT_TYPE, false,
 				false, false, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addTypePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_InstallableUnit_type_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_InstallableUnit_type_feature", "_UI_InstallableUnit_type"),
+				P2Package.Literals.INSTALLABLE_UNIT__TYPE, false, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

@@ -101,6 +101,7 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 			addNamePropertyDescriptor(object);
 			addInstallableUnitListPropertyDescriptor(object);
 			addPropertiesPropertyDescriptor(object);
+			addMdrPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -177,6 +178,21 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 						"_UI_MetadataRepositoryStructuredView_type"),
 				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST, false, false, true,
 				null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Mdr feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addMdrPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MetadataRepositoryStructuredView_mdr_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MetadataRepositoryStructuredView_mdr_feature",
+						"_UI_MetadataRepositoryStructuredView_type"),
+				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__MDR, false, false, false, null, null, null));
 	}
 
 	/**

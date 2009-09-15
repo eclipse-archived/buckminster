@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
 import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Category;
@@ -103,6 +105,16 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	protected CategoryImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	protected CategoryImpl(InstallableUnit iu)
+	{
+		super(iu);
 	}
 
 	/**
@@ -439,6 +451,11 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			}
 		}
 		return productContainer;
+	}
+
+	public InstallableUnitType getType()
+	{
+		return InstallableUnitType.CATEGORY;
 	}
 
 	/**

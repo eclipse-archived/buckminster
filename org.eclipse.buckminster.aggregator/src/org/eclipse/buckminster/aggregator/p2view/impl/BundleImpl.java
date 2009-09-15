@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundle;
 import org.eclipse.buckminster.aggregator.p2view.Details;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
@@ -52,6 +54,16 @@ public class BundleImpl extends IUPresentationImpl implements Bundle
 	protected BundleImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * 
+	 * @generated NOT
+	 */
+	protected BundleImpl(InstallableUnit iu)
+	{
+		super(iu);
 	}
 
 	/**
@@ -164,6 +176,12 @@ public class BundleImpl extends IUPresentationImpl implements Bundle
 			setDetails(P2viewFactory.eINSTANCE.createDetails());
 
 		return getDetails();
+	}
+
+	@Override
+	public InstallableUnitType getType()
+	{
+		return InstallableUnitType.BUNDLE;
 	}
 
 	/**

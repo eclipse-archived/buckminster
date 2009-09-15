@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -47,13 +46,9 @@ public class MapToMappedRepositoryCommand extends AbstractCommand implements Dra
 
 		for(InstallableUnit iu : m_selectedIUs)
 		{
-			MappedUnit newMU = AggregatorFactory.eINSTANCE.createMappedUnit(iu);
-			MappedUnit mu = ItemUtils.findMappedUnit(m_mappedRepo.getUnits(false), newMU);
-			if(mu == null)
-			{
-				m_mappedRepo.addUnit(newMU);
+			MappedUnit newMU = ItemUtils.addIU(m_mappedRepo, iu);
+			if(newMU != null)
 				m_addedMappedUnits.add(newMU);
-			}
 		}
 	}
 

@@ -317,6 +317,16 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	protected EList<TouchpointData> touchpointDataList;
 
+	/**
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final InstallableUnitType TYPE_EDEFAULT = InstallableUnitType.BUNDLE;
+
 	private static final Pattern proxyFragmentPattern = Pattern.compile("^//@installableUnits\\[id='([^']*)',version='([^']*)'\\]$");
 
 	public static InstallableUnit importToModel(IInstallableUnit iu)
@@ -636,6 +646,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 				return getPropertyMap().map();
 		case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST:
 			return getTouchpointDataList();
+		case P2Package.INSTALLABLE_UNIT__TYPE:
+			return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -722,6 +734,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			return propertyMap != null && !propertyMap.isEmpty();
 		case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST:
 			return touchpointDataList != null && !touchpointDataList.isEmpty();
+		case P2Package.INSTALLABLE_UNIT__TYPE:
+			return getType() != TYPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1134,6 +1148,11 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 						: ITouchpointType.NONE;
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public InstallableUnitType getType()
 	{
 		if(getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX))

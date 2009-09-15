@@ -372,6 +372,11 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		return mappedRepository;
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public MappedRepository createMappedRepository(MetadataRepository mdr)
 	{
 		MappedRepository mappedRepo = createMappedRepository();
@@ -381,6 +386,11 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		return mappedRepo;
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public MappedUnit createMappedUnit(InstallableUnit iu)
 	{
 		MappedUnit mu = null;

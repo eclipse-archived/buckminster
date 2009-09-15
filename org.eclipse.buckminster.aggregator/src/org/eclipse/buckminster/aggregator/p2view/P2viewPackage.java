@@ -80,6 +80,14 @@ public interface P2viewPackage extends EPackage
 		EReference METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES = eINSTANCE.getMetadataRepositoryStructuredView_Properties();
 
 		/**
+		 * The meta object literal for the '<em><b>Mdr</b></em>' reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference METADATA_REPOSITORY_STRUCTURED_VIEW__MDR = eINSTANCE.getMetadataRepositoryStructuredView_Mdr();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.InstallableUnitsImpl
 		 * <em>Installable Units</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -260,6 +268,22 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EAttribute IU_PRESENTATION__DESCRIPTION = eINSTANCE.getIUPresentation_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute IU_PRESENTATION__TYPE = eINSTANCE.getIUPresentation_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Iu</b></em>' reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference IU_PRESENTATION__IU = eINSTANCE.getIUPresentation_Iu();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl
@@ -519,13 +543,21 @@ public interface P2viewPackage extends EPackage
 	int METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES = 2;
 
 	/**
+	 * The feature id for the '<em><b>Mdr</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__MDR = 3;
+
+	/**
 	 * The number of structural features of the '<em>Metadata Repository Structured View</em>' class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW_FEATURE_COUNT = 3;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.InstallableUnitsImpl
@@ -766,13 +798,31 @@ public interface P2viewPackage extends EPackage
 	int IU_PRESENTATION__DESCRIPTION = 3;
 
 	/**
-	 * The number of structural features of the '<em>IU Presentation</em>' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IU_PRESENTATION_FEATURE_COUNT = 4;
+	int IU_PRESENTATION__TYPE = 4;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION__IU = 5;
+
+	/**
+	 * The number of structural features of the '<em>IU Presentation</em>' class. <!-- begin-user-doc --> <!-- =======
+	 * The number of structural features of the '<em>IU Presentation</em>' class. <!-- begin-user-doc --> <!-- >>>>>>>
+	 * .r10620 end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_FEATURE_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl <em>Category</em>}
@@ -815,6 +865,22 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int CATEGORY__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__TYPE = IU_PRESENTATION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__IU = IU_PRESENTATION__IU;
 
 	/**
 	 * The feature id for the '<em><b>Category Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -911,6 +977,22 @@ public interface P2viewPackage extends EPackage
 	int FEATURE__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
 
 	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__TYPE = IU_PRESENTATION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__IU = IU_PRESENTATION__IU;
+
+	/**
 	 * The feature id for the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -985,6 +1067,22 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int PRODUCT__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__TYPE = IU_PRESENTATION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__IU = IU_PRESENTATION__IU;
 
 	/**
 	 * The feature id for the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1063,6 +1161,23 @@ public interface P2viewPackage extends EPackage
 	int BUNDLE__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
 
 	/**
+	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__TYPE = IU_PRESENTATION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__IU = IU_PRESENTATION__IU;
+
+	/**
 	 * The feature id for the '<em><b>Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -1119,6 +1234,23 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int OTHER_IU__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+
+	/**
+	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__TYPE = IU_PRESENTATION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__IU = IU_PRESENTATION__IU;
 
 	/**
 	 * The feature id for the '<em><b>Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1517,9 +1649,22 @@ public interface P2viewPackage extends EPackage
 	EAttribute getIUPresentation_Id();
 
 	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIu
+	 * <em>Iu</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Iu</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIu()
+	 * @see #getIUPresentation()
+	 * @generated
+	 */
+	EReference getIUPresentation_Iu();
+
+	/**
 	 * Returns the meta object for the attribute '
 	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getName <em>Name</em>}'. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * ======= Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getName <em>Name</em>}'. <!-- begin-user-doc -->
+	 * >>>>>>> .r10620 <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name</em>'.
 	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentation#getName()
@@ -1527,6 +1672,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getIUPresentation_Name();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getType <em>Type</em>}'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentation#getType()
+	 * @see #getIUPresentation()
+	 * @generated
+	 */
+	EAttribute getIUPresentation_Type();
 
 	/**
 	 * Returns the meta object for the attribute '
@@ -1562,6 +1719,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMetadataRepositoryStructuredView_InstallableUnitList();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMdr <em>Mdr</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Mdr</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMdr()
+	 * @see #getMetadataRepositoryStructuredView()
+	 * @generated
+	 */
+	EReference getMetadataRepositoryStructuredView_Mdr();
 
 	/**
 	 * Returns the meta object for the attribute '
