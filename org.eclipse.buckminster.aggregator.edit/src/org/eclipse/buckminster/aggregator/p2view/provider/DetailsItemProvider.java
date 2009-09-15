@@ -40,8 +40,8 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public DetailsItemProvider(AdapterFactory adapterFactory)
@@ -52,15 +52,15 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!--
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null)
+		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2viewPackage.Literals.DETAILS__INSTALLABLE_UNIT);
@@ -69,8 +69,8 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This returns Details.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Details.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -80,14 +80,14 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
+		if(itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -97,8 +97,8 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -108,8 +108,8 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -133,31 +133,23 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This adds a property descriptor for the Installable Unit feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Installable Unit feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addInstallableUnitPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Details_installableUnit_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Details_installableUnit_feature", "_UI_Details_type"),
-				 P2viewPackage.Literals.DETAILS__INSTALLABLE_UNIT,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Details_installableUnit_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Details_installableUnit_feature", "_UI_Details_type"),
+				P2viewPackage.Literals.DETAILS__INSTALLABLE_UNIT, true, false, true, null, null, null));
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -168,6 +160,7 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

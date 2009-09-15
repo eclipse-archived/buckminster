@@ -29,17 +29,17 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getNamespace <em>Namespace</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getRange <em>Range</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getSelectorList <em>Selector List</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isMultiple <em>Multiple</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isOptional <em>Optional</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isGreedy <em>Greedy</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getFilter <em>Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getName <em>Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getNamespace <em>Namespace</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getRange <em>Range</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getSelectorList <em>Selector List</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isMultiple <em>Multiple</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isOptional <em>Optional</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isGreedy <em>Greedy</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container implements RequiredCapability
@@ -47,15 +47,16 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getFilter()
 	 * @generated
 	 * @ordered
@@ -63,9 +64,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final String FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getFilter()
 	 * @generated
 	 * @ordered
@@ -93,9 +94,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getNamespace() <em>Namespace</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getNamespace()
 	 * @generated
 	 * @ordered
@@ -103,9 +104,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final String NAMESPACE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getNamespace() <em>Namespace</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getNamespace()
 	 * @generated
 	 * @ordered
@@ -113,9 +114,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected String namespace = NAMESPACE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getRange() <em>Range</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getRange() <em>Range</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getRange()
 	 * @generated
 	 * @ordered
@@ -133,9 +134,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected VersionRange range = RANGE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getSelectorList() <em>Selector List</em>}' attribute list.
-	 * <!-- begin-user-doc
+	 * The cached value of the '{@link #getSelectorList() <em>Selector List</em>}' attribute list. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getSelectorList()
 	 * @generated
 	 * @ordered
@@ -143,9 +144,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected EList<String> selectorList;
 
 	/**
-	 * The default value of the '{@link #isMultiple() <em>Multiple</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isMultiple() <em>Multiple</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #isMultiple()
 	 * @generated
 	 * @ordered
@@ -153,9 +154,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final boolean MULTIPLE_EDEFAULT = false;
 
 	/**
-	 * The flag representing the value of the '{@link #isMultiple() <em>Multiple</em>}' attribute.
-	 * <!-- begin-user-doc
+	 * The flag representing the value of the '{@link #isMultiple() <em>Multiple</em>}' attribute. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #isMultiple()
 	 * @generated
 	 * @ordered
@@ -163,9 +164,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final int MULTIPLE_EFLAG = 1 << 0;
 
 	/**
-	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #isOptional()
 	 * @generated
 	 * @ordered
@@ -173,9 +174,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final boolean OPTIONAL_EDEFAULT = false;
 
 	/**
-	 * The flag representing the value of the '{@link #isOptional() <em>Optional</em>}' attribute.
-	 * <!-- begin-user-doc
+	 * The flag representing the value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #isOptional()
 	 * @generated
 	 * @ordered
@@ -183,9 +184,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final int OPTIONAL_EFLAG = 1 << 1;
 
 	/**
-	 * The default value of the '{@link #isGreedy() <em>Greedy</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isGreedy() <em>Greedy</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #isGreedy()
 	 * @generated
 	 * @ordered
@@ -193,9 +194,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final boolean GREEDY_EDEFAULT = false;
 
 	/**
-	 * The flag representing the value of the '{@link #isGreedy() <em>Greedy</em>}' attribute.
-	 * <!-- begin-user-doc -->
+	 * The flag representing the value of the '{@link #isGreedy() <em>Greedy</em>}' attribute. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #isGreedy()
 	 * @generated
 	 * @ordered
@@ -204,6 +205,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RequiredCapabilityImpl()
@@ -213,58 +215,68 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.REQUIRED_CAPABILITY__FILTER:
-				return getFilter();
-			case P2Package.REQUIRED_CAPABILITY__NAME:
-				return getName();
-			case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
-				return getNamespace();
-			case P2Package.REQUIRED_CAPABILITY__RANGE:
-				return getRange();
-			case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
-				return getSelectorList();
-			case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
-				return isMultiple();
-			case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
-				return isOptional();
-			case P2Package.REQUIRED_CAPABILITY__GREEDY:
-				return isGreedy();
+		case P2Package.REQUIRED_CAPABILITY__FILTER:
+			return getFilter();
+		case P2Package.REQUIRED_CAPABILITY__NAME:
+			return getName();
+		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
+			return getNamespace();
+		case P2Package.REQUIRED_CAPABILITY__RANGE:
+			return getRange();
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			return getSelectorList();
+		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
+			return isMultiple();
+		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
+			return isOptional();
+		case P2Package.REQUIRED_CAPABILITY__GREEDY:
+			return isGreedy();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.REQUIRED_CAPABILITY__FILTER:
-				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-			case P2Package.REQUIRED_CAPABILITY__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
-				return NAMESPACE_EDEFAULT == null ? namespace != null : !NAMESPACE_EDEFAULT.equals(namespace);
-			case P2Package.REQUIRED_CAPABILITY__RANGE:
-				return RANGE_EDEFAULT == null ? range != null : !RANGE_EDEFAULT.equals(range);
-			case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
-				return selectorList != null && !selectorList.isEmpty();
-			case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
-				return ((eFlags & MULTIPLE_EFLAG) != 0) != MULTIPLE_EDEFAULT;
-			case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
-				return ((eFlags & OPTIONAL_EFLAG) != 0) != OPTIONAL_EDEFAULT;
-			case P2Package.REQUIRED_CAPABILITY__GREEDY:
-				return ((eFlags & GREEDY_EFLAG) != 0) != GREEDY_EDEFAULT;
+		case P2Package.REQUIRED_CAPABILITY__FILTER:
+			return FILTER_EDEFAULT == null
+					? filter != null
+					: !FILTER_EDEFAULT.equals(filter);
+		case P2Package.REQUIRED_CAPABILITY__NAME:
+			return NAME_EDEFAULT == null
+					? name != null
+					: !NAME_EDEFAULT.equals(name);
+		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
+			return NAMESPACE_EDEFAULT == null
+					? namespace != null
+					: !NAMESPACE_EDEFAULT.equals(namespace);
+		case P2Package.REQUIRED_CAPABILITY__RANGE:
+			return RANGE_EDEFAULT == null
+					? range != null
+					: !RANGE_EDEFAULT.equals(range);
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			return selectorList != null && !selectorList.isEmpty();
+		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
+			return ((eFlags & MULTIPLE_EFLAG) != 0) != MULTIPLE_EDEFAULT;
+		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
+			return ((eFlags & OPTIONAL_EFLAG) != 0) != OPTIONAL_EDEFAULT;
+		case P2Package.REQUIRED_CAPABILITY__GREEDY:
+			return ((eFlags & GREEDY_EFLAG) != 0) != GREEDY_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -300,82 +312,85 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.REQUIRED_CAPABILITY__FILTER:
-				setFilter((String)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__NAME:
-				setName((String)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
-				setNamespace((String)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__RANGE:
-				setRange((VersionRange)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
-				getSelectorList().clear();
-				getSelectorList().addAll((Collection<? extends String>)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
-				setMultiple((Boolean)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
-				setOptional((Boolean)newValue);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__GREEDY:
-				setGreedy((Boolean)newValue);
-				return;
+		case P2Package.REQUIRED_CAPABILITY__FILTER:
+			setFilter((String)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__NAME:
+			setName((String)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
+			setNamespace((String)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__RANGE:
+			setRange((VersionRange)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			getSelectorList().clear();
+			getSelectorList().addAll((Collection<? extends String>)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
+			setMultiple((Boolean)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
+			setOptional((Boolean)newValue);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__GREEDY:
+			setGreedy((Boolean)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.REQUIRED_CAPABILITY__FILTER:
-				setFilter(FILTER_EDEFAULT);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__NAME:
-				setName(NAME_EDEFAULT);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
-				setNamespace(NAMESPACE_EDEFAULT);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__RANGE:
-				setRange(RANGE_EDEFAULT);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
-				getSelectorList().clear();
-				return;
-			case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
-				setMultiple(MULTIPLE_EDEFAULT);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
-				setOptional(OPTIONAL_EDEFAULT);
-				return;
-			case P2Package.REQUIRED_CAPABILITY__GREEDY:
-				setGreedy(GREEDY_EDEFAULT);
-				return;
+		case P2Package.REQUIRED_CAPABILITY__FILTER:
+			setFilter(FILTER_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__NAME:
+			setName(NAME_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
+			setNamespace(NAMESPACE_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__RANGE:
+			setRange(RANGE_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
+			getSelectorList().clear();
+			return;
+		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
+			setMultiple(MULTIPLE_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
+			setOptional(OPTIONAL_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__GREEDY:
+			setGreedy(GREEDY_EDEFAULT);
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getFilter()
@@ -385,6 +400,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getName()
@@ -394,6 +410,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getNamespace()
@@ -403,6 +420,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public VersionRange getRange()
@@ -412,13 +430,15 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<String> getSelectorList()
 	{
-		if (selectorList == null)
+		if(selectorList == null)
 		{
-			selectorList = new EDataTypeUniqueEList<String>(String.class, this, P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST);
+			selectorList = new EDataTypeUniqueEList<String>(String.class, this,
+					P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST);
 		}
 		return selectorList;
 	}
@@ -454,6 +474,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isGreedy()
@@ -463,6 +484,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isMultiple()
@@ -472,6 +494,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isOptional()
@@ -481,85 +504,106 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setFilter(String newFilter)
 	{
 		String oldFilter = filter;
 		filter = newFilter;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__FILTER, oldFilter, filter));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__FILTER, oldFilter,
+					filter));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setGreedy(boolean newGreedy)
 	{
 		boolean oldGreedy = (eFlags & GREEDY_EFLAG) != 0;
-		if (newGreedy) eFlags |= GREEDY_EFLAG; else eFlags &= ~GREEDY_EFLAG;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__GREEDY, oldGreedy, newGreedy));
+		if(newGreedy)
+			eFlags |= GREEDY_EFLAG;
+		else
+			eFlags &= ~GREEDY_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__GREEDY, oldGreedy,
+					newGreedy));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setMultiple(boolean newMultiple)
 	{
 		boolean oldMultiple = (eFlags & MULTIPLE_EFLAG) != 0;
-		if (newMultiple) eFlags |= MULTIPLE_EFLAG; else eFlags &= ~MULTIPLE_EFLAG;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__MULTIPLE, oldMultiple, newMultiple));
+		if(newMultiple)
+			eFlags |= MULTIPLE_EFLAG;
+		else
+			eFlags &= ~MULTIPLE_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__MULTIPLE, oldMultiple,
+					newMultiple));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setName(String newName)
 	{
 		String oldName = name;
 		name = newName;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__NAME, oldName, name));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setNamespace(String newNamespace)
 	{
 		String oldNamespace = namespace;
 		namespace = newNamespace;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__NAMESPACE, oldNamespace, namespace));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__NAMESPACE,
+					oldNamespace, namespace));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setOptional(boolean newOptional)
 	{
 		boolean oldOptional = (eFlags & OPTIONAL_EFLAG) != 0;
-		if (newOptional) eFlags |= OPTIONAL_EFLAG; else eFlags &= ~OPTIONAL_EFLAG;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__OPTIONAL, oldOptional, newOptional));
+		if(newOptional)
+			eFlags |= OPTIONAL_EFLAG;
+		else
+			eFlags &= ~OPTIONAL_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__OPTIONAL, oldOptional,
+					newOptional));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setRange(VersionRange newRange)
 	{
 		VersionRange oldRange = range;
 		range = newRange;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__RANGE, oldRange, range));
 	}
 
@@ -612,6 +656,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

@@ -30,10 +30,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl#getPropertyMap <em>Property Map</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl#getPropertyMap <em>Property Map</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class PropertiesImpl extends MinimalEObjectImpl.Container implements Properties
@@ -41,15 +41,16 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getPropertyMap() <em>Property Map</em>}' map.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getPropertyMap() <em>Property Map</em>}' map. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getPropertyMap()
 	 * @generated
 	 * @ordered
@@ -58,6 +59,7 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertiesImpl()
@@ -67,98 +69,108 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-				if (coreType) return getPropertyMap();
-				else return getPropertyMap().map();
+		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
+			if(coreType)
+				return getPropertyMap();
+			else
+				return getPropertyMap().map();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-				return ((InternalEList<?>)getPropertyMap()).basicRemove(otherEnd, msgs);
+		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
+			return ((InternalEList<?>)getPropertyMap()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-				return propertyMap != null && !propertyMap.isEmpty();
+		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
+			return propertyMap != null && !propertyMap.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-				((EStructuralFeature.Setting)getPropertyMap()).set(newValue);
-				return;
+		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
+			((EStructuralFeature.Setting)getPropertyMap()).set(newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-				getPropertyMap().clear();
-				return;
+		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
+			getPropertyMap().clear();
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EMap<String, String> getPropertyMap()
 	{
-		if (propertyMap == null)
+		if(propertyMap == null)
 		{
-			propertyMap = new EcoreEMap<String,String>(P2Package.Literals.PROPERTY, PropertyImpl.class, this, P2viewPackage.PROPERTIES__PROPERTY_MAP);
+			propertyMap = new EcoreEMap<String, String>(P2Package.Literals.PROPERTY, PropertyImpl.class, this,
+					P2viewPackage.PROPERTIES__PROPERTY_MAP);
 		}
 		return propertyMap;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

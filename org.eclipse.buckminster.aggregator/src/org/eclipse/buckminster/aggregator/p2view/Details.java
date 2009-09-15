@@ -14,14 +14,14 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Details</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Details#getInstallableUnit <em>Installable Unit</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Details#getInstallableUnit <em>Installable Unit</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getDetails()
  * @model
  * @generated
@@ -30,13 +30,13 @@ public interface Details extends EObject
 {
 
 	/**
-	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Installable Unit</em>' reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Installable Unit</em>' reference.
 	 * @see #setInstallableUnit(InstallableUnit)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getDetails_InstallableUnit()
@@ -46,9 +46,11 @@ public interface Details extends EObject
 	InstallableUnit getInstallableUnit();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Details#getInstallableUnit <em>Installable Unit</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Installable Unit</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Details#getInstallableUnit
+	 * <em>Installable Unit</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Installable Unit</em>' reference.
 	 * @see #getInstallableUnit()
 	 * @generated
 	 */

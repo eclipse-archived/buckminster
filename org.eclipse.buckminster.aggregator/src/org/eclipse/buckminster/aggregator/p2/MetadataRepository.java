@@ -33,14 +33,14 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
 public interface MetadataRepository extends EObject, IMetadataRepository
 {
 	/**
-	 * Returns the value of the '<em><b>Installable Units</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit}.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Installable Units</b></em>' containment reference list. The list contents are of
+	 * type {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit}. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Installable Units</em>' containment reference list isn't clear, there really should be
 	 * more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Installable Units</em>' containment reference list.
 	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_InstallableUnits()
 	 * @model containment="true" keys="id version"
@@ -59,31 +59,31 @@ public interface MetadataRepository extends EObject, IMetadataRepository
 	String getNameFromProxy();
 
 	/**
-	 * Returns the value of the '<em><b>Property Map</b></em>' map.
-	 * The key is of type {@link java.lang.String},
-	 * and the value is of type {@link java.lang.String},
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Property Map</b></em>' map. The key is of type {@link java.lang.String}, and the
+	 * value is of type {@link java.lang.String}, <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Property Map</em>' map isn't clear, there really should be more of a description
 	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Property Map</em>' map.
 	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_PropertyMap()
-	 * @model mapType="org.eclipse.buckminster.aggregator.p2.Property<org.eclipse.emf.ecore.EString, org.eclipse.emf.ecore.EString>"
+	 * @model mapType=
+	 *        "org.eclipse.buckminster.aggregator.p2.Property<org.eclipse.emf.ecore.EString, org.eclipse.emf.ecore.EString>"
 	 * @generated
 	 */
 	EMap<String, String> getPropertyMap();
 
 	/**
-	 * Returns the value of the '<em><b>Repository References</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference}.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Repository References</b></em>' containment reference list. The list contents
+	 * are of type {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference}. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Repository References</em>' containment reference list isn't clear, there really
 	 * should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Repository References</em>' containment reference list.
 	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getMetadataRepository_RepositoryReferences()
 	 * @model containment="true"

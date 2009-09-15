@@ -19,14 +19,15 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 
 /**
  * <!-- begin-user-doc --> The <b>Resource Factory</b> associated with the package. <!-- end-user-doc -->
+ * 
  * @see org.eclipse.buckminster.aggregator.p2view.util.P2viewResourceImpl
  * @generated
  */
 public class P2viewResourceFactoryImpl extends ResourceFactoryImpl
 {
 	/**
-	 * Creates an instance of the resource factory.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the resource factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public P2viewResourceFactoryImpl()
@@ -35,8 +36,8 @@ public class P2viewResourceFactoryImpl extends ResourceFactoryImpl
 	}
 
 	/**
-	 * Creates an instance of the resource.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the resource. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

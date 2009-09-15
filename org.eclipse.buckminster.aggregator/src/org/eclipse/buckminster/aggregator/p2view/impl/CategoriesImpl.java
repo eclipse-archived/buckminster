@@ -28,10 +28,10 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoriesImpl#getCategories <em>Categories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoriesImpl#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class CategoriesImpl extends MinimalEObjectImpl.Container implements Categories
@@ -39,15 +39,16 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' reference list.
-	 * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' reference list. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #getCategories()
 	 * @generated
 	 * @ordered
@@ -56,6 +57,7 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected CategoriesImpl()
@@ -65,75 +67,80 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORIES__CATEGORIES:
-				return getCategories();
+		case P2viewPackage.CATEGORIES__CATEGORIES:
+			return getCategories();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORIES__CATEGORIES:
-				return categories != null && !categories.isEmpty();
+		case P2viewPackage.CATEGORIES__CATEGORIES:
+			return categories != null && !categories.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORIES__CATEGORIES:
-				getCategories().clear();
-				getCategories().addAll((Collection<? extends Category>)newValue);
-				return;
+		case P2viewPackage.CATEGORIES__CATEGORIES:
+			getCategories().clear();
+			getCategories().addAll((Collection<? extends Category>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORIES__CATEGORIES:
-				getCategories().clear();
-				return;
+		case P2viewPackage.CATEGORIES__CATEGORIES:
+			getCategories().clear();
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<Category> getCategories()
 	{
-		if (categories == null)
+		if(categories == null)
 		{
 			categories = new EObjectResolvingEList<Category>(Category.class, this, P2viewPackage.CATEGORIES__CATEGORIES);
 		}
@@ -142,6 +149,7 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

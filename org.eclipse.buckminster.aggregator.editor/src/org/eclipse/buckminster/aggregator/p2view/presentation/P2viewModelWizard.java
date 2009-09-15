@@ -92,21 +92,22 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 
 /**
- * This is a simple wizard for creating a new model file.
- * <!-- begin-user-doc --> <!-- end-user-doc -->
+ * This is a simple wizard for creating a new model file. <!-- begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class P2viewModelWizard extends Wizard implements INewWizard
 {
 	/**
-	 * This is the page where the type of object to create is selected.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the page where the type of object to create is selected. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public class P2viewModelWizardInitialObjectCreationPage extends WizardPage
 	{
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		protected Combo initialObjectField;
@@ -118,25 +119,27 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		protected Combo encodingField;
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		protected ModifyListener validator = new ModifyListener()
+		{
+			public void modifyText(ModifyEvent e)
 			{
-				public void modifyText(ModifyEvent e)
-				{
-					setPageComplete(validatePage());
-				}
-			};
+				setPageComplete(validatePage());
+			}
+		};
 
 		/**
-		 * Pass in the selection.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * Pass in the selection. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public P2viewModelWizardInitialObjectCreationPage(String pageId)
@@ -146,6 +149,7 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public void createControl(Composite parent)
@@ -181,12 +185,12 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 				initialObjectField.setLayoutData(data);
 			}
 
-			for (String objectName : getInitialObjectNames())
+			for(String objectName : getInitialObjectNames())
 			{
 				initialObjectField.add(getLabel(objectName));
 			}
 
-			if (initialObjectField.getItemCount() == 1)
+			if(initialObjectField.getItemCount() == 1)
 			{
 				initialObjectField.select(0);
 			}
@@ -208,7 +212,7 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 				encodingField.setLayoutData(data);
 			}
 
-			for (String encoding : getEncodings())
+			for(String encoding : getEncodings())
 			{
 				encodingField.add(encoding);
 			}
@@ -222,6 +226,7 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public String getEncoding()
@@ -231,15 +236,16 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public String getInitialObjectName()
 		{
 			String label = initialObjectField.getText();
 
-			for (String name : getInitialObjectNames())
+			for(String name : getInitialObjectNames())
 			{
-				if (getLabel(name).equals(label))
+				if(getLabel(name).equals(label))
 				{
 					return name;
 				}
@@ -249,15 +255,16 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		@Override
 		public void setVisible(boolean visible)
 		{
 			super.setVisible(visible);
-			if (visible)
+			if(visible)
 			{
-				if (initialObjectField.getItemCount() == 1)
+				if(initialObjectField.getItemCount() == 1)
 				{
 					initialObjectField.clearSelection();
 					encodingField.setFocus();
@@ -272,14 +279,16 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		protected Collection<String> getEncodings()
 		{
-			if (encodings == null)
+			if(encodings == null)
 			{
 				encodings = new ArrayList<String>();
-				for (StringTokenizer stringTokenizer = new StringTokenizer(AggregatorEditorPlugin.INSTANCE.getString("_UI_XMLEncodingChoices")); stringTokenizer.hasMoreTokens(); )
+				for(StringTokenizer stringTokenizer = new StringTokenizer(
+						AggregatorEditorPlugin.INSTANCE.getString("_UI_XMLEncodingChoices")); stringTokenizer.hasMoreTokens();)
 				{
 					encodings.add(stringTokenizer.nextToken());
 				}
@@ -288,8 +297,8 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 		}
 
 		/**
-		 * Returns the label for the specified type name.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * Returns the label for the specified type name. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		protected String getLabel(String typeName)
@@ -307,6 +316,7 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		protected boolean validatePage()
@@ -316,15 +326,15 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	}
 
 	/**
-	 * This is the one page of the wizard.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the one page of the wizard. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public class P2viewModelWizardNewFileCreationPage extends WizardNewFileCreationPage
 	{
 		/**
-		 * Pass in the selection.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * Pass in the selection. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public P2viewModelWizardNewFileCreationPage(String pageId, IStructuredSelection selection)
@@ -334,6 +344,7 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public IFile getModelFile()
@@ -342,20 +353,23 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 		}
 
 		/**
-		 * The framework calls this to see if the file is correct.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The framework calls this to see if the file is correct. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		@Override
 		protected boolean validatePage()
 		{
-			if (super.validatePage())
+			if(super.validatePage())
 			{
 				String extension = new Path(getFileName()).getFileExtension();
-				if (extension == null || !FILE_EXTENSIONS.contains(extension))
+				if(extension == null || !FILE_EXTENSIONS.contains(extension))
 				{
-					String key = FILE_EXTENSIONS.size() > 1 ? "_WARN_FilenameExtensions" : "_WARN_FilenameExtension";
-					setErrorMessage(AggregatorEditorPlugin.INSTANCE.getString(key, new Object [] { FORMATTED_FILE_EXTENSIONS }));
+					String key = FILE_EXTENSIONS.size() > 1
+							? "_WARN_FilenameExtensions"
+							: "_WARN_FilenameExtension";
+					setErrorMessage(AggregatorEditorPlugin.INSTANCE.getString(key,
+							new Object[] { FORMATTED_FILE_EXTENSIONS }));
 					return false;
 				}
 				return true;
@@ -365,11 +379,12 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	}
 
 	/**
-	 * The supported extensions for created files.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The supported extensions for created files. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public static final List<String> FILE_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewEditorFilenameExtensions").split("\\s*,\\s*")));
+	public static final List<String> FILE_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(AggregatorEditorPlugin.INSTANCE.getString(
+			"_UI_P2viewEditorFilenameExtensions").split("\\s*,\\s*")));
 
 	/**
 	 * A formatted list of supported file extensions, suitable for display. <!-- begin-user-doc --> <!-- end-user-doc
@@ -377,47 +392,48 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	 * 
 	 * @generated
 	 */
-	public static final String FORMATTED_FILE_EXTENSIONS = AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
+	public static final String FORMATTED_FILE_EXTENSIONS = AggregatorEditorPlugin.INSTANCE.getString(
+			"_UI_P2viewEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
 
 	/**
-	 * This caches an instance of the model package.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This caches an instance of the model package. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected P2viewPackage p2viewPackage = P2viewPackage.eINSTANCE;
 
 	/**
-	 * This caches an instance of the model factory.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This caches an instance of the model factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected P2viewFactory p2viewFactory = p2viewPackage.getP2viewFactory();
 
 	/**
-	 * This is the file creation page.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the file creation page. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected P2viewModelWizardNewFileCreationPage newFileCreationPage;
 
 	/**
-	 * This is the initial object creation page.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the initial object creation page. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected P2viewModelWizardInitialObjectCreationPage initialObjectCreationPage;
 
 	/**
-	 * Remember the selection during initialization for populating the default container.
-	 * <!-- begin-user-doc --> <!--
+	 * Remember the selection during initialization for populating the default container. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IStructuredSelection selection;
 
 	/**
-	 * Remember the workbench during initialization.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Remember the workbench during initialization. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IWorkbench workbench;
@@ -431,8 +447,8 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	protected List<String> initialObjectNames;
 
 	/**
-	 * The framework calls this to create the contents of the wizard.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The framework calls this to create the contents of the wizard. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -443,29 +459,30 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 		newFileCreationPage = new P2viewModelWizardNewFileCreationPage("Whatever", selection);
 		newFileCreationPage.setTitle(AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewModelWizard_label"));
 		newFileCreationPage.setDescription(AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewModelWizard_description"));
-		newFileCreationPage.setFileName(AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewEditorFilenameDefaultBase") + "." + FILE_EXTENSIONS.get(0));
+		newFileCreationPage.setFileName(AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewEditorFilenameDefaultBase")
+				+ "." + FILE_EXTENSIONS.get(0));
 		addPage(newFileCreationPage);
 
 		// Try and get the resource selection to determine a current directory for the file dialog.
 		//
-		if (selection != null && !selection.isEmpty())
+		if(selection != null && !selection.isEmpty())
 		{
 			// Get the resource...
 			//
 			Object selectedElement = selection.iterator().next();
-			if (selectedElement instanceof IResource)
+			if(selectedElement instanceof IResource)
 			{
 				// Get the resource parent, if its a file.
 				//
 				IResource selectedResource = (IResource)selectedElement;
-				if (selectedResource.getType() == IResource.FILE)
+				if(selectedResource.getType() == IResource.FILE)
 				{
 					selectedResource = selectedResource.getParent();
 				}
 
 				// This gives us a directory...
 				//
-				if (selectedResource instanceof IFolder || selectedResource instanceof IProject)
+				if(selectedResource instanceof IFolder || selectedResource instanceof IProject)
 				{
 					// Set this for the container.
 					//
@@ -476,7 +493,7 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 					String defaultModelBaseFilename = AggregatorEditorPlugin.INSTANCE.getString("_UI_P2viewEditorFilenameDefaultBase");
 					String defaultModelFilenameExtension = FILE_EXTENSIONS.get(0);
 					String modelFilename = defaultModelBaseFilename + "." + defaultModelFilenameExtension;
-					for (int i = 1; ((IContainer)selectedResource).findMember(modelFilename) != null; ++i)
+					for(int i = 1; ((IContainer)selectedResource).findMember(modelFilename) != null; ++i)
 					{
 						modelFilename = defaultModelBaseFilename + i + "." + defaultModelFilenameExtension;
 					}
@@ -491,8 +508,8 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	}
 
 	/**
-	 * Get the file from the page.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Get the file from the page. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public IFile getModelFile()
@@ -501,8 +518,8 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	}
 
 	/**
-	 * This just records the information.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This just records the information. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection)
@@ -514,8 +531,8 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	}
 
 	/**
-	 * Do the work after everything is specified.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Do the work after everything is specified. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -529,50 +546,49 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 
 			// Do the work within an operation.
 			//
-			WorkspaceModifyOperation operation =
-				new WorkspaceModifyOperation()
+			WorkspaceModifyOperation operation = new WorkspaceModifyOperation()
+			{
+				@Override
+				protected void execute(IProgressMonitor progressMonitor)
 				{
-					@Override
-					protected void execute(IProgressMonitor progressMonitor)
+					try
 					{
-						try
+						// Create a resource set
+						//
+						ResourceSet resourceSet = new ResourceSetImpl();
+
+						// Get the URI of the model file.
+						//
+						URI fileURI = URI.createPlatformResourceURI(modelFile.getFullPath().toString(), true);
+
+						// Create a resource for this file.
+						//
+						Resource resource = resourceSet.createResource(fileURI);
+
+						// Add the initial model object to the contents.
+						//
+						EObject rootObject = createInitialModel();
+						if(rootObject != null)
 						{
-							// Create a resource set
-							//
-							ResourceSet resourceSet = new ResourceSetImpl();
-
-							// Get the URI of the model file.
-							//
-							URI fileURI = URI.createPlatformResourceURI(modelFile.getFullPath().toString(), true);
-
-							// Create a resource for this file.
-							//
-							Resource resource = resourceSet.createResource(fileURI);
-
-							// Add the initial model object to the contents.
-							//
-							EObject rootObject = createInitialModel();
-							if (rootObject != null)
-							{
-								resource.getContents().add(rootObject);
-							}
-
-							// Save the contents of the resource to the file system.
-							//
-							Map<Object, Object> options = new HashMap<Object, Object>();
-							options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
-							resource.save(options);
+							resource.getContents().add(rootObject);
 						}
-						catch (Exception exception)
-						{
-							AggregatorEditorPlugin.INSTANCE.log(exception);
-						}
-						finally
-						{
-							progressMonitor.done();
-						}
+
+						// Save the contents of the resource to the file system.
+						//
+						Map<Object, Object> options = new HashMap<Object, Object>();
+						options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
+						resource.save(options);
 					}
-				};
+					catch(Exception exception)
+					{
+						AggregatorEditorPlugin.INSTANCE.log(exception);
+					}
+					finally
+					{
+						progressMonitor.done();
+					}
+				}
+			};
 
 			getContainer().run(false, false, operation);
 
@@ -581,36 +597,35 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 			IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = workbenchWindow.getActivePage();
 			final IWorkbenchPart activePart = page.getActivePart();
-			if (activePart instanceof ISetSelectionTarget)
+			if(activePart instanceof ISetSelectionTarget)
 			{
 				final ISelection targetSelection = new StructuredSelection(modelFile);
-				getShell().getDisplay().asyncExec
-					(new Runnable()
-					 {
-						 public void run()
-						 {
-							 ((ISetSelectionTarget)activePart).selectReveal(targetSelection);
-						 }
-					 });
+				getShell().getDisplay().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						((ISetSelectionTarget)activePart).selectReveal(targetSelection);
+					}
+				});
 			}
 
 			// Open an editor on the new file.
 			//
 			try
 			{
-				page.openEditor
-					(new FileEditorInput(modelFile),
-					 workbench.getEditorRegistry().getDefaultEditor(modelFile.getFullPath().toString()).getId());
+				page.openEditor(new FileEditorInput(modelFile), workbench.getEditorRegistry().getDefaultEditor(
+						modelFile.getFullPath().toString()).getId());
 			}
-			catch (PartInitException exception)
+			catch(PartInitException exception)
 			{
-				MessageDialog.openError(workbenchWindow.getShell(), AggregatorEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
+				MessageDialog.openError(workbenchWindow.getShell(),
+						AggregatorEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
 				return false;
 			}
 
 			return true;
 		}
-		catch (Exception exception)
+		catch(Exception exception)
 		{
 			AggregatorEditorPlugin.INSTANCE.log(exception);
 			return false;
@@ -618,8 +633,8 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	}
 
 	/**
-	 * Create a new model.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Create a new model. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected EObject createInitialModel()
@@ -637,15 +652,15 @@ public class P2viewModelWizard extends Wizard implements INewWizard
 	 */
 	protected Collection<String> getInitialObjectNames()
 	{
-		if (initialObjectNames == null)
+		if(initialObjectNames == null)
 		{
 			initialObjectNames = new ArrayList<String>();
-			for (EClassifier eClassifier : p2viewPackage.getEClassifiers())
+			for(EClassifier eClassifier : p2viewPackage.getEClassifiers())
 			{
-				if (eClassifier instanceof EClass)
+				if(eClassifier instanceof EClass)
 				{
 					EClass eClass = (EClass)eClassifier;
-					if (!eClass.isAbstract())
+					if(!eClass.isAbstract())
 					{
 						initialObjectNames.add(eClass.getName());
 					}

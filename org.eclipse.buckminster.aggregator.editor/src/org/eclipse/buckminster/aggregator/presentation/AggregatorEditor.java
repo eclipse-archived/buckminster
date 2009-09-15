@@ -161,8 +161,8 @@ import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 /**
- * This is an example of a Aggregator model editor.
- * <!-- begin-user-doc --> <!-- end-user-doc -->
+ * This is an example of a Aggregator model editor. <!-- begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class AggregatorEditor extends MultiPageEditorPart implements IEditingDomainProvider, ISelectionProvider,
@@ -170,12 +170,14 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public class ReverseAdapterFactoryContentProvider extends AdapterFactoryContentProvider
 	{
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public ReverseAdapterFactoryContentProvider(AdapterFactory adapterFactory)
@@ -185,28 +187,35 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		@Override
-		public Object [] getChildren(Object object)
+		public Object[] getChildren(Object object)
 		{
 			Object parent = super.getParent(object);
-			return (parent == null ? Collections.EMPTY_SET : Collections.singleton(parent)).toArray();
+			return (parent == null
+					? Collections.EMPTY_SET
+					: Collections.singleton(parent)).toArray();
 		}
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		@Override
-		public Object [] getElements(Object object)
+		public Object[] getElements(Object object)
 		{
 			Object parent = super.getParent(object);
-			return (parent == null ? Collections.EMPTY_SET : Collections.singleton(parent)).toArray();
+			return (parent == null
+					? Collections.EMPTY_SET
+					: Collections.singleton(parent)).toArray();
 		}
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		@Override
@@ -217,6 +226,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		/**
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		@Override
@@ -228,8 +238,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This looks up a string in the plugin's plugin.properties file.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	private static String getString(String key)
@@ -238,19 +248,19 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This looks up a string in plugin.properties, making a substitution.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This looks up a string in plugin.properties, making a substitution. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	private static String getString(String key, Object s1)
 	{
-		return AggregatorEditorPlugin.INSTANCE.getString(key, new Object [] { s1 });
+		return AggregatorEditorPlugin.INSTANCE.getString(key, new Object[] { s1 });
 	}
 
 	/**
-	 * This keeps track of the editing domain that is used to track all changes to the model.
-	 * <!-- begin-user-doc -->
+	 * This keeps track of the editing domain that is used to track all changes to the model. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected AdapterFactoryEditingDomain editingDomain;
@@ -264,324 +274,330 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	protected ComposedAdapterFactory adapterFactory;
 
 	/**
-	 * This is the content outline page.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the content outline page. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IContentOutlinePage contentOutlinePage;
 
 	/**
-	 * This is a kludge...
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is a kludge... <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IStatusLineManager contentOutlineStatusLineManager;
 
 	/**
-	 * This is the content outline page's viewer.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the content outline page's viewer. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected TreeViewer contentOutlineViewer;
 
 	/**
-	 * This is the property sheet page.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the property sheet page. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertySheetPage propertySheetPage;
 
 	/**
-	 * This is the viewer that shadows the selection in the content outline.
-	 * The parent relation must be correctly defined for this to work.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is the viewer that shadows the selection in the content outline. The parent relation must be correctly
+	 * defined for this to work. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected TreeViewer selectionViewer;
 
 	/**
-	 * This keeps track of the active content viewer, which may be either one of the viewers in the pages or the content outline viewer.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the active content viewer, which may be either one of the viewers in the pages or the content
+	 * outline viewer. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Viewer currentViewer;
 
 	/**
-	 * This listens to which ever viewer is active.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This listens to which ever viewer is active. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ISelectionChangedListener selectionChangedListener;
 
 	/**
-	 * This keeps track of all the {@link org.eclipse.jface.viewers.ISelectionChangedListener}s that are listening to this editor.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of all the {@link org.eclipse.jface.viewers.ISelectionChangedListener}s that are listening to
+	 * this editor. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Collection<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
 	/**
-	 * This keeps track of the selection of the editor as a whole.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the selection of the editor as a whole. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ISelection editorSelection = StructuredSelection.EMPTY;
 
 	/**
-	 * The MarkerHelper is responsible for creating workspace resource markers presented
-	 * in Eclipse's Problems View.
+	 * The MarkerHelper is responsible for creating workspace resource markers presented in Eclipse's Problems View.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected MarkerHelper markerHelper = new EditUIMarkerHelper();
 
 	/**
-	 * This listens for when the outline becomes active
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This listens for when the outline becomes active <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IPartListener partListener = new IPartListener()
+	{
+		public void partActivated(IWorkbenchPart p)
 		{
-			public void partActivated(IWorkbenchPart p)
+			if(p instanceof ContentOutline)
 			{
-				if (p instanceof ContentOutline)
+				if(((ContentOutline)p).getCurrentPage() == contentOutlinePage)
 				{
-					if (((ContentOutline)p).getCurrentPage() == contentOutlinePage)
-					{
-						getActionBarContributor().setActiveEditor(AggregatorEditor.this);
+					getActionBarContributor().setActiveEditor(AggregatorEditor.this);
 
-						setCurrentViewer(contentOutlineViewer);
-					}
+					setCurrentViewer(contentOutlineViewer);
 				}
-				else if (p instanceof PropertySheet)
+			}
+			else if(p instanceof PropertySheet)
+			{
+				if(((PropertySheet)p).getCurrentPage() == propertySheetPage)
 				{
-					if (((PropertySheet)p).getCurrentPage() == propertySheetPage)
-					{
-						getActionBarContributor().setActiveEditor(AggregatorEditor.this);
-						handleActivate();
-					}
-				}
-				else if (p == AggregatorEditor.this)
-				{
+					getActionBarContributor().setActiveEditor(AggregatorEditor.this);
 					handleActivate();
 				}
 			}
-			public void partBroughtToTop(IWorkbenchPart p)
+			else if(p == AggregatorEditor.this)
 			{
-				// Ignore.
+				handleActivate();
 			}
-			public void partClosed(IWorkbenchPart p)
-			{
-				// Ignore.
-			}
-			public void partDeactivated(IWorkbenchPart p)
-			{
-				// Ignore.
-			}
-			public void partOpened(IWorkbenchPart p)
-			{
-				// Ignore.
-			}
-		};
+		}
+
+		public void partBroughtToTop(IWorkbenchPart p)
+		{
+			// Ignore.
+		}
+
+		public void partClosed(IWorkbenchPart p)
+		{
+			// Ignore.
+		}
+
+		public void partDeactivated(IWorkbenchPart p)
+		{
+			// Ignore.
+		}
+
+		public void partOpened(IWorkbenchPart p)
+		{
+			// Ignore.
+		}
+	};
 
 	/**
-	 * Resources that have been removed since last activation.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Resources that have been removed since last activation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Collection<Resource> removedResources = new ArrayList<Resource>();
 
 	/**
-	 * Resources that have been changed since last activation.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Resources that have been changed since last activation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Collection<Resource> changedResources = new ArrayList<Resource>();
 
 	/**
-	 * Resources that have been saved.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Resources that have been saved. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Collection<Resource> savedResources = new ArrayList<Resource>();
 
 	/**
-	 * Map to store the diagnostic associated with a resource.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Map to store the diagnostic associated with a resource. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Map<Resource, Diagnostic> resourceToDiagnosticMap = new LinkedHashMap<Resource, Diagnostic>();
 
 	/**
-	 * Controls whether the problem indication should be updated.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Controls whether the problem indication should be updated. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected boolean updateProblemIndication = true;
 
 	/**
-	 * Adapter used to update the problem indication when resources are demanded loaded.
-	 * <!-- begin-user-doc --> <!--
+	 * Adapter used to update the problem indication when resources are demanded loaded. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected EContentAdapter problemIndicationAdapter = new EContentAdapter()
+	{
+		@Override
+		public void notifyChanged(Notification notification)
 		{
-			@Override
-			public void notifyChanged(Notification notification)
+			if(notification.getNotifier() instanceof Resource)
 			{
-				if (notification.getNotifier() instanceof Resource)
+				switch(notification.getFeatureID(Resource.class))
 				{
-					switch (notification.getFeatureID(Resource.class))
+				case Resource.RESOURCE__IS_LOADED:
+				case Resource.RESOURCE__ERRORS:
+				case Resource.RESOURCE__WARNINGS:
+				{
+					Resource resource = (Resource)notification.getNotifier();
+					Diagnostic diagnostic = analyzeResourceProblems(resource, null);
+					if(diagnostic.getSeverity() != Diagnostic.OK)
 					{
-						case Resource.RESOURCE__IS_LOADED:
-						case Resource.RESOURCE__ERRORS:
-						case Resource.RESOURCE__WARNINGS:
-						{
-							Resource resource = (Resource)notification.getNotifier();
-							Diagnostic diagnostic = analyzeResourceProblems(resource, null);
-							if (diagnostic.getSeverity() != Diagnostic.OK)
-							{
-								resourceToDiagnosticMap.put(resource, diagnostic);
-							}
-							else
-							{
-								resourceToDiagnosticMap.remove(resource);
-							}
-
-							if (updateProblemIndication)
-							{
-								getSite().getShell().getDisplay().asyncExec
-									(new Runnable()
-									 {
-										 public void run()
-										 {
-											 updateProblemIndication();
-										 }
-									 });
-							}
-							break;
-						}
+						resourceToDiagnosticMap.put(resource, diagnostic);
 					}
-				}
-				else
-				{
-					super.notifyChanged(notification);
-				}
-			}
+					else
+					{
+						resourceToDiagnosticMap.remove(resource);
+					}
 
-			@Override
-			protected void setTarget(Resource target)
-			{
-				basicSetTarget(target);
+					if(updateProblemIndication)
+					{
+						getSite().getShell().getDisplay().asyncExec(new Runnable()
+						{
+							public void run()
+							{
+								updateProblemIndication();
+							}
+						});
+					}
+					break;
+				}
+				}
 			}
+			else
+			{
+				super.notifyChanged(notification);
+			}
+		}
 
-			@Override
-			protected void unsetTarget(Resource target)
-			{
-				basicUnsetTarget(target);
-			}
-		};
+		@Override
+		protected void setTarget(Resource target)
+		{
+			basicSetTarget(target);
+		}
+
+		@Override
+		protected void unsetTarget(Resource target)
+		{
+			basicUnsetTarget(target);
+		}
+	};
 
 	/**
-	 * This listens for workspace changes.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This listens for workspace changes. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IResourceChangeListener resourceChangeListener = new IResourceChangeListener()
+	{
+		public void resourceChanged(IResourceChangeEvent event)
 		{
-			public void resourceChanged(IResourceChangeEvent event)
+			IResourceDelta delta = event.getDelta();
+			try
 			{
-				IResourceDelta delta = event.getDelta();
-				try
+				class ResourceDeltaVisitor implements IResourceDeltaVisitor
 				{
-					class ResourceDeltaVisitor implements IResourceDeltaVisitor
-					{
-						protected ResourceSet resourceSet = editingDomain.getResourceSet();
-						protected Collection<Resource> changedResources = new ArrayList<Resource>();
-						protected Collection<Resource> removedResources = new ArrayList<Resource>();
+					protected ResourceSet resourceSet = editingDomain.getResourceSet();
 
-						public boolean visit(IResourceDelta delta)
+					protected Collection<Resource> changedResources = new ArrayList<Resource>();
+
+					protected Collection<Resource> removedResources = new ArrayList<Resource>();
+
+					public Collection<Resource> getChangedResources()
+					{
+						return changedResources;
+					}
+
+					public Collection<Resource> getRemovedResources()
+					{
+						return removedResources;
+					}
+
+					public boolean visit(IResourceDelta delta)
+					{
+						if(delta.getResource().getType() == IResource.FILE)
 						{
-							if (delta.getResource().getType() == IResource.FILE)
+							if(delta.getKind() == IResourceDelta.REMOVED || delta.getKind() == IResourceDelta.CHANGED
+									&& delta.getFlags() != IResourceDelta.MARKERS)
 							{
-								if (delta.getKind() == IResourceDelta.REMOVED ||
-								    delta.getKind() == IResourceDelta.CHANGED && delta.getFlags() != IResourceDelta.MARKERS)
+								Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(
+										delta.getFullPath().toString(), true), false);
+								if(resource != null)
 								{
-									Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(delta.getFullPath().toString(), true), false);
-									if (resource != null)
+									if(delta.getKind() == IResourceDelta.REMOVED)
 									{
-										if (delta.getKind() == IResourceDelta.REMOVED)
-										{
-											removedResources.add(resource);
-										}
-										else if (!savedResources.remove(resource))
-										{
-											changedResources.add(resource);
-										}
+										removedResources.add(resource);
+									}
+									else if(!savedResources.remove(resource))
+									{
+										changedResources.add(resource);
 									}
 								}
 							}
-
-							return true;
 						}
 
-						public Collection<Resource> getChangedResources()
-						{
-							return changedResources;
-						}
-
-						public Collection<Resource> getRemovedResources()
-						{
-							return removedResources;
-						}
-					}
-
-					final ResourceDeltaVisitor visitor = new ResourceDeltaVisitor();
-					delta.accept(visitor);
-
-					if (!visitor.getRemovedResources().isEmpty())
-					{
-						getSite().getShell().getDisplay().asyncExec
-							(new Runnable()
-							 {
-								 public void run()
-								 {
-									 removedResources.addAll(visitor.getRemovedResources());
-									 if (!isDirty())
-									 {
-										 getSite().getPage().closeEditor(AggregatorEditor.this, false);
-									 }
-								 }
-							 });
-					}
-
-					if (!visitor.getChangedResources().isEmpty())
-					{
-						getSite().getShell().getDisplay().asyncExec
-							(new Runnable()
-							 {
-								 public void run()
-								 {
-									 changedResources.addAll(visitor.getChangedResources());
-									 if (getSite().getPage().getActiveEditor() == AggregatorEditor.this)
-									 {
-										 handleActivate();
-									 }
-								 }
-							 });
+						return true;
 					}
 				}
-				catch (CoreException exception)
+
+				final ResourceDeltaVisitor visitor = new ResourceDeltaVisitor();
+				delta.accept(visitor);
+
+				if(!visitor.getRemovedResources().isEmpty())
 				{
-					AggregatorEditorPlugin.INSTANCE.log(exception);
+					getSite().getShell().getDisplay().asyncExec(new Runnable()
+					{
+						public void run()
+						{
+							removedResources.addAll(visitor.getRemovedResources());
+							if(!isDirty())
+							{
+								getSite().getPage().closeEditor(AggregatorEditor.this, false);
+							}
+						}
+					});
+				}
+
+				if(!visitor.getChangedResources().isEmpty())
+				{
+					getSite().getShell().getDisplay().asyncExec(new Runnable()
+					{
+						public void run()
+						{
+							changedResources.addAll(visitor.getChangedResources());
+							if(getSite().getPage().getActiveEditor() == AggregatorEditor.this)
+							{
+								handleActivate();
+							}
+						}
+					});
 				}
 			}
-		};
+			catch(CoreException exception)
+			{
+				AggregatorEditorPlugin.INSTANCE.log(exception);
+			}
+		}
+	};
 
 	/**
-	 * This creates a model editor.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This creates a model editor. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public AggregatorEditor()
@@ -602,34 +618,27 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * Returns a diagnostic describing the errors and warnings listed in the resource
-	 * and the specified exception (if any).
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a diagnostic describing the errors and warnings listed in the resource and the specified exception (if
+	 * any). <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Diagnostic analyzeResourceProblems(Resource resource, Exception exception)
 	{
-		if (!resource.getErrors().isEmpty() || !resource.getWarnings().isEmpty())
+		if(!resource.getErrors().isEmpty() || !resource.getWarnings().isEmpty())
 		{
-			BasicDiagnostic basicDiagnostic =
-				new BasicDiagnostic
-					(Diagnostic.ERROR,
-					 "org.eclipse.buckminster.aggregator.editor",
-					 0,
-					 getString("_UI_CreateModelError_message", resource.getURI()),
-					 new Object [] { exception == null ? (Object)resource : exception });
+			BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.ERROR,
+					"org.eclipse.buckminster.aggregator.editor", 0, getString("_UI_CreateModelError_message",
+							resource.getURI()), new Object[] { exception == null
+							? (Object)resource
+							: exception });
 			basicDiagnostic.merge(EcoreUtil.computeDiagnostic(resource, true));
 			return basicDiagnostic;
 		}
-		else if (exception != null)
+		else if(exception != null)
 		{
-			return
-				new BasicDiagnostic
-					(Diagnostic.ERROR,
-					 "org.eclipse.buckminster.aggregator.editor",
-					 0,
-					 getString("_UI_CreateModelError_message", resource.getURI()),
-					 new Object[] { exception });
+			return new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.buckminster.aggregator.editor", 0, getString(
+					"_UI_CreateModelError_message", resource.getURI()), new Object[] { exception });
 		}
 		else
 		{
@@ -706,6 +715,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	/**
 	 * This is the method called to load a resource into the editing domain's resource set based on the editor's input.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void createModelGen()
@@ -719,16 +729,16 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			//
 			resource = editingDomain.getResourceSet().getResource(resourceURI, true);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			exception = e;
 			resource = editingDomain.getResourceSet().getResource(resourceURI, false);
 		}
 
 		Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
-		if (diagnostic.getSeverity() != Diagnostic.OK)
+		if(diagnostic.getSeverity() != Diagnostic.OK)
 		{
-			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
+			resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
 		}
 		editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
 	}
@@ -748,7 +758,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		// Only creates the other pages if there is something that can be edited
 		//
-		if (!getEditingDomain().getResourceSet().getResources().isEmpty())
+		if(!getEditingDomain().getResourceSet().getResources().isEmpty())
 		{
 			// Create a page for the selection tree view.
 			//
@@ -759,7 +769,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 			selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 			selectionViewer.setInput(editingDomain.getResourceSet());
-			selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+			selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)),
+					true);
 
 			new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
 
@@ -767,47 +778,46 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			int pageIndex = addPage(tree);
 			setPageText(pageIndex, getString("_UI_SelectionPage_label"));
 
-			getSite().getShell().getDisplay().asyncExec
-				(new Runnable()
-				 {
-					 public void run()
-					 {
-						 setActivePage(0);
-					 }
-				 });
+			getSite().getShell().getDisplay().asyncExec(new Runnable()
+			{
+				public void run()
+				{
+					setActivePage(0);
+				}
+			});
 		}
 
 		// Ensures that this editor will only display the page's tab
 		// area if there are more than one page
 		//
-		getContainer().addControlListener
-			(new ControlAdapter()
-			 {
-				boolean guard = false;
-				@Override
-				public void controlResized(ControlEvent event)
-				{
-					if (!guard)
-					{
-						guard = true;
-						hideTabs();
-						guard = false;
-					}
-				}
-			 });
+		getContainer().addControlListener(new ControlAdapter()
+		{
+			boolean guard = false;
 
-		getSite().getShell().getDisplay().asyncExec
-			(new Runnable()
-			 {
-				 public void run()
-				 {
-					 updateProblemIndication();
-				 }
-			 });
+			@Override
+			public void controlResized(ControlEvent event)
+			{
+				if(!guard)
+				{
+					guard = true;
+					hideTabs();
+					guard = false;
+				}
+			}
+		});
+
+		getSite().getShell().getDisplay().asyncExec(new Runnable()
+		{
+			public void run()
+			{
+				updateProblemIndication();
+			}
+		});
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -821,17 +831,17 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		adapterFactory.dispose();
 
-		if (getActionBarContributor().getActiveEditor() == this)
+		if(getActionBarContributor().getActiveEditor() == this)
 		{
 			getActionBarContributor().setActiveEditor(null);
 		}
 
-		if (propertySheetPage != null)
+		if(propertySheetPage != null)
 		{
 			propertySheetPage.dispose();
 		}
 
-		if (contentOutlinePage != null)
+		if(contentOutlinePage != null)
 		{
 			contentOutlinePage.dispose();
 		}
@@ -840,9 +850,9 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This is for implementing {@link IEditorPart} and simply saves the model file.
-	 * <!-- begin-user-doc --> <!--
+	 * This is for implementing {@link IEditorPart} and simply saves the model file. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -855,39 +865,39 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		// Do the work within an operation because this is a long running activity that modifies the workbench.
 		//
-		WorkspaceModifyOperation operation =
-			new WorkspaceModifyOperation()
+		WorkspaceModifyOperation operation = new WorkspaceModifyOperation()
+		{
+			// This is the method that gets invoked when the operation runs.
+			//
+			@Override
+			public void execute(IProgressMonitor monitor)
 			{
-				// This is the method that gets invoked when the operation runs.
+				// Save the resources to the file system.
 				//
-				@Override
-				public void execute(IProgressMonitor monitor)
+				boolean first = true;
+				for(Resource resource : editingDomain.getResourceSet().getResources())
 				{
-					// Save the resources to the file system.
-					//
-					boolean first = true;
-					for (Resource resource : editingDomain.getResourceSet().getResources())
+					if((first || !resource.getContents().isEmpty() || isPersisted(resource))
+							&& !editingDomain.isReadOnly(resource))
 					{
-						if ((first || !resource.getContents().isEmpty() || isPersisted(resource)) && !editingDomain.isReadOnly(resource))
+						try
 						{
-							try
+							long timeStamp = resource.getTimeStamp();
+							resource.save(saveOptions);
+							if(resource.getTimeStamp() != timeStamp)
 							{
-								long timeStamp = resource.getTimeStamp();
-								resource.save(saveOptions);
-								if (resource.getTimeStamp() != timeStamp)
-								{
-									savedResources.add(resource);
-								}
+								savedResources.add(resource);
 							}
-							catch (Exception exception)
-							{
-								resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
-							}
-							first = false;
 						}
+						catch(Exception exception)
+						{
+							resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
+						}
+						first = false;
 					}
 				}
-			};
+			}
+		};
 
 		updateProblemIndication = false;
 		try
@@ -901,7 +911,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		}
-		catch (Exception exception)
+		catch(Exception exception)
 		{
 			// Something went wrong that shouldn't.
 			//
@@ -912,8 +922,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This also changes the editor's input.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This also changes the editor's input. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -922,10 +932,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		SaveAsDialog saveAsDialog = new SaveAsDialog(getSite().getShell());
 		saveAsDialog.open();
 		IPath path = saveAsDialog.getResult();
-		if (path != null)
+		if(path != null)
 		{
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-			if (file != null)
+			if(file != null)
 			{
 				doSaveAs(URI.createPlatformResourceURI(file.getFullPath().toString(), true), new FileEditorInput(file));
 			}
@@ -934,6 +944,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EditingDomainActionBarContributor getActionBarContributor()
@@ -943,6 +954,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public IActionBars getActionBars()
@@ -951,23 +963,25 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This is how the framework determines which interfaces we implement.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is how the framework determines which interfaces we implement. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class key)
 	{
-		if (key.equals(IContentOutlinePage.class))
+		if(key.equals(IContentOutlinePage.class))
 		{
-			return showOutlineView() ? getContentOutlinePage() : null;
+			return showOutlineView()
+					? getContentOutlinePage()
+					: null;
 		}
-		else if (key.equals(IPropertySheetPage.class))
+		else if(key.equals(IPropertySheetPage.class))
 		{
 			return getPropertySheetPage();
 		}
-		else if (key.equals(IGotoMarker.class))
+		else if(key.equals(IGotoMarker.class))
 		{
 			return this;
 		}
@@ -979,6 +993,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public AdapterFactory getAdapterFactory()
@@ -987,13 +1002,13 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This accesses a cached version of the content outliner.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This accesses a cached version of the content outliner. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public IContentOutlinePage getContentOutlinePage()
 	{
-		if (contentOutlinePage == null)
+		if(contentOutlinePage == null)
 		{
 			// The content outline is just a tree.
 			//
@@ -1016,16 +1031,18 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					//
 					createContextMenuFor(contentOutlineViewer);
 
-					if (!editingDomain.getResourceSet().getResources().isEmpty())
+					if(!editingDomain.getResourceSet().getResources().isEmpty())
 					{
-					  // Select the root object in the view.
-					  //
-					  contentOutlineViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+						// Select the root object in the view.
+						//
+						contentOutlineViewer.setSelection(new StructuredSelection(
+								editingDomain.getResourceSet().getResources().get(0)), true);
 					}
 				}
 
 				@Override
-				public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager, IStatusLineManager statusLineManager)
+				public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager,
+						IStatusLineManager statusLineManager)
 				{
 					super.makeContributions(menuManager, toolBarManager, statusLineManager);
 					contentOutlineStatusLineManager = statusLineManager;
@@ -1043,26 +1060,25 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 			// Listen to selection so that we can handle it is a special way.
 			//
-			contentOutlinePage.addSelectionChangedListener
-				(new ISelectionChangedListener()
-				 {
-					 // This ensures that we handle selections correctly.
-					 //
-					 public void selectionChanged(SelectionChangedEvent event)
-					 {
-						 handleContentOutlineSelection(event.getSelection());
-					 }
-				 });
+			contentOutlinePage.addSelectionChangedListener(new ISelectionChangedListener()
+			{
+				// This ensures that we handle selections correctly.
+				//
+				public void selectionChanged(SelectionChangedEvent event)
+				{
+					handleContentOutlineSelection(event.getSelection());
+				}
+			});
 		}
 
 		return contentOutlinePage;
 	}
 
 	/**
-	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
-	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}
-	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface. This is important
+	 * for implementing the static methods of {@link AdapterFactoryEditingDomain} and for supporting
+	 * {@link org.eclipse.emf.edit.ui.action.CommandAction}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EditingDomain getEditingDomain()
@@ -1071,31 +1087,30 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This accesses a cached version of the property sheet.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This accesses a cached version of the property sheet. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public IPropertySheetPage getPropertySheetPage()
 	{
-		if (propertySheetPage == null)
+		if(propertySheetPage == null)
 		{
-			propertySheetPage =
-				new ExtendedPropertySheetPage(editingDomain)
+			propertySheetPage = new ExtendedPropertySheetPage(editingDomain)
+			{
+				@Override
+				public void setActionBars(IActionBars actionBars)
 				{
-					@Override
-					public void setSelectionToViewer(List<?> selection)
-					{
-						AggregatorEditor.this.setSelectionToViewer(selection);
-						AggregatorEditor.this.setFocus();
-					}
+					super.setActionBars(actionBars);
+					getActionBarContributor().shareGlobalActions(this, actionBars);
+				}
 
-					@Override
-					public void setActionBars(IActionBars actionBars)
-					{
-						super.setActionBars(actionBars);
-						getActionBarContributor().shareGlobalActions(this, actionBars);
-					}
-				};
+				@Override
+				public void setSelectionToViewer(List<?> selection)
+				{
+					AggregatorEditor.this.setSelectionToViewer(selection);
+					AggregatorEditor.this.setFocus();
+				}
+			};
 			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
 		}
 
@@ -1105,6 +1120,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	/**
 	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider} to return this editor's overall selection.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public ISelection getSelection()
@@ -1113,9 +1129,9 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This returns the viewer as required by the {@link IViewerProvider} interface.
-	 * <!-- begin-user-doc --> <!--
+	 * This returns the viewer as required by the {@link IViewerProvider} interface. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Viewer getViewer()
@@ -1125,44 +1141,45 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void gotoMarker(IMarker marker)
 	{
 		try
 		{
-			if (marker.getType().equals(EValidator.MARKER))
+			if(marker.getType().equals(EValidator.MARKER))
 			{
 				String uriAttribute = marker.getAttribute(EValidator.URI_ATTRIBUTE, null);
-				if (uriAttribute != null)
+				if(uriAttribute != null)
 				{
 					URI uri = URI.createURI(uriAttribute);
 					EObject eObject = editingDomain.getResourceSet().getEObject(uri, true);
-					if (eObject != null)
+					if(eObject != null)
 					{
-					  setSelectionToViewer(Collections.singleton(editingDomain.getWrapper(eObject)));
+						setSelectionToViewer(Collections.singleton(editingDomain.getWrapper(eObject)));
 					}
 				}
 			}
 		}
-		catch (CoreException exception)
+		catch(CoreException exception)
 		{
 			AggregatorEditorPlugin.INSTANCE.log(exception);
 		}
 	}
 
 	/**
-	 * This deals with how we want selection in the outliner to affect the other views.
-	 * <!-- begin-user-doc --> <!--
+	 * This deals with how we want selection in the outliner to affect the other views. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void handleContentOutlineSelection(ISelection selection)
 	{
-		if (selectionViewer != null && !selection.isEmpty() && selection instanceof IStructuredSelection)
+		if(selectionViewer != null && !selection.isEmpty() && selection instanceof IStructuredSelection)
 		{
 			Iterator<?> selectedElements = ((IStructuredSelection)selection).iterator();
-			if (selectedElements.hasNext())
+			if(selectedElements.hasNext())
 			{
 				// Get the first selected element.
 				//
@@ -1170,7 +1187,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 				ArrayList<Object> selectionList = new ArrayList<Object>();
 				selectionList.add(selectedElement);
-				while (selectedElements.hasNext())
+				while(selectedElements.hasNext())
 				{
 					selectionList.add(selectedElements.next());
 				}
@@ -1183,8 +1200,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This is called during startup.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is called during startup. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -1195,13 +1212,14 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		setPartName(editorInput.getName());
 		site.setSelectionProvider(this);
 		site.getPage().addPartListener(partListener);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener,
+				IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/**
-	 * This is for implementing {@link IEditorPart} and simply tests the command stack.
-	 * <!-- begin-user-doc --> <!--
+	 * This is for implementing {@link IEditorPart} and simply tests the command stack. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -1211,8 +1229,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This always returns true because it is not currently supported.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This always returns true because it is not currently supported. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -1222,8 +1240,9 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This implements {@link org.eclipse.jface.action.IMenuListener} to help fill the context menus with contributions from the Edit menu.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This implements {@link org.eclipse.jface.action.IMenuListener} to help fill the context menus with contributions
+	 * from the Edit menu. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void menuAboutToShow(IMenuManager menuManager)
@@ -1243,43 +1262,42 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This makes sure that one content viewer, either for the current page or the outline view, if it has focus,
-	 * is the current one.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This makes sure that one content viewer, either for the current page or the outline view, if it has focus, is the
+	 * current one. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setCurrentViewer(Viewer viewer)
 	{
 		// If it is changing...
 		//
-		if (currentViewer != viewer)
+		if(currentViewer != viewer)
 		{
-			if (selectionChangedListener == null)
+			if(selectionChangedListener == null)
 			{
 				// Create the listener on demand.
 				//
-				selectionChangedListener =
-					new ISelectionChangedListener()
+				selectionChangedListener = new ISelectionChangedListener()
+				{
+					// This just notifies those things that are affected by the section.
+					//
+					public void selectionChanged(SelectionChangedEvent selectionChangedEvent)
 					{
-						// This just notifies those things that are affected by the section.
-						//
-						public void selectionChanged(SelectionChangedEvent selectionChangedEvent)
-						{
-							setSelection(selectionChangedEvent.getSelection());
-						}
-					};
+						setSelection(selectionChangedEvent.getSelection());
+					}
+				};
 			}
 
 			// Stop listening to the old one.
 			//
-			if (currentViewer != null)
+			if(currentViewer != null)
 			{
 				currentViewer.removeSelectionChangedListener(selectionChangedListener);
 			}
 
 			// Start listening to the new one.
 			//
-			if (viewer != null)
+			if(viewer != null)
 			{
 				viewer.addSelectionChangedListener(selectionChangedListener);
 			}
@@ -1290,12 +1308,15 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 			// Set the editors selection based on the current viewer's selection.
 			//
-			setSelection(currentViewer == null ? StructuredSelection.EMPTY : currentViewer.getSelection());
+			setSelection(currentViewer == null
+					? StructuredSelection.EMPTY
+					: currentViewer.getSelection());
 		}
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -1306,15 +1327,15 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 	/**
 	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider} to set this editor's overall selection.
-	 * Calling this result will notify the listeners.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Calling this result will notify the listeners. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setSelection(ISelection selection)
 	{
 		editorSelection = selection;
 
-		for (ISelectionChangedListener listener : selectionChangedListeners)
+		for(ISelectionChangedListener listener : selectionChangedListeners)
 		{
 			listener.selectionChanged(new SelectionChangedEvent(this, selection));
 		}
@@ -1322,8 +1343,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This sets the selection into whichever viewer is active.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This sets the selection into whichever viewer is active. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setSelectionToViewer(Collection<?> collection)
@@ -1331,57 +1352,59 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		final Collection<?> theSelection = collection;
 		// Make sure it's okay.
 		//
-		if (theSelection != null && !theSelection.isEmpty())
+		if(theSelection != null && !theSelection.isEmpty())
 		{
-			Runnable runnable =
-				new Runnable()
+			Runnable runnable = new Runnable()
+			{
+				public void run()
 				{
-					public void run()
+					// Try to select the items in the current content viewer of the editor.
+					//
+					if(currentViewer != null)
 					{
-						// Try to select the items in the current content viewer of the editor.
-						//
-						if (currentViewer != null)
-						{
-							currentViewer.setSelection(new StructuredSelection(theSelection.toArray()), true);
-						}
+						currentViewer.setSelection(new StructuredSelection(theSelection.toArray()), true);
 					}
-				};
+				}
+			};
 			getSite().getShell().getDisplay().asyncExec(runnable);
 		}
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setStatusLineManager(ISelection selection)
 	{
-		IStatusLineManager statusLineManager = currentViewer != null && currentViewer == contentOutlineViewer ?
-			contentOutlineStatusLineManager : getActionBars().getStatusLineManager();
+		IStatusLineManager statusLineManager = currentViewer != null && currentViewer == contentOutlineViewer
+				? contentOutlineStatusLineManager
+				: getActionBars().getStatusLineManager();
 
-		if (statusLineManager != null)
+		if(statusLineManager != null)
 		{
-			if (selection instanceof IStructuredSelection)
+			if(selection instanceof IStructuredSelection)
 			{
 				Collection<?> collection = ((IStructuredSelection)selection).toList();
-				switch (collection.size())
+				switch(collection.size())
 				{
-					case 0:
-					{
-						statusLineManager.setMessage(getString("_UI_NoObjectSelected"));
-						break;
-					}
-					case 1:
-					{
-						String text = new AdapterFactoryItemDelegator(adapterFactory).getText(collection.iterator().next());
-						statusLineManager.setMessage(getString("_UI_SingleObjectSelected", text));
-						break;
-					}
-					default:
-					{
-						statusLineManager.setMessage(getString("_UI_MultiObjectSelected", Integer.toString(collection.size())));
-						break;
-					}
+				case 0:
+				{
+					statusLineManager.setMessage(getString("_UI_NoObjectSelected"));
+					break;
+				}
+				case 1:
+				{
+					String text = new AdapterFactoryItemDelegator(adapterFactory).getText(collection.iterator().next());
+					statusLineManager.setMessage(getString("_UI_SingleObjectSelected", text));
+					break;
+				}
+				default:
+				{
+					statusLineManager.setMessage(getString("_UI_MultiObjectSelected",
+							Integer.toString(collection.size())));
+					break;
+				}
 				}
 			}
 			else
@@ -1403,7 +1426,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		contextMenu.add(new Separator("additions"));
 		contextMenu.setRemoveAllWhenShown(true);
 		contextMenu.addMenuListener(this);
-		Menu menu= contextMenu.createContextMenu(viewer.getControl());
+		Menu menu = contextMenu.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(contextMenu, new UnwrappingSelectionProvider(viewer));
 
@@ -1415,6 +1438,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void doSaveAs(URI uri, IEditorInput editorInput)
@@ -1422,16 +1446,15 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		(editingDomain.getResourceSet().getResources().get(0)).setURI(uri);
 		setInputWithNotify(editorInput);
 		setPartName(editorInput.getName());
-		IProgressMonitor progressMonitor =
-			getActionBars().getStatusLineManager() != null ?
-				getActionBars().getStatusLineManager().getProgressMonitor() :
-				new NullProgressMonitor();
+		IProgressMonitor progressMonitor = getActionBars().getStatusLineManager() != null
+				? getActionBars().getStatusLineManager().getProgressMonitor()
+				: new NullProgressMonitor();
 		doSave(progressMonitor);
 	}
 
 	/**
-	 * This is here for the listener to be able to call it.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is here for the listener to be able to call it. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -1441,26 +1464,26 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * Handles activation of the editor or it's associated views.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Handles activation of the editor or it's associated views. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void handleActivate()
 	{
 		// Recompute the read only state.
 		//
-		if (editingDomain.getResourceToReadOnlyMap() != null)
+		if(editingDomain.getResourceToReadOnlyMap() != null)
 		{
-		  editingDomain.getResourceToReadOnlyMap().clear();
+			editingDomain.getResourceToReadOnlyMap().clear();
 
-		  // Refresh any actions that may become enabled or disabled.
-		  //
-		  setSelection(getSelection());
+			// Refresh any actions that may become enabled or disabled.
+			//
+			setSelection(getSelection());
 		}
 
-		if (!removedResources.isEmpty())
+		if(!removedResources.isEmpty())
 		{
-			if (handleDirtyConflict())
+			if(handleDirtyConflict())
 			{
 				getSite().getPage().closeEditor(AggregatorEditor.this, false);
 			}
@@ -1471,7 +1494,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				savedResources.clear();
 			}
 		}
-		else if (!changedResources.isEmpty())
+		else if(!changedResources.isEmpty())
 		{
 			changedResources.removeAll(savedResources);
 			handleChangedResources();
@@ -1481,33 +1504,33 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * Handles what to do with changed resources on activation.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Handles what to do with changed resources on activation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void handleChangedResources()
 	{
-		if (!changedResources.isEmpty() && (!isDirty() || handleDirtyConflict()))
+		if(!changedResources.isEmpty() && (!isDirty() || handleDirtyConflict()))
 		{
-			if (isDirty())
+			if(isDirty())
 			{
 				changedResources.addAll(editingDomain.getResourceSet().getResources());
 			}
 			editingDomain.getCommandStack().flush();
 
 			updateProblemIndication = false;
-			for (Resource resource : changedResources)
+			for(Resource resource : changedResources)
 			{
-				if (resource.isLoaded())
+				if(resource.isLoaded())
 				{
 					resource.unload();
 					try
 					{
 						resource.load(Collections.EMPTY_MAP);
 					}
-					catch (IOException exception)
+					catch(IOException exception)
 					{
-						if (!resourceToDiagnosticMap.containsKey(resource))
+						if(!resourceToDiagnosticMap.containsKey(resource))
 						{
 							resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
 						}
@@ -1515,7 +1538,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				}
 			}
 
-			if (AdapterFactoryEditingDomain.isStale(editorSelection))
+			if(AdapterFactoryEditingDomain.isStale(editorSelection))
 			{
 				setSelection(StructuredSelection.EMPTY);
 			}
@@ -1533,11 +1556,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 */
 	protected boolean handleDirtyConflict()
 	{
-		return
-			MessageDialog.openQuestion
-				(getSite().getShell(),
-				 getString("_UI_FileConflict_label"),
-				 getString("_WARN_FileConflict"));
+		return MessageDialog.openQuestion(getSite().getShell(), getString("_UI_FileConflict_label"),
+				getString("_WARN_FileConflict"));
 	}
 
 	/**
@@ -1548,10 +1568,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 */
 	protected void hideTabs()
 	{
-		if (getPageCount() <= 1)
+		if(getPageCount() <= 1)
 		{
 			setPageText(0, "");
-			if (getContainer() instanceof CTabFolder)
+			if(getContainer() instanceof CTabFolder)
 			{
 				((CTabFolder)getContainer()).setTabHeight(1);
 				Point point = getContainer().getSize();
@@ -1561,8 +1581,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This sets up the editing domain for the model editor.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This sets up the editing domain for the model editor. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void initializeEditingDomain()
@@ -1581,35 +1601,34 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		//
 		BasicCommandStack commandStack = new BasicCommandStack();
 
-		// Add a listener to set the most recent command's affected objects to be the selection of the viewer with focus.
+		// Add a listener to set the most recent command's affected objects to be the selection of the viewer with
+		// focus.
 		//
-		commandStack.addCommandStackListener
-			(new CommandStackListener()
-			 {
-				 public void commandStackChanged(final EventObject event)
-				 {
-					 getContainer().getDisplay().asyncExec
-						 (new Runnable()
-						  {
-							  public void run()
-							  {
-								  firePropertyChange(IEditorPart.PROP_DIRTY);
+		commandStack.addCommandStackListener(new CommandStackListener()
+		{
+			public void commandStackChanged(final EventObject event)
+			{
+				getContainer().getDisplay().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						firePropertyChange(IEditorPart.PROP_DIRTY);
 
-								  // Try to select the affected objects.
-								  //
-								  Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
-								  if (mostRecentCommand != null)
-								  {
-									  setSelectionToViewer(mostRecentCommand.getAffectedObjects());
-								  }
-								  if (propertySheetPage != null && !propertySheetPage.getControl().isDisposed())
-								  {
-									  propertySheetPage.refresh();
-								  }
-							  }
-						  });
-				 }
-			 });
+						// Try to select the affected objects.
+						//
+						Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
+						if(mostRecentCommand != null)
+						{
+							setSelectionToViewer(mostRecentCommand.getAffectedObjects());
+						}
+						if(propertySheetPage != null && !propertySheetPage.getControl().isDisposed())
+						{
+							propertySheetPage.refresh();
+						}
+					}
+				});
+			}
+		});
 
 		// Create the editing domain with a special command stack.
 		//
@@ -1624,10 +1643,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This returns whether something has been persisted to the URI of the specified resource.
-	 * The implementation uses the URI converter from the editor's resource set to try to open an input stream. 
-	 * <!-- begin-user-doc --> <!--
+	 * This returns whether something has been persisted to the URI of the specified resource. The implementation uses
+	 * the URI converter from the editor's resource set to try to open an input stream. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected boolean isPersistedGen(Resource resource)
@@ -1636,13 +1655,13 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		try
 		{
 			InputStream stream = editingDomain.getResourceSet().getURIConverter().createInputStream(resource.getURI());
-			if (stream != null)
+			if(stream != null)
 			{
 				result = true;
 				stream.close();
 			}
 		}
-		catch (IOException e)
+		catch(IOException e)
 		{
 			// Ignore
 		}
@@ -1650,8 +1669,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * This is used to track the active viewer.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is used to track the active viewer. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -1659,15 +1678,15 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	{
 		super.pageChange(pageIndex);
 
-		if (contentOutlinePage != null)
+		if(contentOutlinePage != null)
 		{
 			handleContentOutlineSelection(contentOutlinePage.getSelection());
 		}
 	}
 
 	/**
-	 * Returns whether the outline view should be presented to the user.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns whether the outline view should be presented to the user. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected boolean showOutlineView()
@@ -1683,10 +1702,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 */
 	protected void showTabs()
 	{
-		if (getPageCount() > 1)
+		if(getPageCount() > 1)
 		{
 			setPageText(0, getString("_UI_SelectionPage_label"));
-			if (getContainer() instanceof CTabFolder)
+			if(getContainer() instanceof CTabFolder)
 			{
 				((CTabFolder)getContainer()).setTabHeight(SWT.DEFAULT);
 				Point point = getContainer().getSize();
@@ -1696,40 +1715,36 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	}
 
 	/**
-	 * Updates the problems indication with the information described in the specified diagnostic.
-	 * <!-- begin-user-doc
+	 * Updates the problems indication with the information described in the specified diagnostic. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void updateProblemIndication()
 	{
-		if (updateProblemIndication)
+		if(updateProblemIndication)
 		{
-			BasicDiagnostic diagnostic =
-				new BasicDiagnostic
-					(Diagnostic.OK,
-					 "org.eclipse.buckminster.aggregator.editor",
-					 0,
-					 null,
-					 new Object [] { editingDomain.getResourceSet() });
-			for (Diagnostic childDiagnostic : resourceToDiagnosticMap.values())
+			BasicDiagnostic diagnostic = new BasicDiagnostic(Diagnostic.OK,
+					"org.eclipse.buckminster.aggregator.editor", 0, null,
+					new Object[] { editingDomain.getResourceSet() });
+			for(Diagnostic childDiagnostic : resourceToDiagnosticMap.values())
 			{
-				if (childDiagnostic.getSeverity() != Diagnostic.OK)
+				if(childDiagnostic.getSeverity() != Diagnostic.OK)
 				{
 					diagnostic.add(childDiagnostic);
 				}
 			}
 
 			int lastEditorPage = getPageCount() - 1;
-			if (lastEditorPage >= 0 && getEditor(lastEditorPage) instanceof ProblemEditorPart)
+			if(lastEditorPage >= 0 && getEditor(lastEditorPage) instanceof ProblemEditorPart)
 			{
 				((ProblemEditorPart)getEditor(lastEditorPage)).setDiagnostic(diagnostic);
-				if (diagnostic.getSeverity() != Diagnostic.OK)
+				if(diagnostic.getSeverity() != Diagnostic.OK)
 				{
 					setActivePage(lastEditorPage);
 				}
 			}
-			else if (diagnostic.getSeverity() != Diagnostic.OK)
+			else if(diagnostic.getSeverity() != Diagnostic.OK)
 			{
 				ProblemEditorPart problemEditorPart = new ProblemEditorPart();
 				problemEditorPart.setDiagnostic(diagnostic);
@@ -1741,22 +1756,22 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					setActivePage(lastEditorPage);
 					showTabs();
 				}
-				catch (PartInitException exception)
+				catch(PartInitException exception)
 				{
 					AggregatorEditorPlugin.INSTANCE.log(exception);
 				}
 			}
 
-			if (markerHelper.hasMarkers(editingDomain.getResourceSet()))
+			if(markerHelper.hasMarkers(editingDomain.getResourceSet()))
 			{
 				markerHelper.deleteMarkers(editingDomain.getResourceSet());
-				if (diagnostic.getSeverity() != Diagnostic.OK)
+				if(diagnostic.getSeverity() != Diagnostic.OK)
 				{
 					try
 					{
 						markerHelper.createMarkers(diagnostic);
 					}
-					catch (CoreException exception)
+					catch(CoreException exception)
 					{
 						AggregatorEditorPlugin.INSTANCE.log(exception);
 					}

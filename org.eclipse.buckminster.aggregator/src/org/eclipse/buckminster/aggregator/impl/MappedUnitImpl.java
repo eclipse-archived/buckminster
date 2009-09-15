@@ -26,19 +26,20 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#isEnabled <em>Enabled</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#getValidConfigurations <em>Valid Configurations</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#isEnabled <em>Enabled</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MappedUnitImpl#getValidConfigurations <em>Valid Configurations
+ * </em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implements MappedUnit
 {
 	/**
-	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #isEnabled()
 	 * @generated
 	 * @ordered
@@ -46,9 +47,9 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 	protected static final boolean ENABLED_EDEFAULT = true;
 
 	/**
-	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute.
-	 * <!-- begin-user-doc -->
+	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #isEnabled()
 	 * @generated
 	 * @ordered
@@ -67,6 +68,7 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected MappedUnitImpl()
@@ -77,17 +79,20 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
-		if (baseClass == EnabledStatusProvider.class)
+		if(baseClass == EnabledStatusProvider.class)
 		{
-			switch (derivedFeatureID)
+			switch(derivedFeatureID)
 			{
-				case AggregatorPackage.MAPPED_UNIT__ENABLED: return AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED;
-				default: return -1;
+			case AggregatorPackage.MAPPED_UNIT__ENABLED:
+				return AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED;
+			default:
+				return -1;
 			}
 		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
@@ -95,17 +100,20 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
 	{
-		if (baseClass == EnabledStatusProvider.class)
+		if(baseClass == EnabledStatusProvider.class)
 		{
-			switch (baseFeatureID)
+			switch(baseFeatureID)
 			{
-				case AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED: return AggregatorPackage.MAPPED_UNIT__ENABLED;
-				default: return -1;
+			case AggregatorPackage.ENABLED_STATUS_PROVIDER__ENABLED:
+				return AggregatorPackage.MAPPED_UNIT__ENABLED;
+			default:
+				return -1;
 			}
 		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
@@ -113,74 +121,78 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.MAPPED_UNIT__ENABLED:
-				return isEnabled();
-			case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
-				return getValidConfigurations();
+		case AggregatorPackage.MAPPED_UNIT__ENABLED:
+			return isEnabled();
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			return getValidConfigurations();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.MAPPED_UNIT__ENABLED:
-				return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
-			case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
-				return validConfigurations != null && !validConfigurations.isEmpty();
+		case AggregatorPackage.MAPPED_UNIT__ENABLED:
+			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			return validConfigurations != null && !validConfigurations.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.MAPPED_UNIT__ENABLED:
-				setEnabled((Boolean)newValue);
-				return;
-			case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
-				getValidConfigurations().clear();
-				getValidConfigurations().addAll((Collection<? extends Configuration>)newValue);
-				return;
+		case AggregatorPackage.MAPPED_UNIT__ENABLED:
+			setEnabled((Boolean)newValue);
+			return;
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			getValidConfigurations().clear();
+			getValidConfigurations().addAll((Collection<? extends Configuration>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.MAPPED_UNIT__ENABLED:
-				setEnabled(ENABLED_EDEFAULT);
-				return;
-			case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
-				getValidConfigurations().clear();
-				return;
+		case AggregatorPackage.MAPPED_UNIT__ENABLED:
+			setEnabled(ENABLED_EDEFAULT);
+			return;
+		case AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS:
+			getValidConfigurations().clear();
+			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -207,13 +219,15 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<Configuration> getValidConfigurations()
 	{
-		if (validConfigurations == null)
+		if(validConfigurations == null)
 		{
-			validConfigurations = new EObjectResolvingEList<Configuration>(Configuration.class, this, AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS);
+			validConfigurations = new EObjectResolvingEList<Configuration>(Configuration.class, this,
+					AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS);
 		}
 		return validConfigurations;
 	}
@@ -238,7 +252,7 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 			return false;
 
 		Contribution contribution = (Contribution)mappedRepository.eContainer();
-		if(!contribution.isEnabled())
+		if(contribution != null && !contribution.isEnabled())
 			return false;
 
 		return true;
@@ -246,6 +260,7 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isEnabled()
@@ -263,24 +278,31 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setEnabled(boolean newEnabled)
 	{
 		boolean oldEnabled = (eFlags & ENABLED_EFLAG) != 0;
-		if (newEnabled) eFlags |= ENABLED_EFLAG; else eFlags &= ~ENABLED_EFLAG;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_UNIT__ENABLED, oldEnabled, newEnabled));
+		if(newEnabled)
+			eFlags |= ENABLED_EFLAG;
+		else
+			eFlags &= ~ENABLED_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_UNIT__ENABLED, oldEnabled,
+					newEnabled));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (enabled: ");
@@ -291,6 +313,7 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

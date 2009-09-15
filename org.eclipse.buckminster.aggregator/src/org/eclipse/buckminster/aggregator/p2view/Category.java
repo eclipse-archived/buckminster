@@ -11,18 +11,18 @@ package org.eclipse.buckminster.aggregator.p2view;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Category</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getCategoryContainer <em>Category Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getFeatureContainer <em>Feature Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer <em>Bundle Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getCategoryContainer <em>Category Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getFeatureContainer <em>Feature Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer <em>Bundle Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory()
  * @model
  * @generated
@@ -30,13 +30,13 @@ package org.eclipse.buckminster.aggregator.p2view;
 public interface Category extends IUPresentation
 {
 	/**
-	 * Returns the value of the '<em><b>Bundle Container</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Bundle Container</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Bundle Container</em>' reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Bundle Container</em>' reference.
 	 * @see #setBundleContainer(Bundles)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_BundleContainer()
@@ -46,13 +46,13 @@ public interface Category extends IUPresentation
 	Bundles getBundleContainer();
 
 	/**
-	 * Returns the value of the '<em><b>Category Container</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Category Container</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Category Container</em>' reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Category Container</em>' reference.
 	 * @see #setCategoryContainer(Categories)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_CategoryContainer()
@@ -62,13 +62,13 @@ public interface Category extends IUPresentation
 	Categories getCategoryContainer();
 
 	/**
-	 * Returns the value of the '<em><b>Details</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Details</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Details</em>' reference isn't clear, there really should be more of a description
 	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Details</em>' reference.
 	 * @see #setDetails(Details)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_Details()
@@ -78,13 +78,13 @@ public interface Category extends IUPresentation
 	Details getDetails();
 
 	/**
-	 * Returns the value of the '<em><b>Feature Container</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Feature Container</em>' reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Feature Container</em>' reference.
 	 * @see #setFeatureContainer(Features)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_FeatureContainer()
@@ -95,6 +95,7 @@ public interface Category extends IUPresentation
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
@@ -102,6 +103,7 @@ public interface Category extends IUPresentation
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
@@ -109,6 +111,7 @@ public interface Category extends IUPresentation
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
@@ -116,6 +119,7 @@ public interface Category extends IUPresentation
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
@@ -123,19 +127,20 @@ public interface Category extends IUPresentation
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
 	Products getNotNullProductContainer();
 
 	/**
-	 * Returns the value of the '<em><b>Product Container</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Product Container</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Product Container</em>' reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Product Container</em>' reference.
 	 * @see #setProductContainer(Products)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_ProductContainer()
@@ -145,45 +150,55 @@ public interface Category extends IUPresentation
 	Products getProductContainer();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer <em>Bundle Container</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Bundle Container</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer
+	 * <em>Bundle Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Bundle Container</em>' reference.
 	 * @see #getBundleContainer()
 	 * @generated
 	 */
 	void setBundleContainer(Bundles value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getCategoryContainer <em>Category Container</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Category Container</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getCategoryContainer
+	 * <em>Category Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Category Container</em>' reference.
 	 * @see #getCategoryContainer()
 	 * @generated
 	 */
 	void setCategoryContainer(Categories value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Details</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}'
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Details</em>' reference.
 	 * @see #getDetails()
 	 * @generated
 	 */
 	void setDetails(Details value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getFeatureContainer <em>Feature Container</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Feature Container</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getFeatureContainer
+	 * <em>Feature Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Feature Container</em>' reference.
 	 * @see #getFeatureContainer()
 	 * @generated
 	 */
 	void setFeatureContainer(Features value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Product Container</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer
+	 * <em>Product Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Product Container</em>' reference.
 	 * @see #getProductContainer()
 	 * @generated
 	 */

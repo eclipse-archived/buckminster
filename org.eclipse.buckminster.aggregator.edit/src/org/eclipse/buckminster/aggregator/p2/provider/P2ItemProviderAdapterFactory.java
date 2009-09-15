@@ -39,17 +39,17 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 		IChangeNotifier, IDisposable
 {
 	/**
-	 * This keeps track of the root adapter factory that delegates to this adapter factory.
-	 * <!-- begin-user-doc --> <!--
+	 * This keeps track of the root adapter factory that delegates to this adapter factory. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ComposedAdapterFactory parentAdapterFactory;
 
 	/**
-	 * This is used to implement {@link org.eclipse.emf.edit.provider.IChangeNotifier}.
-	 * <!-- begin-user-doc --> <!--
+	 * This is used to implement {@link org.eclipse.emf.edit.provider.IChangeNotifier}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IChangeNotifier changeNotifier = new ChangeNotifier();
@@ -63,37 +63,42 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	protected Collection<Object> supportedTypes = new ArrayList<Object>();
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.ArtifactKey} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.ArtifactKey}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ArtifactKeyItemProvider artifactKeyItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.Copyright} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.Copyright}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected CopyrightItemProvider copyrightItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.MetadataRepository} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.MetadataRepository}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected MetadataRepositoryItemProvider metadataRepositoryItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected InstallableUnitItemProvider installableUnitItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment} instances.
-	 * <!-- begin-user-doc --> <!--
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment} instances. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected InstallableUnitFragmentItemProvider installableUnitFragmentItemProvider;
@@ -101,80 +106,88 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	/**
 	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.License} instances.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected LicenseItemProvider licenseItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.ProvidedCapability} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.ProvidedCapability}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ProvidedCapabilityItemProvider providedCapabilityItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.RequiredCapability} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.RequiredCapability}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RequiredCapabilityItemProvider requiredCapabilityItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.TouchpointData} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.TouchpointData}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected TouchpointDataItemProvider touchpointDataItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.TouchpointInstruction} instances.
-	 * <!-- begin-user-doc --> <!--
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2.TouchpointInstruction} instances. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected TouchpointInstructionItemProvider touchpointInstructionItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.TouchpointType} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.TouchpointType}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected TouchpointTypeItemProvider touchpointTypeItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.UpdateDescriptor} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.UpdateDescriptor}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected UpdateDescriptorItemProvider updateDescriptorItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link java.util.Map.Entry} instances.
-	 * <!-- begin-user-doc -->
+	 * This keeps track of the one adapter used for all {@link java.util.Map.Entry} instances. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertyItemProvider propertyItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link java.util.Map.Entry} instances.
-	 * <!-- begin-user-doc -->
+	 * This keeps track of the one adapter used for all {@link java.util.Map.Entry} instances. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected InstructionMapItemProvider instructionMapItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference} instances.
-	 * <!-- begin-user-doc --> <!--
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2.RepositoryReference} instances. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RepositoryReferenceItemProvider repositoryReferenceItemProvider;
 
 	/**
-	 * This constructs an instance.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public P2ItemProviderAdapterFactory()
@@ -187,9 +200,9 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This implementation substitutes the factory itself as the key for the adapter.
-	 * <!-- begin-user-doc --> <!--
+	 * This implementation substitutes the factory itself as the key for the adapter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -200,15 +213,16 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object adapt(Object object, Object type)
 	{
-		if (isFactoryForType(type))
+		if(isFactoryForType(type))
 		{
 			Object adapter = super.adapt(object, type);
-			if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter)))
+			if(!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter)))
 			{
 				return adapter;
 			}
@@ -218,8 +232,8 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This adds a listener.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a listener. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void addListener(INotifyChangedListener notifyChangedListener)
@@ -228,15 +242,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.ArtifactKey}.
-	 * <!-- begin-user-doc -->
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.ArtifactKey}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createArtifactKeyAdapter()
 	{
-		if (artifactKeyItemProvider == null)
+		if(artifactKeyItemProvider == null)
 		{
 			artifactKeyItemProvider = new ArtifactKeyItemProvider(this);
 		}
@@ -245,15 +259,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.Copyright}.
-	 * <!-- begin-user-doc -->
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.Copyright}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createCopyrightAdapter()
 	{
-		if (copyrightItemProvider == null)
+		if(copyrightItemProvider == null)
 		{
 			copyrightItemProvider = new CopyrightItemProvider(this);
 		}
@@ -262,15 +276,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit}.
-	 * <!-- begin-user-doc
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createInstallableUnitAdapter()
 	{
-		if (installableUnitItemProvider == null)
+		if(installableUnitItemProvider == null)
 		{
 			installableUnitItemProvider = new InstallableUnitItemProvider(this);
 		}
@@ -287,7 +301,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createInstallableUnitFragmentAdapter()
 	{
-		if (installableUnitFragmentItemProvider == null)
+		if(installableUnitFragmentItemProvider == null)
 		{
 			installableUnitFragmentItemProvider = new InstallableUnitFragmentItemProvider(this);
 		}
@@ -296,14 +310,14 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link java.util.Map.Entry}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This creates an adapter for a {@link java.util.Map.Entry}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createInstructionMapAdapter()
 	{
-		if (instructionMapItemProvider == null)
+		if(instructionMapItemProvider == null)
 		{
 			instructionMapItemProvider = new InstructionMapItemProvider(this);
 		}
@@ -312,15 +326,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.License}.
-	 * <!-- begin-user-doc --> <!--
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.License}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createLicenseAdapter()
 	{
-		if (licenseItemProvider == null)
+		if(licenseItemProvider == null)
 		{
 			licenseItemProvider = new LicenseItemProvider(this);
 		}
@@ -337,7 +351,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createMetadataRepositoryAdapter()
 	{
-		if (metadataRepositoryItemProvider == null)
+		if(metadataRepositoryItemProvider == null)
 		{
 			metadataRepositoryItemProvider = new MetadataRepositoryItemProvider(this);
 		}
@@ -346,14 +360,14 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link java.util.Map.Entry}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This creates an adapter for a {@link java.util.Map.Entry}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createPropertyAdapter()
 	{
-		if (propertyItemProvider == null)
+		if(propertyItemProvider == null)
 		{
 			propertyItemProvider = new PropertyItemProvider(this);
 		}
@@ -370,7 +384,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createProvidedCapabilityAdapter()
 	{
-		if (providedCapabilityItemProvider == null)
+		if(providedCapabilityItemProvider == null)
 		{
 			providedCapabilityItemProvider = new ProvidedCapabilityItemProvider(this);
 		}
@@ -387,7 +401,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createRepositoryReferenceAdapter()
 	{
-		if (repositoryReferenceItemProvider == null)
+		if(repositoryReferenceItemProvider == null)
 		{
 			repositoryReferenceItemProvider = new RepositoryReferenceItemProvider(this);
 		}
@@ -404,7 +418,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createRequiredCapabilityAdapter()
 	{
-		if (requiredCapabilityItemProvider == null)
+		if(requiredCapabilityItemProvider == null)
 		{
 			requiredCapabilityItemProvider = new RequiredCapabilityItemProvider(this);
 		}
@@ -413,15 +427,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.TouchpointData}.
-	 * <!-- begin-user-doc
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.TouchpointData}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createTouchpointDataAdapter()
 	{
-		if (touchpointDataItemProvider == null)
+		if(touchpointDataItemProvider == null)
 		{
 			touchpointDataItemProvider = new TouchpointDataItemProvider(this);
 		}
@@ -438,7 +452,7 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	@Override
 	public Adapter createTouchpointInstructionAdapter()
 	{
-		if (touchpointInstructionItemProvider == null)
+		if(touchpointInstructionItemProvider == null)
 		{
 			touchpointInstructionItemProvider = new TouchpointInstructionItemProvider(this);
 		}
@@ -447,15 +461,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.TouchpointType}.
-	 * <!-- begin-user-doc
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.TouchpointType}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createTouchpointTypeAdapter()
 	{
-		if (touchpointTypeItemProvider == null)
+		if(touchpointTypeItemProvider == null)
 		{
 			touchpointTypeItemProvider = new TouchpointTypeItemProvider(this);
 		}
@@ -464,15 +478,15 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.UpdateDescriptor}.
-	 * <!-- begin-user-doc
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2.UpdateDescriptor}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Adapter createUpdateDescriptorAdapter()
 	{
-		if (updateDescriptorItemProvider == null)
+		if(updateDescriptorItemProvider == null)
 		{
 			updateDescriptorItemProvider = new UpdateDescriptorItemProvider(this);
 		}
@@ -481,57 +495,75 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This disposes all of the item providers created by this factory. 
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This disposes all of the item providers created by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void dispose()
 	{
-		if (artifactKeyItemProvider != null) artifactKeyItemProvider.dispose();
-		if (copyrightItemProvider != null) copyrightItemProvider.dispose();
-		if (metadataRepositoryItemProvider != null) metadataRepositoryItemProvider.dispose();
-		if (installableUnitItemProvider != null) installableUnitItemProvider.dispose();
-		if (installableUnitFragmentItemProvider != null) installableUnitFragmentItemProvider.dispose();
-		if (licenseItemProvider != null) licenseItemProvider.dispose();
-		if (providedCapabilityItemProvider != null) providedCapabilityItemProvider.dispose();
-		if (requiredCapabilityItemProvider != null) requiredCapabilityItemProvider.dispose();
-		if (touchpointDataItemProvider != null) touchpointDataItemProvider.dispose();
-		if (touchpointInstructionItemProvider != null) touchpointInstructionItemProvider.dispose();
-		if (touchpointTypeItemProvider != null) touchpointTypeItemProvider.dispose();
-		if (updateDescriptorItemProvider != null) updateDescriptorItemProvider.dispose();
-		if (propertyItemProvider != null) propertyItemProvider.dispose();
-		if (instructionMapItemProvider != null) instructionMapItemProvider.dispose();
-		if (repositoryReferenceItemProvider != null) repositoryReferenceItemProvider.dispose();
+		if(artifactKeyItemProvider != null)
+			artifactKeyItemProvider.dispose();
+		if(copyrightItemProvider != null)
+			copyrightItemProvider.dispose();
+		if(metadataRepositoryItemProvider != null)
+			metadataRepositoryItemProvider.dispose();
+		if(installableUnitItemProvider != null)
+			installableUnitItemProvider.dispose();
+		if(installableUnitFragmentItemProvider != null)
+			installableUnitFragmentItemProvider.dispose();
+		if(licenseItemProvider != null)
+			licenseItemProvider.dispose();
+		if(providedCapabilityItemProvider != null)
+			providedCapabilityItemProvider.dispose();
+		if(requiredCapabilityItemProvider != null)
+			requiredCapabilityItemProvider.dispose();
+		if(touchpointDataItemProvider != null)
+			touchpointDataItemProvider.dispose();
+		if(touchpointInstructionItemProvider != null)
+			touchpointInstructionItemProvider.dispose();
+		if(touchpointTypeItemProvider != null)
+			touchpointTypeItemProvider.dispose();
+		if(updateDescriptorItemProvider != null)
+			updateDescriptorItemProvider.dispose();
+		if(propertyItemProvider != null)
+			propertyItemProvider.dispose();
+		if(instructionMapItemProvider != null)
+			instructionMapItemProvider.dispose();
+		if(repositoryReferenceItemProvider != null)
+			repositoryReferenceItemProvider.dispose();
 	}
 
 	/**
-	 * This delegates to {@link #changeNotifier} and to {@link #parentAdapterFactory}.
-	 * <!-- begin-user-doc --> <!--
+	 * This delegates to {@link #changeNotifier} and to {@link #parentAdapterFactory}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void fireNotifyChanged(Notification notification)
 	{
 		changeNotifier.fireNotifyChanged(notification);
 
-		if (parentAdapterFactory != null)
+		if(parentAdapterFactory != null)
 		{
 			parentAdapterFactory.fireNotifyChanged(notification);
 		}
 	}
 
 	/**
-	 * This returns the root adapter factory that contains this factory.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the root adapter factory that contains this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public ComposeableAdapterFactory getRootAdapterFactory()
 	{
-		return parentAdapterFactory == null ? this : parentAdapterFactory.getRootAdapterFactory();
+		return parentAdapterFactory == null
+				? this
+				: parentAdapterFactory.getRootAdapterFactory();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -541,8 +573,8 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This removes a listener.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This removes a listener. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void removeListener(INotifyChangedListener notifyChangedListener)
@@ -551,8 +583,8 @@ public class P2ItemProviderAdapterFactory extends P2AdapterFactory implements Co
 	}
 
 	/**
-	 * This sets the composed adapter factory that contains this factory.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This sets the composed adapter factory that contains this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setParentAdapterFactory(ComposedAdapterFactory parentAdapterFactory)

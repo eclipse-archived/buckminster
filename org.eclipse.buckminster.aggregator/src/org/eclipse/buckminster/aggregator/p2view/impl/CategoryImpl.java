@@ -30,14 +30,17 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getCategoryContainer <em>Category Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getFeatureContainer <em>Feature Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getProductContainer <em>Product Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getBundleContainer <em>Bundle Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getDetails <em>Details</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getCategoryContainer <em>Category Container
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getFeatureContainer <em>Feature Container
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getProductContainer <em>Product Container
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getBundleContainer <em>Bundle Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class CategoryImpl extends IUPresentationImpl implements Category
@@ -73,9 +76,9 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	protected Products productContainer;
 
 	/**
-	 * The cached value of the '{@link #getBundleContainer() <em>Bundle Container</em>}' reference.
-	 * <!-- begin-user-doc
+	 * The cached value of the '{@link #getBundleContainer() <em>Bundle Container</em>}' reference. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getBundleContainer()
 	 * @generated
 	 * @ordered
@@ -83,9 +86,9 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	protected Bundles bundleContainer;
 
 	/**
-	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getDetails()
 	 * @generated
 	 * @ordered
@@ -94,6 +97,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected CategoryImpl()
@@ -103,6 +107,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Bundles basicGetBundleContainer()
@@ -112,6 +117,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Categories basicGetCategoryContainer()
@@ -121,6 +127,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Details basicGetDetails()
@@ -130,6 +137,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Features basicGetFeatureContainer()
@@ -139,6 +147,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Products basicGetProductContainer()
@@ -148,125 +157,136 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
-				if (resolve) return getCategoryContainer();
-				return basicGetCategoryContainer();
-			case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
-				if (resolve) return getFeatureContainer();
-				return basicGetFeatureContainer();
-			case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
-				if (resolve) return getProductContainer();
-				return basicGetProductContainer();
-			case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
-				if (resolve) return getBundleContainer();
-				return basicGetBundleContainer();
-			case P2viewPackage.CATEGORY__DETAILS:
-				if (resolve) return getDetails();
-				return basicGetDetails();
+		case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
+			if(resolve)
+				return getCategoryContainer();
+			return basicGetCategoryContainer();
+		case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
+			if(resolve)
+				return getFeatureContainer();
+			return basicGetFeatureContainer();
+		case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
+			if(resolve)
+				return getProductContainer();
+			return basicGetProductContainer();
+		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
+			if(resolve)
+				return getBundleContainer();
+			return basicGetBundleContainer();
+		case P2viewPackage.CATEGORY__DETAILS:
+			if(resolve)
+				return getDetails();
+			return basicGetDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
-				return categoryContainer != null;
-			case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
-				return featureContainer != null;
-			case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
-				return productContainer != null;
-			case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
-				return bundleContainer != null;
-			case P2viewPackage.CATEGORY__DETAILS:
-				return details != null;
+		case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
+			return categoryContainer != null;
+		case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
+			return featureContainer != null;
+		case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
+			return productContainer != null;
+		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
+			return bundleContainer != null;
+		case P2viewPackage.CATEGORY__DETAILS:
+			return details != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
-				setCategoryContainer((Categories)newValue);
-				return;
-			case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
-				setFeatureContainer((Features)newValue);
-				return;
-			case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
-				setProductContainer((Products)newValue);
-				return;
-			case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
-				setBundleContainer((Bundles)newValue);
-				return;
-			case P2viewPackage.CATEGORY__DETAILS:
-				setDetails((Details)newValue);
-				return;
+		case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
+			setCategoryContainer((Categories)newValue);
+			return;
+		case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
+			setFeatureContainer((Features)newValue);
+			return;
+		case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
+			setProductContainer((Products)newValue);
+			return;
+		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
+			setBundleContainer((Bundles)newValue);
+			return;
+		case P2viewPackage.CATEGORY__DETAILS:
+			setDetails((Details)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
-				setCategoryContainer((Categories)null);
-				return;
-			case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
-				setFeatureContainer((Features)null);
-				return;
-			case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
-				setProductContainer((Products)null);
-				return;
-			case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
-				setBundleContainer((Bundles)null);
-				return;
-			case P2viewPackage.CATEGORY__DETAILS:
-				setDetails((Details)null);
-				return;
+		case P2viewPackage.CATEGORY__CATEGORY_CONTAINER:
+			setCategoryContainer((Categories)null);
+			return;
+		case P2viewPackage.CATEGORY__FEATURE_CONTAINER:
+			setFeatureContainer((Features)null);
+			return;
+		case P2viewPackage.CATEGORY__PRODUCT_CONTAINER:
+			setProductContainer((Products)null);
+			return;
+		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
+			setBundleContainer((Bundles)null);
+			return;
+		case P2viewPackage.CATEGORY__DETAILS:
+			setDetails((Details)null);
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Bundles getBundleContainer()
 	{
-		if (bundleContainer != null && bundleContainer.eIsProxy())
+		if(bundleContainer != null && bundleContainer.eIsProxy())
 		{
 			InternalEObject oldBundleContainer = (InternalEObject)bundleContainer;
 			bundleContainer = (Bundles)eResolveProxy(oldBundleContainer);
-			if (bundleContainer != oldBundleContainer)
+			if(bundleContainer != oldBundleContainer)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__BUNDLE_CONTAINER, oldBundleContainer, bundleContainer));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__BUNDLE_CONTAINER,
+							oldBundleContainer, bundleContainer));
 			}
 		}
 		return bundleContainer;
@@ -274,18 +294,20 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Categories getCategoryContainer()
 	{
-		if (categoryContainer != null && categoryContainer.eIsProxy())
+		if(categoryContainer != null && categoryContainer.eIsProxy())
 		{
 			InternalEObject oldCategoryContainer = (InternalEObject)categoryContainer;
 			categoryContainer = (Categories)eResolveProxy(oldCategoryContainer);
-			if (categoryContainer != oldCategoryContainer)
+			if(categoryContainer != oldCategoryContainer)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__CATEGORY_CONTAINER, oldCategoryContainer, categoryContainer));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							P2viewPackage.CATEGORY__CATEGORY_CONTAINER, oldCategoryContainer, categoryContainer));
 			}
 		}
 		return categoryContainer;
@@ -293,18 +315,20 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Details getDetails()
 	{
-		if (details != null && details.eIsProxy())
+		if(details != null && details.eIsProxy())
 		{
 			InternalEObject oldDetails = (InternalEObject)details;
 			details = (Details)eResolveProxy(oldDetails);
-			if (details != oldDetails)
+			if(details != oldDetails)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__DETAILS, oldDetails, details));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__DETAILS,
+							oldDetails, details));
 			}
 		}
 		return details;
@@ -312,18 +336,20 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Features getFeatureContainer()
 	{
-		if (featureContainer != null && featureContainer.eIsProxy())
+		if(featureContainer != null && featureContainer.eIsProxy())
 		{
 			InternalEObject oldFeatureContainer = (InternalEObject)featureContainer;
 			featureContainer = (Features)eResolveProxy(oldFeatureContainer);
-			if (featureContainer != oldFeatureContainer)
+			if(featureContainer != oldFeatureContainer)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__FEATURE_CONTAINER, oldFeatureContainer, featureContainer));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							P2viewPackage.CATEGORY__FEATURE_CONTAINER, oldFeatureContainer, featureContainer));
 			}
 		}
 		return featureContainer;
@@ -396,18 +422,20 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Products getProductContainer()
 	{
-		if (productContainer != null && productContainer.eIsProxy())
+		if(productContainer != null && productContainer.eIsProxy())
 		{
 			InternalEObject oldProductContainer = (InternalEObject)productContainer;
 			productContainer = (Products)eResolveProxy(oldProductContainer);
-			if (productContainer != oldProductContainer)
+			if(productContainer != oldProductContainer)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__PRODUCT_CONTAINER, oldProductContainer, productContainer));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							P2viewPackage.CATEGORY__PRODUCT_CONTAINER, oldProductContainer, productContainer));
 			}
 		}
 		return productContainer;
@@ -415,66 +443,76 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setBundleContainer(Bundles newBundleContainer)
 	{
 		Bundles oldBundleContainer = bundleContainer;
 		bundleContainer = newBundleContainer;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__BUNDLE_CONTAINER, oldBundleContainer, bundleContainer));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__BUNDLE_CONTAINER,
+					oldBundleContainer, bundleContainer));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setCategoryContainer(Categories newCategoryContainer)
 	{
 		Categories oldCategoryContainer = categoryContainer;
 		categoryContainer = newCategoryContainer;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__CATEGORY_CONTAINER, oldCategoryContainer, categoryContainer));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__CATEGORY_CONTAINER,
+					oldCategoryContainer, categoryContainer));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setDetails(Details newDetails)
 	{
 		Details oldDetails = details;
 		details = newDetails;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__DETAILS, oldDetails, details));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setFeatureContainer(Features newFeatureContainer)
 	{
 		Features oldFeatureContainer = featureContainer;
 		featureContainer = newFeatureContainer;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__FEATURE_CONTAINER, oldFeatureContainer, featureContainer));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__FEATURE_CONTAINER,
+					oldFeatureContainer, featureContainer));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setProductContainer(Products newProductContainer)
 	{
 		Products oldProductContainer = productContainer;
 		productContainer = newProductContainer;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__PRODUCT_CONTAINER, oldProductContainer, productContainer));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__PRODUCT_CONTAINER,
+					oldProductContainer, productContainer));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

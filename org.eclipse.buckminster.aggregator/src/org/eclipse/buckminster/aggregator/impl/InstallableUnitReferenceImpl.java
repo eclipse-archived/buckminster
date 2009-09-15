@@ -29,10 +29,11 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getInstallableUnit <em>Installable Unit</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getInstallableUnit <em>Installable
+ * Unit</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Container implements
@@ -41,15 +42,16 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getInstallableUnit() <em>Installable Unit</em>}' reference.
-	 * <!-- begin-user-doc
+	 * The cached value of the '{@link #getInstallableUnit() <em>Installable Unit</em>}' reference. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getInstallableUnit()
 	 * @generated
 	 * @ordered
@@ -58,6 +60,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected InstallableUnitReferenceImpl()
@@ -67,6 +70,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public InstallableUnit basicGetInstallableUnit()
@@ -76,63 +80,68 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
-				if (resolve) return getInstallableUnit();
-				return basicGetInstallableUnit();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
+			if(resolve)
+				return getInstallableUnit();
+			return basicGetInstallableUnit();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
-				return installableUnit != null;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
+			return installableUnit != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
-				setInstallableUnit((InstallableUnit)newValue);
-				return;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
+			setInstallableUnit((InstallableUnit)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
-				setInstallableUnit((InstallableUnit)null);
-				return;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
+			setInstallableUnit((InstallableUnit)null);
+			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -159,18 +168,21 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public InstallableUnit getInstallableUnitGen()
 	{
-		if (installableUnit != null && installableUnit.eIsProxy())
+		if(installableUnit != null && installableUnit.eIsProxy())
 		{
 			InternalEObject oldInstallableUnit = (InternalEObject)installableUnit;
 			installableUnit = (InstallableUnit)eResolveProxy(oldInstallableUnit);
-			if (installableUnit != oldInstallableUnit)
+			if(installableUnit != oldInstallableUnit)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, oldInstallableUnit, installableUnit));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, oldInstallableUnit,
+							installableUnit));
 			}
 		}
 		return installableUnit;
@@ -189,18 +201,21 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setInstallableUnit(InstallableUnit newInstallableUnit)
 	{
 		InstallableUnit oldInstallableUnit = installableUnit;
 		installableUnit = newInstallableUnit;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, oldInstallableUnit, installableUnit));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, oldInstallableUnit, installableUnit));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

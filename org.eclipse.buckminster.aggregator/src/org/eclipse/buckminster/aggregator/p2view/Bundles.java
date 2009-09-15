@@ -15,14 +15,14 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Bundles</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Bundles#getBundles <em>Bundles</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Bundles#getBundles <em>Bundles</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getBundles()
  * @model
  * @generated
@@ -30,14 +30,14 @@ import org.eclipse.emf.ecore.EObject;
 public interface Bundles extends EObject
 {
 	/**
-	 * Returns the value of the '<em><b>Bundles</b></em>' reference list.
-	 * The list contents are of type {@link org.eclipse.buckminster.aggregator.p2view.Bundle}.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Bundles</b></em>' reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Bundle}. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Bundles</em>' reference list isn't clear, there really should be more of a description
 	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Bundles</em>' reference list.
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getBundles_Bundles()
 	 * @model

@@ -23,18 +23,18 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl#getCategories <em>Categories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class FeatureImpl extends MappedUnitImpl implements Feature
 {
 	/**
-	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' reference list.
-	 * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' reference list. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #getCategories()
 	 * @generated
 	 * @ordered
@@ -43,6 +43,7 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected FeatureImpl()
@@ -52,114 +53,123 @@ public class FeatureImpl extends MappedUnitImpl implements Feature
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.FEATURE__CATEGORIES:
-				return getCategories();
+		case AggregatorPackage.FEATURE__CATEGORIES:
+			return getCategories();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.FEATURE__CATEGORIES:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCategories()).basicAdd(otherEnd, msgs);
+		case AggregatorPackage.FEATURE__CATEGORIES:
+			return ((InternalEList<InternalEObject>)(InternalEList<?>)getCategories()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.FEATURE__CATEGORIES:
-				return ((InternalEList<?>)getCategories()).basicRemove(otherEnd, msgs);
+		case AggregatorPackage.FEATURE__CATEGORIES:
+			return ((InternalEList<?>)getCategories()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.FEATURE__CATEGORIES:
-				return categories != null && !categories.isEmpty();
+		case AggregatorPackage.FEATURE__CATEGORIES:
+			return categories != null && !categories.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.FEATURE__CATEGORIES:
-				getCategories().clear();
-				getCategories().addAll((Collection<? extends CustomCategory>)newValue);
-				return;
+		case AggregatorPackage.FEATURE__CATEGORIES:
+			getCategories().clear();
+			getCategories().addAll((Collection<? extends CustomCategory>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.FEATURE__CATEGORIES:
-				getCategories().clear();
-				return;
+		case AggregatorPackage.FEATURE__CATEGORIES:
+			getCategories().clear();
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<CustomCategory> getCategories()
 	{
-		if (categories == null)
+		if(categories == null)
 		{
-			categories = new EObjectWithInverseResolvingEList.ManyInverse<CustomCategory>(CustomCategory.class, this, AggregatorPackage.FEATURE__CATEGORIES, AggregatorPackage.CUSTOM_CATEGORY__FEATURES);
+			categories = new EObjectWithInverseResolvingEList.ManyInverse<CustomCategory>(CustomCategory.class, this,
+					AggregatorPackage.FEATURE__CATEGORIES, AggregatorPackage.CUSTOM_CATEGORY__FEATURES);
 		}
 		return categories;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

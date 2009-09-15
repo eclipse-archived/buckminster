@@ -35,13 +35,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#isEnabled <em>Enabled</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getLabel <em>Label</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getRepositories <em>Repositories</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getContacts <em>Contacts</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#isEnabled <em>Enabled</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getLabel <em>Label</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getRepositories <em>Repositories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getContacts <em>Contacts</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ContributionImpl extends MinimalEObjectImpl.Container implements Contribution
@@ -49,15 +49,16 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #isEnabled()
 	 * @generated
 	 * @ordered
@@ -65,9 +66,9 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	protected static final boolean ENABLED_EDEFAULT = true;
 
 	/**
-	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute.
-	 * <!-- begin-user-doc -->
+	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #isEnabled()
 	 * @generated
 	 * @ordered
@@ -75,9 +76,9 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	protected static final int ENABLED_EFLAG = 1 << 0;
 
 	/**
-	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getLabel()
 	 * @generated
 	 * @ordered
@@ -105,9 +106,9 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	protected EList<MappedRepository> repositories;
 
 	/**
-	 * The cached value of the '{@link #getContacts() <em>Contacts</em>}' reference list.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getContacts() <em>Contacts</em>}' reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getContacts()
 	 * @generated
 	 * @ordered
@@ -116,6 +117,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ContributionImpl()
@@ -126,121 +128,129 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.CONTRIBUTION__ENABLED:
-				return isEnabled();
-			case AggregatorPackage.CONTRIBUTION__LABEL:
-				return getLabel();
-			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-				return getRepositories();
-			case AggregatorPackage.CONTRIBUTION__CONTACTS:
-				return getContacts();
+		case AggregatorPackage.CONTRIBUTION__ENABLED:
+			return isEnabled();
+		case AggregatorPackage.CONTRIBUTION__LABEL:
+			return getLabel();
+		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+			return getRepositories();
+		case AggregatorPackage.CONTRIBUTION__CONTACTS:
+			return getContacts();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-				return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
+		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+			return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.CONTRIBUTION__ENABLED:
-				return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
-			case AggregatorPackage.CONTRIBUTION__LABEL:
-				return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
-			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-				return repositories != null && !repositories.isEmpty();
-			case AggregatorPackage.CONTRIBUTION__CONTACTS:
-				return contacts != null && !contacts.isEmpty();
+		case AggregatorPackage.CONTRIBUTION__ENABLED:
+			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
+		case AggregatorPackage.CONTRIBUTION__LABEL:
+			return LABEL_EDEFAULT == null
+					? label != null
+					: !LABEL_EDEFAULT.equals(label);
+		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+			return repositories != null && !repositories.isEmpty();
+		case AggregatorPackage.CONTRIBUTION__CONTACTS:
+			return contacts != null && !contacts.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.CONTRIBUTION__ENABLED:
-				setEnabled((Boolean)newValue);
-				return;
-			case AggregatorPackage.CONTRIBUTION__LABEL:
-				setLabel((String)newValue);
-				return;
-			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-				getRepositories().clear();
-				getRepositories().addAll((Collection<? extends MappedRepository>)newValue);
-				return;
-			case AggregatorPackage.CONTRIBUTION__CONTACTS:
-				getContacts().clear();
-				getContacts().addAll((Collection<? extends Contact>)newValue);
-				return;
+		case AggregatorPackage.CONTRIBUTION__ENABLED:
+			setEnabled((Boolean)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__LABEL:
+			setLabel((String)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+			getRepositories().clear();
+			getRepositories().addAll((Collection<? extends MappedRepository>)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__CONTACTS:
+			getContacts().clear();
+			getContacts().addAll((Collection<? extends Contact>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case AggregatorPackage.CONTRIBUTION__ENABLED:
-				setEnabled(ENABLED_EDEFAULT);
-				return;
-			case AggregatorPackage.CONTRIBUTION__LABEL:
-				setLabel(LABEL_EDEFAULT);
-				return;
-			case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
-				getRepositories().clear();
-				return;
-			case AggregatorPackage.CONTRIBUTION__CONTACTS:
-				getContacts().clear();
-				return;
+		case AggregatorPackage.CONTRIBUTION__ENABLED:
+			setEnabled(ENABLED_EDEFAULT);
+			return;
+		case AggregatorPackage.CONTRIBUTION__LABEL:
+			setLabel(LABEL_EDEFAULT);
+			return;
+		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+			getRepositories().clear();
+			return;
+		case AggregatorPackage.CONTRIBUTION__CONTACTS:
+			getContacts().clear();
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<Contact> getContacts()
 	{
-		if (contacts == null)
+		if(contacts == null)
 		{
 			contacts = new EObjectResolvingEList<Contact>(Contact.class, this, AggregatorPackage.CONTRIBUTION__CONTACTS);
 		}
@@ -249,6 +259,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getLabel()
@@ -258,13 +269,15 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<MappedRepository> getRepositories()
 	{
-		if (repositories == null)
+		if(repositories == null)
 		{
-			repositories = new EObjectContainmentEList<MappedRepository>(MappedRepository.class, this, AggregatorPackage.CONTRIBUTION__REPOSITORIES);
+			repositories = new EObjectContainmentEList<MappedRepository>(MappedRepository.class, this,
+					AggregatorPackage.CONTRIBUTION__REPOSITORIES);
 		}
 		return repositories;
 	}
@@ -316,6 +329,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isEnabled()
@@ -325,36 +339,45 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setEnabled(boolean newEnabled)
 	{
 		boolean oldEnabled = (eFlags & ENABLED_EFLAG) != 0;
-		if (newEnabled) eFlags |= ENABLED_EFLAG; else eFlags &= ~ENABLED_EFLAG;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__ENABLED, oldEnabled, newEnabled));
+		if(newEnabled)
+			eFlags |= ENABLED_EFLAG;
+		else
+			eFlags &= ~ENABLED_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__ENABLED, oldEnabled,
+					newEnabled));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setLabel(String newLabel)
 	{
 		String oldLabel = label;
 		label = newLabel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__LABEL, oldLabel, label));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__LABEL, oldLabel,
+					label));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (enabled: ");
@@ -367,6 +390,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

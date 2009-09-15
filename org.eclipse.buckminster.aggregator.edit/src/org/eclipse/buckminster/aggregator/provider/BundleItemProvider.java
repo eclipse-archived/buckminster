@@ -25,17 +25,17 @@ import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.Bundle} object.
- * <!-- begin-user-doc
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.Bundle} object. <!-- begin-user-doc
  * --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class BundleItemProvider extends MappedUnitItemProvider implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public BundleItemProvider(AdapterFactory adapterFactory)
@@ -44,8 +44,8 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 	}
 
 	/**
-	 * This returns Bundle.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Bundle.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -55,14 +55,14 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
+		if(itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -100,9 +100,9 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

@@ -42,8 +42,8 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public CategoriesItemProvider(AdapterFactory adapterFactory)
@@ -54,15 +54,15 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!--
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
 	{
-		if (childrenFeatures == null)
+		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(P2viewPackage.Literals.CATEGORIES__CATEGORIES);
@@ -71,8 +71,8 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 	}
 
 	/**
-	 * This returns Categories.gif.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Categories.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -82,14 +82,14 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
+		if(itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -99,8 +99,8 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -110,8 +110,8 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -135,31 +135,23 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 	}
 
 	/**
-	 * This adds a property descriptor for the Categories feature.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Categories feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addCategoriesPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Categories_categories_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Categories_categories_feature", "_UI_Categories_type"),
-				 P2viewPackage.Literals.CATEGORIES__CATEGORIES,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Categories_categories_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Categories_categories_feature", "_UI_Categories_type"),
+				P2viewPackage.Literals.CATEGORIES__CATEGORIES, true, false, true, null, null, null));
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -170,6 +162,7 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

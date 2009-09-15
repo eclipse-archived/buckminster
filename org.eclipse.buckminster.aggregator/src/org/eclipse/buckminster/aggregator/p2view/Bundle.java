@@ -11,14 +11,14 @@ package org.eclipse.buckminster.aggregator.p2view;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Bundle</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.Bundle#getDetails <em>Details</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Bundle#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getBundle()
  * @model
  * @generated
@@ -26,13 +26,13 @@ package org.eclipse.buckminster.aggregator.p2view;
 public interface Bundle extends IUPresentation
 {
 	/**
-	 * Returns the value of the '<em><b>Details</b></em>' reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Details</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Details</em>' reference isn't clear, there really should be more of a description
 	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Details</em>' reference.
 	 * @see #setDetails(Details)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getBundle_Details()
@@ -43,15 +43,18 @@ public interface Bundle extends IUPresentation
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
 	Details getNotNullDetails();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Bundle#getDetails <em>Details</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Details</em>' reference.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Bundle#getDetails <em>Details</em>}'
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Details</em>' reference.
 	 * @see #getDetails()
 	 * @generated
 	 */

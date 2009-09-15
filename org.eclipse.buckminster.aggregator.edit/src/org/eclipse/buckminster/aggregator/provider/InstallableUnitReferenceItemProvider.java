@@ -39,15 +39,21 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.InstallableUnitReference} object.
  * <!-- begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class InstallableUnitReferenceItemProvider extends AggregatorItemProviderAdapter implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
 		IItemPropertySource
 {
+	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
+	{
+		return iuRef.getInstallableUnit(!iuRef.isMappedRepositoryBroken());
+	}
+
 	/**
-	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public InstallableUnitReferenceItemProvider(AdapterFactory adapterFactory)
@@ -56,14 +62,14 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
 	{
-		if (itemPropertyDescriptors == null)
+		if(itemPropertyDescriptors == null)
 		{
 			super.getPropertyDescriptors(object);
 
@@ -73,8 +79,8 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -84,8 +90,8 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -171,30 +177,6 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 		});
 	}
 
-	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-	 * that can be created under this object.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
-	{
-		super.collectNewChildDescriptors(newChildDescriptors, object);
-	}
-
-	// Must be implemented by subclass.
-	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	// Must be implemented by subclass.
-	protected Query getInstallableUnitQuery()
-	{
-		throw new UnsupportedOperationException();
-	}
-
 	protected boolean appendIUText(Object iuRef, StringBuilder bld)
 	{
 		InstallableUnit iu = getInstallableUnit((InstallableUnitReference)iuRef);
@@ -230,8 +212,27 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 		return true;
 	}
 
-	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
-		return iuRef.getInstallableUnit(!iuRef.isMappedRepositoryBroken());
+		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	// Must be implemented by subclass.
+	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	// Must be implemented by subclass.
+	protected Query getInstallableUnitQuery()
+	{
+		throw new UnsupportedOperationException();
 	}
 }

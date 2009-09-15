@@ -28,10 +28,10 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductsImpl#getProducts <em>Products</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductsImpl#getProducts <em>Products</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ProductsImpl extends MinimalEObjectImpl.Container implements Products
@@ -39,15 +39,16 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getProducts() <em>Products</em>}' reference list.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getProducts() <em>Products</em>}' reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getProducts()
 	 * @generated
 	 * @ordered
@@ -56,6 +57,7 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ProductsImpl()
@@ -65,75 +67,80 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCTS__PRODUCTS:
-				return getProducts();
+		case P2viewPackage.PRODUCTS__PRODUCTS:
+			return getProducts();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCTS__PRODUCTS:
-				return products != null && !products.isEmpty();
+		case P2viewPackage.PRODUCTS__PRODUCTS:
+			return products != null && !products.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCTS__PRODUCTS:
-				getProducts().clear();
-				getProducts().addAll((Collection<? extends Product>)newValue);
-				return;
+		case P2viewPackage.PRODUCTS__PRODUCTS:
+			getProducts().clear();
+			getProducts().addAll((Collection<? extends Product>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCTS__PRODUCTS:
-				getProducts().clear();
-				return;
+		case P2viewPackage.PRODUCTS__PRODUCTS:
+			getProducts().clear();
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<Product> getProducts()
 	{
-		if (products == null)
+		if(products == null)
 		{
 			products = new EObjectResolvingEList<Product>(Product.class, this, P2viewPackage.PRODUCTS__PRODUCTS);
 		}
@@ -142,6 +149,7 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

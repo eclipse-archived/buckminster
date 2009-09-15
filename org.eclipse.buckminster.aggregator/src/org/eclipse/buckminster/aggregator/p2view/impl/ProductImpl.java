@@ -28,12 +28,13 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl#getFeatureContainer <em>Feature Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl#getBundleContainer <em>Bundle Container</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl#getDetails <em>Details</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl#getFeatureContainer <em>Feature Container</em>}
+ * </li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl#getBundleContainer <em>Bundle Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ProductImpl extends IUPresentationImpl implements Product
@@ -49,9 +50,9 @@ public class ProductImpl extends IUPresentationImpl implements Product
 	protected Features featureContainer;
 
 	/**
-	 * The cached value of the '{@link #getBundleContainer() <em>Bundle Container</em>}' reference.
-	 * <!-- begin-user-doc
+	 * The cached value of the '{@link #getBundleContainer() <em>Bundle Container</em>}' reference. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getBundleContainer()
 	 * @generated
 	 * @ordered
@@ -59,9 +60,9 @@ public class ProductImpl extends IUPresentationImpl implements Product
 	protected Bundles bundleContainer;
 
 	/**
-	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getDetails()
 	 * @generated
 	 * @ordered
@@ -70,6 +71,7 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ProductImpl()
@@ -79,6 +81,7 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Bundles basicGetBundleContainer()
@@ -88,6 +91,7 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Details basicGetDetails()
@@ -97,6 +101,7 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Features basicGetFeatureContainer()
@@ -106,103 +111,112 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
-				if (resolve) return getFeatureContainer();
-				return basicGetFeatureContainer();
-			case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
-				if (resolve) return getBundleContainer();
-				return basicGetBundleContainer();
-			case P2viewPackage.PRODUCT__DETAILS:
-				if (resolve) return getDetails();
-				return basicGetDetails();
+		case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
+			if(resolve)
+				return getFeatureContainer();
+			return basicGetFeatureContainer();
+		case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
+			if(resolve)
+				return getBundleContainer();
+			return basicGetBundleContainer();
+		case P2viewPackage.PRODUCT__DETAILS:
+			if(resolve)
+				return getDetails();
+			return basicGetDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
-				return featureContainer != null;
-			case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
-				return bundleContainer != null;
-			case P2viewPackage.PRODUCT__DETAILS:
-				return details != null;
+		case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
+			return featureContainer != null;
+		case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
+			return bundleContainer != null;
+		case P2viewPackage.PRODUCT__DETAILS:
+			return details != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
-				setFeatureContainer((Features)newValue);
-				return;
-			case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
-				setBundleContainer((Bundles)newValue);
-				return;
-			case P2viewPackage.PRODUCT__DETAILS:
-				setDetails((Details)newValue);
-				return;
+		case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
+			setFeatureContainer((Features)newValue);
+			return;
+		case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
+			setBundleContainer((Bundles)newValue);
+			return;
+		case P2viewPackage.PRODUCT__DETAILS:
+			setDetails((Details)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
-				setFeatureContainer((Features)null);
-				return;
-			case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
-				setBundleContainer((Bundles)null);
-				return;
-			case P2viewPackage.PRODUCT__DETAILS:
-				setDetails((Details)null);
-				return;
+		case P2viewPackage.PRODUCT__FEATURE_CONTAINER:
+			setFeatureContainer((Features)null);
+			return;
+		case P2viewPackage.PRODUCT__BUNDLE_CONTAINER:
+			setBundleContainer((Bundles)null);
+			return;
+		case P2viewPackage.PRODUCT__DETAILS:
+			setDetails((Details)null);
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Bundles getBundleContainer()
 	{
-		if (bundleContainer != null && bundleContainer.eIsProxy())
+		if(bundleContainer != null && bundleContainer.eIsProxy())
 		{
 			InternalEObject oldBundleContainer = (InternalEObject)bundleContainer;
 			bundleContainer = (Bundles)eResolveProxy(oldBundleContainer);
-			if (bundleContainer != oldBundleContainer)
+			if(bundleContainer != oldBundleContainer)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.PRODUCT__BUNDLE_CONTAINER, oldBundleContainer, bundleContainer));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.PRODUCT__BUNDLE_CONTAINER,
+							oldBundleContainer, bundleContainer));
 			}
 		}
 		return bundleContainer;
@@ -210,18 +224,20 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Details getDetails()
 	{
-		if (details != null && details.eIsProxy())
+		if(details != null && details.eIsProxy())
 		{
 			InternalEObject oldDetails = (InternalEObject)details;
 			details = (Details)eResolveProxy(oldDetails);
-			if (details != oldDetails)
+			if(details != oldDetails)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.PRODUCT__DETAILS, oldDetails, details));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.PRODUCT__DETAILS,
+							oldDetails, details));
 			}
 		}
 		return details;
@@ -229,18 +245,20 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Features getFeatureContainer()
 	{
-		if (featureContainer != null && featureContainer.eIsProxy())
+		if(featureContainer != null && featureContainer.eIsProxy())
 		{
 			InternalEObject oldFeatureContainer = (InternalEObject)featureContainer;
 			featureContainer = (Features)eResolveProxy(oldFeatureContainer);
-			if (featureContainer != oldFeatureContainer)
+			if(featureContainer != oldFeatureContainer)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.PRODUCT__FEATURE_CONTAINER, oldFeatureContainer, featureContainer));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.PRODUCT__FEATURE_CONTAINER,
+							oldFeatureContainer, featureContainer));
 			}
 		}
 		return featureContainer;
@@ -287,42 +305,48 @@ public class ProductImpl extends IUPresentationImpl implements Product
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setBundleContainer(Bundles newBundleContainer)
 	{
 		Bundles oldBundleContainer = bundleContainer;
 		bundleContainer = newBundleContainer;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.PRODUCT__BUNDLE_CONTAINER, oldBundleContainer, bundleContainer));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.PRODUCT__BUNDLE_CONTAINER,
+					oldBundleContainer, bundleContainer));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setDetails(Details newDetails)
 	{
 		Details oldDetails = details;
 		details = newDetails;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.PRODUCT__DETAILS, oldDetails, details));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setFeatureContainer(Features newFeatureContainer)
 	{
 		Features oldFeatureContainer = featureContainer;
 		featureContainer = newFeatureContainer;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.PRODUCT__FEATURE_CONTAINER, oldFeatureContainer, featureContainer));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.PRODUCT__FEATURE_CONTAINER,
+					oldFeatureContainer, featureContainer));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

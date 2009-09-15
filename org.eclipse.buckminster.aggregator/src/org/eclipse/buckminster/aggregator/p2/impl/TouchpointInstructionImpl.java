@@ -23,11 +23,12 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstructi
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.TouchpointInstructionImpl#getBody <em>Body</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2.impl.TouchpointInstructionImpl#getImportAttribute <em>Import Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.TouchpointInstructionImpl#getBody <em>Body</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.TouchpointInstructionImpl#getImportAttribute <em>Import
+ * Attribute</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container implements TouchpointInstruction
@@ -35,6 +36,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
@@ -61,9 +63,9 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	protected String body = BODY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getImportAttribute() <em>Import Attribute</em>}' attribute.
-	 * <!-- begin-user-doc
+	 * The default value of the '{@link #getImportAttribute() <em>Import Attribute</em>}' attribute. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getImportAttribute()
 	 * @generated
 	 * @ordered
@@ -71,9 +73,9 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 	protected static final String IMPORT_ATTRIBUTE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getImportAttribute() <em>Import Attribute</em>}' attribute.
-	 * <!-- begin-user-doc
+	 * The cached value of the '{@link #getImportAttribute() <em>Import Attribute</em>}' attribute. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getImportAttribute()
 	 * @generated
 	 * @ordered
@@ -82,6 +84,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected TouchpointInstructionImpl()
@@ -91,34 +94,40 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
-				return getBody();
-			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
-				return getImportAttribute();
+		case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
+			return getBody();
+		case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
+			return getImportAttribute();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
-				return BODY_EDEFAULT == null ? body != null : !BODY_EDEFAULT.equals(body);
-			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
-				return IMPORT_ATTRIBUTE_EDEFAULT == null ? importAttribute != null : !IMPORT_ATTRIBUTE_EDEFAULT.equals(importAttribute);
+		case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
+			return BODY_EDEFAULT == null
+					? body != null
+					: !BODY_EDEFAULT.equals(body);
+		case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
+			return IMPORT_ATTRIBUTE_EDEFAULT == null
+					? importAttribute != null
+					: !IMPORT_ATTRIBUTE_EDEFAULT.equals(importAttribute);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -151,44 +160,47 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
-				setBody((String)newValue);
-				return;
-			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
-				setImportAttribute((String)newValue);
-				return;
+		case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
+			setBody((String)newValue);
+			return;
+		case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
+			setImportAttribute((String)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
-				setBody(BODY_EDEFAULT);
-				return;
-			case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
-				setImportAttribute(IMPORT_ATTRIBUTE_EDEFAULT);
-				return;
+		case P2Package.TOUCHPOINT_INSTRUCTION__BODY:
+			setBody(BODY_EDEFAULT);
+			return;
+		case P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE:
+			setImportAttribute(IMPORT_ATTRIBUTE_EDEFAULT);
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getBody()
@@ -198,6 +210,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getImportAttribute()
@@ -220,36 +233,41 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setBody(String newBody)
 	{
 		String oldBody = body;
 		body = newBody;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.TOUCHPOINT_INSTRUCTION__BODY, oldBody, body));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setImportAttribute(String newImportAttribute)
 	{
 		String oldImportAttribute = importAttribute;
 		importAttribute = newImportAttribute;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE, oldImportAttribute, importAttribute));
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.TOUCHPOINT_INSTRUCTION__IMPORT_ATTRIBUTE,
+					oldImportAttribute, importAttribute));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString()
 	{
-		if (eIsProxy()) return super.toString();
+		if(eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (body: ");
@@ -262,6 +280,7 @@ public class TouchpointInstructionImpl extends MinimalEObjectImpl.Container impl
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

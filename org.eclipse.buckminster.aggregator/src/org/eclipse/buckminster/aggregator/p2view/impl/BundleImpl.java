@@ -26,18 +26,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl#getDetails <em>Details</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class BundleImpl extends IUPresentationImpl implements Bundle
 {
 	/**
-	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getDetails()
 	 * @generated
 	 * @ordered
@@ -46,6 +46,7 @@ public class BundleImpl extends IUPresentationImpl implements Bundle
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected BundleImpl()
@@ -55,6 +56,7 @@ public class BundleImpl extends IUPresentationImpl implements Bundle
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Details basicGetDetails()
@@ -64,81 +66,88 @@ public class BundleImpl extends IUPresentationImpl implements Bundle
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.BUNDLE__DETAILS:
-				if (resolve) return getDetails();
-				return basicGetDetails();
+		case P2viewPackage.BUNDLE__DETAILS:
+			if(resolve)
+				return getDetails();
+			return basicGetDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.BUNDLE__DETAILS:
-				return details != null;
+		case P2viewPackage.BUNDLE__DETAILS:
+			return details != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.BUNDLE__DETAILS:
-				setDetails((Details)newValue);
-				return;
+		case P2viewPackage.BUNDLE__DETAILS:
+			setDetails((Details)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch (featureID)
+		switch(featureID)
 		{
-			case P2viewPackage.BUNDLE__DETAILS:
-				setDetails((Details)null);
-				return;
+		case P2viewPackage.BUNDLE__DETAILS:
+			setDetails((Details)null);
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Details getDetails()
 	{
-		if (details != null && details.eIsProxy())
+		if(details != null && details.eIsProxy())
 		{
 			InternalEObject oldDetails = (InternalEObject)details;
 			details = (Details)eResolveProxy(oldDetails);
-			if (details != oldDetails)
+			if(details != oldDetails)
 			{
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.BUNDLE__DETAILS, oldDetails, details));
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.BUNDLE__DETAILS,
+							oldDetails, details));
 			}
 		}
 		return details;
@@ -159,18 +168,20 @@ public class BundleImpl extends IUPresentationImpl implements Bundle
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setDetails(Details newDetails)
 	{
 		Details oldDetails = details;
 		details = newDetails;
-		if (eNotificationRequired())
+		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.BUNDLE__DETAILS, oldDetails, details));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

@@ -14,16 +14,18 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Metadata Repository Structured View</b></em>'.
  * <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getInstallableUnitList <em>Installable Unit List</em>}</li>
- *   <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getProperties <em>Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getName <em>Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getInstallableUnitList <em>
+ * Installable Unit List</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getProperties <em>Properties
+ * </em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView()
  * @model
  * @generated
@@ -31,13 +33,13 @@ import org.eclipse.emf.ecore.EObject;
 public interface MetadataRepositoryStructuredView extends EObject
 {
 	/**
-	 * Returns the value of the '<em><b>Installable Unit List</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Installable Unit List</b></em>' containment reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Installable Unit List</em>' reference isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Installable Unit List</em>' containment reference.
 	 * @see #setInstallableUnitList(InstallableUnits)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_InstallableUnitList()
@@ -47,12 +49,12 @@ public interface MetadataRepositoryStructuredView extends EObject
 	InstallableUnits getInstallableUnitList();
 
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_Name()
@@ -62,13 +64,13 @@ public interface MetadataRepositoryStructuredView extends EObject
 	String getName();
 
 	/**
-	 * Returns the value of the '<em><b>Properties</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Properties</b></em>' containment reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Properties</em>' reference isn't clear, there really should be more of a description
 	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Properties</em>' containment reference.
 	 * @see #setProperties(Properties)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_Properties()
@@ -78,27 +80,35 @@ public interface MetadataRepositoryStructuredView extends EObject
 	Properties getProperties();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getInstallableUnitList <em>Installable Unit List</em>}' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Installable Unit List</em>' containment reference.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getInstallableUnitList
+	 * <em>Installable Unit List</em>}' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Installable Unit List</em>' containment reference.
 	 * @see #getInstallableUnitList()
 	 * @generated
 	 */
 	void setInstallableUnitList(InstallableUnits value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getName
+	 * <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */
 	void setName(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getProperties <em>Properties</em>}' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Properties</em>' containment reference.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getProperties
+	 * <em>Properties</em>}' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Properties</em>' containment reference.
 	 * @see #getProperties()
 	 * @generated
 	 */
