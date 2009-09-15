@@ -345,6 +345,7 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/installableUnitList"/>
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/properties"/>
+        <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/mdr"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/InstallableUnits">
         <genFeatures notify="false" children="true" createChild="false" propertySortChoices="true"
@@ -383,11 +384,15 @@
         <genFeatures notify="false" children="true" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Miscellaneous/others"/>
       </genClasses>
-      <genClasses image="false" ecoreClass="Aggregator.ecore#//p2view/IUPresentation">
+      <genClasses image="false" ecoreClass="Aggregator.ecore#//p2view/IUPresentation"
+          labelFeature="#//aggregator/p2view/IUPresentation/label">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/id"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/version"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/label"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/description"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/type"/>
+        <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUPresentation/iu"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Category">
         <genFeatures notify="false" children="true" createChild="false" propertySortChoices="true"

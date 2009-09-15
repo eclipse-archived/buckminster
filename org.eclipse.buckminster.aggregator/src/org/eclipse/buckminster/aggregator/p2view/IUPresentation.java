@@ -9,6 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import java.util.Comparator;
+
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.emf.ecore.EObject;
@@ -24,6 +26,7 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getId <em>Id</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getVersion <em>Version</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getName <em>Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getDescription <em>Description</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getType <em>Type</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIu <em>Iu</em>}</li>
@@ -36,6 +39,60 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
  */
 public interface IUPresentation extends EObject
 {
+	// Compares IU presentation by name (ascending) and version (descending)
+	static class IUPresentationComparator implements Comparator<IUPresentation>
+	{
+
+		public int compare(IUPresentation iu1, IUPresentation iu2)
+		{
+			if(iu1 != null)
+				if(iu2 == null)
+					return 1;
+				else
+				{
+					String name1 = iu1.getName();
+					String name2 = iu2.getName();
+
+					if(name1 != null)
+						if(name2 == null)
+							return 1;
+						else
+						{
+							int result = name1.compareTo(name2);
+
+							if(result == 0)
+							{
+								// Order by version in descending order
+								Version version1 = iu1.getVersion();
+								Version version2 = iu2.getVersion();
+
+								if(version1 != null)
+									if(version2 == null)
+										return -1;
+									else
+										return -version1.compareTo(version2);
+								else if(version2 != null)
+									return 1;
+								else
+									return 0;
+							}
+
+							return result;
+						}
+					else if(name2 != null)
+						return -1;
+					else
+						return 0;
+				}
+			else if(iu2 != null)
+				return -1;
+			else
+				return 0;
+		}
+	}
+
+	static Comparator<IUPresentation> COMPARATOR = new IUPresentationComparator();
+
 	/**
 	 * Returns the value of the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
@@ -80,6 +137,22 @@ public interface IUPresentation extends EObject
 	 * @generated
 	 */
 	InstallableUnit getIu();
+
+	/**
+	 * Returns the value of the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Label</em>' attribute isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Label</em>' attribute.
+	 * @see #setLabel(String)
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUPresentation_Label()
+	 * @model
+	 * @generated
+	 */
+	String getLabel();
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value of
@@ -152,6 +225,17 @@ public interface IUPresentation extends EObject
 	 * @generated
 	 */
 	void setId(String value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getLabel <em>Label</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Label</em>' attribute.
+	 * @see #getLabel()
+	 * @generated
+	 */
+	void setLabel(String value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getName <em>Name</em>}'

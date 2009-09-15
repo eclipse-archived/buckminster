@@ -262,6 +262,14 @@ public interface P2viewPackage extends EPackage
 		EAttribute IU_PRESENTATION__NAME = eINSTANCE.getIUPresentation_Name();
 
 		/**
+		 * The meta object literal for the '<em><b>Label</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute IU_PRESENTATION__LABEL = eINSTANCE.getIUPresentation_Label();
+
+		/**
 		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
@@ -790,12 +798,20 @@ public interface P2viewPackage extends EPackage
 	int IU_PRESENTATION__NAME = 2;
 
 	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION__LABEL = 3;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IU_PRESENTATION__DESCRIPTION = 3;
+	int IU_PRESENTATION__DESCRIPTION = 4;
 
 	/**
 	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -804,7 +820,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IU_PRESENTATION__TYPE = 4;
+	int IU_PRESENTATION__TYPE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -812,7 +828,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IU_PRESENTATION__IU = 5;
+	int IU_PRESENTATION__IU = 6;
 
 	/**
 	 * The number of structural features of the '<em>IU Presentation</em>' class. <!-- begin-user-doc --> <!-- =======
@@ -822,7 +838,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IU_PRESENTATION_FEATURE_COUNT = 6;
+	int IU_PRESENTATION_FEATURE_COUNT = 7;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl <em>Category</em>}
@@ -857,6 +873,14 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int CATEGORY__NAME = IU_PRESENTATION__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__LABEL = IU_PRESENTATION__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -969,6 +993,14 @@ public interface P2viewPackage extends EPackage
 	int FEATURE__NAME = IU_PRESENTATION__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__LABEL = IU_PRESENTATION__LABEL;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -1059,6 +1091,14 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int PRODUCT__NAME = IU_PRESENTATION__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__LABEL = IU_PRESENTATION__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1153,6 +1193,14 @@ public interface P2viewPackage extends EPackage
 	int BUNDLE__NAME = IU_PRESENTATION__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__LABEL = IU_PRESENTATION__LABEL;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -1226,6 +1274,14 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int OTHER_IU__NAME = IU_PRESENTATION__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__LABEL = IU_PRESENTATION__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1658,6 +1714,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getIUPresentation_Iu();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getLabel <em>Label</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Label</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentation#getLabel()
+	 * @see #getIUPresentation()
+	 * @generated
+	 */
+	EAttribute getIUPresentation_Label();
 
 	/**
 	 * Returns the meta object for the attribute '

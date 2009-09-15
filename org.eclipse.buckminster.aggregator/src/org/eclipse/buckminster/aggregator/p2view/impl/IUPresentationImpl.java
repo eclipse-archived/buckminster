@@ -108,6 +108,26 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	protected String name = NAME_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LABEL_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected String label = LABEL_EDEFAULT;
+
+	/**
 	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -183,6 +203,8 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return getVersion();
 		case P2viewPackage.IU_PRESENTATION__NAME:
 			return getName();
+		case P2viewPackage.IU_PRESENTATION__LABEL:
+			return getLabel();
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			return getDescription();
 		case P2viewPackage.IU_PRESENTATION__TYPE:
@@ -215,6 +237,10 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return NAME_EDEFAULT == null
 					? name != null
 					: !NAME_EDEFAULT.equals(name);
+		case P2viewPackage.IU_PRESENTATION__LABEL:
+			return LABEL_EDEFAULT == null
+					? label != null
+					: !LABEL_EDEFAULT.equals(label);
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			return DESCRIPTION_EDEFAULT == null
 					? description != null
@@ -246,6 +272,9 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 		case P2viewPackage.IU_PRESENTATION__NAME:
 			setName((String)newValue);
 			return;
+		case P2viewPackage.IU_PRESENTATION__LABEL:
+			setLabel((String)newValue);
+			return;
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			setDescription((String)newValue);
 			return;
@@ -271,6 +300,9 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return;
 		case P2viewPackage.IU_PRESENTATION__NAME:
 			setName(NAME_EDEFAULT);
+			return;
+		case P2viewPackage.IU_PRESENTATION__LABEL:
+			setLabel(LABEL_EDEFAULT);
 			return;
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			setDescription(DESCRIPTION_EDEFAULT);
@@ -307,6 +339,16 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	public InstallableUnit getIu()
 	{
 		return iu;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getLabel()
+	{
+		return label;
 	}
 
 	/**
@@ -368,6 +410,19 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	 * 
 	 * @generated
 	 */
+	public void setLabel(String newLabel)
+	{
+		String oldLabel = label;
+		label = newLabel;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.IU_PRESENTATION__LABEL, oldLabel, label));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setName(String newName)
 	{
 		String oldName = name;
@@ -408,6 +463,8 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 		result.append(version);
 		result.append(", name: ");
 		result.append(name);
+		result.append(", label: ");
+		result.append(label);
 		result.append(", description: ");
 		result.append(description);
 		result.append(')');

@@ -110,7 +110,7 @@ public class CategoryItemProvider extends IUPresentationItemProvider implements 
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Category)object).getName();
+		String label = ((Category)object).getLabel();
 		return label == null || label.length() == 0
 				? "Unknown Category"
 				: label;

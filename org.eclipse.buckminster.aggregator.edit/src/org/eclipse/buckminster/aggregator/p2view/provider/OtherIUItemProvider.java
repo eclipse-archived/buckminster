@@ -102,7 +102,7 @@ public class OtherIUItemProvider extends IUPresentationItemProvider implements I
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((OtherIU)object).getName();
+		String label = ((OtherIU)object).getLabel();
 		return label == null || label.length() == 0
 				? "Unkown IU"
 				: label;

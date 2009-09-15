@@ -106,7 +106,7 @@ public class FeatureItemProvider extends IUPresentationItemProvider implements I
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Feature)object).getName();
+		String label = ((Feature)object).getLabel();
 		return label == null || label.length() == 0
 				? "Unknown Feature"
 				: label;

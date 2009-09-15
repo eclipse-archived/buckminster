@@ -102,7 +102,7 @@ public class BundleItemProvider extends IUPresentationItemProvider implements IE
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Bundle)object).getName();
+		String label = ((Bundle)object).getLabel();
 		return label == null || label.length() == 0
 				? "Unknown Bundle"
 				: label;

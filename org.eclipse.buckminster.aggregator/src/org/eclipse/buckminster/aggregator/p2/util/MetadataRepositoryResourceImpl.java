@@ -148,6 +148,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			repoView.setInstallableUnitList(P2viewFactory.eINSTANCE.createInstallableUnits());
 
 			Map<String, Map<Version, IUPresentation>> iuMap = new HashMap<String, Map<Version, IUPresentation>>();
+			List<Category> categories = new ArrayList<Category>();
+			List<Feature> features = new ArrayList<Feature>();
+			List<Product> products = new ArrayList<Product>();
+			List<Bundle> bundles = new ArrayList<Bundle>();
+			List<OtherIU> miscellaneous = new ArrayList<OtherIU>();
 
 			for(InstallableUnit iu : repository.getInstallableUnits())
 			{
@@ -158,32 +163,27 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				case CATEGORY:
 					iuPresentation = P2viewFactory.eINSTANCE.createCategory(iu);
 					((Category)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
-					repoView.getInstallableUnitList().getNotNullCategoryContainer().getCategories().add(
-							(Category)iuPresentation);
+					categories.add((Category)iuPresentation);
 					break;
 				case FEATURE:
 					iuPresentation = P2viewFactory.eINSTANCE.createFeature(iu);
 					((Feature)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
-					repoView.getInstallableUnitList().getNotNullFeatureContainer().getFeatures().add(
-							(Feature)iuPresentation);
+					features.add((Feature)iuPresentation);
 					break;
 				case PRODUCT:
 					iuPresentation = P2viewFactory.eINSTANCE.createProduct(iu);
 					((Product)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
-					repoView.getInstallableUnitList().getNotNullProductContainer().getProducts().add(
-							(Product)iuPresentation);
+					products.add((Product)iuPresentation);
 					break;
 				case BUNDLE:
 					iuPresentation = P2viewFactory.eINSTANCE.createBundle(iu);
 					((Bundle)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
-					repoView.getInstallableUnitList().getNotNullBundleContainer().getBundles().add(
-							(Bundle)iuPresentation);
+					bundles.add((Bundle)iuPresentation);
 					break;
 				default:
 					iuPresentation = P2viewFactory.eINSTANCE.createOtherIU(iu);
 					((OtherIU)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
-					repoView.getInstallableUnitList().getNotNullMiscellaneousContainer().getOthers().add(
-							(OtherIU)iuPresentation);
+					miscellaneous.add((OtherIU)iuPresentation);
 				}
 
 				iuPresentation.setId(iu.getId());
@@ -192,17 +192,44 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				String name = getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
 				if(name == null)
 					name = iu.getId();
+				iuPresentation.setName(name);
 
 				if(iu.getType() == InstallableUnitType.CATEGORY || iu.getVersion() == null)
-					iuPresentation.setName(name);
+					iuPresentation.setLabel(name);
 				else
-					iuPresentation.setName(name + " / " + iu.getVersion().toString());
+					iuPresentation.setLabel(name + " / " + iu.getVersion().toString());
 				iuPresentation.setDescription(getLocalizedProperty(iu, IInstallableUnit.PROP_DESCRIPTION));
 
 				Map<Version, IUPresentation> versionMap = iuMap.get(iu.getId());
 				if(versionMap == null)
 					iuMap.put(iu.getId(), versionMap = new HashMap<Version, IUPresentation>());
 				versionMap.put(iu.getVersion(), iuPresentation);
+			}
+
+			if(categories.size() > 0)
+			{
+				Collections.sort(categories, IUPresentation.COMPARATOR);
+				repoView.getInstallableUnitList().getNotNullCategoryContainer().getCategories().addAll(categories);
+			}
+			if(features.size() > 0)
+			{
+				Collections.sort(features, IUPresentation.COMPARATOR);
+				repoView.getInstallableUnitList().getNotNullFeatureContainer().getFeatures().addAll(features);
+			}
+			if(products.size() > 0)
+			{
+				Collections.sort(products, IUPresentation.COMPARATOR);
+				repoView.getInstallableUnitList().getNotNullProductContainer().getProducts().addAll(products);
+			}
+			if(bundles.size() > 0)
+			{
+				Collections.sort(bundles, IUPresentation.COMPARATOR);
+				repoView.getInstallableUnitList().getNotNullBundleContainer().getBundles().addAll(bundles);
+			}
+			if(miscellaneous.size() > 0)
+			{
+				Collections.sort(miscellaneous, IUPresentation.COMPARATOR);
+				repoView.getInstallableUnitList().getNotNullMiscellaneousContainer().getOthers().addAll(miscellaneous);
 			}
 
 			Categories categoryContainer = repoView.getInstallableUnitList().getCategoryContainer();
@@ -217,6 +244,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 		private void exploreCategory(Category category, Map<String, Map<Version, IUPresentation>> iuMap)
 		{
+			List<Category> categories = new ArrayList<Category>();
+			List<Feature> features = new ArrayList<Feature>();
+			List<Product> products = new ArrayList<Product>();
+			List<Bundle> bundles = new ArrayList<Bundle>();
+
 			for(IRequiredCapability requiredCapability : category.getDetails().getInstallableUnit().getRequiredCapabilityList())
 			{
 				VersionRange range = requiredCapability.getRange();
@@ -233,15 +265,36 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 				if(iuPresentation instanceof Category)
 				{
-					category.getNotNullCategoryContainer().getCategories().add((Category)iuPresentation);
+					categories.add((Category)iuPresentation);
 					exploreCategory((Category)iuPresentation, iuMap);
 				}
 				else if(iuPresentation instanceof Feature)
-					category.getNotNullFeatureContainer().getFeatures().add((Feature)iuPresentation);
+					features.add((Feature)iuPresentation);
 				else if(iuPresentation instanceof Product)
-					category.getNotNullProductContainer().getProducts().add((Product)iuPresentation);
+					products.add((Product)iuPresentation);
 				else if(iuPresentation instanceof Bundle)
-					category.getNotNullBundleContainer().getBundles().add((Bundle)iuPresentation);
+					bundles.add((Bundle)iuPresentation);
+			}
+
+			if(categories.size() > 0)
+			{
+				Collections.sort(categories, IUPresentation.COMPARATOR);
+				category.getNotNullCategoryContainer().getCategories().addAll(categories);
+			}
+			if(features.size() > 0)
+			{
+				Collections.sort(features, IUPresentation.COMPARATOR);
+				category.getNotNullFeatureContainer().getFeatures().addAll(features);
+			}
+			if(products.size() > 0)
+			{
+				Collections.sort(products, IUPresentation.COMPARATOR);
+				category.getNotNullProductContainer().getProducts().addAll(products);
+			}
+			if(bundles.size() > 0)
+			{
+				Collections.sort(bundles, IUPresentation.COMPARATOR);
+				category.getNotNullBundleContainer().getBundles().addAll(bundles);
 			}
 		}
 

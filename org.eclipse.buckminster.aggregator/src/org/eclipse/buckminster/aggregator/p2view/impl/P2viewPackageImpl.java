@@ -290,6 +290,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__ID);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__VERSION);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__NAME);
+		createEAttribute(iuPresentationEClass, IU_PRESENTATION__LABEL);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__DESCRIPTION);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__TYPE);
 		createEReference(iuPresentationEClass, IU_PRESENTATION__IU);
@@ -601,7 +602,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 */
 	public EAttribute getIUPresentation_Description()
 	{
-		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -621,7 +622,17 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 */
 	public EReference getIUPresentation_Iu()
 	{
-		return (EReference)iuPresentationEClass.getEStructuralFeatures().get(5);
+		return (EReference)iuPresentationEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getIUPresentation_Label()
+	{
+		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -641,7 +652,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 */
 	public EAttribute getIUPresentation_Type()
 	{
-		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -949,6 +960,8 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 				IUPresentation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
 				!IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIUPresentation_Name(), ecorePackage.getEString(), "name", null, 0, 1, IUPresentation.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIUPresentation_Label(), ecorePackage.getEString(), "label", null, 0, 1, IUPresentation.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIUPresentation_Description(), ecorePackage.getEString(), "description", null, 0, 1,
 				IUPresentation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,

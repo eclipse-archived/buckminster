@@ -67,6 +67,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 			addIdPropertyDescriptor(object);
 			addVersionPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
+			addLabelPropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
 			addTypePropertyDescriptor(object);
 			addIuPropertyDescriptor(object);
@@ -93,7 +94,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((IUPresentation)object).getName();
+		String label = ((IUPresentation)object).getLabel();
 		return label == null || label.length() == 0
 				? getString("_UI_IUPresentation_type")
 				: getString("_UI_IUPresentation_type") + " " + label;
@@ -116,6 +117,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 		case P2viewPackage.IU_PRESENTATION__ID:
 		case P2viewPackage.IU_PRESENTATION__VERSION:
 		case P2viewPackage.IU_PRESENTATION__NAME:
+		case P2viewPackage.IU_PRESENTATION__LABEL:
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 		case P2viewPackage.IU_PRESENTATION__TYPE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -166,6 +168,21 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				getString("_UI_IUPresentation_iu_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_iu_feature", "_UI_IUPresentation_type"),
 				P2viewPackage.Literals.IU_PRESENTATION__IU, false, false, false, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Label feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addLabelPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IUPresentation_label_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUPresentation_label_feature", "_UI_IUPresentation_type"),
+				P2viewPackage.Literals.IU_PRESENTATION__LABEL, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

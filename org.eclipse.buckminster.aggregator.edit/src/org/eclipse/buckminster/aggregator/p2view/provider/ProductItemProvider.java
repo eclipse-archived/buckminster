@@ -106,7 +106,7 @@ public class ProductItemProvider extends IUPresentationItemProvider implements I
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Product)object).getName();
+		String label = ((Product)object).getLabel();
 		return label == null || label.length() == 0
 				? "Unknown Product"
 				: label;
