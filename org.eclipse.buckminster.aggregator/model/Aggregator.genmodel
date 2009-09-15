@@ -286,7 +286,7 @@
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2/InstructionMap">
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/InstructionMap/key"/>
-        <genFeatures property="Readonly" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstructionMap/value"/>
+        <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstructionMap/value"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IQueryable">
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IQueryable/query">

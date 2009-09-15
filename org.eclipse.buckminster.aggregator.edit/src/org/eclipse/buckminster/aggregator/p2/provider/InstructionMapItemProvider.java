@@ -10,19 +10,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -186,9 +189,25 @@ public class InstructionMapItemProvider extends AggregatorItemProviderAdapter im
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
 
-		newChildDescriptors.add(createChildParameter(P2Package.Literals.INSTRUCTION_MAP__VALUE,
-				P2Factory.eINSTANCE.createTouchpointInstruction()));
+	/**
+	 * Don't allow setting attributes
+	 */
+	@Override
+	protected Command createSetCommand(EditingDomain domain, EObject owner, EStructuralFeature feature, Object value)
+	{
+		return UnexecutableCommand.INSTANCE;
+	}
+
+	/**
+	 * Don't allow setting attributes
+	 */
+	@Override
+	protected Command createSetCommand(EditingDomain domain, EObject owner, EStructuralFeature feature, Object value,
+			int index)
+	{
+		return UnexecutableCommand.INSTANCE;
 	}
 
 	/**

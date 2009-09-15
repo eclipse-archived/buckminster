@@ -522,6 +522,25 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 	}
 
 	/**
+	 * Don't allow setting attributes
+	 */
+	@Override
+	protected Command createSetCommand(EditingDomain domain, EObject owner, EStructuralFeature feature, Object value)
+	{
+		return UnexecutableCommand.INSTANCE;
+	}
+
+	/**
+	 * Don't allow setting attributes
+	 */
+	@Override
+	protected Command createSetCommand(EditingDomain domain, EObject owner, EStructuralFeature feature, Object value,
+			int index)
+	{
+		return UnexecutableCommand.INSTANCE;
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
