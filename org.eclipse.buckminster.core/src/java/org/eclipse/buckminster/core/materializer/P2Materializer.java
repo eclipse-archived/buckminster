@@ -120,13 +120,12 @@ public class P2Materializer extends AbstractMaterializer
 	@Override
 	public String getMaterializerRootDir() throws CoreException
 	{
-		String location = TargetPlatform.getInstance().getLocation().getAbsolutePath();
+		File location = TargetPlatform.getInstance().getLocation();
 		// bug 285449: throw exception if we cannot determine the target location
 		if(location == null)
-		{
 			throw BuckminsterException.fromMessage(Messages.Unable_to_determine_platform_install_location);
-		}
-		return location;
+
+		return location.getAbsolutePath();
 	}
 
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
