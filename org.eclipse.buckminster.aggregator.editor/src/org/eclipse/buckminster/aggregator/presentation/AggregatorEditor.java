@@ -47,6 +47,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -54,6 +56,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -747,10 +751,34 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 * This is the method used by the framework to install your own controls. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public void createPages()
+	{
+		createPagesGen();
+
+		selectionViewer.addDoubleClickListener(new IDoubleClickListener()
+		{
+			public void doubleClick(DoubleClickEvent event)
+			{
+				TreePath path = ((TreeSelection)event.getSelection()).getPaths()[0];
+
+				if(selectionViewer.getExpandedState(path))
+					selectionViewer.collapseToLevel(path, 1);
+				else
+					selectionViewer.expandToLevel(path, 1);
+			}
+		});
+	}
+
+	/**
+	 * This is the method used by the framework to install your own controls. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 */
+	public void createPagesGen()
 	{
 		// Creates the model from the editor input
 		//
