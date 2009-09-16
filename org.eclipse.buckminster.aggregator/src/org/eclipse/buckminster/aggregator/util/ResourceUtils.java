@@ -87,6 +87,8 @@ public class ResourceUtils
 	 */
 	public static void loadResourceForMappedRepository(MappedRepository mappedRepository)
 	{
+		if(mappedRepository.getLocation() == null)
+			return;
 		Aggregator aggregator = (Aggregator)mappedRepository.eContainer().eContainer();
 		MetadataRepositoryResourceImpl.loadRepository(mappedRepository.getLocation(), aggregator);
 	}

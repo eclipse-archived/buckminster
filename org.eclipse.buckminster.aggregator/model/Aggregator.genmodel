@@ -341,10 +341,10 @@
         ecorePackage="Aggregator.ecore#//p2view">
       <genClasses ecoreClass="Aggregator.ecore#//p2view/MetadataRepositoryStructuredView">
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/name"/>
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/installableUnitList"/>
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/properties"/>
+        <genFeatures property="Readonly" children="true" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/installableUnitList"/>
+        <genFeatures property="Readonly" children="true" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/properties"/>
         <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/mdr"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/InstallableUnits">

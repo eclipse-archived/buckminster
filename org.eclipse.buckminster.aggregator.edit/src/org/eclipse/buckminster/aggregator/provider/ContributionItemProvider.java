@@ -306,7 +306,20 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		// If a repository is added (e.g. Undo Delete), reload MDR
 		else if(notification.getEventType() == Notification.ADD
 				&& notification.getNewValue() instanceof MappedRepository)
+		{
 			ResourceUtils.loadResourceForMappedRepository((MappedRepository)notification.getNewValue());
+
+			Set<EObject> affectedNodes = new HashSet<EObject>();
+			// Go through all ancestors to mark warnings
+			EObject container = ((EObject)notification.getNotifier());
+			while(container != null)
+			{
+				affectedNodes.add(container);
+				container = container.eContainer();
+			}
+			for(EObject affectedNode : affectedNodes)
+				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
+		}
 	}
 
 	/**

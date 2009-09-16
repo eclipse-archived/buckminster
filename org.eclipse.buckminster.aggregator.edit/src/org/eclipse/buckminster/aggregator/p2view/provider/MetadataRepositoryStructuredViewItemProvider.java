@@ -158,6 +158,10 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__NAME:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST:
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			return;
 		}
 		super.notifyChanged(notification);
 	}
