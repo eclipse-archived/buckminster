@@ -1220,8 +1220,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		getMappedUnit_ValidConfigurations().getEKeys().add(this.getConfiguration_WindowSystem());
 		getMappedUnit_ValidConfigurations().getEKeys().add(this.getConfiguration_Architecture());
 
-		addEOperation(mappedUnitEClass, ecorePackage.getEBoolean(), "isBranchEnabled", 0, 1, IS_UNIQUE, IS_ORDERED);
-
 		initEClass(productEClass, Product.class, "Product", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(propertyEClass, Property.class, "Property", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1271,6 +1269,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		addEOperation(installableUnitReferenceEClass, ecorePackage.getEBoolean(), "isMappedRepositoryBroken", 0, 1,
 				IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(installableUnitReferenceEClass, ecorePackage.getEBoolean(), "isBranchEnabled", 0, 1, IS_UNIQUE,
+				IS_ORDERED);
 
 		initEClass(exclusionRuleEClass, ExclusionRule.class, "ExclusionRule", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);

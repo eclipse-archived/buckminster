@@ -12,6 +12,7 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -44,12 +45,15 @@ public class ExclusionRuleItemProvider extends MapRuleItemProvider implements IE
 	/**
 	 * This returns ExclusionRule.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ExclusionRule"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/ExclusionRule" + (((ExclusionRule)object).isBranchEnabled()
+						? ""
+						: "Disabled")));
 	}
 
 	/**

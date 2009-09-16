@@ -24,6 +24,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule} object.
@@ -47,12 +48,15 @@ public class ValidConfigurationsRuleItemProvider extends MapRuleItemProvider imp
 	/**
 	 * This returns ValidConfigurationsRule.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ValidConfigurationsRule"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/ValidConfigurationsRule" + (((ValidConfigurationsRule)object).isBranchEnabled()
+						? ""
+						: "Disabled")));
 	}
 
 	/**
@@ -113,6 +117,13 @@ public class ValidConfigurationsRuleItemProvider extends MapRuleItemProvider imp
 	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
+
+		switch(notification.getFeatureID(ValidConfigurationsRule.class))
+		{
+		case AggregatorPackage.VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		}
 		super.notifyChanged(notification);
 	}
 

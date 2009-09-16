@@ -31,6 +31,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
@@ -48,7 +49,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 {
 	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
 	{
-		return iuRef.getInstallableUnit(!iuRef.isMappedRepositoryBroken());
+		return iuRef.getInstallableUnit(iuRef.isBranchEnabled() && !iuRef.isMappedRepositoryBroken());
 	}
 
 	/**
@@ -111,6 +112,13 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
+
+		switch(notification.getFeatureID(InstallableUnitReference.class))
+		{
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		}
 		super.notifyChanged(notification);
 	}
 

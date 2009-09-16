@@ -43,12 +43,4 @@ public interface MappedUnit extends InstallableUnitReference, EnabledStatusProvi
 	 */
 	EList<Configuration> getValidConfigurations();
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @model kind="operation"
-	 * @generated
-	 */
-	boolean isBranchEnabled();
-
 } // MappedUnit

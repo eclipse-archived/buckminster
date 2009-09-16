@@ -126,7 +126,7 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//MapRule"/>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//InstallableUnitReference">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//InstallableUnitReference/installableUnit"/>
+      <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//InstallableUnitReference/installableUnit"/>
       <genOperations ecoreOperation="Aggregator.ecore#//InstallableUnitReference/getInstallableUnit">
         <genParameters ecoreParameter="Aggregator.ecore#//InstallableUnitReference/getInstallableUnit/forceResolve"/>
       </genOperations>
@@ -134,7 +134,7 @@
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//ExclusionRule"/>
     <genClasses ecoreClass="Aggregator.ecore#//ValidConfigurationsRule">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//ValidConfigurationsRule/validConfigurations"/>
+      <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//ValidConfigurationsRule/validConfigurations"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" ecorePackage="Aggregator.ecore#//p2">
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="Aggregator.ecore#//p2/InstallableUnitType">

@@ -60,6 +60,14 @@ public interface InstallableUnitReference extends EObject
 	 * @model kind="operation"
 	 * @generated
 	 */
+	boolean isBranchEnabled();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
 	boolean isMappedRepositoryBroken();
 
 	/**

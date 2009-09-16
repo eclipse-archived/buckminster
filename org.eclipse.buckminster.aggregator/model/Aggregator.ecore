@@ -89,7 +89,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Bundle" eSuperTypes="#//MappedUnit"/>
   <eClassifiers xsi:type="ecore:EClass" name="MappedUnit" abstract="true" eSuperTypes="#//InstallableUnitReference #//EnabledStatusProvider">
-    <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="validConfigurations" upperBound="-1"
         eType="#//Configuration" eKeys="#//Configuration/operatingSystem #//Configuration/windowSystem #//Configuration/architecture"/>
   </eClassifiers>
@@ -152,6 +151,7 @@
       <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
     <eOperations name="isMappedRepositoryBroken" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnit" eType="#//p2/InstallableUnit"
         eKeys="#//p2/IInstallableUnit/id #//p2/IInstallableUnit/version"/>
   </eClassifiers>

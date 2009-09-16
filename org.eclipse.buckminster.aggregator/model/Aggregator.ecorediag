@@ -208,10 +208,6 @@
       <styles xmi:type="notation:FilteringStyle" xmi:id="_c0zxZJ3ZEd6eFb3LIE8mlQ"/>
     </children>
     <children xmi:type="notation:Node" xmi:id="_c0zxZZ3ZEd6eFb3LIE8mlQ" type="5002">
-      <children xmi:type="notation:Node" xmi:id="_c00Yc53ZEd6eFb3LIE8mlQ" type="2002">
-        <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//MappedUnit/isBranchEnabled"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_c00YdJ3ZEd6eFb3LIE8mlQ"/>
-      </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_c00YcJ3ZEd6eFb3LIE8mlQ"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_c00YcZ3ZEd6eFb3LIE8mlQ"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_c00Ycp3ZEd6eFb3LIE8mlQ"/>

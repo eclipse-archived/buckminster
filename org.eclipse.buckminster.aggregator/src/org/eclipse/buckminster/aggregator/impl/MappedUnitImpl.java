@@ -9,9 +9,7 @@ package org.eclipse.buckminster.aggregator.impl;
 import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Configuration;
-import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
-import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -230,32 +228,6 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 					AggregatorPackage.MAPPED_UNIT__VALID_CONFIGURATIONS);
 		}
 		return validConfigurations;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public boolean isBranchEnabled()
-	{
-		if(!isEnabled())
-			return false;
-
-		MappedRepository mappedRepository = (MappedRepository)eContainer();
-
-		// a new MappedUnit without any container is enabled - used by commands that add MappedUnits
-		if(mappedRepository == null)
-			return true;
-
-		if(!mappedRepository.isEnabled())
-			return false;
-
-		Contribution contribution = (Contribution)mappedRepository.eContainer();
-		if(contribution != null && !contribution.isEnabled())
-			return false;
-
-		return true;
 	}
 
 	/**

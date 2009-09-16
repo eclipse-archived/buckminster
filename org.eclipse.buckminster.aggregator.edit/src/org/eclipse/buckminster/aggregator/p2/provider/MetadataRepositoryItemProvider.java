@@ -9,6 +9,7 @@ package org.eclipse.buckminster.aggregator.p2.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
@@ -145,6 +146,19 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 				: getString("_UI_MetadataRepository_type") + " " + label;
 	}
 
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		notifyChangedGen(notification);
+
+		if(notification.getFeatureID(MetadataRepository.class) != P2Package.METADATA_REPOSITORY__INSTALLABLE_UNITS)
+			return;
+
+		Aggregator aggregator = (Aggregator)((EObject)notification.getNotifier()).eResource().getResourceSet().getResources().get(
+				0).getContents().get(0);
+		fireNotifyChanged(new ViewerNotification(notification, aggregator, true, true));
+	}
+
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
@@ -152,8 +166,7 @@ public class MetadataRepositoryItemProvider extends AggregatorItemProviderAdapte
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void notifyChanged(Notification notification)
+	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
 

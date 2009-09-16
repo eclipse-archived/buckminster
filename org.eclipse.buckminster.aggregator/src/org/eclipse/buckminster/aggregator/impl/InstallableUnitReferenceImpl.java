@@ -10,6 +10,8 @@
 package org.eclipse.buckminster.aggregator.impl;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 
@@ -186,6 +188,32 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 			}
 		}
 		return installableUnit;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isBranchEnabled()
+	{
+		if(this instanceof EnabledStatusProvider && !((EnabledStatusProvider)this).isEnabled())
+			return false;
+
+		MappedRepository mappedRepository = (MappedRepository)eContainer();
+
+		// a new MappedUnit without any container is enabled - used by commands that add MappedUnits
+		if(mappedRepository == null)
+			return true;
+
+		if(!mappedRepository.isEnabled())
+			return false;
+
+		Contribution contribution = (Contribution)mappedRepository.eContainer();
+		if(contribution != null && !contribution.isEnabled())
+			return false;
+
+		return true;
 	}
 
 	/**
