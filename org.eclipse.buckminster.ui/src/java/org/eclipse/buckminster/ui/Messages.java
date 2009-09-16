@@ -28,6 +28,8 @@ public class Messages extends NLS
 
 	public static String action_properties;
 
+	public static String action_properties_file_selection;
+
 	public static String action;
 
 	public static String actions;
@@ -82,6 +84,8 @@ public class Messages extends NLS
 
 	public static String attributes_with_colon;
 
+	public static String available_attributes;
+
 	public static String bad_file_name;
 
 	public static String base_path_with_colon;
@@ -117,6 +121,8 @@ public class Messages extends NLS
 	public static String certificate_details_with_dots;
 
 	public static String clear_url_cache;
+
+	public static String collecting_actions;
 
 	public static String command;
 
@@ -254,13 +260,15 @@ public class Messages extends NLS
 
 	public static String file_name_with_hotkey;
 
-	public static String file_with_colon;
+	public static String filesystem;
 
 	public static String filter;
 
 	public static String filter_with_colon;
 
 	public static String folder_with_colon;
+
+	public static String force_complete_rebuild;
 
 	public static String from_excl_to_excl_version;
 
@@ -382,6 +390,8 @@ public class Messages extends NLS
 
 	public static String no_ompl;
 
+	public static String not_a_valid_file;
+
 	public static String not_available_abbreviation;
 
 	public static String not_yet_implemented;
@@ -456,6 +466,10 @@ public class Messages extends NLS
 
 	public static String properties;
 
+	public static String properties_file_does_not_exist;
+
+	public static String properties_file_with_colon;
+
 	public static String properties_with_colon;
 
 	public static String prune_according_to_attributes_with_colon;
@@ -512,6 +526,10 @@ public class Messages extends NLS
 
 	public static String save_mspec;
 
+	public static String select_action_properties_file;
+
+	public static String select_actions_to_perform;
+
 	public static String select_new_file_container;
 
 	public static String selected_components_with_colon;
@@ -521,6 +539,8 @@ public class Messages extends NLS
 	public static String short_description_with_colon;
 
 	public static String show_details;
+
+	public static String show_private_attributes;
 
 	public static String show_target_platform_components;
 
@@ -621,6 +641,8 @@ public class Messages extends NLS
 	public static String workspace_components;
 
 	public static String workspace_with_colon;
+
+	public static String workspace;
 
 	public static String workspace_with_dots;
 

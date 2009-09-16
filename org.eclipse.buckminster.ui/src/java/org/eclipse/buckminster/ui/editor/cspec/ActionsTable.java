@@ -162,15 +162,15 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 		{
 		case COUNT:
 			m_fileCountText.setText(String.valueOf(builder.getProductFileCount()));
-			m_additionalFileCountText.setText("");
+			m_additionalFileCountText.setText(""); //$NON-NLS-1$
 			break;
 		case MAPPER:
-			m_fileCountText.setText("");
+			m_fileCountText.setText(""); //$NON-NLS-1$
 			m_additionalFileCountText.setText(String.valueOf(builder.getProductFileCount()));
 			break;
 		default:
-			m_fileCountText.setText("");
-			m_additionalFileCountText.setText("");
+			m_fileCountText.setText(""); //$NON-NLS-1$
+			m_additionalFileCountText.setText(""); //$NON-NLS-1$
 		}
 		refreshFileCountFields();
 
@@ -255,7 +255,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder>
 			}
 			catch(NumberFormatException e)
 			{
-				throw new ValidatorException(Messages.invalid_number + ": " + fileCount);
+				throw new ValidatorException(Messages.invalid_number + ": " + fileCount); //$NON-NLS-1$
 			}
 
 		builder.setProductAlias(UiUtils.trimmedValue(m_prodAliasText));

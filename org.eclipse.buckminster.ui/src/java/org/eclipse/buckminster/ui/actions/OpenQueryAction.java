@@ -87,7 +87,7 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		String[] lastURLs = null;
 
 		if(lastURLsString != null && lastURLsString.length() > 0)
-			lastURLs = lastURLsString.split(";");
+			lastURLs = lastURLsString.split(";"); //$NON-NLS-1$
 		else
 		{
 			String lastURLString = preferences.getString(LAST_CQUERY_URL);

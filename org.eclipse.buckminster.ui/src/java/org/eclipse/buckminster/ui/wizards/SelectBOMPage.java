@@ -228,7 +228,7 @@ public class SelectBOMPage extends AbstractQueryPage
 						IParserFactory pf = CorePlugin.getDefault().getParserFactory();
 						MaterializationSpec mspec = null;
 						String path = urlToParse.getPath();
-						if(!(path.endsWith(".cquery") || path.endsWith(".bom")))
+						if(!(path.endsWith(".cquery") || path.endsWith(".bom"))) //$NON-NLS-1$ //$NON-NLS-2$
 						{
 							try
 							{
@@ -238,7 +238,7 @@ public class SelectBOMPage extends AbstractQueryPage
 							{
 								// Assume this was not an mspec
 								//
-								if(urlToParse.getPath().endsWith(".mspec"))
+								if(urlToParse.getPath().endsWith(".mspec")) //$NON-NLS-1$
 									throw e;
 							}
 						}
@@ -260,7 +260,7 @@ public class SelectBOMPage extends AbstractQueryPage
 
 						BillOfMaterials bom;
 						ComponentQuery cquery = null;
-						if(!urlToParse.getPath().endsWith(".bom"))
+						if(!urlToParse.getPath().endsWith(".bom")) //$NON-NLS-1$
 						{
 							try
 							{
@@ -270,7 +270,7 @@ public class SelectBOMPage extends AbstractQueryPage
 							{
 								// Assume this was not a cquery, restart input
 								//
-								if(urlToParse.getPath().endsWith(".cquery"))
+								if(urlToParse.getPath().endsWith(".cquery")) //$NON-NLS-1$
 									throw e;
 							}
 						}

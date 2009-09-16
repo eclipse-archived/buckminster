@@ -555,7 +555,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		catch(Throwable e)
 		{
 			CoreException ce = BuckminsterException.wrap(e);
-			throw new PartInitException("Unable to initialize query editor", ce);
+			throw new PartInitException(Messages.unable_to_open_editor, ce);
 		}
 		finally
 		{
