@@ -18,7 +18,9 @@ import java.util.List;
 import org.eclipse.buckminster.core.build.PropertiesEmitter;
 import org.eclipse.buckminster.core.helpers.ArrayUtils;
 import org.eclipse.buckminster.jdt.Messages;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -100,10 +102,12 @@ public class ClasspathEmitter extends PropertiesEmitter
 	private static void appendPaths(IJavaModel model, IProject project, String target, List<IPath> path,
 			HashSet<IPath> seenPaths, HashSet<String> seenProjects, boolean atTop) throws CoreException
 	{
+		Logger log = Buckminster.getLogger();
 		String projectName = project.getName();
 		if(seenProjects.contains(projectName))
 			return;
 		seenProjects.add(projectName);
+		log.debug("Emitting classpath for project %s...", projectName);
 
 		IJavaProject javaProject = model.getJavaProject(projectName);
 		IClasspathEntry[] entries;
@@ -113,62 +117,28 @@ public class ClasspathEmitter extends PropertiesEmitter
 			//
 			BMClasspathContainer container = new BMClasspathContainer(project, target);
 			entries = container.getClasspathEntries();
-
+			log.debug(" not a java project, contains %d entries", Integer.valueOf(entries.length));
 		}
 		else
 		{
 			entries = (atTop && target != null)
 					? changeClasspathForTarget(javaProject, target)
 					: javaProject.getResolvedClasspath(false);
+			log.debug(" java project, contains %d entries", Integer.valueOf(entries.length));
 		}
 
-		ArrayList<IClasspathEntry> resolvedEntries = new ArrayList<IClasspathEntry>();
 		for(IClasspathEntry entry : entries)
-		{
-			switch(entry.getEntryKind())
-			{
-			case IClasspathEntry.CPE_VARIABLE:
-				try
-				{
-					IClasspathEntry resolvedEntry = JavaCore.getResolvedClasspathEntry(entry);
-					if(resolvedEntry != null)
-						resolvedEntries.add(resolvedEntry);
-				}
-				catch(AssertionFailedException e)
-				{
-				}
-				break;
-
-			case IClasspathEntry.CPE_CONTAINER:
-				IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), javaProject);
-				if(container == null)
-					break;
-
-				IClasspathEntry[] containerEntries = container.getClasspathEntries();
-				if(containerEntries == null)
-					break;
-
-				int top = containerEntries.length;
-				for(int idx = 0; idx < top; ++idx)
-				{
-					ClasspathEntry cEntry = (ClasspathEntry)containerEntries[idx];
-					resolvedEntries.add(cEntry.combineWith((ClasspathEntry)entry));
-				}
-				break;
-
-			default:
-				resolvedEntries.add(entry);
-			}
-		}
-
-		for(IClasspathEntry entry : resolvedEntries)
 		{
 			IPath entryPath;
 			switch(entry.getEntryKind())
 			{
 			case IClasspathEntry.CPE_LIBRARY:
+				log.debug(" found library with path: %s", entry.getPath());
 				if(!(atTop || entry.isExported()))
+				{
+					log.debug(" skipping path %s. It's neither at top nor exported", entry.getPath());
 					continue;
+				}
 
 				entryPath = entry.getPath();
 				break;
@@ -183,12 +153,18 @@ public class ClasspathEmitter extends PropertiesEmitter
 						continue;
 					entryPath = proj.getOutputLocation();
 				}
+				log.debug(" found source with path: %s", entryPath);
 				break;
 			case IClasspathEntry.CPE_PROJECT:
+				projectName = entry.getPath().segment(0);
+				log.debug(" found project: %s", projectName);
 				if(!(atTop || entry.isExported()))
+				{
+					log.debug(" skipping project %s. It's neither at top nor exported", projectName);
 					continue;
+				}
 
-				IProject conProject = ResourcesPlugin.getWorkspace().getRoot().getProject(entry.getPath().segment(0));
+				IProject conProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 				appendPaths(model, conProject, null, path, seenPaths, seenProjects, false);
 				continue;
 			default:
@@ -197,12 +173,16 @@ public class ClasspathEmitter extends PropertiesEmitter
 
 			IResource folder = ResourcesPlugin.getWorkspace().getRoot().findMember(entryPath);
 			if(folder != null)
+			{
+				log.debug(" path %s is inside workspace, switching to %s", entryPath, folder.getLocation());
 				entryPath = folder.getLocation();
+			}
 
 			if(!seenPaths.contains(entryPath))
 			{
 				seenPaths.add(entryPath);
 				path.add(entryPath);
+				log.debug(" path %s added", entryPath);
 			}
 		}
 	}
@@ -225,6 +205,8 @@ public class ClasspathEmitter extends PropertiesEmitter
 		boolean haveOtherBMCPs = false;
 		boolean targetContainerInstalled = false;
 
+		Logger log = Buckminster.getLogger();
+		log.debug("Changing classpath for project %s into %s", javaProject.getProject().getName(), target);
 		IPath desiredContainer = BMClasspathContainer.PATH.append(target);
 		IClasspathEntry[] rawEntries = javaProject.readRawClasspath();
 		int top = rawEntries.length;
@@ -273,10 +255,14 @@ public class ClasspathEmitter extends PropertiesEmitter
 		}
 		else
 		{
-			rawEntries = ArrayUtils.appendFirst(rawEntries, new IClasspathEntry[] { JavaCore
-					.newContainerEntry(desiredContainer) });
+			rawEntries = ArrayUtils.appendFirst(rawEntries,
+					new IClasspathEntry[] { JavaCore.newContainerEntry(desiredContainer) });
 			entriesChanged = true;
 		}
+
+		log.debug(entriesChanged
+				? " changes detected"
+				: " no changes detected");
 
 		return entriesChanged
 				? getResolvedClasspath(javaProject, rawEntries)

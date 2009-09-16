@@ -36,4 +36,13 @@
           library="ant_tasks/ant_tasks.jar"
           name="buckminster.projectClasspath"/>
  </extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.commands">
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.jdt.commands.InstallJRE"
+          name="org.eclipse.buckminster.jdt.installJRE"
+          status="NORMAL">
+    </command>
+ </extension>
 </plugin>
