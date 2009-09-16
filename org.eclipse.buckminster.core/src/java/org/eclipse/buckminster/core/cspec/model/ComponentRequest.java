@@ -268,6 +268,12 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		Filter mergedFilter = null;
 		if(!Trivial.equalsAllowNull(thisFilter, thatFilter))
 		{
+			if(thisOptional != thatOptional)
+				// Filters can only be merged if both are required or
+				// both are optional
+				//
+				throw new ComponentRequestConflictException(this, that);
+
 			Filter strippedThis = thisFilter;
 			if(thisOptional && !thatOptional)
 				strippedThis = strippedThis.stripFilter(P2_OPTIONAL_FILTER);
