@@ -274,55 +274,11 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 				//
 				throw new ComponentRequestConflictException(this, that);
 
-			Filter strippedThis = thisFilter;
-			if(thisOptional && !thatOptional)
-				strippedThis = strippedThis.stripFilter(P2_OPTIONAL_FILTER);
-
-			Filter strippedThat = thatFilter;
-			if(thatOptional && !thisOptional)
-				strippedThat = strippedThat.stripFilter(P2_OPTIONAL_FILTER);
-
-			if(strippedThis == null)
-			{
-				if(strippedThat != null)
-				{
-					if(cmp == 0)
-						cmp = 1;
-					else if(cmp == -1)
-						cmp = 2;
-				}
-			}
-			else
-			{
-				if(strippedThat == null)
-				{
-					if(cmp == 0)
-						cmp = -1;
-					else if(cmp == 1)
-						cmp = 2;
-				}
-				else
-				{
-					mergedFilter = strippedThat.addFilterWithAnd(strippedThis);
-					if(strippedThat.equals(mergedFilter))
-					{
-						if(cmp == 0)
-							cmp = 1;
-						else if(cmp == -1)
-							cmp = 2;
-					}
-					else if(strippedThis.equals(mergedFilter))
-					{
-						if(cmp == 0)
-							cmp = -1;
-						else if(cmp == 1)
-							cmp = 2;
-					}
-					else
-						cmp = 2;
-				}
-			}
+			if(thisFilter != null && thatFilter != null)
+				mergedFilter = thisFilter.addFilterWithOr(thatFilter);
 		}
+		else
+			mergedFilter = thisFilter;
 
 		// Never allow an optional request to qualify one that is not
 		// optional. The opposite is OK though.
