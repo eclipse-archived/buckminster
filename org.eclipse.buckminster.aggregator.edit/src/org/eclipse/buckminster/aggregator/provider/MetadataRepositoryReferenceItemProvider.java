@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -106,13 +107,56 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
-		return getString("_UI_MetadataRepositoryReference_type") + " " + metadataRepositoryReference.isEnabled();
+		MetadataRepositoryReference repoRef = (MetadataRepositoryReference)object;
+		MetadataRepository mdr = repoRef.getMetadataRepository(repoRef.isBranchEnabled());
+		StringBuilder bld = new StringBuilder();
+		bld.append(getString(getTypeName()));
+		bld.append(' ');
+		if(mdr != null)
+		{
+			String name;
+			URI location;
+
+			if(!mdr.eIsProxy())
+			{
+				name = mdr.getName();
+				location = mdr.getLocation();
+			}
+			else
+			{
+				name = mdr.getNameFromProxy();
+				location = mdr.getLocationFromProxy();
+			}
+
+			if(name != null)
+			{
+				bld.append(name);
+				bld.append(' ');
+			}
+
+			if(location != null)
+				bld.append(location);
+			else
+				bld.append("no location");
+
+		}
+		else
+		{
+			if(repoRef.getLocation() != null)
+				bld.append(repoRef.getLocation());
+			else
+				bld.append("no location");
+		}
+
+		if(!repoRef.isEnabled())
+			bld.append(" (disabled)");
+
+		return bld.toString();
 	}
 
 	/**
@@ -125,25 +169,23 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	{
 		notifyChangedGen(notification);
 
-		MetadataRepositoryReference repoRef = (MetadataRepositoryReference)notification.getNotifier();
-
 		if(notification.getEventType() != Notification.SET)
 			return;
 
-		switch(notification.getFeatureID(MappedRepository.class))
+		MetadataRepositoryReference repoRef = (MetadataRepositoryReference)notification.getNotifier();
+		switch(notification.getFeatureID(MetadataRepositoryReference.class))
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
-			onLocationChange((MetadataRepositoryReference)notification.getNotifier(), notification.getNewStringValue());
+			onLocationChange(repoRef, notification.getNewStringValue());
 			// no 'break' here is an intention - refresh nodes that may have been affected
 
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			fireNotifyChanged(new ViewerNotification(notification, repoRef, true, false));
 
 			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
-			Set<EObject> affectedNodes = new HashSet<EObject>();
 
 			// Go through all direct ancestors first
-			EObject container = ((EObject)notification.getNotifier());
+			EObject container = repoRef.eContainer();
 			while(container != null)
 			{
 				affectedNodeLabels.add(container);
@@ -153,6 +195,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			if(repoRef instanceof MappedRepository)
 			{
 				// Browse all mapped units which may have changed their virtual status (inherently enabled/disabled)
+				Set<EObject> affectedNodes = new HashSet<EObject>();
 				for(MappedUnit unit : ((MappedRepository)repoRef).getUnits(true))
 				{
 					affectedNodes.add(unit);
@@ -161,10 +204,10 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 						for(CustomCategory category : ((Feature)unit).getCategories())
 							affectedNodes.add(category);
 				}
+				for(EObject affectedNode : affectedNodes)
+					fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
 			}
 
-			for(EObject affectedNode : affectedNodes)
-				fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
 			for(EObject affectedNode : affectedNodeLabels)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
@@ -295,6 +338,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	protected String getTypeName()
+	{
+		return "_UI_MetadataRepositoryReference_type";
 	}
 
 	private void onLocationChange(MetadataRepositoryReference repository, String location)

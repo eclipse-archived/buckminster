@@ -218,7 +218,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	public Aggregator getAggregator()
 	{
-		return (Aggregator)eContainer().eContainer();
+		return (Aggregator)eContainer();
 	}
 
 	/**

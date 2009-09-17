@@ -6,7 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +17,6 @@ import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
@@ -142,51 +140,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	@Override
 	public String getText(Object object)
 	{
-		MappedRepository mappedRepository = (MappedRepository)object;
-		MetadataRepository mdr = mappedRepository.getMetadataRepository(mappedRepository.isBranchEnabled());
-		StringBuilder bld = new StringBuilder();
-		bld.append(getString("_UI_MappedRepository_type"));
-		bld.append(' ');
-		if(mdr != null)
-		{
-			String name;
-			URI location;
-
-			if(!mdr.eIsProxy())
-			{
-				name = mdr.getName();
-				location = mdr.getLocation();
-			}
-			else
-			{
-				name = mdr.getNameFromProxy();
-				location = mdr.getLocationFromProxy();
-			}
-
-			if(name != null)
-			{
-				bld.append(name);
-				bld.append(' ');
-			}
-
-			if(location != null)
-				bld.append(location);
-			else
-				bld.append("not mapped");
-
-		}
-		else
-		{
-			if(mappedRepository.getLocation() != null)
-				bld.append(mappedRepository.getLocation());
-			else
-				bld.append("not mapped");
-		}
-
-		if(!mappedRepository.isEnabled())
-			bld.append(" (disabled)");
-
-		return bld.toString();
+		return super.getText(object);
 	}
 
 	/**
@@ -366,6 +320,12 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);
+	}
+
+	@Override
+	protected String getTypeName()
+	{
+		return "_UI_MappedRepository_type";
 	}
 
 	private Command createCompoundRemoveCommand(EditingDomain domain, MappedRepository mappedRepository,

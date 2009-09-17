@@ -4,7 +4,9 @@ import static java.lang.String.format;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +16,8 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -44,20 +48,15 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.CompositeQuery;
+import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
 public class RepositoryVerifier extends BuilderPhase
 {
-	private static ProvisioningContext createContext(URI site)
-	{
-		URI[] repoLocations = new URI[] { site };
-		ProvisioningContext context = new ProvisioningContext(repoLocations);
-		context.setArtifactRepositories(repoLocations);
-		return context;
-	}
-
 	@SuppressWarnings("unchecked")
 	private static Set<Explanation> getExplanations(RequestStatus requestStatus)
 	{
@@ -99,7 +98,7 @@ public class RepositoryVerifier extends BuilderPhase
 
 		String profilePrefix = Builder.PROFILE_ID + '_';
 
-		Set<IInstallableUnit> unitsToAggregate = builder.getUnitsToAggregate();
+		final Set<IInstallableUnit> unitsToAggregate = builder.getUnitsToAggregate();
 		Buckminster bucky = Buckminster.getDefault();
 		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		IPlanner planner = bucky.getService(IPlanner.class);
@@ -127,7 +126,7 @@ public class RepositoryVerifier extends BuilderPhase
 					profile = profileRegistry.addProfile(profileId, props);
 
 				IInstallableUnit[] rootArr = getRootIUs(repoLocation, profile, Builder.ALL_CONTRIBUTED_CONTENT_FEATURE,
-						Builder.ALL_CONTRIBUTED_CONTENT_VERSION, subMon.newChild(10));
+						Builder.ALL_CONTRIBUTED_CONTENT_VERSION, subMon.newChild(9));
 
 				// Add as root IU's to a request
 				ProfileChangeRequest request = new ProfileChangeRequest(profile);
@@ -146,6 +145,21 @@ public class RepositoryVerifier extends BuilderPhase
 					throw new CoreException(status);
 				}
 
+				Set<InstallableUnit> validationOnlyIUs = null;
+				List<MetadataRepositoryReference> validationRepos = aggregator.getValidationRepositories();
+				for(MetadataRepositoryReference validationRepo : validationRepos)
+				{
+					if(validationRepo.isEnabled())
+					{
+						if(validationOnlyIUs == null)
+							validationOnlyIUs = new HashSet<InstallableUnit>();
+						validationOnlyIUs.addAll(validationRepo.getMetadataRepository().getInstallableUnits());
+					}
+				}
+				if(validationOnlyIUs == null)
+					validationOnlyIUs = Collections.emptySet();
+
+				Set<IInstallableUnit> suspectedValidationOnlyIUs = null;
 				Operand[] ops = plan.getOperands();
 				for(Operand op : ops)
 				{
@@ -154,8 +168,50 @@ public class RepositoryVerifier extends BuilderPhase
 
 					InstallableUnitOperand iuOp = (InstallableUnitOperand)op;
 					IInstallableUnit iu = iuOp.second();
-					if(iu != null && !Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(iu.getId()))
+					if(iu == null)
+						continue;
+
+					String id = iu.getId();
+					if(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(id))
+						continue;
+
+					if(validationOnlyIUs.contains(iu))
+					{
+						// This IU should not be included unless it is also included in one of
+						// the contributed repositories
+						if(suspectedValidationOnlyIUs == null)
+							suspectedValidationOnlyIUs = new HashSet<IInstallableUnit>();
+						suspectedValidationOnlyIUs.add(iu);
+					}
+					else
 						unitsToAggregate.add(iu);
+				}
+
+				if(suspectedValidationOnlyIUs != null)
+				{
+					// Prune the set of IU's that we suspect are there for validation
+					// purposes only using the source repository
+					//
+					final Set<IInstallableUnit> candidates = suspectedValidationOnlyIUs;
+					IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+					try
+					{
+						IMetadataRepository sourceRepo = mdrMgr.loadRepository(repoLocation, subMon.newChild(1));
+						sourceRepo.query(new MatchQuery()
+						{
+							@Override
+							public boolean isMatch(Object iu)
+							{
+								if(candidates.contains(iu))
+									unitsToAggregate.add((IInstallableUnit)iu);
+								return false; // Since we don't use the Collector
+							}
+						}, null, subMon.newChild(1));
+					}
+					finally
+					{
+						bucky.ungetService(mdrMgr);
+					}
 				}
 			}
 		}
@@ -240,6 +296,26 @@ public class RepositoryVerifier extends BuilderPhase
 				}
 		}
 		return contribsFound;
+	}
+
+	private ProvisioningContext createContext(URI site)
+	{
+		List<MetadataRepositoryReference> validationRepos = getBuilder().getAggregator().getValidationRepositories();
+		int top = validationRepos.size();
+		List<URI> sites = new ArrayList<URI>(top + 1);
+		sites.add(site);
+
+		URI[] repoLocations = new URI[top + 1];
+		for(int idx = 0; idx < top; ++idx)
+		{
+			MetadataRepositoryReference mdRef = validationRepos.get(idx);
+			if(mdRef.isEnabled())
+				sites.add(URI.create(mdRef.getLocation()));
+		}
+		repoLocations = sites.toArray(new URI[sites.size()]);
+		ProvisioningContext context = new ProvisioningContext(repoLocations);
+		context.setArtifactRepositories(repoLocations);
+		return context;
 	}
 
 	private Contribution findContribution(IInstallableUnit iu, IRequiredCapability rq)

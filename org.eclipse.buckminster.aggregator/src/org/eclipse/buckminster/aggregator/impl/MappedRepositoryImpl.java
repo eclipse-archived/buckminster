@@ -8,6 +8,7 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.Collection;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Category;
@@ -320,6 +321,12 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	@Override
+	public Aggregator getAggregator()
+	{
+		return (Aggregator)eContainer().eContainer();
 	}
 
 	/**

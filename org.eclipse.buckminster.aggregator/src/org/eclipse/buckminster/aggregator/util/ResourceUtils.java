@@ -92,13 +92,13 @@ public class ResourceUtils
 	/**
 	 * Loads resource for specified repository
 	 * 
-	 * @param mappedRepository
+	 * @param repoRef
 	 */
-	public static void loadResourceForMappedRepository(MetadataRepositoryReference mappedRepository)
+	public static void loadResourceForMappedRepository(MetadataRepositoryReference repoRef)
 	{
-		if(mappedRepository.getLocation() == null)
+		if(repoRef.getLocation() == null)
 			return;
-		Aggregator aggregator = mappedRepository.getAggregator();
-		MetadataRepositoryResourceImpl.loadRepository(mappedRepository.getLocation(), aggregator);
+		Aggregator aggregator = repoRef.getAggregator();
+		MetadataRepositoryResourceImpl.loadRepository(repoRef.getLocation(), aggregator);
 	}
 }

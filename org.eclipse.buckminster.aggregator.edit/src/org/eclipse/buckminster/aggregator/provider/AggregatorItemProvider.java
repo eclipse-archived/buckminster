@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -134,12 +135,24 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 	{
 		notifyChangedGen(notification);
 
-		if(notification.getEventType() == Notification.REMOVE && notification.getOldValue() instanceof Contribution)
-			ResourceUtils.cleanUpResources((Aggregator)notification.getNotifier());
-		else if(notification.getEventType() == Notification.ADD && notification.getNewValue() instanceof Contribution)
+		if(notification.getEventType() == Notification.REMOVE)
 		{
-			for(MappedRepository mappedRepository : ((Contribution)notification.getNewValue()).getRepositories(true))
-				ResourceUtils.loadResourceForMappedRepository(mappedRepository);
+			Object oldV = notification.getOldValue();
+			if(oldV instanceof Contribution || oldV instanceof MetadataRepositoryReference)
+				ResourceUtils.cleanUpResources((Aggregator)notification.getNotifier());
+		}
+		else if(notification.getEventType() == Notification.ADD)
+		{
+			Object newV = notification.getNewValue();
+			if(newV instanceof Contribution)
+			{
+				for(MappedRepository mappedRepository : ((Contribution)newV).getRepositories(true))
+					ResourceUtils.loadResourceForMappedRepository(mappedRepository);
+			}
+			else if(newV instanceof MetadataRepositoryReference)
+			{
+				ResourceUtils.loadResourceForMappedRepository((MetadataRepositoryReference)newV);
+			}
 		}
 	}
 

@@ -156,6 +156,7 @@ import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
 
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
@@ -666,13 +667,16 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			if(contents.size() == 1 && contents.get(0) instanceof Aggregator)
 			{
 				Aggregator aggregator = (Aggregator)contents.get(0);
-				final Set<MappedRepository> repositoriesToLoad = new HashSet<MappedRepository>();
+				final Set<MetadataRepositoryReference> repositoriesToLoad = new HashSet<MetadataRepositoryReference>();
 
 				for(Contribution contribution : aggregator.getContributions())
 					if(contribution.isEnabled())
 						for(MappedRepository mappedRepository : contribution.getRepositories())
 							if(mappedRepository.isEnabled())
 								repositoriesToLoad.add(mappedRepository);
+				for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
+					if(repoRef.isEnabled())
+						repositoriesToLoad.add(repoRef);
 
 				try
 				{
@@ -689,13 +693,13 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 							try
 							{
-								for(MappedRepository mappedRepository : repositoriesToLoad)
+								for(MetadataRepositoryReference repo : repositoriesToLoad)
 								{
 									if(monitor.isCanceled())
 										throw new InterruptedException("Operation was cancelled");
 
-									monitor.subTask(mappedRepository.getLocation());
-									mappedRepository.getMetadataRepository();
+									monitor.subTask(repo.getLocation());
+									repo.getMetadataRepository();
 									monitor.worked(1);
 								}
 							}
