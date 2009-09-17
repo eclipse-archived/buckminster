@@ -166,6 +166,15 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	protected ValidConfigurationsRuleItemProvider validConfigurationsRuleItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference} instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected MetadataRepositoryReferenceItemProvider metadataRepositoryReferenceItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -392,6 +401,23 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createMetadataRepositoryReferenceAdapter()
+	{
+		if(metadataRepositoryReferenceItemProvider == null)
+		{
+			metadataRepositoryReferenceItemProvider = new MetadataRepositoryReferenceItemProvider(this);
+		}
+
+		return metadataRepositoryReferenceItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.Product}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -475,6 +501,8 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 			exclusionRuleItemProvider.dispose();
 		if(validConfigurationsRuleItemProvider != null)
 			validConfigurationsRuleItemProvider.dispose();
+		if(metadataRepositoryReferenceItemProvider != null)
+			metadataRepositoryReferenceItemProvider.dispose();
 	}
 
 	/**

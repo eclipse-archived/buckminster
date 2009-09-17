@@ -62,6 +62,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute AGGREGATOR__TYPE = eINSTANCE.getAggregator_Type();
 
 		/**
+		 * The meta object literal for the '<em><b>Validation Repositories</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference AGGREGATOR__VALIDATION_REPOSITORIES = eINSTANCE.getAggregator_ValidationRepositories();
+
+		/**
 		 * The meta object literal for the '<em><b>Build Root</b></em>' attribute feature. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
@@ -192,28 +200,12 @@ public interface AggregatorPackage extends EPackage
 		EReference MAPPED_REPOSITORY__MAP_RULES = eINSTANCE.getMappedRepository_MapRules();
 
 		/**
-		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference MAPPED_REPOSITORY__METADATA_REPOSITORY = eINSTANCE.getMappedRepository_MetadataRepository();
-
-		/**
 		 * The meta object literal for the '<em><b>Categories</b></em>' containment reference list feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference MAPPED_REPOSITORY__CATEGORIES = eINSTANCE.getMappedRepository_Categories();
-
-		/**
-		 * The meta object literal for the '<em><b>Location</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute MAPPED_REPOSITORY__LOCATION = eINSTANCE.getMappedRepository_Location();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -534,6 +526,33 @@ public interface AggregatorPackage extends EPackage
 		EReference VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS = eINSTANCE.getValidConfigurationsRule_ValidConfigurations();
 
 		/**
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl
+		 * <em>Metadata Repository Reference</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMetadataRepositoryReference()
+		 * @generated
+		 */
+		EClass METADATA_REPOSITORY_REFERENCE = eINSTANCE.getMetadataRepositoryReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY = eINSTANCE.getMetadataRepositoryReference_MetadataRepository();
+
+		/**
+		 * The meta object literal for the '<em><b>Location</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute METADATA_REPOSITORY_REFERENCE__LOCATION = eINSTANCE.getMetadataRepositoryReference_Location();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -717,13 +736,22 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR__TYPE = 9;
 
 	/**
+	 * The feature id for the '<em><b>Validation Repositories</b></em>' containment reference list. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__VALIDATION_REPOSITORIES = 10;
+
+	/**
 	 * The number of structural features of the '<em>Aggregator</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR_FEATURE_COUNT = 10;
+	int AGGREGATOR_FEATURE_COUNT = 11;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
@@ -753,6 +781,50 @@ public interface AggregatorPackage extends EPackage
 	int ENABLED_STATUS_PROVIDER_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl
+	 * <em>Metadata Repository Reference</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMetadataRepositoryReference()
+	 * @generated
+	 */
+	int METADATA_REPOSITORY_REFERENCE = 17;
+
+	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_REFERENCE__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
+
+	/**
+	 * The feature id for the '<em><b>Metadata Repository</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_REFERENCE__LOCATION = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Metadata Repository Reference</em>' class. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MappedRepositoryImpl
 	 * <em>Mapped Repository</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -768,34 +840,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Products</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__PRODUCTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Bundles</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__BUNDLES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Features</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__FEATURES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
+	int MAPPED_REPOSITORY__ENABLED = METADATA_REPOSITORY_REFERENCE__ENABLED;
 
 	/**
 	 * The feature id for the '<em><b>Metadata Repository</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -804,7 +849,42 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__METADATA_REPOSITORY = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
+	int MAPPED_REPOSITORY__METADATA_REPOSITORY = METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY;
+
+	/**
+	 * The feature id for the '<em><b>Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__LOCATION = METADATA_REPOSITORY_REFERENCE__LOCATION;
+
+	/**
+	 * The feature id for the '<em><b>Products</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__PRODUCTS = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Bundles</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__BUNDLES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Features</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__FEATURES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Categories</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -813,15 +893,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORIES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int MAPPED_REPOSITORY__LOCATION = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 5;
+	int MAPPED_REPOSITORY__CATEGORIES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Mirror Artifacts</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -830,7 +902,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 6;
+	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Category Prefix</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -838,7 +910,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORY_PREFIX = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 7;
+	int MAPPED_REPOSITORY__CATEGORY_PREFIX = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Map Rules</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -847,7 +919,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__MAP_RULES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 8;
+	int MAPPED_REPOSITORY__MAP_RULES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
@@ -856,7 +928,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 9;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 7;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -1447,7 +1519,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 17;
+	int AGGREGATE_TYPE = 18;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1457,7 +1529,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 18;
+	int OPERATING_SYSTEM = 19;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1467,7 +1539,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 19;
+	int WINDOW_SYSTEM = 20;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1477,7 +1549,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 20;
+	int ARCHITECTURE = 21;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1487,7 +1559,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 21;
+	int PACKED_STRATEGY = 22;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1496,7 +1568,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 22;
+	int URI = 23;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -1632,6 +1704,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getAggregator_Type();
+
+	/**
+	 * Returns the meta object for the containment reference list '
+	 * {@link org.eclipse.buckminster.aggregator.Aggregator#getValidationRepositories <em>Validation Repositories</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference list '<em>Validation Repositories</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Aggregator#getValidationRepositories()
+	 * @see #getAggregator()
+	 * @generated
+	 */
+	EReference getAggregator_ValidationRepositories();
 
 	/**
 	 * Returns the factory that creates the instances of the model. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2008,18 +2092,6 @@ public interface AggregatorPackage extends EPackage
 	EReference getMappedRepository_Features();
 
 	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}'. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Location</em>'.
-	 * @see org.eclipse.buckminster.aggregator.MappedRepository#getLocation()
-	 * @see #getMappedRepository()
-	 * @generated
-	 */
-	EAttribute getMappedRepository_Location();
-
-	/**
 	 * Returns the meta object for the containment reference list '
 	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#getMapRules <em>Map Rules</em>}'. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
@@ -2030,18 +2102,6 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMappedRepository_MapRules();
-
-	/**
-	 * Returns the meta object for the reference '
-	 * {@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the reference '<em>Metadata Repository</em>'.
-	 * @see org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository()
-	 * @see #getMappedRepository()
-	 * @generated
-	 */
-	EReference getMappedRepository_MetadataRepository();
 
 	/**
 	 * Returns the meta object for the attribute '
@@ -2098,6 +2158,40 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EClass getMapRule();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference
+	 * <em>Metadata Repository Reference</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Metadata Repository Reference</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MetadataRepositoryReference
+	 * @generated
+	 */
+	EClass getMetadataRepositoryReference();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getLocation <em>Location</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Location</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getLocation()
+	 * @see #getMetadataRepositoryReference()
+	 * @generated
+	 */
+	EAttribute getMetadataRepositoryReference_Location();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getMetadataRepository
+	 * <em>Metadata Repository</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Metadata Repository</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getMetadataRepository()
+	 * @see #getMetadataRepositoryReference()
+	 * @generated
+	 */
+	EReference getMetadataRepositoryReference_MetadataRepository();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.OperatingSystem

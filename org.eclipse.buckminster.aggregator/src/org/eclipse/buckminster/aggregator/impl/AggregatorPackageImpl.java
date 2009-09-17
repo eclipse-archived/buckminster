@@ -24,6 +24,7 @@ import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.OperatingSystem;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.Product;
@@ -225,6 +226,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EClass metadataRepositoryReferenceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EEnum aggregateTypeEEnum = null;
 
 	/**
@@ -325,14 +333,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEAttribute(aggregatorEClass, AGGREGATOR__PACKED_STRATEGY);
 		createEAttribute(aggregatorEClass, AGGREGATOR__SENDMAIL);
 		createEAttribute(aggregatorEClass, AGGREGATOR__TYPE);
+		createEReference(aggregatorEClass, AGGREGATOR__VALIDATION_REPOSITORIES);
 
 		mappedRepositoryEClass = createEClass(MAPPED_REPOSITORY);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__PRODUCTS);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__BUNDLES);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__FEATURES);
-		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__METADATA_REPOSITORY);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__CATEGORIES);
-		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__LOCATION);
 		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__MIRROR_ARTIFACTS);
 		createEAttribute(mappedRepositoryEClass, MAPPED_REPOSITORY__CATEGORY_PREFIX);
 		createEReference(mappedRepositoryEClass, MAPPED_REPOSITORY__MAP_RULES);
@@ -387,6 +394,10 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		validConfigurationsRuleEClass = createEClass(VALID_CONFIGURATIONS_RULE);
 		createEReference(validConfigurationsRuleEClass, VALID_CONFIGURATIONS_RULE__VALID_CONFIGURATIONS);
+
+		metadataRepositoryReferenceEClass = createEClass(METADATA_REPOSITORY_REFERENCE);
+		createEReference(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY);
+		createEAttribute(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__LOCATION);
 
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
@@ -517,6 +528,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EAttribute getAggregator_Type()
 	{
 		return (EAttribute)aggregatorEClass.getEStructuralFeatures().get(9);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getAggregator_ValidationRepositories()
+	{
+		return (EReference)aggregatorEClass.getEStructuralFeatures().get(10);
 	}
 
 	/**
@@ -836,7 +857,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EReference getMappedRepository_Categories()
 	{
-		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(4);
+		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -846,7 +867,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EAttribute getMappedRepository_CategoryPrefix()
 	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(7);
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -864,29 +885,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
-	public EAttribute getMappedRepository_Location()
-	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EReference getMappedRepository_MapRules()
 	{
-		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(8);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EReference getMappedRepository_MetadataRepository()
-	{
-		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(3);
+		return (EReference)mappedRepositoryEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -896,7 +897,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 */
 	public EAttribute getMappedRepository_MirrorArtifacts()
 	{
-		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(6);
+		return (EAttribute)mappedRepositoryEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -937,6 +938,36 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EClass getMapRule()
 	{
 		return mapRuleEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getMetadataRepositoryReference()
+	{
+		return metadataRepositoryReferenceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getMetadataRepositoryReference_Location()
+	{
+		return (EAttribute)metadataRepositoryReferenceEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getMetadataRepositoryReference_MetadataRepository()
+	{
+		return (EReference)metadataRepositoryReferenceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1069,7 +1100,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		mappedRepositoryEClass.getESuperTypes().add(this.getEnabledStatusProvider());
+		mappedRepositoryEClass.getESuperTypes().add(this.getMetadataRepositoryReference());
 		contributionEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		featureEClass.getESuperTypes().add(this.getMappedUnit());
 		bundleEClass.getESuperTypes().add(this.getMappedUnit());
@@ -1080,6 +1111,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		mapRuleEClass.getESuperTypes().add(this.getInstallableUnitReference());
 		exclusionRuleEClass.getESuperTypes().add(this.getMapRule());
 		validConfigurationsRuleEClass.getESuperTypes().add(this.getMapRule());
+		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(aggregatorEClass, Aggregator.class, "Aggregator", !IS_ABSTRACT, !IS_INTERFACE,
@@ -1115,6 +1147,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getAggregator_Type(), this.getAggregateType(), "type", null, 1, 1, Aggregator.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAggregator_ValidationRepositories(), this.getMetadataRepositoryReference(), null,
+				"validationRepositories", null, 0, -1, Aggregator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		EOperation op = addEOperation(aggregatorEClass, this.getContribution(), "getContributions", 0, -1, IS_UNIQUE,
 				IS_ORDERED);
@@ -1131,15 +1166,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEReference(getMappedRepository_Features(), this.getFeature(), null, "features", null, 0, -1,
 				MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getMappedRepository_MetadataRepository(), theP2Package.getMetadataRepository(), null,
-				"metadataRepository", null, 0, 1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-				!IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMappedRepository_Categories(), this.getCategory(), null, "categories", null, 0, -1,
 				MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMappedRepository_Location(), ecorePackage.getEString(), "location", null, 1, 1,
-				MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
 		initEAttribute(getMappedRepository_MirrorArtifacts(), ecorePackage.getEBoolean(), "mirrorArtifacts", "true", 0,
 				1, MappedRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1154,13 +1183,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEParameter(op, ecorePackage.getEBoolean(), "enabledOnly", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(mappedRepositoryEClass, ecorePackage.getEBoolean(), "isMapExclusive", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		addEOperation(mappedRepositoryEClass, ecorePackage.getEBoolean(), "isBranchEnabled", 0, 1, IS_UNIQUE,
-				IS_ORDERED);
-
-		op = addEOperation(mappedRepositoryEClass, theP2Package.getMetadataRepository(), "getMetadataRepository", 0, 1,
-				IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEBoolean(), "forceResolve", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(configurationEClass, Configuration.class, "Configuration", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
@@ -1281,6 +1303,25 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEReference(getValidConfigurationsRule_ValidConfigurations(), this.getConfiguration(), null,
 				"validConfigurations", null, 0, -1, ValidConfigurationsRule.class, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(metadataRepositoryReferenceEClass, MetadataRepositoryReference.class, "MetadataRepositoryReference",
+				!IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getMetadataRepositoryReference_MetadataRepository(), theP2Package.getMetadataRepository(), null,
+				"metadataRepository", null, 0, 1, MetadataRepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMetadataRepositoryReference_Location(), ecorePackage.getEString(), "location", null, 1, 1,
+				MetadataRepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		addEOperation(metadataRepositoryReferenceEClass, this.getAggregator(), "getAggregator", 0, 1, IS_UNIQUE,
+				IS_ORDERED);
+
+		op = addEOperation(metadataRepositoryReferenceEClass, theP2Package.getMetadataRepository(),
+				"getMetadataRepository", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEBoolean(), "forceResolve", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(metadataRepositoryReferenceEClass, ecorePackage.getEBoolean(), "isBranchEnabled", 0, 1,
+				IS_UNIQUE, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

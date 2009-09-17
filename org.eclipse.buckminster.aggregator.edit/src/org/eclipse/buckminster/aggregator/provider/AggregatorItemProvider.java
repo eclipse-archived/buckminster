@@ -66,6 +66,7 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTRIBUTIONS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTACTS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES);
+			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__VALIDATION_REPOSITORIES);
 		}
 		return childrenFeatures;
 	}
@@ -167,6 +168,7 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
+		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -266,7 +268,7 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
@@ -284,6 +286,9 @@ public class AggregatorItemProvider extends AggregatorItemProviderAdapter implem
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES,
 				AggregatorFactory.eINSTANCE.createCustomCategory()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__VALIDATION_REPOSITORIES,
+				AggregatorFactory.eINSTANCE.createMetadataRepositoryReference()));
 	}
 
 	/**

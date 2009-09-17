@@ -28,6 +28,8 @@ import org.eclipse.emf.ecore.EObject;
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getValidationRepositories <em>Validation
+ *          Repositories</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -194,6 +196,22 @@ public interface Aggregator extends EObject, StatusProvider
 	 * @generated
 	 */
 	AggregateType getType();
+
+	/**
+	 * Returns the value of the '<em><b>Validation Repositories</b></em>' containment reference list. The list contents
+	 * are of type {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Validation Repositories</em>' containment reference list isn't clear, there really
+	 * should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Validation Repositories</em>' containment reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_ValidationRepositories()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<MetadataRepositoryReference> getValidationRepositories();
 
 	/**
 	 * Returns the value of the '<em><b>Sendmail</b></em>' attribute. <!-- begin-user-doc -->

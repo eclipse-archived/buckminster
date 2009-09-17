@@ -18,7 +18,6 @@ import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.StatusProvider;
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
@@ -26,7 +25,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -49,37 +47,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * 
  * @generated
  */
-public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implements MappedRepository
+public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implements MappedRepository
 {
-	/**
-	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	protected int eFlags = 0;
-
-	/**
-	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #isEnabled()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean ENABLED_EDEFAULT = true;
-
-	/**
-	 * The flag representing the value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @see #isEnabled()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int ENABLED_EFLAG = 1 << 0;
-
 	/**
 	 * The cached value of the '{@link #getProducts() <em>Products</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -111,16 +80,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected EList<Feature> features;
 
 	/**
-	 * The cached value of the '{@link #getMetadataRepository() <em>Metadata Repository</em>}' reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getMetadataRepository()
-	 * @generated
-	 * @ordered
-	 */
-	protected MetadataRepository metadataRepository;
-
-	/**
 	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -129,26 +88,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * @ordered
 	 */
 	protected EList<Category> categories;
-
-	/**
-	 * The default value of the '{@link #getLocation() <em>Location</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getLocation()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String LOCATION_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLocation() <em>Location</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getLocation()
-	 * @generated
-	 * @ordered
-	 */
-	protected String location = LOCATION_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isMirrorArtifacts() <em>Mirror Artifacts</em>}' attribute. <!-- begin-user-doc
@@ -208,7 +147,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	protected MappedRepositoryImpl()
 	{
 		super();
-		eFlags |= ENABLED_EFLAG;
 		eFlags |= MIRROR_ARTIFACTS_EFLAG;
 	}
 
@@ -231,37 +169,19 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
-	public MetadataRepository basicGetMetadataRepository()
-	{
-		return metadataRepository;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			return isEnabled();
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			return getProducts();
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
 			return getBundles();
 		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 			return getFeatures();
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			if(resolve)
-				return getMetadataRepository();
-			return basicGetMetadataRepository();
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 			return getCategories();
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			return getLocation();
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			return isMirrorArtifacts();
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
@@ -306,22 +226,14 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			return products != null && !products.isEmpty();
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
 			return bundles != null && !bundles.isEmpty();
 		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 			return features != null && !features.isEmpty();
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			return metadataRepository != null;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 			return categories != null && !categories.isEmpty();
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			return LOCATION_EDEFAULT == null
-					? location != null
-					: !LOCATION_EDEFAULT.equals(location);
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			return ((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0) != MIRROR_ARTIFACTS_EDEFAULT;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
@@ -345,9 +257,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			setEnabled((Boolean)newValue);
-			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			getProducts().clear();
 			getProducts().addAll((Collection<? extends Product>)newValue);
@@ -360,15 +269,9 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			getFeatures().clear();
 			getFeatures().addAll((Collection<? extends Feature>)newValue);
 			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			setMetadataRepository((MetadataRepository)newValue);
-			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 			getCategories().clear();
 			getCategories().addAll((Collection<? extends Category>)newValue);
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			setLocation((String)newValue);
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			setMirrorArtifacts((Boolean)newValue);
@@ -394,9 +297,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			setEnabled(ENABLED_EDEFAULT);
-			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			getProducts().clear();
 			return;
@@ -406,14 +306,8 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 		case AggregatorPackage.MAPPED_REPOSITORY__FEATURES:
 			getFeatures().clear();
 			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-			setMetadataRepository((MetadataRepository)null);
-			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 			getCategories().clear();
-			return;
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			setLocation(LOCATION_EDEFAULT);
 			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 			setMirrorArtifacts(MIRROR_ARTIFACTS_EDEFAULT);
@@ -516,16 +410,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
-	public String getLocation()
-	{
-		return location;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EList<MapRule> getMapRules()
 	{
 		if(mapRules == null)
@@ -534,54 +418,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 					AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES);
 		}
 		return mapRules;
-	}
-
-	/**
-	 * Prevent MDR from being loaded if the mapping is disabled
-	 * 
-	 * @generated NOT
-	 */
-	public MetadataRepository getMetadataRepository()
-	{
-		if(!isBranchEnabled())
-			return null;
-
-		return getMetadataRepositoryGen();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public MetadataRepository getMetadataRepository(boolean forceResolve)
-	{
-		if(forceResolve)
-			return getMetadataRepositoryGen();
-
-		return basicGetMetadataRepository();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public MetadataRepository getMetadataRepositoryGen()
-	{
-		if(metadataRepository != null && metadataRepository.eIsProxy())
-		{
-			InternalEObject oldMetadataRepository = (InternalEObject)metadataRepository;
-			metadataRepository = (MetadataRepository)eResolveProxy(oldMetadataRepository);
-			if(metadataRepository != oldMetadataRepository)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository,
-							metadataRepository));
-			}
-		}
-		return metadataRepository;
 	}
 
 	/**
@@ -661,17 +497,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public boolean isBranchEnabled()
 	{
-		return isEnabled() && (eContainer() == null || ((Contribution)eContainer()).isEnabled());
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public boolean isEnabled()
-	{
-		return (eFlags & ENABLED_EFLAG) != 0;
+		return super.isBranchEnabled() && (eContainer() == null || ((Contribution)eContainer()).isEnabled());
 	}
 
 	/**
@@ -728,51 +554,6 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
-	public void setEnabled(boolean newEnabled)
-	{
-		boolean oldEnabled = (eFlags & ENABLED_EFLAG) != 0;
-		if(newEnabled)
-			eFlags |= ENABLED_EFLAG;
-		else
-			eFlags &= ~ENABLED_EFLAG;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__ENABLED,
-					oldEnabled, newEnabled));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setLocation(String newLocation)
-	{
-		String oldLocation = location;
-		location = newLocation;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__LOCATION,
-					oldLocation, location));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setMetadataRepository(MetadataRepository newMetadataRepository)
-	{
-		MetadataRepository oldMetadataRepository = metadataRepository;
-		metadataRepository = newMetadataRepository;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY, oldMetadataRepository, metadataRepository));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public void setMirrorArtifacts(boolean newMirrorArtifacts)
 	{
 		boolean oldMirrorArtifacts = (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
@@ -797,11 +578,7 @@ public class MappedRepositoryImpl extends MinimalEObjectImpl.Container implement
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (enabled: ");
-		result.append((eFlags & ENABLED_EFLAG) != 0);
-		result.append(", location: ");
-		result.append(location);
-		result.append(", mirrorArtifacts: ");
+		result.append(" (mirrorArtifacts: ");
 		result.append((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0);
 		result.append(", categoryPrefix: ");
 		result.append(categoryPrefix);

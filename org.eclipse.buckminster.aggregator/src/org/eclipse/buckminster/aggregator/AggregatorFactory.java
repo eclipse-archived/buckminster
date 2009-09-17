@@ -123,6 +123,15 @@ public interface AggregatorFactory extends EFactory
 	MappedUnit createMappedUnit(InstallableUnit iu);
 
 	/**
+	 * Returns a new object of class '<em>Metadata Repository Reference</em>'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return a new object of class '<em>Metadata Repository Reference</em>'.
+	 * @generated
+	 */
+	MetadataRepositoryReference createMetadataRepositoryReference();
+
+	/**
 	 * Returns a new object of class '<em>Product</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Product</em>'.

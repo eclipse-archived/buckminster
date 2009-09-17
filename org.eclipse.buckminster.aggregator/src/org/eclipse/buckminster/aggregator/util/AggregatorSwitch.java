@@ -259,6 +259,22 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Metadata Repository Reference</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Metadata Repository Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMetadataRepositoryReference(MetadataRepositoryReference object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Product</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -377,6 +393,8 @@ public class AggregatorSwitch<T>
 		{
 			MappedRepository mappedRepository = (MappedRepository)theEObject;
 			T result = caseMappedRepository(mappedRepository);
+			if(result == null)
+				result = caseMetadataRepositoryReference(mappedRepository);
 			if(result == null)
 				result = caseEnabledStatusProvider(mappedRepository);
 			if(result == null)
@@ -539,6 +557,16 @@ public class AggregatorSwitch<T>
 				result = caseMapRule(validConfigurationsRule);
 			if(result == null)
 				result = caseInstallableUnitReference(validConfigurationsRule);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE:
+		{
+			MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)theEObject;
+			T result = caseMetadataRepositoryReference(metadataRepositoryReference);
+			if(result == null)
+				result = caseEnabledStatusProvider(metadataRepositoryReference);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

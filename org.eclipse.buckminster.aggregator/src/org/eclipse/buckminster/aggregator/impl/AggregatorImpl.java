@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.Notification;
@@ -44,6 +45,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getPackedStrategy <em>Packed Strategy</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getValidationRepositories <em>Validation
+ * Repositories</em>}</li>
  * </ul>
  * </p>
  * 
@@ -265,6 +268,16 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	protected static final int TYPE_EFLAG = 0x7 << TYPE_EFLAG_OFFSET;
 
 	/**
+	 * The cached value of the '{@link #getValidationRepositories() <em>Validation Repositories</em>}' containment
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getValidationRepositories()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<MetadataRepositoryReference> validationRepositories;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -316,6 +329,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return isSendmail();
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			return getType();
+		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
+			return getValidationRepositories();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -355,6 +370,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return ((InternalEList<?>)getContacts()).basicRemove(otherEnd, msgs);
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 			return ((InternalEList<?>)getCustomCategories()).basicRemove(otherEnd, msgs);
+		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
+			return ((InternalEList<?>)getValidationRepositories()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -393,6 +410,8 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
+		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
+			return validationRepositories != null && !validationRepositories.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -442,6 +461,10 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			setType((AggregateType)newValue);
 			return;
+		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
+			getValidationRepositories().clear();
+			getValidationRepositories().addAll((Collection<? extends MetadataRepositoryReference>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -485,6 +508,9 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return;
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			setType(TYPE_EDEFAULT);
+			return;
+		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
+			getValidationRepositories().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -654,6 +680,21 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	public AggregateType getType()
 	{
 		return TYPE_EFLAG_VALUES[(eFlags & TYPE_EFLAG) >>> TYPE_EFLAG_OFFSET];
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<MetadataRepositoryReference> getValidationRepositories()
+	{
+		if(validationRepositories == null)
+		{
+			validationRepositories = new EObjectContainmentEList<MetadataRepositoryReference>(
+					MetadataRepositoryReference.class, this, AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES);
+		}
+		return validationRepositories;
 	}
 
 	/**

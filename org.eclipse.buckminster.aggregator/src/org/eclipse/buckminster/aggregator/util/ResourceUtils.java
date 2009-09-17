@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -41,12 +42,20 @@ public class ResourceUtils
 		Set<Resource> referencedResources = new HashSet<Resource>();
 		referencedResources.add(topResource);
 		for(Contribution contribution : aggregator.getContributions(true))
+		{
 			for(MappedRepository mappedRepository : contribution.getRepositories(true))
 			{
 				org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
 						mappedRepository.getLocation(), null);
 				referencedResources.add(topSet.getResource(repoURI, false));
 			}
+		}
+		for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
+		{
+			org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
+					repoRef.getLocation(), null);
+			referencedResources.add(topSet.getResource(repoURI, false));
+		}
 		Iterator<Resource> allResources = topSet.getResources().iterator();
 
 		while(allResources.hasNext())
@@ -59,22 +68,22 @@ public class ResourceUtils
 	/**
 	 * Tries to get metadata repository from mapped repository. If it fails to load, an exception is thrown.
 	 * 
-	 * @param mappedRepository
+	 * @param repoRef
 	 * @return
 	 * @throws CoreException
 	 */
-	public static MetadataRepository getMetadataRepository(MappedRepository mappedRepository) throws CoreException
+	public static MetadataRepository getMetadataRepository(MetadataRepositoryReference repoRef) throws CoreException
 	{
-		MetadataRepository mdr = mappedRepository.getMetadataRepository();
+		MetadataRepository mdr = repoRef.getMetadataRepository();
 
 		if(mdr == null)
 		{
-			Resource resource = mappedRepository.eResource();
+			Resource resource = repoRef.eResource();
 			if(resource != null && resource instanceof MetadataRepositoryResourceImpl
 					&& ((MetadataRepositoryResourceImpl)resource).getLastException() != null)
 				throw BuckminsterException.wrap(((MetadataRepositoryResourceImpl)resource).getLastException());
 
-			throw BuckminsterException.fromMessage("Unable to load repository " + mappedRepository.getLocation());
+			throw BuckminsterException.fromMessage("Unable to load repository " + repoRef.getLocation());
 		}
 
 		return mdr;
@@ -85,11 +94,11 @@ public class ResourceUtils
 	 * 
 	 * @param mappedRepository
 	 */
-	public static void loadResourceForMappedRepository(MappedRepository mappedRepository)
+	public static void loadResourceForMappedRepository(MetadataRepositoryReference mappedRepository)
 	{
 		if(mappedRepository.getLocation() == null)
 			return;
-		Aggregator aggregator = (Aggregator)mappedRepository.eContainer().eContainer();
+		Aggregator aggregator = mappedRepository.getAggregator();
 		MetadataRepositoryResourceImpl.loadRepository(mappedRepository.getLocation(), aggregator);
 	}
 }

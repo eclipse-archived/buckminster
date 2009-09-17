@@ -10,26 +10,19 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToMappedRepositoryCommand;
-import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
@@ -59,8 +52,9 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceItemProvider implements
+		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
+		IItemPropertySource
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -134,24 +128,10 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 		{
 			super.getPropertyDescriptors(object);
 
-			addEnabledPropertyDescriptor(object);
-			addMetadataRepositoryPropertyDescriptor(object);
-			addLocationPropertyDescriptor(object);
 			addMirrorArtifactsPropertyDescriptor(object);
 			addCategoryPrefixPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return AggregatorEditPlugin.INSTANCE;
 	}
 
 	/**
@@ -210,86 +190,19 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 	}
 
 	/**
-	 * Experimental. Loads a resource when the user types in a URL.
-	 */
-	@Override
-	public void notifyChanged(Notification notification)
-	{
-		notifyChangedGen(notification);
-
-		MappedRepository mappedRepository = (MappedRepository)notification.getNotifier();
-
-		if(notification.getEventType() != Notification.SET)
-			return;
-
-		switch(notification.getFeatureID(MappedRepository.class))
-		{
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
-			onLocationChange((MappedRepository)notification.getNotifier(), notification.getNewStringValue());
-			// no 'break' here is an intention - refresh nodes that may have been affected
-
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-
-			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
-			Set<EObject> affectedNodes = new HashSet<EObject>();
-
-			// Go through all direct ancestors first
-			EObject container = ((EObject)notification.getNotifier());
-			while(container != null)
-			{
-				affectedNodeLabels.add(container);
-				container = container.eContainer();
-			}
-
-			// Browse all mapped units which may have changed their virtual status (inherently enabled/disabled)
-			for(MappedUnit unit : mappedRepository.getUnits(true))
-			{
-				affectedNodes.add(unit);
-				// And now, find all categories which may contain the feature just being enabled/disabled
-				if(unit instanceof Feature)
-					for(CustomCategory category : ((Feature)unit).getCategories())
-						affectedNodes.add(category);
-			}
-
-			for(EObject affectedNode : affectedNodes)
-				fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
-			for(EObject affectedNode : affectedNodeLabels)
-				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
-
-			Aggregator aggregator = (Aggregator)mappedRepository.eContainer().eContainer();
-
-			if(notification.getFeatureID(MappedRepository.class) == AggregatorPackage.MAPPED_REPOSITORY__ENABLED)
-			{
-				if(notification.getNewBooleanValue())
-					ResourceUtils.loadResourceForMappedRepository(mappedRepository);
-				else
-					ResourceUtils.cleanUpResources(aggregator);
-			}
-			else
-				ResourceUtils.cleanUpResources(aggregator);
-
-			break;
-		}
-
-	}
-
-	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 */
-	public void notifyChangedGen(Notification notification)
+	@Override
+	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
 
 		switch(notification.getFeatureID(MappedRepository.class))
 		{
-		case AggregatorPackage.MAPPED_REPOSITORY__ENABLED:
-		case AggregatorPackage.MAPPED_REPOSITORY__METADATA_REPOSITORY:
-		case AggregatorPackage.MAPPED_REPOSITORY__LOCATION:
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -318,75 +231,6 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_categoryPrefix_feature",
 						"_UI_MappedRepository_type"), AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORY_PREFIX,
 				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Enabled feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addEnabledPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_EnabledStatusProvider_enabled_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_EnabledStatusProvider_enabled_feature", "_UI_EnabledStatusProvider_type"),
-				AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED, true, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Location feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addLocationPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MappedRepository_location_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MappedRepository_location_feature", "_UI_MappedRepository_type"),
-				AggregatorPackage.Literals.MAPPED_REPOSITORY__LOCATION, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Metadata Repository feature. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated NOT
-	 */
-	protected void addMetadataRepositoryPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(new ContributionItemProvider.DynamicItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MappedRepository_metadataRepository_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_metadataRepository_feature",
-						"_UI_MappedRepository_type"),
-				AggregatorPackage.Literals.MAPPED_REPOSITORY__METADATA_REPOSITORY, true, false, true, null, null, null)
-		{
-			@Override
-			public Collection<?> getChoiceOfValues(Object object)
-			{
-				// Provide a list of repositories that has not already been mapped
-				//
-				MappedRepository self = (MappedRepository)object;
-				Aggregator aggregator = (Aggregator)self.eContainer().eContainer();
-				Collection<?> repos = super.getChoiceOfValues(object);
-				for(Contribution contribution : aggregator.getContributions())
-				{
-					for(MappedRepository mappedRepo : contribution.getRepositories())
-					{
-						if(mappedRepo == self)
-							continue;
-						MetadataRepository repo = mappedRepo.getMetadataRepository();
-						if(repo != null)
-							repos.remove(repo);
-					}
-				}
-				return repos;
-			}
-		});
 	}
 
 	/**
@@ -549,19 +393,4 @@ public class MappedRepositoryItemProvider extends AggregatorItemProviderAdapter 
 
 		return new CompoundCommand("Delete", commands);
 	}
-
-	private void onLocationChange(MappedRepository repository, String location)
-	{
-		MetadataRepository repo = null;
-		Aggregator aggregator = (Aggregator)repository.eContainer().eContainer();
-		try
-		{
-			repo = MetadataRepositoryResourceImpl.loadRepository(location, aggregator);
-		}
-		finally
-		{
-			repository.setMetadataRepository(repo);
-		}
-	}
-
 }

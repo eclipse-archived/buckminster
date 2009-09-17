@@ -6,7 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.emf.common.util.EList;
 
 /**
@@ -20,10 +19,7 @@ import org.eclipse.emf.common.util.EList;
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getProducts <em>Products</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getBundles <em>Bundles</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getFeatures <em>Features</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository <em>Metadata Repository
- *          </em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMapRules <em>Map Rules</em>}</li>
@@ -34,7 +30,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface MappedRepository extends EnabledStatusProvider, StatusProvider
+public interface MappedRepository extends MetadataRepositoryReference, StatusProvider
 {
 	/**
 	 * Adds MappedUnit to the collection of either features, categories, bundles or products
@@ -109,22 +105,6 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	EList<Feature> getFeatures();
 
 	/**
-	 * Returns the value of the '<em><b>Location</b></em>' attribute. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Location</em>' attribute isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Location</em>' attribute.
-	 * @see #setLocation(String)
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_Location()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getLocation();
-
-	/**
 	 * Returns the value of the '<em><b>Map Rules</b></em>' containment reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.aggregator.MapRule}. <!-- begin-user-doc -->
 	 * <p>
@@ -139,30 +119,6 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	 * @generated
 	 */
 	EList<MapRule> getMapRules();
-
-	/**
-	 * Returns the value of the '<em><b>Metadata Repository</b></em>' reference. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Metadata Repository</em>' reference isn't clear, there really should be more of a
-	 * description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Metadata Repository</em>' reference.
-	 * @see #setMetadataRepository(MetadataRepository)
-	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository_MetadataRepository()
-	 * @model
-	 * @generated
-	 */
-	MetadataRepository getMetadataRepository();
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @model
-	 * @generated
-	 */
-	MetadataRepository getMetadataRepository(boolean forceResolve);
 
 	/**
 	 * Returns the value of the '<em><b>Products</b></em>' containment reference list. The list contents are of type
@@ -189,14 +145,6 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	 * @generated
 	 */
 	EList<MappedUnit> getUnits(boolean enabledOnly);
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @model kind="operation"
-	 * @generated
-	 */
-	boolean isBranchEnabled();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc --> Returns <code>true</code> if the container
@@ -242,28 +190,6 @@ public interface MappedRepository extends EnabledStatusProvider, StatusProvider
 	 * @generated
 	 */
 	void setCategoryPrefix(String value);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getLocation <em>Location</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Location</em>' attribute.
-	 * @see #getLocation()
-	 * @generated
-	 */
-	void setLocation(String value);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#getMetadataRepository
-	 * <em>Metadata Repository</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Metadata Repository</em>' reference.
-	 * @see #getMetadataRepository()
-	 * @generated
-	 */
-	void setMetadataRepository(MetadataRepository value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts

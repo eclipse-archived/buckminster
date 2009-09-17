@@ -202,6 +202,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createExclusionRule();
 		case AggregatorPackage.VALID_CONFIGURATIONS_RULE:
 			return createValidConfigurationsRule();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE:
+			return createMetadataRepositoryReference();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -416,6 +418,17 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		mu.setInstallableUnit(iu);
 
 		return mu;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public MetadataRepositoryReference createMetadataRepositoryReference()
+	{
+		MetadataRepositoryReferenceImpl metadataRepositoryReference = new MetadataRepositoryReferenceImpl();
+		return metadataRepositoryReference;
 	}
 
 	/**

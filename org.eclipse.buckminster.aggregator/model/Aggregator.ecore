@@ -23,8 +23,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="packedStrategy" eType="#//PackedStrategy"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sendmail" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//AggregateType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validationRepositories"
+        upperBound="-1" eType="#//MetadataRepositoryReference" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MappedRepository" eSuperTypes="#//EnabledStatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="MappedRepository" eSuperTypes="#//MetadataRepositoryReference">
     <eOperations name="getUnits" upperBound="-1" eType="#//MappedUnit">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Returns the MappedUnits referenced by this instance. Units that have their &lt;code>enabled&lt;/code> flag set to false will be excluded if the parameter &lt;code>enabledOnly&lt;/code> is set to &lt;code>true&lt;/code>."/>
@@ -36,21 +38,14 @@
         <details key="documentation" value="Returns &lt;code>true&lt;/code> if the container has MappedUnit children."/>
       </eAnnotations>
     </eOperations>
-    <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eOperations name="getMetadataRepository" eType="#//p2/MetadataRepository">
-      <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1"
         eType="#//Product" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="bundles" upperBound="-1"
         eType="#//Bundle" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
         eType="#//Feature" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="metadataRepository" eType="#//p2/MetadataRepository"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="categories" upperBound="-1"
         eType="#//Category" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="mirrorArtifacts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="categoryPrefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -159,6 +154,16 @@
   <eClassifiers xsi:type="ecore:EClass" name="ValidConfigurationsRule" eSuperTypes="#//MapRule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="validConfigurations" upperBound="-1"
         eType="#//Configuration"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MetadataRepositoryReference" eSuperTypes="#//EnabledStatusProvider">
+    <eOperations name="getAggregator" eType="#//Aggregator"/>
+    <eOperations name="getMetadataRepository" eType="#//p2/MetadataRepository">
+      <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
+    <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metadataRepository" eType="#//p2/MetadataRepository"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eSubpackages name="p2" nsURI="http://www.eclipse.org/buckminster/2009/p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EClass" name="IArtifactKey" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey"
