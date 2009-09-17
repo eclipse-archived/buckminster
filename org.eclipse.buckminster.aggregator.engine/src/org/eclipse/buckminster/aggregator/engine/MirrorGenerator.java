@@ -387,7 +387,10 @@ public class MirrorGenerator extends BuilderPhase
 						MonitorUtils.worked(contribMonitor, 95);
 				}
 				if(errors.size() > 0)
+				{
+					artifactErrors = true;
 					builder.sendEmail(contrib, errors);
+				}
 				MonitorUtils.done(contribMonitor);
 			}
 
@@ -522,7 +525,7 @@ public class MirrorGenerator extends BuilderPhase
 		}
 		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
 		if(artifactErrors)
-			throw BuckminsterException.fromMessage("Not all artifacts could be mirrored");
+			throw BuckminsterException.fromMessage("Not all artifacts could be mirrored, see log for details");
 	}
 
 	private void mirror(List<ArtifactKey> keysToInstall, IArtifactRepository source, IArtifactRepository dest,
