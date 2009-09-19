@@ -79,6 +79,18 @@ public abstract class URLUtils
 		return url;
 	}
 
+	private static void appendQueryItem(StringBuilder query, String item)
+	{
+		int top = item.length();
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = item.charAt(idx);
+			if(c == '&')
+				query.append(c);
+			query.append(c);
+		}
+	}
+
 	/**
 	 * Appends a trailing slash to <code>url</code> and returns the result. If the <code>url</code> already has a
 	 * trailing slash, the argument is returned without modification.
@@ -94,8 +106,7 @@ public abstract class URLUtils
 			try
 			{
 				URI u = url.toURI();
-				url = new URI(u.getScheme(), u.getAuthority(), u.getPath() + '/', u.getQuery(), u.getFragment())
-						.toURL();
+				url = new URI(u.getScheme(), u.getAuthority(), u.getPath() + '/', u.getQuery(), u.getFragment()).toURL();
 			}
 			catch(RuntimeException e)
 			{
@@ -225,6 +236,20 @@ public abstract class URLUtils
 
 	public static URI normalizeToURI(String pathOrURI, boolean asFolder) throws CoreException
 	{
+		if(pathOrURI == null || pathOrURI.length() == 0)
+			return null;
+
+		// If we have a protocol part that consists of one single letter, then we assume
+		// that this is a windows path.
+		//
+		pathOrURI = pathOrURI.replace('\\', '/');
+		if(pathOrURI.length() > 1 && pathOrURI.charAt(1) == ':')
+		{
+			char c = pathOrURI.charAt(0);
+			if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+				pathOrURI = "file:/" + pathOrURI; //$NON-NLS-1$
+		}
+
 		URI uri;
 		try
 		{
@@ -345,18 +370,6 @@ public abstract class URLUtils
 		catch(MalformedURLException e)
 		{
 			return null;
-		}
-	}
-
-	private static void appendQueryItem(StringBuilder query, String item)
-	{
-		int top = item.length();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			char c = item.charAt(idx);
-			if(c == '&')
-				query.append(c);
-			query.append(c);
 		}
 	}
 }
