@@ -19,8 +19,10 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.ui.AbstractCSpecAction;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.core.resources.IFile;
@@ -299,7 +301,16 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog
 
 	private static final String LAST_PROPERTIES = "last.properties"; //$NON-NLS-1$
 
-	private Collection<Attribute> attributes = new ArrayList<Attribute>();
+	private Collection<Attribute> attributes;
+
+	private AbstractCSpecAction m_cspecAction;
+
+	public InvokeActionDialog(Shell shell, AbstractCSpecAction action)
+	{
+		this(shell, "", null); //$NON-NLS-1$
+		m_cspecAction = action;
+
+	}
 
 	public InvokeActionDialog(Shell shell, String title, Collection<Attribute> viableAttributes)
 	{
@@ -507,17 +518,36 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog
 	protected void fillContentProvider(AbstractContentProvider contentProvider, ItemsFilter itemsFilter,
 			IProgressMonitor progressMonitor) throws CoreException
 	{
-		progressMonitor.beginTask(Messages.collecting_actions, attributes.size());
-		for(Attribute attribute : attributes)
+		// progressMonitor.beginTask(Messages.collecting_actions, 100);
+		if(attributes == null)
 		{
-			if(itemsFilter.matchItem(attribute))
+			final CSpec cspec = m_cspecAction.fetchCSpec(progressMonitor);
+			if(cspec != null)
 			{
-				contentProvider.add(attribute, itemsFilter);
-			}
-			progressMonitor.worked(1);
-		}
-		progressMonitor.done();
+				attributes = cspec.getAttributes().values();
+				getShell().getDisplay().asyncExec(new Runnable()
+				{
 
+					public void run()
+					{
+						getShell().setText(Messages.actions_of + cspec.getName());
+
+					}
+				});
+			}
+		}
+		if(attributes != null)
+		{
+
+			for(Attribute attribute : attributes)
+			{
+				if(itemsFilter.matchItem(attribute))
+				{
+					contentProvider.add(attribute, itemsFilter);
+				}
+			}
+		}
+		// progressMonitor.done();
 	}
 
 	@Override

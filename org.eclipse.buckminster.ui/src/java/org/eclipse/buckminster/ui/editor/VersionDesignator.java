@@ -323,7 +323,7 @@ public class VersionDesignator extends Widgetin
 			else
 			{
 				String vds = versionDesignator.toString();
-				if(!(vds.startsWith("[") || vds.startsWith("(") || vds.startsWith("raw:[") || vds.startsWith("raw:(")))
+				if(!(vds.startsWith("[") || vds.startsWith("(") || vds.startsWith("raw:[") || vds.startsWith("raw:("))) //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
 					dsType = DesignatorType.GREATER_OR_EQUAL;
 				else if(versionDesignator.getIncludeMinimum())
 					dsType = versionDesignator.getIncludeMaximum()

@@ -123,6 +123,20 @@ public class InvokeAction extends AbstractCSpecAction
 
 		InvokeActionDialog dialog = new InvokeActionDialog(shell, Messages.actions_of + cspec.getName(),
 				viableAttributes);
+
+		openDialog(dialog);
+
+	}
+
+	@Override
+	protected void run(Shell shell)
+	{
+		InvokeActionDialog dialog = new InvokeActionDialog(shell, this);
+		openDialog(dialog);
+	}
+
+	private void openDialog(InvokeActionDialog dialog)
+	{
 		if(dialog.open() != Window.OK)
 			return;
 		File propertiesFile = dialog.getPropertiesFile();
@@ -132,5 +146,7 @@ public class InvokeAction extends AbstractCSpecAction
 			return;
 		ActionJob job = new ActionJob(attributes.get(0).getName(), attributes, propertiesFile, forceRebuild);
 		job.schedule();
+
 	}
+
 }

@@ -12,6 +12,7 @@ package org.eclipse.buckminster.ui;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.ui.internal.CSpecEditorInput;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
@@ -38,8 +39,8 @@ public class ViewCSpecAction extends AbstractCSpecAction
 
 		IEditorRegistry editorRegistry = workbench.getEditorRegistry();
 		CSpecEditorInput input = new CSpecEditorInput(cspec);
-		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(), input.getContentDescription()
-				.getContentType());
+		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(),
+				input.getContentDescription().getContentType());
 		try
 		{
 			page.openEditor(input, ed.getId());
@@ -48,5 +49,20 @@ public class ViewCSpecAction extends AbstractCSpecAction
 		{
 			UiUtils.openError(page.getWorkbenchWindow().getShell(), Messages.unable_to_open_editor, e);
 		}
+	}
+
+	@Override
+	protected void run(Shell shell)
+	{
+		CSpec cspec = fetchCSpec(new NullProgressMonitor());
+		if(cspec == null)
+		{
+			super.run(shell);
+		}
+		else
+		{
+			run(cspec, shell);
+		}
+
 	}
 }
