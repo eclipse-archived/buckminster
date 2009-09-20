@@ -76,6 +76,8 @@ public class WorkspaceInfo
 
 	private static boolean s_hasBeenActivated;
 
+	private static boolean s_hasBeenFullyInitialized;
+
 	private static final HashMap<ComponentIdentifier, IPath> s_locationCache = new HashMap<ComponentIdentifier, IPath>();
 
 	private static final IResource[] s_noResources = new IResource[0];
@@ -587,6 +589,18 @@ public class WorkspaceInfo
 				: wsRoot.findFilesForLocationURI(locationURI);
 	}
 
+	/**
+	 * Returns <code>true</code> if the workspace catch up job has been successfully run once and <code>false</code>
+	 * otherwise.
+	 * 
+	 * @return if the workspace catch up job has been run or not
+	 * @see WorkspaceInfo#runWorkspaceCatchUpJob()
+	 */
+	public static boolean isFullyInitialized()
+	{
+		return s_hasBeenFullyInitialized;
+	}
+
 	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException
 	{
 		checkFirstUse();
@@ -634,6 +648,7 @@ public class WorkspaceInfo
 		catch(InterruptedException e)
 		{
 		}
+		s_hasBeenFullyInitialized = true;
 	}
 
 	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException

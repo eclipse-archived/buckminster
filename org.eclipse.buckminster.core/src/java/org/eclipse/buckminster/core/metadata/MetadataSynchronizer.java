@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.EclipsePreferencesReader;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.runtime.AttachableProgressMonitor;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
@@ -56,6 +57,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -174,6 +176,12 @@ public class MetadataSynchronizer implements IResourceChangeListener
 
 	static class WorkspaceCatchUpJob extends Job
 	{
+
+		private static final QualifiedName QN_ATTACHABLE_PROGRESS_MONITOR = new QualifiedName(CorePlugin.getID(),
+				"attachableProgressMonitor"); //$NON-NLS-1$
+
+		private AttachableProgressMonitor attachableMonitor;
+
 		public WorkspaceCatchUpJob()
 		{
 			super(Messages.Buckminster_workspace_catch_up);
@@ -182,12 +190,24 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			// for it to complete during plug-in activation
 			//
 			setPriority(Job.SHORT);
+			attachableMonitor = new AttachableProgressMonitor();
+			setProperty(QN_ATTACHABLE_PROGRESS_MONITOR, attachableMonitor);
+		}
+
+		@Override
+		public boolean belongsTo(Object family)
+		{
+			if(family == MetadataSynchronizer.class)
+				return true;
+			return false;
 		}
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor)
 		{
+			monitor = attachableMonitor.wrap(monitor);
 			monitor.beginTask(Messages.Refreshing_project_meta_data, 1000);
+
 			try
 			{
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -222,6 +242,7 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			}
 			finally
 			{
+				setProperty(QN_ATTACHABLE_PROGRESS_MONITOR, null);
 				monitor.done();
 			}
 			return Status.OK_STATUS;
