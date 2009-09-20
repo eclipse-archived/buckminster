@@ -72,6 +72,7 @@
 		<sequential>
 			<eclipse.launch app="buckminster">
 				<args>
+					<jvmarg value="-Dbugfix.288796=true"/>
 					<arg value="-data" />
 					<arg value="@{workspace}" />
 					<arg value="--loglevel" />
@@ -169,6 +170,7 @@
 				<arg value="${jdk1.4.dir}" />
 			</cmdargs>
 		</buckminster>
+
 		<buckminster command="setpref">
 			<cmdargs>
 				<arg value="targetPlatformPath=${targetPlatformPath}" />
@@ -178,8 +180,6 @@
 			<cmdargs>
 				<arg value="-P" />
 				<arg value="${basedir}/build.properties" />
-				<arg value="--bomfile" />
-				<arg value="${basedir}/bomfile.bom" />
 				<arg value="${basedir}/build.mspec" />
 			</cmdargs>
 		</buckminster>
