@@ -9,17 +9,16 @@
 package org.eclipse.buckminster.installer;
 
 import java.net.URI;
+import java.util.Arrays;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.Headless;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
+import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
-import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.CapabilityQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.CompositeQuery;
@@ -30,10 +29,20 @@ public class ListSite extends AbstractCommand
 {
 	static IInstallableUnit[] getRootIUs(URI site, IProgressMonitor monitor) throws SimpleErrorExitException
 	{
-		IRequiredCapability rq = MetadataFactory.createRequiredCapability("org.eclipse.equinox.p2.eclipse.type",
-				"feature", VersionRange.emptyRange, null, false, false);
-		Collector roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] {
-				new CapabilityQuery(rq), new LatestIUVersionQuery() }), new Collector(), monitor);
+		Collector roots = new Collector();
+
+		if(site == null)
+		{
+			IProfile runningInstanceProfile = ProvisioningHelper.getProfile(IProfileRegistry.SELF);
+
+			if(runningInstanceProfile != null)
+				roots = runningInstanceProfile.query(new CompositeQuery(new Query[] { new FeatureQuery(),
+						new LatestIUVersionQuery() }), roots, monitor);
+		}
+		else
+			roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { new FeatureQuery(),
+					new LatestIUVersionQuery() }), roots, monitor);
+
 		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
 	}
 
@@ -54,13 +63,16 @@ public class ListSite extends AbstractCommand
 	{
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		System.out.println(Messages.feature_listing_heading);
-		for(IInstallableUnit iu : getRootIUs(m_site, monitor))
+
+		IInstallableUnit[] roots = getRootIUs(m_site, monitor);
+		Arrays.sort(roots);
+		for(IInstallableUnit iu : roots)
 		{
 			System.out.print("  "); //$NON-NLS-1$
 
 			String id = iu.getId();
-			if(id.endsWith(".feature.jar"))
-				id = id.substring(0, id.length() - 12);
+			if(id.endsWith(FeatureQuery.FEATURE_GROUP))
+				id = id.substring(0, id.length() - 14);
 			System.out.print(id);
 			String label = iu.getProperty(IInstallableUnit.PROP_NAME);
 			if(label != null)
