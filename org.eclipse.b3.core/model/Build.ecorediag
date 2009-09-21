@@ -534,7 +534,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_MLkCMZ4QEd6chsMEA3b_4g" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_MLkCMp4QEd6chsMEA3b_4g" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//IBuildUnit/buildParts"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//IBuildUnit/parts"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_MLkCM54QEd6chsMEA3b_4g" points="[13, 22, -391, 184]$[183, 22, -221, 184]$[183, -68, -221, 94]$[372, -68, -32, 94]$[372, -138, -32, 24]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_W3o9kaE1Ed6id4aWWYPxZQ" id="(0.9406392694063926,0.3068181818181818)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_W3o9kqE1Ed6id4aWWYPxZQ" id="(0.5,0.5)"/>
@@ -590,7 +590,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_FlODcZ7YEd6chsMEA3b_4g" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_FlODcp7YEd6chsMEA3b_4g" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//IArtifactsPart/pathGroup"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//IArtifactsPart/paths"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_FlODc57YEd6chsMEA3b_4g" points="[5, 3, -3, -185]$[5, 125, -3, -63]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_FlP4oJ7YEd6chsMEA3b_4g" id="(0.20588235294117646,0.9285714285714286)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_FlP4oZ7YEd6chsMEA3b_4g" id="(0.6136363636363636,1.0)"/>
@@ -640,7 +640,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_wiM-0Z7mEd6chsMEA3b_4g" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_wiM-0p7mEd6chsMEA3b_4g" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//IProducedPart/pathGroup"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//IProducedPart/paths"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_wiM-057mEd6chsMEA3b_4g" points="[34, 27, 502, -198]$[78, 27, 546, -198]$[78, 281, 546, 56]$[-425, 281, 43, 56]$[-425, 225, 43, 0]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_l0BZUJ7wEd6chsMEA3b_4g" id="(0.6666666666666666,0.0)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_wiO0AJ7mEd6chsMEA3b_4g" id="(0.30303030303030304,1.0)"/>
@@ -810,7 +810,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_sfdxoZ90Ed6id4aWWYPxZQ" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_sfdxop90Ed6id4aWWYPxZQ" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//ResultingPathGroup/pathGroup"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//ResultingPathGroup/paths"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_sfdxo590Ed6id4aWWYPxZQ" points="[-26, 12, 165, 14]$[-166, 12, 25, 14]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_sffm0J90Ed6id4aWWYPxZQ" id="(0.23076923076923078,0.16666666666666666)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_sffm0Z90Ed6id4aWWYPxZQ" id="(0.8106060606060606,0.35384615384615387)"/>
