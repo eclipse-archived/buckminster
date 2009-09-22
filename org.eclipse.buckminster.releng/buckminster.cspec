@@ -5,6 +5,7 @@
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.tools" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.equinox.executable" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.rcp" componentType="eclipse.feature"/>
     </cs:dependencies>
     <cs:actions>
@@ -15,6 +16,24 @@
             </cs:actorProperties>
             <cs:properties>
                 <cs:property key="directory" value="${buckminster.download.area}/updates-${site.suffix}/"/>
+            </cs:properties>
+        </cs:public>
+        <cs:public name="clear.site.eclipse.headless" actor="ant" always="true">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="buckminster.ant"/>
+                <cs:property key="targets" value="clear.directory"/>
+            </cs:actorProperties>
+            <cs:properties>
+                <cs:property key="directory" value="${buckminster.download.area}/headless-${site.suffix}"/>
+            </cs:properties>
+        </cs:public>
+        <cs:public name="clear.site.eclipse.tools" actor="ant" always="true">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="buckminster.ant"/>
+                <cs:property key="targets" value="clear.directory"/>
+            </cs:actorProperties>
+            <cs:properties>
+                <cs:property key="directory" value="${buckminster.download.area}/tools-${site.suffix}"/>
             </cs:properties>
         </cs:public>
         <cs:public name="promote.site.eclipse" actor="ant">
@@ -28,15 +47,6 @@
             </cs:prerequisites>
             <cs:products alias="action.output" base="${buckminster.download.area}/updates-${site.suffix}/"/>
         </cs:public>
-        <cs:public name="clear.site.eclipse.headless" actor="ant" always="true">
-            <cs:actorProperties>
-                <cs:property key="buildFile" value="buckminster.ant"/>
-                <cs:property key="targets" value="clear.directory"/>
-            </cs:actorProperties>
-            <cs:properties>
-                <cs:property key="directory" value="${buckminster.download.area}/headless-${site.suffix}"/>
-            </cs:properties>
-        </cs:public>
         <cs:public name="promote.site.eclipse.headless" actor="ant">
             <cs:actorProperties>
                 <cs:property key="buildFileId" value="buckminster.pdetasks"/>
@@ -47,15 +57,6 @@
                 <cs:attribute name="site.p2" component="org.eclipse.buckminster.site.eclipse.headless"/>
             </cs:prerequisites>
             <cs:products alias="action.output" base="${buckminster.download.area}/headless-${site.suffix}/"/>
-        </cs:public>
-        <cs:public name="clear.site.eclipse.tools" actor="ant" always="true">
-            <cs:actorProperties>
-                <cs:property key="buildFile" value="buckminster.ant"/>
-                <cs:property key="targets" value="clear.directory"/>
-            </cs:actorProperties>
-            <cs:properties>
-                <cs:property key="directory" value="${buckminster.download.area}/tools-${site.suffix}"/>
-            </cs:properties>
         </cs:public>
         <cs:public name="promote.site.eclipse.tools" actor="ant">
             <cs:actorProperties>
