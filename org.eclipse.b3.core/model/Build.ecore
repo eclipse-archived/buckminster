@@ -416,8 +416,9 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Advices on a filter. The filterOp controls if the advice should replace the current value, or be combined using AND or OR."/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterString" eType="#//FilterString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterOp" eType="#//command/FilterAdviceOperation"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="remove" eType="#//filter/IFilter"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="add" eType="#//filter/IFilter"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="FilterAdviceOperation">
       <eLiterals name="AND"/>
