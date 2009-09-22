@@ -3157,7 +3157,7 @@
       </children>
       <styles xmi:type="notation:ShapeStyle" xmi:id="_4v_EEabzEd6s-IUiwkRRNw" fontColor="4210752" fontName="Lucida Grande" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
       <element xmi:type="ecore:EClass" href="Build.ecore#//command/IUnitRequest"/>
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_4v_EEqbzEd6s-IUiwkRRNw" x="288" y="18"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_4v_EEqbzEd6s-IUiwkRRNw" x="324" y="27"/>
     </children>
     <styles xmi:type="notation:DiagramStyle" xmi:id="_FBuG0abFEd6s-IUiwkRRNw"/>
     <element xmi:type="ecore:EPackage" href="Build.ecore#//resolution"/>
@@ -3226,7 +3226,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_CEFQMab1Ed6s-IUiwkRRNw" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_CEFQMqb1Ed6s-IUiwkRRNw" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//IBuildUnit/resolution.1"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//IBuildUnit/resolution"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CEFQM6b1Ed6s-IUiwkRRNw" points="[-27, 15, -25, -192]$[-27, 202, -25, -5]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CEHFYKb1Ed6s-IUiwkRRNw" id="(0.8137254901960784,0.625)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CEHFYab1Ed6s-IUiwkRRNw" id="(0.7058823529411765,0.14285714285714285)"/>

@@ -45,7 +45,6 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="circularityAllowed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//resolution/IResolution"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//resolution/IResolution"
         eOpposite="#//resolution/IResolution/buildUnit"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceLocation" eType="#//URI"/>
@@ -470,7 +469,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="IResolution" abstract="true" interface="true">
       <eStructuralFeatures xsi:type="ecore:EReference" name="importOptions" eType="#//resolution/ImportOptions"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="buildUnit" eType="#//IBuildUnit"
-          eOpposite="#//IBuildUnit/resolution.1"/>
+          eOpposite="#//IBuildUnit/resolution"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ImportOptions" abstract="true" interface="true">
       <eStructuralFeatures xsi:type="ecore:EReference" name="materializer" eType="#//materializer/IMaterializer"/>
