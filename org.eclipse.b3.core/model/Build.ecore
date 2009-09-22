@@ -412,6 +412,18 @@
     <eClassifiers xsi:type="ecore:EClass" name="InvokeCommand" eSuperTypes="#//command/BuildUnitCommand">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" eType="#//Name"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FilterAdvice" eSuperTypes="#//command/IAdvise">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Advices on a filter. The filterOp controls if the advice should replace the current value, or be combined using AND or OR."/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterString" eType="#//FilterString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterOp" eType="#//command/FilterAdviceOperation"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FilterAdviceOperation">
+      <eLiterals name="AND"/>
+      <eLiterals name="OR" value="1"/>
+      <eLiterals name="REPLACE" value="2"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="filter" nsURI="filter" nsPrefix="filter">
     <eClassifiers xsi:type="ecore:EClass" name="IFilter" abstract="true" interface="true">
