@@ -119,7 +119,7 @@ public class RepositoryVerifier extends BuilderPhase
 
 				IProfile profile = null;
 				String profileId = profilePrefix + configName;
-				if(builder.isUpdate())
+				if(builder.isCleanBuild())
 					profile = profileRegistry.getProfile(profileId);
 
 				if(profile == null)

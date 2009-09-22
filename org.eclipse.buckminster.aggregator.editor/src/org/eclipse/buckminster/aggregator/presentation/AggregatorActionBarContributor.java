@@ -25,6 +25,7 @@ import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
+import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
@@ -94,26 +95,33 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 {
 	class BuildRepoAction extends Action
 	{
-		private final boolean m_verifyOnly;
+		private final Builder.ActionType m_actionType;
 
-		private final boolean m_update;
-
-		public BuildRepoAction(boolean verifyOnly, boolean update)
+		public BuildRepoAction(Builder.ActionType actionType)
 		{
-			m_verifyOnly = verifyOnly;
-			m_update = update;
-
-			if(m_verifyOnly)
+			m_actionType = actionType;
+			String txt;
+			String imageURLPath = null;
+			switch(actionType)
 			{
-				setText("Verify Repository");
+			case CLEAN:
+				txt = "Clean Repository";
+				break;
+			case VERIFY:
+				txt = "Verify Repository";
+				break;
+			case BUILD:
+				txt = "Build Repository";
+				imageURLPath = "full/obj16/start_task.gif";
+				break;
+			default:
+				txt = "Clean and Build Repository";
+				imageURLPath = "full/obj16/start_task.gif";
 			}
-			else
+			setText(txt);
+			if(imageURLPath != null)
 			{
-				if(update)
-					setText("Update Repository");
-				else
-					setText("Build Repository");
-				Object imageURL = AggregatorEditorPlugin.INSTANCE.getImage("full/obj16/start_task.gif");
+				Object imageURL = AggregatorEditorPlugin.INSTANCE.getImage(imageURLPath);
 
 				if(imageURL != null && imageURL instanceof URL)
 					setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
@@ -156,10 +164,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 									+ URLEncoder.encode(fileURL.getPath(), "UTF-8").replaceAll("\\+", "%20"));
 							builder.setBuildModelLocation(new File(uri));
 							builder.setLogLevel(Logger.DEBUG);
-							builder.setVerifyOnly(m_verifyOnly);
-							builder.setUpdate(m_update);
+							builder.setAction(m_actionType);
 
-							if(builder.run(monitor) != IApplication.EXIT_OK)
+							if(builder.run(true, monitor) != IApplication.EXIT_OK)
 								throw new Exception("Build failed (see log for more details)");
 						}
 						catch(Throwable e)
@@ -467,11 +474,13 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected ActionContributionItem m_reloadRepoMenuItem;
 
-	protected BuildRepoAction m_buildRepoAction;
-
-	protected BuildRepoAction m_updateRepoAction;
+	protected BuildRepoAction m_cleanRepoAction;
 
 	protected BuildRepoAction m_verifyRepoAction;
+
+	protected BuildRepoAction m_buildRepoAction;
+
+	protected BuildRepoAction m_cleanBuildRepoAction;
 
 	protected List<IAction> m_mapToContributionActions = new ArrayList<IAction>();
 
@@ -491,9 +500,10 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		m_enabledStatusMenuItem = new ActionContributionItem(new EnabledStatusAction());
 		m_enabledStatusMenuItem.setVisible(false);
 		m_reloadRepoMenuItem = new ActionContributionItem(new ReloadRepoAction());
-		m_buildRepoAction = new BuildRepoAction(false, false);
-		m_updateRepoAction = new BuildRepoAction(false, true);
-		m_verifyRepoAction = new BuildRepoAction(true, false);
+		m_cleanRepoAction = new BuildRepoAction(ActionType.CLEAN);
+		m_verifyRepoAction = new BuildRepoAction(ActionType.VERIFY);
+		m_buildRepoAction = new BuildRepoAction(ActionType.BUILD);
+		m_cleanBuildRepoAction = new BuildRepoAction(ActionType.CLEAN_BUILD);
 	}
 
 	/**
@@ -784,11 +794,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	@Override
 	protected void addGlobalActions(IMenuManager menuManager)
 	{
-		menuManager.insertBefore("additions", new ActionContributionItem(m_buildRepoAction));
-		menuManager.insertBefore("additions", new ActionContributionItem(m_updateRepoAction));
+		menuManager.insertBefore("additions", new ActionContributionItem(m_cleanRepoAction));
 		menuManager.insertBefore("additions", new ActionContributionItem(m_verifyRepoAction));
+		menuManager.insertBefore("additions", new ActionContributionItem(m_buildRepoAction));
+		menuManager.insertBefore("additions", new ActionContributionItem(m_cleanBuildRepoAction));
 		menuManager.insertBefore("additions", new Separator());
-
 		addGlobalActionsGen(menuManager);
 	}
 

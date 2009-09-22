@@ -38,6 +38,10 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -76,6 +80,11 @@ import org.xml.sax.SAXParseException;
 
 public class Builder implements IApplication
 {
+	public enum ActionType
+	{
+		CLEAN, VERIFY, BUILD, CLEAN_BUILD
+	}
+
 	private static class EmailAddress
 	{
 		private final String address;
@@ -144,7 +153,9 @@ public class Builder implements IApplication
 
 	private static final String BUNDLE_UPDATESITE = "org.eclipse.equinox.p2.updatesite"; //$NON-NLS-1$
 
-	private static final String CORE_BUNDLE = "org.eclipse.equinox.p2.core"; //$NON-NLS-1$
+	private static final String BUNDLE_CORE = "org.eclipse.equinox.p2.core"; //$NON-NLS-1$
+
+	static private final String BUNDLE_ENGINE = "org.eclipse.equinox.p2.engine"; //$NON-NLS-1$
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd"); //$NON-NLS-1$
 
@@ -215,6 +226,25 @@ public class Builder implements IApplication
 		return result.length > 0
 				? result[0]
 				: null;
+	}
+
+	private static void deleteAndCheck(File folder, String fileName) throws CoreException
+	{
+		File file = new File(folder, fileName);
+		file.delete();
+		if(file.exists())
+			throw BuckminsterException.fromMessage("Unable to delete file %s\n", file.getAbsolutePath());
+	}
+
+	private static void deleteMetadataRepository(IMetadataRepositoryManager mdrMgr, File repoFolder)
+			throws CoreException
+	{
+		URI repoURI = Builder.createURI(repoFolder);
+		mdrMgr.removeRepository(repoURI);
+		deleteAndCheck(repoFolder, "compositeContent.jar");
+		deleteAndCheck(repoFolder, "compositeContent.xml");
+		deleteAndCheck(repoFolder, "content.jar");
+		deleteAndCheck(repoFolder, "content.xml");
 	}
 
 	private static synchronized Bundle getBundle(PackageAdmin packageAdmin, String symbolicName)
@@ -344,13 +374,15 @@ public class Builder implements IApplication
 
 	private Set<IInstallableUnit> unverifiedUnits;
 
-	private HashMap<MappedRepository, List<VersionedName>> exclusions;
+	private HashMap<MappedRepository, List<VersionedName>> exclusions;;
 
-	private boolean update = false;
-
-	private boolean verifyOnly = false;
+	ActionType action = ActionType.BUILD;
 
 	private CompositeMetadataRepository sourceComposite;
+
+	private String preservedDataArea;
+
+	private String preservedProfile;
 
 	/**
 	 * Prevent that the {@link IInstallableUnit} identified by <code>versionedName</code> is mapped from
@@ -449,6 +481,11 @@ public class Builder implements IApplication
 				: unverifiedUnits;
 	}
 
+	public boolean isCleanBuild()
+	{
+		return action == ActionType.CLEAN_BUILD;
+	}
+
 	/**
 	 * Checks if the repository can be included verbatim. If it can, the builder will include a reference to it in a
 	 * composite repository instead of copying everything into an aggregate
@@ -501,14 +538,9 @@ public class Builder implements IApplication
 				&& !"true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_GROUP));
 	}
 
-	public boolean isUpdate()
-	{
-		return update;
-	}
-
 	public boolean isVerifyOnly()
 	{
-		return verifyOnly;
+		return action == ActionType.VERIFY;
 	}
 
 	/**
@@ -516,11 +548,24 @@ public class Builder implements IApplication
 	 * 
 	 * @param monitor
 	 */
-	public Object run(IProgressMonitor monitor)
+	public Object run(boolean fromIDE, IProgressMonitor monitor)
 	{
-		MonitorUtils.begin(monitor, verifyOnly
-				? 200
-				: 2200);
+		int ticks;
+		switch(action)
+		{
+		case CLEAN:
+			ticks = 50;
+			break;
+		case VERIFY:
+			ticks = 200;
+			break;
+		case BUILD:
+			ticks = 2150;
+			break;
+		default:
+			ticks = 2200;
+		}
+		MonitorUtils.begin(monitor, ticks);
 
 		try
 		{
@@ -539,36 +584,46 @@ public class Builder implements IApplication
 
 			// Verify that all contributions can be parsed, i.e. contains
 			// well-formed XML
+			//
 			verifyContributions();
 			runTransformation(now);
+			switch(action)
+			{
+			case CLEAN:
+			case CLEAN_BUILD:
+				cleanAll();
+				break;
+			default:
+				cleanMetadata();
+			}
+
+			if(action == ActionType.CLEAN)
+				return IApplication.EXIT_OK;
+
+			buildRoot.mkdirs();
+			if(!buildRoot.exists())
+				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
 
 			Buckminster bucky = Buckminster.getDefault();
-			PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
+			restartP2Bundles();
 			try
 			{
-				stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
-				stopBundle(packageAdmin, CORE_BUNDLE);
-
-				String p2DataArea = new File(buildRoot, "p2").toString();
-				System.setProperty(PROP_P2_DATA_AREA, p2DataArea);
-				System.setProperty(PROP_P2_PROFILE, PROFILE_ID);
-
-				if(!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
-					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
-				if(!startEarly(packageAdmin, CORE_BUNDLE))
-					throw BuckminsterException.fromMessage("Missing bundle %s", CORE_BUNDLE);
-				if(!startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP))
-					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
-				if(!startEarly(packageAdmin, BUNDLE_UPDATESITE))
-					throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
-
-				IProfile profile = null;
+				// Remove previously used profiles.
+				//
 				IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
-				if(update)
-					profile = profileRegistry.getProfile(PROFILE_ID);
-
-				if(profile == null)
+				try
 				{
+					List<String> knownIDs = new ArrayList<String>();
+					for(IProfile profile : profileRegistry.getProfiles())
+					{
+						String id = profile.getProfileId();
+						if(id.startsWith(PROFILE_ID))
+							knownIDs.add(id);
+					}
+
+					for(String id : knownIDs)
+						profileRegistry.removeProfile(id);
+
 					String instArea = buildRoot.toString();
 					Map<String, String> props = new HashMap<String, String>();
 					props.put(IProfile.PROP_FLAVOR, "tooling"); //$NON-NLS-1$
@@ -577,25 +632,25 @@ public class Builder implements IApplication
 							aggregator.getLabel()));
 					props.put(IProfile.PROP_CACHE, instArea);
 					props.put(IProfile.PROP_INSTALL_FOLDER, instArea);
-					profile = profileRegistry.addProfile(PROFILE_ID, props);
+					profileRegistry.addProfile(PROFILE_ID, props);
 				}
-				bucky.ungetService(profileRegistry);
-			}
-			catch(BundleException e)
-			{
-				throw BuckminsterException.wrap(e);
+				finally
+				{
+					bucky.ungetService(profileRegistry);
+				}
+
+				runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
+				runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 15));
+				runVerificationFeatureGenerator(MonitorUtils.subMonitor(monitor, 15));
+				runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 100));
+				if(action != ActionType.VERIFY)
+					runMirroring(MonitorUtils.subMonitor(monitor, 2000));
+				return IApplication.EXIT_OK;
 			}
 			finally
 			{
-				bucky.ungetService(packageAdmin);
+				restoreP2Bundles();
 			}
-
-			runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
-			runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 15));
-			runVerificationFeatureGenerator(MonitorUtils.subMonitor(monitor, 15));
-			runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 100));
-			if(!verifyOnly)
-				runMirroring(MonitorUtils.subMonitor(monitor, 2000));
 		}
 		catch(Throwable e)
 		{
@@ -606,9 +661,21 @@ public class Builder implements IApplication
 		}
 		finally
 		{
+			if(fromIDE)
+			{
+				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+				for(IContainer rootContainer : wsRoot.findContainersForLocationURI(buildRoot.toURI()))
+					try
+					{
+						rootContainer.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 10));
+					}
+					catch(CoreException e)
+					{
+						// ignore
+					}
+			}
 			monitor.done();
 		}
-		return IApplication.EXIT_OK;
 	}
 
 	public void sendEmail(Contribution contrib, List<String> errors)
@@ -721,6 +788,11 @@ public class Builder implements IApplication
 		}
 	}
 
+	public void setAction(ActionType action)
+	{
+		this.action = action;
+	}
+
 	public void setBuildID(String buildId)
 	{
 		this.buildID = buildId;
@@ -817,16 +889,6 @@ public class Builder implements IApplication
 		this.subjectPrefix = subjectPrefix;
 	}
 
-	public void setUpdate(boolean update)
-	{
-		this.update = update;
-	}
-
-	public void setVerifyOnly(boolean verifyOnly)
-	{
-		this.verifyOnly = verifyOnly;
-	}
-
 	public Object start(IApplicationContext context) throws Exception
 	{
 
@@ -856,11 +918,55 @@ public class Builder implements IApplication
 			log.info(msg);
 			return Integer.valueOf(1);
 		}
-		return run(new NullProgressMonitor());
+		return run(false, new NullProgressMonitor());
 	}
 
 	public void stop()
 	{
+	}
+
+	private void cleanAll() throws CoreException
+	{
+		cleanMetadata();
+
+		Buckminster bucky = Buckminster.getDefault();
+		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+		try
+		{
+			File destination = new File(buildRoot, Builder.REPO_FOLDER_FINAL);
+			arMgr.removeRepository(Builder.createURI(destination));
+			arMgr.removeRepository(Builder.createURI(new File(destination, Builder.REPO_FOLDER_AGGREGATE)));
+		}
+		finally
+		{
+			bucky.ungetService(arMgr);
+		}
+
+		if(buildRoot.exists())
+		{
+			FileUtils.deleteAll(buildRoot);
+			if(buildRoot.exists())
+				throw BuckminsterException.fromMessage("Failed to delete folder %s", buildRoot.getAbsolutePath());
+		}
+	}
+
+	private void cleanMetadata() throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+		try
+		{
+			File finalRepo = new File(buildRoot, Builder.REPO_FOLDER_FINAL);
+			deleteMetadataRepository(mdrMgr, finalRepo);
+			deleteMetadataRepository(mdrMgr, new File(finalRepo, Builder.REPO_FOLDER_AGGREGATE));
+			File interimRepo = new File(buildRoot, Builder.REPO_FOLDER_INTERIM);
+			deleteMetadataRepository(mdrMgr, interimRepo);
+			deleteMetadataRepository(mdrMgr, new File(interimRepo, Builder.REPO_FOLDER_VERIFICATION));
+		}
+		finally
+		{
+			bucky.ungetService(mdrMgr);
+		}
 	}
 
 	private EmailAddress mockCCRecipient() throws UnsupportedEncodingException
@@ -884,14 +990,11 @@ public class Builder implements IApplication
 		for(int idx = 0; idx < top; ++idx)
 		{
 			String arg = args[idx];
-			if("-verifyOnly".equalsIgnoreCase(arg))
+			if("-action".equalsIgnoreCase(arg))
 			{
-				setVerifyOnly(true);
-				continue;
-			}
-			if("-updateOnly".equalsIgnoreCase(arg))
-			{
-				setUpdate(true);
+				if(++idx >= top)
+					requiresArgument(arg);
+				action = ActionType.valueOf(args[idx].toUpperCase());
 				continue;
 			}
 			if("-production".equalsIgnoreCase(arg))
@@ -1034,6 +1137,76 @@ public class Builder implements IApplication
 		}
 	}
 
+	private void restartP2Bundles() throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
+
+		try
+		{
+			stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
+			stopBundle(packageAdmin, BUNDLE_ENGINE);
+			stopBundle(packageAdmin, BUNDLE_CORE);
+
+			String p2DataArea = new File(buildRoot, "p2").toString();
+			preservedDataArea = System.setProperty(PROP_P2_DATA_AREA, p2DataArea);
+			preservedProfile = System.setProperty(PROP_P2_PROFILE, PROFILE_ID);
+
+			if(!startEarly(packageAdmin, BUNDLE_ECF_FS_PROVIDER))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ECF_FS_PROVIDER);
+			if(!startEarly(packageAdmin, BUNDLE_CORE))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_CORE);
+			if(!startEarly(packageAdmin, BUNDLE_ENGINE))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_ENGINE);
+			if(!startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_EXEMPLARY_SETUP);
+			if(!startEarly(packageAdmin, BUNDLE_UPDATESITE))
+				throw BuckminsterException.fromMessage("Missing bundle %s", BUNDLE_UPDATESITE);
+		}
+		catch(BundleException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			bucky.ungetService(packageAdmin);
+		}
+	}
+
+	private void restoreP2Bundles() throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
+
+		try
+		{
+			stopBundle(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
+			stopBundle(packageAdmin, BUNDLE_ENGINE);
+			stopBundle(packageAdmin, BUNDLE_CORE);
+
+			if(preservedDataArea == null)
+				System.clearProperty(PROP_P2_DATA_AREA);
+			else
+				System.setProperty(PROP_P2_DATA_AREA, preservedDataArea);
+			if(preservedProfile == null)
+				System.clearProperty(PROP_P2_PROFILE);
+			else
+				System.setProperty(PROP_P2_PROFILE, preservedProfile);
+
+			startEarly(packageAdmin, BUNDLE_CORE);
+			startEarly(packageAdmin, BUNDLE_ENGINE);
+			startEarly(packageAdmin, BUNDLE_EXEMPLARY_SETUP);
+		}
+		catch(BundleException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			bucky.ungetService(packageAdmin);
+		}
+	}
+
 	private void runCategoriesRepoGenerator(IProgressMonitor monitor) throws CoreException
 	{
 		CategoriesGenerator generator = new CategoriesGenerator(this);
@@ -1092,45 +1265,6 @@ public class Builder implements IApplication
 
 			if(!buildRoot.isAbsolute())
 				buildRoot = new File(buildModelLocation.getParent(), buildRoot.getPath());
-
-			// Loose prior knowledge of the repositories that we are about to create or update
-			//
-			if(!verifyOnly)
-			{
-				Buckminster bucky = Buckminster.getDefault();
-				IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-				IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
-				try
-				{
-					File destination = new File(buildRoot, Builder.REPO_FOLDER_FINAL);
-					URI destURI = Builder.createURI(destination);
-					URI aggrURI = Builder.createURI(new File(destination, Builder.REPO_FOLDER_AGGREGATE));
-
-					mdrMgr.removeRepository(destURI);
-					arMgr.removeRepository(destURI);
-					mdrMgr.removeRepository(aggrURI);
-					arMgr.removeRepository(aggrURI);
-				}
-				finally
-				{
-					bucky.ungetService(mdrMgr);
-					bucky.ungetService(arMgr);
-				}
-			}
-
-			if(!(update || verifyOnly))
-			{
-				if(buildRoot.exists())
-				{
-					FileUtils.deleteAll(buildRoot);
-					if(buildRoot.exists())
-						throw BuckminsterException.fromMessage("Failed to delete folder %s",
-								buildRoot.getAbsolutePath());
-				}
-			}
-			buildRoot.mkdirs();
-			if(!buildRoot.exists())
-				throw BuckminsterException.fromMessage("Failed to create folder %s", buildRoot);
 		}
 		catch(Exception e)
 		{

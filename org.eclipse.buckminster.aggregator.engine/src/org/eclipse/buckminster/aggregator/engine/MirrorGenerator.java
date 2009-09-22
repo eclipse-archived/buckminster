@@ -78,6 +78,19 @@ public class MirrorGenerator extends BuilderPhase
 		}
 	}
 
+	private static boolean checkIfTargetPresent(IArtifactRepository destination, IArtifactDescriptor descriptor)
+	{
+		if(destination.contains(descriptor))
+		{
+			Buckminster.getLogger().debug("    %s artifact is already present",
+					descriptor.getProperty(IArtifactDescriptor.FORMAT) == null
+							? "canonical"
+							: "optimized");
+			return true;
+		}
+		return false;
+	}
+
 	private static IStatus extractDeeperRootCause(IStatus status)
 	{
 		if(status == null)
@@ -135,7 +148,6 @@ public class MirrorGenerator extends BuilderPhase
 		{
 			if(result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
 			{
-				dest.removeDescriptor(sourceDesc);
 				result = extractRootCause(result);
 				throw BuckminsterException.fromMessage(result.getException(),
 						"Unable to mirror artifact %s from repository %s: %s", sourceDesc.getArtifactKey(),
@@ -159,7 +171,6 @@ public class MirrorGenerator extends BuilderPhase
 		}
 
 		result = extractRootCause(result);
-		target.removeDescriptor(canonical);
 		throw BuckminsterException.fromMessage(result.getException(),
 				"Unable to unpack artifact %s in repository %s: %s", optimized.getArtifactKey(), target.getLocation(),
 				result.getMessage());
@@ -252,19 +263,15 @@ public class MirrorGenerator extends BuilderPhase
 		boolean artifactErrors = false;
 		try
 		{
-			boolean isUpdate = builder.isUpdate();
+			boolean isCleanBuild = builder.isCleanBuild();
 			Aggregator aggregator = builder.getAggregator();
 
 			subMon.setTaskName("Mirroring meta-data and artifacts...");
 			MonitorUtils.subTask(subMon, "Initializing");
 			IArtifactRepository aggregateAr = null;
-			IMetadataRepository aggregateMdr = null;
-			if(isUpdate)
+			if(!isCleanBuild)
 			{
-				mdrMgr.removeRepository(finalURI);
 				arMgr.removeRepository(finalURI);
-				new File(destination, "compositeContent.jar").delete();
-				new File(destination, "compositeArtifacts.jar").delete();
 				aggregateDestination.mkdirs();
 				for(File oldLocation : destination.listFiles())
 				{
@@ -272,18 +279,9 @@ public class MirrorGenerator extends BuilderPhase
 						continue;
 					oldLocation.renameTo(new File(aggregateDestination, oldLocation.getName()));
 				}
-
 				try
 				{
 					aggregateAr = arMgr.loadRepository(aggregateURI, subMon.newChild(5));
-				}
-				catch(ProvisionException e)
-				{
-				}
-
-				try
-				{
-					aggregateMdr = mdrMgr.loadRepository(aggregateURI, subMon.newChild(5));
 				}
 				catch(ProvisionException e)
 				{
@@ -301,13 +299,11 @@ public class MirrorGenerator extends BuilderPhase
 			}
 			MonitorUtils.worked(subMon, 5);
 
-			if(aggregateMdr == null)
-			{
-				Map<String, String> properties = new HashMap<String, String>();
-				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
-				String label = aggregator.getLabel();
-				aggregateMdr = mdrMgr.createRepository(aggregateURI, label, Builder.SIMPLE_METADATA_TYPE, properties);
-			}
+			Map<String, String> properties = new HashMap<String, String>();
+			properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
+			String label = aggregator.getLabel();
+			IMetadataRepository aggregateMdr = mdrMgr.createRepository(aggregateURI, label,
+					Builder.SIMPLE_METADATA_TYPE, properties);
 			MonitorUtils.worked(subMon, 5);
 
 			addUnverifiedRoots(subMon.newChild(5));
@@ -439,7 +435,7 @@ public class MirrorGenerator extends BuilderPhase
 			{
 				// Set up the final composite repositories
 				log.info("Building final metadata composite at %s", finalURI);
-				Map<String, String> properties = new HashMap<String, String>();
+				properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 
 				String name = builder.getAggregator().getLabel();
@@ -484,7 +480,7 @@ public class MirrorGenerator extends BuilderPhase
 			{
 				// Set up the final composite repositories
 				log.info("Building final artifact composite at %s", finalURI);
-				Map<String, String> properties = new HashMap<String, String>();
+				properties = new HashMap<String, String>();
 				properties.put(IRepository.PROP_COMPRESSED, Boolean.toString(true));
 
 				String name = builder.getAggregator().getLabel();
@@ -573,8 +569,11 @@ public class MirrorGenerator extends BuilderPhase
 
 				if(optimized == null)
 				{
-					log.debug("    doing copy of canonical artifact");
-					mirror(source, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+					if(!checkIfTargetPresent(dest, canonical))
+					{
+						log.debug("    doing copy of canonical artifact");
+						mirror(source, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+					}
 					continue;
 				}
 
@@ -585,12 +584,18 @@ public class MirrorGenerator extends BuilderPhase
 						// Canonical is required
 						throw BuckminsterException.fromMessage("No canonical artifact %s found in repository %s", key,
 								dest.getLocation());
-					log.debug("    doing copy of canonical artifact");
-					mirror(source, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+					if(!checkIfTargetPresent(dest, canonical))
+					{
+						log.debug("    doing copy of canonical artifact");
+						mirror(source, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+					}
 					break;
 				case COPY:
-					log.debug("    doing copy of optimized artifact");
-					mirror(source, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 90));
+					if(!checkIfTargetPresent(dest, optimized))
+					{
+						log.debug("    doing copy of optimized artifact");
+						mirror(source, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 90));
+					}
 					break;
 				default:
 					// We need a canonical descriptor to complete this.
@@ -602,14 +607,26 @@ public class MirrorGenerator extends BuilderPhase
 					}
 					if(strategy == PackedStrategy.UNPACK)
 					{
-						log.debug("    doing copy of optimized artifact into canonical target");
-						mirror(source, dest, optimized, canonical, MonitorUtils.subMonitor(monitor, 90));
+						if(!checkIfTargetPresent(dest, canonical))
+						{
+							log.debug("    doing copy of optimized artifact into canonical target");
+							mirror(source, dest, optimized, canonical, MonitorUtils.subMonitor(monitor, 90));
+						}
 					}
 					else
 					{
-						log.debug("    doing copy of optimized artifact");
-						mirror(source, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 70));
 						boolean isVerify = strategy == PackedStrategy.VERIFY;
+						if(checkIfTargetPresent(dest, optimized))
+						{
+							if(isVerify)
+								// Treat the target as verified.
+								break;
+						}
+						else
+						{
+							log.debug("    doing copy of optimized artifact");
+							mirror(source, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 70));
+						}
 						log.debug("    unpacking optimized artifact%s", isVerify
 								? " for verification"
 								: "");
@@ -620,6 +637,7 @@ public class MirrorGenerator extends BuilderPhase
 			catch(CoreException e)
 			{
 				errors.add(Builder.getExceptionMessages(e));
+				dest.removeDescriptor(key);
 				Buckminster.getLogger().error(e, e.getMessage());
 			}
 		}
