@@ -346,7 +346,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//Name"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="nameSpace" eType="#//NameSpace"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="#//p2/VersionRange"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="resolutionOptions" eType="#//resolution/ResolutionOptions"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="options" eType="#//resolution/ResolutionOptions"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BuildUnitCommand" abstract="true"
         interface="true">
@@ -467,7 +467,7 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IResolution" abstract="true" interface="true">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="importOptions" eType="#//resolution/ImportOptions"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="options" eType="#//resolution/ImportOptions"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="buildUnit" eType="#//IBuildUnit"
           eOpposite="#//IBuildUnit/resolution"/>
     </eClassifiers>

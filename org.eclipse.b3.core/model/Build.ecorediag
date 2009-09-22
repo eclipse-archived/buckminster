@@ -2741,7 +2741,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_c5074ab7Ed6s-IUiwkRRNw" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_c5074qb7Ed6s-IUiwkRRNw" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//command/IUnitRequest/resolutionOptions"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//command/IUnitRequest/options"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_c50746b7Ed6s-IUiwkRRNw" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_c6C-UKb7Ed6s-IUiwkRRNw" id="(0.4966887417218543,0.0)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_c6C-Uab7Ed6s-IUiwkRRNw" id="(0.4968152866242038,1.0)"/>
@@ -3170,7 +3170,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_f2_qsabGEd6s-IUiwkRRNw" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_f2_qsqbGEd6s-IUiwkRRNw" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//command/IUnitRequest/resolutionOptions"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//command/IUnitRequest/options"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_f2_qs6bGEd6s-IUiwkRRNw" points="[4, -3, -158, 6]$[143, -3, -19, 6]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_f3rAIKbGEd6s-IUiwkRRNw" id="(0.9735099337748344,0.432)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_f3rAIabGEd6s-IUiwkRRNw" id="(0.12738853503184713,0.14906832298136646)"/>
@@ -3198,7 +3198,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_smOUYabcEd6s-IUiwkRRNw" routing="Rectilinear" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_smOUYqbcEd6s-IUiwkRRNw" fontColor="4210752" fontName="Lucida Grande" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="Build.ecore#//resolution/IResolution/importOptions"/>
+      <element xmi:type="ecore:EReference" href="Build.ecore#//resolution/IResolution/options"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_smOUY6bcEd6s-IUiwkRRNw" points="[7, -8, -300, -5]$[303, -8, -4, -5]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_smPigKbcEd6s-IUiwkRRNw" id="(0.9313725490196079,0.6666666666666666)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_smPigabcEd6s-IUiwkRRNw" id="(0.023148148148148147,0.32558139534883723)"/>
