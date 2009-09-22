@@ -44,6 +44,24 @@
 		</provider>
 	</searchPath>
 
+	<searchPath name="orbit.R">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/updateSite"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="orbit.M">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/updateSite?importType=binary"/>
+		</provider>
+	</searchPath>
+
+	<searchPath name="orbit.I">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
+			<uri format="http://download.eclipse.org/tools/orbit/downloads/drops/S20090911225403/updateSite?importType=binary"/>
+		</provider>
+	</searchPath>
+
 	<searchPath name="simultanious.release_3.5.M">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
 			<uri format="http://download.eclipse.org/releases/maintenance?importType=binary"/>
@@ -109,6 +127,7 @@
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
 	<locator searchPathRef="buckminster" pattern="^org\.slf4j\.extendable$" />
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" />
+	<locator searchPathRef="orbit.${build.type}" pattern="^com\.ibm\.icu\.base$" />
 	<locator searchPathRef="platform_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="pde.cvs" pattern="^org\.eclipse\.pde\.launching$" />
