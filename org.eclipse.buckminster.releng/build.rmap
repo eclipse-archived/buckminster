@@ -91,18 +91,9 @@
 	</searchPath>
 
     <!-- temporary search path until binary builds are available -->
-	<searchPath name="jdt.cvs">
-		<provider readerType="cvs" componentTypes="osgi.bundle" mutable="true" source="true">
-			<uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,{0}">
-				<bc:propertyRef key="buckminster.component" />
-			</uri>
-		</provider>
-	</searchPath>
-
-    <!-- temporary search path until binary builds are available -->
 	<searchPath name="pde.cvs">
 		<provider readerType="cvs" componentTypes="osgi.bundle" mutable="true" source="true">
-			<uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,pde-incubator/launching/{0}">
+			<uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,pde/ui/{0}">
 				<bc:propertyRef key="buckminster.component" />
 			</uri>
 		</provider>
@@ -120,7 +111,6 @@
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" />
 	<locator searchPathRef="platform_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
-	<locator searchPathRef="jdt.cvs" pattern="^org\.eclipse\.jdt\.junit\.core$" />
 	<locator searchPathRef="pde.cvs" pattern="^org\.eclipse\.pde\.launching$" />
 	<locator searchPathRef="emma" pattern="^com\.mountainminds\.eclemma\.core$" />
 	<locator searchPathRef="svnkit" pattern="^org\.tmatesoft\.svnkit(\..+)?" />
