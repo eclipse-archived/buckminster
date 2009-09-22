@@ -31,9 +31,12 @@ import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
+import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -940,19 +943,25 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		{
 			ItemSorter itemSorter = new ItemSorter(((IStructuredSelection)selection).toList());
 
-			List<MetadataRepository> selectedMDRs = (List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR);
-			List<InstallableUnit> selectedIUs = (List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU);
-
 			List<IAction> mapToActions = new ArrayList<IAction>();
 
 			if(itemSorter.getTotalItemCount() > 0
-					&& itemSorter.getTotalItemCount() == (selectedMDRs.size() + selectedIUs.size()))
+					&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(ItemGroup.IU).size())
+							||(itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size()))))
 			{
+				List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
+				List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
+
+				mdrs.addAll((List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR));
+				mdrs.addAll(ItemUtils.getMDRs((List<MetadataRepositoryStructuredView>)itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED)));
+				ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+				ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
+
 				for(Contribution contribution : m_aggregator.getContributions())
 					if(contribution.isEnabled())
 						mapToActions.add(new MapToContributionAction(
 								((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution,
-								selectedMDRs, selectedIUs));
+								mdrs, ius));
 			}
 
 			return mapToActions;
