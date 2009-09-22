@@ -260,7 +260,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 			return new MapToMappedRepositoryCommand((MappedRepository)owner, ius);
 		}
 
-		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
+		return UnexecutableCommand.INSTANCE;
 	}
 
 	/**
