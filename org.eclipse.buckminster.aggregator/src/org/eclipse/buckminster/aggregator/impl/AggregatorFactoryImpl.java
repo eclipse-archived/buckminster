@@ -406,6 +406,7 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			mu = createCategory();
 			break;
 		case BUNDLE:
+		case FRAGMENT:
 			mu = createBundle();
 			break;
 		case PRODUCT:

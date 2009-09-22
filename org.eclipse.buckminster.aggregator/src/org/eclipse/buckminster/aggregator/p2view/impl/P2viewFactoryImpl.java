@@ -94,6 +94,8 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 			return createProducts();
 		case P2viewPackage.BUNDLES:
 			return createBundles();
+		case P2viewPackage.FRAGMENTS:
+			return createFragments();
 		case P2viewPackage.MISCELLANEOUS:
 			return createMiscellaneous();
 		case P2viewPackage.CATEGORY:
@@ -104,6 +106,8 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 			return createProduct();
 		case P2viewPackage.BUNDLE:
 			return createBundle();
+		case P2viewPackage.FRAGMENT:
+			return createFragment();
 		case P2viewPackage.OTHER_IU:
 			return createOtherIU();
 		case P2viewPackage.DETAILS:
@@ -127,7 +131,7 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
@@ -171,7 +175,7 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
@@ -204,7 +208,7 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
@@ -223,6 +227,39 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	{
 		FeaturesImpl features = new FeaturesImpl();
 		return features;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Fragment createFragment()
+	{
+		FragmentImpl fragment = new FragmentImpl();
+		return fragment;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public Fragment createFragment(InstallableUnit iu)
+	{
+		FragmentImpl fragment = new FragmentImpl(iu);
+		return fragment;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Fragments createFragments()
+	{
+		FragmentsImpl fragments = new FragmentsImpl();
+		return fragments;
 	}
 
 	/**
@@ -252,10 +289,10 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	 * 
 	 * @generated NOT
 	 */
-	public MetadataRepositoryStructuredView createMetadataRepositoryStructuredView(MetadataRepository mdr)
+	public MetadataRepositoryStructuredView createMetadataRepositoryStructuredView(MetadataRepository metadataRepository)
 	{
 		MetadataRepositoryStructuredViewImpl metadataRepositoryStructuredView = new MetadataRepositoryStructuredViewImpl(
-				mdr);
+				metadataRepository);
 		return metadataRepositoryStructuredView;
 	}
 
@@ -282,7 +319,7 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
@@ -304,7 +341,7 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */

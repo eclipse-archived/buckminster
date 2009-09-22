@@ -34,12 +34,12 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Bundles} object. <!--
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Fragments} object. <!--
  * begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class BundlesItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
+public class FragmentsItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IItemColorProvider
 {
@@ -48,7 +48,7 @@ public class BundlesItemProvider extends AggregatorItemProviderAdapter implement
 	 * 
 	 * @generated
 	 */
-	public BundlesItemProvider(AdapterFactory adapterFactory)
+	public FragmentsItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
@@ -67,20 +67,20 @@ public class BundlesItemProvider extends AggregatorItemProviderAdapter implement
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(P2viewPackage.Literals.BUNDLES__BUNDLES);
+			childrenFeatures.add(P2viewPackage.Literals.FRAGMENTS__FRAGMENTS);
 		}
 		return childrenFeatures;
 	}
 
 	/**
-	 * This returns Bundles.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns Fragments.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Bundles"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Fragments"));
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class BundlesItemProvider extends AggregatorItemProviderAdapter implement
 		{
 			super.getPropertyDescriptors(object);
 
-			addBundlesPropertyDescriptor(object);
+			addFragmentsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -119,7 +119,7 @@ public class BundlesItemProvider extends AggregatorItemProviderAdapter implement
 	@Override
 	public String getText(Object object)
 	{
-		return getString("_UI_Bundles_type");
+		return getString("_UI_Fragments_type");
 	}
 
 	/**
@@ -137,17 +137,17 @@ public class BundlesItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This adds a property descriptor for the Bundles feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Fragments feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addBundlesPropertyDescriptor(Object object)
+	protected void addFragmentsPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Bundles_bundles_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Bundles_bundles_feature", "_UI_Bundles_type"), P2viewPackage.Literals.BUNDLES__BUNDLES,
-				false, false, true, null, null, null));
+				getString("_UI_Fragments_fragments_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Fragments_fragments_feature", "_UI_Fragments_type"),
+				P2viewPackage.Literals.FRAGMENTS__FRAGMENTS, false, false, true, null, null, null));
 	}
 
 	/**

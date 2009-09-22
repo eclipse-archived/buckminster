@@ -16,6 +16,7 @@ import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Category;
 import org.eclipse.buckminster.aggregator.p2view.Details;
 import org.eclipse.buckminster.aggregator.p2view.Features;
+import org.eclipse.buckminster.aggregator.p2view.Fragments;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.buckminster.aggregator.p2view.Products;
@@ -26,6 +27,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Category</b></em>'. <!-- end-user-doc -->
@@ -39,6 +41,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getProductContainer <em>Product Container
  * </em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getBundleContainer <em>Bundle Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getFragmentContainer <em>Fragment Container
+ * </em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
@@ -88,6 +92,16 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	protected Bundles bundleContainer;
 
 	/**
+	 * The cached value of the '{@link #getFragmentContainer() <em>Fragment Container</em>}' reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getFragmentContainer()
+	 * @generated
+	 * @ordered
+	 */
+	protected Fragments fragmentContainer;
+
+	/**
 	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -108,7 +122,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
@@ -162,6 +176,16 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 * 
 	 * @generated
 	 */
+	public Fragments basicGetFragmentContainer()
+	{
+		return fragmentContainer;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public Products basicGetProductContainer()
 	{
 		return productContainer;
@@ -193,6 +217,10 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			if(resolve)
 				return getBundleContainer();
 			return basicGetBundleContainer();
+		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
+			if(resolve)
+				return getFragmentContainer();
+			return basicGetFragmentContainer();
 		case P2viewPackage.CATEGORY__DETAILS:
 			if(resolve)
 				return getDetails();
@@ -219,6 +247,8 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			return productContainer != null;
 		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
 			return bundleContainer != null;
+		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
+			return fragmentContainer != null;
 		case P2viewPackage.CATEGORY__DETAILS:
 			return details != null;
 		}
@@ -246,6 +276,9 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			return;
 		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
 			setBundleContainer((Bundles)newValue);
+			return;
+		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
+			setFragmentContainer((Fragments)newValue);
 			return;
 		case P2viewPackage.CATEGORY__DETAILS:
 			setDetails((Details)newValue);
@@ -275,6 +308,9 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			return;
 		case P2viewPackage.CATEGORY__BUNDLE_CONTAINER:
 			setBundleContainer((Bundles)null);
+			return;
+		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
+			setFragmentContainer((Fragments)null);
 			return;
 		case P2viewPackage.CATEGORY__DETAILS:
 			setDetails((Details)null);
@@ -370,6 +406,27 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated
+	 */
+	public Fragments getFragmentContainer()
+	{
+		if(fragmentContainer != null && fragmentContainer.eIsProxy())
+		{
+			InternalEObject oldFragmentContainer = (InternalEObject)fragmentContainer;
+			fragmentContainer = (Fragments)eResolveProxy(oldFragmentContainer);
+			if(fragmentContainer != oldFragmentContainer)
+			{
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							P2viewPackage.CATEGORY__FRAGMENT_CONTAINER, oldFragmentContainer, fragmentContainer));
+			}
+		}
+		return fragmentContainer;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
 	public Bundles getNotNullBundleContainer()
@@ -424,6 +481,19 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 * 
 	 * @generated NOT
 	 */
+	public Fragments getNotNullFragmentContainer()
+	{
+		if(fragmentContainer == null)
+			setFragmentContainer(P2viewFactory.eINSTANCE.createFragments());
+
+		return getFragmentContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public Products getNotNullProductContainer()
 	{
 		if(productContainer == null)
@@ -456,6 +526,17 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	public InstallableUnitType getType()
 	{
 		return InstallableUnitType.CATEGORY;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isNested()
+	{
+		return "true".equalsIgnoreCase(getNotNullDetails().getInstallableUnit().getProperty(
+				IInstallableUnit.PROP_TYPE_GROUP));
 	}
 
 	/**
@@ -511,6 +592,20 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__FEATURE_CONTAINER,
 					oldFeatureContainer, featureContainer));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setFragmentContainer(Fragments newFragmentContainer)
+	{
+		Fragments oldFragmentContainer = fragmentContainer;
+		fragmentContainer = newFragmentContainer;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__FRAGMENT_CONTAINER,
+					oldFragmentContainer, fragmentContainer));
 	}
 
 	/**

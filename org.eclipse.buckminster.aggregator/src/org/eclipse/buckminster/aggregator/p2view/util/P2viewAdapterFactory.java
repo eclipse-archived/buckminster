@@ -84,6 +84,18 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseFragment(Fragment object)
+		{
+			return createFragmentAdapter();
+		}
+
+		@Override
+		public Adapter caseFragments(Fragments object)
+		{
+			return createFragmentsAdapter();
+		}
+
+		@Override
 		public Adapter caseInstallableUnits(InstallableUnits object)
 		{
 			return createInstallableUnitsAdapter();
@@ -274,6 +286,36 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createFeaturesAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2view.Fragment
+	 * <em>Fragment</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Fragment
+	 * @generated
+	 */
+	public Adapter createFragmentAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2view.Fragments
+	 * <em>Fragments</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Fragments
+	 * @generated
+	 */
+	public Adapter createFragmentsAdapter()
 	{
 		return null;
 	}

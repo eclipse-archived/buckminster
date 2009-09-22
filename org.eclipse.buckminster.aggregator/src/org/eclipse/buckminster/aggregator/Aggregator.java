@@ -214,6 +214,14 @@ public interface Aggregator extends EObject, StatusProvider
 	EList<MetadataRepositoryReference> getValidationRepositories();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	EList<MetadataRepositoryReference> getValidationRepositories(boolean enabledOnly);
+
+	/**
 	 * Returns the value of the '<em><b>Sendmail</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Sendmail</em>' attribute isn't clear, there really should be more of a description

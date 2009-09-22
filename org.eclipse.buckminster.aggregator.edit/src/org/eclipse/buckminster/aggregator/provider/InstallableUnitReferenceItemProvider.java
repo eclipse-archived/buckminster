@@ -26,6 +26,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -45,7 +46,7 @@ import org.eclipse.equinox.internal.provisional.p2.query.Query;
  */
 public class InstallableUnitReferenceItemProvider extends AggregatorItemProviderAdapter implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
-		IItemPropertySource
+		IItemPropertySource, IItemColorProvider
 {
 	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
 	{
@@ -60,6 +61,17 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	public InstallableUnitReferenceItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
+	}
+
+	/**
+	 * Grey out the label if this item is (directly or indirectly) disabled
+	 */
+	@Override
+	public Object getForeground(Object object)
+	{
+		return ((InstallableUnitReference)object).isBranchEnabled()
+				? null
+				: IItemColorProvider.GRAYED_OUT_COLOR;
 	}
 
 	/**

@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -35,7 +36,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  */
 public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProvider implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
-		IItemPropertySource
+		IItemPropertySource, IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -98,15 +99,12 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((InstallableUnitFragment)object).getId();
-		return label == null || label.length() == 0
-				? getString("_UI_InstallableUnitFragment_type")
-				: getString("_UI_InstallableUnitFragment_type") + " " + label;
+		return super.getText(object);
 	}
 
 	/**

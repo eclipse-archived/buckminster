@@ -57,7 +57,7 @@ public class OtherIUImpl extends IUPresentationImpl implements OtherIU
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */

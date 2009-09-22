@@ -24,6 +24,7 @@ import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.provider.IChangeNotifier;
 import org.eclipse.emf.edit.provider.IDisposable;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.INotifyChangedListener;
@@ -180,6 +181,22 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	protected PropertiesItemProvider propertiesItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2view.Fragment}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected FragmentItemProvider fragmentItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2view.Fragments}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected FragmentsItemProvider fragmentsItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -191,6 +208,7 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 		supportedTypes.add(ITreeItemContentProvider.class);
 		supportedTypes.add(IItemLabelProvider.class);
 		supportedTypes.add(IItemPropertySource.class);
+		supportedTypes.add(IItemColorProvider.class);
 	}
 
 	/**
@@ -355,6 +373,40 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Fragment}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createFragmentAdapter()
+	{
+		if(fragmentItemProvider == null)
+		{
+			fragmentItemProvider = new FragmentItemProvider(this);
+		}
+
+		return fragmentItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Fragments}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createFragmentsAdapter()
+	{
+		if(fragmentsItemProvider == null)
+		{
+			fragmentsItemProvider = new FragmentsItemProvider(this);
+		}
+
+		return fragmentsItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.InstallableUnits}. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -492,6 +544,8 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 			productsItemProvider.dispose();
 		if(bundlesItemProvider != null)
 			bundlesItemProvider.dispose();
+		if(fragmentsItemProvider != null)
+			fragmentsItemProvider.dispose();
 		if(miscellaneousItemProvider != null)
 			miscellaneousItemProvider.dispose();
 		if(categoryItemProvider != null)
@@ -502,6 +556,8 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 			productItemProvider.dispose();
 		if(bundleItemProvider != null)
 			bundleItemProvider.dispose();
+		if(fragmentItemProvider != null)
+			fragmentItemProvider.dispose();
 		if(otherIUItemProvider != null)
 			otherIUItemProvider.dispose();
 		if(detailsItemProvider != null)

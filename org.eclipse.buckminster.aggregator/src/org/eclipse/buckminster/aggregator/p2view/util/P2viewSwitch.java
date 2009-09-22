@@ -153,6 +153,36 @@ public class P2viewSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Fragment</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Fragment</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFragment(Fragment object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Fragments</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Fragments</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFragments(Fragments object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Installable Units</em>'. <!-- begin-user-doc
 	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
 	 * -->
@@ -384,6 +414,14 @@ public class P2viewSwitch<T>
 				result = defaultCase(theEObject);
 			return result;
 		}
+		case P2viewPackage.FRAGMENTS:
+		{
+			Fragments fragments = (Fragments)theEObject;
+			T result = caseFragments(fragments);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
 		case P2viewPackage.MISCELLANEOUS:
 		{
 			Miscellaneous miscellaneous = (Miscellaneous)theEObject;
@@ -436,6 +474,18 @@ public class P2viewSwitch<T>
 			T result = caseBundle(bundle);
 			if(result == null)
 				result = caseIUPresentation(bundle);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.FRAGMENT:
+		{
+			Fragment fragment = (Fragment)theEObject;
+			T result = caseFragment(fragment);
+			if(result == null)
+				result = caseBundle(fragment);
+			if(result == null)
+				result = caseIUPresentation(fragment);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

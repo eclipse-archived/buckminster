@@ -124,8 +124,8 @@ public class ItemUtils
 		Set<MetadataRepository> set = new HashSet<MetadataRepository>();
 
 		for(MetadataRepositoryStructuredView mdrsv : mdrsvs)
-			if(mdrsv.getMdr() != null)
-				set.add(mdrsv.getMdr());
+			if(mdrsv.getMetadataRepository() != null)
+				set.add(mdrsv.getMetadataRepository());
 
 		return set;
 	}

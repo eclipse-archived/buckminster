@@ -700,6 +700,42 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public EList<MetadataRepositoryReference> getValidationRepositories(boolean enabledOnly)
+	{
+		EList<MetadataRepositoryReference> validationRepositories = getValidationRepositories();
+		if(enabledOnly)
+		{
+			EList<MetadataRepositoryReference> enabledValidationRepositories = null;
+			int top = validationRepositories.size();
+			for(int idx = 0; idx < top; ++idx)
+			{
+				MetadataRepositoryReference validationRepository = validationRepositories.get(idx);
+				if(validationRepository.isEnabled())
+				{
+					if(enabledValidationRepositories != null)
+						enabledValidationRepositories.add(validationRepository);
+					continue;
+				}
+
+				if(enabledValidationRepositories == null)
+				{
+					enabledValidationRepositories = new BasicEList<MetadataRepositoryReference>(
+							validationRepositories.size() - 1);
+					for(int sdx = 0; sdx < idx; ++sdx)
+						enabledValidationRepositories.add(validationRepositories.get(sdx));
+				}
+			}
+			if(enabledValidationRepositories != null)
+				validationRepositories = enabledValidationRepositories;
+		}
+		return validationRepositories;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isSendmail()

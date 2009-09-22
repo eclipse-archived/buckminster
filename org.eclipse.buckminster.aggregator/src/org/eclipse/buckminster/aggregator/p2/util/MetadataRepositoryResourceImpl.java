@@ -22,6 +22,7 @@ import org.eclipse.buckminster.aggregator.p2view.Bundle;
 import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Category;
 import org.eclipse.buckminster.aggregator.p2view.Feature;
+import org.eclipse.buckminster.aggregator.p2view.Fragment;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.OtherIU;
@@ -152,6 +153,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			List<Feature> features = new ArrayList<Feature>();
 			List<Product> products = new ArrayList<Product>();
 			List<Bundle> bundles = new ArrayList<Bundle>();
+			List<Fragment> fragments = new ArrayList<Fragment>();
 			List<OtherIU> miscellaneous = new ArrayList<OtherIU>();
 
 			for(InstallableUnit iu : repository.getInstallableUnits())
@@ -163,7 +165,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				case CATEGORY:
 					iuPresentation = P2viewFactory.eINSTANCE.createCategory(iu);
 					((Category)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
-					categories.add((Category)iuPresentation);
+					if(!((Category)iuPresentation).isNested())
+						categories.add((Category)iuPresentation);
 					break;
 				case FEATURE:
 					iuPresentation = P2viewFactory.eINSTANCE.createFeature(iu);
@@ -179,6 +182,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 					iuPresentation = P2viewFactory.eINSTANCE.createBundle(iu);
 					((Bundle)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					bundles.add((Bundle)iuPresentation);
+					break;
+				case FRAGMENT:
+					iuPresentation = P2viewFactory.eINSTANCE.createFragment(iu);
+					((Fragment)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
+					fragments.add((Fragment)iuPresentation);
 					break;
 				default:
 					iuPresentation = P2viewFactory.eINSTANCE.createOtherIU(iu);
@@ -226,6 +234,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				Collections.sort(bundles, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullBundleContainer().getBundles().addAll(bundles);
 			}
+			if(fragments.size() > 0)
+			{
+				Collections.sort(fragments, IUPresentation.COMPARATOR);
+				repoView.getInstallableUnitList().getNotNullFragmentContainer().getFragments().addAll(fragments);
+			}
 			if(miscellaneous.size() > 0)
 			{
 				Collections.sort(miscellaneous, IUPresentation.COMPARATOR);
@@ -248,6 +261,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			List<Feature> features = new ArrayList<Feature>();
 			List<Product> products = new ArrayList<Product>();
 			List<Bundle> bundles = new ArrayList<Bundle>();
+			List<Fragment> fragments = new ArrayList<Fragment>();
 
 			for(IRequiredCapability requiredCapability : category.getDetails().getInstallableUnit().getRequiredCapabilityList())
 			{
@@ -272,6 +286,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 					features.add((Feature)iuPresentation);
 				else if(iuPresentation instanceof Product)
 					products.add((Product)iuPresentation);
+				else if(iuPresentation instanceof Fragment)
+					fragments.add((Fragment)iuPresentation);
 				else if(iuPresentation instanceof Bundle)
 					bundles.add((Bundle)iuPresentation);
 			}
@@ -295,6 +311,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			{
 				Collections.sort(bundles, IUPresentation.COMPARATOR);
 				category.getNotNullBundleContainer().getBundles().addAll(bundles);
+			}
+			if(fragments.size() > 0)
+			{
+				Collections.sort(fragments, IUPresentation.COMPARATOR);
+				category.getNotNullFragmentContainer().getFragments().addAll(fragments);
 			}
 		}
 
@@ -354,10 +375,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				}
 
 				List<EObject> contents = mdr.getContents();
-				if(contents.size() != 2 || ((MetadataRepository)contents.get(0)).getLocation() == null)
+				if(contents.size() != 1
+						|| ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository().getLocation() == null)
 					throw new Exception(String.format("Unable to load repository %s", repositoryURI));
 
-				return (MetadataRepository)contents.get(0);
+				return ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository();
 			}
 			else
 				throw new Exception(String.format("Unable to obtain a resource for repository %s", repositoryURI));
@@ -427,7 +449,6 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 					return;
 				}
 
-				getContents().add(repository);
 				getContents().add(repoView);
 			}
 			catch(InterruptedException e)

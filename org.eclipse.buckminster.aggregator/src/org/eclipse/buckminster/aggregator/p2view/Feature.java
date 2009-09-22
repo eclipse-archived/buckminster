@@ -17,6 +17,7 @@ package org.eclipse.buckminster.aggregator.p2view;
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getFeatureContainer <em>Feature Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getBundleContainer <em>Bundle Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getFragmentContainer <em>Fragment Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
@@ -76,6 +77,22 @@ public interface Feature extends IUPresentation
 	Features getFeatureContainer();
 
 	/**
+	 * Returns the value of the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Fragment Container</em>' reference isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Fragment Container</em>' reference.
+	 * @see #setFragmentContainer(Fragments)
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getFeature_FragmentContainer()
+	 * @model
+	 * @generated
+	 */
+	Fragments getFragmentContainer();
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @model kind="operation"
@@ -98,6 +115,14 @@ public interface Feature extends IUPresentation
 	 * @generated
 	 */
 	Features getNotNullFeatureContainer();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	Fragments getNotNullFragmentContainer();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Feature#getBundleContainer
@@ -131,5 +156,16 @@ public interface Feature extends IUPresentation
 	 * @generated
 	 */
 	void setFeatureContainer(Features value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Feature#getFragmentContainer
+	 * <em>Fragment Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Fragment Container</em>' reference.
+	 * @see #getFragmentContainer()
+	 * @generated
+	 */
+	void setFragmentContainer(Fragments value);
 
 } // Feature

@@ -24,7 +24,8 @@ import org.eclipse.emf.ecore.EObject;
  * Installable Unit List</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getProperties <em>Properties
  * </em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMdr <em>Mdr</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMetadataRepository <em>
+ * Metadata Repository</em>}</li>
  * </ul>
  * </p>
  * 
@@ -51,18 +52,20 @@ public interface MetadataRepositoryStructuredView extends EObject
 	InstallableUnits getInstallableUnitList();
 
 	/**
-	 * Returns the value of the '<em><b>Mdr</b></em>' reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Metadata Repository</b></em>' containment reference. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Mdr</em>' reference isn't clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Metadata Repository</em>' reference isn't clear, there really should be more of a
+	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Mdr</em>' reference.
-	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_Mdr()
-	 * @model resolveProxies="false" required="true" changeable="false" ordered="false"
+	 * @return the value of the '<em>Metadata Repository</em>' containment reference.
+	 * @see #setMetadataRepository(MetadataRepository)
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_MetadataRepository()
+	 * @model containment="true" required="true" ordered="false"
 	 * @generated
 	 */
-	MetadataRepository getMdr();
+	MetadataRepository getMetadataRepository();
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value of
@@ -107,6 +110,18 @@ public interface MetadataRepositoryStructuredView extends EObject
 	 * @generated
 	 */
 	void setInstallableUnitList(InstallableUnits value);
+
+	/**
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMetadataRepository
+	 * <em>Metadata Repository</em>}' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Metadata Repository</em>' containment reference.
+	 * @see #getMetadataRepository()
+	 * @generated
+	 */
+	void setMetadataRepository(MetadataRepository value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getName

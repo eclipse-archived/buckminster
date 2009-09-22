@@ -43,6 +43,7 @@ import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -58,7 +59,8 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * @generated
  */
 public class ContributionItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
+		IItemColorProvider
 {
 	static class DynamicItemPropertyDescriptor extends ItemPropertyDescriptor
 	{
@@ -152,6 +154,17 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	}
 
 	/**
+	 * Grey out the label if this item is (directly or indirectly) disabled
+	 */
+	@Override
+	public Object getForeground(Object object)
+	{
+		return ((Contribution)object).isEnabled()
+				? null
+				: IItemColorProvider.GRAYED_OUT_COLOR;
+	}
+
+	/**
 	 * This returns Contribution.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
@@ -218,9 +231,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		String label = ((Contribution)object).getLabel();
 		return label == null || label.length() == 0
 				? getString("_UI_Contribution_type")
-				: getString("_UI_Contribution_type") + " " + label + (((Contribution)object).isEnabled()
-						? ""
-						: " (disabled)");
+				: getString("_UI_Contribution_type") + " " + label;
 	}
 
 	/**

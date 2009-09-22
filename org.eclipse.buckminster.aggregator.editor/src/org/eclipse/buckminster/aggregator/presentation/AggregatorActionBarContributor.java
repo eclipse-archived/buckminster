@@ -946,8 +946,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			List<IAction> mapToActions = new ArrayList<IAction>();
 
 			if(itemSorter.getTotalItemCount() > 0
-					&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(ItemGroup.IU).size())
-							||(itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size()))))
+					&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(
+							ItemGroup.IU).size()) || (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(
+							ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size()))))
 			{
 				List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
 				List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
@@ -960,8 +961,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				for(Contribution contribution : m_aggregator.getContributions())
 					if(contribution.isEnabled())
 						mapToActions.add(new MapToContributionAction(
-								((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution,
-								mdrs, ius));
+								((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution, mdrs, ius));
 			}
 
 			return mapToActions;

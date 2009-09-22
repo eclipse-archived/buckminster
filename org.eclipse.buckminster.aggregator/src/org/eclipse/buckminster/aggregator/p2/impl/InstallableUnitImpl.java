@@ -1155,12 +1155,14 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	public InstallableUnitType getType()
 	{
-		if(getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX))
-			return InstallableUnitType.FEATURE;
 		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
 			return InstallableUnitType.CATEGORY;
+		if(getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX))
+			return InstallableUnitType.FEATURE;
 		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_GROUP)))
 			return InstallableUnitType.PRODUCT;
+		if(isFragment())
+			return InstallableUnitType.FRAGMENT;
 		if(isBundle())
 			return InstallableUnitType.BUNDLE;
 		return InstallableUnitType.OTHER;

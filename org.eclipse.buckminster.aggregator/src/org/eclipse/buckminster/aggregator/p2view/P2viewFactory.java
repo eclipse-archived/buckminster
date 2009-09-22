@@ -38,7 +38,7 @@ public interface P2viewFactory extends EFactory
 	Bundle createBundle();
 
 	/**
-	 * <<<<<<< .mine Returns a new object of class '<em>Bundle</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Bundle</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Bundle</em>'.
 	 * @generated NOT
@@ -70,7 +70,7 @@ public interface P2viewFactory extends EFactory
 	Category createCategory();
 
 	/**
-	 * <<<<<<< .mine Returns a new object of class '<em>Category</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Category</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Category</em>'.
 	 * @generated NOT
@@ -94,7 +94,7 @@ public interface P2viewFactory extends EFactory
 	Feature createFeature();
 
 	/**
-	 * <<<<<<< .mine Returns a new object of class '<em>Feature</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Feature</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Feature</em>'.
 	 * @generated NOT
@@ -108,6 +108,30 @@ public interface P2viewFactory extends EFactory
 	 * @generated
 	 */
 	Features createFeatures();
+
+	/**
+	 * Returns a new object of class '<em>Fragment</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Fragment</em>'.
+	 * @generated
+	 */
+	Fragment createFragment();
+
+	/**
+	 * Returns a new object of class '<em>Fragment</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Fragment</em>'.
+	 * @generated NOT
+	 */
+	Fragment createFragment(InstallableUnit iu);
+
+	/**
+	 * Returns a new object of class '<em>Fragments</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Fragments</em>'.
+	 * @generated
+	 */
+	Fragments createFragments();
 
 	/**
 	 * Returns a new object of class '<em>Installable Units</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -127,8 +151,8 @@ public interface P2viewFactory extends EFactory
 	MetadataRepositoryStructuredView createMetadataRepositoryStructuredView();
 
 	/**
-	 * <<<<<<< .mine Returns a new object of class '<em>Metadata Repository Structured View</em>'. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Metadata Repository Structured View</em>'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Metadata Repository Structured View</em>'.
 	 * @generated NOT
@@ -152,7 +176,7 @@ public interface P2viewFactory extends EFactory
 	OtherIU createOtherIU();
 
 	/**
-	 * <<<<<<< .mine Returns a new object of class '<em>Other IU</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Other IU</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Other IU</em>'.
 	 * @generated NOT
@@ -168,7 +192,7 @@ public interface P2viewFactory extends EFactory
 	Product createProduct();
 
 	/**
-	 * <<<<<<< .mine Returns a new object of class '<em>Product</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Product</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Product</em>'.
 	 * @generated NOT

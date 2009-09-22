@@ -277,7 +277,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	private EClass iAdaptableEClass = null;
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
@@ -1015,7 +1015,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
@@ -1045,7 +1045,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
@@ -2128,6 +2128,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.FEATURE);
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.PRODUCT);
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.CATEGORY);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.FRAGMENT);
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.OTHER);
 
 		// Initialize data types

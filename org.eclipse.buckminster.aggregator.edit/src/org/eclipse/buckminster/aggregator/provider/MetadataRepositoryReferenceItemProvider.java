@@ -35,6 +35,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -51,7 +52,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  */
 public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProviderAdapter implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
-		IItemPropertySource
+		IItemPropertySource, IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -61,6 +62,17 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	public MetadataRepositoryReferenceItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
+	}
+
+	/**
+	 * Grey out the label if this item is (directly or indirectly) disabled
+	 */
+	@Override
+	public Object getForeground(Object object)
+	{
+		return ((MetadataRepositoryReference)object).isBranchEnabled()
+				? null
+				: IItemColorProvider.GRAYED_OUT_COLOR;
 	}
 
 	/**
@@ -152,9 +164,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			else
 				bld.append("no location");
 		}
-
-		if(!repoRef.isEnabled())
-			bld.append(" (disabled)");
 
 		return bld.toString();
 	}

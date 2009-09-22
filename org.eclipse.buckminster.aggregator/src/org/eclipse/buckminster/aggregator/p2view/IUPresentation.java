@@ -58,7 +58,7 @@ public interface IUPresentation extends EObject
 							return 1;
 						else
 						{
-							int result = name1.compareTo(name2);
+							int result = name1.toLowerCase().compareTo(name2.toLowerCase());
 
 							if(result == 0)
 							{
@@ -156,7 +156,7 @@ public interface IUPresentation extends EObject
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value of
-	 * the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> >>>>>>> .r10620
+	 * the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really should be more of a description here...
 	 * </p>
@@ -171,9 +171,8 @@ public interface IUPresentation extends EObject
 	String getName();
 
 	/**
-	 * <<<<<<< .mine Returns the value of the '<em><b>Type</b></em>' attribute. The default value is <code>""</code>.
-	 * The literals are from the enumeration {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType}. <!--
-	 * begin-user-doc -->
+	 * Returns the value of the '<em><b>Type</b></em>' attribute. The default value is <code>""</code>. The literals are
+	 * from the enumeration {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType}. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Type</em>' attribute isn't clear, there really should be more of a description here...
 	 * </p>
@@ -189,7 +188,7 @@ public interface IUPresentation extends EObject
 
 	/**
 	 * Returns the value of the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> ======= Returns the value
-	 * of the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> >>>>>>> .r10620
+	 * of the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Version</em>' attribute isn't clear, there really should be more of a description
 	 * here...

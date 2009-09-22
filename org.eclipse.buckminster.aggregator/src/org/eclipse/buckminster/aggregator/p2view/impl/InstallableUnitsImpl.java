@@ -12,6 +12,7 @@ package org.eclipse.buckminster.aggregator.p2view.impl;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
 import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Features;
+import org.eclipse.buckminster.aggregator.p2view.Fragments;
 import org.eclipse.buckminster.aggregator.p2view.InstallableUnits;
 import org.eclipse.buckminster.aggregator.p2view.Miscellaneous;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
@@ -96,6 +97,16 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	protected Bundles bundleContainer;
 
 	/**
+	 * The cached value of the '{@link #getFragmentContainer() <em>Fragment Container</em>}' reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getFragmentContainer()
+	 * @generated
+	 * @ordered
+	 */
+	protected Fragments fragmentContainer;
+
+	/**
 	 * The cached value of the '{@link #getMiscellaneousContainer() <em>Miscellaneous Container</em>}' reference. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -150,6 +161,16 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
+	public Fragments basicGetFragmentContainer()
+	{
+		return fragmentContainer;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public Miscellaneous basicGetMiscellaneousContainer()
 	{
 		return miscellaneousContainer;
@@ -191,6 +212,10 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 			if(resolve)
 				return getBundleContainer();
 			return basicGetBundleContainer();
+		case P2viewPackage.INSTALLABLE_UNITS__FRAGMENT_CONTAINER:
+			if(resolve)
+				return getFragmentContainer();
+			return basicGetFragmentContainer();
 		case P2viewPackage.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER:
 			if(resolve)
 				return getMiscellaneousContainer();
@@ -217,6 +242,8 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 			return productContainer != null;
 		case P2viewPackage.INSTALLABLE_UNITS__BUNDLE_CONTAINER:
 			return bundleContainer != null;
+		case P2viewPackage.INSTALLABLE_UNITS__FRAGMENT_CONTAINER:
+			return fragmentContainer != null;
 		case P2viewPackage.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER:
 			return miscellaneousContainer != null;
 		}
@@ -244,6 +271,9 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 			return;
 		case P2viewPackage.INSTALLABLE_UNITS__BUNDLE_CONTAINER:
 			setBundleContainer((Bundles)newValue);
+			return;
+		case P2viewPackage.INSTALLABLE_UNITS__FRAGMENT_CONTAINER:
+			setFragmentContainer((Fragments)newValue);
 			return;
 		case P2viewPackage.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER:
 			setMiscellaneousContainer((Miscellaneous)newValue);
@@ -273,6 +303,9 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 			return;
 		case P2viewPackage.INSTALLABLE_UNITS__BUNDLE_CONTAINER:
 			setBundleContainer((Bundles)null);
+			return;
+		case P2viewPackage.INSTALLABLE_UNITS__FRAGMENT_CONTAINER:
+			setFragmentContainer((Fragments)null);
 			return;
 		case P2viewPackage.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER:
 			setMiscellaneousContainer((Miscellaneous)null);
@@ -350,6 +383,28 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 * 
 	 * @generated
 	 */
+	public Fragments getFragmentContainer()
+	{
+		if(fragmentContainer != null && fragmentContainer.eIsProxy())
+		{
+			InternalEObject oldFragmentContainer = (InternalEObject)fragmentContainer;
+			fragmentContainer = (Fragments)eResolveProxy(oldFragmentContainer);
+			if(fragmentContainer != oldFragmentContainer)
+			{
+				if(eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							P2viewPackage.INSTALLABLE_UNITS__FRAGMENT_CONTAINER, oldFragmentContainer,
+							fragmentContainer));
+			}
+		}
+		return fragmentContainer;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public Miscellaneous getMiscellaneousContainer()
 	{
 		if(miscellaneousContainer != null && miscellaneousContainer.eIsProxy())
@@ -404,6 +459,19 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 			setFeatureContainer(P2viewFactory.eINSTANCE.createFeatures());
 
 		return getFeatureContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public Fragments getNotNullFragmentContainer()
+	{
+		if(fragmentContainer == null)
+			setFragmentContainer(P2viewFactory.eINSTANCE.createFragments());
+
+		return getFragmentContainer();
 	}
 
 	/**
@@ -493,6 +561,20 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.INSTALLABLE_UNITS__FEATURE_CONTAINER,
 					oldFeatureContainer, featureContainer));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setFragmentContainer(Fragments newFragmentContainer)
+	{
+		Fragments oldFragmentContainer = fragmentContainer;
+		fragmentContainer = newFragmentContainer;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.INSTALLABLE_UNITS__FRAGMENT_CONTAINER,
+					oldFragmentContainer, fragmentContainer));
 	}
 
 	/**

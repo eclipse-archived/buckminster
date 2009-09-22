@@ -19,6 +19,7 @@ package org.eclipse.buckminster.aggregator.p2view;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getFeatureContainer <em>Feature Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer <em>Bundle Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getFragmentContainer <em>Fragment Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
@@ -94,6 +95,22 @@ public interface Category extends IUPresentation
 	Features getFeatureContainer();
 
 	/**
+	 * Returns the value of the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Fragment Container</em>' reference isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Fragment Container</em>' reference.
+	 * @see #setFragmentContainer(Fragments)
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_FragmentContainer()
+	 * @model
+	 * @generated
+	 */
+	Fragments getFragmentContainer();
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @model kind="operation"
@@ -131,6 +148,14 @@ public interface Category extends IUPresentation
 	 * @model kind="operation"
 	 * @generated
 	 */
+	Fragments getNotNullFragmentContainer();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
 	Products getNotNullProductContainer();
 
 	/**
@@ -148,6 +173,14 @@ public interface Category extends IUPresentation
 	 * @generated
 	 */
 	Products getProductContainer();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	boolean isNested();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer
@@ -192,6 +225,17 @@ public interface Category extends IUPresentation
 	 * @generated
 	 */
 	void setFeatureContainer(Features value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getFragmentContainer
+	 * <em>Fragment Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Fragment Container</em>' reference.
+	 * @see #getFragmentContainer()
+	 * @generated
+	 */
+	void setFragmentContainer(Fragments value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer

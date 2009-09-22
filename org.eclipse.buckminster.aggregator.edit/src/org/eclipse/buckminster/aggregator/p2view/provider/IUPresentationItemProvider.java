@@ -25,6 +25,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -40,7 +41,8 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * @generated
  */
 public class IUPresentationItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
+		IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -137,7 +139,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUPresentation_description_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_description_feature", "_UI_IUPresentation_type"),
-				P2viewPackage.Literals.IU_PRESENTATION__DESCRIPTION, true, false, false,
+				P2viewPackage.Literals.IU_PRESENTATION__DESCRIPTION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -152,7 +154,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUPresentation_id_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_id_feature", "_UI_IUPresentation_type"),
-				P2viewPackage.Literals.IU_PRESENTATION__ID, true, false, false,
+				P2viewPackage.Literals.IU_PRESENTATION__ID, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -181,7 +183,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUPresentation_label_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_label_feature", "_UI_IUPresentation_type"),
-				P2viewPackage.Literals.IU_PRESENTATION__LABEL, true, false, false,
+				P2viewPackage.Literals.IU_PRESENTATION__LABEL, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -196,7 +198,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUPresentation_name_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_name_feature", "_UI_IUPresentation_type"),
-				P2viewPackage.Literals.IU_PRESENTATION__NAME, true, false, false,
+				P2viewPackage.Literals.IU_PRESENTATION__NAME, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -226,7 +228,7 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_IUPresentation_version_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_IUPresentation_version_feature", "_UI_IUPresentation_type"),
-				P2viewPackage.Literals.IU_PRESENTATION__VERSION, true, false, false,
+				P2viewPackage.Literals.IU_PRESENTATION__VERSION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 

@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -39,7 +40,8 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * @generated
  */
 public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
+		IItemColorProvider
 
 {
 	protected static InstallableUnit getInstallableUnit(InstallableUnitReference iuRef)
@@ -180,18 +182,6 @@ public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider
 						"_UI_PropertyDescriptor_description", "_UI_MappedUnit_validConfigurations_feature",
 						"_UI_MappedUnit_type"), AggregatorPackage.Literals.MAPPED_UNIT__VALID_CONFIGURATIONS, true,
 				false, true, null, null, null));
-	}
-
-	@Override
-	protected boolean appendIUText(Object iuRef, StringBuilder bld)
-	{
-		if(super.appendIUText(iuRef, bld))
-		{
-			if(((MappedUnit)iuRef).isEnabled())
-				return true;
-			bld.append(" (disabled)");
-		}
-		return false;
 	}
 
 	/**

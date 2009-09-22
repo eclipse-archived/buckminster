@@ -62,13 +62,21 @@ public enum InstallableUnitType implements Enumerator
 	CATEGORY(3, "CATEGORY", "category"),
 
 	/**
-	 * The '<em><b>OTHER</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>FRAGMENT</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #FRAGMENT_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	FRAGMENT(4, "FRAGMENT", "fragment"), /**
+	 * The '<em><b>OTHER</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #OTHER_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	OTHER(4, "OTHER", "other");
+	OTHER(5, "OTHER", "other");
 
 	/**
 	 * The '<em><b>BUNDLE</b></em>' literal value. <!-- begin-user-doc -->
@@ -131,6 +139,21 @@ public enum InstallableUnitType implements Enumerator
 	public static final int CATEGORY_VALUE = 3;
 
 	/**
+	 * The '<em><b>FRAGMENT</b></em>' literal value. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>FRAGMENT</b></em>' literal object isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @see #FRAGMENT
+	 * @model literal="fragment"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int FRAGMENT_VALUE = 4;
+
+	/**
 	 * The '<em><b>OTHER</b></em>' literal value. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>OTHER</b></em>' literal object isn't clear, there really should be more of a
@@ -143,7 +166,7 @@ public enum InstallableUnitType implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	public static final int OTHER_VALUE = 4;
+	public static final int OTHER_VALUE = 5;
 
 	/**
 	 * An array of all the '<em><b>Installable Unit Type</b></em>' enumerators. <!-- begin-user-doc --> <!--
@@ -152,7 +175,7 @@ public enum InstallableUnitType implements Enumerator
 	 * @generated
 	 */
 	private static final InstallableUnitType[] VALUES_ARRAY = new InstallableUnitType[] { BUNDLE, FEATURE, PRODUCT,
-			CATEGORY, OTHER, };
+			CATEGORY, FRAGMENT, OTHER, };
 
 	/**
 	 * A public read-only list of all the '<em><b>Installable Unit Type</b></em>' enumerators. <!-- begin-user-doc -->
@@ -180,6 +203,8 @@ public enum InstallableUnitType implements Enumerator
 			return PRODUCT;
 		case CATEGORY_VALUE:
 			return CATEGORY;
+		case FRAGMENT_VALUE:
+			return FRAGMENT;
 		case OTHER_VALUE:
 			return OTHER;
 		}

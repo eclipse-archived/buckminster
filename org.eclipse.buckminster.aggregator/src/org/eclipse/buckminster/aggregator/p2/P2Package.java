@@ -872,9 +872,8 @@ public interface P2Package extends EPackage
 		EClass IADAPTABLE = eINSTANCE.getIAdaptable();
 
 		/**
-		 * <<<<<<< .mine The meta object literal for the '
-		 * {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType <em>Installable Unit Type</em>}' enum. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType
+		 * <em>Installable Unit Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
 		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getInstallableUnitType()
@@ -2056,8 +2055,7 @@ public interface P2Package extends EPackage
 	int INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST = IINSTALLABLE_UNIT_FEATURE_COUNT + 5;
 
 	/**
-	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -2222,8 +2220,7 @@ public interface P2Package extends EPackage
 	int INSTALLABLE_UNIT_FRAGMENT__TOUCHPOINT_DATA_LIST = INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST;
 
 	/**
-	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered

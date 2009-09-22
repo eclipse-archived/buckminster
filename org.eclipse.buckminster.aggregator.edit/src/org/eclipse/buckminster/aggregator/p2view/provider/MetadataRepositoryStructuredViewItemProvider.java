@@ -12,6 +12,7 @@ package org.eclipse.buckminster.aggregator.p2view.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 
@@ -26,6 +27,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -43,7 +45,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  */
 public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItemProviderAdapter implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
-		IItemPropertySource
+		IItemPropertySource, IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -101,7 +103,7 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 			addNamePropertyDescriptor(object);
 			addInstallableUnitListPropertyDescriptor(object);
 			addPropertiesPropertyDescriptor(object);
-			addMdrPropertyDescriptor(object);
+			addMetadataRepositoryPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -120,20 +122,10 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
-	{
-		return getTextGen(object) + " - Structured View";
-	}
-
-	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public String getTextGen(Object object)
 	{
 		String label = ((MetadataRepositoryStructuredView)object).getName();
 		return label == null || label.length() == 0
@@ -156,6 +148,7 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 		switch(notification.getFeatureID(MetadataRepositoryStructuredView.class))
 		{
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__NAME:
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST:
@@ -185,18 +178,21 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 	}
 
 	/**
-	 * This adds a property descriptor for the Mdr feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Metadata Repository feature. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 */
-	protected void addMdrPropertyDescriptor(Object object)
+	protected void addMetadataRepositoryPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MetadataRepositoryStructuredView_mdr_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MetadataRepositoryStructuredView_mdr_feature",
+				getString("_UI_MetadataRepositoryStructuredView_metadataRepository_feature"), getString(
+						"_UI_PropertyDescriptor_description",
+						"_UI_MetadataRepositoryStructuredView_metadataRepository_feature",
 						"_UI_MetadataRepositoryStructuredView_type"),
-				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__MDR, false, false, false, null, null, null));
+				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY, false, false, false,
+				null, null, null));
 	}
 
 	/**
@@ -242,6 +238,10 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add(createChildParameter(
+				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY,
+				P2Factory.eINSTANCE.createMetadataRepository()));
 	}
 
 	/**

@@ -25,6 +25,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -38,7 +39,8 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
  * @generated
  */
 public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
+		IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -68,6 +70,7 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 			childrenFeatures.add(P2viewPackage.Literals.INSTALLABLE_UNITS__FEATURE_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.INSTALLABLE_UNITS__PRODUCT_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.INSTALLABLE_UNITS__BUNDLE_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.INSTALLABLE_UNITS__FRAGMENT_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER);
 		}
 		return childrenFeatures;
@@ -100,6 +103,7 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 			addFeatureContainerPropertyDescriptor(object);
 			addProductContainerPropertyDescriptor(object);
 			addBundleContainerPropertyDescriptor(object);
+			addFragmentContainerPropertyDescriptor(object);
 			addMiscellaneousContainerPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -152,8 +156,8 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_InstallableUnits_bundleContainer_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnits_bundleContainer_feature",
-						"_UI_InstallableUnits_type"), P2viewPackage.Literals.INSTALLABLE_UNITS__BUNDLE_CONTAINER, true,
-				false, true, null, null, null));
+						"_UI_InstallableUnits_type"), P2viewPackage.Literals.INSTALLABLE_UNITS__BUNDLE_CONTAINER,
+				false, false, true, null, null, null));
 	}
 
 	/**
@@ -168,7 +172,7 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 				getString("_UI_InstallableUnits_categoryContainer_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnits_categoryContainer_feature",
 						"_UI_InstallableUnits_type"), P2viewPackage.Literals.INSTALLABLE_UNITS__CATEGORY_CONTAINER,
-				true, false, true, null, null, null));
+				false, false, true, null, null, null));
 	}
 
 	/**
@@ -183,7 +187,22 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 				getString("_UI_InstallableUnits_featureContainer_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnits_featureContainer_feature",
 						"_UI_InstallableUnits_type"), P2viewPackage.Literals.INSTALLABLE_UNITS__FEATURE_CONTAINER,
-				true, false, true, null, null, null));
+				false, false, true, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Fragment Container feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addFragmentContainerPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_InstallableUnits_fragmentContainer_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_InstallableUnits_fragmentContainer_feature",
+						"_UI_InstallableUnits_type"), P2viewPackage.Literals.INSTALLABLE_UNITS__FRAGMENT_CONTAINER,
+				false, false, true, null, null, null));
 	}
 
 	/**
@@ -199,7 +218,7 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 				getString("_UI_InstallableUnits_miscellaneousContainer_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnits_miscellaneousContainer_feature",
 						"_UI_InstallableUnits_type"),
-				P2viewPackage.Literals.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER, true, false, true, null, null, null));
+				P2viewPackage.Literals.INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER, false, false, true, null, null, null));
 	}
 
 	/**
@@ -214,7 +233,7 @@ public class InstallableUnitsItemProvider extends AggregatorItemProviderAdapter 
 				getString("_UI_InstallableUnits_productContainer_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnits_productContainer_feature",
 						"_UI_InstallableUnits_type"), P2viewPackage.Literals.INSTALLABLE_UNITS__PRODUCT_CONTAINER,
-				true, false, true, null, null, null));
+				false, false, true, null, null, null));
 	}
 
 	/**

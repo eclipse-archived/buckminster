@@ -121,7 +121,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */

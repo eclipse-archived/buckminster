@@ -80,12 +80,12 @@ public interface P2viewPackage extends EPackage
 		EReference METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES = eINSTANCE.getMetadataRepositoryStructuredView_Properties();
 
 		/**
-		 * The meta object literal for the '<em><b>Mdr</b></em>' reference feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Metadata Repository</b></em>' containment reference feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EReference METADATA_REPOSITORY_STRUCTURED_VIEW__MDR = eINSTANCE.getMetadataRepositoryStructuredView_Mdr();
+		EReference METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY = eINSTANCE.getMetadataRepositoryStructuredView_MetadataRepository();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.InstallableUnitsImpl
@@ -128,6 +128,14 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EReference INSTALLABLE_UNITS__BUNDLE_CONTAINER = eINSTANCE.getInstallableUnits_BundleContainer();
+
+		/**
+		 * The meta object literal for the '<em><b>Fragment Container</b></em>' reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference INSTALLABLE_UNITS__FRAGMENT_CONTAINER = eINSTANCE.getInstallableUnits_FragmentContainer();
 
 		/**
 		 * The meta object literal for the '<em><b>Miscellaneous Container</b></em>' reference feature. <!--
@@ -208,6 +216,24 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EReference BUNDLES__BUNDLES = eINSTANCE.getBundles_Bundles();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl
+		 * <em>Fragments</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFragments()
+		 * @generated
+		 */
+		EClass FRAGMENTS = eINSTANCE.getFragments();
+
+		/**
+		 * The meta object literal for the '<em><b>Fragments</b></em>' reference list feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference FRAGMENTS__FRAGMENTS = eINSTANCE.getFragments_Fragments();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.MiscellaneousImpl
@@ -336,6 +362,14 @@ public interface P2viewPackage extends EPackage
 		EReference CATEGORY__BUNDLE_CONTAINER = eINSTANCE.getCategory_BundleContainer();
 
 		/**
+		 * The meta object literal for the '<em><b>Fragment Container</b></em>' reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference CATEGORY__FRAGMENT_CONTAINER = eINSTANCE.getCategory_FragmentContainer();
+
+		/**
 		 * The meta object literal for the '<em><b>Details</b></em>' reference feature. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
@@ -368,6 +402,14 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EReference FEATURE__BUNDLE_CONTAINER = eINSTANCE.getFeature_BundleContainer();
+
+		/**
+		 * The meta object literal for the '<em><b>Fragment Container</b></em>' reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference FEATURE__FRAGMENT_CONTAINER = eINSTANCE.getFeature_FragmentContainer();
 
 		/**
 		 * The meta object literal for the '<em><b>Details</b></em>' reference feature. <!-- begin-user-doc --> <!--
@@ -404,6 +446,14 @@ public interface P2viewPackage extends EPackage
 		EReference PRODUCT__BUNDLE_CONTAINER = eINSTANCE.getProduct_BundleContainer();
 
 		/**
+		 * The meta object literal for the '<em><b>Fragment Container</b></em>' reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference PRODUCT__FRAGMENT_CONTAINER = eINSTANCE.getProduct_FragmentContainer();
+
+		/**
 		 * The meta object literal for the '<em><b>Details</b></em>' reference feature. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
@@ -428,6 +478,16 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EReference BUNDLE__DETAILS = eINSTANCE.getBundle_Details();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl
+		 * <em>Fragment</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFragment()
+		 * @generated
+		 */
+		EClass FRAGMENT = eINSTANCE.getFragment();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.OtherIUImpl
@@ -551,12 +611,13 @@ public interface P2viewPackage extends EPackage
 	int METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES = 2;
 
 	/**
-	 * The feature id for the '<em><b>Mdr</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Metadata Repository</b></em>' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW__MDR = 3;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY = 3;
 
 	/**
 	 * The number of structural features of the '<em>Metadata Repository Structured View</em>' class. <!--
@@ -614,13 +675,22 @@ public interface P2viewPackage extends EPackage
 	int INSTALLABLE_UNITS__BUNDLE_CONTAINER = 3;
 
 	/**
+	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int INSTALLABLE_UNITS__FRAGMENT_CONTAINER = 4;
+
+	/**
 	 * The feature id for the '<em><b>Miscellaneous Container</b></em>' reference. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER = 4;
+	int INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER = 5;
 
 	/**
 	 * The number of structural features of the '<em>Installable Units</em>' class. <!-- begin-user-doc --> <!--
@@ -629,7 +699,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS_FEATURE_COUNT = 5;
+	int INSTALLABLE_UNITS_FEATURE_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoriesImpl
@@ -737,6 +807,33 @@ public interface P2viewPackage extends EPackage
 	int BUNDLES_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl
+	 * <em>Fragments</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFragments()
+	 * @generated
+	 */
+	int FRAGMENTS = 6;
+
+	/**
+	 * The feature id for the '<em><b>Fragments</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENTS__FRAGMENTS = 0;
+
+	/**
+	 * The number of structural features of the '<em>Fragments</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENTS_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.MiscellaneousImpl
 	 * <em>Miscellaneous</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -744,7 +841,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getMiscellaneous()
 	 * @generated
 	 */
-	int MISCELLANEOUS = 6;
+	int MISCELLANEOUS = 7;
 
 	/**
 	 * The feature id for the '<em><b>Others</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -771,7 +868,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getIUPresentation()
 	 * @generated
 	 */
-	int IU_PRESENTATION = 7;
+	int IU_PRESENTATION = 8;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -814,8 +911,7 @@ public interface P2viewPackage extends EPackage
 	int IU_PRESENTATION__DESCRIPTION = 4;
 
 	/**
-	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -848,7 +944,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getCategory()
 	 * @generated
 	 */
-	int CATEGORY = 8;
+	int CATEGORY = 9;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -943,12 +1039,21 @@ public interface P2viewPackage extends EPackage
 	int CATEGORY__BUNDLE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__FRAGMENT_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 4;
+
+	/**
 	 * The feature id for the '<em><b>Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CATEGORY__DETAILS = IU_PRESENTATION_FEATURE_COUNT + 4;
+	int CATEGORY__DETAILS = IU_PRESENTATION_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of structural features of the '<em>Category</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -956,7 +1061,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CATEGORY_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 5;
+	int CATEGORY_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 6;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl <em>Feature</em>}'
@@ -966,7 +1071,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFeature()
 	 * @generated
 	 */
-	int FEATURE = 9;
+	int FEATURE = 10;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1043,12 +1148,21 @@ public interface P2viewPackage extends EPackage
 	int FEATURE__BUNDLE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__FRAGMENT_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 2;
+
+	/**
 	 * The feature id for the '<em><b>Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__DETAILS = IU_PRESENTATION_FEATURE_COUNT + 2;
+	int FEATURE__DETAILS = IU_PRESENTATION_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Feature</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1056,7 +1170,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 3;
+	int FEATURE_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl <em>Product</em>}'
@@ -1066,7 +1180,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProduct()
 	 * @generated
 	 */
-	int PRODUCT = 10;
+	int PRODUCT = 11;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1143,12 +1257,21 @@ public interface P2viewPackage extends EPackage
 	int PRODUCT__BUNDLE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__FRAGMENT_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 2;
+
+	/**
 	 * The feature id for the '<em><b>Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__DETAILS = IU_PRESENTATION_FEATURE_COUNT + 2;
+	int PRODUCT__DETAILS = IU_PRESENTATION_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Product</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1156,7 +1279,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 3;
+	int PRODUCT_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl <em>Bundle</em>}'
@@ -1166,7 +1289,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getBundle()
 	 * @generated
 	 */
-	int BUNDLE = 11;
+	int BUNDLE = 12;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1209,8 +1332,7 @@ public interface P2viewPackage extends EPackage
 	int BUNDLE__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
 
 	/**
-	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -1242,6 +1364,88 @@ public interface P2viewPackage extends EPackage
 	int BUNDLE_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 1;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl <em>Fragment</em>}
+	 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFragment()
+	 * @generated
+	 */
+	int FRAGMENT = 13;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__ID = BUNDLE__ID;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__VERSION = BUNDLE__VERSION;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__NAME = BUNDLE__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__LABEL = BUNDLE__LABEL;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__DESCRIPTION = BUNDLE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__TYPE = BUNDLE__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Iu</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__IU = BUNDLE__IU;
+
+	/**
+	 * The feature id for the '<em><b>Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__DETAILS = BUNDLE__DETAILS;
+
+	/**
+	 * The number of structural features of the '<em>Fragment</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT_FEATURE_COUNT = BUNDLE_FEATURE_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.OtherIUImpl <em>Other IU</em>}'
 	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1249,7 +1453,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getOtherIU()
 	 * @generated
 	 */
-	int OTHER_IU = 12;
+	int OTHER_IU = 14;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1292,8 +1496,7 @@ public interface P2viewPackage extends EPackage
 	int OTHER_IU__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
 
 	/**
-	 * <<<<<<< .mine The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -1332,7 +1535,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getDetails()
 	 * @generated
 	 */
-	int DETAILS = 13;
+	int DETAILS = 15;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1359,7 +1562,7 @@ public interface P2viewPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProperties()
 	 * @generated
 	 */
-	int PROPERTIES = 14;
+	int PROPERTIES = 16;
 
 	/**
 	 * The feature id for the '<em><b>Property Map</b></em>' map. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1502,6 +1705,18 @@ public interface P2viewPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Category#getFragmentContainer <em>Fragment Container</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Fragment Container</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Category#getFragmentContainer()
+	 * @see #getCategory()
+	 * @generated
+	 */
+	EReference getCategory_FragmentContainer();
+
+	/**
+	 * Returns the meta object for the reference '
 	 * {@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1580,6 +1795,18 @@ public interface P2viewPackage extends EPackage
 	EReference getFeature_FeatureContainer();
 
 	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Feature#getFragmentContainer <em>Fragment Container</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Fragment Container</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Feature#getFragmentContainer()
+	 * @see #getFeature()
+	 * @generated
+	 */
+	EReference getFeature_FragmentContainer();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.Features <em>Features</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1600,6 +1827,38 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getFeatures_Features();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.Fragment <em>Fragment</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Fragment</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Fragment
+	 * @generated
+	 */
+	EClass getFragment();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.Fragments <em>Fragments</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Fragments</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Fragments
+	 * @generated
+	 */
+	EClass getFragments();
+
+	/**
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Fragments#getFragments <em>Fragments</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference list '<em>Fragments</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Fragments#getFragments()
+	 * @see #getFragments()
+	 * @generated
+	 */
+	EReference getFragments_Fragments();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.InstallableUnits
@@ -1646,6 +1905,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getInstallableUnits_FeatureContainer();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.InstallableUnits#getFragmentContainer
+	 * <em>Fragment Container</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Fragment Container</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.InstallableUnits#getFragmentContainer()
+	 * @see #getInstallableUnits()
+	 * @generated
+	 */
+	EReference getInstallableUnits_FragmentContainer();
 
 	/**
 	 * Returns the meta object for the reference '
@@ -1789,16 +2060,16 @@ public interface P2viewPackage extends EPackage
 	EReference getMetadataRepositoryStructuredView_InstallableUnitList();
 
 	/**
-	 * Returns the meta object for the reference '
-	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMdr <em>Mdr</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMetadataRepository
+	 * <em>Metadata Repository</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the reference '<em>Mdr</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMdr()
+	 * @return the meta object for the containment reference '<em>Metadata Repository</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMetadataRepository()
 	 * @see #getMetadataRepositoryStructuredView()
 	 * @generated
 	 */
-	EReference getMetadataRepositoryStructuredView_Mdr();
+	EReference getMetadataRepositoryStructuredView_MetadataRepository();
 
 	/**
 	 * Returns the meta object for the attribute '
@@ -1919,6 +2190,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getProduct_FeatureContainer();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Product#getFragmentContainer <em>Fragment Container</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Fragment Container</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Product#getFragmentContainer()
+	 * @see #getProduct()
+	 * @generated
+	 */
+	EReference getProduct_FragmentContainer();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.Products <em>Products</em>}'.

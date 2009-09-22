@@ -36,7 +36,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <em>Installable Unit List</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getProperties <em>
  * Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getMdr <em>Mdr</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getMetadataRepository
+ * <em>Metadata Repository</em>}</li>
  * </ul>
  * </p>
  * 
@@ -95,13 +96,14 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	protected Properties properties;
 
 	/**
-	 * The cached value of the '{@link #getMdr() <em>Mdr</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getMetadataRepository() <em>Metadata Repository</em>}' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see #getMdr()
+	 * @see #getMetadataRepository()
 	 * @generated
 	 * @ordered
 	 */
-	protected MetadataRepository mdr;
+	protected MetadataRepository metadataRepository;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -114,14 +116,14 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
-	protected MetadataRepositoryStructuredViewImpl(MetadataRepository mdr)
+	protected MetadataRepositoryStructuredViewImpl(MetadataRepository metadataRepository)
 	{
 		super();
-		this.mdr = mdr;
+		setMetadataRepository(metadataRepository);
 	}
 
 	/**
@@ -138,6 +140,28 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
 					P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST, oldInstallableUnitList,
 					newInstallableUnitList);
+			if(msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public NotificationChain basicSetMetadataRepository(MetadataRepository newMetadataRepository, NotificationChain msgs)
+	{
+		MetadataRepository oldMetadataRepository = metadataRepository;
+		metadataRepository = newMetadataRepository;
+		if(eNotificationRequired())
+		{
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+					P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY, oldMetadataRepository,
+					newMetadataRepository);
 			if(msgs == null)
 				msgs = notification;
 			else
@@ -183,8 +207,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return getInstallableUnitList();
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			return getProperties();
-		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__MDR:
-			return getMdr();
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
+			return getMetadataRepository();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -203,6 +227,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return basicSetInstallableUnitList(null, msgs);
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			return basicSetProperties(null, msgs);
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
+			return basicSetMetadataRepository(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -225,8 +251,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return installableUnitList != null;
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			return properties != null;
-		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__MDR:
-			return mdr != null;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
+			return metadataRepository != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -249,6 +275,9 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return;
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			setProperties((Properties)newValue);
+			return;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
+			setMetadataRepository((MetadataRepository)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -273,6 +302,9 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES:
 			setProperties((Properties)null);
 			return;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
+			setMetadataRepository((MetadataRepository)null);
+			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -288,13 +320,13 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc --> <<<<<<< .mine
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public MetadataRepository getMdr()
+	public MetadataRepository getMetadataRepository()
 	{
-		return mdr;
+		return metadataRepository;
 	}
 
 	/**
@@ -341,6 +373,32 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			eNotify(new ENotificationImpl(this, Notification.SET,
 					P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST, newInstallableUnitList,
 					newInstallableUnitList));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setMetadataRepository(MetadataRepository newMetadataRepository)
+	{
+		if(newMetadataRepository != metadataRepository)
+		{
+			NotificationChain msgs = null;
+			if(metadataRepository != null)
+				msgs = ((InternalEObject)metadataRepository).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
+						- P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY, null, msgs);
+			if(newMetadataRepository != null)
+				msgs = ((InternalEObject)newMetadataRepository).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
+						- P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY, null, msgs);
+			msgs = basicSetMetadataRepository(newMetadataRepository, msgs);
+			if(msgs != null)
+				msgs.dispatch();
+		}
+		else if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY, newMetadataRepository,
+					newMetadataRepository));
 	}
 
 	/**

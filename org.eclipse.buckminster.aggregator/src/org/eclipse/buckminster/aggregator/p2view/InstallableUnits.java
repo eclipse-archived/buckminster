@@ -85,6 +85,22 @@ public interface InstallableUnits extends EObject
 	Features getFeatureContainer();
 
 	/**
+	 * Returns the value of the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Fragment Container</em>' reference isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Fragment Container</em>' reference.
+	 * @see #setFragmentContainer(Fragments)
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getInstallableUnits_FragmentContainer()
+	 * @model
+	 * @generated
+	 */
+	Fragments getFragmentContainer();
+
+	/**
 	 * Returns the value of the '<em><b>Miscellaneous Container</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Miscellaneous Container</em>' reference isn't clear, there really should be more of a
@@ -123,6 +139,14 @@ public interface InstallableUnits extends EObject
 	 * @generated
 	 */
 	Features getNotNullFeatureContainer();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	Fragments getNotNullFragmentContainer();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -188,6 +212,17 @@ public interface InstallableUnits extends EObject
 	 * @generated
 	 */
 	void setFeatureContainer(Features value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.InstallableUnits#getFragmentContainer
+	 * <em>Fragment Container</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Fragment Container</em>' reference.
+	 * @see #getFragmentContainer()
+	 * @generated
+	 */
+	void setFragmentContainer(Fragments value);
 
 	/**
 	 * Sets the value of the '

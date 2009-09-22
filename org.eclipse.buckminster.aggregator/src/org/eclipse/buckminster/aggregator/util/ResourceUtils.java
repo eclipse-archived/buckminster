@@ -50,7 +50,7 @@ public class ResourceUtils
 				referencedResources.add(topSet.getResource(repoURI, false));
 			}
 		}
-		for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
+		for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories(true))
 		{
 			org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
 					repoRef.getLocation(), null);

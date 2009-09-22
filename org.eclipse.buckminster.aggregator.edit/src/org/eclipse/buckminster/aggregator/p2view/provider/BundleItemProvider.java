@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -35,7 +36,8 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
  * @generated
  */
 public class BundleItemProvider extends IUPresentationItemProvider implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
+		IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -132,8 +134,8 @@ public class BundleItemProvider extends IUPresentationItemProvider implements IE
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_Bundle_details_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Bundle_details_feature", "_UI_Bundle_type"), P2viewPackage.Literals.BUNDLE__DETAILS, true,
-				false, true, null, null, null));
+						"_UI_Bundle_details_feature", "_UI_Bundle_type"), P2viewPackage.Literals.BUNDLE__DETAILS,
+				false, false, true, null, null, null));
 	}
 
 	/**
