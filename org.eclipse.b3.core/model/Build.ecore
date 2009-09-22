@@ -44,6 +44,11 @@
         <details key="group" value="#providedCapabilities"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="circularityAllowed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//resolution/IResolution"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//resolution/IResolution"
+        eOpposite="#//resolution/IResolution/buildUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceLocation" eType="#//URI"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IProvidedCapability" abstract="true"
       interface="true"/>
@@ -53,12 +58,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//Name"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="#//p2/VersionRange"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//FilterString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ISourceUnit" abstract="true" interface="true"
-      eSuperTypes="#//IBuildUnit"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IIUReferenceUnit" abstract="true" interface="true"
-      eSuperTypes="#//IBuildUnit">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="installableUnit" eType="#//p2/IInstallableUnit"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IBuildPart" abstract="true" interface="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//Name"/>
@@ -230,7 +229,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IResourceMap" abstract="true" interface="true">
       <eOperations name="lookup" eType="#//context/IResolution">
-        <eParameters name="request" eType="#//query/IUnitRequest"/>
+        <eParameters name="request" eType="#//command/IUnitRequest"/>
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ILocation" abstract="true" interface="true"/>
@@ -298,10 +297,7 @@
       <eLiterals name="replace" value="3"/>
       <eLiterals name="fail" value="2"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UnpackOptions">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="suffix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UnpackOptions"/>
     <eClassifiers xsi:type="ecore:EClass" name="FileSystemMaterializer" eSuperTypes="#//materializer/IMaterializer"/>
     <eClassifiers xsi:type="ecore:EClass" name="P2Materializer" eSuperTypes="#//materializer/IMaterializer"/>
     <eClassifiers xsi:type="ecore:EClass" name="WorkspaceMaterializer" eSuperTypes="#//materializer/IMaterializer"/>
@@ -346,37 +342,32 @@
       <eLiterals name="groups" value="2"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="query" nsURI="query" nsPrefix="query">
+  <eSubpackages name="command" nsURI="command" nsPrefix="command">
     <eClassifiers xsi:type="ecore:EClass" name="IUnitRequest" abstract="true" interface="true">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//Name"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="nameSpace" eType="#//NameSpace"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="#//p2/VersionRange"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//query/Disposition"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="#//query/Disposition"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resolutionOptions" eType="#//resolution/ResolutionOptions"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IQuery" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" name="BuildUnitCommand" abstract="true"
+        interface="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A BuildUnit command represents an invocation of a b3 command. &#xD;Such a command acts on build units (one or several), and these are described with an IUnitRequest.&#xD;An action could resolve and import the build units, another could invoke an action on a particular build unit.&#xD;The Command is executed with some additional information:&#xD;- a reference to a resolver determines from which &quot;repositories/resolvers&quot; the requet should be satisfied. This makes it possible to to describe and invokation of an action on a build unit that is not yet present in the local environment (provided it can be found in the IResolver used). A different configuration could use the default IResolver that only looks in the workspace and target platform, etc.&#xD;&#xD;When a command is executed, it can also define a set of properties, and advice to be applied to instances in the build model being constructed.&#xD;Such advice is provided by an IPointCut."/>
+      </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="requests" lowerBound="1"
-          upperBound="-1" eType="#//query/IUnitRequest" containment="true"/>
+          upperBound="-1" eType="#//command/IUnitRequest" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="pointcuts" upperBound="-1"
-          eType="#//query/PointCut" containment="true"/>
+          eType="#//command/IPointCut" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertyScope"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="resolver" eType="#//resolver/IResolver"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" name="Disposition">
-      <eLiterals name="required"/>
-      <eLiterals name="desired" value="1"/>
-      <eLiterals name="unbiassed" value="2"/>
-      <eLiterals name="undesired" value="3"/>
-      <eLiterals name="rejected" value="4"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="PointCut" abstract="true" interface="true">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="namePattern" eType="#//Pattern"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nameSpace" eType="#//NameSpace"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="advice" eType="#//query/IAdvise"
-          containment="true"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IAdvise" abstract="true" interface="true">
+    <eClassifiers xsi:type="ecore:EClass" name="IPointCut" abstract="true" interface="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A pointcut contains a collection of advice to apply to a selection of IBuildUnit."/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
+          eType="#//command/IAdvise" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="enabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true">
@@ -385,70 +376,42 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="PartQualificationAdvice" eSuperTypes="#//query/IUnitAdvice">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="parts" lowerBound="1"
-          upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="prune" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IAdvise" abstract="true" interface="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="featurePath" eType="#//URI"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UnitDispositionAdvice" eSuperTypes="#//query/IUnitAdvice">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//query/Disposition"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="#//query/Disposition"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ResolverFilterAdvice" eSuperTypes="#//query/IRequestAdvice">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The ResolverFilterAdvice, adds the ability to specify the resolvers that should be given opportunity to resolve the unit.&#xD;Filtering is done on the resolver type name. "/>
-      </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//FilterString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterGroups" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="If true, groups (FirstChoice, and BestChoice) are also filtered. If set to false (the default), groups are always accepted."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SelectionAdvice" eSuperTypes="#//query/IRequestAdvice">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchTagPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="VersionOverrideAdvice" eSuperTypes="#//query/IRequiredCapabilityAdvice">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionRange" eType="#//p2/VersionRange"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="OverlayAdvice" eSuperTypes="#//query/IUnitAdvice">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="path" eType="#//Path"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="PropertyAdvice" eSuperTypes="#//query/IPropertyScopeAdvice">
+    <eClassifiers xsi:type="ecore:EClass" name="ImportCommand" eSuperTypes="#//command/BuildUnitCommand"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PropertyAdvice" eSuperTypes="#//command/IAdvise">
       <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertyScope"
           containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Query" eSuperTypes="#//query/IQuery"/>
-    <eClassifiers xsi:type="ecore:EClass" name="IUnitAdvice" abstract="true" interface="true"
-        eSuperTypes="#//query/IAdvise"/>
-    <eClassifiers xsi:type="ecore:EClass" name="IRequiredCapabilityAdvice" abstract="true"
-        interface="true" eSuperTypes="#//query/IAdvise">
+    <eClassifiers xsi:type="ecore:EClass" name="BuildUnitSelector" eSuperTypes="#//command/IPointCut">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Advice applied to required capabilities requesting the adviced build unit.&#xD;(This is from Buckminster. It would be more natural to advice required capabilities"/>
+        <details key="documentation" value="A simple selector of IBuildUnit matching build units based on a name pattern, nameSpace, and version range."/>
       </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="namePattern" eType="#//Pattern"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nameSpace" eType="#//NameSpace"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionRange" eType="#//p2/VersionRange"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IRequestAdvice" abstract="true" interface="true"
-        eSuperTypes="#//query/IAdvise">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Advice applied to requests for build units."/>
-      </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="StringAdvice" eSuperTypes="#//command/IAdvise">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IPropertyScopeAdvice" abstract="true"
-        interface="true" eSuperTypes="#//query/IAdvise"/>
-    <eClassifiers xsi:type="ecore:EClass" name="DropRequiredCapabilityAdvice" eSuperTypes="#//query/IRequiredCapabilityAdvice"/>
-    <eClassifiers xsi:type="ecore:EClass" name="CircularityAdvice" eSuperTypes="#//query/IUnitAdvice">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="allow" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eClassifiers xsi:type="ecore:EClass" name="VersionAdvice" eSuperTypes="#//command/IAdvise">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="#//p2/Version"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MaterializationAdvice" eSuperTypes="#//query/IUnitAdvice">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="materializer" eType="#//materializer/IMaterializer"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="#//materializer/ConflictResolution"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="unpack" eType="#//materializer/UnpackOptions"
-          containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resourcePath" eType="#//Path"/>
+    <eClassifiers xsi:type="ecore:EClass" name="VersionRangeAdvice" eSuperTypes="#//command/IAdvise">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionRange" eType="#//p2/VersionRange"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanAdvice" eSuperTypes="#//command/IAdvise">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UnsetAdvice" eSuperTypes="#//command/IAdvise"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NewInstanceAdvice" eSuperTypes="#//command/IAdvise">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="clazz" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="initializers" upperBound="-1"
+          eType="#//command/IAdvise" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InvokeCommand" eSuperTypes="#//command/BuildUnitCommand">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" eType="#//Name"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="filter" nsURI="filter" nsPrefix="filter">
@@ -473,6 +436,57 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="A pattern filter simpler than a full regexp. This class is useful to capture patterns without having to express them as regular expressions.&#xD;(i.e. if someone wants to translate ANT or Shell scripts into this model).&#xD;"/>
       </eAnnotations>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="resolution" nsURI="resolution" nsPrefix="resolution">
+    <eClassifiers xsi:type="ecore:EClass" name="ResolutionOptions" abstract="true"
+        interface="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//resolution/Disposition"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="#//resolution/Disposition"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchTagPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolverFilter" eType="#//FilterString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterGroups" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="overlayPath" eType="#//Path"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeParts" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If not empty, specifies a list of parts which requirements should be considered when resolving. If empty, all parts are considered."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="excludeParts" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If not empty, specifies a list of parts which requirements should be excluded when resolving. If empty, no exclusion takes place.&#xD;If a part is mentioned in both includeParts and excludeParts, the exclusion has precedence."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="prune" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Prunes the resulting build unit to only include the parts specified with include and exclude parts."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IResolution" abstract="true" interface="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="importOptions" eType="#//resolution/ImportOptions"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="buildUnit" eType="#//IBuildUnit"
+          eOpposite="#//IBuildUnit/resolution.1"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ImportOptions" abstract="true" interface="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="materializer" eType="#//materializer/IMaterializer"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="#//materializer/ConflictResolution"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resourcePath" eType="#//Path"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unpack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="suffix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="Disposition">
+      <eLiterals name="required"/>
+      <eLiterals name="desired" value="1"/>
+      <eLiterals name="unbiassed" value="2"/>
+      <eLiterals name="undesired" value="3"/>
+      <eLiterals name="rejected" value="4"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
