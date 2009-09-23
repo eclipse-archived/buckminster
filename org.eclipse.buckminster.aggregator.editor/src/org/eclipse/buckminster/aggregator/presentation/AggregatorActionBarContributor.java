@@ -118,7 +118,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				imageURLPath = "full/obj16/start_task.gif";
 				break;
 			default:
-				txt = "Clean and Build Repository";
+				txt = "Clean then Build Repository";
 				imageURLPath = "full/obj16/start_task.gif";
 			}
 			setText(txt);
