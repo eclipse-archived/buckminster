@@ -80,6 +80,12 @@
       eSuperTypes="#//IPrerequisites #//PropertyScope">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="executeOnce" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
+        eType="#//command/IAdvise" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A closure can add dynamic advice - the advice is activated/deactivated with the closure.&#xD;Relative advice is relative to the closure."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ICapability" abstract="true" interface="true">
     <eOperations name="satisfies" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
@@ -168,8 +174,19 @@
     <eClassifiers xsi:type="ecore:EDataType" name="IInstallableUnit" instanceClassName="org.eclipse.equinox.p2.provisional.IInstallableUnit"/>
   </eSubpackages>
   <eSubpackages name="context" nsURI="context" nsPrefix="context">
-    <eClassifiers xsi:type="ecore:EClass" name="IBuildContext" abstract="true" interface="true"/>
-    <eClassifiers xsi:type="ecore:EClass" name="IResolution">
+    <eClassifiers xsi:type="ecore:EClass" name="IBuildContext" abstract="true" interface="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="requests" upperBound="-1"
+          eType="#//command/IUnitRequest" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resolutions" upperBound="-1"
+          eType="#//context/IResolution" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" upperBound="-1"
+          eType="#//IBuildUnit" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
+          eType="#//command/IAdvise" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resolver" eType="#//resolver/IResolver"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IResolution" abstract="true" interface="true">
       <eStructuralFeatures xsi:type="ecore:EReference" name="resolves" lowerBound="1"
           eType="#//IRequiredCapability"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//ICapability"/>
@@ -355,41 +372,25 @@
       </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="requests" lowerBound="1"
           upperBound="-1" eType="#//command/IUnitRequest" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="pointcuts" upperBound="-1"
-          eType="#//command/IPointCut" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertyScope"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="resolver" eType="#//resolver/IResolver"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IPointCut" abstract="true" interface="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="A pointcut contains a collection of advice to apply to a selection of IBuildUnit."/>
-      </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
           eType="#//command/IAdvise" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="enabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="true">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Only enabled advice have effect. It is usefult to be able to turn off advice in some situations while not removing them from the model."/>
-        </eAnnotations>
-      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IAdvise" abstract="true" interface="true">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="featurePath" eType="#//URI"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="selector" eType="#//command/ContextNodeSelector"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ImportCommand" eSuperTypes="#//command/BuildUnitCommand"/>
     <eClassifiers xsi:type="ecore:EClass" name="PropertyAdvice" eSuperTypes="#//command/IAdvise">
       <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertyScope"
           containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="BuildUnitSelector" eSuperTypes="#//command/IPointCut">
+    <eClassifiers xsi:type="ecore:EClass" name="ContextNodeSelector" abstract="true"
+        interface="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="A simple selector of IBuildUnit matching build units based on a name pattern, nameSpace, and version range."/>
+        <details key="documentation" value="A selector of nodes in the IBuildContext. Probably based on XPath. &#xD;This selector defines what the advice is applied to in the IBuildContext."/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="namePattern" eType="#//Pattern"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nameSpace" eType="#//NameSpace"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionRange" eType="#//p2/VersionRange"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="StringAdvice" eSuperTypes="#//command/IAdvise">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -404,10 +405,8 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="UnsetAdvice" eSuperTypes="#//command/IAdvise"/>
-    <eClassifiers xsi:type="ecore:EClass" name="NewInstanceAdvice" eSuperTypes="#//command/IAdvise">
+    <eClassifiers xsi:type="ecore:EClass" name="NewInstanceAdvice" eSuperTypes="#//command/AdviceGroup">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="clazz" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="initializers" upperBound="-1"
-          eType="#//command/IAdvise" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InvokeCommand" eSuperTypes="#//command/BuildUnitCommand">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" eType="#//Name"/>
@@ -424,6 +423,13 @@
       <eLiterals name="AND"/>
       <eLiterals name="OR" value="1"/>
       <eLiterals name="REPLACE" value="2"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AdviceGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Makes nestede advice relative to the featurePath of the group."/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
+          eType="#//command/IAdvise" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="filter" nsURI="filter" nsPrefix="filter">
