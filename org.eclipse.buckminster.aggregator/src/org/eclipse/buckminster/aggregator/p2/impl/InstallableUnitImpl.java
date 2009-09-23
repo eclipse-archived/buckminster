@@ -7,6 +7,7 @@
 package org.eclipse.buckminster.aggregator.p2.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,6 +42,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.equinox.internal.p2.core.helpers.OrderedProperties;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
@@ -342,6 +344,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			List<RequiredCapability> mhosts = miuf.getHostList();
 			for(IRequiredCapability host : ((IInstallableUnitFragment)iu).getHost())
 				mhosts.add(importToModel(host));
+			miuf.setFragment(true);
 			miu = miuf;
 		}
 		else
@@ -1021,7 +1024,26 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	@SuppressWarnings("unchecked")
 	public Map getProperties()
 	{
-		return getPropertyMap().map();
+		// Retain the order of the properties
+		//
+		EMap<String,String> propertyEntries = getPropertyMap();
+		int top = propertyEntries.size();
+		if(top == 0)
+			return Collections.emptyMap();
+
+		if(top == 1)
+		{
+			Map.Entry<String, String> entry = propertyEntries.get(0);
+			return Collections.singletonMap(entry.getKey(), entry.getValue());
+		}
+
+		OrderedProperties props = new OrderedProperties(top);
+		for(int idx = 0; idx < top; ++idx)
+		{
+			Map.Entry<String, String> entry = propertyEntries.get(idx);
+			props.put(entry.getKey(), entry.getValue());
+		}
+		return props;
 	}
 
 	/**

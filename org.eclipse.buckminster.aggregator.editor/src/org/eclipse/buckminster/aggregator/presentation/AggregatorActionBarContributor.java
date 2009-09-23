@@ -349,7 +349,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		public void run()
 		{
 			if(m_mappedRepository != null && m_mappedRepository.isBranchEnabled())
-				MetadataRepositoryResourceImpl.loadRepository(m_mappedRepository.getLocation(), m_aggregator, true);
+				MetadataRepositoryResourceImpl.loadRepository(m_mappedRepository.getResolvedLocation(), m_aggregator,
+						true);
 		}
 
 		public void setMappedRepository(MappedRepository mappedRepository)

@@ -102,7 +102,7 @@ public class ItemUtils
 
 		for(MappedRepository repo : contribution.getRepositories())
 			if(mdr.getLocation() != null && repo.getLocation() != null
-					&& mdr.getLocation().toString().equalsIgnoreCase(repo.getLocation()))
+					&& mdr.getLocation().toString().equalsIgnoreCase(repo.getResolvedLocation()))
 				return repo;
 
 		return null;
@@ -140,7 +140,7 @@ public class ItemUtils
 	public static boolean haveSameLocation(MappedRepository mappedRepo,
 			Collection<? extends InstallableUnit> selectedIUs)
 	{
-		String location = mappedRepo.getLocation();
+		String location = mappedRepo.getResolvedLocation();
 
 		if(location == null)
 			return false;

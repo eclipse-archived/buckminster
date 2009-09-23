@@ -310,7 +310,7 @@ public class RepositoryVerifier extends BuilderPhase
 		{
 			MetadataRepositoryReference mdRef = validationRepos.get(idx);
 			if(mdRef.isEnabled())
-				sites.add(URI.create(mdRef.getLocation()));
+				sites.add(URI.create(mdRef.getResolvedLocation()));
 		}
 		repoLocations = sites.toArray(new URI[sites.size()]);
 		ProvisioningContext context = new ProvisioningContext(repoLocations);

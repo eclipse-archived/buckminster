@@ -1327,6 +1327,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEOperation(metadataRepositoryReferenceEClass, ecorePackage.getEBoolean(), "isBranchEnabled", 0, 1,
 				IS_UNIQUE, IS_ORDERED);
 
+		addEOperation(metadataRepositoryReferenceEClass, ecorePackage.getEString(), "getResolvedLocation", 0, 1,
+				IS_UNIQUE, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");
 		addEEnumLiteral(aggregateTypeEEnum, AggregateType.STABLE);

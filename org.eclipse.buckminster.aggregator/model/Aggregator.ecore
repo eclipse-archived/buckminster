@@ -164,6 +164,7 @@
       <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
     <eOperations name="isBranchEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eOperations name="getResolvedLocation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metadataRepository" eType="#//p2/MetadataRepository"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

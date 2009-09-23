@@ -84,6 +84,14 @@ public interface MetadataRepositoryReference extends EnabledStatusProvider
 	 * @model kind="operation"
 	 * @generated
 	 */
+	String getResolvedLocation();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
 	boolean isBranchEnabled();
 
 	/**

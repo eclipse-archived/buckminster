@@ -12,16 +12,15 @@ package org.eclipse.buckminster.aggregator.impl;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
-
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.Notification;
-
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Metadata Repository Reference</b></em>'. <!--
@@ -277,6 +276,57 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			}
 		}
 		return metadataRepository;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String getResolvedLocation()
+	{
+		String location = Trivial.trim(getLocation());
+		if(location == null)
+			return null;
+
+		location = location.replaceAll("\\s", "%20").replace('\\', '/');
+		if(location.length() > 1 && location.charAt(1) == ':' && Character.isLetter(location.charAt(0)))
+			// Path starting with a Windows drive letter
+			return "file:/" + location;
+
+		if(location.charAt(0) == '/')
+			// Absolute path
+			return "file:" + location;
+
+		int colonIdx = location.indexOf(':');
+		if(colonIdx > 0)
+		{
+			// Check that characters from start to colon is a valid scheme.
+			int idx = 0;
+			char c = location.charAt(0);
+			if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+			{
+				for(++idx; idx < colonIdx; ++idx)
+				{
+					c = location.charAt(colonIdx);
+					if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-'
+							|| c == '+' || c == '.'))
+						break;
+				}
+			}
+			if(idx < colonIdx)
+				colonIdx = -1;
+		}
+
+		if(colonIdx <= 0)
+		{
+			// Not a valid scheme so assume relative path
+			URI base = getAggregator().eResource().getURI();
+			if(base != null)
+				location = base.trimSegments(1).appendSegments(StringHelper.getArrayFromString(location, '/')).toString();
+		}
+
+		return location;
 	}
 
 	/**

@@ -185,7 +185,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		switch(notification.getFeatureID(MetadataRepositoryReference.class))
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
-			onLocationChange(repoRef, notification.getNewStringValue());
+			onLocationChange(repoRef);
 			// no 'break' here is an intention - refresh nodes that may have been affected
 
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
@@ -354,12 +354,12 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		return "_UI_MetadataRepositoryReference_type";
 	}
 
-	private void onLocationChange(MetadataRepositoryReference repository, String location)
+	private void onLocationChange(MetadataRepositoryReference repository)
 	{
 		MetadataRepository repo = null;
 		try
 		{
-			repo = MetadataRepositoryResourceImpl.loadRepository(location, repository.getAggregator());
+			repo = MetadataRepositoryResourceImpl.loadRepository(repository.getResolvedLocation(), repository.getAggregator());
 		}
 		finally
 		{

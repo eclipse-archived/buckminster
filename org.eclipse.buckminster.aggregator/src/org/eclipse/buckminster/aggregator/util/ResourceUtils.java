@@ -46,7 +46,7 @@ public class ResourceUtils
 			for(MappedRepository mappedRepository : contribution.getRepositories(true))
 			{
 				org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-						mappedRepository.getLocation(), null);
+						mappedRepository.getResolvedLocation(), null);
 				referencedResources.add(topSet.getResource(repoURI, false));
 			}
 		}
@@ -83,7 +83,7 @@ public class ResourceUtils
 					&& ((MetadataRepositoryResourceImpl)resource).getLastException() != null)
 				throw BuckminsterException.wrap(((MetadataRepositoryResourceImpl)resource).getLastException());
 
-			throw BuckminsterException.fromMessage("Unable to load repository " + repoRef.getLocation());
+			throw BuckminsterException.fromMessage("Unable to load repository " + repoRef.getResolvedLocation());
 		}
 
 		return mdr;
@@ -99,6 +99,6 @@ public class ResourceUtils
 		if(repoRef.getLocation() == null)
 			return;
 		Aggregator aggregator = repoRef.getAggregator();
-		MetadataRepositoryResourceImpl.loadRepository(repoRef.getLocation(), aggregator);
+		MetadataRepositoryResourceImpl.loadRepository(repoRef.getResolvedLocation(), aggregator);
 	}
 }
