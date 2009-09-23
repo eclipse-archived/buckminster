@@ -217,8 +217,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IInstallableUnitFragment" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment"
         abstract="true" interface="true" eSuperTypes="#//p2/IInstallableUnit">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="#//p2/IRequiredCapabilityArray"
-          changeable="false" transient="true" derived="true"/>
+      <eOperations name="getHost" eType="#//p2/IRequiredCapabilityArray"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ILicense" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.ILicense"
         abstract="true" interface="true">

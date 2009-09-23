@@ -206,14 +206,6 @@ public interface P2Package extends EPackage
 		EClass IINSTALLABLE_UNIT_FRAGMENT = eINSTANCE.getIInstallableUnitFragment();
 
 		/**
-		 * The meta object literal for the '<em><b>Host</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute IINSTALLABLE_UNIT_FRAGMENT__HOST = eINSTANCE.getIInstallableUnitFragment_Host();
-
-		/**
 		 * The meta object literal for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.ILicense
 		 * <em>ILicense</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -1307,21 +1299,13 @@ public interface P2Package extends EPackage
 	int IINSTALLABLE_UNIT_FRAGMENT__COPYRIGHT = IINSTALLABLE_UNIT__COPYRIGHT;
 
 	/**
-	 * The feature id for the '<em><b>Host</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int IINSTALLABLE_UNIT_FRAGMENT__HOST = IINSTALLABLE_UNIT_FEATURE_COUNT + 0;
-
-	/**
 	 * The number of structural features of the '<em>IInstallable Unit Fragment</em>' class. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT_FRAGMENT_FEATURE_COUNT = IINSTALLABLE_UNIT_FEATURE_COUNT + 1;
+	int IINSTALLABLE_UNIT_FRAGMENT_FEATURE_COUNT = IINSTALLABLE_UNIT_FEATURE_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.ILicense
@@ -2228,21 +2212,13 @@ public interface P2Package extends EPackage
 	int INSTALLABLE_UNIT_FRAGMENT__TYPE = INSTALLABLE_UNIT__TYPE;
 
 	/**
-	 * The feature id for the '<em><b>Host</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int INSTALLABLE_UNIT_FRAGMENT__HOST = INSTALLABLE_UNIT_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Host List</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNIT_FRAGMENT__HOST_LIST = INSTALLABLE_UNIT_FEATURE_COUNT + 1;
+	int INSTALLABLE_UNIT_FRAGMENT__HOST_LIST = INSTALLABLE_UNIT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Installable Unit Fragment</em>' class. <!-- begin-user-doc --> <!--
@@ -2251,7 +2227,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNIT_FRAGMENT_FEATURE_COUNT = INSTALLABLE_UNIT_FEATURE_COUNT + 2;
+	int INSTALLABLE_UNIT_FRAGMENT_FEATURE_COUNT = INSTALLABLE_UNIT_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.LicenseImpl <em>License</em>}'
@@ -3199,18 +3175,6 @@ public interface P2Package extends EPackage
 	 * @generated
 	 */
 	EClass getIInstallableUnitFragment();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment#getHost <em>Host</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Host</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment#getHost()
-	 * @see #getIInstallableUnitFragment()
-	 * @generated
-	 */
-	EAttribute getIInstallableUnitFragment_Host();
 
 	/**
 	 * Returns the meta object for data type '<em>IInstallable Unit Fragment Array</em>'. <!-- begin-user-doc --> <!--

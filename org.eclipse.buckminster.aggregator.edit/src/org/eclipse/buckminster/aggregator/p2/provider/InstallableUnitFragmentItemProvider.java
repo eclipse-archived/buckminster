@@ -25,7 +25,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -90,7 +89,6 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 		{
 			super.getPropertyDescriptors(object);
 
-			addHostPropertyDescriptor(object);
 			addHostListPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -121,9 +119,6 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 
 		switch(notification.getFeatureID(InstallableUnitFragment.class))
 		{
-		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-			return;
 		case P2Package.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
@@ -144,21 +139,6 @@ public class InstallableUnitFragmentItemProvider extends InstallableUnitItemProv
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnitFragment_hostList_feature",
 						"_UI_InstallableUnitFragment_type"), P2Package.Literals.INSTALLABLE_UNIT_FRAGMENT__HOST_LIST,
 				false, false, false, null, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Host feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addHostPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IInstallableUnitFragment_host_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IInstallableUnitFragment_host_feature", "_UI_IInstallableUnitFragment_type"),
-				P2Package.Literals.IINSTALLABLE_UNIT_FRAGMENT__HOST, false, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

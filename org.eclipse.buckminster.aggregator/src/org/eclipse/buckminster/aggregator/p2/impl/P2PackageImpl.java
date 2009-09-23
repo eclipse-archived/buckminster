@@ -502,7 +502,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEReference(iInstallableUnitEClass, IINSTALLABLE_UNIT__COPYRIGHT);
 
 		iInstallableUnitFragmentEClass = createEClass(IINSTALLABLE_UNIT_FRAGMENT);
-		createEAttribute(iInstallableUnitFragmentEClass, IINSTALLABLE_UNIT_FRAGMENT__HOST);
 
 		iLicenseEClass = createEClass(ILICENSE);
 		createEAttribute(iLicenseEClass, ILICENSE__LOCATION);
@@ -872,16 +871,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	public EClass getIInstallableUnitFragment()
 	{
 		return iInstallableUnitFragmentEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EAttribute getIInstallableUnitFragment_Host()
-	{
-		return (EAttribute)iInstallableUnitFragmentEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1850,9 +1839,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 		initEClass(iInstallableUnitFragmentEClass, IInstallableUnitFragment.class, "IInstallableUnitFragment",
 				IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIInstallableUnitFragment_Host(), this.getIRequiredCapabilityArray(), "host", null, 0, 1,
-				IInstallableUnitFragment.class, IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+
+		addEOperation(iInstallableUnitFragmentEClass, this.getIRequiredCapabilityArray(), "getHost", 0, 1, IS_UNIQUE,
+				IS_ORDERED);
 
 		initEClass(iLicenseEClass, ILicense.class, "ILicense", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getILicense_Location(), theAggregatorPackage.getURI(), "location", null, 0, 1, ILicense.class,
