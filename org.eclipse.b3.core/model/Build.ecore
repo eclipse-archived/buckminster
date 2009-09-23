@@ -45,8 +45,6 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="circularityAllowed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//resolution/IResolution"
-        eOpposite="#//resolution/IResolution/buildUnit"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceLocation" eType="#//URI"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IProvidedCapability" abstract="true"
@@ -192,6 +190,51 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="resolution" eType="#//ICapability"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="subResolutions" upperBound="-1"
           eType="#//context/IResolution" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="options" eType="#//context/ImportOptions"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ResolutionOptions" abstract="true"
+        interface="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//context/Disposition"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="#//context/Disposition"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchTagPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolverFilter" eType="#//FilterString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterGroups" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="overlayPath" eType="#//Path"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeParts" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If not empty, specifies a list of parts which requirements should be considered when resolving. If empty, all parts are considered."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="excludeParts" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If not empty, specifies a list of parts which requirements should be excluded when resolving. If empty, no exclusion takes place.&#xD;If a part is mentioned in both includeParts and excludeParts, the exclusion has precedence."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="prune" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Prunes the resulting build unit to only include the parts specified with include and exclude parts."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ImportOptions" abstract="true" interface="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="materializer" eType="#//materializer/IMaterializer"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="#//materializer/ConflictResolution"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resourcePath" eType="#//Path"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unpack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="suffix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="Disposition">
+      <eLiterals name="required"/>
+      <eLiterals name="desired" value="1"/>
+      <eLiterals name="unbiassed" value="2"/>
+      <eLiterals name="undesired" value="3"/>
+      <eLiterals name="rejected" value="4"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="runtime" nsURI="runtime" nsPrefix="runtime">
@@ -313,7 +356,6 @@
       <eLiterals name="replace" value="3"/>
       <eLiterals name="fail" value="2"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UnpackOptions"/>
     <eClassifiers xsi:type="ecore:EClass" name="FileSystemMaterializer" eSuperTypes="#//materializer/IMaterializer"/>
     <eClassifiers xsi:type="ecore:EClass" name="P2Materializer" eSuperTypes="#//materializer/IMaterializer"/>
     <eClassifiers xsi:type="ecore:EClass" name="WorkspaceMaterializer" eSuperTypes="#//materializer/IMaterializer"/>
@@ -363,7 +405,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//Name"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="nameSpace" eType="#//NameSpace"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="#//p2/VersionRange"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="options" eType="#//resolution/ResolutionOptions"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="options" eType="#//context/ResolutionOptions"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BuildUnitCommand" abstract="true"
         interface="true">
@@ -454,57 +496,6 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="A pattern filter simpler than a full regexp. This class is useful to capture patterns without having to express them as regular expressions.&#xD;(i.e. if someone wants to translate ANT or Shell scripts into this model).&#xD;"/>
       </eAnnotations>
-    </eClassifiers>
-  </eSubpackages>
-  <eSubpackages name="resolution" nsURI="resolution" nsPrefix="resolution">
-    <eClassifiers xsi:type="ecore:EClass" name="ResolutionOptions" abstract="true"
-        interface="true">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//resolution/Disposition"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="#//resolution/Disposition"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchTagPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolverFilter" eType="#//FilterString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterGroups" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="overlayPath" eType="#//Path"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeParts" upperBound="-1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="If not empty, specifies a list of parts which requirements should be considered when resolving. If empty, all parts are considered."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="excludeParts" upperBound="-1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="If not empty, specifies a list of parts which requirements should be excluded when resolving. If empty, no exclusion takes place.&#xD;If a part is mentioned in both includeParts and excludeParts, the exclusion has precedence."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="prune" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Prunes the resulting build unit to only include the parts specified with include and exclude parts."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IResolution" abstract="true" interface="true">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="options" eType="#//resolution/ImportOptions"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="buildUnit" eType="#//IBuildUnit"
-          eOpposite="#//IBuildUnit/resolution"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ImportOptions" abstract="true" interface="true">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="materializer" eType="#//materializer/IMaterializer"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="#//materializer/ConflictResolution"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="resourcePath" eType="#//Path"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unpack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="suffix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" name="Disposition">
-      <eLiterals name="required"/>
-      <eLiterals name="desired" value="1"/>
-      <eLiterals name="unbiassed" value="2"/>
-      <eLiterals name="undesired" value="3"/>
-      <eLiterals name="rejected" value="4"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
