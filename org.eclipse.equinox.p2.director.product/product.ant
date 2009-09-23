@@ -38,8 +38,10 @@
 		<!-- Copy needed platform specific fragments -->
 		<copy todir="${destination}/plugins">
 			<fileset dir="${eclipse.home}/plugins" excludes="*.source_*.jar">
+				<include name="org.eclipse.equinox.launcher.*/**"/>
 				<include name="org.eclipse.core.net.*.jar"/>
-				<include name="org.eclipse.equinox.security.*.jar"/>
+				<include name="org.eclipse.equinox.security.win32.*.jar"/>
+				<include name="org.eclipse.equinox.security.macosx.*.jar"/>
 			</fileset>
 		</copy>
 
