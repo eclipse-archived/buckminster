@@ -309,7 +309,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	protected static final InstallableUnitType TYPE_EDEFAULT = InstallableUnitType.BUNDLE;
 
-	private static final Pattern proxyFragmentPattern = Pattern.compile("^//@installableUnits\\[id='([^']*)',version='([^']*)'\\]$");
+	private static final Pattern proxyFragmentPattern = Pattern.compile("^//@metadataRepository/@installableUnits\\[id='([^']*)',version='([^']*)'\\]$");
 
 	public static InstallableUnit importToModel(IInstallableUnit iu)
 	{

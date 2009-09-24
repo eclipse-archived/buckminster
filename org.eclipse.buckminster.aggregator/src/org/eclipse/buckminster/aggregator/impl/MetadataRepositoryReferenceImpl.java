@@ -308,7 +308,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			{
 				for(++idx; idx < colonIdx; ++idx)
 				{
-					c = location.charAt(colonIdx);
+					c = location.charAt(idx);
 					if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-'
 							|| c == '+' || c == '.'))
 						break;
