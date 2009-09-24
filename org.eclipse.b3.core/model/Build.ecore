@@ -4,7 +4,7 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="build"
     nsURI="http://build/1.0" nsPrefix="build">
   <eClassifiers xsi:type="ecore:EClass" name="IBuildUnit" abstract="true" interface="true"
-      eSuperTypes="#//ICapability #//PropertyScope">
+      eSuperTypes="#//ICapability #//PropertyScope #//IGenericUnit">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//FilterString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parts" upperBound="-1"
         eType="#//IBuildPart" containment="true" eOpposite="#//IBuildPart/buildUnit"/>
@@ -166,6 +166,10 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="URI" instanceClassName="java.net.URI"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IGenericUnit" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="self" lowerBound="1" eType="#//IPathGroup"
+        changeable="false" volatile="true" transient="true" derived="true"/>
+  </eClassifiers>
   <eSubpackages name="p2" nsURI="p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EDataType" name="Version" instanceClassName="org.eclipse.equinox.internal.provisional.p2.core.Version"/>
     <eClassifiers xsi:type="ecore:EDataType" name="VersionRange" instanceClassName="org.eclipse.equinox.internal.provisional.p2.core.VersionRange"/>
