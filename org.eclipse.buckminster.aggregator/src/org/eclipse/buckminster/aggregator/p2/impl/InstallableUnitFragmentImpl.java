@@ -169,6 +169,12 @@ public class InstallableUnitFragmentImpl extends InstallableUnitImpl implements 
 		return hostList;
 	}
 
+	@Override
+	public boolean isFragment()
+	{
+		return true;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

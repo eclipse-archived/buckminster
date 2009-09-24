@@ -359,7 +359,8 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		MetadataRepository repo = null;
 		try
 		{
-			repo = MetadataRepositoryResourceImpl.loadRepository(repository.getResolvedLocation(), repository.getAggregator());
+			repo = MetadataRepositoryResourceImpl.loadRepository(repository.getResolvedLocation(),
+					repository.getAggregator());
 		}
 		finally
 		{

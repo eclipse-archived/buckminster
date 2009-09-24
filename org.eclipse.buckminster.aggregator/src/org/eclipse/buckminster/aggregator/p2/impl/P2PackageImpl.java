@@ -494,7 +494,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEAttribute(iInstallableUnitEClass, IINSTALLABLE_UNIT__ID);
 		createEReference(iInstallableUnitEClass, IINSTALLABLE_UNIT__TOUCHPOINT_TYPE);
 		createEAttribute(iInstallableUnitEClass, IINSTALLABLE_UNIT__VERSION);
-		createEAttribute(iInstallableUnitEClass, IINSTALLABLE_UNIT__FRAGMENT);
 		createEAttribute(iInstallableUnitEClass, IINSTALLABLE_UNIT__RESOLVED);
 		createEAttribute(iInstallableUnitEClass, IINSTALLABLE_UNIT__SINGLETON);
 		createEReference(iInstallableUnitEClass, IINSTALLABLE_UNIT__UPDATE_DESCRIPTOR);
@@ -760,7 +759,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EReference getIInstallableUnit_Copyright()
 	{
-		return (EReference)iInstallableUnitEClass.getEStructuralFeatures().get(9);
+		return (EReference)iInstallableUnitEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -771,16 +770,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	public EAttribute getIInstallableUnit_Filter()
 	{
 		return (EAttribute)iInstallableUnitEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EAttribute getIInstallableUnit_Fragment()
-	{
-		return (EAttribute)iInstallableUnitEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -800,7 +789,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EReference getIInstallableUnit_License()
 	{
-		return (EReference)iInstallableUnitEClass.getEStructuralFeatures().get(8);
+		return (EReference)iInstallableUnitEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -810,7 +799,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EAttribute getIInstallableUnit_Resolved()
 	{
-		return (EAttribute)iInstallableUnitEClass.getEStructuralFeatures().get(5);
+		return (EAttribute)iInstallableUnitEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -820,7 +809,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EAttribute getIInstallableUnit_Singleton()
 	{
-		return (EAttribute)iInstallableUnitEClass.getEStructuralFeatures().get(6);
+		return (EAttribute)iInstallableUnitEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -840,7 +829,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EReference getIInstallableUnit_UpdateDescriptor()
 	{
-		return (EReference)iInstallableUnitEClass.getEStructuralFeatures().get(7);
+		return (EReference)iInstallableUnitEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -1790,9 +1779,6 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIInstallableUnit_Version(), this.getVersion(), "version", null, 0, 1, IInstallableUnit.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIInstallableUnit_Fragment(), ecorePackage.getEBoolean(), "fragment", null, 0, 1,
-				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIInstallableUnit_Resolved(), ecorePackage.getEBoolean(), "resolved", null, 0, 1,
 				IInstallableUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
 				!IS_DERIVED, IS_ORDERED);
@@ -1831,6 +1817,8 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 		addEOperation(iInstallableUnitEClass, this.getITouchpointDataArray(), "getTouchpointData", 0, 1, IS_UNIQUE,
 				IS_ORDERED);
+
+		addEOperation(iInstallableUnitEClass, ecorePackage.getEBoolean(), "isFragment", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = addEOperation(iInstallableUnitEClass, ecorePackage.getEBoolean(), "satisfies", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIRequiredCapability(), "candidate", 0, 1, IS_UNIQUE, IS_ORDERED);

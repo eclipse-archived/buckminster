@@ -147,14 +147,6 @@ public interface P2Package extends EPackage
 		EAttribute IINSTALLABLE_UNIT__VERSION = eINSTANCE.getIInstallableUnit_Version();
 
 		/**
-		 * The meta object literal for the '<em><b>Fragment</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute IINSTALLABLE_UNIT__FRAGMENT = eINSTANCE.getIInstallableUnit_Fragment();
-
-		/**
 		 * The meta object literal for the '<em><b>Resolved</b></em>' attribute feature. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
@@ -1145,20 +1137,12 @@ public interface P2Package extends EPackage
 	int IINSTALLABLE_UNIT__VERSION = 3;
 
 	/**
-	 * The feature id for the '<em><b>Fragment</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int IINSTALLABLE_UNIT__FRAGMENT = 4;
-
-	/**
 	 * The feature id for the '<em><b>Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT__RESOLVED = 5;
+	int IINSTALLABLE_UNIT__RESOLVED = 4;
 
 	/**
 	 * The feature id for the '<em><b>Singleton</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1166,7 +1150,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT__SINGLETON = 6;
+	int IINSTALLABLE_UNIT__SINGLETON = 5;
 
 	/**
 	 * The feature id for the '<em><b>Update Descriptor</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -1175,7 +1159,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT__UPDATE_DESCRIPTOR = 7;
+	int IINSTALLABLE_UNIT__UPDATE_DESCRIPTOR = 6;
 
 	/**
 	 * The feature id for the '<em><b>License</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1184,7 +1168,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT__LICENSE = 8;
+	int IINSTALLABLE_UNIT__LICENSE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Copyright</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -1193,7 +1177,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT__COPYRIGHT = 9;
+	int IINSTALLABLE_UNIT__COPYRIGHT = 8;
 
 	/**
 	 * The number of structural features of the '<em>IInstallable Unit</em>' class. <!-- begin-user-doc --> <!--
@@ -1202,7 +1186,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IINSTALLABLE_UNIT_FEATURE_COUNT = 10;
+	int IINSTALLABLE_UNIT_FEATURE_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment
@@ -1246,14 +1230,6 @@ public interface P2Package extends EPackage
 	 * @ordered
 	 */
 	int IINSTALLABLE_UNIT_FRAGMENT__VERSION = IINSTALLABLE_UNIT__VERSION;
-
-	/**
-	 * The feature id for the '<em><b>Fragment</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int IINSTALLABLE_UNIT_FRAGMENT__FRAGMENT = IINSTALLABLE_UNIT__FRAGMENT;
 
 	/**
 	 * The feature id for the '<em><b>Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1935,14 +1911,6 @@ public interface P2Package extends EPackage
 	int INSTALLABLE_UNIT__VERSION = IINSTALLABLE_UNIT__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Fragment</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int INSTALLABLE_UNIT__FRAGMENT = IINSTALLABLE_UNIT__FRAGMENT;
-
-	/**
 	 * The feature id for the '<em><b>Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -2098,14 +2066,6 @@ public interface P2Package extends EPackage
 	 * @ordered
 	 */
 	int INSTALLABLE_UNIT_FRAGMENT__VERSION = INSTALLABLE_UNIT__VERSION;
-
-	/**
-	 * The feature id for the '<em><b>Fragment</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int INSTALLABLE_UNIT_FRAGMENT__FRAGMENT = INSTALLABLE_UNIT__FRAGMENT;
 
 	/**
 	 * The feature id for the '<em><b>Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -3056,18 +3016,6 @@ public interface P2Package extends EPackage
 	 * @generated
 	 */
 	EAttribute getIInstallableUnit_Filter();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit#isFragment <em>Fragment</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Fragment</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit#isFragment()
-	 * @see #getIInstallableUnit()
-	 * @generated
-	 */
-	EAttribute getIInstallableUnit_Fragment();
 
 	/**
 	 * Returns the meta object for the attribute '

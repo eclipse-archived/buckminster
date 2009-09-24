@@ -195,6 +195,7 @@
       <eOperations name="getRequiredCapabilities" eType="#//p2/IRequiredCapabilityArray"/>
       <eOperations name="getProvidedCapabilities" eType="#//p2/IProvidedCapabilityArray"/>
       <eOperations name="getTouchpointData" eType="#//p2/ITouchpointDataArray"/>
+      <eOperations name="isFragment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eOperations name="satisfies" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eParameters name="candidate" eType="#//p2/IRequiredCapability"/>
       </eOperations>
@@ -206,7 +207,6 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="touchpointType" eType="#//p2/ITouchpointType"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="#//p2/Version"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="fragment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolved" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="singleton" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="updateDescriptor" eType="#//p2/IUpdateDescriptor"

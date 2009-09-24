@@ -134,7 +134,6 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 			addIdPropertyDescriptor(object);
 			addTouchpointTypePropertyDescriptor(object);
 			addVersionPropertyDescriptor(object);
-			addFragmentPropertyDescriptor(object);
 			addResolvedPropertyDescriptor(object);
 			addSingletonPropertyDescriptor(object);
 			addUpdateDescriptorPropertyDescriptor(object);
@@ -212,7 +211,6 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 		case P2Package.INSTALLABLE_UNIT__FILTER:
 		case P2Package.INSTALLABLE_UNIT__ID:
 		case P2Package.INSTALLABLE_UNIT__VERSION:
-		case P2Package.INSTALLABLE_UNIT__FRAGMENT:
 		case P2Package.INSTALLABLE_UNIT__RESOLVED:
 		case P2Package.INSTALLABLE_UNIT__SINGLETON:
 		case P2Package.INSTALLABLE_UNIT__TYPE:
@@ -275,21 +273,6 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 						"_UI_IInstallableUnit_filter_feature", "_UI_IInstallableUnit_type"),
 				P2Package.Literals.IINSTALLABLE_UNIT__FILTER, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Fragment feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addFragmentPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_IInstallableUnit_fragment_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_IInstallableUnit_fragment_feature", "_UI_IInstallableUnit_type"),
-				P2Package.Literals.IINSTALLABLE_UNIT__FRAGMENT, false, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

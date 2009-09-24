@@ -71,10 +71,6 @@
         <element xmi:type="ecore:EAttribute" href="Aggregator.ecore#//p2/IInstallableUnit/version"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_bNQjpVsQEd6vfc32FHoGFw"/>
       </children>
-      <children xmi:type="notation:Node" xmi:id="_bNRKsFsQEd6vfc32FHoGFw" type="2001">
-        <element xmi:type="ecore:EAttribute" href="Aggregator.ecore#//p2/IInstallableUnit/fragment"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_bNRKsVsQEd6vfc32FHoGFw"/>
-      </children>
       <children xmi:type="notation:Node" xmi:id="_bNRKslsQEd6vfc32FHoGFw" type="2001">
         <element xmi:type="ecore:EAttribute" href="Aggregator.ecore#//p2/IInstallableUnit/resolved"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_bNRKs1sQEd6vfc32FHoGFw"/>
@@ -119,6 +115,10 @@
       <children xmi:type="notation:Node" xmi:id="_afW6AFtLEd6VuawgzDNa7w" type="2002">
         <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//p2/IInstallableUnit/getTouchpointData"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_afW6AVtLEd6VuawgzDNa7w"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_D6aQMKjYEd6tYqh2Ra9GoA" type="2002">
+        <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//p2/IInstallableUnit/isFragment"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D6aQMajYEd6tYqh2Ra9GoA"/>
       </children>
       <children xmi:type="notation:Node" xmi:id="_bNRxw1sQEd6vfc32FHoGFw" type="2002">
         <element xmi:type="ecore:EOperation" href="Aggregator.ecore#//p2/IInstallableUnit/satisfies"/>
@@ -962,7 +962,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_bO6wgVsQEd6vfc32FHoGFw" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_bO6wglsQEd6vfc32FHoGFw" fontName="Sans"/>
     <element xsi:nil="true"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_bO6wg1sQEd6vfc32FHoGFw" points="[-112, 24, 311, 15]$[-215, 24, 208, 15]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_bO6wg1sQEd6vfc32FHoGFw" points="[-112, 24, 311, 14]$[-215, 24, 208, 14]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_bTzQglsQEd6vfc32FHoGFw" id="(0.6666666666666666,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_bTz3kFsQEd6vfc32FHoGFw" id="(0.15384615384615385,0.1836734693877551)"/>
   </edges>
@@ -994,7 +994,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_bO7-pVsQEd6vfc32FHoGFw" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_bO7-plsQEd6vfc32FHoGFw" fontName="Sans"/>
     <element xsi:nil="true"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_bO7-p1sQEd6vfc32FHoGFw" points="[3, 41, -11, -242]$[3, 132, -11, -151]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_bO7-p1sQEd6vfc32FHoGFw" points="[13, 41, -20, -284]$[13, 132, -20, -193]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_bTGs8FsQEd6vfc32FHoGFw" id="(0.5,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_bTGs8VsQEd6vfc32FHoGFw" id="(0.5,1.0)"/>
   </edges>
@@ -1054,7 +1054,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_V64GMVsfEd6ngNO5Tuxvhw" routing="Rectilinear" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_V64GMlsfEd6ngNO5Tuxvhw" fontColor="4210752" fontName="Sans" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="Aggregator.ecore#//p2/InstallableUnit/propertyMap"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_V64GM1sfEd6ngNO5Tuxvhw" points="[-122, 24, 552, -40]$[-576, 24, 98, -40]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_V64GM1sfEd6ngNO5Tuxvhw" points="[-122, 20, 552, -40]$[-576, 20, 98, -40]"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_V68XoVsfEd6ngNO5Tuxvhw" id="(0.20161290322580644,0.9846153846153847)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_PvXUQFshEd6ngNO5Tuxvhw" type="3002" source="_bN7SAlsQEd6vfc32FHoGFw" target="_bN_jdFsQEd6vfc32FHoGFw">

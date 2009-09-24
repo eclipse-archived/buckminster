@@ -170,26 +170,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	protected Version version = VERSION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isFragment() <em>Fragment</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #isFragment()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean FRAGMENT_EDEFAULT = false;
-
-	/**
-	 * The flag representing the value of the '{@link #isFragment() <em>Fragment</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @see #isFragment()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int FRAGMENT_EFLAG = 1 << 0;
-
-	/**
 	 * The default value of the '{@link #isResolved() <em>Resolved</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -207,7 +187,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int RESOLVED_EFLAG = 1 << 1;
+	protected static final int RESOLVED_EFLAG = 1 << 0;
 
 	/**
 	 * The default value of the '{@link #isSingleton() <em>Singleton</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -227,7 +207,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int SINGLETON_EFLAG = 1 << 2;
+	protected static final int SINGLETON_EFLAG = 1 << 1;
 
 	/**
 	 * The cached value of the '{@link #getUpdateDescriptor() <em>Update Descriptor</em>}' containment reference. <!--
@@ -344,7 +324,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			List<RequiredCapability> mhosts = miuf.getHostList();
 			for(IRequiredCapability host : ((IInstallableUnitFragment)iu).getHost())
 				mhosts.add(importToModel(host));
-			miuf.setFragment(true);
 			miu = miuf;
 		}
 		else
@@ -352,7 +331,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 		miu.setCopyright(importToModel(iu.getCopyright()));
 		miu.setFilter(iu.getFilter());
-		miu.setFragment(iu.isFragment());
 		miu.setId(iu.getId());
 		miu.setLicense(importToModel(iu.getLicense()));
 		miu.setResolved(iu.isResolved());
@@ -622,8 +600,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			return getTouchpointType();
 		case P2Package.INSTALLABLE_UNIT__VERSION:
 			return getVersion();
-		case P2Package.INSTALLABLE_UNIT__FRAGMENT:
-			return isFragment();
 		case P2Package.INSTALLABLE_UNIT__RESOLVED:
 			return isResolved();
 		case P2Package.INSTALLABLE_UNIT__SINGLETON:
@@ -713,8 +689,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			return VERSION_EDEFAULT == null
 					? version != null
 					: !VERSION_EDEFAULT.equals(version);
-		case P2Package.INSTALLABLE_UNIT__FRAGMENT:
-			return ((eFlags & FRAGMENT_EFLAG) != 0) != FRAGMENT_EDEFAULT;
 		case P2Package.INSTALLABLE_UNIT__RESOLVED:
 			return ((eFlags & RESOLVED_EFLAG) != 0) != RESOLVED_EDEFAULT;
 		case P2Package.INSTALLABLE_UNIT__SINGLETON:
@@ -807,9 +781,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		case P2Package.INSTALLABLE_UNIT__VERSION:
 			setVersion((Version)newValue);
 			return;
-		case P2Package.INSTALLABLE_UNIT__FRAGMENT:
-			setFragment((Boolean)newValue);
-			return;
 		case P2Package.INSTALLABLE_UNIT__RESOLVED:
 			setResolved((Boolean)newValue);
 			return;
@@ -873,9 +844,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			return;
 		case P2Package.INSTALLABLE_UNIT__VERSION:
 			setVersion(VERSION_EDEFAULT);
-			return;
-		case P2Package.INSTALLABLE_UNIT__FRAGMENT:
-			setFragment(FRAGMENT_EDEFAULT);
 			return;
 		case P2Package.INSTALLABLE_UNIT__RESOLVED:
 			setResolved(RESOLVED_EDEFAULT);
@@ -1026,7 +994,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	{
 		// Retain the order of the properties
 		//
-		EMap<String,String> propertyEntries = getPropertyMap();
+		EMap<String, String> propertyEntries = getPropertyMap();
 		int top = propertyEntries.size();
 		if(top == 0)
 			return Collections.emptyMap();
@@ -1183,9 +1151,9 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			return InstallableUnitType.FEATURE;
 		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_GROUP)))
 			return InstallableUnitType.PRODUCT;
-		if(isFragment())
+		if(isOSGiFragment())
 			return InstallableUnitType.FRAGMENT;
-		if(isBundle())
+		if(isOSGiBundle())
 			return InstallableUnitType.BUNDLE;
 		return InstallableUnitType.OTHER;
 	}
@@ -1242,11 +1210,11 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public boolean isFragment()
 	{
-		return (eFlags & FRAGMENT_EFLAG) != 0;
+		return false;
 	}
 
 	/**
@@ -1318,23 +1286,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		filter = newFilter;
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__FILTER, oldFilter, filter));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setFragment(boolean newFragment)
-	{
-		boolean oldFragment = (eFlags & FRAGMENT_EFLAG) != 0;
-		if(newFragment)
-			eFlags |= FRAGMENT_EFLAG;
-		else
-			eFlags &= ~FRAGMENT_EFLAG;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.INSTALLABLE_UNIT__FRAGMENT, oldFragment,
-					newFragment));
 	}
 
 	/**
@@ -1491,8 +1442,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		result.append(id);
 		result.append(", version: ");
 		result.append(version);
-		result.append(", fragment: ");
-		result.append((eFlags & FRAGMENT_EFLAG) != 0);
 		result.append(", resolved: ");
 		result.append((eFlags & RESOLVED_EFLAG) != 0);
 		result.append(", singleton: ");
@@ -1522,11 +1471,19 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return P2Package.Literals.INSTALLABLE_UNIT;
 	}
 
-	private boolean isBundle()
+	private boolean isOSGiBundle()
 	{
 		for(IProvidedCapability rc : getProvidedCapabilityList())
 			if(IAggregatorConstants.NAMESPACE_TYPE.equals(rc.getNamespace())
 					&& (IAggregatorConstants.CAPABILITY_TYPE_BUNDLE.equals(rc.getName()) || IAggregatorConstants.CAPABILITY_TYPE_SOURCE.equals(rc.getName())))
+				return true;
+		return false;
+	}
+
+	private boolean isOSGiFragment()
+	{
+		for(IProvidedCapability rc : getProvidedCapabilityList())
+			if(IAggregatorConstants.NAMESPACE_OSGI_FRAGMENT.equals(rc.getNamespace()))
 				return true;
 		return false;
 	}
