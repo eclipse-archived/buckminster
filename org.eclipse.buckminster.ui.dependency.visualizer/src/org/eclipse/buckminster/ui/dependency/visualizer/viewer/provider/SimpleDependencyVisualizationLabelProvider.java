@@ -264,11 +264,11 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return null;
 	}
 
-	public void highlightSelection(BOMNode selection)
+	public void highlightSelection(BOMNode nodeSelection)
 	{
-		if(selection == this.selection)
+		if(nodeSelection == selection)
 			return;
-		highlightSelectionInternal(selection);
+		highlightSelectionInternal(nodeSelection);
 
 	}
 
@@ -309,17 +309,17 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 	}
 
 	@SuppressWarnings("unchecked")
-	private void highlightSelectionInternal(BOMNode selection)
+	private void highlightSelectionInternal(BOMNode nodeSelection)
 	{
-		BOMNode previousSelection = this.selection;
-		this.selection = selection;
+		BOMNode previousSelection = selection;
+		selection = nodeSelection;
 		unreveal(previousSelection);
 
-		if(selection == null)
+		if(nodeSelection == null)
 			return;
 		Object[] connections = graphViewer.getConnectionElements();
 		interestingConnections = new HashMap<EntityConnectionData, ConnectionCategory>(
-				relationshipProvider.getInterestingRelationships(root, selection, connections));
+				relationshipProvider.getInterestingRelationships(root, nodeSelection, connections));
 		interestingNodes.clear();
 		for(Entry<EntityConnectionData, ConnectionCategory> entry : interestingConnections.entrySet())
 		{
@@ -336,7 +336,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		objectsToUpdate.addAll(interestingConnections.keySet());
 		objectsToUpdate.addAll(interestingNodes.keySet());
 		objectsToUpdate.add(root);
-		objectsToUpdate.add(selection);
+		objectsToUpdate.add(nodeSelection);
 		graphViewer.update(objectsToUpdate.toArray(), null);
 
 	}

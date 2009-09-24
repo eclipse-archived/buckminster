@@ -330,10 +330,10 @@ public class DependencyVisualizer extends EditorPart
 						TreePath path = paths[0].getParentPath();
 						if(path != null)
 						{
-							Object parent = path.getLastSegment();
-							if(parent instanceof BOMNode)
+							Object nodeParent = path.getLastSegment();
+							if(nodeParent instanceof BOMNode)
 							{
-								BOMNode node = (BOMNode)parent;
+								BOMNode node = (BOMNode)nodeParent;
 								DependencyVisualizer.this.graphViewer.setInputAndRoot(Collections.singletonList(node));
 								DependencyVisualizer.this.graphViewer.setSelection(event.getSelection(), true);
 							}
