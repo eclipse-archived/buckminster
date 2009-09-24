@@ -3285,7 +3285,4 @@
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Ku9lMaROEd6s-IUiwkRRNw" id="(0.7155172413793104,1.0)"/>
     </edges>
   </notation:Diagram>
-  <notation:Diagram xmi:id="_FBuG0KbFEd6s-IUiwkRRNw" type="EcoreTools" name="Resolution" measurementUnit="Pixel">
-    <styles xmi:type="notation:DiagramStyle" xmi:id="_FBuG0abFEd6s-IUiwkRRNw"/>
-  </notation:Diagram>
 </xmi:XMI>
