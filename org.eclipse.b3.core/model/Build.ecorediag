@@ -205,7 +205,7 @@
       <children xmi:type="notation:Node" xmi:id="_KfzxYJ4YEd6chsMEA3b_4g" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_KfzxYZ4YEd6chsMEA3b_4g" type="5001">
         <children xmi:type="notation:Node" xmi:id="_9ROtMKkNEd6eepse63v24w" type="2001">
-          <element xmi:type="ecore:EAttribute" href="Build.ecore#//IRequirement/propertyName"/>
+          <element xmi:type="ecore:EAttribute" href="Build.ecore#//IRequirement/memberName"/>
           <layoutConstraint xmi:type="notation:Location" xmi:id="_9ROtMakNEd6eepse63v24w"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_zCNlEJ5EEd6chsMEA3b_4g" type="2001">
