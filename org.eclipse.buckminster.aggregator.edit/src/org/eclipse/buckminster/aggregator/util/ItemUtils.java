@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -88,6 +89,16 @@ public class ItemUtils
 		return newMappedRepo;
 	}
 
+	public static MappedRepository findMappedRepository(Aggregator aggregator, MetadataRepository mdr)
+	{
+		for(Contribution contribution : aggregator.getContributions())
+			for(MappedRepository repo : contribution.getRepositories())
+				if(repo.getMetadataRepository() == mdr)
+					return repo;
+
+		return null;
+	}
+
 	/**
 	 * Searches for a MappedRepository with the same location
 	 * 
@@ -108,7 +119,34 @@ public class ItemUtils
 		return null;
 	}
 
-	public static Collection<InstallableUnit> getIUs(Collection<? extends IUPresentation> iups)
+	public static MappedUnit findMappedUnit(Aggregator aggregator, InstallableUnit iu)
+	{
+		MetadataRepository mdr = (MetadataRepository)((EObject)iu).eContainer();
+
+		for(Contribution contribution : aggregator.getContributions())
+			for(MappedRepository repo : contribution.getRepositories())
+			{
+				if(repo.getMetadataRepository() != mdr)
+					continue;
+
+				for(MappedUnit unit : repo.getUnits(false))
+					if(unit.getInstallableUnit() == iu)
+						return unit;
+			}
+
+		return null;
+	}
+
+	public static MappedUnit findMappedUnit(MappedRepository mappedRepo, InstallableUnit iu)
+	{
+		for(MappedUnit unit : mappedRepo.getUnits(false))
+			if(unit.getInstallableUnit() == iu)
+				return unit;
+
+		return null;
+	}
+
+	public static Collection<? extends InstallableUnit> getIUs(Collection<? extends IUPresentation> iups)
 	{
 		Set<InstallableUnit> set = new HashSet<InstallableUnit>();
 

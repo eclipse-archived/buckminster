@@ -6,15 +6,23 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
+import org.eclipse.buckminster.aggregator.util.ItemSorter;
+import org.eclipse.buckminster.aggregator.util.ItemUtils;
+import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -217,6 +225,30 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	/**
+	 * Supports DnD from Features to CustomCategory
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
+			int operation, Collection<?> collection)
+	{
+		ItemSorter itemSorter = new ItemSorter(collection);
+
+		if(itemSorter.getTotalItemCount() > 0
+				&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.FEATURE).size() || (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
+						ItemGroup.FEATURE_STRUCTURED).size())))
+		{
+			List<InstallableUnit> features = new ArrayList<InstallableUnit>();
+			features.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.FEATURE));
+			features.addAll(ItemUtils.getIUs((List<org.eclipse.buckminster.aggregator.p2view.Feature>)itemSorter.getGroupItems(ItemGroup.FEATURE_STRUCTURED)));
+
+			return new AddToCustomCategoryCommand((CustomCategory)owner, features);
+		}
+
+		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}
 
 	/**

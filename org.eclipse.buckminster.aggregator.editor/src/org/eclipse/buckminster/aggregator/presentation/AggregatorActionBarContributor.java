@@ -17,10 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.engine.Builder;
@@ -29,6 +29,7 @@ import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
+import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
@@ -96,6 +97,34 @@ import org.xml.sax.SAXException;
 public class AggregatorActionBarContributor extends EditingDomainActionBarContributor implements
 		ISelectionChangedListener
 {
+	class AddToCustomCategoryAction extends Action
+	{
+		private EditingDomain m_domain;
+
+		private AddToCustomCategoryCommand m_command;
+
+		public AddToCustomCategoryAction(EditingDomain domain, CustomCategory customCategory,
+				List<InstallableUnit> selectedFeatures)
+		{
+			Object imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Contribution.gif");
+
+			if(imageURL != null && imageURL instanceof URL)
+				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
+
+			m_domain = domain;
+			m_command = new AddToCustomCategoryCommand(customCategory, selectedFeatures);
+
+			setText(m_command.getLabel());
+			setEnabled(m_command.canExecute());
+		}
+
+		@Override
+		public void run()
+		{
+			m_domain.getCommandStack().execute(m_command);
+		}
+	}
+
 	class BuildRepoAction extends Action
 	{
 		private final Builder.ActionType m_actionType;
@@ -488,6 +517,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected List<IAction> m_mapToContributionActions = new ArrayList<IAction>();
 
+	protected List<IAction> m_addToCustomCategoriesActions = new ArrayList<IAction>();
+
 	private Aggregator m_aggregator;
 
 	/**
@@ -579,6 +610,17 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				MenuManager submenuManager = new MenuManager(
 						AggregatorEditorPlugin.INSTANCE.getString("_UI_Map_to_menu_item"));
 				populateManager(submenuManager, m_mapToContributionActions, null);
+				menuManager.insertBefore("edit", submenuManager);
+			}
+
+		if(m_addToCustomCategoriesActions != null && m_addToCustomCategoriesActions.size() > 0)
+			if(m_addToCustomCategoriesActions.size() == 1)
+				menuManager.insertBefore("edit", m_addToCustomCategoriesActions.get(0));
+			else
+			{
+				MenuManager submenuManager = new MenuManager(
+						AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_to_menu_item"));
+				populateManager(submenuManager, m_addToCustomCategoriesActions, null);
 				menuManager.insertBefore("edit", submenuManager);
 			}
 
@@ -674,7 +716,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	public void setActiveEditor(IEditorPart part)
 	{
 		setActiveEditorGen(part);
-		m_aggregator = getAggregator((IEditingDomainProvider)activeEditorPart);
+		m_aggregator = getAggregator((IEditingDomainProvider)part);
 	}
 
 	/**
@@ -793,6 +835,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 
 		m_mapToContributionActions = generateMapToContributionActions(selection);
+		m_addToCustomCategoriesActions = generateAddToCustomCategoryActions(selection);
 	}
 
 	@Override
@@ -938,6 +981,34 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	}
 
 	@SuppressWarnings("unchecked")
+	private List<IAction> generateAddToCustomCategoryActions(ISelection selection)
+	{
+		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() > 0)
+		{
+			ItemSorter itemSorter = new ItemSorter(((IStructuredSelection)selection).toList());
+
+			List<IAction> addToActions = new ArrayList<IAction>();
+
+			if(itemSorter.getTotalItemCount() > 0
+					&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.FEATURE).size() || (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
+							ItemGroup.FEATURE_STRUCTURED).size())))
+			{
+				List<InstallableUnit> features = new ArrayList<InstallableUnit>();
+				features.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.FEATURE));
+				features.addAll(ItemUtils.getIUs((List<org.eclipse.buckminster.aggregator.p2view.Feature>)itemSorter.getGroupItems(ItemGroup.FEATURE_STRUCTURED)));
+
+				for(CustomCategory customCategory : m_aggregator.getCustomCategories())
+					addToActions.add(new AddToCustomCategoryAction(
+							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), customCategory, features));
+			}
+
+			return addToActions;
+		}
+
+		return Collections.emptyList();
+	}
+
+	@SuppressWarnings("unchecked")
 	private List<IAction> generateMapToContributionActions(ISelection selection)
 	{
 		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() > 0)
@@ -970,5 +1041,4 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 		return Collections.emptyList();
 	}
-
 }
