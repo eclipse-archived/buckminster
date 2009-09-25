@@ -129,7 +129,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 				createStructuredView();
 
-				log.info("Done. Took %s", TimeUtils.getFormattedDuration(start));
+				log.debug("Done. Took %s", TimeUtils.getFormattedDuration(start));
 			}
 			catch(Exception e)
 			{
