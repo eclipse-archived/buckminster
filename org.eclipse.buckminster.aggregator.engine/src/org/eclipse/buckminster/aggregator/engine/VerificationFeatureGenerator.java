@@ -30,7 +30,7 @@ public class VerificationFeatureGenerator extends BuilderPhase
 	public void run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
-		long now = System.currentTimeMillis();
+		long start = TimeUtils.getNow();
 		MonitorUtils.begin(monitor, "Verifying Features", 100);
 		String info = "Starting generation of verification feature";
 		log.info(info);
@@ -67,7 +67,7 @@ public class VerificationFeatureGenerator extends BuilderPhase
 			bucky.ungetService(mdrMgr);
 			MonitorUtils.done(monitor);
 		}
-		log.info("Done. Took %s", TimeUtils.getFormattedDuration(now)); //$NON-NLS-1$
+		log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 	}
 
 	private IPublisherAction[] createActions(IMetadataRepository mdr)
