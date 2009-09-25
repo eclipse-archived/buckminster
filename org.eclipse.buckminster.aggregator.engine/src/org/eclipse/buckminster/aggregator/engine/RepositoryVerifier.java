@@ -2,6 +2,7 @@ package org.eclipse.buckminster.aggregator.engine;
 
 import static java.lang.String.format;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +18,11 @@ import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.PackedStrategy;
+import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -26,13 +31,20 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
 import org.eclipse.equinox.internal.p2.director.Explanation;
 import org.eclipse.equinox.internal.p2.director.Explanation.HardRequirement;
 import org.eclipse.equinox.internal.p2.director.Explanation.MissingIU;
 import org.eclipse.equinox.internal.p2.director.Explanation.Singleton;
+import org.eclipse.equinox.internal.p2.touchpoint.eclipse.PublisherUtil;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IFileArtifactRepository;
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.director.IPlanner;
@@ -91,7 +103,8 @@ public class RepositoryVerifier extends BuilderPhase
 		Builder builder = getBuilder();
 		Aggregator aggregator = builder.getAggregator();
 		List<Configuration> configs = aggregator.getConfigurations();
-		SubMonitor subMon = SubMonitor.convert(monitor, configs.size() * 100);
+		int configCount = configs.size();
+		SubMonitor subMon = SubMonitor.convert(monitor, configCount * 100);
 
 		Logger log = Buckminster.getLogger();
 		log.info("Starting planner verification"); //$NON-NLS-1$
@@ -106,8 +119,9 @@ public class RepositoryVerifier extends BuilderPhase
 		URI repoLocation = builder.getSourceCompositeURI();
 		try
 		{
-			for(Configuration config : configs)
+			for(int configIdx = 0; configIdx < configCount; ++configIdx)
 			{
+				Configuration config = configs.get(configIdx);
 				String configName = config.getName();
 				String info = format("Verifying config %s...", configName); //$NON-NLS-1$
 				log.info(info);
@@ -135,84 +149,123 @@ public class RepositoryVerifier extends BuilderPhase
 					request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU,
 							Boolean.TRUE.toString());
 				request.addInstallableUnits(rootArr);
-				ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation),
-						subMon.newChild(90, SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 
-				IStatus status = plan.getStatus();
-				if(status.getSeverity() == IStatus.ERROR)
+				boolean hadPartials = true;
+				while(hadPartials)
 				{
-					sendEmails(plan.getRequestStatus());
-					log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
-					throw new CoreException(status);
-				}
+					hadPartials = false;
+					ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation),
+							subMon.newChild(80, SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 
-				Set<InstallableUnit> validationOnlyIUs = null;
-				List<MetadataRepositoryReference> validationRepos = aggregator.getValidationRepositories();
-				for(MetadataRepositoryReference validationRepo : validationRepos)
-				{
-					if(validationRepo.isEnabled())
+					IStatus status = plan.getStatus();
+					if(status.getSeverity() == IStatus.ERROR)
 					{
-						if(validationOnlyIUs == null)
-							validationOnlyIUs = new HashSet<InstallableUnit>();
-						validationOnlyIUs.addAll(validationRepo.getMetadataRepository().getInstallableUnits());
+						sendEmails(plan.getRequestStatus());
+						log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
+						throw new CoreException(status);
 					}
-				}
-				if(validationOnlyIUs == null)
-					validationOnlyIUs = Collections.emptySet();
 
-				Set<IInstallableUnit> suspectedValidationOnlyIUs = null;
-				Operand[] ops = plan.getOperands();
-				for(Operand op : ops)
-				{
-					if(!(op instanceof InstallableUnitOperand))
-						continue;
-
-					InstallableUnitOperand iuOp = (InstallableUnitOperand)op;
-					IInstallableUnit iu = iuOp.second();
-					if(iu == null)
-						continue;
-
-					String id = iu.getId();
-					if(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(id))
-						continue;
-
-					if(validationOnlyIUs.contains(iu))
+					Set<InstallableUnit> validationOnlyIUs = null;
+					List<MetadataRepositoryReference> validationRepos = aggregator.getValidationRepositories();
+					for(MetadataRepositoryReference validationRepo : validationRepos)
 					{
-						// This IU should not be included unless it is also included in one of
-						// the contributed repositories
-						if(suspectedValidationOnlyIUs == null)
-							suspectedValidationOnlyIUs = new HashSet<IInstallableUnit>();
-						suspectedValidationOnlyIUs.add(iu);
-					}
-					else
-						unitsToAggregate.add(iu);
-				}
-
-				if(suspectedValidationOnlyIUs != null)
-				{
-					// Prune the set of IU's that we suspect are there for validation
-					// purposes only using the source repository
-					//
-					final Set<IInstallableUnit> candidates = suspectedValidationOnlyIUs;
-					IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-					try
-					{
-						IMetadataRepository sourceRepo = mdrMgr.loadRepository(repoLocation, subMon.newChild(1));
-						sourceRepo.query(new MatchQuery()
+						if(validationRepo.isEnabled())
 						{
-							@Override
-							public boolean isMatch(Object iu)
-							{
-								if(candidates.contains(iu))
-									unitsToAggregate.add((IInstallableUnit)iu);
-								return false; // Since we don't use the Collector
-							}
-						}, null, subMon.newChild(1));
+							if(validationOnlyIUs == null)
+								validationOnlyIUs = new HashSet<InstallableUnit>();
+							validationOnlyIUs.addAll(validationRepo.getMetadataRepository().getInstallableUnits());
+						}
 					}
-					finally
+					if(validationOnlyIUs == null)
+						validationOnlyIUs = Collections.emptySet();
+
+					Set<IInstallableUnit> suspectedValidationOnlyIUs = null;
+					Operand[] ops = plan.getOperands();
+					for(Operand op : ops)
 					{
-						bucky.ungetService(mdrMgr);
+						if(!(op instanceof InstallableUnitOperand))
+							continue;
+
+						InstallableUnitOperand iuOp = (InstallableUnitOperand)op;
+						IInstallableUnit iu = iuOp.second();
+						if(iu == null)
+							continue;
+
+						String id = iu.getId();
+						if(Builder.ALL_CONTRIBUTED_CONTENT_FEATURE.equals(id))
+							continue;
+
+						if(validationOnlyIUs.contains(iu))
+						{
+							// This IU should not be included unless it is also included in one of
+							// the contributed repositories
+							if(suspectedValidationOnlyIUs == null)
+								suspectedValidationOnlyIUs = new HashSet<IInstallableUnit>();
+							suspectedValidationOnlyIUs.add(iu);
+						}
+						else
+						{
+							if(!unitsToAggregate.contains(iu))
+							{
+								if(Boolean.valueOf(iu.getProperty(IInstallableUnit.PROP_PARTIAL_IU)).booleanValue())
+								{
+									iu = resolvePartialIU(iu, subMon.newChild(1));
+									hadPartials = true;
+								}
+								unitsToAggregate.add(iu);
+							}
+						}
 					}
+
+					if(suspectedValidationOnlyIUs != null)
+					{
+						// Prune the set of IU's that we suspect are there for validation
+						// purposes only using the source repository
+						//
+						final Set<IInstallableUnit> candidates = suspectedValidationOnlyIUs;
+						IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+						try
+						{
+							final boolean hadPartialsHolder[] = new boolean[] { false };
+							IMetadataRepository sourceRepo = mdrMgr.loadRepository(repoLocation, subMon.newChild(1));
+							sourceRepo.query(new MatchQuery()
+							{
+								@Override
+								public boolean isMatch(Object obj)
+								{
+									if(obj instanceof InstallableUnit)
+									{
+										InstallableUnit iu = (InstallableUnit)obj;
+										if(candidates.contains(iu) && !unitsToAggregate.contains(iu))
+										{
+											try
+											{
+												if(Boolean.valueOf(iu.getProperty(IInstallableUnit.PROP_PARTIAL_IU)).booleanValue())
+												{
+													iu = resolvePartialIU(iu,
+															SubMonitor.convert(new NullProgressMonitor()));
+													hadPartialsHolder[0] = true;
+												}
+											}
+											catch(CoreException e)
+											{
+												throw new RuntimeException(e);
+											}
+											unitsToAggregate.add(iu);
+										}
+									}
+									return false; // Since we don't use the Collector
+								}
+							}, null, subMon.newChild(1));
+						}
+						finally
+						{
+							bucky.ungetService(mdrMgr);
+						}
+					}
+					if(hadPartials)
+						// Rerun the validation
+						log.info("Partial IU's encountered. Verifying %s again...", configName); //$NON-NLS-1$					}
 				}
 			}
 		}
@@ -342,6 +395,93 @@ public class RepositoryVerifier extends BuilderPhase
 		return null;
 	}
 
+	private InstallableUnit resolvePartialIU(IInstallableUnit iu, SubMonitor subMon) throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+		Logger log = Buckminster.getLogger();
+		String info = "Converting partial IU for " + iu.getId() + "...";
+		subMon.beginTask(info, IProgressMonitor.UNKNOWN);
+		log.debug(info);
+
+		// Scan all mapped repositories for this IU
+		//
+		InstallableUnit miu = null;
+		MetadataRepository mdr = null;
+		contribs: for(Contribution contrib : getBuilder().getAggregator().getContributions(true))
+
+			for(MappedRepository repo : contrib.getRepositories(true))
+			{
+				MetadataRepository candidate = repo.getMetadataRepository();
+				for(InstallableUnit candidateIU : candidate.getInstallableUnits())
+					if(iu.getId().equals(candidateIU.getId()) && iu.getVersion().equals(candidateIU.getVersion()))
+					{
+						mdr = candidate;
+						miu = candidateIU;
+						break contribs;
+					}
+			}
+
+		if(mdr == null)
+			throw BuckminsterException.fromMessage("Unable to locate mapped repository for IU %s/%s", iu.getId(),
+					iu.getVersion());
+
+		try
+		{
+			IArtifactRepository sourceAr = arMgr.loadRepository(mdr.getLocation(), subMon.newChild(10));
+			File tempRepositoryFolder = getBuilder().getTempRepositoryFolder();
+			tempRepositoryFolder.mkdirs();
+
+			URI tempRepositoryURI = Builder.createURI(tempRepositoryFolder);
+			IFileArtifactRepository tempAr;
+			try
+			{
+				tempAr = (IFileArtifactRepository)arMgr.loadRepository(tempRepositoryURI, subMon.newChild(1));
+			}
+			catch(ProvisionException e)
+			{
+				tempAr = (IFileArtifactRepository)arMgr.createRepository(tempRepositoryURI, "temporary artifacts"
+						+ " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, Collections.emptyMap()); //$NON-NLS-1$
+			}
+
+			List<ArtifactKey> artifacts = miu.getArtifactList();
+			ArrayList<String> errors = new ArrayList<String>();
+			MirrorGenerator.mirror(artifacts, null, sourceAr, tempAr, PackedStrategy.UNPACK_AS_SIBLING, errors,
+					subMon.newChild(1));
+			int numErrors = errors.size();
+			if(numErrors > 0)
+			{
+				IStatus[] children = new IStatus[numErrors];
+				for(int idx = 0; idx < numErrors; ++idx)
+					children[idx] = new Status(IStatus.ERROR, Engine.PLUGIN_ID, errors.get(idx));
+				MultiStatus status = new MultiStatus(Engine.PLUGIN_ID, IStatus.ERROR, children, "Unable to mirror",
+						null);
+				throw new CoreException(status);
+			}
+
+			ArtifactKey key = artifacts.get(0);
+			File bundleFile = tempAr.getArtifactFile(artifacts.get(0));
+			if(bundleFile == null)
+				throw BuckminsterException.fromMessage(
+						"Unable to resolve partial IU. Artifact file for %s could not be found", key);
+
+			IInstallableUnit preparedIU = PublisherUtil.createBundleIU(key, bundleFile);
+			if(preparedIU == null)
+				throw BuckminsterException.fromMessage(
+						"Unable to resolve partial IU. Artifact file for %s did not contain a bundle manifest", key);
+			InstallableUnit newIU = InstallableUnitImpl.importToModel(preparedIU);
+
+			List<InstallableUnit> allIUs = mdr.getInstallableUnits();
+			allIUs.remove(miu);
+			allIUs.add(newIU);
+			return newIU;
+		}
+		finally
+		{
+			bucky.ungetService(arMgr);
+		}
+	}
+
 	private void sendEmails(RequestStatus requestStatus)
 	{
 		Builder builder = getBuilder();
@@ -404,4 +544,5 @@ public class RepositoryVerifier extends BuilderPhase
 				builder.sendEmail(contrib, errors);
 		}
 	}
+
 }

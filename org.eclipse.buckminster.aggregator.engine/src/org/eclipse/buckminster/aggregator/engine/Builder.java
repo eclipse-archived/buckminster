@@ -125,13 +125,13 @@ public class Builder implements IApplication
 
 	public static final String PROFILE_ID = "GalileoTest"; //$NON-NLS-1$
 
-	public static final String REPO_FOLDER_CATEGORIES = "categories"; //$NON-NLS-1$
-
 	public static final String REPO_FOLDER_VERIFICATION = "verification"; //$NON-NLS-1$
 
 	public static final String REPO_FOLDER_FINAL = "final"; //$NON-NLS-1$
 
 	public static final String REPO_FOLDER_INTERIM = "interim"; //$NON-NLS-1$
+
+	public static final String REPO_FOLDER_TEMP = "temp"; //$NON-NLS-1$
 
 	public static final String REPO_FOLDER_AGGREGATE = "aggregate"; //$NON-NLS-1$
 
@@ -467,6 +467,11 @@ public class Builder implements IApplication
 	public URI getSourceCompositeURI() throws CoreException
 	{
 		return createURI(new File(buildRoot, REPO_FOLDER_INTERIM));
+	}
+
+	public File getTempRepositoryFolder()
+	{
+		return new File(buildRoot, REPO_FOLDER_TEMP);
 	}
 
 	public Set<IInstallableUnit> getUnitsToAggregate()

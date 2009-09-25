@@ -83,7 +83,7 @@ public class CategoriesGenerator extends BuilderPhase
 		List<RequiredCapability> rcs = cat.getRequiredCapabilityList();
 		for(Feature feature : category.getFeatures())
 		{
-			if(!feature.isEnabled())
+			if(!feature.isBranchEnabled())
 				continue;
 
 			InstallableUnit iu = feature.getInstallableUnit();
