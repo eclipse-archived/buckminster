@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -66,7 +67,7 @@ public class VerificationFeatureGenerator extends BuilderPhase
 			bucky.ungetService(mdrMgr);
 			MonitorUtils.done(monitor);
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
+		log.info("Done. Took %s", TimeUtils.getFormattedDuration(now)); //$NON-NLS-1$
 	}
 
 	private IPublisherAction[] createActions(IMetadataRepository mdr)

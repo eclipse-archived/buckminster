@@ -18,6 +18,7 @@ import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -94,7 +95,7 @@ public class RepositoryVerifier extends BuilderPhase
 
 		Logger log = Buckminster.getLogger();
 		log.info("Starting planner verification"); //$NON-NLS-1$
-		long now = System.currentTimeMillis();
+		long start = TimeUtils.getNow();
 
 		String profilePrefix = Builder.PROFILE_ID + '_';
 
@@ -141,7 +142,7 @@ public class RepositoryVerifier extends BuilderPhase
 				if(status.getSeverity() == IStatus.ERROR)
 				{
 					sendEmails(plan.getRequestStatus());
-					log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now)); //$NON-NLS-1$
+					log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 					throw new CoreException(status);
 				}
 

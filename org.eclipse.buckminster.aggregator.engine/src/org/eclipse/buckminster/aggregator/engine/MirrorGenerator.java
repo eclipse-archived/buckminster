@@ -20,6 +20,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
+import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -246,7 +247,7 @@ public class MirrorGenerator extends BuilderPhase
 	{
 		Logger log = Buckminster.getLogger();
 		log.info("Starting mirror generation");
-		long now = System.currentTimeMillis();
+		long start = TimeUtils.getNow();
 
 		Builder builder = getBuilder();
 		File destination = new File(builder.getBuildRoot(), Builder.REPO_FOLDER_FINAL);
@@ -519,7 +520,7 @@ public class MirrorGenerator extends BuilderPhase
 			arMgr = null;
 			MonitorUtils.done(subMon);
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
+		log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 		if(artifactErrors)
 			throw BuckminsterException.fromMessage("Not all artifacts could be mirrored, see log for details");
 	}

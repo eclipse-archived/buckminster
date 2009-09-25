@@ -19,6 +19,7 @@ import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.buckminster.aggregator.p2.impl.ProvidedCapabilityImpl;
 import org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl;
+import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -40,7 +41,7 @@ public class CategoriesGenerator extends BuilderPhase
 	public void run(IProgressMonitor monitor) throws CoreException
 	{
 		Logger log = Buckminster.getLogger();
-		long now = System.currentTimeMillis();
+		long start = TimeUtils.getNow();
 		MonitorUtils.begin(monitor, 10);
 		String info = "Starting generation of categories";
 		MonitorUtils.subTask(monitor, info);
@@ -62,7 +63,7 @@ public class CategoriesGenerator extends BuilderPhase
 		{
 			MonitorUtils.done(monitor);
 		}
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
+		log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 	}
 
 	private InstallableUnit createCategoryIU(CustomCategory category)

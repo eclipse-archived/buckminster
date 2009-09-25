@@ -28,6 +28,7 @@ import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredVie
 import org.eclipse.buckminster.aggregator.p2view.OtherIU;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.Product;
+import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -96,7 +97,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				String msg = format("Loading repository %s", location);
 				log.debug(msg);
 				subMon.setTaskName(msg);
-				long start = System.currentTimeMillis();
+				long start = TimeUtils.getNow();
 				IMetadataRepository repo;
 				try
 				{
@@ -128,7 +129,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 				createStructuredView();
 
-				log.debug("Done. Took %d millisecs", Long.valueOf(System.currentTimeMillis() - start));
+				log.info("Done. Took %s", TimeUtils.getFormattedDuration(start));
 			}
 			catch(Exception e)
 			{

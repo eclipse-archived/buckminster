@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
+import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -43,7 +44,7 @@ public class SourceCompositeGenerator extends BuilderPhase
 		log.info(info);
 		subMon.setTaskName("Generating composite from all sources...");
 
-		long now = System.currentTimeMillis();
+		long start = TimeUtils.getNow();
 
 		String name = getBuilder().getAggregator().getLabel() + " Composite";
 		Map<String, String> properties = new HashMap<String, String>();
@@ -95,7 +96,7 @@ public class SourceCompositeGenerator extends BuilderPhase
 		}
 		bucky.ungetService(mdrMgr);
 		MonitorUtils.done(subMon);
-		log.info("Done. Took %d ms", Long.valueOf(System.currentTimeMillis() - now));
+		log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 		if(errorsFound)
 			throw BuckminsterException.fromMessage("CompositeRepository generation was not succesful");
 	}
