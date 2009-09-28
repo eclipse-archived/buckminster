@@ -34,7 +34,7 @@ public class PlatformComponentsFilter extends ViewerFilter
 			Resolution resolution = node.getResolution();
 			if(resolution == null)
 				return true;
-			return !"eclipse.platform".equals(resolution.getProvider().getReaderTypeId());
+			return !"eclipse.platform".equals(resolution.getProvider().getReaderTypeId()); //$NON-NLS-1$
 
 		}
 		return true;

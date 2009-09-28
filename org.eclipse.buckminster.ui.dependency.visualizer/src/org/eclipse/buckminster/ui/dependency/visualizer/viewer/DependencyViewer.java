@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.ui.actions.ViewChosenCSpecAction;
+import org.eclipse.buckminster.ui.dependency.visualizer.Messages;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.IViewerSettingChangeListener;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.ViewerSettingChangeEvent;
 import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.DependencyContentProvider;
@@ -119,7 +120,7 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 	public void setInputAndRoot(List<? extends BOMNode> input)
 	{
 		if(input.size() != 1)
-			throw new IllegalArgumentException("List must contain exactly one bom so far");
+			throw new IllegalArgumentException(Messages.ListMustContainExactlyOneBom);
 		labelProvider.clear();
 		setInput(input);
 		BOMNode node = input.get(0);

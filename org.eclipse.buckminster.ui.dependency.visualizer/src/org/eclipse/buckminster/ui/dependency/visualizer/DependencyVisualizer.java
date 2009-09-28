@@ -82,7 +82,7 @@ public class DependencyVisualizer extends EditorPart
 		parent.setLayout(new FillLayout());
 
 		Form form = toolkit.createForm(parent);
-		form.setText("Dependency Visualization");
+		form.setText(Messages.DependencyVisualisation);
 		parent = form.getBody();
 		parent.setLayout(new GridLayout(2, false));
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
@@ -92,7 +92,7 @@ public class DependencyVisualizer extends EditorPart
 				| ExpandableComposite.TITLE_BAR);
 		sashForm.setWeights(new int[] { 25, 70 });
 
-		graphSection.setText("Graph");
+		graphSection.setText(Messages.Graph);
 
 		graphSection.setLayout(new FillLayout());
 		this.graphViewer = new DependencyViewer(graphSection, SWT.NONE);
@@ -206,7 +206,7 @@ public class DependencyVisualizer extends EditorPart
 
 		Section filterSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT
 				| ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.EXPANDED);
-		filterSection.setText("Filters");
+		filterSection.setText(Messages.Filters);
 		filterSection.setLayout(new GridLayout(1, true));
 		filterSection.setClient(createFilterComposite(filterSection));
 		GridDataFactory.fillDefaults().applyTo(filterSection);
@@ -214,14 +214,14 @@ public class DependencyVisualizer extends EditorPart
 		Section layoutSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT
 				| ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.EXPANDED);
 		layoutSection.setLayout(new FillLayout());
-		layoutSection.setText("Layout");
+		layoutSection.setText(Messages.Layout);
 		layoutSection.setClient(createLayoutComposite(layoutSection));
 		GridDataFactory.fillDefaults().applyTo(layoutSection);
 
 		Section pathSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT
 				| ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.EXPANDED);
 		pathSection.setLayout(new FillLayout());
-		pathSection.setText("Path Highlighting");
+		pathSection.setText(Messages.PathHighlighting);
 		pathSection.setClient(createHighlightComposite(pathSection));
 		GridDataFactory.fillDefaults().applyTo(pathSection);
 
@@ -233,7 +233,7 @@ public class DependencyVisualizer extends EditorPart
 
 		scroll.layout();
 		actions.setClient(scroll);
-		actions.setText("Settings");
+		actions.setText(Messages.Settings);
 		GridDataFactory.fillDefaults().applyTo(actions);
 
 	}
@@ -284,7 +284,7 @@ public class DependencyVisualizer extends EditorPart
 		Section navigationSection = toolkit.createSection(parent, ExpandableComposite.EXPANDED
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(navigationSection);
-		navigationSection.setText("Navgiation");
+		navigationSection.setText(Messages.Navigation);
 		navigationSection.setLayout(new FillLayout());
 
 		treeViewer = new TreeViewer(toolkit.createTree(navigationSection, SWT.NONE));

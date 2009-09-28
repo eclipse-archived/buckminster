@@ -64,7 +64,7 @@ public class ShortesPathCalculation
 		for(BOMNode bomNode : queue)
 		{
 			map.put(bomNode, VERY_LARGE_NUMBER);
-			map.put(root, 0);
+			map.put(root, Integer.valueOf(0));
 		}
 		return map;
 	}
@@ -80,12 +80,12 @@ public class ShortesPathCalculation
 			List<BOMNode> outgoing = head.getChildren();
 			for(BOMNode current : outgoing)
 			{
-				int headLength = lengthMap.get(head);
-				int currentLength = lengthMap.get(current);
+				int headLength = lengthMap.get(head).intValue();
+				int currentLength = lengthMap.get(current).intValue();
 				if(headLength + 1 < currentLength)
 				{
 					previous.put(current, head);
-					lengthMap.put(current, lengthMap.get(head) + 1);
+					lengthMap.put(current, Integer.valueOf(headLength + 1));
 				}
 			}
 		}

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.dependency.visualizer.controls;
 
+import org.eclipse.buckminster.ui.dependency.visualizer.Messages;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.ViewerSettingChangeEvent;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.ViewerSettingType;
 import org.eclipse.swt.SWT;
@@ -80,15 +81,15 @@ public class LayoutControl extends AbstractViewerSettingControl
 
 		Composite layoutComposite = getWidgetToolkit().createComposite(parent);
 		layoutComposite.setLayout(new GridLayout(1, true));
-		final Button spring = getWidgetToolkit().createButton(layoutComposite, "Spring Layout", SWT.RADIO);
-		final Button directed = getWidgetToolkit().createButton(layoutComposite, "Directed Layout", SWT.RADIO);
-		final Button grid = getWidgetToolkit().createButton(layoutComposite, "Grid Layout", SWT.RADIO);
-		final Button horizontal = getWidgetToolkit().createButton(layoutComposite, "Horizontal Layout", SWT.RADIO);
-		final Button vertical = getWidgetToolkit().createButton(layoutComposite, "Vertical Layout", SWT.RADIO);
-		final Button tree = getWidgetToolkit().createButton(layoutComposite, "Tree Layout", SWT.RADIO);
-		final Button horizontalTree = getWidgetToolkit().createButton(layoutComposite, "Horizontal Tree Layout",
+		final Button spring = getWidgetToolkit().createButton(layoutComposite, Messages.SpringLayout, SWT.RADIO);
+		final Button directed = getWidgetToolkit().createButton(layoutComposite, Messages.DirectedLayout, SWT.RADIO);
+		final Button grid = getWidgetToolkit().createButton(layoutComposite, Messages.GridLayout, SWT.RADIO);
+		final Button horizontal = getWidgetToolkit().createButton(layoutComposite, Messages.HorizontalLayout, SWT.RADIO);
+		final Button vertical = getWidgetToolkit().createButton(layoutComposite, Messages.VerticalLayout, SWT.RADIO);
+		final Button tree = getWidgetToolkit().createButton(layoutComposite, Messages.TreeLayout, SWT.RADIO);
+		final Button horizontalTree = getWidgetToolkit().createButton(layoutComposite, Messages.HorizontalTreeLayout,
 				SWT.RADIO);
-		final Button radial = getWidgetToolkit().createButton(layoutComposite, "Radial Layout", SWT.RADIO);
+		final Button radial = getWidgetToolkit().createButton(layoutComposite, Messages.RadialLayout, SWT.RADIO);
 
 		tree.setSelection(true);
 		LayoutAlgorithm algo = addHorizontalShift(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));

@@ -38,15 +38,15 @@ public class DependencyLabelProvider extends LabelProvider
 			{
 				componentTypeID = resolution.getComponentTypeId();
 			}
-			if("osgi.bundle".equals(componentTypeID))
-				return ImageCache.getImage("icons/osgi16x16.png");
-			else if("maven".equals(componentTypeID))
-				return ImageCache.getImage("icons/apache.png");
+			if("osgi.bundle".equals(componentTypeID)) //$NON-NLS-1$
+				return ImageCache.getImage("icons/osgi16x16.png"); //$NON-NLS-1$
+			else if("maven".equals(componentTypeID)) //$NON-NLS-1$
+				return ImageCache.getImage("icons/apache.png"); //$NON-NLS-1$
 
-			else if("buckminster".equals(componentTypeID))
-				return ImageCache.getImage("icons/component.png");
-			else if("eclipse.feature".equals(componentTypeID))
-				return ImageCache.getImage("icons/eclipse.gif");
+			else if("buckminster".equals(componentTypeID)) //$NON-NLS-1$
+				return ImageCache.getImage("icons/component.png"); //$NON-NLS-1$
+			else if("eclipse.feature".equals(componentTypeID)) //$NON-NLS-1$
+				return ImageCache.getImage("icons/eclipse.gif"); //$NON-NLS-1$
 
 		}
 		return super.getImage(element);
@@ -65,7 +65,7 @@ public class DependencyLabelProvider extends LabelProvider
 		if(element instanceof EntityConnectionData)
 		{
 
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		return super.getText(element);
 	}

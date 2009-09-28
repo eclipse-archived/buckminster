@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.dependency.visualizer.controls;
 
+import org.eclipse.buckminster.ui.dependency.visualizer.Messages;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.ViewerSettingChangeEvent;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.ViewerSettingType;
 import org.eclipse.buckminster.ui.dependency.visualizer.viewer.filter.PlatformComponentsFilter;
@@ -58,14 +59,14 @@ public class FilterControl extends AbstractViewerSettingControl
 		{
 			if(invert)
 			{
-				getWidgetToolkit().createLabel(parent, "Blacklist");
+				getWidgetToolkit().createLabel(parent, Messages.Blacklist);
 			}
 			else
 			{
-				getWidgetToolkit().createLabel(parent, "Whitelist");
+				getWidgetToolkit().createLabel(parent, Messages.Whilelist);
 			}
 
-			regex = getWidgetToolkit().createText(parent, "", SWT.BORDER);
+			regex = getWidgetToolkit().createText(parent, "", SWT.BORDER); //$NON-NLS-1$
 			regex.addModifyListener(this);
 		}
 
@@ -108,7 +109,7 @@ public class FilterControl extends AbstractViewerSettingControl
 		Composite filterComposite = getWidgetToolkit().createComposite(parent);
 		filterComposite.setLayout(new GridLayout(2, true));
 
-		final Button filterPlatform = getWidgetToolkit().createButton(filterComposite, "Filter Target Platform",
+		final Button filterPlatform = getWidgetToolkit().createButton(filterComposite, Messages.FilterTargetPlatform,
 				SWT.CHECK);
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(filterPlatform);
 		filterPlatform.setSelection(true);
