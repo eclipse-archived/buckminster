@@ -5,12 +5,14 @@
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
 
 	<property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
+	<property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
 
 	<searchPath name="buckminster">
 		<provider readerType="svn" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true"
 			source="true">
 			<uri
-				format="http://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/{0}?moduleAfterTag&amp;moduleAfterBranch">
+				format="{0}/tools/org.eclipse.buckminster/trunk/{1}?moduleAfterTag&amp;moduleAfterBranch">
+				<bc:propertyRef key="eclipse.svn.prefix" />
 				<bc:propertyRef key="buckminster.component" />
 			</uri>
 		</provider>
