@@ -101,7 +101,7 @@ public class MirrorGenerator extends BuilderPhase
 		}
 	}
 
-	static void mirror(List<ArtifactKey> keysToInstall, IArtifactRepository cache, IArtifactRepository source,
+	static void mirror(List<ArtifactKey> keysToInstall, IArtifactRepository source, IArtifactRepository cache,
 			IArtifactRepository dest, PackedStrategy strategy, List<String> errors, IProgressMonitor monitor)
 	{
 		Logger log = Buckminster.getLogger();
