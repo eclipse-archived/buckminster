@@ -107,46 +107,40 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 				IPath basePath;
 				String pattern;
-				if(isAbsolute)
-				{
-					// Base path cannot contain wild card characters
-					//
-					IPath rootPath = Path.fromPortableString(rootName);
-					int firstStar = -1;
-					int numSegs = rootPath.segmentCount();
-					for(int idx = 0; idx < numSegs; ++idx)
-						if(rootPath.segment(idx).indexOf('*') >= 0)
-						{
-							firstStar = idx;
-							break;
-						}
 
-					if(firstStar == -1)
+				// Base path cannot contain wild card characters
+				//
+				IPath rootPath = Path.fromPortableString(rootName);
+				int firstStar = -1;
+				int numSegs = rootPath.segmentCount();
+				for(int idx = 0; idx < numSegs; ++idx)
+					if(rootPath.segment(idx).indexOf('*') >= 0)
 					{
-						if(isFile)
-						{
-							pattern = rootPath.lastSegment();
-							basePath = rootPath.removeLastSegments(1);
-						}
-						else
-						{
-							pattern = "**"; //$NON-NLS-1$
-							basePath = rootPath;
-						}
+						firstStar = idx;
+						break;
+					}
+
+				if(firstStar == -1)
+				{
+					if(isFile)
+					{
+						pattern = rootPath.lastSegment();
+						basePath = rootPath.removeLastSegments(1);
 					}
 					else
 					{
-						basePath = rootPath.removeLastSegments(rootPath.segmentCount() - (firstStar + 1));
-						pattern = rootPath.removeFirstSegments(firstStar).toPortableString();
+						pattern = "**"; //$NON-NLS-1$
+						basePath = rootPath;
 					}
 				}
 				else
 				{
-					basePath = baseDirectory;
-					if(!isFile && rootName.indexOf('*') < 0)
-						rootName = Path.fromPortableString(rootName).append("**").toPortableString(); //$NON-NLS-1$
-					pattern = rootName;
+					basePath = rootPath.removeLastSegments(rootPath.segmentCount() - (firstStar + 1));
+					pattern = rootPath.removeFirstSegments(firstStar).toPortableString();
 				}
+
+				if(!isAbsolute)
+					basePath = baseDirectory.append(basePath.makeRelative());
 
 				FileSet fileset = new FileSet();
 				fileset.setProject(PROPERTY_REPLACER);
@@ -156,8 +150,13 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				include.setName(pattern);
 
 				String[] files = fileset.getDirectoryScanner().getIncludedFiles();
+				IPath destBaseDir = Path.fromPortableString(key);
 				for(String found : files)
-					configAdvice.addRootfile(new File(base, found), key);
+				{
+					IPath foundFile = Path.fromPortableString(found);
+					String destDir = destBaseDir.append(foundFile.removeLastSegments(1)).toPortableString();
+					configAdvice.addRootfile(new File(base, found), destDir);
+				}
 			}
 		}
 
