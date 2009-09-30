@@ -134,12 +134,16 @@ public class MirrorGenerator extends BuilderPhase
 			else
 				sourceForCopy = source;
 
+			PackedStrategy keyStrategy;
+
 			if(!"osgi.bundle".equals(key.getClassifier()))
 				//
 				// Only osgi.bundles will contain .class files so we get rid of
 				// excessive use of pack200 here.
 				//
-				strategy = PackedStrategy.SKIP;
+				keyStrategy = PackedStrategy.SKIP;
+			else
+				keyStrategy = strategy;
 
 			try
 			{
@@ -172,7 +176,7 @@ public class MirrorGenerator extends BuilderPhase
 					continue;
 				}
 
-				switch(strategy)
+				switch(keyStrategy)
 				{
 				case SKIP:
 					if(canonical == null)
@@ -200,7 +204,7 @@ public class MirrorGenerator extends BuilderPhase
 						ad.setRepository(dest);
 						canonical = ad;
 					}
-					if(strategy == PackedStrategy.UNPACK)
+					if(keyStrategy == PackedStrategy.UNPACK)
 					{
 						if(!checkIfTargetPresent(dest, canonical))
 						{
@@ -210,7 +214,7 @@ public class MirrorGenerator extends BuilderPhase
 					}
 					else
 					{
-						boolean isVerify = strategy == PackedStrategy.VERIFY;
+						boolean isVerify = keyStrategy == PackedStrategy.VERIFY;
 						if(checkIfTargetPresent(dest, optimized))
 						{
 							if(isVerify)
