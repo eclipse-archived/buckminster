@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.artifact.repository.MirrorRequest;
@@ -89,15 +90,32 @@ public class MirrorGenerator extends BuilderPhase
 		request.setSourceRepository(source);
 		request.perform(monitor);
 		IStatus result = request.getResult();
-		if(result.getSeverity() == IStatus.ERROR)
+		if(result.isOK())
+			return;
+
+		switch(result.getSeverity())
 		{
-			if(result.getCode() != org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
+		case IStatus.OK:
+			return;
+		case IStatus.INFO:
+			Buckminster.getLogger().info(result.getMessage());
+			return;
+		case IStatus.CANCEL:
+			Buckminster.getLogger().warning("Aggregation cancelled while mirroring artifact %s",
+					sourceDesc.getArtifactKey());
+			throw new OperationCanceledException();
+		default:
+			if(result.getCode() == org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
 			{
-				result = extractRootCause(result);
-				throw BuckminsterException.fromMessage(result.getException(),
-						"Unable to mirror artifact %s from repository %s: %s", sourceDesc.getArtifactKey(),
-						source.getLocation(), result.getMessage());
+				Buckminster.getLogger().warning("  copy failed. Artifact %s is already present",
+						sourceDesc.getArtifactKey());
+				return;
 			}
+
+			result = extractRootCause(result);
+			throw BuckminsterException.fromMessage(result.getException(),
+					"Unable to mirror artifact %s from repository %s: %s", sourceDesc.getArtifactKey(),
+					source.getLocation(), result.getMessage());
 		}
 	}
 
