@@ -7,7 +7,6 @@
 	<mspecNode namePattern="^org\.eclipse\.buckminster(\..+)?" materializer="workspace" />
 	<mspecNode namePattern="^org\.slf4j\.extendable$" materializer="workspace" />
 	<mspecNode namePattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" materializer="workspace" />
-	<mspecNode namePattern="^org\.eclipse\.jdt\.junit\.core$" materializer="workspace" />
 	<mspecNode namePattern="^org\.eclipse\.pde\.launching$" materializer="workspace" />
 	<mspecNode namePattern="^com\.mountainminds\.eclemma\.core$" materializer="workspace" />
 </mspec>
