@@ -18,6 +18,8 @@ import org.apache.tools.ant.types.PatternSet.NameEntry;
 import org.apache.tools.ant.types.selectors.FilenameSelector;
 import org.apache.tools.ant.types.selectors.OrSelector;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.pde.tasks.FeatureRootAdvice.ConfigAdvice;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -38,6 +40,7 @@ import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Utils;
 
@@ -46,7 +49,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 {
 	private static final Project PROPERTY_REPLACER = new Project();
 
-	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties, IPath baseDirectory)
+	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties,
+			IPath baseDirectory, String[] configs)
 	{
 		Map<String, Map<String, String>> configMap = TypedCollections.processRootProperties(buildProperties, true);
 		if(configMap.size() == 1)
@@ -61,18 +65,28 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		{
 			String config = entry.getKey();
 			Map<String, String> rootMap = entry.getValue();
-			populateConfigAdvice(advice, config, rootMap, baseDirectory);
+			populateConfigAdvice(advice, config, rootMap, baseDirectory, configs);
 		}
 		return advice;
 	}
 
 	private static void populateConfigAdvice(FeatureRootAdvice advice, String config, Map<String, String> rootMap,
-			IPath baseDirectory)
+			IPath baseDirectory, String[] configs)
 	{
 		if(config.equals(Utils.ROOT_COMMON))
 			config = ""; //$NON-NLS-1$
 		else
+		{
 			config = reorderConfig(config);
+			int idx = configs.length;
+			while(--idx >= 0)
+				if(config.equals(configs[idx]))
+					break;
+
+			if(idx < 0)
+				// Config was not on the list
+				return;
+		}
 
 		ConfigAdvice configAdvice = advice.getConfigAdvice(config);
 		FileSetDescriptor descriptor = configAdvice.getDescriptor();
@@ -92,8 +106,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				continue;
 			}
 
-			for(String rootName : StringHelper.getArrayFromString(rootEntry.getValue(), ','))
+			for(String rootValue : StringHelper.getArrayFromString(rootEntry.getValue(), ','))
 			{
+				String rootName = rootValue;
 				boolean isAbsolute = rootName.startsWith("absolute:"); //$NON-NLS-1$
 				if(isAbsolute)
 					rootName = rootName.substring(9);
@@ -144,12 +159,22 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 				FileSet fileset = new FileSet();
 				fileset.setProject(PROPERTY_REPLACER);
+				fileset.setErrorOnMissingDir(false);
 				File base = basePath.toFile();
 				fileset.setDir(base);
 				NameEntry include = fileset.createInclude();
 				include.setName(pattern);
 
 				String[] files = fileset.getDirectoryScanner().getIncludedFiles();
+				if(files.length == 0)
+				{
+					PDEPlugin.getLogger().warning(
+							NLS.bind(Messages.rootAdviceForConfig_0_in_1_at_2_does_not_appoint_existing_artifacts,
+									new Object[] { config, IPDEBuildConstants.PROPERTIES_FILE,
+											baseDirectory.toOSString() }));
+					continue;
+				}
+
 				IPath destBaseDir = Path.fromPortableString(key);
 				for(String found : files)
 				{
@@ -220,7 +245,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 					{
 						input = new BufferedInputStream(new FileInputStream(buildProps));
 						properties.load(input);
-						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), properties, location);
+						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), properties, location,
+								publisherInfo.getConfigurations());
 						if(rootAdvice != null)
 							publisherInfo.addAdvice(rootAdvice);
 					}
