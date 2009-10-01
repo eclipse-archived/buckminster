@@ -143,6 +143,8 @@ public class Messages extends NLS
 
 	public static String resetting_target_platform_0;
 
+	public static String rootAdviceForConfig_0_in_1_at_2_does_not_appoint_existing_artifacts;
+
 	static
 	{
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
