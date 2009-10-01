@@ -119,7 +119,7 @@ public class MirrorGenerator extends BuilderPhase
 		}
 	}
 
-	static void mirror(List<ArtifactKey> keysToInstall, IArtifactRepository source, IArtifactRepository cache,
+	static void mirror(List<ArtifactKey> keysToInstall, IArtifactRepository cache, IArtifactRepository source,
 			IArtifactRepository dest, PackedStrategy strategy, List<String> errors, IProgressMonitor monitor)
 	{
 		Logger log = Buckminster.getLogger();
@@ -546,7 +546,7 @@ public class MirrorGenerator extends BuilderPhase
 						IArtifactRepository childAr = arMgr.loadRepository(childMdr.getLocation(),
 								contribMonitor.newChild(1, SubMonitor.SUPPRESS_BEGINTASK
 										| SubMonitor.SUPPRESS_SETTASKNAME));
-						mirror(keysToMirror, childAr, tempAr, aggregateAr, aggregator.getPackedStrategy(), errors,
+						mirror(keysToMirror, tempAr, childAr, aggregateAr, aggregator.getPackedStrategy(), errors,
 								contribMonitor.newChild(94, SubMonitor.SUPPRESS_BEGINTASK
 										| SubMonitor.SUPPRESS_SETTASKNAME));
 						aggregatedArIsEmpty = false;
