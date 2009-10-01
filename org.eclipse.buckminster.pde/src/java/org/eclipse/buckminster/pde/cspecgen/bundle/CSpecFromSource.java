@@ -325,11 +325,14 @@ public class CSpecFromSource extends CSpecGenerator
 		IPath manifestFolder = resolveLink(new Path(IPDEBuildConstants.MANIFEST_FOLDER).append(MANIFEST), null).removeLastSegments(
 				1).addTrailingSeparator();
 		AttributeBuilder manifest = null;
+		boolean versionExpansion = false;
 		Version version = cspec.getVersion();
-		String versionQualifier = version.getQualifier();
-		boolean versionExpansion = versionQualifier != null
-				? versionQualifier.endsWith(VersionQualifierTask.QUALIFIER_SUFFIX)
-				: false;
+		if(version != null)
+		{
+			String versionQualifier = version.getQualifier();
+			if(versionQualifier != null)
+				versionExpansion = versionQualifier.endsWith(VersionQualifierTask.QUALIFIER_SUFFIX);
+		}
 
 		// Add the build.properties artifact. We want to manage that separately since it
 		// is one of the requirements for expanding the bundle version
