@@ -136,6 +136,15 @@
 		</provider>
 	</searchPath>
 
+	<searchPath name="gef">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
+			source="false">
+			<uri format="{0}/tools/gef/updates/milestones?importType=binary">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+	</searchPath>
+
     <!-- temporary search path until binary builds are available -->
 	<searchPath name="pde.cvs">
 		<provider readerType="cvs" componentTypes="osgi.bundle" mutable="true" source="true">
@@ -155,6 +164,8 @@
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
 	<locator searchPathRef="buckminster" pattern="^org\.slf4j\.extendable$" />
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" />
+	<locator searchPathRef="gef" pattern="^org\.eclipse\.zest(\..+)?$" />
+	<locator searchPathRef="gef" pattern="^org\.eclipse\.draw2d(\..+)?$" />
 	<locator searchPathRef="orbit.${build.type}" pattern="^com\.ibm\.icu\.base$" />
 	<locator searchPathRef="platform_${eclipse.release}.${build.type}" failOnError="false"/>
 	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
