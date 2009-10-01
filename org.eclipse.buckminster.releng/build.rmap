@@ -92,7 +92,7 @@
 
 	<searchPath name="simultanious.release_3.6.M">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/releases/helios?importType=binary">
+			<uri format="{0}/releases/staging?importType=binary">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
