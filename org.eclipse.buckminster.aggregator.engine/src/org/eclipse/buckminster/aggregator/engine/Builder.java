@@ -666,7 +666,7 @@ public class Builder implements IApplication
 		}
 		finally
 		{
-			if(fromIDE)
+			if(fromIDE && buildRoot != null)
 			{
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 				for(IContainer rootContainer : wsRoot.findContainersForLocationURI(buildRoot.toURI()))

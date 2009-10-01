@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.artifact.repository.MirrorRequest;
@@ -91,15 +92,24 @@ public class MirrorGenerator extends BuilderPhase
 		request.perform(monitor);
 		IStatus result = request.getResult();
 		if(result.isOK())
-			return;
+		{
+		}
 
 		switch(result.getSeverity())
 		{
-		case IStatus.OK:
-			return;
 		case IStatus.INFO:
 			Buckminster.getLogger().info(result.getMessage());
-			return;
+			// Fall through to OK
+		case IStatus.OK:
+			// Unfortunately, this doesn't necessarily mean that everything is OK. Zero sized files are
+			// silently ignored. See bug 290986
+			// We can't have that here.
+			if(dest.contains(targetDesc))
+				// All is well.
+				return;
+
+			result = new Status(IStatus.ERROR, Engine.PLUGIN_ID, "Zero bytes copied");
+			break;
 		case IStatus.CANCEL:
 			Buckminster.getLogger().warning("Aggregation cancelled while mirroring artifact %s",
 					sourceDesc.getArtifactKey());
@@ -111,12 +121,12 @@ public class MirrorGenerator extends BuilderPhase
 						sourceDesc.getArtifactKey());
 				return;
 			}
-
 			result = extractRootCause(result);
-			throw BuckminsterException.fromMessage(result.getException(),
-					"Unable to mirror artifact %s from repository %s: %s", sourceDesc.getArtifactKey(),
-					source.getLocation(), result.getMessage());
 		}
+
+		throw BuckminsterException.fromMessage(result.getException(),
+				"Unable to mirror artifact %s from repository %s: %s", sourceDesc.getArtifactKey(),
+				source.getLocation(), result.getMessage());
 	}
 
 	static void mirror(List<ArtifactKey> keysToInstall, IArtifactRepository cache, IArtifactRepository source,
