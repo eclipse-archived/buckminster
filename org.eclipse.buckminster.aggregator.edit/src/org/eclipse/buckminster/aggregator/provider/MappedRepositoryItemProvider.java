@@ -207,6 +207,25 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 				true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
+	@Override
+	protected void afterLocationChange(MetadataRepositoryReference repoRef, MetadataRepository repo)
+	{
+		MappedRepository mappedRepo = (MappedRepository)repoRef;
+
+		for(MappedUnit unit : mappedRepo.getUnits(false))
+		{
+			InstallableUnit oldIU = unit.getInstallableUnit();
+			InstallableUnit newIU = null;
+
+			if(oldIU != null)
+				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(repo != null
+						? repo.getLocation().toString()
+						: "", oldIU.getVersionedName());
+
+			unit.setInstallableUnit(newIU);
+		}
+	}
+
 	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -357,22 +376,5 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 		}
 
 		return new CompoundCommand("Delete", commands);
-	}
-	
-	@Override
-	protected void afterLocationChange(MetadataRepositoryReference repoRef, MetadataRepository repo)
-	{
-		MappedRepository mappedRepo = (MappedRepository)repoRef;
-		
-		for(MappedUnit unit : mappedRepo.getUnits(false))
-		{
-			InstallableUnit oldIU = unit.getInstallableUnit();			
-			InstallableUnit newIU = null;
-
-			if(oldIU != null)
-				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(repo.getLocation().toString(), oldIU.getVersionedName());
-			
-			unit.setInstallableUnit(newIU);
-		}
 	}
 }

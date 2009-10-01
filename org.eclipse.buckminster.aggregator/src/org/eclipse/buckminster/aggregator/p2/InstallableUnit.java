@@ -163,13 +163,14 @@ public interface InstallableUnit extends EObject, IInstallableUnit, StatusProvid
 	InstallableUnitType getType();
 
 	/**
+	 * Obtains the name and version information either from the proxy URI fragment or from attributes. So, it works for
+	 * both genuine instance or proxy.
+	 */
+	VersionedName getVersionedName();
+
+	/**
 	 * Obtains the name and version information from the proxy URI fragment
 	 */
 	VersionedName getVersionedNameFromProxy();
-
-	/**
-	 * Obtains the name and version information either from the proxy URI fragment or from attributes. So, it works for both genuine instance or proxy.
-	 */
-	VersionedName getVersionedName();
 
 } // InstallableUnit

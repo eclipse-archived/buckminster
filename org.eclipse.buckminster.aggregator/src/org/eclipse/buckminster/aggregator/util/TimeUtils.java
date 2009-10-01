@@ -29,19 +29,14 @@ public class TimeUtils
 
 	private static final ChoiceFormat SECONDS_FORMAT = new ChoiceFormat(LIMITS, SECONDS_PART);
 
-    private static final int MS_IN_SECOND = 1000;
-    
-    private static final int SEC_IN_MINUTE = 60;
+	private static final int MS_IN_SECOND = 1000;
+
+	private static final int SEC_IN_MINUTE = 60;
 
 	static
 	{
 		TIME_FORMAT.setFormat(0, MINUTES_FORMAT);
 		TIME_FORMAT.setFormat(1, SECONDS_FORMAT);
-	}
-
-    public static long getNow()
-	{
-		return System.currentTimeMillis();
 	}
 
 	public static long getDuration(long fromTime)
@@ -52,10 +47,15 @@ public class TimeUtils
 	public static String getFormattedDuration(long fromTime)
 	{
 		long milliseconds = getDuration(fromTime);
-        long seconds = milliseconds / MS_IN_SECOND;
-        long minutes = seconds / SEC_IN_MINUTE;
-        Object[] args = {Long.valueOf(minutes), Long.valueOf(seconds % SEC_IN_MINUTE)};
+		long seconds = milliseconds / MS_IN_SECOND;
+		long minutes = seconds / SEC_IN_MINUTE;
+		Object[] args = { Long.valueOf(minutes), Long.valueOf(seconds % SEC_IN_MINUTE) };
 
-        return TIME_FORMAT.format(args);
+		return TIME_FORMAT.format(args);
+	}
+
+	public static long getNow()
+	{
+		return System.currentTimeMillis();
 	}
 }

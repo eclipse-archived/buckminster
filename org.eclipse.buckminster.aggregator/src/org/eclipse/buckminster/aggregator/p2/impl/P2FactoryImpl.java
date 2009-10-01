@@ -49,7 +49,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 {
 	private static final String PROXY_URI_FORMATTER = "p2:%s#//@metadataRepository/@installableUnits[id='%s',version='%s']";
-	
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -392,6 +392,17 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated
+	 */
+	public InstallableUnitFragment createInstallableUnitFragment()
+	{
+		InstallableUnitFragmentImpl installableUnitFragment = new InstallableUnitFragmentImpl();
+		return installableUnitFragment;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
 	public InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedName iuVN)
@@ -401,17 +412,6 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 		installableUnit.eSetProxyURI(proxyURI);
 
 		return installableUnit;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public InstallableUnitFragment createInstallableUnitFragment()
-	{
-		InstallableUnitFragmentImpl installableUnitFragment = new InstallableUnitFragmentImpl();
-		return installableUnitFragment;
 	}
 
 	/**

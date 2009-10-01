@@ -50,20 +50,20 @@ public interface P2Factory extends EFactory
 	InstallableUnit createInstallableUnit();
 
 	/**
-	 * Returns a new proxy of class '<em>Installable Unit</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return a new proxy of class '<em>Installable Unit</em>'.
-	 * @generated NOT
-	 */
-	InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedName iuVN);
-
-	/**
 	 * Returns a new object of class '<em>Installable Unit Fragment</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Installable Unit Fragment</em>'.
 	 * @generated
 	 */
 	InstallableUnitFragment createInstallableUnitFragment();
+
+	/**
+	 * Returns a new proxy of class '<em>Installable Unit</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new proxy of class '<em>Installable Unit</em>'.
+	 * @generated NOT
+	 */
+	InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedName iuVN);
 
 	/**
 	 * Returns a new object of class '<em>License</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->

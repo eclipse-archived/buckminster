@@ -15,8 +15,11 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
@@ -41,20 +44,40 @@ public class ResourceUtils
 		ResourceSet topSet = topResource.getResourceSet();
 		Set<Resource> referencedResources = new HashSet<Resource>();
 		referencedResources.add(topResource);
-		for(Contribution contribution : aggregator.getContributions(true))
+		for(Contribution contribution : aggregator.getContributions())
 		{
-			for(MappedRepository mappedRepository : contribution.getRepositories(true))
+			for(MappedRepository mappedRepository : contribution.getRepositories())
 			{
-				org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-						mappedRepository.getResolvedLocation(), null);
-				referencedResources.add(topSet.getResource(repoURI, false));
+				if(mappedRepository.isBranchEnabled())
+				{
+					org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
+							mappedRepository.getResolvedLocation(), null);
+					referencedResources.add(topSet.getResource(repoURI, false));
+				}
+				else
+				{
+					for(MappedUnit unit : mappedRepository.getUnits(false))
+					{
+						InstallableUnit originalIU = unit.getInstallableUnit(false);
+
+						if(!originalIU.eIsProxy())
+							unit.setInstallableUnit(P2Factory.eINSTANCE.createInstallableUnitProxy(
+									mappedRepository.getLocation(), originalIU.getVersionedName()));
+					}
+					mappedRepository.setMetadataRepository(null);
+				}
 			}
 		}
-		for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories(true))
+		for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
 		{
-			org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-					repoRef.getLocation(), null);
-			referencedResources.add(topSet.getResource(repoURI, false));
+			if(repoRef.isBranchEnabled())
+			{
+				org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
+						repoRef.getLocation(), null);
+				referencedResources.add(topSet.getResource(repoURI, false));
+			}
+			else
+				repoRef.setMetadataRepository(null);
 		}
 		Iterator<Resource> allResources = topSet.getResources().iterator();
 
@@ -99,6 +122,7 @@ public class ResourceUtils
 		if(repoRef.getLocation() == null)
 			return;
 		Aggregator aggregator = repoRef.getAggregator();
-		MetadataRepositoryResourceImpl.loadRepository(repoRef.getResolvedLocation(), aggregator);
+		repoRef.setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(repoRef.getResolvedLocation(),
+				aggregator));
 	}
 }
