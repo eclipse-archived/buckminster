@@ -7,6 +7,7 @@
 package org.eclipse.buckminster.aggregator.p2;
 
 import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 
 /**
  * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a create method for each non-abstract class of
@@ -47,6 +48,14 @@ public interface P2Factory extends EFactory
 	 * @generated
 	 */
 	InstallableUnit createInstallableUnit();
+
+	/**
+	 * Returns a new proxy of class '<em>Installable Unit</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new proxy of class '<em>Installable Unit</em>'.
+	 * @generated NOT
+	 */
+	InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedName iuVN);
 
 	/**
 	 * Returns a new object of class '<em>Installable Unit Fragment</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->

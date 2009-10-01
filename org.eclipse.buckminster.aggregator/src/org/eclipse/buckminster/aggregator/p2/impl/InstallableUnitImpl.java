@@ -1178,6 +1178,14 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return version;
 	}
 
+	public VersionedName getVersionedName()
+	{
+		if(eIsProxy())
+			return getVersionedNameFromProxy();
+		else
+			return new VersionedName(getId(), getVersion());
+	}
+
 	public VersionedName getVersionedNameFromProxy()
 	{
 		URI uri = eProxyURI();

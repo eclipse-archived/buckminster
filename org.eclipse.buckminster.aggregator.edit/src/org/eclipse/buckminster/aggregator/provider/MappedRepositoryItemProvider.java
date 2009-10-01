@@ -16,7 +16,11 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
@@ -353,5 +357,22 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 		}
 
 		return new CompoundCommand("Delete", commands);
+	}
+	
+	@Override
+	protected void afterLocationChange(MetadataRepositoryReference repoRef, MetadataRepository repo)
+	{
+		MappedRepository mappedRepo = (MappedRepository)repoRef;
+		
+		for(MappedUnit unit : mappedRepo.getUnits(false))
+		{
+			InstallableUnit oldIU = unit.getInstallableUnit();			
+			InstallableUnit newIU = null;
+
+			if(oldIU != null)
+				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(repo.getLocation().toString(), oldIU.getVersionedName());
+			
+			unit.setInstallableUnit(newIU);
+		}
 	}
 }

@@ -365,6 +365,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		finally
 		{
 			repository.setMetadataRepository(repo);
+			afterLocationChange(repository, repo);
 		}
+	}
+	
+	protected void afterLocationChange(MetadataRepositoryReference repoRef, MetadataRepository repo)
+	{
 	}
 }

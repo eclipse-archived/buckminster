@@ -24,6 +24,7 @@ import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
 import org.eclipse.buckminster.aggregator.p2.TouchpointType;
 import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -32,6 +33,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment;
@@ -46,6 +48,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
  */
 public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 {
+	private static final String PROXY_URI_FORMATTER = "p2:%s#//@metadataRepository/@installableUnits[id='%s',version='%s']";
+	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -382,6 +386,20 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	public InstallableUnit createInstallableUnit()
 	{
 		InstallableUnitImpl installableUnit = new InstallableUnitImpl();
+		return installableUnit;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedName iuVN)
+	{
+		InstallableUnitImpl installableUnit = new InstallableUnitImpl();
+		URI proxyURI = URI.createURI(String.format(PROXY_URI_FORMATTER, repoLocation, iuVN.getId(), iuVN.getVersion()));
+		installableUnit.eSetProxyURI(proxyURI);
+
 		return installableUnit;
 	}
 
