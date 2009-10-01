@@ -72,8 +72,8 @@ import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
-import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
 import org.eclipse.pde.internal.core.ibundle.IBundleModel;
+import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
 import org.eclipse.pde.internal.core.text.bundle.ManifestHeader;
 import org.eclipse.pde.internal.core.text.bundle.RequireBundleObject;
 import org.osgi.framework.BundleException;
@@ -260,10 +260,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 					: imports;
 		}
 
-		if(!(model instanceof BundlePluginModel))
+		if(!(model instanceof IBundlePluginModelBase))
 			return s_noRequiredBundles;
 
-		IBundleModel bundleModel = ((BundlePluginModel)model).getBundleModel();
+		IBundleModel bundleModel = ((IBundlePluginModelBase)model).getBundleModel();
 		ManifestHeader header = (ManifestHeader)bundleModel.getBundle().getManifestHeader(Constants.REQUIRE_BUNDLE);
 		if(header == null)
 			return s_noRequiredBundles;
