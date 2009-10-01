@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
+import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -345,7 +345,7 @@ public class MavenComponentType extends AbstractComponentType
 			cspec.addDependency(depBld);
 			archives.addExternalPrerequisite(componentName, ID, WellKnownExports.JAVA_BINARIES);
 		}
-		catch(DependencyAlreadyDefinedException e)
+		catch(PrerequisiteAlreadyDefinedException e)
 		{
 			ComponentRequestBuilder oldDep = cspec.getRequiredDependency(depBld.getName(), depBld.getComponentTypeID());
 			if(!Trivial.equalsAllowNull(vd, oldDep.getVersionRange()))
