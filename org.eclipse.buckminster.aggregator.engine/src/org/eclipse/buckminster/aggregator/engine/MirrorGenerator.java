@@ -81,13 +81,14 @@ public class MirrorGenerator extends BuilderPhase
 		}
 	}
 
-	static void mirror(IArtifactRepository source, IArtifactRepository dest, IArtifactDescriptor sourceDesc,
-			IArtifactDescriptor targetDesc, IProgressMonitor monitor) throws CoreException
+	static IArtifactDescriptor mirror(IArtifactRepository source, IArtifactRepository dest,
+			IArtifactDescriptor sourceDesc, IArtifactDescriptor targetDesc, IProgressMonitor monitor)
+			throws CoreException
 	{
 		ArtifactDescriptor localTargetDesc = new ArtifactDescriptor(targetDesc);
 		localTargetDesc.setRepository(dest);
 		if(dest.contains(localTargetDesc))
-			return;
+			return localTargetDesc;
 
 		RawMirrorRequest request = new RawMirrorRequest(sourceDesc, localTargetDesc, dest);
 		request.setSourceRepository(source);
@@ -103,7 +104,7 @@ public class MirrorGenerator extends BuilderPhase
 			// We can't have that here.
 			if(dest.contains(localTargetDesc))
 				// All is well.
-				return;
+				return localTargetDesc;
 
 			result = new Status(IStatus.ERROR, Engine.PLUGIN_ID, "Zero bytes copied");
 			break;
@@ -116,7 +117,7 @@ public class MirrorGenerator extends BuilderPhase
 			{
 				Buckminster.getLogger().warning("  copy failed. Artifact %s is already present",
 						sourceDesc.getArtifactKey());
-				return;
+				return localTargetDesc;
 			}
 			result = extractRootCause(result);
 		}
@@ -249,7 +250,8 @@ public class MirrorGenerator extends BuilderPhase
 						else
 						{
 							log.debug("    doing copy of optimized artifact");
-							mirror(sourceForCopy, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 70));
+							optimized = mirror(sourceForCopy, dest, optimized, optimized, MonitorUtils.subMonitor(
+									monitor, 70));
 						}
 						log.debug("    unpacking optimized artifact%s", isVerify
 								? " for verification"
@@ -270,10 +272,11 @@ public class MirrorGenerator extends BuilderPhase
 
 	private static boolean checkIfTargetPresent(IArtifactRepository destination, IArtifactDescriptor descriptor)
 	{
-		if(destination.contains(descriptor))
+		ArtifactDescriptor localDesc = new ArtifactDescriptor(descriptor);
+		if(destination.contains(localDesc))
 		{
 			Buckminster.getLogger().debug("    %s artifact is already present",
-					descriptor.getProperty(IArtifactDescriptor.FORMAT) == null
+					localDesc.getProperty(IArtifactDescriptor.FORMAT) == null
 							? "canonical"
 							: "optimized");
 			return true;
@@ -327,6 +330,8 @@ public class MirrorGenerator extends BuilderPhase
 	private static void unpackToSibling(IArtifactRepository target, IArtifactDescriptor optimized,
 			IArtifactDescriptor canonical, boolean verifyOnly, IProgressMonitor monitor) throws CoreException
 	{
+		canonical = new ArtifactDescriptor(canonical);
+		((ArtifactDescriptor)canonical).setRepository(target);
 		CanonicalizeRequest request = new CanonicalizeRequest(optimized, canonical, target);
 		request.perform(monitor);
 		IStatus result = request.getResult();
