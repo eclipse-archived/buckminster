@@ -84,27 +84,24 @@ public class MirrorGenerator extends BuilderPhase
 	static void mirror(IArtifactRepository source, IArtifactRepository dest, IArtifactDescriptor sourceDesc,
 			IArtifactDescriptor targetDesc, IProgressMonitor monitor) throws CoreException
 	{
-		if(dest.contains(sourceDesc))
+		ArtifactDescriptor localTargetDesc = new ArtifactDescriptor(targetDesc);
+		localTargetDesc.setRepository(dest);
+		if(dest.contains(localTargetDesc))
 			return;
 
-		RawMirrorRequest request = new RawMirrorRequest(sourceDesc, targetDesc, dest);
+		RawMirrorRequest request = new RawMirrorRequest(sourceDesc, localTargetDesc, dest);
 		request.setSourceRepository(source);
 		request.perform(monitor);
 		IStatus result = request.getResult();
-		if(result.isOK())
-		{
-		}
-
 		switch(result.getSeverity())
 		{
 		case IStatus.INFO:
 			Buckminster.getLogger().info(result.getMessage());
-			// Fall through to OK
 		case IStatus.OK:
 			// Unfortunately, this doesn't necessarily mean that everything is OK. Zero sized files are
 			// silently ignored. See bug 290986
 			// We can't have that here.
-			if(dest.contains(targetDesc))
+			if(dest.contains(localTargetDesc))
 				// All is well.
 				return;
 
