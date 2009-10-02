@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface InstallableUnitReference extends EObject
+public interface InstallableUnitReference extends EObject, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc -->

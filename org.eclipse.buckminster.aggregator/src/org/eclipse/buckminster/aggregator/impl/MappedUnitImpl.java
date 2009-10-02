@@ -11,7 +11,6 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.MappedUnit;
-import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
@@ -201,18 +200,6 @@ public abstract class MappedUnitImpl extends InstallableUnitReferenceImpl implem
 		return isBranchEnabled()
 				? super.getInstallableUnit()
 				: null;
-	}
-
-	public int getStatus()
-	{
-		if(isMappedRepositoryBroken())
-			return StatusProvider.BROKEN_CHILD;
-
-		if(isBranchEnabled() && getInstallableUnit() != null
-				&& getInstallableUnit().getStatus() == StatusProvider.BROKEN)
-			return StatusProvider.BROKEN_CHILD;
-
-		return StatusProvider.OK;
 	}
 
 	/**

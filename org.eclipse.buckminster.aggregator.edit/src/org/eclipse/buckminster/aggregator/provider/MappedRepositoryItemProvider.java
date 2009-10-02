@@ -9,14 +9,16 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -212,9 +214,13 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	{
 		MappedRepository mappedRepo = (MappedRepository)repoRef;
 
-		for(MappedUnit unit : mappedRepo.getUnits(false))
+		Set<InstallableUnitReference> iuRefs = new HashSet<InstallableUnitReference>();
+		iuRefs.addAll(mappedRepo.getUnits(false));
+		iuRefs.addAll(mappedRepo.getMapRules());
+
+		for(InstallableUnitReference iuRef : iuRefs)
 		{
-			InstallableUnit oldIU = unit.getInstallableUnit();
+			InstallableUnit oldIU = iuRef.getInstallableUnit();
 			InstallableUnit newIU = null;
 
 			if(oldIU != null)
@@ -222,7 +228,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 						? repo.getLocation().toString()
 						: "", oldIU.getVersionedName());
 
-			unit.setInstallableUnit(newIU);
+			iuRef.setInstallableUnit(newIU);
 		}
 	}
 

@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 
@@ -188,6 +189,23 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 			}
 		}
 		return installableUnit;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public int getStatus()
+	{
+		if(isMappedRepositoryBroken())
+			return StatusProvider.BROKEN_CHILD;
+
+		if(isBranchEnabled() && getInstallableUnit() != null
+				&& getInstallableUnit().getStatus() == StatusProvider.BROKEN)
+			return StatusProvider.BROKEN_CHILD;
+
+		return StatusProvider.OK;
 	}
 
 	/**

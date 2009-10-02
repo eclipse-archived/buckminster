@@ -447,11 +447,14 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 		if(isBranchEnabled())
 		{
 			if(getMetadataRepository() != null)
+			{
 				for(MappedUnit unit : getEnabledUnits())
-				{
 					if(unit.getStatus() != StatusProvider.OK)
 						return StatusProvider.BROKEN_CHILD;
-				}
+				for(MapRule rule : getMapRules())
+					if(rule.getStatus() != StatusProvider.OK)
+						return StatusProvider.BROKEN_CHILD;
+			}
 			else
 				return StatusProvider.BROKEN_CHILD;
 		}
