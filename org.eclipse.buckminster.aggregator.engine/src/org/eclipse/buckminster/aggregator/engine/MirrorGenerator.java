@@ -41,6 +41,7 @@ import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactD
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
+import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
@@ -85,12 +86,10 @@ public class MirrorGenerator extends BuilderPhase
 			IArtifactDescriptor sourceDesc, IArtifactDescriptor targetDesc, IProgressMonitor monitor)
 			throws CoreException
 	{
-		ArtifactDescriptor localTargetDesc = new ArtifactDescriptor(targetDesc);
-		localTargetDesc.setRepository(dest);
-		if(dest.contains(localTargetDesc))
-			return localTargetDesc;
+		if(dest.contains(targetDesc))
+			return targetDesc;
 
-		RawMirrorRequest request = new RawMirrorRequest(sourceDesc, localTargetDesc, dest);
+		RawMirrorRequest request = new RawMirrorRequest(sourceDesc, targetDesc, dest);
 		request.setSourceRepository(source);
 		request.perform(monitor);
 		IStatus result = request.getResult();
@@ -102,9 +101,9 @@ public class MirrorGenerator extends BuilderPhase
 			// Unfortunately, this doesn't necessarily mean that everything is OK. Zero sized files are
 			// silently ignored. See bug 290986
 			// We can't have that here.
-			if(dest.contains(localTargetDesc))
+			if(getArtifactDescriptor(dest, targetDesc.getArtifactKey(), isPacked(targetDesc)) != null)
 				// All is well.
-				return localTargetDesc;
+				return targetDesc;
 
 			result = new Status(IStatus.ERROR, Engine.PLUGIN_ID, "Zero bytes copied");
 			break;
@@ -117,7 +116,7 @@ public class MirrorGenerator extends BuilderPhase
 			{
 				Buckminster.getLogger().warning("  copy failed. Artifact %s is already present",
 						sourceDesc.getArtifactKey());
-				return localTargetDesc;
+				return targetDesc;
 			}
 			result = extractRootCause(result);
 		}
@@ -182,10 +181,10 @@ public class MirrorGenerator extends BuilderPhase
 				IArtifactDescriptor canonical = null;
 				for(IArtifactDescriptor desc : aDescs)
 				{
-					if(desc.getProperty(IArtifactDescriptor.FORMAT) == null)
-						canonical = desc;
-					else if(ProcessingStepHandler.canProcess(desc))
+					if(isPacked(desc))
 						optimized = desc;
+					else
+						canonical = desc;
 				}
 
 				if(optimized == null && canonical == null)
@@ -194,10 +193,11 @@ public class MirrorGenerator extends BuilderPhase
 
 				if(optimized == null)
 				{
-					if(!checkIfTargetPresent(dest, canonical))
+					if(!checkIfTargetPresent(dest, key, false))
 					{
 						log.debug("    doing copy of canonical artifact");
-						mirror(sourceForCopy, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+						mirror(sourceForCopy, dest, canonical, createDestinationDescriptor(key, false),
+								MonitorUtils.subMonitor(monitor, 90));
 					}
 					continue;
 				}
@@ -205,59 +205,58 @@ public class MirrorGenerator extends BuilderPhase
 				switch(keyStrategy)
 				{
 				case SKIP:
-					if(canonical == null)
-						// Canonical is required
-						throw BuckminsterException.fromMessage("No canonical artifact %s found in repository %s", key,
-								dest.getLocation());
-					if(!checkIfTargetPresent(dest, canonical))
+					if(!checkIfTargetPresent(dest, key, false))
 					{
 						log.debug("    doing copy of canonical artifact");
-						mirror(sourceForCopy, dest, canonical, canonical, MonitorUtils.subMonitor(monitor, 90));
+						mirror(sourceForCopy, dest, canonical, createDestinationDescriptor(key, false),
+								MonitorUtils.subMonitor(monitor, 90));
 					}
 					break;
 				case COPY:
-					if(!checkIfTargetPresent(dest, optimized))
+					if(!checkIfTargetPresent(dest, key, true))
 					{
 						log.debug("    doing copy of optimized artifact");
-						mirror(sourceForCopy, dest, optimized, optimized, MonitorUtils.subMonitor(monitor, 90));
+						mirror(sourceForCopy, dest, optimized, createDestinationDescriptor(key, true),
+								MonitorUtils.subMonitor(monitor, 90));
 					}
 					break;
 				default:
-					// We need a canonical descriptor to complete this.
-					if(canonical == null)
-					{
-						ArtifactDescriptor ad = new ArtifactDescriptor(key);
-						ad.setRepository(dest);
-						canonical = ad;
-					}
 					if(keyStrategy == PackedStrategy.UNPACK)
 					{
-						if(!checkIfTargetPresent(dest, canonical))
+						if(!checkIfTargetPresent(dest, key, false))
 						{
 							log.debug("    doing copy of optimized artifact into canonical target");
-							mirror(sourceForCopy, dest, optimized, canonical, MonitorUtils.subMonitor(monitor, 90));
+							mirror(sourceForCopy, dest, optimized, createDestinationDescriptor(key, false),
+									MonitorUtils.subMonitor(monitor, 90));
 						}
+						continue;
+					}
+
+					boolean isVerify = keyStrategy == PackedStrategy.VERIFY;
+					if(checkIfTargetPresent(dest, key, true))
+					{
+						if(isVerify)
+							// Treat the target as verified.
+							break;
 					}
 					else
 					{
-						boolean isVerify = keyStrategy == PackedStrategy.VERIFY;
-						if(checkIfTargetPresent(dest, optimized))
-						{
-							if(isVerify)
-								// Treat the target as verified.
-								break;
-						}
-						else
-						{
-							log.debug("    doing copy of optimized artifact");
-							optimized = mirror(sourceForCopy, dest, optimized, optimized, MonitorUtils.subMonitor(
-									monitor, 70));
-						}
-						log.debug("    unpacking optimized artifact%s", isVerify
-								? " for verification"
-								: "");
-						unpackToSibling(dest, optimized, canonical, isVerify, MonitorUtils.subMonitor(monitor, 20));
+						log.debug("    doing copy of optimized artifact");
+						optimized = mirror(sourceForCopy, dest, optimized, createDestinationDescriptor(key, true),
+								MonitorUtils.subMonitor(monitor, 70));
 					}
+
+					if(isVerify)
+						log.debug("    unpacking optimized artifact for verification");
+					else
+					{
+						if(checkIfTargetPresent(dest, key, false))
+							break;
+						log.debug("    unpacking optimized artifact");
+					}
+
+					unpackToSibling(dest, getArtifactDescriptor(dest, key, true), createDestinationDescriptor(key,
+							false), isVerify, MonitorUtils.subMonitor(monitor, 20));
 				}
 			}
 			catch(CoreException e)
@@ -270,18 +269,29 @@ public class MirrorGenerator extends BuilderPhase
 		MonitorUtils.done(monitor);
 	}
 
-	private static boolean checkIfTargetPresent(IArtifactRepository destination, IArtifactDescriptor descriptor)
+	private static boolean checkIfTargetPresent(IArtifactRepository destination, IArtifactKey key, boolean packed)
 	{
-		ArtifactDescriptor localDesc = new ArtifactDescriptor(descriptor);
-		if(destination.contains(localDesc))
+		IArtifactDescriptor found = getArtifactDescriptor(destination, key, packed);
+		if(found != null)
 		{
-			Buckminster.getLogger().debug("    %s artifact is already present",
-					localDesc.getProperty(IArtifactDescriptor.FORMAT) == null
-							? "canonical"
-							: "optimized");
+			Buckminster.getLogger().debug("    %s artifact is already present", packed
+					? "optimized"
+					: "canonical");
 			return true;
 		}
 		return false;
+	}
+
+	private static IArtifactDescriptor createDestinationDescriptor(IArtifactKey key, boolean optimized)
+	{
+		ArtifactDescriptor desc = new ArtifactDescriptor(key);
+		if(optimized)
+		{
+			desc.setProperty(IArtifactDescriptor.FORMAT, "packed");
+			desc.setProcessingSteps(new ProcessingStepDescriptor[] { new ProcessingStepDescriptor(
+					"org.eclipse.equinox.p2.processing.Pack200Unpacker", null, true) });
+		}
+		return desc;
 	}
 
 	private static IStatus extractDeeperRootCause(IStatus status)
@@ -327,11 +337,34 @@ public class MirrorGenerator extends BuilderPhase
 				: rootCause;
 	}
 
+	private static IArtifactDescriptor getArtifactDescriptor(IArtifactRepository destination, IArtifactKey key,
+			boolean packed)
+	{
+		for(IArtifactDescriptor candidate : destination.getArtifactDescriptors(key))
+		{
+			if(isPacked(candidate))
+			{
+				if(packed)
+					return candidate;
+			}
+			else
+			{
+				if(!packed)
+					return candidate;
+			}
+		}
+		return null;
+	}
+
+	private static boolean isPacked(IArtifactDescriptor desc)
+	{
+		return desc != null && "packed".equals(desc.getProperty(IArtifactDescriptor.FORMAT))
+				&& ProcessingStepHandler.canProcess(desc);
+	}
+
 	private static void unpackToSibling(IArtifactRepository target, IArtifactDescriptor optimized,
 			IArtifactDescriptor canonical, boolean verifyOnly, IProgressMonitor monitor) throws CoreException
 	{
-		canonical = new ArtifactDescriptor(canonical);
-		((ArtifactDescriptor)canonical).setRepository(target);
 		CanonicalizeRequest request = new CanonicalizeRequest(optimized, canonical, target);
 		request.perform(monitor);
 		IStatus result = request.getResult();
@@ -339,7 +372,7 @@ public class MirrorGenerator extends BuilderPhase
 				|| result.getCode() == org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
 		{
 			if(verifyOnly)
-				target.removeDescriptor(canonical);
+				target.removeDescriptor(getArtifactDescriptor(target, canonical.getArtifactKey(), false));
 			return;
 		}
 
