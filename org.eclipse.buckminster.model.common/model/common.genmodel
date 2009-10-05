@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.model.common/src"
+    modelPluginID="org.eclipse.buckminster.model.common" modelName="Common" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="5.0" copyrightFields="false">
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/buckminster/Common-1.0" value="common.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <foreignModel>common.ecore</foreignModel>
+  <genPackages prefix="Common" basePackage="org.eclipse.buckminster.model" resource="XML"
+      disposableProviderFactory="true" ecorePackage="common.ecore#/">
+    <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+      <genAnnotations source="common.xsd"/>
+    </genAnnotations>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="common.ecore#//SplitType">
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/quoted"/>
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/unquoted"/>
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/groups"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="common.ecore#//PropertyKey"/>
+    <genDataTypes ecoreDataType="common.ecore#//URL"/>
+    <genDataTypes ecoreDataType="common.ecore#//Uuid"/>
+    <genDataTypes ecoreDataType="common.ecore#//Pattern"/>
+    <genClasses ecoreClass="common.ecore#//Constant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Constant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//Documentation"/>
+    <genClasses ecoreClass="common.ecore#//Format"/>
+    <genClasses ecoreClass="common.ecore#//Match">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Match/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Match/quotePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Match/replacement"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//Property">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Property/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Property/mutable"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//PropertyConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//PropertyConstant/value"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//PropertyElement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/constant"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/format"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/propertyRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/replace"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/toLower"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/toUpper"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//PropertyRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//PropertyRef/key"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//Replace">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//Replace/match"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Replace/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Replace/quotePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Replace/replacement"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//RxGroup">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference common.ecore#//RxGroup/rxPart"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="common.ecore#//RxPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/optional"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//RxPattern">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/prefix"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/suffix"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//Split">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Split/limit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Split/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Split/style"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//ToLower"/>
+    <genClasses ecoreClass="common.ecore#//ToUpper"/>
+    <genClasses image="false" ecoreClass="common.ecore#//Value"/>
+    <genClasses image="false" ecoreClass="common.ecore#//ValueFilter">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/constant"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/format"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/propertyRef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/replace"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/split"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/toLower"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/toUpper"/>
+    </genClasses>
+    <genClasses dynamic="true" ecoreClass="common.ecore#//DocumentRoot"/>
+  </genPackages>
+</genmodel:GenModel>
