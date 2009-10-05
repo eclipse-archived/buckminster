@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:pde="http://www.eclipse.org/buckminster/PDEMapProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="pde" ecore:package="org.eclipse.buckminster.rmap.pde" targetNamespace="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
+  <xsd:import namespace="http://www.eclipse.org/buckminster/RMap-1.0" schemaLocation="../../org.eclipse.buckminster.rmap/model/rmap.xsd"/>
+  <xsd:element ecore:ignore="true" name="PDEMapProvider" type="pde:PDEMapProvider"/>
+  <xsd:complexType name="PDEMapProvider">
+    <xsd:complexContent>
+      <xsd:extension base="rm:Provider"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

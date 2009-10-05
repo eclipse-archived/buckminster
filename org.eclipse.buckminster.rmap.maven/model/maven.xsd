@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:maven="http://www.eclipse.org/buckminster/MavenProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="maven" ecore:package="org.eclipse.buckminster.rmap.maven" targetNamespace="http://www.eclipse.org/buckminster/MavenProvider-1.0">
+  <xsd:import namespace="http://www.eclipse.org/buckminster/RMap-1.0" schemaLocation="../../org.eclipse.buckminster.rmap/model/rmap.xsd"/>
+  <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:element ecore:ignore="true" name="GroupAndArtifact" type="maven:GroupAndArtifact"/>
+  <xsd:element ecore:ignore="true" name="MapEntry" type="maven:MapEntry"/>
+  <xsd:element ecore:ignore="true" name="Mappings" type="maven:Mappings"/>
+  <xsd:element ecore:ignore="true" name="MavenProvider" type="maven:MavenProvider"/>
+  <xsd:complexType name="GroupAndArtifact">
+    <xsd:attribute name="artifactId" type="ecore:EString"/>
+    <xsd:attribute name="groupId" type="ecore:EString"/>
+  </xsd:complexType>
+  <xsd:complexType name="MapEntry">
+    <xsd:complexContent>
+      <xsd:extension base="maven:GroupAndArtifact">
+        <xsd:sequence>
+          <xsd:element ecore:name="aliases" ecore:reference="maven:GroupAndArtifact" maxOccurs="unbounded" minOccurs="0" name="alias" type="xsd:anyURI"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="ecore:EString"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Mappings">
+    <xsd:sequence>
+      <xsd:element ecore:name="entries" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="entry" type="maven:MapEntry"/>
+      <xsd:element ecore:name="rules" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="rule" type="rm:Transform"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="MavenProvider">
+    <xsd:complexContent>
+      <xsd:extension base="rm:Provider">
+        <xsd:sequence>
+          <xsd:element ecore:resolveProxies="true" minOccurs="0" name="mappings" type="maven:Mappings"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

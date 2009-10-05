@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="rm" ecore:package="org.eclipse.buckminster.rmap" targetNamespace="http://www.eclipse.org/buckminster/RMap-1.0">
+  <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="../../org.eclipse.buckminster.model.common/model/common.xsd"/>
+  <xsd:element name="rmap" type="rm:ResourceMap"/>
+  <xsd:complexType abstract="true" name="Matcher">
+    <xsd:attribute name="pattern" type="bc:pattern"/>
+  </xsd:complexType>
+  <xsd:complexType name="Redirect">
+    <xsd:complexContent>
+      <xsd:extension base="rm:Matcher">
+        <xsd:attribute name="href" type="bc:URL" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Locator">
+    <xsd:complexContent>
+      <xsd:extension base="rm:Matcher">
+        <xsd:attribute ecore:name="searchPath" ecore:reference="rm:SearchPath" name="searchPathRef" type="xsd:anyURI" use="required"/>
+        <xsd:attribute default="true" ecore:unsettable="false" name="failOnError" type="ecore:EBoolean"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="SearchPath">
+    <xsd:sequence>
+      <xsd:element ecore:name="providers" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="provider" type="rm:Provider"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:ID" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="ResourceMap">
+    <xsd:sequence>
+      <xsd:element ecore:name="locators" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="locator" type="rm:Locator"/>
+      <xsd:element ecore:name="redirects" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="redirect" type="rm:Redirect"/>
+      <xsd:element ecore:name="searchPaths" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="searchPath" type="rm:SearchPath"/>
+      <xsd:element ecore:name="propertyElements" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="propertyElement" type="bc:PropertyElement"/>
+      <xsd:element ecore:name="properties" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="property" type="bc:PropertyConstant"/>
+      <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="documentation" type="bc:Documentation"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Provider">
+    <xsd:sequence>
+      <xsd:element default="" ecore:transient="true" ecore:unique="true" maxOccurs="unbounded" minOccurs="0" name="componentTypes" nillable="true" type="ecore:EString"/>
+      <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="versionConverter" type="rm:VersionConverter"/>
+      <xsd:element ecore:resolveProxies="true" form="qualified" name="uri" type="bc:Format"/>
+      <xsd:element ecore:name="matchers" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="matcher" type="rm:URIMatcher"/>
+      <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="documentation" type="bc:Documentation"/>
+    </xsd:sequence>
+    <xsd:attribute ecore:derived="true" ecore:name="componentTypesAttr" ecore:volatile="true" name="componentTypes" type="ecore:EString"/>
+    <xsd:attribute name="readerType" type="ecore:EString" use="required"/>
+    <xsd:attribute ecore:unsettable="false" name="source" type="ecore:EBoolean"/>
+    <xsd:attribute ecore:unsettable="false" name="mutable" type="ecore:EBoolean"/>
+    <xsd:attribute name="resolutionFilter" type="ecore:EString"/>
+  </xsd:complexType>
+  <xsd:complexType name="Transform">
+    <xsd:attribute name="fromPattern" type="bc:pattern" use="required"/>
+    <xsd:attribute name="fromReplacement" type="ecore:EString" use="required"/>
+    <xsd:attribute name="toPattern" type="bc:pattern" use="required"/>
+    <xsd:attribute name="toReplacement" type="ecore:EString" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="VersionConverter">
+    <xsd:sequence>
+      <xsd:element ecore:name="transformers" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="transform" type="rm:Transform"/>
+    </xsd:sequence>
+    <xsd:attribute name="type" type="ecore:EString" use="required"/>
+    <xsd:attribute default="OSGi" ecore:unsettable="false" name="versionType" type="ecore:EString"/>
+  </xsd:complexType>
+  <xsd:complexType name="URIMatcher">
+    <xsd:sequence>
+      <xsd:element ecore:name="rxParts" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="rxPart" type="bc:RxPart"/>
+    </xsd:sequence>
+    <xsd:attribute name="base" type="ecore:EString"/>
+  </xsd:complexType>
+</xsd:schema>
