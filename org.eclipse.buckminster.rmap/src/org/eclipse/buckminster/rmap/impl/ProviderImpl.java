@@ -580,13 +580,29 @@ public class ProviderImpl extends EObjectImpl implements Provider
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public void setComponentTypesAttr(String newComponentTypesAttr)
 	{
-		// TODO: implement this method to set the 'Component Types Attr' attribute
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		if(newComponentTypesAttr == null || newComponentTypesAttr.length() == 0)
+		{
+			if(componentTypes != null)
+				componentTypes.clear();
+			return;
+		}
+
+		EList<String> ctypes = getComponentTypes();
+		ctypes.clear();
+		int commaIdx = newComponentTypesAttr.indexOf(',');
+		int idx = 0;
+		while(commaIdx >= idx)
+		{
+			ctypes.add(newComponentTypesAttr.substring(idx, commaIdx));
+			idx = commaIdx + 1;
+			commaIdx = newComponentTypesAttr.indexOf(',', idx);
+		}
+		if(idx < newComponentTypesAttr.length())
+			ctypes.add(newComponentTypesAttr.substring(idx));
 	}
 
 	/**
