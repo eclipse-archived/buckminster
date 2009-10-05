@@ -27,12 +27,13 @@
 
    <extension point="org.eclipse.ui.editors">
       <editor
-            id="org.eclipse.buckminster.rmap.presentation.RmapEditorID"
-            name="%_UI_RmapEditor_label"
-            icon="icons/full/obj16/RmapModelFile.gif"
-            extensions="rmap"
             class="org.eclipse.buckminster.rmap.presentation.RmapEditor"
-            contributorClass="org.eclipse.buckminster.rmap.presentation.RmapActionBarContributor">
+            contributorClass="org.eclipse.buckminster.rmap.presentation.RmapActionBarContributor"
+            default="true"
+            extensions="rmap"
+            icon="icons/full/obj16/rmap.png"
+            id="org.eclipse.buckminster.rmap.presentation.RmapEditorID"
+            name="%_UI_RmapEditor_label">
       </editor>
    </extension>
 

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster UI Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.ui; singleton:=true
-Bundle-Version: 1.0.350.qualifier
+Bundle-Version: 1.2.360.qualifier
 Bundle-Activator: org.eclipse.buckminster.ui.UiPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
