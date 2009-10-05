@@ -529,22 +529,6 @@ public interface CommonPackage extends EPackage
 		EClass DOCUMENT_ROOT = eINSTANCE.getDocumentRoot();
 
 		/**
-		 * The meta object literal for the '<em><b>Group</b></em>' containment reference feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference DOCUMENT_ROOT__GROUP = eINSTANCE.getDocumentRoot_Group();
-
-		/**
-		 * The meta object literal for the '<em><b>Match</b></em>' containment reference feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference DOCUMENT_ROOT__MATCH = eINSTANCE.getDocumentRoot_Match();
-
-		/**
 		 * The meta object literal for the '<em><b>Rx Part</b></em>' containment reference feature. <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
 		 * 
@@ -571,15 +555,6 @@ public interface CommonPackage extends EPackage
 		 * @generated
 		 */
 		EDataType PROPERTY_KEY = eINSTANCE.getPropertyKey();
-
-		/**
-		 * The meta object literal for the '<em>URL</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @see java.net.URL
-		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getURL()
-		 * @generated
-		 */
-		EDataType URL = eINSTANCE.getURL();
 
 		/**
 		 * The meta object literal for the '<em>Uuid</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1642,31 +1617,13 @@ public interface CommonPackage extends EPackage
 	int DOCUMENT_ROOT = 16;
 
 	/**
-	 * The feature id for the '<em><b>Group</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__GROUP = 0;
-
-	/**
-	 * The feature id for the '<em><b>Match</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__MATCH = 1;
-
-	/**
 	 * The feature id for the '<em><b>Rx Part</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__RX_PART = 2;
+	int DOCUMENT_ROOT__RX_PART = 0;
 
 	/**
 	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
@@ -1675,7 +1632,7 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 3;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}' enum.
@@ -1697,22 +1654,13 @@ public interface CommonPackage extends EPackage
 	int PROPERTY_KEY = 18;
 
 	/**
-	 * The meta object id for the '<em>URL</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see java.net.URL
-	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getURL()
-	 * @generated
-	 */
-	int URL = 19;
-
-	/**
 	 * The meta object id for the '<em>Uuid</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see java.util.UUID
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getUuid()
 	 * @generated
 	 */
-	int UUID = 20;
+	int UUID = 19;
 
 	/**
 	 * The meta object id for the '<em>Pattern</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1721,7 +1669,7 @@ public interface CommonPackage extends EPackage
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPattern()
 	 * @generated
 	 */
-	int PATTERN = 21;
+	int PATTERN = 20;
 
 	/**
 	 * Returns the factory that creates the instances of the model. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1807,28 +1755,6 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	EClass getDocumentRoot();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getGroup
-	 * <em>Group</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference '<em>Group</em>'.
-	 * @see org.eclipse.emf.ecore.EObject#getGroup()
-	 * @see #getDocumentRoot()
-	 * @generated
-	 */
-	EReference getDocumentRoot_Group();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getMatch
-	 * <em>Match</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference '<em>Match</em>'.
-	 * @see org.eclipse.emf.ecore.EObject#getMatch()
-	 * @see #getDocumentRoot()
-	 * @generated
-	 */
-	EReference getDocumentRoot_Match();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRxPart
@@ -2320,18 +2246,6 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	EClass getToUpper();
-
-	/**
-	 * Returns the meta object for data type '{@link java.net.URL <em>URL</em>}'. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @return the meta object for data type '<em>URL</em>'.
-	 * @see java.net.URL
-	 * @model instanceClass="java.net.URL"
-	 *        extendedMetaData="name='URL' baseType='http://www.eclipse.org/emf/2003/XMLType#anyURI'"
-	 * @generated
-	 */
-	EDataType getURL();
 
 	/**
 	 * Returns the meta object for data type '{@link java.util.UUID <em>Uuid</em>}'. <!-- begin-user-doc --> <!--

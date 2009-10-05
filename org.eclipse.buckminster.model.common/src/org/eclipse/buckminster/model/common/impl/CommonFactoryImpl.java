@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
-import java.net.URL;
-
 import java.util.UUID;
 
 import java.util.regex.Pattern;
@@ -125,8 +123,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return convertSplitTypeToString(eDataType, instanceValue);
 		case CommonPackage.PROPERTY_KEY:
 			return convertPropertyKeyToString(eDataType, instanceValue);
-		case CommonPackage.URL:
-			return convertURLToString(eDataType, instanceValue);
 		case CommonPackage.UUID:
 			return convertUuidToString(eDataType, instanceValue);
 		case CommonPackage.PATTERN:
@@ -134,16 +130,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public String convertURLToString(EDataType eDataType, Object instanceValue)
-	{
-		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.ANY_URI, instanceValue);
 	}
 
 	/**
@@ -259,8 +245,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return createSplitTypeFromString(eDataType, initialValue);
 		case CommonPackage.PROPERTY_KEY:
 			return createPropertyKeyFromString(eDataType, initialValue);
-		case CommonPackage.URL:
-			return createURLFromString(eDataType, initialValue);
 		case CommonPackage.UUID:
 			return createUuidFromString(eDataType, initialValue);
 		case CommonPackage.PATTERN:
@@ -423,16 +407,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	{
 		ToUpperImpl toUpper = new ToUpperImpl();
 		return toUpper;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public URL createURLFromString(EDataType eDataType, String initialValue)
-	{
-		return (URL)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.ANY_URI, initialValue);
 	}
 
 	/**

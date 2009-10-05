@@ -293,15 +293,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ToLower" eSuperTypes="#//ValueFilter"/>
   <eClassifiers xsi:type="ecore:EClass" name="ToUpper" eSuperTypes="#//ValueFilter"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="URL" instanceClassName="java.net.URL">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A type that describes an URL. TODO: Needs patterns that restrict the URL. Must be available from somewhere."/>
-    </eAnnotations>
-    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-      <details key="name" value="URL"/>
-      <details key="baseType" value="http://www.eclipse.org/emf/2003/XMLType#anyURI"/>
-    </eAnnotations>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="Uuid" instanceClassName="java.util.UUID">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="uuid"/>
@@ -378,26 +369,6 @@
       <details key="name" value=""/>
       <details key="kind" value="mixed"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="group" upperBound="-2"
-        eType="#//RxGroup" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="group"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="affiliation" value="rxPart"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="match" upperBound="-2"
-        eType="#//RxPattern" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="match"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="affiliation" value="rxPart"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rxPart" upperBound="-2"
         eType="#//RxPart" changeable="false" volatile="true" transient="true" derived="true"
         containment="true" resolveProxies="false">

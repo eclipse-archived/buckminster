@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
 
-import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.URIMatcher;
 
@@ -70,7 +69,6 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP);
-			childrenFeatures.add(RmapPackage.Literals.URI_MATCHER__RX_PARTS);
 		}
 		return childrenFeatures;
 	}
@@ -79,40 +77,18 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
 	{
 		Object childFeature = feature;
-		Object childObject = child;
-
 		if(childFeature instanceof EStructuralFeature && FeatureMapUtil.isFeatureMap((EStructuralFeature)childFeature))
 		{
-			FeatureMap.Entry entry = (FeatureMap.Entry)childObject;
+			FeatureMap.Entry entry = (FeatureMap.Entry)child;
 			childFeature = entry.getEStructuralFeature();
-			childObject = entry.getValue();
 		}
-
-		boolean qualify = childFeature == RmapPackage.Literals.DOCUMENT_ROOT__ARCH
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__MATCH
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NAME
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NL
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__OS
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__VERSION
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__WS
-				|| childFeature == CommonPackage.Literals.DOCUMENT_ROOT__MATCH
-				|| childFeature == RmapPackage.Literals.URI_MATCHER__RX_PARTS
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__GROUP
-				|| childFeature == CommonPackage.Literals.DOCUMENT_ROOT__GROUP;
-
-		if(qualify)
-		{
-			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject),
-					getFeatureText(childFeature), getTypeText(owner) });
-		}
-		return super.getCreateChildText(owner, feature, child, selection);
+		return getFeatureText(childFeature);
 	}
 
 	/**
@@ -183,10 +159,10 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 		switch(notification.getFeatureID(URIMatcher.class))
 		{
 		case RmapPackage.URI_MATCHER__BASE:
+		case RmapPackage.URI_MATCHER__RX_PARTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case RmapPackage.URI_MATCHER__RX_PARTS_GROUP:
-		case RmapPackage.URI_MATCHER__RX_PARTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -211,7 +187,7 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
@@ -219,7 +195,7 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
+				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
 						CommonFactory.eINSTANCE.createRxPattern())));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
@@ -227,23 +203,7 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 						CommonFactory.eINSTANCE.createRxGroup())));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
-						CommonFactory.eINSTANCE.createRxPattern())));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NAME,
-						CommonFactory.eINSTANCE.createRxPattern())));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL,
-						CommonFactory.eINSTANCE.createRxPattern())));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS,
-						CommonFactory.eINSTANCE.createRxPattern())));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
 						CommonFactory.eINSTANCE.createRxPattern())));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
@@ -251,22 +211,28 @@ public class URIMatcherItemProvider extends ItemProviderAdapter implements IEdit
 						CommonFactory.eINSTANCE.createRxPattern())));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
+				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REVISION,
+						CommonFactory.eINSTANCE.createRxPattern())));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
+				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
+						CommonFactory.eINSTANCE.createRxPattern())));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
+				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS,
+						CommonFactory.eINSTANCE.createRxPattern())));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__WS,
 						CommonFactory.eINSTANCE.createRxPattern())));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__GROUP,
-						CommonFactory.eINSTANCE.createRxGroup())));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__MATCH,
+				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
 						CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS,
-				CommonFactory.eINSTANCE.createRxGroup()));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.URI_MATCHER__RX_PARTS_GROUP,
+				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL,
+						CommonFactory.eINSTANCE.createRxPattern())));
 	}
 
 	/**

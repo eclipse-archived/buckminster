@@ -100,7 +100,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 			public Object caseDocumentation(Documentation object)
 			{
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
@@ -108,23 +108,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 								CommonFactory.eINSTANCE.createRxGroup())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NAME,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
@@ -132,7 +116,27 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REVISION,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__WS,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL,
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				return null;
@@ -147,7 +151,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 			public Object caseRxGroup(RxGroup object)
 			{
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
@@ -155,23 +159,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 								CommonFactory.eINSTANCE.createRxGroup())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NAME,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS,
-								CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
@@ -179,7 +167,27 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REVISION,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__WS,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
+								CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL,
 								CommonFactory.eINSTANCE.createRxPattern())));
 
 				return null;

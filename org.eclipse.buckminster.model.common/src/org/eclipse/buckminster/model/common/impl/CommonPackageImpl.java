@@ -185,13 +185,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
-	private EDataType urlEDataType = null;
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	private EDataType uuidEDataType = null;
 
 	/**
@@ -373,8 +366,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		createEReference(valueFilterEClass, VALUE_FILTER__TO_UPPERS);
 
 		documentRootEClass = createEClass(DOCUMENT_ROOT);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__GROUP);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__MATCH);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__RX_PART);
 
 		// Create enums
@@ -382,7 +373,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 
 		// Create data types
 		propertyKeyEDataType = createEDataType(PROPERTY_KEY);
-		urlEDataType = createEDataType(URL);
 		uuidEDataType = createEDataType(UUID);
 		patternEDataType = createEDataType(PATTERN);
 	}
@@ -472,29 +462,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Group()
-	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EReference getDocumentRoot_Match()
-	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EReference getDocumentRoot_RxPart()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(2);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -942,16 +912,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
-	public EDataType getURL()
-	{
-		return urlEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EDataType getUuid()
 	{
 		return uuidEDataType;
@@ -1208,12 +1168,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(documentRootEClass, null, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDocumentRoot_Group(), this.getRxGroup(), null, "group", null, 0, -2, null, IS_TRANSIENT,
-				IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-				IS_ORDERED);
-		initEReference(getDocumentRoot_Match(), this.getRxPattern(), null, "match", null, 0, -2, null, IS_TRANSIENT,
-				IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-				IS_ORDERED);
 		initEReference(getDocumentRoot_RxPart(), this.getRxPart(), null, "rxPart", null, 0, -2, null, IS_TRANSIENT,
 				IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
 				IS_ORDERED);
@@ -1226,7 +1180,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 
 		// Initialize data types
 		initEDataType(propertyKeyEDataType, String.class, "PropertyKey", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-		initEDataType(urlEDataType, java.net.URL.class, "URL", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(uuidEDataType, java.util.UUID.class, "Uuid", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(patternEDataType, Pattern.class, "Pattern", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
@@ -1293,8 +1246,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		addAnnotation(getSplit_Limit(), source, new String[] { "kind", "attribute" });
 		addAnnotation(getSplit_Pattern(), source, new String[] { "kind", "attribute" });
 		addAnnotation(getSplit_Style(), source, new String[] { "kind", "attribute" });
-		addAnnotation(urlEDataType, source, new String[] { "name", "URL", "baseType",
-				"http://www.eclipse.org/emf/2003/XMLType#anyURI" });
 		addAnnotation(uuidEDataType, source, new String[] { "name", "uuid", "baseType",
 				"http://www.eclipse.org/emf/2003/XMLType#string", "pattern",
 				"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" });
@@ -1315,10 +1266,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		addAnnotation(patternEDataType, source, new String[] { "name", "pattern", "baseType",
 				"http://www.eclipse.org/emf/2003/XMLType#string" });
 		addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" });
-		addAnnotation(getDocumentRoot_Group(), source, new String[] { "kind", "element", "name", "group", "namespace",
-				"##targetNamespace", "affiliation", "rxPart" });
-		addAnnotation(getDocumentRoot_Match(), source, new String[] { "kind", "element", "name", "match", "namespace",
-				"##targetNamespace", "affiliation", "rxPart" });
 		addAnnotation(getDocumentRoot_RxPart(), source, new String[] { "kind", "element", "name", "rxPart",
 				"namespace", "##targetNamespace" });
 	}

@@ -246,15 +246,16 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__MIXED);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__ARCH);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__GROUP);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__MATCH);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__GROUP);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__NAME);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__NL);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__OS);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__TIMESTAMP);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__VERSION);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__REVISION);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__TIMESTAMP);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__OS);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__WS);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__ARCH);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__NL);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__RMAP);
 
 		uriMatcherEClass = createEClass(URI_MATCHER);
@@ -280,7 +281,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Arch()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(11);
 	}
 
 	/**
@@ -300,7 +301,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Match()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(5);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -320,7 +321,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Name()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(6);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -330,7 +331,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Nl()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(7);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(12);
 	}
 
 	/**
@@ -340,7 +341,17 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Os()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(8);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(9);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getDocumentRoot_Revision()
+	{
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -350,7 +361,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Rmap()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(12);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(13);
 	}
 
 	/**
@@ -360,7 +371,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Timestamp()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(9);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -370,7 +381,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Version()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(10);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -380,7 +391,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getDocumentRoot_Ws()
 	{
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(11);
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(10);
 	}
 
 	/**
@@ -963,31 +974,34 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		initEReference(getDocumentRoot_XSISchemaLocation(), ecorePackage.getEStringToStringMapEntry(), null,
 				"xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
 				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Arch(), theCommonPackage.getRxPattern(), null, "arch", null, 0, -2, null,
+		initEReference(getDocumentRoot_Match(), theCommonPackage.getRxPattern(), null, "match", null, 0, -2, null,
 				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
 				IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Group(), theCommonPackage.getRxGroup(), null, "group", null, 0, -2, null,
 				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
 				IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Match(), theCommonPackage.getRxPattern(), null, "match", null, 0, -2, null,
-				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-				IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Name(), theCommonPackage.getRxPattern(), null, "name", null, 0, -2, null,
 				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
 				IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Nl(), theCommonPackage.getRxPattern(), null, "nl", null, 0, -2, null,
-				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-				IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Os(), theCommonPackage.getRxPattern(), null, "os", null, 0, -2, null,
-				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-				IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Timestamp(), theCommonPackage.getRxPattern(), null, "timestamp", null, 0, -2,
-				null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Version(), theCommonPackage.getRxPattern(), null, "version", null, 0, -2, null,
 				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
 				IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Revision(), theCommonPackage.getRxPattern(), null, "revision", null, 0, -2,
+				null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Timestamp(), theCommonPackage.getRxPattern(), null, "timestamp", null, 0, -2,
+				null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Os(), theCommonPackage.getRxPattern(), null, "os", null, 0, -2, null,
+				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Ws(), theCommonPackage.getRxPattern(), null, "ws", null, 0, -2, null,
+				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Arch(), theCommonPackage.getRxPattern(), null, "arch", null, 0, -2, null,
+				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Nl(), theCommonPackage.getRxPattern(), null, "nl", null, 0, -2, null,
 				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
 				IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Rmap(), this.getResourceMap(), null, "rmap", null, 1, 1, null, !IS_TRANSIENT,
@@ -1055,25 +1069,28 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 				"xmlns:prefix" });
 		addAnnotation(getDocumentRoot_XSISchemaLocation(), source, new String[] { "kind", "attribute", "name",
 				"xsi:schemaLocation" });
-		addAnnotation(getDocumentRoot_Arch(), source, new String[] { "kind", "element", "name", "arch", "namespace",
+		addAnnotation(getDocumentRoot_Match(), source, new String[] { "kind", "element", "name", "match", "namespace",
 				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
 		addAnnotation(getDocumentRoot_Group(), source, new String[] { "kind", "element", "name", "group", "namespace",
 				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
-		addAnnotation(getDocumentRoot_Match(), source, new String[] { "kind", "element", "name", "match", "namespace",
-				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
 		addAnnotation(getDocumentRoot_Name(), source, new String[] { "kind", "element", "name", "name", "namespace",
 				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
-		addAnnotation(getDocumentRoot_Nl(), source, new String[] { "kind", "element", "name", "nl", "namespace",
-				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
-		addAnnotation(getDocumentRoot_Os(), source, new String[] { "kind", "element", "name", "os", "namespace",
-				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
-		addAnnotation(getDocumentRoot_Timestamp(), source,
-				new String[] { "kind", "element", "name", "timestamp", "namespace", "##targetNamespace", "affiliation",
-						"http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
 		addAnnotation(getDocumentRoot_Version(), source,
 				new String[] { "kind", "element", "name", "version", "namespace", "##targetNamespace", "affiliation",
 						"http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
+		addAnnotation(getDocumentRoot_Revision(), source,
+				new String[] { "kind", "element", "name", "revision", "namespace", "##targetNamespace", "affiliation",
+						"http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
+		addAnnotation(getDocumentRoot_Timestamp(), source,
+				new String[] { "kind", "element", "name", "timestamp", "namespace", "##targetNamespace", "affiliation",
+						"http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
+		addAnnotation(getDocumentRoot_Os(), source, new String[] { "kind", "element", "name", "os", "namespace",
+				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
 		addAnnotation(getDocumentRoot_Ws(), source, new String[] { "kind", "element", "name", "ws", "namespace",
+				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
+		addAnnotation(getDocumentRoot_Arch(), source, new String[] { "kind", "element", "name", "arch", "namespace",
+				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
+		addAnnotation(getDocumentRoot_Nl(), source, new String[] { "kind", "element", "name", "nl", "namespace",
 				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#rxPart" });
 		addAnnotation(getDocumentRoot_Rmap(), source, new String[] { "namespace", "##targetNamespace", "kind",
 				"element", "name", "rmap" });

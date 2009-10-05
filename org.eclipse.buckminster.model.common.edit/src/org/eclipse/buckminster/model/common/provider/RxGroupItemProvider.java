@@ -9,15 +9,12 @@ package org.eclipse.buckminster.model.common.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.RxGroup;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -61,9 +58,20 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP);
-			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PART);
 		}
 		return childrenFeatures;
+	}
+
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
+	{
+		Object childFeature = feature;
+		if(childFeature instanceof EStructuralFeature && FeatureMapUtil.isFeatureMap((EStructuralFeature)childFeature))
+		{
+			FeatureMap.Entry entry = (FeatureMap.Entry)child;
+			childFeature = entry.getEStructuralFeature();
+		}
+		return getFeatureText(childFeature);
 	}
 
 	/**
@@ -121,8 +129,10 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 
 		switch(notification.getFeatureID(RxGroup.class))
 		{
-		case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
 		case CommonPackage.RX_GROUP__RX_PART:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -139,14 +149,6 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__GROUP,
-						CommonFactory.eINSTANCE.createRxGroup())));
-
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
-				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__MATCH,
-						CommonFactory.eINSTANCE.createRxPattern())));
 	}
 
 	/**

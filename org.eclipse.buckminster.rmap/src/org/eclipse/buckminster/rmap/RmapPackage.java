@@ -452,6 +452,14 @@ public interface RmapPackage extends EPackage
 		EReference DOCUMENT_ROOT__VERSION = eINSTANCE.getDocumentRoot_Version();
 
 		/**
+		 * The meta object literal for the '<em><b>Revision</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__REVISION = eINSTANCE.getDocumentRoot_Revision();
+
+		/**
 		 * The meta object literal for the '<em><b>Ws</b></em>' containment reference feature. <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * 
@@ -977,13 +985,13 @@ public interface RmapPackage extends EPackage
 	int DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = 2;
 
 	/**
-	 * The feature id for the '<em><b>Arch</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * The feature id for the '<em><b>Match</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__ARCH = 3;
+	int DOCUMENT_ROOT__MATCH = 3;
 
 	/**
 	 * The feature id for the '<em><b>Group</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -995,47 +1003,13 @@ public interface RmapPackage extends EPackage
 	int DOCUMENT_ROOT__GROUP = 4;
 
 	/**
-	 * The feature id for the '<em><b>Match</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__MATCH = 5;
-
-	/**
 	 * The feature id for the '<em><b>Name</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__NAME = 6;
-
-	/**
-	 * The feature id for the '<em><b>Nl</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__NL = 7;
-
-	/**
-	 * The feature id for the '<em><b>Os</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__OS = 8;
-
-	/**
-	 * The feature id for the '<em><b>Timestamp</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__TIMESTAMP = 9;
+	int DOCUMENT_ROOT__NAME = 5;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1044,7 +1018,33 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__VERSION = 10;
+	int DOCUMENT_ROOT__VERSION = 6;
+
+	/**
+	 * The feature id for the '<em><b>Revision</b></em>' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__REVISION = 7;
+
+	/**
+	 * The feature id for the '<em><b>Timestamp</b></em>' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__TIMESTAMP = 8;
+
+	/**
+	 * The feature id for the '<em><b>Os</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__OS = 9;
 
 	/**
 	 * The feature id for the '<em><b>Ws</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1052,7 +1052,24 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__WS = 11;
+	int DOCUMENT_ROOT__WS = 10;
+
+	/**
+	 * The feature id for the '<em><b>Arch</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__ARCH = 11;
+
+	/**
+	 * The feature id for the '<em><b>Nl</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__NL = 12;
 
 	/**
 	 * The feature id for the '<em><b>Rmap</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1061,7 +1078,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__RMAP = 12;
+	int DOCUMENT_ROOT__RMAP = 13;
 
 	/**
 	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
@@ -1070,7 +1087,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 13;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 14;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl <em>URI Matcher</em>}' class.
@@ -1204,6 +1221,17 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 */
 	EReference getDocumentRoot_Os();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRevision
+	 * <em>Revision</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Revision</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getRevision()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Revision();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRmap

@@ -9,7 +9,6 @@ package org.eclipse.buckminster.model.common.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -61,8 +60,6 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(CommonPackage.Literals.DOCUMENT_ROOT__GROUP);
-			childrenFeatures.add(CommonPackage.Literals.DOCUMENT_ROOT__MATCH);
 			childrenFeatures.add(CommonPackage.Literals.DOCUMENT_ROOT__RX_PART);
 		}
 		return childrenFeatures;
@@ -131,8 +128,6 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 
 		switch(notification.getFeatureID(EObject.class))
 		{
-		case CommonPackage.DOCUMENT_ROOT__GROUP:
-		case CommonPackage.DOCUMENT_ROOT__MATCH:
 		case CommonPackage.DOCUMENT_ROOT__RX_PART:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
@@ -150,12 +145,6 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENT_ROOT__GROUP,
-				CommonFactory.eINSTANCE.createRxGroup()));
-
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENT_ROOT__MATCH,
-				CommonFactory.eINSTANCE.createRxPattern()));
 	}
 
 	/**

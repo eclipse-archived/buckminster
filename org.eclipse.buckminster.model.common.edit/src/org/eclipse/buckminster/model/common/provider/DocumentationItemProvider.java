@@ -9,7 +9,6 @@ package org.eclipse.buckminster.model.common.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Documentation;
 
@@ -168,14 +167,6 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 
 		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__CDATA, "")));
-
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__GROUP,
-						CommonFactory.eINSTANCE.createRxGroup())));
-
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__MATCH,
-						CommonFactory.eINSTANCE.createRxPattern())));
 	}
 
 	/**

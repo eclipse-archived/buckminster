@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.model.common.util;
 
-import java.net.URL;
-
 import java.util.Map;
 import java.util.UUID;
 
@@ -328,16 +326,6 @@ public class CommonValidator extends EObjectValidator
 	 * 
 	 * @generated
 	 */
-	public boolean validateURL(URL url, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return true;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public boolean validateUuid(UUID uuid, DiagnosticChain diagnostics, Map<Object, Object> context)
 	{
 		boolean result = validateUuid_Pattern(uuid, diagnostics, context);
@@ -424,8 +412,6 @@ public class CommonValidator extends EObjectValidator
 			return validateSplitType((SplitType)value, diagnostics, context);
 		case CommonPackage.PROPERTY_KEY:
 			return validatePropertyKey((String)value, diagnostics, context);
-		case CommonPackage.URL:
-			return validateURL((URL)value, diagnostics, context);
 		case CommonPackage.UUID:
 			return validateUuid((UUID)value, diagnostics, context);
 		case CommonPackage.PATTERN:

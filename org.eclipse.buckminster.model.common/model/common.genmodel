@@ -23,13 +23,16 @@
       <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/groups"/>
     </genEnums>
     <genDataTypes ecoreDataType="common.ecore#//PropertyKey"/>
-    <genDataTypes ecoreDataType="common.ecore#//URL"/>
     <genDataTypes ecoreDataType="common.ecore#//Uuid"/>
     <genDataTypes ecoreDataType="common.ecore#//Pattern"/>
     <genClasses ecoreClass="common.ecore#//Constant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Constant/value"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//Documentation"/>
+    <genClasses ecoreClass="common.ecore#//Documentation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute common.ecore#//Documentation/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Documentation/any"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute common.ecore#//Documentation/anyAttribute"/>
+    </genClasses>
     <genClasses ecoreClass="common.ecore#//Format">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Format/format"/>
     </genClasses>
@@ -64,7 +67,7 @@
     </genClasses>
     <genClasses ecoreClass="common.ecore#//RxGroup">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute common.ecore#//RxGroup/rxPartsGroup"/>
-      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference common.ecore#//RxGroup/rxPart"/>
+      <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference common.ecore#//RxGroup/rxPart"/>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//RxPart">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/name"/>
@@ -92,8 +95,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/toUppers"/>
     </genClasses>
     <genClasses dynamic="true" ecoreClass="common.ecore#//DocumentRoot">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//DocumentRoot/group"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//DocumentRoot/match"/>
       <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference common.ecore#//DocumentRoot/rxPart"/>
     </genClasses>
   </genPackages>
