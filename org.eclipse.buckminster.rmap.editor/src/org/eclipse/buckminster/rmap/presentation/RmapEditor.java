@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.model.common.provider.CommonItemProviderAdapterFactory;
-import org.eclipse.buckminster.rmap.provider.ProviderExtension;
-import org.eclipse.buckminster.rmap.provider.RmapEditPlugin;
 import org.eclipse.buckminster.rmap.provider.RmapItemProviderAdapterFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -1473,7 +1471,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	/**
 	 * This sets up the editing domain for the model editor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	protected void initializeEditingDomain()
 	{
@@ -1483,10 +1481,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 		adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new RmapItemProviderAdapterFactory());
-
-		for(ProviderExtension pf : RmapEditPlugin.INSTANCE.getProviderFactories())
-			adapterFactory.addAdapterFactory(pf.createItemProviderAdapterFactory());
-
 		adapterFactory.addAdapterFactory(new CommonItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 

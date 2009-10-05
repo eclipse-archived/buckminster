@@ -18,6 +18,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -59,7 +60,8 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PARTS);
+			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP);
+			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PART);
 		}
 		return childrenFeatures;
 	}
@@ -119,7 +121,8 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 
 		switch(notification.getFeatureID(RxGroup.class))
 		{
-		case CommonPackage.RX_GROUP__RX_PARTS:
+		case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
+		case CommonPackage.RX_GROUP__RX_PART:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -137,11 +140,13 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS,
-				CommonFactory.eINSTANCE.createRxGroup()));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__GROUP,
+						CommonFactory.eINSTANCE.createRxGroup())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__MATCH,
+						CommonFactory.eINSTANCE.createRxPattern())));
 	}
 
 	/**

@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="bc" ecore:package="org.eclipse.buckminster.model.common" targetNamespace="http://www.eclipse.org/buckminster/Common-1.0">
   <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:element name="group" substitutionGroup="bc:rxPart" type="bc:RxGroup"/>
+  <xsd:element name="match" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element abstract="true" name="rxPart" type="bc:RxPart"/>
   <xsd:complexType name="Constant">
     <xsd:attribute name="value" type="ecore:EString" use="required"/>
   </xsd:complexType>
-  <xsd:complexType name="Documentation"/>
+  <xsd:complexType mixed="true" name="Documentation">
+    <xsd:sequence>
+      <xsd:any ecore:name="any" namespace="##any"/>
+    </xsd:sequence>
+    <xsd:anyAttribute ecore:name="anyAttribute" namespace="##any"/>
+  </xsd:complexType>
   <xsd:complexType name="Format">
     <xsd:annotation>
       <xsd:documentation>A Format is the base for a java.text.Format that in turn is used when creating a string from a set of parameter values. A parameter is denoted by {&lt;n&gt;} where &lt;n&gt; denotes n'th parameter element using zero for the first parameter.</xsd:documentation>
@@ -81,7 +89,9 @@
     <xsd:complexContent>
       <xsd:extension base="bc:RxPart">
         <xsd:sequence>
-          <xsd:element ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="rxParts" type="bc:RxPart"/>
+          <xsd:choice ecore:featureMap="rxPartsGroup" maxOccurs="unbounded">
+            <xsd:element ecore:changeable="false" ecore:upperBound="-1" minOccurs="0" ref="bc:rxPart"/>
+          </xsd:choice>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

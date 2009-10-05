@@ -21,11 +21,11 @@
                org.eclipse.emf.edit.provider.IItemLabelProvider
                org.eclipse.emf.edit.provider.IItemPropertySource"/>
    </extension>
-   <extension
-         point="org.eclipse.buckminster.rmap.edit.rmapProviders">
-      <rmapProvider
-            class="org.eclipse.buckminster.rmap.pde.provider.PdeProviderExtension">
-      </rmapProvider>
+
+   <extension point="org.eclipse.emf.edit.childCreationExtenders">
+      <extender
+            uri="http://www.eclipse.org/buckminster/RMap-1.0"
+            class="org.eclipse.buckminster.rmap.pde.provider.PdeItemProviderAdapterFactory$RmapChildCreationExtender"/>
    </extension>
 
 </plugin>

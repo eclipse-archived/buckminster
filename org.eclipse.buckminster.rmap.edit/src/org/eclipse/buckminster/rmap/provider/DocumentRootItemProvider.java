@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.RmapPackage;
 
@@ -20,6 +21,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -62,9 +64,47 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__ARCH);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__GROUP);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__MATCH);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__NAME);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__NL);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__OS);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__VERSION);
+			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__WS);
 			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__RMAP);
 		}
 		return childrenFeatures;
+	}
+
+	/**
+	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
+	{
+		Object childFeature = feature;
+		Object childObject = child;
+
+		boolean qualify = childFeature == RmapPackage.Literals.DOCUMENT_ROOT__ARCH
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__MATCH
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NAME
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NL
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__OS
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__VERSION
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__WS;
+
+		if(qualify)
+		{
+			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject),
+					getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**
@@ -102,7 +142,7 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 	@Override
 	public ResourceLocator getResourceLocator()
 	{
-		return RmapEditPlugin.INSTANCE;
+		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
 	}
 
 	/**
@@ -130,6 +170,15 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 
 		switch(notification.getFeatureID(EObject.class))
 		{
+		case RmapPackage.DOCUMENT_ROOT__ARCH:
+		case RmapPackage.DOCUMENT_ROOT__GROUP:
+		case RmapPackage.DOCUMENT_ROOT__MATCH:
+		case RmapPackage.DOCUMENT_ROOT__NAME:
+		case RmapPackage.DOCUMENT_ROOT__NL:
+		case RmapPackage.DOCUMENT_ROOT__OS:
+		case RmapPackage.DOCUMENT_ROOT__TIMESTAMP:
+		case RmapPackage.DOCUMENT_ROOT__VERSION:
+		case RmapPackage.DOCUMENT_ROOT__WS:
 		case RmapPackage.DOCUMENT_ROOT__RMAP:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
@@ -147,6 +196,33 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__GROUP,
+				CommonFactory.eINSTANCE.createRxGroup()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__NAME,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__NL,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__OS,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__VERSION,
+				CommonFactory.eINSTANCE.createRxPattern()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__WS,
+				CommonFactory.eINSTANCE.createRxPattern()));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__RMAP,
 				RmapFactory.eINSTANCE.createResourceMap()));

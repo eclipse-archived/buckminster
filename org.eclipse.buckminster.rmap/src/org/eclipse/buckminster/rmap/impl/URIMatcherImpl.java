@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.rmap.impl;
 
-import java.util.Collection;
-
 import org.eclipse.buckminster.model.common.RxPart;
 
 import org.eclipse.buckminster.rmap.RmapPackage;
@@ -24,7 +22,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -33,6 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getBase <em>Base</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getRxPartsGroup <em>Rx Parts Group</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getRxParts <em>Rx Parts</em>}</li>
  * </ul>
  * </p>
@@ -62,14 +62,14 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 	protected String base = BASE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getRxParts() <em>Rx Parts</em>}' containment reference list. <!-- begin-user-doc
+	 * The cached value of the '{@link #getRxPartsGroup() <em>Rx Parts Group</em>}' attribute list. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @see #getRxParts()
+	 * @see #getRxPartsGroup()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<RxPart> rxParts;
+	protected FeatureMap rxPartsGroup;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -93,6 +93,10 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 		{
 		case RmapPackage.URI_MATCHER__BASE:
 			return getBase();
+		case RmapPackage.URI_MATCHER__RX_PARTS_GROUP:
+			if(coreType)
+				return getRxPartsGroup();
+			return ((FeatureMap.Internal)getRxPartsGroup()).getWrapper();
 		case RmapPackage.URI_MATCHER__RX_PARTS:
 			return getRxParts();
 		}
@@ -109,6 +113,8 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 	{
 		switch(featureID)
 		{
+		case RmapPackage.URI_MATCHER__RX_PARTS_GROUP:
+			return ((InternalEList<?>)getRxPartsGroup()).basicRemove(otherEnd, msgs);
 		case RmapPackage.URI_MATCHER__RX_PARTS:
 			return ((InternalEList<?>)getRxParts()).basicRemove(otherEnd, msgs);
 		}
@@ -129,8 +135,10 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 			return BASE_EDEFAULT == null
 					? base != null
 					: !BASE_EDEFAULT.equals(base);
+		case RmapPackage.URI_MATCHER__RX_PARTS_GROUP:
+			return rxPartsGroup != null && !rxPartsGroup.isEmpty();
 		case RmapPackage.URI_MATCHER__RX_PARTS:
-			return rxParts != null && !rxParts.isEmpty();
+			return !getRxParts().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -149,9 +157,8 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 		case RmapPackage.URI_MATCHER__BASE:
 			setBase((String)newValue);
 			return;
-		case RmapPackage.URI_MATCHER__RX_PARTS:
-			getRxParts().clear();
-			getRxParts().addAll((Collection<? extends RxPart>)newValue);
+		case RmapPackage.URI_MATCHER__RX_PARTS_GROUP:
+			((FeatureMap.Internal)getRxPartsGroup()).set(newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -170,8 +177,8 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 		case RmapPackage.URI_MATCHER__BASE:
 			setBase(BASE_EDEFAULT);
 			return;
-		case RmapPackage.URI_MATCHER__RX_PARTS:
-			getRxParts().clear();
+		case RmapPackage.URI_MATCHER__RX_PARTS_GROUP:
+			getRxPartsGroup().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -194,11 +201,21 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 	 */
 	public EList<RxPart> getRxParts()
 	{
-		if(rxParts == null)
+		return getRxPartsGroup().list(RmapPackage.Literals.URI_MATCHER__RX_PARTS);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public FeatureMap getRxPartsGroup()
+	{
+		if(rxPartsGroup == null)
 		{
-			rxParts = new EObjectContainmentEList<RxPart>(RxPart.class, this, RmapPackage.URI_MATCHER__RX_PARTS);
+			rxPartsGroup = new BasicFeatureMap(this, RmapPackage.URI_MATCHER__RX_PARTS_GROUP);
 		}
-		return rxParts;
+		return rxPartsGroup;
 	}
 
 	/**
@@ -228,6 +245,8 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (base: ");
 		result.append(base);
+		result.append(", rxPartsGroup: ");
+		result.append(rxPartsGroup);
 		result.append(')');
 		return result.toString();
 	}

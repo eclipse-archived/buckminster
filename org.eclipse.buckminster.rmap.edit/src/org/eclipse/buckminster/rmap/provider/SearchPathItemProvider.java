@@ -17,6 +17,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
+import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -101,7 +102,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	@Override
 	public ResourceLocator getResourceLocator()
 	{
-		return RmapEditPlugin.INSTANCE;
+		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
 	}
 
 	/**
@@ -157,24 +158,13 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	}
 
 	/**
-	 * Add new child descriptors including the ones added through extension point.
-	 */
-	@Override
-	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
-	{
-		collectNewChildDescriptorsGen(newChildDescriptors, object);
-		for(ProviderExtension pf : RmapEditPlugin.INSTANCE.getProviderFactories())
-			newChildDescriptors.add(createChildParameter(RmapPackage.Literals.SEARCH_PATH__PROVIDERS,
-					pf.createProvider()));
-	}
-
-	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void collectNewChildDescriptorsGen(Collection<Object> newChildDescriptors, Object object)
+	@Override
+	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 

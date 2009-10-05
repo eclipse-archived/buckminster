@@ -12,8 +12,6 @@ Export-Package: org.eclipse.buckminster.rmap,
  org.eclipse.buckminster.rmap.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport
+ org.eclipse.emf.ecore.xmi;visibility:=reexport,
+ org.eclipse.buckminster.model.common;visibility:=reexport
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.buckminster.model.common,
- org.eclipse.buckminster.model.common.impl,
- org.eclipse.buckminster.model.common.util

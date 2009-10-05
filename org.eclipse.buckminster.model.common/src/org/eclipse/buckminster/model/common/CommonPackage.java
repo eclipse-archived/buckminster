@@ -13,8 +13,6 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
-import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-
 /**
  * <!-- begin-user-doc --> The <b>Package</b> for the model. It contains accessors for the meta objects to represent
  * <ul>
@@ -75,6 +73,30 @@ public interface CommonPackage extends EPackage
 		 * @generated
 		 */
 		EClass DOCUMENTATION = eINSTANCE.getDocumentation();
+
+		/**
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute DOCUMENTATION__MIXED = eINSTANCE.getDocumentation_Mixed();
+
+		/**
+		 * The meta object literal for the '<em><b>Any</b></em>' attribute list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute DOCUMENTATION__ANY = eINSTANCE.getDocumentation_Any();
+
+		/**
+		 * The meta object literal for the '<em><b>Any Attribute</b></em>' attribute list feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute DOCUMENTATION__ANY_ATTRIBUTE = eINSTANCE.getDocumentation_AnyAttribute();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.impl.FormatImpl <em>Format</em>}
@@ -301,12 +323,20 @@ public interface CommonPackage extends EPackage
 		EClass RX_GROUP = eINSTANCE.getRxGroup();
 
 		/**
-		 * The meta object literal for the '<em><b>Rx Parts</b></em>' containment reference list feature. <!--
+		 * The meta object literal for the '<em><b>Rx Parts Group</b></em>' attribute list feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute RX_GROUP__RX_PARTS_GROUP = eINSTANCE.getRxGroup_RxPartsGroup();
+
+		/**
+		 * The meta object literal for the '<em><b>Rx Part</b></em>' containment reference list feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EReference RX_GROUP__RX_PARTS = eINSTANCE.getRxGroup_RxParts();
+		EReference RX_GROUP__RX_PART = eINSTANCE.getRxGroup_RxPart();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.impl.RxPartImpl
@@ -499,6 +529,30 @@ public interface CommonPackage extends EPackage
 		EClass DOCUMENT_ROOT = eINSTANCE.getDocumentRoot();
 
 		/**
+		 * The meta object literal for the '<em><b>Group</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__GROUP = eINSTANCE.getDocumentRoot_Group();
+
+		/**
+		 * The meta object literal for the '<em><b>Match</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__MATCH = eINSTANCE.getDocumentRoot_Match();
+
+		/**
+		 * The meta object literal for the '<em><b>Rx Part</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__RX_PART = eINSTANCE.getDocumentRoot_RxPart();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}'
 		 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -617,7 +671,7 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENTATION__MIXED = XMLTypePackage.ANY_TYPE__MIXED;
+	int DOCUMENTATION__MIXED = 0;
 
 	/**
 	 * The feature id for the '<em><b>Any</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -625,7 +679,7 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENTATION__ANY = XMLTypePackage.ANY_TYPE__ANY;
+	int DOCUMENTATION__ANY = 1;
 
 	/**
 	 * The feature id for the '<em><b>Any Attribute</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
@@ -634,7 +688,7 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENTATION__ANY_ATTRIBUTE = XMLTypePackage.ANY_TYPE__ANY_ATTRIBUTE;
+	int DOCUMENTATION__ANY_ATTRIBUTE = 2;
 
 	/**
 	 * The number of structural features of the '<em>Documentation</em>' class. <!-- begin-user-doc --> <!--
@@ -643,7 +697,7 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENTATION_FEATURE_COUNT = XMLTypePackage.ANY_TYPE_FEATURE_COUNT + 0;
+	int DOCUMENTATION_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl
@@ -1226,13 +1280,22 @@ public interface CommonPackage extends EPackage
 	int RX_GROUP__OPTIONAL = RX_PART__OPTIONAL;
 
 	/**
-	 * The feature id for the '<em><b>Rx Parts</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * The feature id for the '<em><b>Rx Parts Group</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int RX_GROUP__RX_PARTS_GROUP = RX_PART_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Rx Part</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int RX_GROUP__RX_PARTS = RX_PART_FEATURE_COUNT + 0;
+	int RX_GROUP__RX_PART = RX_PART_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Rx Group</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1240,7 +1303,7 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int RX_GROUP_FEATURE_COUNT = RX_PART_FEATURE_COUNT + 1;
+	int RX_GROUP_FEATURE_COUNT = RX_PART_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.impl.RxPatternImpl <em>Rx Pattern</em>}'
@@ -1579,13 +1642,40 @@ public interface CommonPackage extends EPackage
 	int DOCUMENT_ROOT = 16;
 
 	/**
+	 * The feature id for the '<em><b>Group</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__GROUP = 0;
+
+	/**
+	 * The feature id for the '<em><b>Match</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__MATCH = 1;
+
+	/**
+	 * The feature id for the '<em><b>Rx Part</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__RX_PART = 2;
+
+	/**
 	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 0;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}' enum.
@@ -1673,6 +1763,41 @@ public interface CommonPackage extends EPackage
 	EClass getDocumentation();
 
 	/**
+	 * Returns the meta object for the attribute list '{@link org.eclipse.buckminster.model.common.Documentation#getAny
+	 * <em>Any</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute list '<em>Any</em>'.
+	 * @see org.eclipse.buckminster.model.common.Documentation#getAny()
+	 * @see #getDocumentation()
+	 * @generated
+	 */
+	EAttribute getDocumentation_Any();
+
+	/**
+	 * Returns the meta object for the attribute list '
+	 * {@link org.eclipse.buckminster.model.common.Documentation#getAnyAttribute <em>Any Attribute</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute list '<em>Any Attribute</em>'.
+	 * @see org.eclipse.buckminster.model.common.Documentation#getAnyAttribute()
+	 * @see #getDocumentation()
+	 * @generated
+	 */
+	EAttribute getDocumentation_AnyAttribute();
+
+	/**
+	 * Returns the meta object for the attribute list '
+	 * {@link org.eclipse.buckminster.model.common.Documentation#getMixed <em>Mixed</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute list '<em>Mixed</em>'.
+	 * @see org.eclipse.buckminster.model.common.Documentation#getMixed()
+	 * @see #getDocumentation()
+	 * @generated
+	 */
+	EAttribute getDocumentation_Mixed();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject <em>Document Root</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1682,6 +1807,39 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	EClass getDocumentRoot();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getGroup
+	 * <em>Group</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Group</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getGroup()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Group();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getMatch
+	 * <em>Match</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Match</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getMatch()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Match();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRxPart
+	 * <em>Rx Part</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Rx Part</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getRxPart()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_RxPart();
 
 	/**
 	 * Returns the meta object for class ' {@link org.eclipse.buckminster.model.common.Format <em>Format</em>}'. <!--
@@ -1993,15 +2151,27 @@ public interface CommonPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.model.common.RxGroup#getRxParts <em>Rx Parts</em>}'. <!-- begin-user-doc --> <!--
+	 * {@link org.eclipse.buckminster.model.common.RxGroup#getRxPart <em>Rx Part</em>}'. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Rx Parts</em>'.
-	 * @see org.eclipse.buckminster.model.common.RxGroup#getRxParts()
+	 * @return the meta object for the containment reference list '<em>Rx Part</em>'.
+	 * @see org.eclipse.buckminster.model.common.RxGroup#getRxPart()
 	 * @see #getRxGroup()
 	 * @generated
 	 */
-	EReference getRxGroup_RxParts();
+	EReference getRxGroup_RxPart();
+
+	/**
+	 * Returns the meta object for the attribute list '
+	 * {@link org.eclipse.buckminster.model.common.RxGroup#getRxPartsGroup <em>Rx Parts Group</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute list '<em>Rx Parts Group</em>'.
+	 * @see org.eclipse.buckminster.model.common.RxGroup#getRxPartsGroup()
+	 * @see #getRxGroup()
+	 * @generated
+	 */
+	EAttribute getRxGroup_RxPartsGroup();
 
 	/**
 	 * Returns the meta object for class ' {@link org.eclipse.buckminster.model.common.RxPart <em>Rx Part</em>}'. <!--

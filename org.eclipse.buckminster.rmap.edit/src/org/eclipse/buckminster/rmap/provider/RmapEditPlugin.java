@@ -6,18 +6,8 @@
  */
 package org.eclipse.buckminster.rmap.provider;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.buckminster.model.common.provider.CommonEditPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
-
 import org.eclipse.emf.common.EMFPlugin;
-
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**
@@ -74,8 +64,6 @@ public final class RmapEditPlugin extends EMFPlugin
 		return plugin;
 	}
 
-	private List<ProviderExtension> providerFactories;
-
 	/**
 	 * Create the instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -96,31 +84,6 @@ public final class RmapEditPlugin extends EMFPlugin
 	public ResourceLocator getPluginResourceLocator()
 	{
 		return plugin;
-	}
-
-	public List<ProviderExtension> getProviderFactories()
-	{
-		if(providerFactories == null)
-		{
-			try
-			{
-				IExtensionRegistry registry = Platform.getExtensionRegistry();
-				for(IConfigurationElement providerConf : registry.getConfigurationElementsFor("org.eclipse.buckminster.rmap.edit.rmapProviders"))
-				{
-					ProviderExtension pf = (ProviderExtension)providerConf.createExecutableExtension("class");
-					if(providerFactories == null)
-						providerFactories = new ArrayList<ProviderExtension>();
-					providerFactories.add(pf);
-				}
-			}
-			catch(CoreException e)
-			{
-				throw new RuntimeException(e);
-			}
-			if(providerFactories == null)
-				providerFactories = Collections.emptyList();
-		}
-		return providerFactories;
 	}
 
 }

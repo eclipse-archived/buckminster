@@ -13,8 +13,6 @@ import org.eclipse.buckminster.model.common.*;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
-import org.eclipse.emf.ecore.xml.type.AnyType;
-
 /**
  * <!-- begin-user-doc --> The <b>Switch</b> for the model's inheritance hierarchy. It supports the call
  * {@link #doSwitch(EObject) doSwitch(object)} to invoke the <code>caseXXX</code> method for each class of the model,
@@ -44,21 +42,6 @@ public class CommonSwitch<T>
 		{
 			modelPackage = CommonPackage.eINSTANCE;
 		}
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Any Type</em>'. <!-- begin-user-doc --> This
-	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Any Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseAnyType(AnyType object)
-	{
-		return null;
 	}
 
 	/**
@@ -393,8 +376,6 @@ public class CommonSwitch<T>
 		{
 			Documentation documentation = (Documentation)theEObject;
 			T result = caseDocumentation(documentation);
-			if(result == null)
-				result = caseAnyType(documentation);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

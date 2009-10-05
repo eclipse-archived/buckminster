@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.rmap.impl;
 
-import java.net.URL;
-
 import org.eclipse.buckminster.rmap.Redirect;
 import org.eclipse.buckminster.rmap.RmapPackage;
 
@@ -38,7 +36,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 * @ordered
 	 */
-	protected static final URL HREF_EDEFAULT = null;
+	protected static final String HREF_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getHref() <em>Href</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -48,7 +46,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 * @ordered
 	 */
-	protected URL href = HREF_EDEFAULT;
+	protected String href = HREF_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -105,7 +103,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 		switch(featureID)
 		{
 		case RmapPackage.REDIRECT__HREF:
-			setHref((URL)newValue);
+			setHref((String)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -133,7 +131,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * 
 	 * @generated
 	 */
-	public URL getHref()
+	public String getHref()
 	{
 		return href;
 	}
@@ -143,9 +141,9 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * 
 	 * @generated
 	 */
-	public void setHref(URL newHref)
+	public void setHref(String newHref)
 	{
-		URL oldHref = href;
+		String oldHref = href;
 		href = newHref;
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.REDIRECT__HREF, oldHref, href));

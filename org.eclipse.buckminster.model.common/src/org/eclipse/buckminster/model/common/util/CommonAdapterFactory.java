@@ -15,8 +15,6 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
-import org.eclipse.emf.ecore.xml.type.AnyType;
-
 /**
  * <!-- begin-user-doc --> The <b>Adapter Factory</b> for the model. It provides an adapter <code>createXXX</code>
  * method for each class of the model. <!-- end-user-doc -->
@@ -40,12 +38,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl
 	 */
 	protected CommonSwitch<Adapter> modelSwitch = new CommonSwitch<Adapter>()
 	{
-		@Override
-		public Adapter caseAnyType(AnyType object)
-		{
-			return createAnyTypeAdapter();
-		}
-
 		@Override
 		public Adapter caseConstant(Constant object)
 		{
@@ -180,20 +172,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl
 	public Adapter createAdapter(Notifier target)
 	{
 		return modelSwitch.doSwitch((EObject)target);
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.emf.ecore.xml.type.AnyType <em>Any Type</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful
-	 * to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.emf.ecore.xml.type.AnyType
-	 * @generated
-	 */
-	public Adapter createAnyTypeAdapter()
-	{
-		return null;
 	}
 
 	/**

@@ -40,8 +40,6 @@ import org.eclipse.emf.ecore.EValidator;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
  * 
@@ -235,9 +233,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 
 		isInited = true;
 
-		// Initialize simple dependencies
-		XMLTypePackage.eINSTANCE.eClass();
-
 		// Create package meta-data objects
 		theCommonPackage.createPackageContents();
 
@@ -310,6 +305,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		createEAttribute(constantEClass, CONSTANT__VALUE);
 
 		documentationEClass = createEClass(DOCUMENTATION);
+		createEAttribute(documentationEClass, DOCUMENTATION__MIXED);
+		createEAttribute(documentationEClass, DOCUMENTATION__ANY);
+		createEAttribute(documentationEClass, DOCUMENTATION__ANY_ATTRIBUTE);
 
 		formatEClass = createEClass(FORMAT);
 		createEAttribute(formatEClass, FORMAT__FORMAT);
@@ -344,7 +342,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		createEAttribute(replaceEClass, REPLACE__REPLACEMENT);
 
 		rxGroupEClass = createEClass(RX_GROUP);
-		createEReference(rxGroupEClass, RX_GROUP__RX_PARTS);
+		createEAttribute(rxGroupEClass, RX_GROUP__RX_PARTS_GROUP);
+		createEReference(rxGroupEClass, RX_GROUP__RX_PART);
 
 		rxPartEClass = createEClass(RX_PART);
 		createEAttribute(rxPartEClass, RX_PART__NAME);
@@ -374,6 +373,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		createEReference(valueFilterEClass, VALUE_FILTER__TO_UPPERS);
 
 		documentRootEClass = createEClass(DOCUMENT_ROOT);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__GROUP);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__MATCH);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__RX_PART);
 
 		// Create enums
 		splitTypeEEnum = createEEnum(SPLIT_TYPE);
@@ -430,9 +432,69 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
+	public EAttribute getDocumentation_Any()
+	{
+		return (EAttribute)documentationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getDocumentation_AnyAttribute()
+	{
+		return (EAttribute)documentationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getDocumentation_Mixed()
+	{
+		return (EAttribute)documentationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EClass getDocumentRoot()
 	{
 		return documentRootEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getDocumentRoot_Group()
+	{
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getDocumentRoot_Match()
+	{
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getDocumentRoot_RxPart()
+	{
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -720,9 +782,19 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getRxGroup_RxParts()
+	public EReference getRxGroup_RxPart()
 	{
-		return (EReference)rxGroupEClass.getEStructuralFeatures().get(0);
+		return (EReference)rxGroupEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getRxGroup_RxPartsGroup()
+	{
+		return (EAttribute)rxGroupEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -982,15 +1054,11 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		setNsPrefix(eNS_PREFIX);
 		setNsURI(eNS_URI);
 
-		// Obtain other dependent packages
-		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
-
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		documentationEClass.getESuperTypes().add(theXMLTypePackage.getAnyType());
 		formatEClass.getESuperTypes().add(this.getValueFilter());
 		propertyConstantEClass.getESuperTypes().add(this.getProperty());
 		propertyElementEClass.getESuperTypes().add(this.getProperty());
@@ -1008,6 +1076,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 
 		initEClass(documentationEClass, Documentation.class, "Documentation", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDocumentation_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1,
+				Documentation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentation_Any(), ecorePackage.getEFeatureMapEntry(), "any", null, 0, -1,
+				Documentation.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+				IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentation_AnyAttribute(), ecorePackage.getEFeatureMapEntry(), "anyAttribute", null, 0,
+				-1, Documentation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+				!IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(formatEClass, Format.class, "Format", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFormat_Format(), ecorePackage.getEString(), "format", null, 1, 1, Format.class,
@@ -1072,9 +1149,12 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(rxGroupEClass, RxGroup.class, "RxGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getRxGroup_RxParts(), this.getRxPart(), null, "rxParts", null, 0, -1, RxGroup.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRxGroup_RxPartsGroup(), ecorePackage.getEFeatureMapEntry(), "rxPartsGroup", null, 0, -1,
+				RxGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEReference(getRxGroup_RxPart(), this.getRxPart(), null, "rxPart", null, 0, -1, RxGroup.class, IS_TRANSIENT,
+				IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
+				IS_ORDERED);
 
 		initEClass(rxPartEClass, RxPart.class, "RxPart", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRxPart_Name(), ecorePackage.getEString(), "name", null, 0, 1, RxPart.class, !IS_TRANSIENT,
@@ -1128,6 +1208,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(documentRootEClass, null, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDocumentRoot_Group(), this.getRxGroup(), null, "group", null, 0, -2, null, IS_TRANSIENT,
+				IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
+				IS_ORDERED);
+		initEReference(getDocumentRoot_Match(), this.getRxPattern(), null, "match", null, 0, -2, null, IS_TRANSIENT,
+				IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
+				IS_ORDERED);
+		initEReference(getDocumentRoot_RxPart(), this.getRxPart(), null, "rxPart", null, 0, -2, null, IS_TRANSIENT,
+				IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
+				IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(splitTypeEEnum, SplitType.class, "SplitType");
@@ -1160,6 +1249,11 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
 		addAnnotation(getConstant_Value(), source, new String[] { "kind", "attribute", "name", "value" });
 		addAnnotation(documentationEClass, source, new String[] { "name", "Documentation", "kind", "mixed" });
+		addAnnotation(getDocumentation_Mixed(), source, new String[] { "kind", "elementWildcard", "name", ":mixed" });
+		addAnnotation(getDocumentation_Any(), source, new String[] { "kind", "elementWildcard", "wildcards", "##any",
+				"name", ":1", "processing", "lax" });
+		addAnnotation(getDocumentation_AnyAttribute(), source, new String[] { "kind", "attributeWildcard", "wildcards",
+				"##any", "name", ":2", "processing", "lax" });
 		addAnnotation(getFormat_Format(), source, new String[] { "kind", "attribute" });
 		addAnnotation(getMatch_Pattern(), source, new String[] { "kind", "attribute" });
 		addAnnotation(getMatch_QuotePattern(), source, new String[] { "kind", "attribute" });
@@ -1187,8 +1281,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		addAnnotation(getReplace_Pattern(), source, new String[] { "kind", "attribute" });
 		addAnnotation(getReplace_QuotePattern(), source, new String[] { "kind", "attribute" });
 		addAnnotation(getReplace_Replacement(), source, new String[] { "kind", "attribute" });
-		addAnnotation(getRxGroup_RxParts(), source,
-				new String[] { "namespace", "##targetNamespace", "kind", "element" });
+		addAnnotation(getRxGroup_RxPartsGroup(), source, new String[] { "kind", "group", "name", "rxPart:group",
+				"namespace", "##targetNamespace" });
+		addAnnotation(getRxGroup_RxPart(), source, new String[] { "kind", "element", "name", "rxPart", "namespace",
+				"##targetNamespace", "group", "rxPart:group" });
 		addAnnotation(getRxPart_Name(), source, new String[] { "kind", "attribute", "name", "name" });
 		addAnnotation(getRxPart_Optional(), source, new String[] { "kind", "attribute", "name", "optional" });
 		addAnnotation(getRxPattern_Pattern(), source, new String[] { "kind", "attribute" });
@@ -1219,6 +1315,12 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		addAnnotation(patternEDataType, source, new String[] { "name", "pattern", "baseType",
 				"http://www.eclipse.org/emf/2003/XMLType#string" });
 		addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" });
+		addAnnotation(getDocumentRoot_Group(), source, new String[] { "kind", "element", "name", "group", "namespace",
+				"##targetNamespace", "affiliation", "rxPart" });
+		addAnnotation(getDocumentRoot_Match(), source, new String[] { "kind", "element", "name", "match", "namespace",
+				"##targetNamespace", "affiliation", "rxPart" });
+		addAnnotation(getDocumentRoot_RxPart(), source, new String[] { "kind", "element", "name", "rxPart",
+				"namespace", "##targetNamespace" });
 	}
 
 } // CommonPackageImpl

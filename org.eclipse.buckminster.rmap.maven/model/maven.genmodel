@@ -16,7 +16,8 @@
   </genAnnotations>
   <foreignModel>maven.ecore</foreignModel>
   <genPackages prefix="Maven" basePackage="org.eclipse.buckminster.rmap" resource="XML"
-      disposableProviderFactory="true" ecorePackage="maven.ecore#/">
+      disposableProviderFactory="true" extensibleProviderFactory="true" childCreationExtenders="true"
+      ecorePackage="maven.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="maven.xsd"/>
     </genAnnotations>

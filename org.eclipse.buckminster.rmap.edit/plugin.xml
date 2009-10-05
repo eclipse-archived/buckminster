@@ -9,8 +9,6 @@
 -->
 
 <plugin>
-   <extension-point id="rmapProviders" name="Resource Map Providers" schema="schema/rmapProviders.exsd"/>
-
    <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
       <factory
             uri="http://www.eclipse.org/buckminster/RMap-1.0"
@@ -21,6 +19,12 @@
                org.eclipse.emf.edit.provider.ITreeItemContentProvider
                org.eclipse.emf.edit.provider.IItemLabelProvider
                org.eclipse.emf.edit.provider.IItemPropertySource"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.edit.childCreationExtenders">
+      <extender
+            uri="http://www.eclipse.org/buckminster/Common-1.0"
+            class="org.eclipse.buckminster.rmap.provider.RmapItemProviderAdapterFactory$CommonChildCreationExtender"/>
    </extension>
 
 </plugin>

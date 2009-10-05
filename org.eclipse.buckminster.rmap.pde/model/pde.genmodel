@@ -15,7 +15,8 @@
   </genAnnotations>
   <foreignModel>pde.ecore</foreignModel>
   <genPackages prefix="Pde" basePackage="org.eclipse.buckminster.rmap" resource="XML"
-      disposableProviderFactory="true" ecorePackage="pde.ecore#/">
+      disposableProviderFactory="true" extensibleProviderFactory="true" childCreationExtenders="true"
+      ecorePackage="pde.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="pde.xsd"/>
     </genAnnotations>

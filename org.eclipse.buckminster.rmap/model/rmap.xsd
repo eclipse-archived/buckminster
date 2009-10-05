@@ -2,6 +2,15 @@
 <xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="rm" ecore:package="org.eclipse.buckminster.rmap" targetNamespace="http://www.eclipse.org/buckminster/RMap-1.0">
   <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
   <xsd:import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="../../org.eclipse.buckminster.model.common/model/common.xsd"/>
+  <xsd:element name="arch" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="group" substitutionGroup="bc:rxPart" type="bc:RxGroup"/>
+  <xsd:element name="match" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="name" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="nl" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="os" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="timestamp" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="version" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
+  <xsd:element name="ws" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
   <xsd:element name="rmap" type="rm:ResourceMap"/>
   <xsd:complexType abstract="true" name="Matcher">
     <xsd:attribute name="pattern" type="bc:pattern"/>
@@ -66,7 +75,9 @@
   </xsd:complexType>
   <xsd:complexType name="URIMatcher">
     <xsd:sequence>
-      <xsd:element ecore:name="rxParts" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="rxPart" type="bc:RxPart"/>
+      <xsd:choice ecore:featureMap="rxPartsGroup" maxOccurs="unbounded">
+        <xsd:element ecore:changeable="false" ecore:lowerBound="1" ecore:name="rxParts" ecore:upperBound="-1" minOccurs="0" ref="bc:rxPart"/>
+      </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="base" type="ecore:EString"/>
   </xsd:complexType>

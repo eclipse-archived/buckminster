@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.rmap;
 
-import java.net.URL;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Redirect</b></em>'. <!-- end-user-doc -->
  * 
@@ -32,12 +30,12 @@ public interface Redirect extends Matcher
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Href</em>' attribute.
-	 * @see #setHref(URL)
+	 * @see #setHref(String)
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getRedirect_Href()
-	 * @model dataType="org.eclipse.buckminster.model.common.URL" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
-	URL getHref();
+	String getHref();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}' attribute. <!--
@@ -48,6 +46,6 @@ public interface Redirect extends Matcher
 	 * @see #getHref()
 	 * @generated
 	 */
-	void setHref(URL value);
+	void setHref(String value);
 
 } // Redirect

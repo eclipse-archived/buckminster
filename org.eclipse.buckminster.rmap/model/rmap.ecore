@@ -7,7 +7,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Redirect" eSuperTypes="#//Matcher">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="href" lowerBound="1" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//URL"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="href" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Locator" eSuperTypes="#//Matcher">
     <eStructuralFeatures xsi:type="ecore:EReference" name="searchPath" lowerBound="1"
@@ -185,6 +185,91 @@
         <details key="name" value="xsi:schemaLocation"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arch" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="arch"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="group" upperBound="-2"
+        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxGroup"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="group"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="match" upperBound="-2"
+        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="match"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="name"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nl" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="nl"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="os" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="os"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" upperBound="-2"
+        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="timestamp"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="version" upperBound="-2"
+        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="version"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ws" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="ws"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rmap" lowerBound="1" eType="#//ResourceMap"
         containment="true">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -200,13 +285,23 @@
         <details key="kind" value="attribute"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="rxParts" upperBound="-1"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPart"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rxPartsGroup" unique="false"
+        lowerBound="1" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="rxPart"/>
+        <details key="kind" value="group"/>
+        <details key="name" value="rxPart:group"/>
+        <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rxParts" lowerBound="1"
+        upperBound="-1" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPart"
+        changeable="false" volatile="true" transient="true" derived="true" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
-        <details key="namespace" value="##targetNamespace"/>
+        <details key="name" value="rxPart"/>
+        <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
+        <details key="group" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart:group"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

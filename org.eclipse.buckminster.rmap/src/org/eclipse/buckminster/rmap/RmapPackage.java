@@ -388,6 +388,78 @@ public interface RmapPackage extends EPackage
 		EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
 		/**
+		 * The meta object literal for the '<em><b>Arch</b></em>' containment reference feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__ARCH = eINSTANCE.getDocumentRoot_Arch();
+
+		/**
+		 * The meta object literal for the '<em><b>Group</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__GROUP = eINSTANCE.getDocumentRoot_Group();
+
+		/**
+		 * The meta object literal for the '<em><b>Match</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__MATCH = eINSTANCE.getDocumentRoot_Match();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' containment reference feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__NAME = eINSTANCE.getDocumentRoot_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Nl</b></em>' containment reference feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__NL = eINSTANCE.getDocumentRoot_Nl();
+
+		/**
+		 * The meta object literal for the '<em><b>Os</b></em>' containment reference feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__OS = eINSTANCE.getDocumentRoot_Os();
+
+		/**
+		 * The meta object literal for the '<em><b>Timestamp</b></em>' containment reference feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__TIMESTAMP = eINSTANCE.getDocumentRoot_Timestamp();
+
+		/**
+		 * The meta object literal for the '<em><b>Version</b></em>' containment reference feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__VERSION = eINSTANCE.getDocumentRoot_Version();
+
+		/**
+		 * The meta object literal for the '<em><b>Ws</b></em>' containment reference feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__WS = eINSTANCE.getDocumentRoot_Ws();
+
+		/**
 		 * The meta object literal for the '<em><b>Rmap</b></em>' containment reference feature. <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * 
@@ -412,6 +484,14 @@ public interface RmapPackage extends EPackage
 		 * @generated
 		 */
 		EAttribute URI_MATCHER__BASE = eINSTANCE.getURIMatcher_Base();
+
+		/**
+		 * The meta object literal for the '<em><b>Rx Parts Group</b></em>' attribute list feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute URI_MATCHER__RX_PARTS_GROUP = eINSTANCE.getURIMatcher_RxPartsGroup();
 
 		/**
 		 * The meta object literal for the '<em><b>Rx Parts</b></em>' containment reference list feature. <!--
@@ -897,13 +977,91 @@ public interface RmapPackage extends EPackage
 	int DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = 2;
 
 	/**
+	 * The feature id for the '<em><b>Arch</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__ARCH = 3;
+
+	/**
+	 * The feature id for the '<em><b>Group</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__GROUP = 4;
+
+	/**
+	 * The feature id for the '<em><b>Match</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__MATCH = 5;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__NAME = 6;
+
+	/**
+	 * The feature id for the '<em><b>Nl</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__NL = 7;
+
+	/**
+	 * The feature id for the '<em><b>Os</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__OS = 8;
+
+	/**
+	 * The feature id for the '<em><b>Timestamp</b></em>' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__TIMESTAMP = 9;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__VERSION = 10;
+
+	/**
+	 * The feature id for the '<em><b>Ws</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__WS = 11;
+
+	/**
 	 * The feature id for the '<em><b>Rmap</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__RMAP = 3;
+	int DOCUMENT_ROOT__RMAP = 12;
 
 	/**
 	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
@@ -912,7 +1070,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 4;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 13;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl <em>URI Matcher</em>}' class.
@@ -933,13 +1091,22 @@ public interface RmapPackage extends EPackage
 	int URI_MATCHER__BASE = 0;
 
 	/**
+	 * The feature id for the '<em><b>Rx Parts Group</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int URI_MATCHER__RX_PARTS_GROUP = 1;
+
+	/**
 	 * The feature id for the '<em><b>Rx Parts</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int URI_MATCHER__RX_PARTS = 1;
+	int URI_MATCHER__RX_PARTS = 2;
 
 	/**
 	 * The number of structural features of the '<em>URI Matcher</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -948,7 +1115,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int URI_MATCHER_FEATURE_COUNT = 2;
+	int URI_MATCHER_FEATURE_COUNT = 3;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject <em>Document Root</em>}'. <!--
@@ -962,6 +1129,39 @@ public interface RmapPackage extends EPackage
 	EClass getDocumentRoot();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getArch
+	 * <em>Arch</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Arch</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getArch()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Arch();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getGroup
+	 * <em>Group</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Group</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getGroup()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Group();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getMatch
+	 * <em>Match</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Match</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getMatch()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Match();
+
+	/**
 	 * Returns the meta object for the attribute list '{@link org.eclipse.emf.ecore.EObject#getMixed <em>Mixed</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -973,6 +1173,39 @@ public interface RmapPackage extends EPackage
 	EAttribute getDocumentRoot_Mixed();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getName
+	 * <em>Name</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Name</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getName()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Name();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getNl <em>Nl</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Nl</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getNl()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Nl();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getOs <em>Os</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Os</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getOs()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Os();
+
+	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRmap
 	 * <em>Rmap</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -982,6 +1215,39 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 */
 	EReference getDocumentRoot_Rmap();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getTimestamp
+	 * <em>Timestamp</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Timestamp</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getTimestamp()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Timestamp();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getVersion
+	 * <em>Version</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Version</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getVersion()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Version();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getWs <em>Ws</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Ws</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getWs()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Ws();
 
 	/**
 	 * Returns the meta object for the map '{@link org.eclipse.emf.ecore.EObject#getXMLNSPrefixMap
@@ -1411,6 +1677,17 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 */
 	EReference getURIMatcher_RxParts();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link org.eclipse.buckminster.rmap.URIMatcher#getRxPartsGroup
+	 * <em>Rx Parts Group</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute list '<em>Rx Parts Group</em>'.
+	 * @see org.eclipse.buckminster.rmap.URIMatcher#getRxPartsGroup()
+	 * @see #getURIMatcher()
+	 * @generated
+	 */
+	EAttribute getURIMatcher_RxPartsGroup();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.rmap.VersionConverter

@@ -9,6 +9,7 @@ package org.eclipse.buckminster.model.common.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Documentation;
 
@@ -24,6 +25,7 @@ import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
+import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -66,8 +68,8 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(XMLTypePackage.Literals.ANY_TYPE__MIXED);
-			childrenFeatures.add(XMLTypePackage.Literals.ANY_TYPE__ANY_ATTRIBUTE);
+			childrenFeatures.add(CommonPackage.Literals.DOCUMENTATION__MIXED);
+			childrenFeatures.add(CommonPackage.Literals.DOCUMENTATION__ANY_ATTRIBUTE);
 		}
 		return childrenFeatures;
 	}
@@ -107,7 +109,7 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 	@Override
 	public ResourceLocator getResourceLocator()
 	{
-		return CommonEditPlugin.INSTANCE;
+		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
 	}
 
 	/**
@@ -154,18 +156,26 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(XMLTypePackage.Literals.ANY_TYPE__MIXED,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__COMMENT, "")));
 
-		newChildDescriptors.add(createChildParameter(XMLTypePackage.Literals.ANY_TYPE__MIXED,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__TEXT, "")));
 
-		newChildDescriptors.add(createChildParameter(XMLTypePackage.Literals.ANY_TYPE__MIXED,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__PROCESSING_INSTRUCTION,
 						XMLTypeFactory.eINSTANCE.createProcessingInstruction())));
 
-		newChildDescriptors.add(createChildParameter(XMLTypePackage.Literals.ANY_TYPE__MIXED,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__CDATA, "")));
+
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__GROUP,
+						CommonFactory.eINSTANCE.createRxGroup())));
+
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.DOCUMENT_ROOT__MATCH,
+						CommonFactory.eINSTANCE.createRxPattern())));
 	}
 
 	/**
