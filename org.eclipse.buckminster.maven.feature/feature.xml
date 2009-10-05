@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.maven.feature"
       label="Buckminster - Maven support"
-      version="1.1.350.qualifier"
+      version="1.2.360.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -10,7 +10,7 @@
    </description>
 
    <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
-      Copyright (c) 2006-2008, Cloudsmith Inc.
+      Copyright (c) 2006-2009, Cloudsmith Inc.
 The code, documentation and other materials contained herein have been
 licensed under the Eclipse Public License - v 1.0 by the copyright holder
 listed above, as the Initial Contributor under such license. The text of
@@ -69,6 +69,20 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
       <import plugin="org.eclipse.buckminster.sax" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.3.100" match="greaterOrEqual"/>
    </requires>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap.maven"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap.maven.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.buckminster.maven"

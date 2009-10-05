@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.core.feature"
       label="Buckminster - Core"
-      version="1.1.350.qualifier"
+      version="1.2.360.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.buckminster.ui">
 
@@ -15,7 +15,7 @@ as a more advanced one for more complex scenarios.
    </description>
 
    <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
-      Copyright (c) 2006-2008, Cloudsmith Inc.
+      Copyright (c) 2006-2009, Cloudsmith Inc.
 The code, documentation and other materials contained herein have been
 licensed under the Eclipse Public License - v 1.0 by the copyright holder
 listed above, as the Initial Contributor under such license. The text of
@@ -122,6 +122,41 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
          version="0.0.0"/>
 
    <plugin
+         id="org.eclipse.buckminster.model.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.model.common.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.buckminster.core"
          download-size="0"
          install-size="0"
@@ -207,6 +242,55 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
 
    <plugin
          id="org.eclipse.draw2d"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.common.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.change"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.xmi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edit.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
