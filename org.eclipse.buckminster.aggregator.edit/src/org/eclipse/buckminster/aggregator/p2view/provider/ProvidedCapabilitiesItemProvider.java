@@ -13,9 +13,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
-import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
+import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -32,21 +33,21 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Details} object. <!--
- * begin-user-doc --> <!-- end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities}
+ * object. <!-- begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class DetailsItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
-		IItemColorProvider
+public class ProvidedCapabilitiesItemProvider extends AggregatorItemProviderAdapter implements
+		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
+		IItemPropertySource, IItemColorProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public DetailsItemProvider(AdapterFactory adapterFactory)
+	public ProvidedCapabilitiesItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
@@ -65,20 +66,20 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(P2viewPackage.Literals.DETAILS__INSTALLABLE_UNIT);
+			childrenFeatures.add(P2viewPackage.Literals.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES);
 		}
 		return childrenFeatures;
 	}
 
 	/**
-	 * This returns Details.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns ProvidedCapabilities.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Details"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ProvidedCapabilities"));
 	}
 
 	/**
@@ -93,7 +94,7 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 		{
 			super.getPropertyDescriptors(object);
 
-			addInstallableUnitPropertyDescriptor(object);
+			addProvidedCapabilitiesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -117,7 +118,7 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	@Override
 	public String getText(Object object)
 	{
-		return getString("_UI_Details_type");
+		return getString("_UI_ProvidedCapabilities_type");
 	}
 
 	/**
@@ -135,17 +136,20 @@ public class DetailsItemProvider extends AggregatorItemProviderAdapter implement
 	}
 
 	/**
-	 * This adds a property descriptor for the Installable Unit feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Provided Capabilities feature. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 */
-	protected void addInstallableUnitPropertyDescriptor(Object object)
+	protected void addProvidedCapabilitiesPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Details_installableUnit_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Details_installableUnit_feature", "_UI_Details_type"),
-				P2viewPackage.Literals.DETAILS__INSTALLABLE_UNIT, false, false, true, null, null, null));
+				getString("_UI_ProvidedCapabilities_providedCapabilities_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_ProvidedCapabilities_providedCapabilities_feature",
+						"_UI_ProvidedCapabilities_type"),
+				P2viewPackage.Literals.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES, false, false, true, null, null,
+				null));
 	}
 
 	/**

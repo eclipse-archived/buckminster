@@ -9,31 +9,35 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
-import org.eclipse.buckminster.aggregator.p2.P2Package;
-import org.eclipse.buckminster.aggregator.p2.impl.PropertyImpl;
+import java.util.Collection;
+
+import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
-import org.eclipse.buckminster.aggregator.p2view.Properties;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EMap;
+import org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities;
+
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EcoreEMap;
-import org.eclipse.emf.ecore.util.InternalEList;
+
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Properties</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '<em><b>Provided Capabilities</b></em>'. <!--
+ * end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl#getPropertyMap <em>Property Map</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilitiesImpl#getProvidedCapabilities <em>
+ * Provided Capabilities</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PropertiesImpl extends MinimalEObjectImpl.Container implements Properties
+public class ProvidedCapabilitiesImpl extends MinimalEObjectImpl.Container implements ProvidedCapabilities
 {
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
@@ -45,21 +49,21 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getPropertyMap() <em>Property Map</em>}' map. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getProvidedCapabilities() <em>Provided Capabilities</em>}' reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see #getPropertyMap()
+	 * @see #getProvidedCapabilities()
 	 * @generated
 	 * @ordered
 	 */
-	protected EMap<String, String> propertyMap;
+	protected EList<ProvidedCapability> providedCapabilities;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected PropertiesImpl()
+	protected ProvidedCapabilitiesImpl()
 	{
 		super();
 	}
@@ -74,29 +78,10 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			if(coreType)
-				return getPropertyMap();
-			else
-				return getPropertyMap().map();
+		case P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES:
+			return getProvidedCapabilities();
 		}
 		return super.eGet(featureID, resolve, coreType);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			return ((InternalEList<?>)getPropertyMap()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -109,8 +94,8 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			return propertyMap != null && !propertyMap.isEmpty();
+		case P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES:
+			return providedCapabilities != null && !providedCapabilities.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -126,8 +111,9 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			((EStructuralFeature.Setting)getPropertyMap()).set(newValue);
+		case P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES:
+			getProvidedCapabilities().clear();
+			getProvidedCapabilities().addAll((Collection<? extends ProvidedCapability>)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -143,8 +129,8 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			getPropertyMap().clear();
+		case P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES:
+			getProvidedCapabilities().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -155,14 +141,14 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	 * 
 	 * @generated
 	 */
-	public EMap<String, String> getPropertyMap()
+	public EList<ProvidedCapability> getProvidedCapabilities()
 	{
-		if(propertyMap == null)
+		if(providedCapabilities == null)
 		{
-			propertyMap = new EcoreEMap<String, String>(P2Package.Literals.PROPERTY, PropertyImpl.class, this,
-					P2viewPackage.PROPERTIES__PROPERTY_MAP);
+			providedCapabilities = new EObjectResolvingEList<ProvidedCapability>(ProvidedCapability.class, this,
+					P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES);
 		}
-		return propertyMap;
+		return providedCapabilities;
 	}
 
 	/**
@@ -173,7 +159,7 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	@Override
 	protected EClass eStaticClass()
 	{
-		return P2viewPackage.Literals.PROPERTIES;
+		return P2viewPackage.Literals.PROVIDED_CAPABILITIES;
 	}
 
-} // PropertiesImpl
+} // ProvidedCapabilitiesImpl

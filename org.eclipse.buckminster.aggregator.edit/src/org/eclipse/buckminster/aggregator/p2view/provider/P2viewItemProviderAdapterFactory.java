@@ -165,14 +165,6 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	protected OtherIUItemProvider otherIUItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2view.Details}
-	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected DetailsItemProvider detailsItemProvider;
-
-	/**
 	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2view.Properties}
 	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -195,6 +187,40 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	 * @generated
 	 */
 	protected FragmentsItemProvider fragmentsItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities} instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected RequiredCapabilitiesItemProvider requiredCapabilitiesItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities} instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ProvidedCapabilitiesItemProvider providedCapabilitiesItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2view.Touchpoints}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected TouchpointsItemProvider touchpointsItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.p2view.IUDetails}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected IUDetailsItemProvider iuDetailsItemProvider;
 
 	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -322,23 +348,6 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Details}. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Adapter createDetailsAdapter()
-	{
-		if(detailsItemProvider == null)
-		{
-			detailsItemProvider = new DetailsItemProvider(this);
-		}
-
-		return detailsItemProvider;
-	}
-
-	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Feature}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -421,6 +430,23 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 		}
 
 		return installableUnitsItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.IUDetails}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createIUDetailsAdapter()
+	{
+		if(iuDetailsItemProvider == null)
+		{
+			iuDetailsItemProvider = new IUDetailsItemProvider(this);
+		}
+
+		return iuDetailsItemProvider;
 	}
 
 	/**
@@ -526,6 +552,57 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createProvidedCapabilitiesAdapter()
+	{
+		if(providedCapabilitiesItemProvider == null)
+		{
+			providedCapabilitiesItemProvider = new ProvidedCapabilitiesItemProvider(this);
+		}
+
+		return providedCapabilitiesItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createRequiredCapabilitiesAdapter()
+	{
+		if(requiredCapabilitiesItemProvider == null)
+		{
+			requiredCapabilitiesItemProvider = new RequiredCapabilitiesItemProvider(this);
+		}
+
+		return requiredCapabilitiesItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Touchpoints}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createTouchpointsAdapter()
+	{
+		if(touchpointsItemProvider == null)
+		{
+			touchpointsItemProvider = new TouchpointsItemProvider(this);
+		}
+
+		return touchpointsItemProvider;
+	}
+
+	/**
 	 * This disposes all of the item providers created by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -560,10 +637,16 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 			fragmentItemProvider.dispose();
 		if(otherIUItemProvider != null)
 			otherIUItemProvider.dispose();
-		if(detailsItemProvider != null)
-			detailsItemProvider.dispose();
 		if(propertiesItemProvider != null)
 			propertiesItemProvider.dispose();
+		if(requiredCapabilitiesItemProvider != null)
+			requiredCapabilitiesItemProvider.dispose();
+		if(providedCapabilitiesItemProvider != null)
+			providedCapabilitiesItemProvider.dispose();
+		if(touchpointsItemProvider != null)
+			touchpointsItemProvider.dispose();
+		if(iuDetailsItemProvider != null)
+			iuDetailsItemProvider.dispose();
 	}
 
 	/**

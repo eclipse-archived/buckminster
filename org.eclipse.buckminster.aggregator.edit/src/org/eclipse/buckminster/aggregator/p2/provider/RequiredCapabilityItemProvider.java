@@ -118,7 +118,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 		if(label == null || label.length() == 0)
 			label = rc.getNamespace() + ":";
 
-		return getString("_UI_RequiredCapability_type") + " - " + label + " " + rc.getName();
+		return label + " " + rc.getName();
 	}
 
 	/**

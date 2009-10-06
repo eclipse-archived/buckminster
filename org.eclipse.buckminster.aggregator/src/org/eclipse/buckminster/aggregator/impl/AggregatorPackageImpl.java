@@ -29,6 +29,7 @@ import org.eclipse.buckminster.aggregator.OperatingSystem;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.buckminster.aggregator.WindowSystem;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
@@ -43,6 +44,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
@@ -75,6 +77,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				: new AggregatorPackageImpl());
 
 		isInited = true;
+
+		// Initialize simple dependencies
+		XMLTypePackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
 		P2PackageImpl theP2Package = (P2PackageImpl)(EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI) instanceof P2PackageImpl
@@ -227,6 +232,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * @generated
 	 */
 	private EClass metadataRepositoryReferenceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass statusProviderEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -398,6 +410,8 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		metadataRepositoryReferenceEClass = createEClass(METADATA_REPOSITORY_REFERENCE);
 		createEReference(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY);
 		createEAttribute(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__LOCATION);
+
+		statusProviderEClass = createEClass(STATUS_PROVIDER);
 
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
@@ -1035,6 +1049,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EClass getStatusProvider()
+	{
+		return statusProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EDataType getURI()
 	{
 		return uriEDataType;
@@ -1090,6 +1114,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		// Obtain other dependent packages
 		P2Package theP2Package = (P2Package)EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI);
 		P2viewPackage theP2viewPackage = (P2viewPackage)EPackage.Registry.INSTANCE.getEPackage(P2viewPackage.eNS_URI);
+		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
 		// Add subpackages
 		getESubpackages().add(theP2Package);
@@ -1109,6 +1134,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		productEClass.getESuperTypes().add(this.getMappedUnit());
 		categoryEClass.getESuperTypes().add(this.getMappedUnit());
 		mapRuleEClass.getESuperTypes().add(this.getInstallableUnitReference());
+		installableUnitReferenceEClass.getESuperTypes().add(this.getStatusProvider());
 		exclusionRuleEClass.getESuperTypes().add(this.getMapRule());
 		validConfigurationsRuleEClass.getESuperTypes().add(this.getMapRule());
 		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getEnabledStatusProvider());
@@ -1329,6 +1355,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		addEOperation(metadataRepositoryReferenceEClass, ecorePackage.getEString(), "getResolvedLocation", 0, 1,
 				IS_UNIQUE, IS_ORDERED);
+
+		initEClass(statusProviderEClass, StatusProvider.class, "StatusProvider", IS_ABSTRACT, IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+
+		addEOperation(statusProviderEClass, theXMLTypePackage.getInt(), "getStatus", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

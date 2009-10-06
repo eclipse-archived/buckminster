@@ -113,7 +113,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 		if(label == null || label.length() == 0)
 			label = pc.getNamespace() + ":";
 
-		return getString("_UI_ProvidedCapability_type") + " - " + label + " " + pc.getName();
+		return label + " " + pc.getName();
 	}
 
 	/**

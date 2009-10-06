@@ -9,8 +9,13 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
+import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2view.*;
 
 import org.eclipse.emf.ecore.EClass;
@@ -110,10 +115,16 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 			return createFragment();
 		case P2viewPackage.OTHER_IU:
 			return createOtherIU();
-		case P2viewPackage.DETAILS:
-			return createDetails();
 		case P2viewPackage.PROPERTIES:
 			return createProperties();
+		case P2viewPackage.REQUIRED_CAPABILITIES:
+			return createRequiredCapabilities();
+		case P2viewPackage.PROVIDED_CAPABILITIES:
+			return createProvidedCapabilities();
+		case P2viewPackage.TOUCHPOINTS:
+			return createTouchpoints();
+		case P2viewPackage.IU_DETAILS:
+			return createIUDetails();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -183,17 +194,6 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	{
 		CategoryImpl category = new CategoryImpl(iu);
 		return category;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Details createDetails()
-	{
-		DetailsImpl details = new DetailsImpl();
-		return details;
 	}
 
 	/**
@@ -271,6 +271,68 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	{
 		InstallableUnitsImpl installableUnits = new InstallableUnitsImpl();
 		return installableUnits;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public IUDetails createIUDetails()
+	{
+		IUDetailsImpl iuDetails = new IUDetailsImpl();
+		return iuDetails;
+	}
+
+	public IUDetails createIUDetails(InstallableUnit iu)
+	{
+		IUDetailsImpl iuDetails = new IUDetailsImpl();
+
+		for(RequiredCapability rc : iu.getRequiredCapabilityList())
+		{
+			if(iuDetails.getRequiredCapabilitiesContainer() == null)
+				iuDetails.setRequiredCapabilitiesContainer(createRequiredCapabilities());
+
+			iuDetails.getRequiredCapabilitiesContainer().getRequiredCapabilities().add(rc);
+		}
+
+		for(ProvidedCapability pc : iu.getProvidedCapabilityList())
+		{
+			if(iuDetails.getProvidedCapabilitiesContainer() == null)
+				iuDetails.setProvidedCapabilitiesContainer(createProvidedCapabilities());
+
+			iuDetails.getProvidedCapabilitiesContainer().getProvidedCapabilities().add(pc);
+		}
+
+		for(Map.Entry<String, String> property : iu.getPropertyMap().entrySet())
+		{
+			if(iuDetails.getPropertiesContainer() == null)
+				iuDetails.setPropertiesContainer(createProperties());
+
+			iuDetails.getPropertiesContainer().getPropertyMap().put(property.getKey(), property.getValue());
+		}
+
+		if(iu.getTouchpointType() != null)
+		{
+			if(iuDetails.getTouchpointsContainer() == null)
+				iuDetails.setTouchpointsContainer(createTouchpoints());
+
+			iuDetails.getTouchpointsContainer().setTouchpointType(iu.getTouchpointType());
+		}
+
+		for(TouchpointData tpData : iu.getTouchpointDataList())
+		{
+			if(iuDetails.getTouchpointsContainer() == null)
+				iuDetails.setTouchpointsContainer(createTouchpoints());
+
+			iuDetails.getTouchpointsContainer().getTouchpointDataList().add(tpData);
+		}
+
+		iuDetails.setUpdateDescriptor(iu.getUpdateDescriptor());
+		iuDetails.setCopyright(iu.getCopyright());
+		iuDetails.setLicense(iu.getLicense());
+
+		return iuDetails;
 	}
 
 	/**
@@ -371,6 +433,39 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	{
 		PropertiesImpl properties = new PropertiesImpl();
 		return properties;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public ProvidedCapabilities createProvidedCapabilities()
+	{
+		ProvidedCapabilitiesImpl providedCapabilities = new ProvidedCapabilitiesImpl();
+		return providedCapabilities;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public RequiredCapabilities createRequiredCapabilities()
+	{
+		RequiredCapabilitiesImpl requiredCapabilities = new RequiredCapabilitiesImpl();
+		return requiredCapabilities;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Touchpoints createTouchpoints()
+	{
+		TouchpointsImpl touchpoints = new TouchpointsImpl();
+		return touchpoints;
 	}
 
 	/**

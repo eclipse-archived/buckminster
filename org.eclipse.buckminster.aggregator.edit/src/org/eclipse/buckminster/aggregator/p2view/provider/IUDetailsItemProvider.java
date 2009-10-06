@@ -13,13 +13,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
-import org.eclipse.buckminster.aggregator.p2view.Product;
+
+import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -30,12 +33,12 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Product} object. <!--
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.IUDetails} object. <!--
  * begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class ProductItemProvider extends IUPresentationItemProvider implements IEditingDomainItemProvider,
+public class IUDetailsItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IItemColorProvider
 {
@@ -44,7 +47,7 @@ public class ProductItemProvider extends IUPresentationItemProvider implements I
 	 * 
 	 * @generated
 	 */
-	public ProductItemProvider(AdapterFactory adapterFactory)
+	public IUDetailsItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
@@ -63,22 +66,26 @@ public class ProductItemProvider extends IUPresentationItemProvider implements I
 		if(childrenFeatures == null)
 		{
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(P2viewPackage.Literals.PRODUCT__FEATURE_CONTAINER);
-			childrenFeatures.add(P2viewPackage.Literals.PRODUCT__BUNDLE_CONTAINER);
-			childrenFeatures.add(P2viewPackage.Literals.PRODUCT__FRAGMENT_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__REQUIRED_CAPABILITIES_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__PROVIDED_CAPABILITIES_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__PROPERTIES_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__TOUCHPOINTS_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__UPDATE_DESCRIPTOR);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__COPYRIGHT);
+			childrenFeatures.add(P2viewPackage.Literals.IU_DETAILS__LICENSE);
 		}
 		return childrenFeatures;
 	}
 
 	/**
-	 * This returns Product.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns IUDetails.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Product"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/IUDetails"));
 	}
 
 	/**
@@ -93,25 +100,33 @@ public class ProductItemProvider extends IUPresentationItemProvider implements I
 		{
 			super.getPropertyDescriptors(object);
 
-			addFeatureContainerPropertyDescriptor(object);
-			addBundleContainerPropertyDescriptor(object);
-			addFragmentContainerPropertyDescriptor(object);
+			addUpdateDescriptorPropertyDescriptor(object);
+			addCopyrightPropertyDescriptor(object);
+			addLicensePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
+	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator()
+	{
+		return AggregatorEditPlugin.INSTANCE;
+	}
+
+	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Product)object).getLabel();
-		return label == null || label.length() == 0
-				? "Unknown Product"
-				: label;
+		return getString("_UI_IUDetails_type");
 	}
 
 	/**
@@ -129,45 +144,45 @@ public class ProductItemProvider extends IUPresentationItemProvider implements I
 	}
 
 	/**
-	 * This adds a property descriptor for the Bundle Container feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Copyright feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addBundleContainerPropertyDescriptor(Object object)
+	protected void addCopyrightPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Product_bundleContainer_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Product_bundleContainer_feature", "_UI_Product_type"),
-				P2viewPackage.Literals.PRODUCT__BUNDLE_CONTAINER, false, false, true, null, null, null));
+				getString("_UI_IUDetails_copyright_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUDetails_copyright_feature", "_UI_IUDetails_type"),
+				P2viewPackage.Literals.IU_DETAILS__COPYRIGHT, false, false, true, null, null, null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Feature Container feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the License feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addFeatureContainerPropertyDescriptor(Object object)
+	protected void addLicensePropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Product_featureContainer_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Product_featureContainer_feature", "_UI_Product_type"),
-				P2viewPackage.Literals.PRODUCT__FEATURE_CONTAINER, false, false, true, null, null, null));
+				getString("_UI_IUDetails_license_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUDetails_license_feature", "_UI_IUDetails_type"),
+				P2viewPackage.Literals.IU_DETAILS__LICENSE, false, false, true, null, null, null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Fragment Container feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Update Descriptor feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addFragmentContainerPropertyDescriptor(Object object)
+	protected void addUpdateDescriptorPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Product_fragmentContainer_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Product_fragmentContainer_feature", "_UI_Product_type"),
-				P2viewPackage.Literals.PRODUCT__FRAGMENT_CONTAINER, false, false, true, null, null, null));
+				getString("_UI_IUDetails_updateDescriptor_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IUDetails_updateDescriptor_feature", "_UI_IUDetails_type"),
+				P2viewPackage.Literals.IU_DETAILS__UPDATE_DESCRIPTOR, false, false, true, null, null, null));
 	}
 
 	/**

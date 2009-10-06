@@ -108,21 +108,6 @@ public class P2viewSwitch<T>
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Details</em>'. <!-- begin-user-doc --> This
-	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Details</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDetails(Details object)
-	{
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Feature</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -194,6 +179,21 @@ public class P2viewSwitch<T>
 	 * @generated
 	 */
 	public T caseInstallableUnits(InstallableUnits object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IU Details</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IU Details</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIUDetails(IUDetails object)
 	{
 		return null;
 	}
@@ -301,6 +301,53 @@ public class P2viewSwitch<T>
 	 * @generated
 	 */
 	public T caseProperties(Properties object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Provided Capabilities</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Provided Capabilities</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseProvidedCapabilities(ProvidedCapabilities object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Required Capabilities</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Required Capabilities</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRequiredCapabilities(RequiredCapabilities object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Touchpoints</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Touchpoints</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTouchpoints(Touchpoints object)
 	{
 		return null;
 	}
@@ -500,18 +547,42 @@ public class P2viewSwitch<T>
 				result = defaultCase(theEObject);
 			return result;
 		}
-		case P2viewPackage.DETAILS:
-		{
-			Details details = (Details)theEObject;
-			T result = caseDetails(details);
-			if(result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
 		case P2viewPackage.PROPERTIES:
 		{
 			Properties properties = (Properties)theEObject;
 			T result = caseProperties(properties);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.REQUIRED_CAPABILITIES:
+		{
+			RequiredCapabilities requiredCapabilities = (RequiredCapabilities)theEObject;
+			T result = caseRequiredCapabilities(requiredCapabilities);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.PROVIDED_CAPABILITIES:
+		{
+			ProvidedCapabilities providedCapabilities = (ProvidedCapabilities)theEObject;
+			T result = caseProvidedCapabilities(providedCapabilities);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.TOUCHPOINTS:
+		{
+			Touchpoints touchpoints = (Touchpoints)theEObject;
+			T result = caseTouchpoints(touchpoints);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.IU_DETAILS:
+		{
+			IUDetails iuDetails = (IUDetails)theEObject;
+			T result = caseIUDetails(iuDetails);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

@@ -66,12 +66,6 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
-		public Adapter caseDetails(Details object)
-		{
-			return createDetailsAdapter();
-		}
-
-		@Override
 		public Adapter caseFeature(Feature object)
 		{
 			return createFeatureAdapter();
@@ -99,6 +93,12 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseInstallableUnits(InstallableUnits object)
 		{
 			return createInstallableUnitsAdapter();
+		}
+
+		@Override
+		public Adapter caseIUDetails(IUDetails object)
+		{
+			return createIUDetailsAdapter();
 		}
 
 		@Override
@@ -141,6 +141,24 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseProperties(Properties object)
 		{
 			return createPropertiesAdapter();
+		}
+
+		@Override
+		public Adapter caseProvidedCapabilities(ProvidedCapabilities object)
+		{
+			return createProvidedCapabilitiesAdapter();
+		}
+
+		@Override
+		public Adapter caseRequiredCapabilities(RequiredCapabilities object)
+		{
+			return createRequiredCapabilitiesAdapter();
+		}
+
+		@Override
+		public Adapter caseTouchpoints(Touchpoints object)
+		{
+			return createTouchpointsAdapter();
 		}
 
 		@Override
@@ -236,20 +254,6 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2view.Details
-	 * <em>Details</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore
-	 * cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.aggregator.p2view.Details
-	 * @generated
-	 */
-	public Adapter createDetailsAdapter()
-	{
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for the default case. <!-- begin-user-doc --> This default implementation returns null.
 	 * <!-- end-user-doc -->
 	 * 
@@ -331,6 +335,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createInstallableUnitsAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2view.IUDetails
+	 * <em>IU Details</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUDetails
+	 * @generated
+	 */
+	public Adapter createIUDetailsAdapter()
 	{
 		return null;
 	}
@@ -436,6 +455,51 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createPropertiesAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities <em>Provided Capabilities</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
+	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities
+	 * @generated
+	 */
+	public Adapter createProvidedCapabilitiesAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities <em>Required Capabilities</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
+	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities
+	 * @generated
+	 */
+	public Adapter createRequiredCapabilitiesAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2view.Touchpoints
+	 * <em>Touchpoints</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Touchpoints
+	 * @generated
+	 */
+	public Adapter createTouchpointsAdapter()
 	{
 		return null;
 	}

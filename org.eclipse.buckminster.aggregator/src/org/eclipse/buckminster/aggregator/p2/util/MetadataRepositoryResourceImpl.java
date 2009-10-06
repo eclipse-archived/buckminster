@@ -165,33 +165,27 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				{
 				case CATEGORY:
 					iuPresentation = P2viewFactory.eINSTANCE.createCategory(iu);
-					((Category)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					if(!((Category)iuPresentation).isNested())
 						categories.add((Category)iuPresentation);
 					break;
 				case FEATURE:
 					iuPresentation = P2viewFactory.eINSTANCE.createFeature(iu);
-					((Feature)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					features.add((Feature)iuPresentation);
 					break;
 				case PRODUCT:
 					iuPresentation = P2viewFactory.eINSTANCE.createProduct(iu);
-					((Product)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					products.add((Product)iuPresentation);
 					break;
 				case BUNDLE:
 					iuPresentation = P2viewFactory.eINSTANCE.createBundle(iu);
-					((Bundle)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					bundles.add((Bundle)iuPresentation);
 					break;
 				case FRAGMENT:
 					iuPresentation = P2viewFactory.eINSTANCE.createFragment(iu);
-					((Fragment)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					fragments.add((Fragment)iuPresentation);
 					break;
 				default:
 					iuPresentation = P2viewFactory.eINSTANCE.createOtherIU(iu);
-					((OtherIU)iuPresentation).getNotNullDetails().setInstallableUnit(iu);
 					miscellaneous.add((OtherIU)iuPresentation);
 				}
 
@@ -264,7 +258,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			List<Bundle> bundles = new ArrayList<Bundle>();
 			List<Fragment> fragments = new ArrayList<Fragment>();
 
-			for(IRequiredCapability requiredCapability : category.getDetails().getInstallableUnit().getRequiredCapabilityList())
+			for(IRequiredCapability requiredCapability : category.getInstallableUnit().getRequiredCapabilityList())
 			{
 				VersionRange range = requiredCapability.getRange();
 				if(!range.getMinimum().equals(range.getMaximum()) || !range.getIncludeMinimum()

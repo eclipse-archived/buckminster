@@ -305,6 +305,22 @@ public class AggregatorSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Status Provider</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Status Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseStatusProvider(StatusProvider object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Valid Configurations Rule</em>'. <!--
 	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
@@ -438,6 +454,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseEnabledStatusProvider(feature);
 			if(result == null)
+				result = caseStatusProvider(feature);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -452,6 +470,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseEnabledStatusProvider(bundle);
 			if(result == null)
+				result = caseStatusProvider(bundle);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -463,6 +483,8 @@ public class AggregatorSwitch<T>
 				result = caseInstallableUnitReference(mappedUnit);
 			if(result == null)
 				result = caseEnabledStatusProvider(mappedUnit);
+			if(result == null)
+				result = caseStatusProvider(mappedUnit);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -477,6 +499,8 @@ public class AggregatorSwitch<T>
 				result = caseInstallableUnitReference(product);
 			if(result == null)
 				result = caseEnabledStatusProvider(product);
+			if(result == null)
+				result = caseStatusProvider(product);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -499,6 +523,8 @@ public class AggregatorSwitch<T>
 				result = caseInstallableUnitReference(category);
 			if(result == null)
 				result = caseEnabledStatusProvider(category);
+			if(result == null)
+				result = caseStatusProvider(category);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -526,6 +552,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseInstallableUnitReference(mapRule);
 			if(result == null)
+				result = caseStatusProvider(mapRule);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -533,6 +561,8 @@ public class AggregatorSwitch<T>
 		{
 			InstallableUnitReference installableUnitReference = (InstallableUnitReference)theEObject;
 			T result = caseInstallableUnitReference(installableUnitReference);
+			if(result == null)
+				result = caseStatusProvider(installableUnitReference);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -546,6 +576,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseInstallableUnitReference(exclusionRule);
 			if(result == null)
+				result = caseStatusProvider(exclusionRule);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -558,6 +590,8 @@ public class AggregatorSwitch<T>
 			if(result == null)
 				result = caseInstallableUnitReference(validConfigurationsRule);
 			if(result == null)
+				result = caseStatusProvider(validConfigurationsRule);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -567,6 +601,14 @@ public class AggregatorSwitch<T>
 			T result = caseMetadataRepositoryReference(metadataRepositoryReference);
 			if(result == null)
 				result = caseEnabledStatusProvider(metadataRepositoryReference);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.STATUS_PROVIDER:
+		{
+			StatusProvider statusProvider = (StatusProvider)theEObject;
+			T result = caseStatusProvider(statusProvider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

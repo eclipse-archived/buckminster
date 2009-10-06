@@ -18,7 +18,6 @@ package org.eclipse.buckminster.aggregator.p2view;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getFeatureContainer <em>Feature Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getBundleContainer <em>Bundle Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getFragmentContainer <em>Fragment Container</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.Feature#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -43,22 +42,6 @@ public interface Feature extends IUPresentation
 	 * @generated
 	 */
 	Bundles getBundleContainer();
-
-	/**
-	 * Returns the value of the '<em><b>Details</b></em>' reference. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Details</em>' reference isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Details</em>' reference.
-	 * @see #setDetails(Details)
-	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getFeature_Details()
-	 * @model
-	 * @generated
-	 */
-	Details getDetails();
 
 	/**
 	 * Returns the value of the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc -->
@@ -106,14 +89,6 @@ public interface Feature extends IUPresentation
 	 * @model kind="operation"
 	 * @generated
 	 */
-	Details getNotNullDetails();
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @model kind="operation"
-	 * @generated
-	 */
 	Features getNotNullFeatureContainer();
 
 	/**
@@ -134,17 +109,6 @@ public interface Feature extends IUPresentation
 	 * @generated
 	 */
 	void setBundleContainer(Bundles value);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Feature#getDetails <em>Details</em>}'
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Details</em>' reference.
-	 * @see #getDetails()
-	 * @generated
-	 */
-	void setDetails(Details value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Feature#getFeatureContainer

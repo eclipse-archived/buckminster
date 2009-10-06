@@ -78,14 +78,6 @@ public interface P2viewFactory extends EFactory
 	Category createCategory(InstallableUnit iu);
 
 	/**
-	 * Returns a new object of class '<em>Details</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return a new object of class '<em>Details</em>'.
-	 * @generated
-	 */
-	Details createDetails();
-
-	/**
 	 * Returns a new object of class '<em>Feature</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Feature</em>'.
@@ -140,6 +132,22 @@ public interface P2viewFactory extends EFactory
 	 * @generated
 	 */
 	InstallableUnits createInstallableUnits();
+
+	/**
+	 * Returns a new object of class '<em>IU Details</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>IU Details</em>'.
+	 * @generated
+	 */
+	IUDetails createIUDetails();
+
+	/**
+	 * Returns a new object of class '<em>IU Details</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>IU Details</em>'.
+	 * @generated NOT
+	 */
+	IUDetails createIUDetails(InstallableUnit iu);
 
 	/**
 	 * Returns a new object of class '<em>Metadata Repository Structured View</em>'. <!-- begin-user-doc --> <!--
@@ -214,6 +222,30 @@ public interface P2viewFactory extends EFactory
 	 * @generated
 	 */
 	Properties createProperties();
+
+	/**
+	 * Returns a new object of class '<em>Provided Capabilities</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Provided Capabilities</em>'.
+	 * @generated
+	 */
+	ProvidedCapabilities createProvidedCapabilities();
+
+	/**
+	 * Returns a new object of class '<em>Required Capabilities</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Required Capabilities</em>'.
+	 * @generated
+	 */
+	RequiredCapabilities createRequiredCapabilities();
+
+	/**
+	 * Returns a new object of class '<em>Touchpoints</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Touchpoints</em>'.
+	 * @generated
+	 */
+	Touchpoints createTouchpoints();
 
 	/**
 	 * Returns the package supported by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->

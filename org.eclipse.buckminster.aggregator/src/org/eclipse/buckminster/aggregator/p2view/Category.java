@@ -20,7 +20,6 @@ package org.eclipse.buckminster.aggregator.p2view;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer <em>Bundle Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getFragmentContainer <em>Fragment Container</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -61,22 +60,6 @@ public interface Category extends IUPresentation
 	 * @generated
 	 */
 	Categories getCategoryContainer();
-
-	/**
-	 * Returns the value of the '<em><b>Details</b></em>' reference. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Details</em>' reference isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Details</em>' reference.
-	 * @see #setDetails(Details)
-	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_Details()
-	 * @model
-	 * @generated
-	 */
-	Details getDetails();
 
 	/**
 	 * Returns the value of the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc -->
@@ -125,14 +108,6 @@ public interface Category extends IUPresentation
 	 * @generated
 	 */
 	Categories getNotNullCategoryContainer();
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @model kind="operation"
-	 * @generated
-	 */
-	Details getNotNullDetails();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -203,17 +178,6 @@ public interface Category extends IUPresentation
 	 * @generated
 	 */
 	void setCategoryContainer(Categories value);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getDetails <em>Details</em>}'
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Details</em>' reference.
-	 * @see #getDetails()
-	 * @generated
-	 */
-	void setDetails(Details value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.Category#getFeatureContainer

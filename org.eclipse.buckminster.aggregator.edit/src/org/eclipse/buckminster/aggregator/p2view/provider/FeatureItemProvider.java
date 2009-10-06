@@ -66,7 +66,6 @@ public class FeatureItemProvider extends IUPresentationItemProvider implements I
 			childrenFeatures.add(P2viewPackage.Literals.FEATURE__FEATURE_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.FEATURE__BUNDLE_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.FEATURE__FRAGMENT_CONTAINER);
-			childrenFeatures.add(P2viewPackage.Literals.FEATURE__DETAILS);
 		}
 		return childrenFeatures;
 	}
@@ -97,7 +96,6 @@ public class FeatureItemProvider extends IUPresentationItemProvider implements I
 			addFeatureContainerPropertyDescriptor(object);
 			addBundleContainerPropertyDescriptor(object);
 			addFragmentContainerPropertyDescriptor(object);
-			addDetailsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -142,20 +140,6 @@ public class FeatureItemProvider extends IUPresentationItemProvider implements I
 				getString("_UI_Feature_bundleContainer_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Feature_bundleContainer_feature", "_UI_Feature_type"),
 				P2viewPackage.Literals.FEATURE__BUNDLE_CONTAINER, false, false, true, null, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Details feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addDetailsPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Feature_details_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Feature_details_feature", "_UI_Feature_type"), P2viewPackage.Literals.FEATURE__DETAILS,
-				false, false, true, null, null, null));
 	}
 
 	/**

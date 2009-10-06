@@ -553,6 +553,16 @@ public interface AggregatorPackage extends EPackage
 		EAttribute METADATA_REPOSITORY_REFERENCE__LOCATION = eINSTANCE.getMetadataRepositoryReference_Location();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.StatusProvider
+		 * <em>Status Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.StatusProvider
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getStatusProvider()
+		 * @generated
+		 */
+		EClass STATUS_PROVIDER = eINSTANCE.getStatusProvider();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -1080,6 +1090,25 @@ public interface AggregatorPackage extends EPackage
 	int CONTACT_FEATURE_COUNT = 3;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.StatusProvider <em>Status Provider</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.StatusProvider
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getStatusProvider()
+	 * @generated
+	 */
+	int STATUS_PROVIDER = 18;
+
+	/**
+	 * The number of structural features of the '<em>Status Provider</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int STATUS_PROVIDER_FEATURE_COUNT = 0;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.FeatureImpl <em>Feature</em>}' class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1156,7 +1185,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT = 0;
+	int INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT = STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Installable Unit Reference</em>' class. <!-- begin-user-doc -->
@@ -1165,7 +1194,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT = 1;
+	int INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT = STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1519,7 +1548,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 18;
+	int AGGREGATE_TYPE = 19;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1529,7 +1558,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 19;
+	int OPERATING_SYSTEM = 20;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1539,7 +1568,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 20;
+	int WINDOW_SYSTEM = 21;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1549,7 +1578,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 21;
+	int ARCHITECTURE = 22;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1559,7 +1588,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 22;
+	int PACKED_STRATEGY = 23;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1568,7 +1597,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 23;
+	int URI = 24;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -2254,6 +2283,16 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getProperty_Value();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.StatusProvider
+	 * <em>Status Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Status Provider</em>'.
+	 * @see org.eclipse.buckminster.aggregator.StatusProvider
+	 * @generated
+	 */
+	EClass getStatusProvider();
 
 	/**
 	 * Returns the meta object for data type '{@link java.net.URI <em>URI</em>}'. <!-- begin-user-doc --> <!--

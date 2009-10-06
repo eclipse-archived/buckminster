@@ -12,7 +12,6 @@ package org.eclipse.buckminster.aggregator.p2view.impl;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
-import org.eclipse.buckminster.aggregator.p2view.Details;
 import org.eclipse.buckminster.aggregator.p2view.Feature;
 import org.eclipse.buckminster.aggregator.p2view.Features;
 import org.eclipse.buckminster.aggregator.p2view.Fragments;
@@ -36,7 +35,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl#getBundleContainer <em>Bundle Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl#getFragmentContainer <em>Fragment Container
  * </em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -75,16 +73,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 	protected Fragments fragmentContainer;
 
 	/**
-	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getDetails()
-	 * @generated
-	 * @ordered
-	 */
-	protected Details details;
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -112,16 +100,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 	public Bundles basicGetBundleContainer()
 	{
 		return bundleContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Details basicGetDetails()
-	{
-		return details;
 	}
 
 	/**
@@ -166,10 +144,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 			if(resolve)
 				return getFragmentContainer();
 			return basicGetFragmentContainer();
-		case P2viewPackage.FEATURE__DETAILS:
-			if(resolve)
-				return getDetails();
-			return basicGetDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -190,8 +164,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 			return bundleContainer != null;
 		case P2viewPackage.FEATURE__FRAGMENT_CONTAINER:
 			return fragmentContainer != null;
-		case P2viewPackage.FEATURE__DETAILS:
-			return details != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -214,9 +186,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 			return;
 		case P2viewPackage.FEATURE__FRAGMENT_CONTAINER:
 			setFragmentContainer((Fragments)newValue);
-			return;
-		case P2viewPackage.FEATURE__DETAILS:
-			setDetails((Details)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -241,9 +210,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 		case P2viewPackage.FEATURE__FRAGMENT_CONTAINER:
 			setFragmentContainer((Fragments)null);
 			return;
-		case P2viewPackage.FEATURE__DETAILS:
-			setDetails((Details)null);
-			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -267,27 +233,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 			}
 		}
 		return bundleContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Details getDetails()
-	{
-		if(details != null && details.eIsProxy())
-		{
-			InternalEObject oldDetails = (InternalEObject)details;
-			details = (Details)eResolveProxy(oldDetails);
-			if(details != oldDetails)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.FEATURE__DETAILS,
-							oldDetails, details));
-			}
-		}
-		return details;
 	}
 
 	/**
@@ -350,19 +295,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 	 * 
 	 * @generated NOT
 	 */
-	public Details getNotNullDetails()
-	{
-		if(details == null)
-			setDetails(P2viewFactory.eINSTANCE.createDetails());
-
-		return getDetails();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
 	public Features getNotNullFeatureContainer()
 	{
 		if(featureContainer == null)
@@ -401,19 +333,6 @@ public class FeatureImpl extends IUPresentationImpl implements Feature
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.FEATURE__BUNDLE_CONTAINER,
 					oldBundleContainer, bundleContainer));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setDetails(Details newDetails)
-	{
-		Details oldDetails = details;
-		details = newDetails;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.FEATURE__DETAILS, oldDetails, details));
 	}
 
 	/**

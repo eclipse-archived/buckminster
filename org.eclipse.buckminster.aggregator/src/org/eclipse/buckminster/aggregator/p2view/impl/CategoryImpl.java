@@ -14,7 +14,6 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
 import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Category;
-import org.eclipse.buckminster.aggregator.p2view.Details;
 import org.eclipse.buckminster.aggregator.p2view.Features;
 import org.eclipse.buckminster.aggregator.p2view.Fragments;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
@@ -43,7 +42,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getBundleContainer <em>Bundle Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getFragmentContainer <em>Fragment Container
  * </em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getDetails <em>Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -102,16 +100,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	protected Fragments fragmentContainer;
 
 	/**
-	 * The cached value of the '{@link #getDetails() <em>Details</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getDetails()
-	 * @generated
-	 * @ordered
-	 */
-	protected Details details;
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -149,16 +137,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	public Categories basicGetCategoryContainer()
 	{
 		return categoryContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Details basicGetDetails()
-	{
-		return details;
 	}
 
 	/**
@@ -221,10 +199,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			if(resolve)
 				return getFragmentContainer();
 			return basicGetFragmentContainer();
-		case P2viewPackage.CATEGORY__DETAILS:
-			if(resolve)
-				return getDetails();
-			return basicGetDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -249,8 +223,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			return bundleContainer != null;
 		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
 			return fragmentContainer != null;
-		case P2viewPackage.CATEGORY__DETAILS:
-			return details != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -280,9 +252,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
 			setFragmentContainer((Fragments)newValue);
 			return;
-		case P2viewPackage.CATEGORY__DETAILS:
-			setDetails((Details)newValue);
-			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -311,9 +280,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			return;
 		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
 			setFragmentContainer((Fragments)null);
-			return;
-		case P2viewPackage.CATEGORY__DETAILS:
-			setDetails((Details)null);
 			return;
 		}
 		super.eUnset(featureID);
@@ -359,27 +325,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			}
 		}
 		return categoryContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Details getDetails()
-	{
-		if(details != null && details.eIsProxy())
-		{
-			InternalEObject oldDetails = (InternalEObject)details;
-			details = (Details)eResolveProxy(oldDetails);
-			if(details != oldDetails)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.CATEGORY__DETAILS,
-							oldDetails, details));
-			}
-		}
-		return details;
 	}
 
 	/**
@@ -455,19 +400,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 * 
 	 * @generated NOT
 	 */
-	public Details getNotNullDetails()
-	{
-		if(details == null)
-			setDetails(P2viewFactory.eINSTANCE.createDetails());
-
-		return getDetails();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
 	public Features getNotNullFeatureContainer()
 	{
 		if(featureContainer == null)
@@ -535,8 +467,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 */
 	public boolean isNested()
 	{
-		return "true".equalsIgnoreCase(getNotNullDetails().getInstallableUnit().getProperty(
-				IInstallableUnit.PROP_TYPE_GROUP));
+		return "true".equalsIgnoreCase(getInstallableUnit().getProperty(IInstallableUnit.PROP_TYPE_GROUP));
 	}
 
 	/**
@@ -565,19 +496,6 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__CATEGORY_CONTAINER,
 					oldCategoryContainer, categoryContainer));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setDetails(Details newDetails)
-	{
-		Details oldDetails = details;
-		details = newDetails;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.CATEGORY__DETAILS, oldDetails, details));
 	}
 
 	/**

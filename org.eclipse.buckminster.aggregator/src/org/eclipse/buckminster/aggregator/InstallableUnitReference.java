@@ -11,8 +11,6 @@ package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit Reference</b></em>'. <!--
  * end-user-doc -->
@@ -28,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface InstallableUnitReference extends EObject, StatusProvider
+public interface InstallableUnitReference extends StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc -->

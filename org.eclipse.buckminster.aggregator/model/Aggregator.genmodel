@@ -142,6 +142,10 @@
         <genParameters ecoreParameter="Aggregator.ecore#//MetadataRepositoryReference/getMetadataRepository/forceResolve"/>
       </genOperations>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/isBranchEnabled"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/getResolvedLocation"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Aggregator.ecore#//StatusProvider">
+      <genOperations ecoreOperation="Aggregator.ecore#//StatusProvider/getStatus"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" multipleEditorPages="false"
         generateModelWizard="false" ecorePackage="Aggregator.ecore#//p2">
@@ -181,7 +185,6 @@
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/id"/>
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/touchpointType"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/version"/>
-        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/fragment"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/resolved"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/singleton"/>
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/IInstallableUnit/updateDescriptor"/>
@@ -197,13 +200,14 @@
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/getRequiredCapabilities"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/getProvidedCapabilities"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/getTouchpointData"/>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/isFragment"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/satisfies">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IInstallableUnit/satisfies/candidate"/>
         </genOperations>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnit/unresolved"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IInstallableUnitFragment">
-        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnitFragment/host"/>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IInstallableUnitFragment/getHost"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ILicense">
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/location"/>
@@ -408,7 +412,10 @@
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/label"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/description"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/type"/>
-        <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUPresentation/iu"/>
+        <genFeatures property="None" notify="false" createChild="false" propertyDescription=""
+            ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUPresentation/installableUnit"/>
+        <genFeatures property="None" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUPresentation/iuDetails"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Category">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
@@ -421,14 +428,11 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Category/bundleContainer"/>
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Category/fragmentContainer"/>
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Category/details"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullCategoryContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullFeatureContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullProductContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullBundleContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullFragmentContainer"/>
-        <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullDetails"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/isNested"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Feature">
@@ -438,12 +442,9 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Feature/bundleContainer"/>
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Feature/fragmentContainer"/>
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Feature/details"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Feature/getNotNullFeatureContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Feature/getNotNullBundleContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Feature/getNotNullFragmentContainer"/>
-        <genOperations ecoreOperation="Aggregator.ecore#//p2view/Feature/getNotNullDetails"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Product">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
@@ -452,31 +453,46 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Product/bundleContainer"/>
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Product/fragmentContainer"/>
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Product/details"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Product/getNotNullFeatureContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Product/getNotNullBundleContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Product/getNotNullFragmentContainer"/>
-        <genOperations ecoreOperation="Aggregator.ecore#//p2view/Product/getNotNullDetails"/>
       </genClasses>
-      <genClasses ecoreClass="Aggregator.ecore#//p2view/Bundle">
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Bundle/details"/>
-        <genOperations ecoreOperation="Aggregator.ecore#//p2view/Bundle/getNotNullDetails"/>
-      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/Bundle"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Fragment"/>
-      <genClasses ecoreClass="Aggregator.ecore#//p2view/OtherIU">
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/OtherIU/details"/>
-        <genOperations ecoreOperation="Aggregator.ecore#//p2view/OtherIU/getNotNullDetails"/>
-      </genClasses>
-      <genClasses ecoreClass="Aggregator.ecore#//p2view/Details">
-        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Details/installableUnit"/>
-      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/OtherIU"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Properties">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Properties/propertyMap"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/RequiredCapabilities">
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/RequiredCapabilities/requiredCapabilities"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/ProvidedCapabilities">
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/ProvidedCapabilities/providedCapabilities"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/Touchpoints">
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Touchpoints/touchpointType"/>
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Touchpoints/touchpointDataList"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/IUDetails">
+        <genFeatures property="None" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/requiredCapabilitiesContainer"/>
+        <genFeatures property="None" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/providedCapabilitiesContainer"/>
+        <genFeatures property="None" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/propertiesContainer"/>
+        <genFeatures property="None" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/touchpointsContainer"/>
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertyCategory="" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/updateDescriptor"/>
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/copyright"/>
+        <genFeatures property="Readonly" notify="false" children="true" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/license"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>

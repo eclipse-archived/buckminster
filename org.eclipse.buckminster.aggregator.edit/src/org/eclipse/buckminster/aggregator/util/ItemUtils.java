@@ -151,8 +151,8 @@ public class ItemUtils
 		Set<InstallableUnit> set = new HashSet<InstallableUnit>();
 
 		for(IUPresentation iup : iups)
-			if(iup.getIu() != null)
-				set.add(iup.getIu());
+			if(iup.getInstallableUnit() != null)
+				set.add(iup.getInstallableUnit());
 
 		return set;
 	}
