@@ -122,7 +122,7 @@ public class ProviderItemProvider extends ItemProviderAdapter implements IEditin
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Provider)object).getComponentTypesAttr();
+		String label = ((Provider)object).getReaderType();
 		return label == null || label.length() == 0
 				? getString("_UI_Provider_type")
 				: getString("_UI_Provider_type") + " " + label;

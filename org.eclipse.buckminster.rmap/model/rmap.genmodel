@@ -42,7 +42,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/properties"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/documentation"/>
     </genClasses>
-    <genClasses ecoreClass="rmap.ecore#//Provider">
+    <genClasses ecoreClass="rmap.ecore#//Provider" labelFeature="#//rmap/Provider/readerType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/componentTypes"/>
       <genFeatures property="None" notify="false" createChild="false" propertyCategory=""
           ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/componentTypesAttr"/>
@@ -55,13 +55,13 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/matchers"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/documentation"/>
     </genClasses>
-    <genClasses ecoreClass="rmap.ecore#//Transform">
+    <genClasses image="false" ecoreClass="rmap.ecore#//Transform">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Transform/fromPattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Transform/fromReplacement"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Transform/toPattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Transform/toReplacement"/>
     </genClasses>
-    <genClasses ecoreClass="rmap.ecore#//VersionConverter">
+    <genClasses image="false" ecoreClass="rmap.ecore#//VersionConverter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//VersionConverter/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//VersionConverter/versionType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//VersionConverter/transformers"/>
@@ -82,7 +82,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//DocumentRoot/nl"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//DocumentRoot/rmap"/>
     </genClasses>
-    <genClasses ecoreClass="rmap.ecore#//URIMatcher">
+    <genClasses image="false" ecoreClass="rmap.ecore#//URIMatcher">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//URIMatcher/base"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute rmap.ecore#//URIMatcher/rxPartsGroup"/>
       <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference rmap.ecore#//URIMatcher/rxParts"/>

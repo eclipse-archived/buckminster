@@ -51,17 +51,6 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	}
 
 	/**
-	 * This returns Transform.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object)
-	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Transform"));
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated

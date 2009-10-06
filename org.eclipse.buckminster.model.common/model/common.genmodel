@@ -25,7 +25,7 @@
     <genDataTypes ecoreDataType="common.ecore#//PropertyKey"/>
     <genDataTypes ecoreDataType="common.ecore#//Uuid"/>
     <genDataTypes ecoreDataType="common.ecore#//Pattern"/>
-    <genClasses ecoreClass="common.ecore#//Constant">
+    <genClasses image="false" ecoreClass="common.ecore#//Constant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Constant/value"/>
     </genClasses>
     <genClasses ecoreClass="common.ecore#//Documentation">
@@ -33,7 +33,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Documentation/any"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute common.ecore#//Documentation/anyAttribute"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//Format">
+    <genClasses image="false" ecoreClass="common.ecore#//Format">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Format/format"/>
     </genClasses>
     <genClasses ecoreClass="common.ecore#//Match">
@@ -56,16 +56,16 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/toLower"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//PropertyElement/toUpper"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//PropertyRef">
+    <genClasses image="false" ecoreClass="common.ecore#//PropertyRef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//PropertyRef/key"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//Replace">
+    <genClasses image="false" ecoreClass="common.ecore#//Replace">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//Replace/matches"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Replace/pattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Replace/quotePattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Replace/replacement"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//RxGroup">
+    <genClasses image="false" ecoreClass="common.ecore#//RxGroup">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute common.ecore#//RxGroup/rxPartsGroup"/>
       <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference common.ecore#//RxGroup/rxPart"/>
     </genClasses>
@@ -73,18 +73,18 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/optional"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//RxPattern">
+    <genClasses image="false" ecoreClass="common.ecore#//RxPattern">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/pattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/prefix"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/suffix"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//Split">
+    <genClasses image="false" ecoreClass="common.ecore#//Split">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Split/limit"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Split/pattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Split/style"/>
     </genClasses>
-    <genClasses ecoreClass="common.ecore#//ToLower"/>
-    <genClasses ecoreClass="common.ecore#//ToUpper"/>
+    <genClasses image="false" ecoreClass="common.ecore#//ToLower"/>
+    <genClasses image="false" ecoreClass="common.ecore#//ToUpper"/>
     <genClasses image="false" ecoreClass="common.ecore#//ValueFilter">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/constants"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/formats"/>
