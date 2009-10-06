@@ -30,7 +30,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.maven.feature"
+         id="org.eclipse.buckminster.maven.headless.feature"
          version="0.0.0"/>
 
    <includes
