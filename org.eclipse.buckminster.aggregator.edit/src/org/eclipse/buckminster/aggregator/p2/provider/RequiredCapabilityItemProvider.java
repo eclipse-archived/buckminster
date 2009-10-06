@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+import org.eclipse.buckminster.aggregator.util.CapabilityNamespaceRecognizer;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -54,12 +55,18 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	/**
 	 * This returns RequiredCapability.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/RequiredCapability"));
+		RequiredCapability rc = (RequiredCapability)object;
+
+		Object image = CapabilityNamespaceRecognizer.getImage(rc.getNamespace());
+		if(image == null)
+			image = getResourceLocator().getImage("full/obj16/RequiredCapability");
+
+		return overlayImage(object, image);
 	}
 
 	/**
@@ -100,15 +107,18 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((RequiredCapability)object).getName();
-		return label == null || label.length() == 0
-				? getString("_UI_RequiredCapability_type")
-				: getString("_UI_RequiredCapability_type") + " " + label;
+		RequiredCapability rc = (RequiredCapability)object;
+
+		String label = CapabilityNamespaceRecognizer.getLabel(rc.getNamespace());
+		if(label == null || label.length() == 0)
+			label = rc.getNamespace() + ":";
+
+		return getString("_UI_RequiredCapability_type") + " - " + label + " " + rc.getName();
 	}
 
 	/**
