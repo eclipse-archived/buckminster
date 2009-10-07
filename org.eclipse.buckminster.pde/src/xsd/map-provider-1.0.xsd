@@ -14,7 +14,7 @@
 	attributeFormDefault="unqualified"
 	elementFormDefault="qualified">
 
-	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" />
+	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/rmap-1.0.xsd"/>
 
 	<complexType name="PDEMapProvider">
 		<complexContent>
