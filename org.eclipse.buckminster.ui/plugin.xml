@@ -86,14 +86,6 @@
       id="org.eclipse.buckminster.ui.editors.CSPECEditor"
       matchingStrategy="org.eclipse.buckminster.ui.editor.cspec.CSpecEditor"
       name="Buckminster CSPEC Editor"/>
-<editor
-        class="org.eclipse.buckminster.ui.editor.rmap.RMAPEditor"
-        contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-        default="true"
-        extensions="cspex"
-        icon="icons/cspex.png"
-        id="org.eclipse.buckminster.ui.editors.CSPEXEditor"
-        name="Buckminster CSPEX Editor"/>
 	</extension>
 	<extension point="org.eclipse.ui.actionSets">
 		<actionSet id="org.eclipse.buckminster.ui.project"
