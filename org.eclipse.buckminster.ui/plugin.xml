@@ -116,6 +116,12 @@
             name="Buckminster"/>
       <wizard
             category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.ui.wizards.NewResourceMapWizard"
+            icon="icons/rmap.new.png"
+            id="org.eclipse.buckminster.ui.wizards.NewResourceMapWizard"
+            name="Resource Map  file"/>
+      <wizard
+            category="org.eclipse.buckminster"
             class="org.eclipse.buckminster.ui.wizards.NewCQueryWizard"
             icon="icons/cquery.new.png"
             id="org.eclipse.buckminster.ui.wizards.NewCQueryWizard"
