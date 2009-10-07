@@ -20,6 +20,7 @@ package org.eclipse.buckminster.aggregator.p2view;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getProductContainer <em>Product Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getBundleContainer <em>Bundle Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getFragmentContainer <em>Fragment Container</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Category#getIuDetails <em>Iu Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -92,6 +93,21 @@ public interface Category extends IUPresentation
 	 * @generated
 	 */
 	Fragments getFragmentContainer();
+
+	/**
+	 * Returns the value of the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Iu Details</em>' reference isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Iu Details</em>' reference.
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getCategory_IuDetails()
+	 * @model resolveProxies="false" changeable="false"
+	 * @generated
+	 */
+	IUDetails getIuDetails();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

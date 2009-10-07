@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * 
  * @generated
  */
-public class FeatureImpl extends IUPresentationImpl implements Feature
+public class FeatureImpl extends IUPresentationWithDetailsImpl implements Feature
 {
 	/**
 	 * The cached value of the '{@link #getFeatureContainer() <em>Feature Container</em>}' reference. <!--

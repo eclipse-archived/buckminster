@@ -15,13 +15,8 @@ import org.eclipse.buckminster.aggregator.p2view.Properties;
 import org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities;
 import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities;
 import org.eclipse.buckminster.aggregator.p2view.Touchpoints;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
@@ -146,109 +141,25 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 * 
 	 * @generated
 	 */
-	public ICopyright basicGetCopyright()
-	{
-		return copyright;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public ILicense basicGetLicense()
-	{
-		return license;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Properties basicGetPropertiesContainer()
-	{
-		return propertiesContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public ProvidedCapabilities basicGetProvidedCapabilitiesContainer()
-	{
-		return providedCapabilitiesContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public RequiredCapabilities basicGetRequiredCapabilitiesContainer()
-	{
-		return requiredCapabilitiesContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Touchpoints basicGetTouchpointsContainer()
-	{
-		return touchpointsContainer;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public IUpdateDescriptor basicGetUpdateDescriptor()
-	{
-		return updateDescriptor;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case P2viewPackage.IU_DETAILS__REQUIRED_CAPABILITIES_CONTAINER:
-			if(resolve)
-				return getRequiredCapabilitiesContainer();
-			return basicGetRequiredCapabilitiesContainer();
+			return getRequiredCapabilitiesContainer();
 		case P2viewPackage.IU_DETAILS__PROVIDED_CAPABILITIES_CONTAINER:
-			if(resolve)
-				return getProvidedCapabilitiesContainer();
-			return basicGetProvidedCapabilitiesContainer();
+			return getProvidedCapabilitiesContainer();
 		case P2viewPackage.IU_DETAILS__PROPERTIES_CONTAINER:
-			if(resolve)
-				return getPropertiesContainer();
-			return basicGetPropertiesContainer();
+			return getPropertiesContainer();
 		case P2viewPackage.IU_DETAILS__TOUCHPOINTS_CONTAINER:
-			if(resolve)
-				return getTouchpointsContainer();
-			return basicGetTouchpointsContainer();
+			return getTouchpointsContainer();
 		case P2viewPackage.IU_DETAILS__UPDATE_DESCRIPTOR:
-			if(resolve)
-				return getUpdateDescriptor();
-			return basicGetUpdateDescriptor();
+			return getUpdateDescriptor();
 		case P2viewPackage.IU_DETAILS__COPYRIGHT:
-			if(resolve)
-				return getCopyright();
-			return basicGetCopyright();
+			return getCopyright();
 		case P2viewPackage.IU_DETAILS__LICENSE:
-			if(resolve)
-				return getLicense();
-			return basicGetLicense();
+			return getLicense();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -358,17 +269,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public ICopyright getCopyright()
 	{
-		if(copyright != null && ((EObject)copyright).eIsProxy())
-		{
-			InternalEObject oldCopyright = (InternalEObject)copyright;
-			copyright = (ICopyright)eResolveProxy(oldCopyright);
-			if(copyright != oldCopyright)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.IU_DETAILS__COPYRIGHT,
-							oldCopyright, copyright));
-			}
-		}
 		return copyright;
 	}
 
@@ -379,17 +279,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public ILicense getLicense()
 	{
-		if(license != null && ((EObject)license).eIsProxy())
-		{
-			InternalEObject oldLicense = (InternalEObject)license;
-			license = (ILicense)eResolveProxy(oldLicense);
-			if(license != oldLicense)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, P2viewPackage.IU_DETAILS__LICENSE,
-							oldLicense, license));
-			}
-		}
 		return license;
 	}
 
@@ -400,17 +289,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public Properties getPropertiesContainer()
 	{
-		if(propertiesContainer != null && propertiesContainer.eIsProxy())
-		{
-			InternalEObject oldPropertiesContainer = (InternalEObject)propertiesContainer;
-			propertiesContainer = (Properties)eResolveProxy(oldPropertiesContainer);
-			if(propertiesContainer != oldPropertiesContainer)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							P2viewPackage.IU_DETAILS__PROPERTIES_CONTAINER, oldPropertiesContainer, propertiesContainer));
-			}
-		}
 		return propertiesContainer;
 	}
 
@@ -421,18 +299,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public ProvidedCapabilities getProvidedCapabilitiesContainer()
 	{
-		if(providedCapabilitiesContainer != null && providedCapabilitiesContainer.eIsProxy())
-		{
-			InternalEObject oldProvidedCapabilitiesContainer = (InternalEObject)providedCapabilitiesContainer;
-			providedCapabilitiesContainer = (ProvidedCapabilities)eResolveProxy(oldProvidedCapabilitiesContainer);
-			if(providedCapabilitiesContainer != oldProvidedCapabilitiesContainer)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							P2viewPackage.IU_DETAILS__PROVIDED_CAPABILITIES_CONTAINER,
-							oldProvidedCapabilitiesContainer, providedCapabilitiesContainer));
-			}
-		}
 		return providedCapabilitiesContainer;
 	}
 
@@ -443,18 +309,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public RequiredCapabilities getRequiredCapabilitiesContainer()
 	{
-		if(requiredCapabilitiesContainer != null && requiredCapabilitiesContainer.eIsProxy())
-		{
-			InternalEObject oldRequiredCapabilitiesContainer = (InternalEObject)requiredCapabilitiesContainer;
-			requiredCapabilitiesContainer = (RequiredCapabilities)eResolveProxy(oldRequiredCapabilitiesContainer);
-			if(requiredCapabilitiesContainer != oldRequiredCapabilitiesContainer)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							P2viewPackage.IU_DETAILS__REQUIRED_CAPABILITIES_CONTAINER,
-							oldRequiredCapabilitiesContainer, requiredCapabilitiesContainer));
-			}
-		}
 		return requiredCapabilitiesContainer;
 	}
 
@@ -465,18 +319,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public Touchpoints getTouchpointsContainer()
 	{
-		if(touchpointsContainer != null && touchpointsContainer.eIsProxy())
-		{
-			InternalEObject oldTouchpointsContainer = (InternalEObject)touchpointsContainer;
-			touchpointsContainer = (Touchpoints)eResolveProxy(oldTouchpointsContainer);
-			if(touchpointsContainer != oldTouchpointsContainer)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							P2viewPackage.IU_DETAILS__TOUCHPOINTS_CONTAINER, oldTouchpointsContainer,
-							touchpointsContainer));
-			}
-		}
 		return touchpointsContainer;
 	}
 
@@ -487,17 +329,6 @@ public class IUDetailsImpl extends MinimalEObjectImpl.Container implements IUDet
 	 */
 	public IUpdateDescriptor getUpdateDescriptor()
 	{
-		if(updateDescriptor != null && ((EObject)updateDescriptor).eIsProxy())
-		{
-			InternalEObject oldUpdateDescriptor = (InternalEObject)updateDescriptor;
-			updateDescriptor = (IUpdateDescriptor)eResolveProxy(oldUpdateDescriptor);
-			if(updateDescriptor != oldUpdateDescriptor)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
-							P2viewPackage.IU_DETAILS__UPDATE_DESCRIPTOR, oldUpdateDescriptor, updateDescriptor));
-			}
-		}
 		return updateDescriptor;
 	}
 

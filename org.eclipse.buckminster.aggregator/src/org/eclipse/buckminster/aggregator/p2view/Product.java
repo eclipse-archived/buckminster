@@ -25,7 +25,7 @@ package org.eclipse.buckminster.aggregator.p2view;
  * @model
  * @generated
  */
-public interface Product extends IUPresentation
+public interface Product extends IUPresentationWithDetails
 {
 	/**
 	 * Returns the value of the '<em><b>Bundle Container</b></em>' reference. <!-- begin-user-doc -->

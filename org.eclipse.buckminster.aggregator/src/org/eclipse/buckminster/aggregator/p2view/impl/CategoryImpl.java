@@ -16,6 +16,7 @@ import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Category;
 import org.eclipse.buckminster.aggregator.p2view.Features;
 import org.eclipse.buckminster.aggregator.p2view.Fragments;
+import org.eclipse.buckminster.aggregator.p2view.IUDetails;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.buckminster.aggregator.p2view.Products;
@@ -42,6 +43,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getBundleContainer <em>Bundle Container</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getFragmentContainer <em>Fragment Container
  * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl#getIuDetails <em>Iu Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -98,6 +100,16 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 * @ordered
 	 */
 	protected Fragments fragmentContainer;
+
+	/**
+	 * The cached value of the '{@link #getIuDetails() <em>Iu Details</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getIuDetails()
+	 * @generated
+	 * @ordered
+	 */
+	protected IUDetails iuDetails;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -199,6 +211,8 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			if(resolve)
 				return getFragmentContainer();
 			return basicGetFragmentContainer();
+		case P2viewPackage.CATEGORY__IU_DETAILS:
+			return getIuDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -223,6 +237,8 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			return bundleContainer != null;
 		case P2viewPackage.CATEGORY__FRAGMENT_CONTAINER:
 			return fragmentContainer != null;
+		case P2viewPackage.CATEGORY__IU_DETAILS:
+			return iuDetails != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -367,6 +383,19 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 			}
 		}
 		return fragmentContainer;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public IUDetails getIuDetails()
+	{
+		if(iuDetails == null)
+			iuDetails = P2viewFactory.eINSTANCE.createIUDetails(getInstallableUnit());
+
+		return iuDetails;
 	}
 
 	/**

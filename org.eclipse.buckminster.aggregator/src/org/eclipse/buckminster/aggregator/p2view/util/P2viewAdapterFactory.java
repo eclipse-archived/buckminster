@@ -108,6 +108,12 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseIUPresentationWithDetails(IUPresentationWithDetails object)
+		{
+			return createIUPresentationWithDetailsAdapter();
+		}
+
+		@Override
 		public Adapter caseMetadataRepositoryStructuredView(MetadataRepositoryStructuredView object)
 		{
 			return createMetadataRepositoryStructuredViewAdapter();
@@ -365,6 +371,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createIUPresentationAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails <em>IU Presentation With Details</em>}
+	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails
+	 * @generated
+	 */
+	public Adapter createIUPresentationWithDetailsAdapter()
 	{
 		return null;
 	}

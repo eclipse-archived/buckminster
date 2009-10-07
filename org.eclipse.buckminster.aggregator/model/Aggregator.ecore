@@ -479,8 +479,10 @@
           eType="#//p2/InstallableUnitType" changeable="false" volatile="true" defaultValueLiteral=""/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnit" eType="#//p2/InstallableUnit"
           changeable="false" resolveProxies="false"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="iuDetails" eType="#//p2view/IUDetails"
-          changeable="false" resolveProxies="false"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IUPresentationWithDetails" abstract="true"
+        eSuperTypes="#//p2view/IUPresentation #//p2view/IUDetails">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="detailsResolved" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Category" eSuperTypes="#//p2view/IUPresentation">
       <eOperations name="getNotNullCategoryContainer" eType="#//p2view/Categories"/>
@@ -494,8 +496,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="productContainer" eType="#//p2view/Products"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="bundleContainer" eType="#//p2view/Bundles"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="fragmentContainer" eType="#//p2view/Fragments"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="iuDetails" eType="#//p2view/IUDetails"
+          changeable="false" resolveProxies="false"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Feature" eSuperTypes="#//p2view/IUPresentation">
+    <eClassifiers xsi:type="ecore:EClass" name="Feature" eSuperTypes="#//p2view/IUPresentationWithDetails">
       <eOperations name="getNotNullFeatureContainer" eType="#//p2view/Features"/>
       <eOperations name="getNotNullBundleContainer" eType="#//p2view/Bundles"/>
       <eOperations name="getNotNullFragmentContainer" eType="#//p2view/Fragments"/>
@@ -503,7 +507,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="bundleContainer" eType="#//p2view/Bundles"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="fragmentContainer" eType="#//p2view/Fragments"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Product" eSuperTypes="#//p2view/IUPresentation">
+    <eClassifiers xsi:type="ecore:EClass" name="Product" eSuperTypes="#//p2view/IUPresentationWithDetails">
       <eOperations name="getNotNullFeatureContainer" eType="#//p2view/Features"/>
       <eOperations name="getNotNullBundleContainer" eType="#//p2view/Bundles"/>
       <eOperations name="getNotNullFragmentContainer" eType="#//p2view/Fragments"/>
@@ -511,9 +515,9 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="bundleContainer" eType="#//p2view/Bundles"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="fragmentContainer" eType="#//p2view/Fragments"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Bundle" eSuperTypes="#//p2view/IUPresentation"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Bundle" eSuperTypes="#//p2view/IUPresentationWithDetails"/>
     <eClassifiers xsi:type="ecore:EClass" name="Fragment" eSuperTypes="#//p2view/Bundle"/>
-    <eClassifiers xsi:type="ecore:EClass" name="OtherIU" eSuperTypes="#//p2view/IUPresentation"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OtherIU" eSuperTypes="#//p2view/IUPresentationWithDetails"/>
     <eClassifiers xsi:type="ecore:EClass" name="Properties">
       <eStructuralFeatures xsi:type="ecore:EReference" name="propertyMap" upperBound="-1"
           eType="#//p2/Property" containment="true"/>
@@ -533,16 +537,19 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IUDetails">
       <eStructuralFeatures xsi:type="ecore:EReference" name="requiredCapabilitiesContainer"
-          eType="#//p2view/RequiredCapabilities"/>
+          eType="#//p2view/RequiredCapabilities" resolveProxies="false"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="providedCapabilitiesContainer"
-          eType="#//p2view/ProvidedCapabilities"/>
+          eType="#//p2view/ProvidedCapabilities" resolveProxies="false"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="propertiesContainer"
-          eType="#//p2view/Properties"/>
+          eType="#//p2view/Properties" resolveProxies="false"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="touchpointsContainer"
-          eType="#//p2view/Touchpoints"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="updateDescriptor" eType="#//p2/IUpdateDescriptor"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="copyright" eType="#//p2/ICopyright"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="license" eType="#//p2/ILicense"/>
+          eType="#//p2view/Touchpoints" resolveProxies="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="updateDescriptor" eType="#//p2/IUpdateDescriptor"
+          resolveProxies="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="copyright" eType="#//p2/ICopyright"
+          resolveProxies="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="license" eType="#//p2/ILicense"
+          resolveProxies="false"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

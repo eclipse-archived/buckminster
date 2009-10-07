@@ -27,6 +27,7 @@ import org.eclipse.buckminster.aggregator.p2view.Fragment;
 import org.eclipse.buckminster.aggregator.p2view.Fragments;
 import org.eclipse.buckminster.aggregator.p2view.IUDetails;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails;
 import org.eclipse.buckminster.aggregator.p2view.InstallableUnits;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.Miscellaneous;
@@ -46,6 +47,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
@@ -78,6 +80,9 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 				: new P2viewPackageImpl());
 
 		isInited = true;
+
+		// Initialize simple dependencies
+		XMLTypePackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
 		AggregatorPackageImpl theAggregatorPackage = (AggregatorPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI) instanceof AggregatorPackageImpl
@@ -167,6 +172,13 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 * @generated
 	 */
 	private EClass iuPresentationEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass iuPresentationWithDetailsEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -339,7 +351,9 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__DESCRIPTION);
 		createEAttribute(iuPresentationEClass, IU_PRESENTATION__TYPE);
 		createEReference(iuPresentationEClass, IU_PRESENTATION__INSTALLABLE_UNIT);
-		createEReference(iuPresentationEClass, IU_PRESENTATION__IU_DETAILS);
+
+		iuPresentationWithDetailsEClass = createEClass(IU_PRESENTATION_WITH_DETAILS);
+		createEAttribute(iuPresentationWithDetailsEClass, IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED);
 
 		categoryEClass = createEClass(CATEGORY);
 		createEReference(categoryEClass, CATEGORY__CATEGORY_CONTAINER);
@@ -347,6 +361,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		createEReference(categoryEClass, CATEGORY__PRODUCT_CONTAINER);
 		createEReference(categoryEClass, CATEGORY__BUNDLE_CONTAINER);
 		createEReference(categoryEClass, CATEGORY__FRAGMENT_CONTAINER);
+		createEReference(categoryEClass, CATEGORY__IU_DETAILS);
 
 		featureEClass = createEClass(FEATURE);
 		createEReference(featureEClass, FEATURE__FEATURE_CONTAINER);
@@ -485,6 +500,16 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	public EReference getCategory_FragmentContainer()
 	{
 		return (EReference)categoryEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getCategory_IuDetails()
+	{
+		return (EReference)categoryEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -782,16 +807,6 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getIUPresentation_IuDetails()
-	{
-		return (EReference)iuPresentationEClass.getEStructuralFeatures().get(7);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EAttribute getIUPresentation_Label()
 	{
 		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(3);
@@ -825,6 +840,26 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	public EAttribute getIUPresentation_Version()
 	{
 		return (EAttribute)iuPresentationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getIUPresentationWithDetails()
+	{
+		return iuPresentationWithDetailsEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getIUPresentationWithDetails_DetailsResolved()
+	{
+		return (EAttribute)iuPresentationWithDetailsEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1086,18 +1121,21 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 
 		// Obtain other dependent packages
 		P2Package theP2Package = (P2Package)EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI);
+		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		iuPresentationWithDetailsEClass.getESuperTypes().add(this.getIUPresentation());
+		iuPresentationWithDetailsEClass.getESuperTypes().add(this.getIUDetails());
 		categoryEClass.getESuperTypes().add(this.getIUPresentation());
-		featureEClass.getESuperTypes().add(this.getIUPresentation());
-		productEClass.getESuperTypes().add(this.getIUPresentation());
-		bundleEClass.getESuperTypes().add(this.getIUPresentation());
+		featureEClass.getESuperTypes().add(this.getIUPresentationWithDetails());
+		productEClass.getESuperTypes().add(this.getIUPresentationWithDetails());
+		bundleEClass.getESuperTypes().add(this.getIUPresentationWithDetails());
 		fragmentEClass.getESuperTypes().add(this.getBundle());
-		otherIUEClass.getESuperTypes().add(this.getIUPresentation());
+		otherIUEClass.getESuperTypes().add(this.getIUPresentationWithDetails());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(metadataRepositoryStructuredViewEClass, MetadataRepositoryStructuredView.class,
@@ -1208,9 +1246,12 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		initEReference(getIUPresentation_InstallableUnit(), theP2Package.getInstallableUnit(), null, "installableUnit",
 				null, 0, 1, IUPresentation.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE,
 				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIUPresentation_IuDetails(), this.getIUDetails(), null, "iuDetails", null, 0, 1,
-				IUPresentation.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(iuPresentationWithDetailsEClass, IUPresentationWithDetails.class, "IUPresentationWithDetails",
+				IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIUPresentationWithDetails_DetailsResolved(), theXMLTypePackage.getBoolean(),
+				"detailsResolved", null, 0, 1, IUPresentationWithDetails.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(categoryEClass, Category.class, "Category", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getCategory_CategoryContainer(), this.getCategories(), null, "categoryContainer", null, 0, 1,
@@ -1228,6 +1269,9 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		initEReference(getCategory_FragmentContainer(), this.getFragments(), null, "fragmentContainer", null, 0, 1,
 				Category.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCategory_IuDetails(), this.getIUDetails(), null, "iuDetails", null, 0, 1, Category.class,
+				!IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(categoryEClass, this.getCategories(), "getNotNullCategoryContainer", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -1312,24 +1356,24 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 				IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getIUDetails_RequiredCapabilitiesContainer(), this.getRequiredCapabilities(), null,
 				"requiredCapabilitiesContainer", null, 0, 1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+				IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIUDetails_ProvidedCapabilitiesContainer(), this.getProvidedCapabilities(), null,
 				"providedCapabilitiesContainer", null, 0, 1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+				IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIUDetails_PropertiesContainer(), this.getProperties(), null, "propertiesContainer", null, 0,
-				1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+				1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIUDetails_TouchpointsContainer(), this.getTouchpoints(), null, "touchpointsContainer", null,
-				0, 1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+				0, 1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIUDetails_UpdateDescriptor(), theP2Package.getIUpdateDescriptor(), null, "updateDescriptor",
 				null, 0, 1, IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE,
-				IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIUDetails_Copyright(), theP2Package.getICopyright(), null, "copyright", null, 0, 1,
-				IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+				IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIUDetails_License(), theP2Package.getILicense(), null, "license", null, 0, 1,
-				IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+				IUDetails.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 

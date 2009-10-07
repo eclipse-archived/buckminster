@@ -17,7 +17,7 @@ package org.eclipse.buckminster.aggregator.p2view;
  * @model
  * @generated
  */
-public interface Bundle extends IUPresentation
+public interface Bundle extends IUPresentationWithDetails
 {
 
 } // Bundle

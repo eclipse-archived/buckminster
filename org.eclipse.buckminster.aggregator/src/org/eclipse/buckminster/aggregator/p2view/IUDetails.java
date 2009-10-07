@@ -50,7 +50,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>Copyright</em>' reference.
 	 * @see #setCopyright(ICopyright)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_Copyright()
-	 * @model type="org.eclipse.buckminster.aggregator.p2.ICopyright"
+	 * @model type="org.eclipse.buckminster.aggregator.p2.ICopyright" resolveProxies="false"
 	 * @generated
 	 */
 	ICopyright getCopyright();
@@ -66,7 +66,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>License</em>' reference.
 	 * @see #setLicense(ILicense)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_License()
-	 * @model type="org.eclipse.buckminster.aggregator.p2.ILicense"
+	 * @model type="org.eclipse.buckminster.aggregator.p2.ILicense" resolveProxies="false"
 	 * @generated
 	 */
 	ILicense getLicense();
@@ -82,7 +82,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>Properties Container</em>' reference.
 	 * @see #setPropertiesContainer(Properties)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_PropertiesContainer()
-	 * @model
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
 	Properties getPropertiesContainer();
@@ -98,7 +98,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>Provided Capabilities Container</em>' reference.
 	 * @see #setProvidedCapabilitiesContainer(ProvidedCapabilities)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_ProvidedCapabilitiesContainer()
-	 * @model
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
 	ProvidedCapabilities getProvidedCapabilitiesContainer();
@@ -114,7 +114,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>Required Capabilities Container</em>' reference.
 	 * @see #setRequiredCapabilitiesContainer(RequiredCapabilities)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_RequiredCapabilitiesContainer()
-	 * @model
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
 	RequiredCapabilities getRequiredCapabilitiesContainer();
@@ -130,7 +130,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>Touchpoints Container</em>' reference.
 	 * @see #setTouchpointsContainer(Touchpoints)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_TouchpointsContainer()
-	 * @model
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
 	Touchpoints getTouchpointsContainer();
@@ -146,7 +146,7 @@ public interface IUDetails extends EObject
 	 * @return the value of the '<em>Update Descriptor</em>' reference.
 	 * @see #setUpdateDescriptor(IUpdateDescriptor)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUDetails_UpdateDescriptor()
-	 * @model type="org.eclipse.buckminster.aggregator.p2.IUpdateDescriptor"
+	 * @model type="org.eclipse.buckminster.aggregator.p2.IUpdateDescriptor" resolveProxies="false"
 	 * @generated
 	 */
 	IUpdateDescriptor getUpdateDescriptor();

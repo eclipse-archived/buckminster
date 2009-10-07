@@ -11,18 +11,12 @@ package org.eclipse.buckminster.aggregator.p2view.impl;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
-import org.eclipse.buckminster.aggregator.p2view.IUDetails;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
-import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 
 /**
@@ -170,16 +164,6 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	protected InstallableUnit installableUnit;
 
 	/**
-	 * The cached value of the '{@link #getIuDetails() <em>Iu Details</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getIuDetails()
-	 * @generated
-	 * @ordered
-	 */
-	protected IUDetails iuDetails;
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -224,8 +208,6 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return getType();
 		case P2viewPackage.IU_PRESENTATION__INSTALLABLE_UNIT:
 			return getInstallableUnit();
-		case P2viewPackage.IU_PRESENTATION__IU_DETAILS:
-			return getIuDetails();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -264,8 +246,6 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return getType() != TYPE_EDEFAULT;
 		case P2viewPackage.IU_PRESENTATION__INSTALLABLE_UNIT:
 			return installableUnit != null;
-		case P2viewPackage.IU_PRESENTATION__IU_DETAILS:
-			return iuDetails != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -356,19 +336,6 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 	public InstallableUnit getInstallableUnit()
 	{
 		return installableUnit;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public IUDetails getIuDetails()
-	{
-		if(iuDetails == null)
-			iuDetails = P2viewFactory.eINSTANCE.createIUDetails(getInstallableUnit());
-
-		return iuDetails;
 	}
 
 	/**

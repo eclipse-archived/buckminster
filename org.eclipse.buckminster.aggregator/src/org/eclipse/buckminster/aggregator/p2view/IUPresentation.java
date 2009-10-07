@@ -30,7 +30,6 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getDescription <em>Description</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getType <em>Type</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getInstallableUnit <em>Installable Unit</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIuDetails <em>Iu Details</em>}</li>
  * </ul>
  * </p>
  * 
@@ -138,21 +137,6 @@ public interface IUPresentation extends EObject
 	 * @generated
 	 */
 	InstallableUnit getInstallableUnit();
-
-	/**
-	 * Returns the value of the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Iu Details</em>' reference isn't clear, there really should be more of a description
-	 * here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Iu Details</em>' reference.
-	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUPresentation_IuDetails()
-	 * @model resolveProxies="false" changeable="false"
-	 * @generated
-	 */
-	IUDetails getIuDetails();
 
 	/**
 	 * Returns the value of the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc -->

@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EClass;
  * 
  * @generated
  */
-public class BundleImpl extends IUPresentationImpl implements Bundle
+public class BundleImpl extends IUPresentationWithDetailsImpl implements Bundle
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

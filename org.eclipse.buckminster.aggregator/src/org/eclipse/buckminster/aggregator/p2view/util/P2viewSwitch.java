@@ -215,6 +215,22 @@ public class P2viewSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IU Presentation With Details</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IU Presentation With Details</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIUPresentationWithDetails(IUPresentationWithDetails object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Metadata Repository Structured View</em>'.
 	 * <!-- begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
@@ -485,6 +501,18 @@ public class P2viewSwitch<T>
 				result = defaultCase(theEObject);
 			return result;
 		}
+		case P2viewPackage.IU_PRESENTATION_WITH_DETAILS:
+		{
+			IUPresentationWithDetails iuPresentationWithDetails = (IUPresentationWithDetails)theEObject;
+			T result = caseIUPresentationWithDetails(iuPresentationWithDetails);
+			if(result == null)
+				result = caseIUPresentation(iuPresentationWithDetails);
+			if(result == null)
+				result = caseIUDetails(iuPresentationWithDetails);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
 		case P2viewPackage.CATEGORY:
 		{
 			Category category = (Category)theEObject;
@@ -500,7 +528,11 @@ public class P2viewSwitch<T>
 			Feature feature = (Feature)theEObject;
 			T result = caseFeature(feature);
 			if(result == null)
+				result = caseIUPresentationWithDetails(feature);
+			if(result == null)
 				result = caseIUPresentation(feature);
+			if(result == null)
+				result = caseIUDetails(feature);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -510,7 +542,11 @@ public class P2viewSwitch<T>
 			Product product = (Product)theEObject;
 			T result = caseProduct(product);
 			if(result == null)
+				result = caseIUPresentationWithDetails(product);
+			if(result == null)
 				result = caseIUPresentation(product);
+			if(result == null)
+				result = caseIUDetails(product);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -520,7 +556,11 @@ public class P2viewSwitch<T>
 			Bundle bundle = (Bundle)theEObject;
 			T result = caseBundle(bundle);
 			if(result == null)
+				result = caseIUPresentationWithDetails(bundle);
+			if(result == null)
 				result = caseIUPresentation(bundle);
+			if(result == null)
+				result = caseIUDetails(bundle);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -532,7 +572,11 @@ public class P2viewSwitch<T>
 			if(result == null)
 				result = caseBundle(fragment);
 			if(result == null)
+				result = caseIUPresentationWithDetails(fragment);
+			if(result == null)
 				result = caseIUPresentation(fragment);
+			if(result == null)
+				result = caseIUDetails(fragment);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -542,7 +586,11 @@ public class P2viewSwitch<T>
 			OtherIU otherIU = (OtherIU)theEObject;
 			T result = caseOtherIU(otherIU);
 			if(result == null)
+				result = caseIUPresentationWithDetails(otherIU);
+			if(result == null)
 				result = caseIUPresentation(otherIU);
+			if(result == null)
+				result = caseIUDetails(otherIU);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

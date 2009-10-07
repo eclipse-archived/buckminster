@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EClass;
  * 
  * @generated
  */
-public class OtherIUImpl extends IUPresentationImpl implements OtherIU
+public class OtherIUImpl extends IUPresentationWithDetailsImpl implements OtherIU
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

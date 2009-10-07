@@ -320,12 +320,23 @@ public interface P2viewPackage extends EPackage
 		EReference IU_PRESENTATION__INSTALLABLE_UNIT = eINSTANCE.getIUPresentation_InstallableUnit();
 
 		/**
-		 * The meta object literal for the '<em><b>Iu Details</b></em>' reference feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.aggregator.p2view.impl.IUPresentationWithDetailsImpl
+		 * <em>IU Presentation With Details</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.IUPresentationWithDetailsImpl
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getIUPresentationWithDetails()
+		 * @generated
+		 */
+		EClass IU_PRESENTATION_WITH_DETAILS = eINSTANCE.getIUPresentationWithDetails();
+
+		/**
+		 * The meta object literal for the '<em><b>Details Resolved</b></em>' attribute feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EReference IU_PRESENTATION__IU_DETAILS = eINSTANCE.getIUPresentation_IuDetails();
+		EAttribute IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED = eINSTANCE.getIUPresentationWithDetails_DetailsResolved();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl
@@ -376,6 +387,14 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EReference CATEGORY__FRAGMENT_CONTAINER = eINSTANCE.getCategory_FragmentContainer();
+
+		/**
+		 * The meta object literal for the '<em><b>Iu Details</b></em>' reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference CATEGORY__IU_DETAILS = eINSTANCE.getCategory_IuDetails();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl
@@ -951,6 +970,126 @@ public interface P2viewPackage extends EPackage
 	int IU_PRESENTATION = 8;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl <em>Category</em>}
+	 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getCategory()
+	 * @generated
+	 */
+	int CATEGORY = 10;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl <em>Feature</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFeature()
+	 * @generated
+	 */
+	int FEATURE = 11;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl <em>Product</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProduct()
+	 * @generated
+	 */
+	int PRODUCT = 12;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl <em>Bundle</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getBundle()
+	 * @generated
+	 */
+	int BUNDLE = 13;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl <em>Fragment</em>}
+	 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFragment()
+	 * @generated
+	 */
+	int FRAGMENT = 14;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.OtherIUImpl <em>Other IU</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.OtherIUImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getOtherIU()
+	 * @generated
+	 */
+	int OTHER_IU = 15;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl
+	 * <em>Properties</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProperties()
+	 * @generated
+	 */
+	int PROPERTIES = 16;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilitiesImpl
+	 * <em>Required Capabilities</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilitiesImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getRequiredCapabilities()
+	 * @generated
+	 */
+	int REQUIRED_CAPABILITIES = 17;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilitiesImpl
+	 * <em>Provided Capabilities</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilitiesImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProvidedCapabilities()
+	 * @generated
+	 */
+	int PROVIDED_CAPABILITIES = 18;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.TouchpointsImpl
+	 * <em>Touchpoints</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.TouchpointsImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getTouchpoints()
+	 * @generated
+	 */
+	int TOUCHPOINTS = 19;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.IUDetailsImpl
+	 * <em>IU Details</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.IUDetailsImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getIUDetails()
+	 * @generated
+	 */
+	int IU_DETAILS = 20;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.IUPresentationWithDetailsImpl
+	 * <em>IU Presentation With Details</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.IUPresentationWithDetailsImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getIUPresentationWithDetails()
+	 * @generated
+	 */
+	int IU_PRESENTATION_WITH_DETAILS = 9;
+
+	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -1008,14 +1147,6 @@ public interface P2viewPackage extends EPackage
 	int IU_PRESENTATION__INSTALLABLE_UNIT = 6;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int IU_PRESENTATION__IU_DETAILS = 7;
-
-	/**
 	 * The number of structural features of the '<em>IU Presentation</em>' class. <!-- begin-user-doc --> <!-- =======
 	 * The number of structural features of the '<em>IU Presentation</em>' class. <!-- begin-user-doc --> <!-- >>>>>>>
 	 * .r10620 end-user-doc -->
@@ -1023,17 +1154,143 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IU_PRESENTATION_FEATURE_COUNT = 8;
+	int IU_PRESENTATION_FEATURE_COUNT = 7;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl <em>Category</em>}
-	 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.CategoryImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getCategory()
 	 * @generated
+	 * @ordered
 	 */
-	int CATEGORY = 9;
+	int IU_PRESENTATION_WITH_DETAILS__ID = IU_PRESENTATION__ID;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__VERSION = IU_PRESENTATION__VERSION;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__NAME = IU_PRESENTATION__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__LABEL = IU_PRESENTATION__LABEL;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__TYPE = IU_PRESENTATION__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__INSTALLABLE_UNIT = IU_PRESENTATION__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__REQUIRED_CAPABILITIES_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Provided Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__PROVIDED_CAPABILITIES_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Properties Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__PROPERTIES_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Touchpoints Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__TOUCHPOINTS_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Update Descriptor</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__UPDATE_DESCRIPTOR = IU_PRESENTATION_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__COPYRIGHT = IU_PRESENTATION_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>License</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__LICENSE = IU_PRESENTATION_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Details Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED = IU_PRESENTATION_FEATURE_COUNT + 7;
+
+	/**
+	 * The number of structural features of the '<em>IU Presentation With Details</em>' class. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1093,14 +1350,6 @@ public interface P2viewPackage extends EPackage
 	int CATEGORY__INSTALLABLE_UNIT = IU_PRESENTATION__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int CATEGORY__IU_DETAILS = IU_PRESENTATION__IU_DETAILS;
-
-	/**
 	 * The feature id for the '<em><b>Category Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -1146,22 +1395,20 @@ public interface P2viewPackage extends EPackage
 	int CATEGORY__FRAGMENT_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 4;
 
 	/**
+	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__IU_DETAILS = IU_PRESENTATION_FEATURE_COUNT + 5;
+
+	/**
 	 * The number of structural features of the '<em>Category</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CATEGORY_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 5;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl <em>Feature</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.FeatureImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFeature()
-	 * @generated
-	 */
-	int FEATURE = 10;
+	int CATEGORY_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1169,7 +1416,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__ID = IU_PRESENTATION__ID;
+	int FEATURE__ID = IU_PRESENTATION_WITH_DETAILS__ID;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1177,7 +1424,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__VERSION = IU_PRESENTATION__VERSION;
+	int FEATURE__VERSION = IU_PRESENTATION_WITH_DETAILS__VERSION;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1185,7 +1432,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__NAME = IU_PRESENTATION__NAME;
+	int FEATURE__NAME = IU_PRESENTATION_WITH_DETAILS__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1193,7 +1440,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__LABEL = IU_PRESENTATION__LABEL;
+	int FEATURE__LABEL = IU_PRESENTATION_WITH_DETAILS__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1201,7 +1448,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+	int FEATURE__DESCRIPTION = IU_PRESENTATION_WITH_DETAILS__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1209,7 +1456,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__TYPE = IU_PRESENTATION__TYPE;
+	int FEATURE__TYPE = IU_PRESENTATION_WITH_DETAILS__TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1218,15 +1465,77 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__INSTALLABLE_UNIT = IU_PRESENTATION__INSTALLABLE_UNIT;
+	int FEATURE__INSTALLABLE_UNIT = IU_PRESENTATION_WITH_DETAILS__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__IU_DETAILS = IU_PRESENTATION__IU_DETAILS;
+	int FEATURE__REQUIRED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__REQUIRED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Provided Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__PROVIDED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROVIDED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Properties Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__PROPERTIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROPERTIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Touchpoints Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__TOUCHPOINTS_CONTAINER = IU_PRESENTATION_WITH_DETAILS__TOUCHPOINTS_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Update Descriptor</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__UPDATE_DESCRIPTOR = IU_PRESENTATION_WITH_DETAILS__UPDATE_DESCRIPTOR;
+
+	/**
+	 * The feature id for the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__COPYRIGHT = IU_PRESENTATION_WITH_DETAILS__COPYRIGHT;
+
+	/**
+	 * The feature id for the '<em><b>License</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__LICENSE = IU_PRESENTATION_WITH_DETAILS__LICENSE;
+
+	/**
+	 * The feature id for the '<em><b>Details Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURE__DETAILS_RESOLVED = IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED;
 
 	/**
 	 * The feature id for the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1235,7 +1544,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__FEATURE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 0;
+	int FEATURE__FEATURE_CONTAINER = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Bundle Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1244,7 +1553,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__BUNDLE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 1;
+	int FEATURE__BUNDLE_CONTAINER = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1253,7 +1562,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE__FRAGMENT_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 2;
+	int FEATURE__FRAGMENT_CONTAINER = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Feature</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1261,17 +1570,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURE_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 3;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl <em>Product</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.ProductImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProduct()
-	 * @generated
-	 */
-	int PRODUCT = 11;
+	int FEATURE_FEATURE_COUNT = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1279,7 +1578,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__ID = IU_PRESENTATION__ID;
+	int PRODUCT__ID = IU_PRESENTATION_WITH_DETAILS__ID;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1287,7 +1586,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__VERSION = IU_PRESENTATION__VERSION;
+	int PRODUCT__VERSION = IU_PRESENTATION_WITH_DETAILS__VERSION;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1295,7 +1594,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__NAME = IU_PRESENTATION__NAME;
+	int PRODUCT__NAME = IU_PRESENTATION_WITH_DETAILS__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1303,7 +1602,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__LABEL = IU_PRESENTATION__LABEL;
+	int PRODUCT__LABEL = IU_PRESENTATION_WITH_DETAILS__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1311,7 +1610,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+	int PRODUCT__DESCRIPTION = IU_PRESENTATION_WITH_DETAILS__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1319,7 +1618,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__TYPE = IU_PRESENTATION__TYPE;
+	int PRODUCT__TYPE = IU_PRESENTATION_WITH_DETAILS__TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1328,15 +1627,77 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__INSTALLABLE_UNIT = IU_PRESENTATION__INSTALLABLE_UNIT;
+	int PRODUCT__INSTALLABLE_UNIT = IU_PRESENTATION_WITH_DETAILS__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__IU_DETAILS = IU_PRESENTATION__IU_DETAILS;
+	int PRODUCT__REQUIRED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__REQUIRED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Provided Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__PROVIDED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROVIDED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Properties Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__PROPERTIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROPERTIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Touchpoints Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__TOUCHPOINTS_CONTAINER = IU_PRESENTATION_WITH_DETAILS__TOUCHPOINTS_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Update Descriptor</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__UPDATE_DESCRIPTOR = IU_PRESENTATION_WITH_DETAILS__UPDATE_DESCRIPTOR;
+
+	/**
+	 * The feature id for the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__COPYRIGHT = IU_PRESENTATION_WITH_DETAILS__COPYRIGHT;
+
+	/**
+	 * The feature id for the '<em><b>License</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__LICENSE = IU_PRESENTATION_WITH_DETAILS__LICENSE;
+
+	/**
+	 * The feature id for the '<em><b>Details Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCT__DETAILS_RESOLVED = IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED;
 
 	/**
 	 * The feature id for the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1345,7 +1706,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__FEATURE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 0;
+	int PRODUCT__FEATURE_CONTAINER = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Bundle Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1354,7 +1715,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__BUNDLE_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 1;
+	int PRODUCT__BUNDLE_CONTAINER = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1363,7 +1724,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__FRAGMENT_CONTAINER = IU_PRESENTATION_FEATURE_COUNT + 2;
+	int PRODUCT__FRAGMENT_CONTAINER = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Product</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1371,17 +1732,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 3;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl <em>Bundle</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.BundleImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getBundle()
-	 * @generated
-	 */
-	int BUNDLE = 12;
+	int PRODUCT_FEATURE_COUNT = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1389,7 +1740,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__ID = IU_PRESENTATION__ID;
+	int BUNDLE__ID = IU_PRESENTATION_WITH_DETAILS__ID;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1397,7 +1748,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__VERSION = IU_PRESENTATION__VERSION;
+	int BUNDLE__VERSION = IU_PRESENTATION_WITH_DETAILS__VERSION;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1405,7 +1756,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__NAME = IU_PRESENTATION__NAME;
+	int BUNDLE__NAME = IU_PRESENTATION_WITH_DETAILS__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1413,7 +1764,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__LABEL = IU_PRESENTATION__LABEL;
+	int BUNDLE__LABEL = IU_PRESENTATION_WITH_DETAILS__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1421,7 +1772,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+	int BUNDLE__DESCRIPTION = IU_PRESENTATION_WITH_DETAILS__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1429,7 +1780,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__TYPE = IU_PRESENTATION__TYPE;
+	int BUNDLE__TYPE = IU_PRESENTATION_WITH_DETAILS__TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1438,15 +1789,77 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__INSTALLABLE_UNIT = IU_PRESENTATION__INSTALLABLE_UNIT;
+	int BUNDLE__INSTALLABLE_UNIT = IU_PRESENTATION_WITH_DETAILS__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE__IU_DETAILS = IU_PRESENTATION__IU_DETAILS;
+	int BUNDLE__REQUIRED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__REQUIRED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Provided Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__PROVIDED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROVIDED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Properties Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__PROPERTIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROPERTIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Touchpoints Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__TOUCHPOINTS_CONTAINER = IU_PRESENTATION_WITH_DETAILS__TOUCHPOINTS_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Update Descriptor</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__UPDATE_DESCRIPTOR = IU_PRESENTATION_WITH_DETAILS__UPDATE_DESCRIPTOR;
+
+	/**
+	 * The feature id for the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__COPYRIGHT = IU_PRESENTATION_WITH_DETAILS__COPYRIGHT;
+
+	/**
+	 * The feature id for the '<em><b>License</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__LICENSE = IU_PRESENTATION_WITH_DETAILS__LICENSE;
+
+	/**
+	 * The feature id for the '<em><b>Details Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLE__DETAILS_RESOLVED = IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED;
 
 	/**
 	 * The number of structural features of the '<em>Bundle</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1454,17 +1867,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLE_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl <em>Fragment</em>}
-	 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.FragmentImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getFragment()
-	 * @generated
-	 */
-	int FRAGMENT = 13;
+	int BUNDLE_FEATURE_COUNT = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1524,12 +1927,74 @@ public interface P2viewPackage extends EPackage
 	int FRAGMENT__INSTALLABLE_UNIT = BUNDLE__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int FRAGMENT__IU_DETAILS = BUNDLE__IU_DETAILS;
+	int FRAGMENT__REQUIRED_CAPABILITIES_CONTAINER = BUNDLE__REQUIRED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Provided Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__PROVIDED_CAPABILITIES_CONTAINER = BUNDLE__PROVIDED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Properties Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__PROPERTIES_CONTAINER = BUNDLE__PROPERTIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Touchpoints Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__TOUCHPOINTS_CONTAINER = BUNDLE__TOUCHPOINTS_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Update Descriptor</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__UPDATE_DESCRIPTOR = BUNDLE__UPDATE_DESCRIPTOR;
+
+	/**
+	 * The feature id for the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__COPYRIGHT = BUNDLE__COPYRIGHT;
+
+	/**
+	 * The feature id for the '<em><b>License</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__LICENSE = BUNDLE__LICENSE;
+
+	/**
+	 * The feature id for the '<em><b>Details Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENT__DETAILS_RESOLVED = BUNDLE__DETAILS_RESOLVED;
 
 	/**
 	 * The number of structural features of the '<em>Fragment</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1540,22 +2005,12 @@ public interface P2viewPackage extends EPackage
 	int FRAGMENT_FEATURE_COUNT = BUNDLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.OtherIUImpl <em>Other IU</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.OtherIUImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getOtherIU()
-	 * @generated
-	 */
-	int OTHER_IU = 14;
-
-	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__ID = IU_PRESENTATION__ID;
+	int OTHER_IU__ID = IU_PRESENTATION_WITH_DETAILS__ID;
 
 	/**
 	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1563,7 +2018,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__VERSION = IU_PRESENTATION__VERSION;
+	int OTHER_IU__VERSION = IU_PRESENTATION_WITH_DETAILS__VERSION;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1571,7 +2026,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__NAME = IU_PRESENTATION__NAME;
+	int OTHER_IU__NAME = IU_PRESENTATION_WITH_DETAILS__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1579,7 +2034,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__LABEL = IU_PRESENTATION__LABEL;
+	int OTHER_IU__LABEL = IU_PRESENTATION_WITH_DETAILS__LABEL;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1587,7 +2042,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__DESCRIPTION = IU_PRESENTATION__DESCRIPTION;
+	int OTHER_IU__DESCRIPTION = IU_PRESENTATION_WITH_DETAILS__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1595,7 +2050,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__TYPE = IU_PRESENTATION__TYPE;
+	int OTHER_IU__TYPE = IU_PRESENTATION_WITH_DETAILS__TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1604,15 +2059,77 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__INSTALLABLE_UNIT = IU_PRESENTATION__INSTALLABLE_UNIT;
+	int OTHER_IU__INSTALLABLE_UNIT = IU_PRESENTATION_WITH_DETAILS__INSTALLABLE_UNIT;
 
 	/**
-	 * The feature id for the '<em><b>Iu Details</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU__IU_DETAILS = IU_PRESENTATION__IU_DETAILS;
+	int OTHER_IU__REQUIRED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__REQUIRED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Provided Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__PROVIDED_CAPABILITIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROVIDED_CAPABILITIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Properties Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__PROPERTIES_CONTAINER = IU_PRESENTATION_WITH_DETAILS__PROPERTIES_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Touchpoints Container</b></em>' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__TOUCHPOINTS_CONTAINER = IU_PRESENTATION_WITH_DETAILS__TOUCHPOINTS_CONTAINER;
+
+	/**
+	 * The feature id for the '<em><b>Update Descriptor</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__UPDATE_DESCRIPTOR = IU_PRESENTATION_WITH_DETAILS__UPDATE_DESCRIPTOR;
+
+	/**
+	 * The feature id for the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__COPYRIGHT = IU_PRESENTATION_WITH_DETAILS__COPYRIGHT;
+
+	/**
+	 * The feature id for the '<em><b>License</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__LICENSE = IU_PRESENTATION_WITH_DETAILS__LICENSE;
+
+	/**
+	 * The feature id for the '<em><b>Details Resolved</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int OTHER_IU__DETAILS_RESOLVED = IU_PRESENTATION_WITH_DETAILS__DETAILS_RESOLVED;
 
 	/**
 	 * The number of structural features of the '<em>Other IU</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1620,17 +2137,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int OTHER_IU_FEATURE_COUNT = IU_PRESENTATION_FEATURE_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl
-	 * <em>Properties</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProperties()
-	 * @generated
-	 */
-	int PROPERTIES = 15;
+	int OTHER_IU_FEATURE_COUNT = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Property Map</b></em>' map. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1648,16 +2155,6 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int PROPERTIES_FEATURE_COUNT = 1;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilitiesImpl
-	 * <em>Required Capabilities</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilitiesImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getRequiredCapabilities()
-	 * @generated
-	 */
-	int REQUIRED_CAPABILITIES = 16;
 
 	/**
 	 * The feature id for the '<em><b>Required Capabilities</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -1678,16 +2175,6 @@ public interface P2viewPackage extends EPackage
 	int REQUIRED_CAPABILITIES_FEATURE_COUNT = 1;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilitiesImpl
-	 * <em>Provided Capabilities</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilitiesImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProvidedCapabilities()
-	 * @generated
-	 */
-	int PROVIDED_CAPABILITIES = 17;
-
-	/**
 	 * The feature id for the '<em><b>Provided Capabilities</b></em>' reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -1704,16 +2191,6 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int PROVIDED_CAPABILITIES_FEATURE_COUNT = 1;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.TouchpointsImpl
-	 * <em>Touchpoints</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.TouchpointsImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getTouchpoints()
-	 * @generated
-	 */
-	int TOUCHPOINTS = 18;
 
 	/**
 	 * The feature id for the '<em><b>Touchpoint Type</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1740,16 +2217,6 @@ public interface P2viewPackage extends EPackage
 	 * @ordered
 	 */
 	int TOUCHPOINTS_FEATURE_COUNT = 2;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.IUDetailsImpl
-	 * <em>IU Details</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.IUDetailsImpl
-	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getIUDetails()
-	 * @generated
-	 */
-	int IU_DETAILS = 19;
 
 	/**
 	 * The feature id for the '<em><b>Required Capabilities Container</b></em>' reference. <!-- begin-user-doc --> <!--
@@ -1932,6 +2399,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getCategory_FragmentContainer();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Category#getIuDetails <em>Iu Details</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Iu Details</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Category#getIuDetails()
+	 * @see #getCategory()
+	 * @generated
+	 */
+	EReference getCategory_IuDetails();
 
 	/**
 	 * Returns the meta object for the reference '
@@ -2266,18 +2745,6 @@ public interface P2viewPackage extends EPackage
 	EReference getIUPresentation_InstallableUnit();
 
 	/**
-	 * Returns the meta object for the reference '
-	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIuDetails <em>Iu Details</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the reference '<em>Iu Details</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentation#getIuDetails()
-	 * @see #getIUPresentation()
-	 * @generated
-	 */
-	EReference getIUPresentation_IuDetails();
-
-	/**
 	 * Returns the meta object for the attribute '
 	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getLabel <em>Label</em>}'. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
@@ -2326,6 +2793,28 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getIUPresentation_Version();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails
+	 * <em>IU Presentation With Details</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>IU Presentation With Details</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails
+	 * @generated
+	 */
+	EClass getIUPresentationWithDetails();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails#isDetailsResolved
+	 * <em>Details Resolved</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Details Resolved</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.IUPresentationWithDetails#isDetailsResolved()
+	 * @see #getIUPresentationWithDetails()
+	 * @generated
+	 */
+	EAttribute getIUPresentationWithDetails_DetailsResolved();
 
 	/**
 	 * Returns the meta object for class '

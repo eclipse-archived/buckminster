@@ -414,8 +414,9 @@
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentation/type"/>
         <genFeatures property="None" notify="false" createChild="false" propertyDescription=""
             ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUPresentation/installableUnit"/>
-        <genFeatures property="None" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUPresentation/iuDetails"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/IUPresentationWithDetails">
+        <genFeatures property="None" createChild="false" propertyCategory="" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/IUPresentationWithDetails/detailsResolved"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Category">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
@@ -428,6 +429,8 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Category/bundleContainer"/>
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Category/fragmentContainer"/>
+        <genFeatures property="None" notify="false" children="true" createChild="false"
+            ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Category/iuDetails"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullCategoryContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullFeatureContainer"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2view/Category/getNotNullProductContainer"/>

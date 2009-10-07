@@ -30,7 +30,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
  * 
  * @generated
  */
-public class OtherIUItemProvider extends IUPresentationItemProvider implements IEditingDomainItemProvider,
+public class OtherIUItemProvider extends IUPresentationWithDetailsItemProvider implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IItemColorProvider
 {

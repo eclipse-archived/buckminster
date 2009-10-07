@@ -68,6 +68,7 @@ public class CategoryItemProvider extends IUPresentationItemProvider implements 
 			childrenFeatures.add(P2viewPackage.Literals.CATEGORY__PRODUCT_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.CATEGORY__BUNDLE_CONTAINER);
 			childrenFeatures.add(P2viewPackage.Literals.CATEGORY__FRAGMENT_CONTAINER);
+			childrenFeatures.add(P2viewPackage.Literals.CATEGORY__IU_DETAILS);
 		}
 		return childrenFeatures;
 	}
