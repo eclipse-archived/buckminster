@@ -13,7 +13,7 @@
 	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="http://www.eclipse.org/buckminster/CSpec-1.0">
-	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
 	<!-- References between elements in the document -->
 	<annotation>
 		<documentation>

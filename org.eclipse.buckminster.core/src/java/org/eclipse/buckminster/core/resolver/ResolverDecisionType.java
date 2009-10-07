@@ -106,6 +106,15 @@ public enum ResolverDecisionType
 		}
 	},
 
+	READER_TYPE_NOT_FOUND
+	{
+		@Override
+		public String toString()
+		{
+			return Messages.No_reader_type_was_found_that_matches_team_provider_0;
+		}
+	},
+
 	REDIRECT_TO_RESOURCE_MAP
 	{
 		@Override

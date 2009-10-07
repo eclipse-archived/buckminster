@@ -15,11 +15,11 @@
 	xmlns:opml="http://opml.org/spec2"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="http://www.eclipse.org/buckminster/MetaData-1.0">
-	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" />
-	<import namespace="http://www.eclipse.org/buckminster/CQuery-1.0" />
-	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" />
-	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
-	<import namespace="http://opml.org/spec2" />
+	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/rmap-1.0.xsd"/>
+	<import namespace="http://www.eclipse.org/buckminster/CQuery-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/cquery-1.0.xsd"/>
+	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/cspec-1.0.xsd"/>
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
+	<import namespace="http://opml.org/spec2" schemaLocation="platform:/plugin/org.eclipse.buckminster.opml/opml-2.0-ns.xsd"/>
 	<element name="billOfMaterials" type="md:BillOfMaterials" />
 
 	<element name="distro" type="md:Distro"/>

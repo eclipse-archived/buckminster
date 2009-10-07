@@ -274,6 +274,8 @@ public class Messages extends NLS
 
 	public static String CSpec_0_attribute_1_has_no_2_named_3;
 
+	public static String No_reader_type_was_found_that_matches_team_provider_0;
+
 	public static String No_reader_type_with_id_0_has_been_registered_with_extension_point_1;
 
 	public static String No_version_converter_with_id_0_has_been_registered_with_extension_point_1;

@@ -29,7 +29,8 @@
     </xs:documentation>
   </xs:annotation>
 
-  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/xml-2001.xsd"/>
+  
 
   <xs:annotation>
     <xs:documentation>

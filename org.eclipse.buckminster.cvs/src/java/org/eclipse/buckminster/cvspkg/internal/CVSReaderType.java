@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -26,6 +27,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
+import org.eclipse.buckminster.core.reader.ReferenceInfo;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -179,6 +181,28 @@ public class CVSReaderType extends CatalogReaderType
 		}
 	}
 
+	@Override
+	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException
+	{
+		StringTokenizer tokenizer = new StringTokenizer(reference, ","); //$NON-NLS-1$
+		String version = tokenizer.nextToken();
+		// If this is a newer version, then ignore it
+		if(!version.equals("1.0")) //$NON-NLS-1$
+			throw BuckminsterException.fromMessage("The cvs reader only understands version PSF project references of version 1.0");
+
+		String repositoryLocation = tokenizer.nextToken();
+		String module = tokenizer.nextToken();
+		String projectName = tokenizer.nextToken();
+		VersionSelector selector = null;
+		if(tokenizer.hasMoreElements())
+		{
+			String tagInfo = tokenizer.nextToken();
+			if(!(tagInfo.length() == 0 || CVSTag.DEFAULT.toString().equals(tagInfo)))
+				selector = VersionSelector.tag(tagInfo);
+		}
+		return new ReferenceInfo(repositoryLocation + ',' + module, selector, projectName);
+	}
+
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
 	{
 		return null;
@@ -313,7 +337,6 @@ public class CVSReaderType extends CatalogReaderType
 		//
 		String cvsTypeID = CVSProviderPlugin.getTypeId();
 		RepositoryProvider.map(project, cvsTypeID);
-		((CVSTeamProvider)RepositoryProvider.getProvider(project, cvsTypeID)).setWatchEditEnabled(CVSProviderPlugin
-				.getPlugin().isWatchEditEnabled());
+		((CVSTeamProvider)RepositoryProvider.getProvider(project, cvsTypeID)).setWatchEditEnabled(CVSProviderPlugin.getPlugin().isWatchEditEnabled());
 	}
 }

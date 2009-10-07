@@ -93,6 +93,17 @@ public interface IReaderType extends IBuckminsterExtension
 	URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException;
 
 	/**
+	 * The team ProjectSetCapability does not expose any method for extracting the actual repository reference (i.e. the
+	 * URL in case of SVN or the CVSROOT in case of CVS).
+	 * 
+	 * @param reference
+	 *            The provider specific PSF project reference
+	 * @return The locator in a format suitable for the uri of this reader type
+	 * @throws CoreException
+	 */
+	ReferenceInfo extractReferenceInfo(String reference) throws CoreException;
+
+	/**
 	 * Returns the <code>URL</code> of the remote artifact for the given <code>resolution</code> or <code>null</code> if
 	 * no such <code>URL</code> can be presented.
 	 * 

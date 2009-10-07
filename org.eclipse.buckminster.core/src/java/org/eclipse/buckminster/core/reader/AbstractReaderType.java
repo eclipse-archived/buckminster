@@ -67,6 +67,17 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		}
 	}
 
+	public static IReaderType getTypeForRepositoryProvider(String providerId) throws CoreException
+	{
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		for(IConfigurationElement elem : exReg.getConfigurationElementsFor(CorePlugin.READER_TYPE_POINT))
+		{
+			if(providerId.equals(elem.getAttribute("teamRepositoryId"))) //$NON-NLS-1$
+				return CorePlugin.getDefault().getReaderType(elem.getAttribute("id")); //$NON-NLS-1$
+		}
+		return null;
+	}
+
 	public static IReaderType getTypeForResource(IResource resource) throws CoreException
 	{
 		if(resource == null)
@@ -80,14 +91,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 		if(provider == null)
 			return null;
 
-		String providerId = provider.getID();
-		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : exReg.getConfigurationElementsFor(CorePlugin.READER_TYPE_POINT))
-		{
-			if(providerId.equals(elem.getAttribute("teamRepositoryId"))) //$NON-NLS-1$
-				return CorePlugin.getDefault().getReaderType(elem.getAttribute("id")); //$NON-NLS-1$
-		}
-		return null;
+		return getTypeForRepositoryProvider(provider.getID());
 	}
 
 	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
@@ -97,13 +101,18 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
 			throws CoreException
 	{
-		throw new UnsupportedOperationException(NLS.bind(
-				Messages.ReaderType_0_cannot_handle_fetchFactory_data, getId()));
+		throw new UnsupportedOperationException(
+				NLS.bind(Messages.ReaderType_0_cannot_handle_fetchFactory_data, getId()));
 	}
 
 	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
 	{
 		return null;
+	}
+
+	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	public VersionMatch getDefaultVersion() throws CoreException

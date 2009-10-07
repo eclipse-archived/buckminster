@@ -424,21 +424,8 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean isMatch(Version version, VersionSelector branchOrTag)
 	{
-		VersionSelector[] branchTagPath = getBranchTagPath();
-		if(branchTagPath.length > 0)
-		{
-			if(branchOrTag == null)
-				branchOrTag = VersionSelector.branch(VersionSelector.DEFAULT_BRANCH);
-
-			if(VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
-			{
-				logDecision(branchOrTag == null || branchOrTag.getType() == VersionSelector.BRANCH
-						? ResolverDecisionType.BRANCH_REJECTED
-						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(Messages.Not_in_path_0,
-						VersionSelector.toString(branchTagPath)));
-				return false;
-			}
-		}
+		if(!isMatch(branchOrTag))
+			return false;
 
 		VersionRange versionRange = getVersionRange();
 		if(versionRange != null && !versionRange.isIncluded(version))
@@ -465,6 +452,40 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		if(versionMatch == null)
 			versionMatch = VersionMatch.DEFAULT;
 		return isMatch(versionMatch.getVersion(), versionMatch.getBranchOrTag());
+	}
+
+	/**
+	 * Returns true if the given version will match this query with respect to the current version designator, branchTag
+	 * path, and space path.
+	 * 
+	 * @param version
+	 *            The version to match or <code>null</code> if not applicable
+	 * @param branchOrTag
+	 *            The branch or tag to match or <code>null</code> if not applicable
+	 * @param space
+	 *            The space to match or <code>null</code> if not applicable
+	 * @param spacePathResolver
+	 *            the space path resolver to use when expanding the space path.
+	 * @return true if the given values matches this query
+	 */
+	public boolean isMatch(VersionSelector branchOrTag)
+	{
+		VersionSelector[] branchTagPath = getBranchTagPath();
+		if(branchTagPath.length > 0)
+		{
+			if(branchOrTag == null)
+				branchOrTag = VersionSelector.branch(VersionSelector.DEFAULT_BRANCH);
+
+			if(VersionSelector.indexOf(branchTagPath, branchOrTag) < 0)
+			{
+				logDecision(branchOrTag == null || branchOrTag.getType() == VersionSelector.BRANCH
+						? ResolverDecisionType.BRANCH_REJECTED
+						: ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(Messages.Not_in_path_0,
+						VersionSelector.toString(branchTagPath)));
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

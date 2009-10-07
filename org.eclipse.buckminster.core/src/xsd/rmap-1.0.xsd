@@ -13,7 +13,8 @@
 	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
 	targetNamespace="http://www.eclipse.org/buckminster/RMap-1.0"
 	attributeFormDefault="unqualified" elementFormDefault="qualified">
-	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
+
 	<element name="rmap" type="rm:ResourceMap"></element>
 	<element name="provider" type="rm:Provider" />
 	<complexType name="SearchPath">

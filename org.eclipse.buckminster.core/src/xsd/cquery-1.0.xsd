@@ -12,8 +12,8 @@
 	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
 	targetNamespace="http://www.eclipse.org/buckminster/CQuery-1.0" attributeFormDefault="unqualified"
 	elementFormDefault="qualified">
-	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" />
-	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" />
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
+	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/cspec-1.0.xsd" />
 	<element name="componentQuery" type="cq:ComponentQuery" />
 	<complexType name="ComponentQuery">
 		<sequence>

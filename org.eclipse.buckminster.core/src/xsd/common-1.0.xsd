@@ -16,7 +16,7 @@
 	attributeFormDefault="unqualified"
 	elementFormDefault="qualified">
 
-	<import namespace="http://www.w3.org/1999/xhtml" />
+	<import namespace="http://www.w3.org/1999/xhtml" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/xhtml1-strict.xsd"/>
 
     <complexType name="Documentation" mixed="true">
       <complexContent>
