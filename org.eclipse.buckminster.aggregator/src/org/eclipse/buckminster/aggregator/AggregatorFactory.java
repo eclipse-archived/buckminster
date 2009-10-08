@@ -148,6 +148,14 @@ public interface AggregatorFactory extends EFactory
 	Property createProperty();
 
 	/**
+	 * Returns a new object of class '<em>Property</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Property</em>'.
+	 * @generated NOT
+	 */
+	Property createProperty(String key, String value);
+
+	/**
 	 * Returns a new object of class '<em>Valid Configurations Rule</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Valid Configurations Rule</em>'.

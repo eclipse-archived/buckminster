@@ -563,6 +563,34 @@ public interface AggregatorPackage extends EPackage
 		EClass STATUS_PROVIDER = eINSTANCE.getStatusProvider();
 
 		/**
+		 * The meta object literal for the '{@link java.lang.Comparable <em>Comparable</em>}' class. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
+		 * 
+		 * @see java.lang.Comparable
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getComparable()
+		 * @generated
+		 */
+		EClass COMPARABLE = eINSTANCE.getComparable();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.LabelProvider
+		 * <em>Label Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.LabelProvider
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getLabelProvider()
+		 * @generated
+		 */
+		EClass LABEL_PROVIDER = eINSTANCE.getLabelProvider();
+
+		/**
+		 * The meta object literal for the '<em><b>Label</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute LABEL_PROVIDER__LABEL = eINSTANCE.getLabelProvider_Label();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -1342,12 +1370,31 @@ public interface AggregatorPackage extends EPackage
 	int PRODUCT_FEATURE_COUNT = MAPPED_UNIT_FEATURE_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link java.lang.Comparable <em>Comparable</em>}' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see java.lang.Comparable
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getComparable()
+	 * @generated
+	 */
+	int COMPARABLE = 19;
+
+	/**
+	 * The number of structural features of the '<em>Comparable</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPARABLE_FEATURE_COUNT = 0;
+
+	/**
 	 * The feature id for the '<em><b>Key</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY__KEY = 0;
+	int PROPERTY__KEY = COMPARABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1355,7 +1402,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY__VALUE = 1;
+	int PROPERTY__VALUE = COMPARABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Property</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1363,7 +1410,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY_FEATURE_COUNT = 2;
+	int PROPERTY_FEATURE_COUNT = COMPARABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1541,6 +1588,33 @@ public interface AggregatorPackage extends EPackage
 	int VALID_CONFIGURATIONS_RULE_FEATURE_COUNT = MAP_RULE_FEATURE_COUNT + 1;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.LabelProvider <em>Label Provider</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.LabelProvider
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getLabelProvider()
+	 * @generated
+	 */
+	int LABEL_PROVIDER = 20;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int LABEL_PROVIDER__LABEL = 0;
+
+	/**
+	 * The number of structural features of the '<em>Label Provider</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int LABEL_PROVIDER_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.AggregateType <em>Aggregate Type</em>}'
 	 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1548,7 +1622,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 19;
+	int AGGREGATE_TYPE = 21;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1558,7 +1632,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 20;
+	int OPERATING_SYSTEM = 22;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1568,7 +1642,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 21;
+	int WINDOW_SYSTEM = 23;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1578,7 +1652,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 22;
+	int ARCHITECTURE = 24;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1588,7 +1662,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 23;
+	int PACKED_STRATEGY = 25;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1597,7 +1671,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 24;
+	int URI = 26;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -1794,6 +1868,17 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getCategory_LabelOverride();
+
+	/**
+	 * Returns the meta object for class '{@link java.lang.Comparable <em>Comparable</em>}'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Comparable</em>'.
+	 * @see java.lang.Comparable
+	 * @model instanceClass="java.lang.Comparable" typeParameters="T"
+	 * @generated
+	 */
+	EClass getComparable();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.Configuration
@@ -2061,6 +2146,27 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getInstallableUnitReference_InstallableUnit();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.LabelProvider
+	 * <em>Label Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Label Provider</em>'.
+	 * @see org.eclipse.buckminster.aggregator.LabelProvider
+	 * @generated
+	 */
+	EClass getLabelProvider();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.LabelProvider#getLabel
+	 * <em>Label</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Label</em>'.
+	 * @see org.eclipse.buckminster.aggregator.LabelProvider#getLabel()
+	 * @see #getLabelProvider()
+	 * @generated
+	 */
+	EAttribute getLabelProvider_Label();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MappedRepository

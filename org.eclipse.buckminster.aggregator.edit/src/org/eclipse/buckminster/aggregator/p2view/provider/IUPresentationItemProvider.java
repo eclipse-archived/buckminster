@@ -228,5 +228,4 @@ public class IUPresentationItemProvider extends AggregatorItemProviderAdapter im
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 	}
-
 }

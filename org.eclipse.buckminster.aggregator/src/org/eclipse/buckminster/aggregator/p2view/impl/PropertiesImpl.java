@@ -9,25 +9,22 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
-import org.eclipse.buckminster.aggregator.p2.P2Package;
-import org.eclipse.buckminster.aggregator.p2.impl.PropertyImpl;
+import java.util.Collection;
+
+import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.buckminster.aggregator.p2view.Properties;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EcoreEMap;
-import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Properties</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl#getPropertyMap <em>Property Map</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.PropertiesImpl#getPropertyList <em>Property List</em>}</li>
  * </ul>
  * </p>
  * 
@@ -45,14 +42,14 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getPropertyMap() <em>Property Map</em>}' map. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getPropertyList() <em>Property List</em>}' reference list. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
-	 * @see #getPropertyMap()
+	 * @see #getPropertyList()
 	 * @generated
 	 * @ordered
 	 */
-	protected EMap<String, String> propertyMap;
+	protected EList<Property> propertyList;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -74,29 +71,10 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			if(coreType)
-				return getPropertyMap();
-			else
-				return getPropertyMap().map();
+		case P2viewPackage.PROPERTIES__PROPERTY_LIST:
+			return getPropertyList();
 		}
 		return super.eGet(featureID, resolve, coreType);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			return ((InternalEList<?>)getPropertyMap()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -109,8 +87,8 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			return propertyMap != null && !propertyMap.isEmpty();
+		case P2viewPackage.PROPERTIES__PROPERTY_LIST:
+			return propertyList != null && !propertyList.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -126,8 +104,9 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			((EStructuralFeature.Setting)getPropertyMap()).set(newValue);
+		case P2viewPackage.PROPERTIES__PROPERTY_LIST:
+			getPropertyList().clear();
+			getPropertyList().addAll((Collection<? extends Property>)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -143,8 +122,8 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	{
 		switch(featureID)
 		{
-		case P2viewPackage.PROPERTIES__PROPERTY_MAP:
-			getPropertyMap().clear();
+		case P2viewPackage.PROPERTIES__PROPERTY_LIST:
+			getPropertyList().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -155,14 +134,14 @@ public class PropertiesImpl extends MinimalEObjectImpl.Container implements Prop
 	 * 
 	 * @generated
 	 */
-	public EMap<String, String> getPropertyMap()
+	public EList<Property> getPropertyList()
 	{
-		if(propertyMap == null)
+		if(propertyList == null)
 		{
-			propertyMap = new EcoreEMap<String, String>(P2Package.Literals.PROPERTY, PropertyImpl.class, this,
-					P2viewPackage.PROPERTIES__PROPERTY_MAP);
+			propertyList = new EObjectResolvingEList<Property>(Property.class, this,
+					P2viewPackage.PROPERTIES__PROPERTY_LIST);
 		}
-		return propertyMap;
+		return propertyList;
 	}
 
 	/**

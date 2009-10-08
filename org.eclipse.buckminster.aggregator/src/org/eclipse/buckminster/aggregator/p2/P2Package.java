@@ -2266,13 +2266,21 @@ public interface P2Package extends EPackage
 	int PROVIDED_CAPABILITY__VERSION = IPROVIDED_CAPABILITY__VERSION;
 
 	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY__LABEL = IPROVIDED_CAPABILITY_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Provided Capability</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDED_CAPABILITY_FEATURE_COUNT = IPROVIDED_CAPABILITY_FEATURE_COUNT + 0;
+	int PROVIDED_CAPABILITY_FEATURE_COUNT = IPROVIDED_CAPABILITY_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl
@@ -2350,13 +2358,21 @@ public interface P2Package extends EPackage
 	int REQUIRED_CAPABILITY__GREEDY = IREQUIRED_CAPABILITY__GREEDY;
 
 	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY__LABEL = IREQUIRED_CAPABILITY_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Required Capability</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int REQUIRED_CAPABILITY_FEATURE_COUNT = IREQUIRED_CAPABILITY_FEATURE_COUNT + 0;
+	int REQUIRED_CAPABILITY_FEATURE_COUNT = IREQUIRED_CAPABILITY_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.TouchpointDataImpl

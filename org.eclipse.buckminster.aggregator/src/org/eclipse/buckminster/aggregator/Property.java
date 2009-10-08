@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator;
 
+import java.lang.Comparable;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -20,10 +21,10 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getProperty()
- * @model
+ * @model superTypes="org.eclipse.buckminster.aggregator.Comparable<org.eclipse.buckminster.aggregator.Property>"
  * @generated
  */
-public interface Property extends EObject
+public interface Property extends EObject, Comparable<Property>
 {
 	/**
 	 * Returns the value of the '<em><b>Key</b></em>' attribute. <!-- begin-user-doc -->

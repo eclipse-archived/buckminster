@@ -8,6 +8,27 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.net.URI;
 
+import org.eclipse.buckminster.aggregator.AggregateType;
+import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.Architecture;
+import org.eclipse.buckminster.aggregator.Bundle;
+import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.Configuration;
+import org.eclipse.buckminster.aggregator.Contact;
+import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
+import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.OperatingSystem;
+import org.eclipse.buckminster.aggregator.PackedStrategy;
+import org.eclipse.buckminster.aggregator.Product;
+import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
+import org.eclipse.buckminster.aggregator.WindowSystem;
 import org.eclipse.buckminster.aggregator.*;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -479,6 +500,17 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	public Property createProperty()
 	{
 		PropertyImpl property = new PropertyImpl();
+		return property;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public Property createProperty(String key, String value)
+	{
+		PropertyImpl property = new PropertyImpl(key, value);
 		return property;
 	}
 

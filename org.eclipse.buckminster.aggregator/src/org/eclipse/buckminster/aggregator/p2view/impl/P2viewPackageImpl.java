@@ -380,7 +380,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		otherIUEClass = createEClass(OTHER_IU);
 
 		propertiesEClass = createEClass(PROPERTIES);
-		createEReference(propertiesEClass, PROPERTIES__PROPERTY_MAP);
+		createEReference(propertiesEClass, PROPERTIES__PROPERTY_LIST);
 
 		requiredCapabilitiesEClass = createEClass(REQUIRED_CAPABILITIES);
 		createEReference(requiredCapabilitiesEClass, REQUIRED_CAPABILITIES__REQUIRED_CAPABILITIES);
@@ -1027,7 +1027,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getProperties_PropertyMap()
+	public EReference getProperties_PropertyList()
 	{
 		return (EReference)propertiesEClass.getEStructuralFeatures().get(0);
 	}
@@ -1122,6 +1122,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		// Obtain other dependent packages
 		P2Package theP2Package = (P2Package)EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
+		AggregatorPackage theAggregatorPackage = (AggregatorPackage)EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1327,8 +1328,8 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 
 		initEClass(propertiesEClass, Properties.class, "Properties", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getProperties_PropertyMap(), theP2Package.getProperty(), null, "propertyMap", null, 0, -1,
-				Properties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+		initEReference(getProperties_PropertyList(), theAggregatorPackage.getProperty(), null, "propertyList", null, 0,
+				-1, Properties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(requiredCapabilitiesEClass, RequiredCapabilities.class, "RequiredCapabilities", !IS_ABSTRACT,

@@ -505,12 +505,12 @@ public interface P2viewPackage extends EPackage
 		EClass PROPERTIES = eINSTANCE.getProperties();
 
 		/**
-		 * The meta object literal for the '<em><b>Property Map</b></em>' map feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Property List</b></em>' reference list feature. <!-- begin-user-doc
+		 * --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EReference PROPERTIES__PROPERTY_MAP = eINSTANCE.getProperties_PropertyMap();
+		EReference PROPERTIES__PROPERTY_LIST = eINSTANCE.getProperties_PropertyList();
 
 		/**
 		 * The meta object literal for the '
@@ -2140,12 +2140,13 @@ public interface P2viewPackage extends EPackage
 	int OTHER_IU_FEATURE_COUNT = IU_PRESENTATION_WITH_DETAILS_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Property Map</b></em>' map. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Property List</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTIES__PROPERTY_MAP = 0;
+	int PROPERTIES__PROPERTY_LIST = 0;
 
 	/**
 	 * The number of structural features of the '<em>Properties</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -2994,15 +2995,16 @@ public interface P2viewPackage extends EPackage
 	EClass getProperties();
 
 	/**
-	 * Returns the meta object for the map '{@link org.eclipse.buckminster.aggregator.p2view.Properties#getPropertyMap
-	 * <em>Property Map</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.Properties#getPropertyList <em>Property List</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the map '<em>Property Map</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2view.Properties#getPropertyMap()
+	 * @return the meta object for the reference list '<em>Property List</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.Properties#getPropertyList()
 	 * @see #getProperties()
 	 * @generated
 	 */
-	EReference getProperties_PropertyMap();
+	EReference getProperties_PropertyList();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities

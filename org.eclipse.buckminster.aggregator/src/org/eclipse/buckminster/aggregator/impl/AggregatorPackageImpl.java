@@ -6,22 +6,24 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
-import org.eclipse.buckminster.aggregator.CustomCategory;
-import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
-import org.eclipse.buckminster.aggregator.ExclusionRule;
+import java.lang.Comparable;
 import org.eclipse.buckminster.aggregator.AggregateType;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Architecture;
 import org.eclipse.buckminster.aggregator.Bundle;
+import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
+import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.MapRule;
-import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
@@ -40,6 +42,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -245,6 +248,20 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EClass comparableEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass labelProviderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EEnum aggregateTypeEEnum = null;
 
 	/**
@@ -412,6 +429,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEAttribute(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__LOCATION);
 
 		statusProviderEClass = createEClass(STATUS_PROVIDER);
+
+		comparableEClass = createEClass(COMPARABLE);
+
+		labelProviderEClass = createEClass(LABEL_PROVIDER);
+		createEAttribute(labelProviderEClass, LABEL_PROVIDER__LABEL);
 
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
@@ -602,6 +624,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EAttribute getCategory_LabelOverride()
 	{
 		return (EAttribute)categoryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getComparable()
+	{
+		return comparableEClass;
 	}
 
 	/**
@@ -842,6 +874,26 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EReference getInstallableUnitReference_InstallableUnit()
 	{
 		return (EReference)installableUnitReferenceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getLabelProvider()
+	{
+		return labelProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getLabelProvider_Label()
+	{
+		return (EAttribute)labelProviderEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1121,6 +1173,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		getESubpackages().add(theP2viewPackage);
 
 		// Create type parameters
+		addETypeParameter(comparableEClass, "T");
 
 		// Set bounds for type parameters
 
@@ -1132,6 +1185,10 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		mappedUnitEClass.getESuperTypes().add(this.getInstallableUnitReference());
 		mappedUnitEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		productEClass.getESuperTypes().add(this.getMappedUnit());
+		EGenericType g1 = createEGenericType(this.getComparable());
+		EGenericType g2 = createEGenericType(this.getProperty());
+		g1.getETypeArguments().add(g2);
+		propertyEClass.getEGenericSuperTypes().add(g1);
 		categoryEClass.getESuperTypes().add(this.getMappedUnit());
 		mapRuleEClass.getESuperTypes().add(this.getInstallableUnitReference());
 		installableUnitReferenceEClass.getESuperTypes().add(this.getStatusProvider());
@@ -1360,6 +1417,15 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				IS_GENERATED_INSTANCE_CLASS);
 
 		addEOperation(statusProviderEClass, theXMLTypePackage.getInt(), "getStatus", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(comparableEClass, Comparable.class, "Comparable", IS_ABSTRACT, IS_INTERFACE,
+				!IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(labelProviderEClass, LabelProvider.class, "LabelProvider", IS_ABSTRACT, IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getLabelProvider_Label(), theXMLTypePackage.getString(), "label", null, 0, 1,
+				LabelProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

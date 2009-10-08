@@ -118,6 +118,17 @@ public class IUPresentationWithDetailsItemProvider extends IUPresentationItemPro
 				: getString("_UI_IUPresentationWithDetails_type") + " " + label;
 	}
 
+	// Every IUPresentationWithDetail has always some children - children of IUDetails
+	// This construction helps to lazily load IUDetails when they are really needed.
+	// Originally hasChildren method called getIUDetails() and it loaded IUDetails.
+	// It took significant amount of time to load IUDetails for all bundles from a MDR
+	// when Bundles node was expanded.
+	@Override
+	public boolean hasChildren(Object object)
+	{
+		return true;
+	}
+
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
@@ -206,5 +217,4 @@ public class IUPresentationWithDetailsItemProvider extends IUPresentationItemPro
 
 		return super.getChildFeature(object, child);
 	}
-
 }

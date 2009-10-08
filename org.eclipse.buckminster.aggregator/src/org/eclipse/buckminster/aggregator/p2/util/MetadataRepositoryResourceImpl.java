@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -193,14 +195,23 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				iuPresentation.setVersion(iu.getVersion());
 
 				String name = getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
-				if(name == null)
-					name = iu.getId();
-				iuPresentation.setName(name);
+				if(name == null || name.length() == 0)
+					iuPresentation.setName(iu.getId());
+				else
+					iuPresentation.setName(name);
+
+				if(name != null && name.startsWith("%"))
+					name = null;
 
 				if(iu.getType() == InstallableUnitType.CATEGORY || iu.getVersion() == null)
-					iuPresentation.setLabel(name);
+					iuPresentation.setLabel(name != null && name.length() > 0
+							? name
+							: iu.getId());
 				else
-					iuPresentation.setLabel(name + " / " + iu.getVersion().toString());
+					iuPresentation.setLabel(iu.getId() + " / " + iu.getVersion().toString()
+							+ (name != null && name.length() > 0
+									? " (" + name + ")"
+									: ""));
 				iuPresentation.setDescription(getLocalizedProperty(iu, IInstallableUnit.PROP_DESCRIPTION));
 
 				Map<Version, IUPresentation> versionMap = iuMap.get(iu.getId());
@@ -245,9 +256,15 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				for(Category category : categoryContainer.getCategories())
 					exploreCategory(category, iuMap);
 
-			repoView.setProperties(P2viewFactory.eINSTANCE.createProperties());
-			for(Map.Entry<String, String> entry : repository.getPropertyMap())
-				repoView.getProperties().getPropertyMap().put(entry.getKey(), entry.getValue());
+			List<Property> propList = new ArrayList<Property>();
+			for(Map.Entry<String, String> property : repository.getPropertyMap())
+				propList.add(AggregatorFactory.eINSTANCE.createProperty(property.getKey(), property.getValue()));
+			if(propList.size() > 0)
+			{
+				repoView.setProperties(P2viewFactory.eINSTANCE.createProperties());
+				Collections.sort(propList);
+				repoView.getProperties().getPropertyList().addAll(propList);
+			}
 		}
 
 		private void exploreCategory(Category category, Map<String, Map<Version, IUPresentation>> iuMap)

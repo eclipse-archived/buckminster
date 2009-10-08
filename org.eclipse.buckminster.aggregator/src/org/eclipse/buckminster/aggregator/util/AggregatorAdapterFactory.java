@@ -6,7 +6,27 @@
  */
 package org.eclipse.buckminster.aggregator.util;
 
-import org.eclipse.buckminster.aggregator.*;
+import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.Bundle;
+import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.Configuration;
+import org.eclipse.buckminster.aggregator.Contact;
+import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
+import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InstallableUnitReference;
+import org.eclipse.buckminster.aggregator.LabelProvider;
+import org.eclipse.buckminster.aggregator.MapRule;
+import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.Product;
+import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
@@ -51,6 +71,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseCategory(Category object)
 		{
 			return createCategoryAdapter();
+		}
+
+		@Override
+		public <T> Adapter caseComparable(Comparable<T> object)
+		{
+			return createComparableAdapter();
 		}
 
 		@Override
@@ -99,6 +125,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseInstallableUnitReference(InstallableUnitReference object)
 		{
 			return createInstallableUnitReferenceAdapter();
+		}
+
+		@Override
+		public Adapter caseLabelProvider(LabelProvider object)
+		{
+			return createLabelProviderAdapter();
 		}
 
 		@Override
@@ -223,6 +255,20 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createCategoryAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link java.lang.Comparable <em>Comparable</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
+	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see java.lang.Comparable
+	 * @generated
+	 */
+	public Adapter createComparableAdapter()
 	{
 		return null;
 	}
@@ -353,6 +399,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createInstallableUnitReferenceAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.LabelProvider
+	 * <em>Label Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.LabelProvider
+	 * @generated
+	 */
+	public Adapter createLabelProviderAdapter()
 	{
 		return null;
 	}

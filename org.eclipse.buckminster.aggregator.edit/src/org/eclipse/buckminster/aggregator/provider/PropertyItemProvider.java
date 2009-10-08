@@ -88,15 +88,13 @@ public class PropertyItemProvider extends AggregatorItemProviderAdapter implemen
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((Property)object).getKey();
-		return label == null || label.length() == 0
-				? getString("_UI_Property_type")
-				: getString("_UI_Property_type") + " " + label;
+		Property property = (Property)object;
+		return "" + property.getKey() + " -> " + property.getValue();
 	}
 
 	/**
@@ -132,7 +130,7 @@ public class PropertyItemProvider extends AggregatorItemProviderAdapter implemen
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_Property_key_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Property_key_feature", "_UI_Property_type"), AggregatorPackage.Literals.PROPERTY__KEY,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -146,7 +144,7 @@ public class PropertyItemProvider extends AggregatorItemProviderAdapter implemen
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_Property_value_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Property_value_feature", "_UI_Property_type"), AggregatorPackage.Literals.PROPERTY__VALUE,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

@@ -9,7 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
-import org.eclipse.emf.common.util.EMap;
+import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -18,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.aggregator.p2view.Properties#getPropertyMap <em>Property Map</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.Properties#getPropertyList <em>Property List</em>}</li>
  * </ul>
  * </p>
  * 
@@ -29,20 +30,19 @@ import org.eclipse.emf.ecore.EObject;
 public interface Properties extends EObject
 {
 	/**
-	 * Returns the value of the '<em><b>Property Map</b></em>' map. The key is of type {@link java.lang.String}, and the
-	 * value is of type {@link java.lang.String}, <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Property List</b></em>' reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.aggregator.Property}. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Property Map</em>' reference list isn't clear, there really should be more of a
+	 * If the meaning of the '<em>Property List</em>' reference list isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Property Map</em>' map.
-	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getProperties_PropertyMap()
-	 * @model mapType=
-	 *        "org.eclipse.buckminster.aggregator.p2.Property<org.eclipse.emf.ecore.EString, org.eclipse.emf.ecore.EString>"
+	 * @return the value of the '<em>Property List</em>' reference list.
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getProperties_PropertyList()
+	 * @model
 	 * @generated
 	 */
-	EMap<String, String> getPropertyMap();
+	EList<Property> getPropertyList();
 
 } // Properties

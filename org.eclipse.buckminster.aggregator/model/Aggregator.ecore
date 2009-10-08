@@ -94,6 +94,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Property">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eGenericSuperTypes eClassifier="#//Comparable">
+      <eTypeArguments eClassifier="#//Property"/>
+    </eGenericSuperTypes>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="AggregateType">
     <eLiterals name="Stable" value="3" literal="S"/>
@@ -172,6 +175,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StatusProvider" abstract="true" interface="true">
     <eOperations name="getStatus" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Int"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Comparable" instanceClassName="java.lang.Comparable"
+      abstract="true" interface="true">
+    <eTypeParameters name="T"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LabelProvider" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
   </eClassifiers>
   <eSubpackages name="p2" nsURI="http://www.eclipse.org/buckminster/2009/p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EClass" name="IArtifactKey" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey"
@@ -316,8 +326,8 @@
           eType="#//p2/RequiredCapability" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="License" eSuperTypes="#//p2/ILicense"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ProvidedCapability" eSuperTypes="#//p2/IProvidedCapability"/>
-    <eClassifiers xsi:type="ecore:EClass" name="RequiredCapability" eSuperTypes="#//p2/IRequiredCapability"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ProvidedCapability" eSuperTypes="#//p2/IProvidedCapability #//LabelProvider"/>
+    <eClassifiers xsi:type="ecore:EClass" name="RequiredCapability" eSuperTypes="#//p2/IRequiredCapability #//LabelProvider"/>
     <eClassifiers xsi:type="ecore:EClass" name="TouchpointData" eSuperTypes="#//p2/ITouchpointData">
       <eStructuralFeatures xsi:type="ecore:EReference" name="instructionMap" upperBound="-1"
           eType="#//p2/InstructionMap" containment="true"/>
@@ -519,8 +529,8 @@
     <eClassifiers xsi:type="ecore:EClass" name="Fragment" eSuperTypes="#//p2view/Bundle"/>
     <eClassifiers xsi:type="ecore:EClass" name="OtherIU" eSuperTypes="#//p2view/IUPresentationWithDetails"/>
     <eClassifiers xsi:type="ecore:EClass" name="Properties">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="propertyMap" upperBound="-1"
-          eType="#//p2/Property" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="propertyList" upperBound="-1"
+          eType="#//Property"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="RequiredCapabilities">
       <eStructuralFeatures xsi:type="ecore:EReference" name="requiredCapabilities"

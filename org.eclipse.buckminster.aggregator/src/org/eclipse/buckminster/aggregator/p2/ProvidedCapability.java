@@ -6,8 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
+import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 
 /**
@@ -19,6 +18,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IProvidedCapability"
  * @generated
  */
-public interface ProvidedCapability extends EObject, IProvidedCapability
+public interface ProvidedCapability extends IProvidedCapability, LabelProvider
 {
 } // ProvidedCapability

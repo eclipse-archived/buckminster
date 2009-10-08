@@ -9,14 +9,21 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.LabelProvider;
+import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2view.*;
+import org.eclipse.buckminster.aggregator.util.CapabilityNamespace;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -288,28 +295,60 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	{
 		IUDetailsImpl iuDetails = new IUDetailsImpl();
 
+		List<RequiredCapability> rcList = new ArrayList<RequiredCapability>();
 		for(RequiredCapability rc : iu.getRequiredCapabilityList())
 		{
-			if(iuDetails.getRequiredCapabilitiesContainer() == null)
-				iuDetails.setRequiredCapabilitiesContainer(createRequiredCapabilities());
+			if(rc.getLabel() == null)
+			{
+				CapabilityNamespace cn = CapabilityNamespace.byId(rc.getNamespace());
 
-			iuDetails.getRequiredCapabilitiesContainer().getRequiredCapabilities().add(rc);
+				if(cn == CapabilityNamespace.UNKNOWN)
+					rc.setLabel(rc.getNamespace() + ":" + " " + rc.getName());
+				else
+					rc.setLabel(cn.getLabel() + " " + rc.getName());
+			}
+
+			rcList.add(rc);
 		}
 
+		if(rcList.size() > 0)
+		{
+			iuDetails.setRequiredCapabilitiesContainer(createRequiredCapabilities());
+			Collections.sort(rcList, LabelProvider.COMPARATOR);
+			iuDetails.getRequiredCapabilitiesContainer().getRequiredCapabilities().addAll(rcList);
+		}
+
+		List<ProvidedCapability> pcList = new ArrayList<ProvidedCapability>();
 		for(ProvidedCapability pc : iu.getProvidedCapabilityList())
 		{
-			if(iuDetails.getProvidedCapabilitiesContainer() == null)
-				iuDetails.setProvidedCapabilitiesContainer(createProvidedCapabilities());
+			if(pc.getLabel() == null)
+			{
+				CapabilityNamespace cn = CapabilityNamespace.byId(pc.getNamespace());
 
-			iuDetails.getProvidedCapabilitiesContainer().getProvidedCapabilities().add(pc);
+				if(cn == CapabilityNamespace.UNKNOWN)
+					pc.setLabel(pc.getNamespace() + ":" + " " + pc.getName());
+				else
+					pc.setLabel(cn.getLabel() + " " + pc.getName());
+			}
+
+			pcList.add(pc);
 		}
 
-		for(Map.Entry<String, String> property : iu.getPropertyMap().entrySet())
+		if(pcList.size() > 0)
 		{
-			if(iuDetails.getPropertiesContainer() == null)
-				iuDetails.setPropertiesContainer(createProperties());
+			iuDetails.setProvidedCapabilitiesContainer(createProvidedCapabilities());
+			Collections.sort(pcList, LabelProvider.COMPARATOR);
+			iuDetails.getProvidedCapabilitiesContainer().getProvidedCapabilities().addAll(pcList);
+		}
 
-			iuDetails.getPropertiesContainer().getPropertyMap().put(property.getKey(), property.getValue());
+		List<Property> propList = new ArrayList<Property>();
+		for(Map.Entry<String, String> property : iu.getPropertyMap().entrySet())
+			propList.add(AggregatorFactory.eINSTANCE.createProperty(property.getKey(), property.getValue()));
+		if(propList.size() > 0)
+		{
+			iuDetails.setPropertiesContainer(createProperties());
+			Collections.sort(propList);
+			iuDetails.getPropertiesContainer().getPropertyList().addAll(propList);
 		}
 
 		if(iu.getTouchpointType() != null)

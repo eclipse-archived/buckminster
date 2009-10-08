@@ -91,6 +91,24 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	protected PropertyImpl(String key, String value)
+	{
+		super();
+
+		this.key = key;
+		this.value = value;
+	}
+
+	public int compareTo(Property o)
+	{
+		return getKey().compareTo(o.getKey());
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override

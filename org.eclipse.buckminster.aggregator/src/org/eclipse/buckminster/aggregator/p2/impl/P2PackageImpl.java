@@ -1737,7 +1737,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		installableUnitFragmentEClass.getESuperTypes().add(this.getIInstallableUnitFragment());
 		licenseEClass.getESuperTypes().add(this.getILicense());
 		providedCapabilityEClass.getESuperTypes().add(this.getIProvidedCapability());
+		providedCapabilityEClass.getESuperTypes().add(theAggregatorPackage.getLabelProvider());
 		requiredCapabilityEClass.getESuperTypes().add(this.getIRequiredCapability());
+		requiredCapabilityEClass.getESuperTypes().add(theAggregatorPackage.getLabelProvider());
 		touchpointDataEClass.getESuperTypes().add(this.getITouchpointData());
 		touchpointInstructionEClass.getESuperTypes().add(this.getITouchpointInstruction());
 		touchpointTypeEClass.getESuperTypes().add(this.getITouchpointType());

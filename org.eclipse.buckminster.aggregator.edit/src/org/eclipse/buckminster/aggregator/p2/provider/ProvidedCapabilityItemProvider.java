@@ -9,13 +9,14 @@ package org.eclipse.buckminster.aggregator.p2.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
-import org.eclipse.buckminster.aggregator.util.CapabilityNamespaceRecognizer;
+import org.eclipse.buckminster.aggregator.util.CapabilityNamespaceImageProvider;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -62,7 +63,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 	{
 		ProvidedCapability pc = (ProvidedCapability)object;
 
-		Object image = CapabilityNamespaceRecognizer.getImage(pc.getNamespace());
+		Object image = CapabilityNamespaceImageProvider.getImage(pc.getNamespace());
 		if(image == null)
 			image = getResourceLocator().getImage("full/obj16/ProvidedCapability");
 
@@ -84,6 +85,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 			addNamePropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
 			addVersionPropertyDescriptor(object);
+			addLabelPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -107,13 +109,7 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 	@Override
 	public String getText(Object object)
 	{
-		ProvidedCapability pc = (ProvidedCapability)object;
-
-		String label = CapabilityNamespaceRecognizer.getLabel(pc.getNamespace());
-		if(label == null || label.length() == 0)
-			label = pc.getNamespace() + ":";
-
-		return label + " " + pc.getName();
+		return ((ProvidedCapability)object).getLabel();
 	}
 
 	/**
@@ -133,10 +129,26 @@ public class ProvidedCapabilityItemProvider extends AggregatorItemProviderAdapte
 		case P2Package.PROVIDED_CAPABILITY__NAME:
 		case P2Package.PROVIDED_CAPABILITY__NAMESPACE:
 		case P2Package.PROVIDED_CAPABILITY__VERSION:
+		case P2Package.PROVIDED_CAPABILITY__LABEL:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Label feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addLabelPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_LabelProvider_label_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_LabelProvider_label_feature", "_UI_LabelProvider_type"),
+				AggregatorPackage.Literals.LABEL_PROVIDER__LABEL, false, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

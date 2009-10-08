@@ -105,8 +105,8 @@
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Product"/>
     <genClasses ecoreClass="Aggregator.ecore#//Property">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Property/key"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Property/value"/>
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Property/key"/>
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Property/value"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Category">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Category/labelOverride"/>
@@ -146,6 +146,12 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//StatusProvider">
       <genOperations ecoreOperation="Aggregator.ecore#//StatusProvider/getStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="Aggregator.ecore#//Comparable">
+      <genTypeParameters ecoreTypeParameter="Aggregator.ecore#//Comparable/T"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Aggregator.ecore#//LabelProvider">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//LabelProvider/label"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" multipleEditorPages="false"
         generateModelWizard="false" ecorePackage="Aggregator.ecore#//p2">
@@ -465,7 +471,7 @@
       <genClasses ecoreClass="Aggregator.ecore#//p2view/OtherIU"/>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/Properties">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Properties/propertyMap"/>
+            propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/Properties/propertyList"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/RequiredCapabilities">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"

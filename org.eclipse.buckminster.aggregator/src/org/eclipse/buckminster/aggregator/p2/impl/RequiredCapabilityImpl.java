@@ -7,6 +7,8 @@
 package org.eclipse.buckminster.aggregator.p2.impl;
 
 import java.util.Collection;
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 
@@ -37,6 +39,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isMultiple <em>Multiple</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isOptional <em>Optional</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isGreedy <em>Greedy</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getLabel <em>Label</em>}</li>
  * </ul>
  * </p>
  * 
@@ -204,6 +207,26 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected static final int GREEDY_EFLAG = 1 << 2;
 
 	/**
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LABEL_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see #getLabel()
+	 * @generated
+	 * @ordered
+	 */
+	protected String label = LABEL_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -211,6 +234,48 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected RequiredCapabilityImpl()
 	{
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == LabelProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case P2Package.REQUIRED_CAPABILITY__LABEL:
+				return AggregatorPackage.LABEL_PROVIDER__LABEL;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == LabelProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.LABEL_PROVIDER__LABEL:
+				return P2Package.REQUIRED_CAPABILITY__LABEL;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
 	/**
@@ -239,6 +304,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return isOptional();
 		case P2Package.REQUIRED_CAPABILITY__GREEDY:
 			return isGreedy();
+		case P2Package.REQUIRED_CAPABILITY__LABEL:
+			return getLabel();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -277,6 +344,10 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return ((eFlags & OPTIONAL_EFLAG) != 0) != OPTIONAL_EDEFAULT;
 		case P2Package.REQUIRED_CAPABILITY__GREEDY:
 			return ((eFlags & GREEDY_EFLAG) != 0) != GREEDY_EDEFAULT;
+		case P2Package.REQUIRED_CAPABILITY__LABEL:
+			return LABEL_EDEFAULT == null
+					? label != null
+					: !LABEL_EDEFAULT.equals(label);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -346,6 +417,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.REQUIRED_CAPABILITY__GREEDY:
 			setGreedy((Boolean)newValue);
 			return;
+		case P2Package.REQUIRED_CAPABILITY__LABEL:
+			setLabel((String)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -384,6 +458,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.REQUIRED_CAPABILITY__GREEDY:
 			setGreedy(GREEDY_EDEFAULT);
 			return;
+		case P2Package.REQUIRED_CAPABILITY__LABEL:
+			setLabel(LABEL_EDEFAULT);
+			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -396,6 +473,16 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	public String getFilter()
 	{
 		return filter;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getLabel()
+	{
+		return label;
 	}
 
 	/**
@@ -531,6 +618,19 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__GREEDY, oldGreedy,
 					newGreedy));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setLabel(String newLabel)
+	{
+		String oldLabel = label;
+		label = newLabel;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__LABEL, oldLabel, label));
 	}
 
 	/**

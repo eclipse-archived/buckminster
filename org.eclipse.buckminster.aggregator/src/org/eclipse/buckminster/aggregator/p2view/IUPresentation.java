@@ -39,7 +39,7 @@ import org.eclipse.equinox.internal.provisional.p2.core.Version;
  */
 public interface IUPresentation extends EObject
 {
-	// Compares IU presentation by name (ascending) and version (descending)
+	// Compares IU presentation by id (ascending) and version (descending)
 	static class IUPresentationComparator implements Comparator<IUPresentation>
 	{
 
@@ -50,15 +50,15 @@ public interface IUPresentation extends EObject
 					return 1;
 				else
 				{
-					String name1 = iu1.getName();
-					String name2 = iu2.getName();
+					String id1 = iu1.getId();
+					String id2 = iu2.getId();
 
-					if(name1 != null)
-						if(name2 == null)
+					if(id1 != null)
+						if(id2 == null)
 							return 1;
 						else
 						{
-							int result = name1.toLowerCase().compareTo(name2.toLowerCase());
+							int result = id1.toLowerCase().compareTo(id2.toLowerCase());
 
 							if(result == 0)
 							{
@@ -79,7 +79,7 @@ public interface IUPresentation extends EObject
 
 							return result;
 						}
-					else if(name2 != null)
+					else if(id2 != null)
 						return -1;
 					else
 						return 0;

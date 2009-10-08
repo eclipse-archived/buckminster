@@ -9,18 +9,15 @@ package org.eclipse.buckminster.aggregator.p2.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
-
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
-
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
-import org.eclipse.buckminster.aggregator.util.CapabilityNamespaceRecognizer;
+import org.eclipse.buckminster.aggregator.util.CapabilityNamespaceImageProvider;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -62,7 +59,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	{
 		RequiredCapability rc = (RequiredCapability)object;
 
-		Object image = CapabilityNamespaceRecognizer.getImage(rc.getNamespace());
+		Object image = CapabilityNamespaceImageProvider.getImage(rc.getNamespace());
 		if(image == null)
 			image = getResourceLocator().getImage("full/obj16/RequiredCapability");
 
@@ -89,6 +86,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 			addMultiplePropertyDescriptor(object);
 			addOptionalPropertyDescriptor(object);
 			addGreedyPropertyDescriptor(object);
+			addLabelPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -112,13 +110,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 	@Override
 	public String getText(Object object)
 	{
-		RequiredCapability rc = (RequiredCapability)object;
-
-		String label = CapabilityNamespaceRecognizer.getLabel(rc.getNamespace());
-		if(label == null || label.length() == 0)
-			label = rc.getNamespace() + ":";
-
-		return label + " " + rc.getName();
+		return ((RequiredCapability)object).getLabel();
 	}
 
 	/**
@@ -143,6 +135,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
 		case P2Package.REQUIRED_CAPABILITY__GREEDY:
+		case P2Package.REQUIRED_CAPABILITY__LABEL:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
@@ -177,6 +170,21 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 						"_UI_IRequiredCapability_greedy_feature", "_UI_IRequiredCapability_type"),
 				P2Package.Literals.IREQUIRED_CAPABILITY__GREEDY, false, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Label feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addLabelPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_LabelProvider_label_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_LabelProvider_label_feature", "_UI_LabelProvider_type"),
+				AggregatorPackage.Literals.LABEL_PROVIDER__LABEL, false, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
