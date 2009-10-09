@@ -403,7 +403,7 @@
           <layoutConstraint xmi:type="notation:Location" xmi:id="_MNcgUZ-3Ed6id4aWWYPxZQ"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_9x_XcKHnEd6eK7X9CUyCfw" type="2001">
-          <element xmi:type="ecore:EAttribute" href="Build.ecore#//StringProperties/mutable"/>
+          <element xmi:type="ecore:EAttribute" href="Build.ecore#//StringProperties/immutable"/>
           <layoutConstraint xmi:type="notation:Location" xmi:id="_9x_XcaHnEd6eK7X9CUyCfw"/>
         </children>
         <styles xmi:type="notation:DrawerStyle" xmi:id="_LV6GQp-1Ed6id4aWWYPxZQ"/>
