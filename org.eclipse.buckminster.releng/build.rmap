@@ -28,7 +28,7 @@
 
 	<searchPath name="platform_3.5.M">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/eclipse/updates/3.5.x?importType=binary">
+			<uri format="{0}/eclipse/updates/3.5.x/M20091007-1025?importType=binary">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
