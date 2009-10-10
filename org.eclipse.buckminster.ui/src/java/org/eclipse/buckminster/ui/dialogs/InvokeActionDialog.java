@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -378,20 +379,30 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog
 		final CCombo combo = new CCombo(composite, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(combo);
 		String[] lastProperties = getDialogSettings().getArray(LAST_PROPERTIES);
+
 		if(lastProperties != null)
 		{
-			for(int i = 0; i < lastProperties.length; i++)
+			List<String> storedPropertyFiles = new ArrayList<String>(Arrays.asList(lastProperties));
+			Iterator<String> it = storedPropertyFiles.iterator();
+			while(it.hasNext())
 			{
-				if(lastProperties[i] == null)
+				String propertyFile = it.next();
+				if(propertyFile == null)
 				{
-					// make sure that a corrupted dialog setting won't prevent the dialog from opening
-					lastProperties[i] = "INVALID"; //$NON-NLS-1$
+					// remove corrupt dialog setting
+					it.remove();
 				}
+
 			}
-			String[] temp = new String[lastProperties.length + 1];
-			System.arraycopy(lastProperties, 0, temp, 0, lastProperties.length);
-			temp[temp.length - 1] = ""; //$NON-NLS-1$
+			if(!storedPropertyFiles.contains("")) //$NON-NLS-1$
+			{
+				// add an empty string for a 'no properties option' if it doesn't exist
+				storedPropertyFiles.add(""); //$NON-NLS-1$
+			}
+			String[] temp = new String[storedPropertyFiles.size()];
+			storedPropertyFiles.toArray(temp);
 			lastProperties = temp;
+
 		}
 		else
 		{
@@ -629,7 +640,16 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog
 		{
 			propertyList.remove(propertiesFile);
 		}
-		propertyList.add(0, propertiesFile);
+		if(propertiesFile == null)
+		{
+			// null values are not allowed in the combo
+			propertyList.remove(""); //$NON-NLS-1$
+			propertyList.add(0, ""); //$NON-NLS-1$
+		}
+		else
+		{
+			propertyList.add(0, propertiesFile);
+		}
 		lastProperties = propertyList.subList(0, Math.min(5, propertyList.size())).toArray(
 				new String[Math.min(5, propertyList.size())]);
 		getDialogSettings().put(LAST_PROPERTIES, lastProperties);
