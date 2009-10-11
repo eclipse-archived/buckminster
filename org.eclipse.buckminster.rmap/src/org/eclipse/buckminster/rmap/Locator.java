@@ -34,7 +34,7 @@ public interface Locator extends Matcher
 	 * @return the value of the '<em>Search Path</em>' reference.
 	 * @see #setSearchPath(SearchPath)
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getLocator_SearchPath()
-	 * @model required="true" extendedMetaData="name='searchPathRef' kind='attribute'"
+	 * @model resolveProxies="false" required="true" extendedMetaData="name='searchPathRef' kind='attribute'"
 	 * @generated
 	 */
 	SearchPath getSearchPath();

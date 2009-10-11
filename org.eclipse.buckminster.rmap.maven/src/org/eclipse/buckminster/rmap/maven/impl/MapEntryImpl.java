@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Map Entry</b></em>'. <!-- end-user-doc -->
@@ -165,8 +165,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	{
 		if(aliases == null)
 		{
-			aliases = new EObjectResolvingEList<GroupAndArtifact>(GroupAndArtifact.class, this,
-					MavenPackage.MAP_ENTRY__ALIASES);
+			aliases = new EObjectEList<GroupAndArtifact>(GroupAndArtifact.class, this, MavenPackage.MAP_ENTRY__ALIASES);
 		}
 		return aliases;
 	}

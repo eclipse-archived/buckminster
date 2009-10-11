@@ -14,7 +14,7 @@
     <xsd:complexContent>
       <xsd:extension base="maven:GroupAndArtifact">
         <xsd:sequence>
-          <xsd:element ecore:name="aliases" ecore:reference="maven:GroupAndArtifact" maxOccurs="unbounded" minOccurs="0" name="alias" type="xsd:anyURI"/>
+          <xsd:element ecore:name="aliases" ecore:reference="maven:GroupAndArtifact" maxOccurs="unbounded" minOccurs="0" name="alias" type="xsd:IDREF"/>
         </xsd:sequence>
         <xsd:attribute name="name" type="ecore:EString"/>
       </xsd:extension>
@@ -22,15 +22,15 @@
   </xsd:complexType>
   <xsd:complexType name="Mappings">
     <xsd:sequence>
-      <xsd:element ecore:name="entries" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="entry" type="maven:MapEntry"/>
-      <xsd:element ecore:name="rules" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="rule" type="rm:Transform"/>
+      <xsd:element ecore:name="entries" maxOccurs="unbounded" minOccurs="0" name="entry" type="maven:MapEntry"/>
+      <xsd:element ecore:name="rules" maxOccurs="unbounded" minOccurs="0" name="rule" type="rm:Transform"/>
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="MavenProvider">
     <xsd:complexContent>
       <xsd:extension base="rm:Provider">
         <xsd:sequence>
-          <xsd:element ecore:resolveProxies="true" minOccurs="0" name="mappings" type="maven:Mappings"/>
+          <xsd:element minOccurs="0" name="mappings" type="maven:Mappings"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

@@ -101,7 +101,7 @@ public class ProviderImpl extends EObjectImpl implements Provider
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean SOURCE_EDEFAULT = false;
+	protected static final boolean SOURCE_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isSource() <em>Source</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -121,7 +121,7 @@ public class ProviderImpl extends EObjectImpl implements Provider
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean MUTABLE_EDEFAULT = false;
+	protected static final boolean MUTABLE_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}' attribute. <!-- begin-user-doc --> <!--

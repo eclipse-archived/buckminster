@@ -162,7 +162,8 @@ public interface Provider extends EObject
 	VersionConverter getVersionConverter();
 
 	/**
-	 * Returns the value of the '<em><b>Mutable</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Mutable</b></em>' attribute. The default value is <code>"true"</code>. <!--
+	 * begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Mutable</em>' attribute isn't clear, there really should be more of a description
 	 * here...
@@ -172,13 +173,14 @@ public interface Provider extends EObject
 	 * @return the value of the '<em>Mutable</em>' attribute.
 	 * @see #setMutable(boolean)
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getProvider_Mutable()
-	 * @model
+	 * @model default="true"
 	 * @generated
 	 */
 	boolean isMutable();
 
 	/**
-	 * Returns the value of the '<em><b>Source</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Source</b></em>' attribute. The default value is <code>"true"</code>. <!--
+	 * begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Source</em>' attribute isn't clear, there really should be more of a description
 	 * here...
@@ -188,7 +190,7 @@ public interface Provider extends EObject
 	 * @return the value of the '<em>Source</em>' attribute.
 	 * @see #setSource(boolean)
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getProvider_Source()
-	 * @model
+	 * @model default="true"
 	 * @generated
 	 */
 	boolean isSource();

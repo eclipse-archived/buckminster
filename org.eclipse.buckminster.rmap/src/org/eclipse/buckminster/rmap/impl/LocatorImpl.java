@@ -13,8 +13,6 @@ import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -76,25 +74,13 @@ public class LocatorImpl extends MatcherImpl implements Locator
 	 * 
 	 * @generated
 	 */
-	public SearchPath basicGetSearchPath()
-	{
-		return searchPath;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case RmapPackage.LOCATOR__SEARCH_PATH:
-			if(resolve)
-				return getSearchPath();
-			return basicGetSearchPath();
+			return getSearchPath();
 		case RmapPackage.LOCATOR__FAIL_ON_ERROR:
 			return isFailOnError();
 		}
@@ -166,17 +152,6 @@ public class LocatorImpl extends MatcherImpl implements Locator
 	 */
 	public SearchPath getSearchPath()
 	{
-		if(searchPath != null && searchPath.eIsProxy())
-		{
-			InternalEObject oldSearchPath = (InternalEObject)searchPath;
-			searchPath = (SearchPath)eResolveProxy(oldSearchPath);
-			if(searchPath != oldSearchPath)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, RmapPackage.LOCATOR__SEARCH_PATH,
-							oldSearchPath, searchPath));
-			}
-		}
 		return searchPath;
 	}
 

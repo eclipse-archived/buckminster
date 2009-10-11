@@ -11,7 +11,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Locator" eSuperTypes="#//Matcher">
     <eStructuralFeatures xsi:type="ecore:EReference" name="searchPath" lowerBound="1"
-        eType="#//SearchPath">
+        eType="#//SearchPath" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="searchPathRef"/>
         <details key="kind" value="attribute"/>
@@ -37,7 +37,7 @@
       <details key="name" value="ResourceMap"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="locators" upperBound="-1"
-        eType="#//Locator" containment="true">
+        eType="#//Locator" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="locator"/>
         <details key="namespace" value="##targetNamespace"/>
@@ -45,7 +45,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="redirects" upperBound="-1"
-        eType="#//Redirect" containment="true">
+        eType="#//Redirect" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="redirect"/>
         <details key="namespace" value="##targetNamespace"/>
@@ -53,7 +53,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="searchPaths" upperBound="-1"
-        eType="#//SearchPath" containment="true">
+        eType="#//SearchPath" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="searchPath"/>
         <details key="namespace" value="##targetNamespace"/>
@@ -62,7 +62,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyElements" upperBound="-1"
         eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyElement"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="propertyElement"/>
         <details key="namespace" value="##targetNamespace"/>
@@ -71,7 +71,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
         eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyConstant"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="property"/>
         <details key="namespace" value="##targetNamespace"/>
@@ -79,7 +79,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="documentation"/>
         <details key="kind" value="element"/>
@@ -100,25 +100,27 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="readerType" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolutionFilter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="versionConverter" eType="#//VersionConverter"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="uri" lowerBound="1" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Format"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="matchers" upperBound="-1"
-        eType="#//URIMatcher" containment="true">
+        eType="#//URIMatcher" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="matcher"/>
         <details key="kind" value="element"/>
@@ -126,7 +128,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="documentation"/>
         <details key="kind" value="element"/>
@@ -149,7 +151,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral="OSGi"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="transformers" upperBound="-1"
-        eType="#//Transform" containment="true">
+        eType="#//Transform" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="transform"/>
         <details key="namespace" value="##targetNamespace"/>
@@ -281,7 +283,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rmap" lowerBound="1" eType="#//ResourceMap"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>

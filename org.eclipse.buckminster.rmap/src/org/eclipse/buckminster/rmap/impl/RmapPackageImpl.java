@@ -874,7 +874,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 
 		initEClass(locatorEClass, Locator.class, "Locator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLocator_SearchPath(), this.getSearchPath(), null, "searchPath", null, 1, 1, Locator.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLocator_FailOnError(), ecorePackage.getEBoolean(), "failOnError", "true", 0, 1,
 				Locator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
@@ -918,9 +918,9 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 				IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProvider_ReaderType(), ecorePackage.getEString(), "readerType", null, 1, 1, Provider.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getProvider_Source(), ecorePackage.getEBoolean(), "source", null, 0, 1, Provider.class,
+		initEAttribute(getProvider_Source(), ecorePackage.getEBoolean(), "source", "true", 0, 1, Provider.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getProvider_Mutable(), ecorePackage.getEBoolean(), "mutable", null, 0, 1, Provider.class,
+		initEAttribute(getProvider_Mutable(), ecorePackage.getEBoolean(), "mutable", "true", 0, 1, Provider.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProvider_ResolutionFilter(), ecorePackage.getEString(), "resolutionFilter", null, 0, 1,
 				Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,

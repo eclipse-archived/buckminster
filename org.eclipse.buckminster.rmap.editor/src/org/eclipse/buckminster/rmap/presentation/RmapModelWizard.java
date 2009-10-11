@@ -42,7 +42,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -57,32 +56,10 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 /**
  * This is a simple wizard for creating a new model file. <!-- begin-user-doc --> <!-- end-user-doc -->
  * 
- * @generated
+ * @generated NOT
  */
 public class RmapModelWizard extends Wizard implements INewWizard
 {
-	/**
-	 * This is the page where the type of object to create is selected. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public class RmapModelWizardInitialObjectCreationPage
-	{
-		public String getEncoding()
-		{
-			return "UTF-8";
-		}
-
-		public void createControl(Composite parent)
-		{
-		}
-
-		public String getInitialObjectName()
-		{
-			return "rmap";
-		}
-	}
-
 	/**
 	 * This is the one page of the wizard. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -174,13 +151,6 @@ public class RmapModelWizard extends Wizard implements INewWizard
 	protected RmapModelWizardNewFileCreationPage newFileCreationPage;
 
 	/**
-	 * This is the initial object creation page. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected RmapModelWizardInitialObjectCreationPage initialObjectCreationPage;
-
-	/**
 	 * Remember the selection during initialization for populating the default container. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -257,7 +227,6 @@ public class RmapModelWizard extends Wizard implements INewWizard
 				}
 			}
 		}
-		initialObjectCreationPage = new RmapModelWizardInitialObjectCreationPage();
 	}
 
 	/**
@@ -286,7 +255,7 @@ public class RmapModelWizard extends Wizard implements INewWizard
 	/**
 	 * Do the work after everything is specified. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public boolean performFinish()
@@ -329,7 +298,7 @@ public class RmapModelWizard extends Wizard implements INewWizard
 						// Save the contents of the resource to the file system.
 						//
 						Map<Object, Object> options = new HashMap<Object, Object>();
-						options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
+						options.put(XMLResource.OPTION_ENCODING, "UTF-8");
 						resource.save(options);
 					}
 					catch(Exception exception)
@@ -388,12 +357,12 @@ public class RmapModelWizard extends Wizard implements INewWizard
 	/**
 	 * Create a new model. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected EObject createInitialModel()
 	{
 		EClass eClass = ExtendedMetaData.INSTANCE.getDocumentRoot(rmapPackage);
-		EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(initialObjectCreationPage.getInitialObjectName());
+		EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature("rmap");
 		EObject rootObject = rmapFactory.create(eClass);
 		rootObject.eSet(eStructuralFeature, EcoreUtil.create((EClass)eStructuralFeature.getEType()));
 		return rootObject;

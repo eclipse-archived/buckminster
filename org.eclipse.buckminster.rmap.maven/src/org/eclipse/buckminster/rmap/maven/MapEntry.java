@@ -36,7 +36,7 @@ public interface MapEntry extends GroupAndArtifact
 	 * 
 	 * @return the value of the '<em>Aliases</em>' reference list.
 	 * @see org.eclipse.buckminster.rmap.maven.MavenPackage#getMapEntry_Aliases()
-	 * @model extendedMetaData="name='alias' kind='element'"
+	 * @model resolveProxies="false" extendedMetaData="name='alias' kind='element'"
 	 * @generated
 	 */
 	EList<GroupAndArtifact> getAliases();

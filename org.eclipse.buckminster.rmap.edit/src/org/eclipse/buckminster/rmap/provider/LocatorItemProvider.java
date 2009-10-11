@@ -8,15 +8,13 @@ package org.eclipse.buckminster.rmap.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.RmapPackage;
-
+import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -78,18 +76,29 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		Pattern labelValue = ((Locator)object).getPattern();
-		String label = labelValue == null
-				? null
-				: labelValue.toString();
-		return label == null || label.length() == 0
-				? getString("_UI_Locator_type")
-				: getString("_UI_Locator_type") + " " + label;
+		Locator locator = (Locator)object;
+		SearchPath labelValue = locator.getSearchPath();
+		StringBuilder labelBld = new StringBuilder();
+		labelBld.append(getString("_UI_Locator_type"));
+		if(labelValue != null)
+		{
+			labelBld.append(' ');
+			labelBld.append(labelValue.getName());
+		}
+
+		Pattern pattern = locator.getPattern();
+		if(pattern != null)
+		{
+			labelBld.append(" [");
+			labelBld.append(pattern);
+			labelBld.append(']');
+		}
+		return labelBld.toString();
 	}
 
 	/**
