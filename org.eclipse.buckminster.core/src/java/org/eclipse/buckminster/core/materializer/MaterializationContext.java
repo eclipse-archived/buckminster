@@ -111,7 +111,6 @@ public class MaterializationContext extends RMContext
 	 */
 	public IPath getInstallLocation(Resolution resolution) throws CoreException
 	{
-		ComponentIdentifier ci = resolution.getComponentIdentifier();
 		IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
 		IPath relativeLocation = rd.getInstallLocation(resolution, this);
 
@@ -134,7 +133,7 @@ public class MaterializationContext extends RMContext
 				return tmp;
 		}
 
-		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(resolution);
 		IPath nodeLocation = null;
 		boolean useRootDefault = true;
 		if(node != null)
@@ -170,10 +169,9 @@ public class MaterializationContext extends RMContext
 
 	public IPath getLeafArtifact(Resolution resolution) throws CoreException
 	{
-		IComponentIdentifier ci = resolution.getComponentIdentifier();
 		MaterializationSpec mspec = getMaterializationSpec();
-		IPath leaf = mspec.getLeafArtifact(ci);
-		boolean isExpand = mspec.isExpand(ci);
+		IPath leaf = mspec.getLeafArtifact(resolution);
+		boolean isExpand = mspec.isExpand(resolution);
 
 		if(leaf != null)
 		{
@@ -196,6 +194,7 @@ public class MaterializationContext extends RMContext
 		{
 			// No filename is available, let's use a name built from <componentname>_<version>
 			//
+			IComponentIdentifier ci = resolution.getComponentIdentifier();
 			StringBuilder nameBld = new StringBuilder(ci.getName());
 			Version version = ci.getVersion();
 			if(version != null)
@@ -239,14 +238,23 @@ public class MaterializationContext extends RMContext
 				: new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
 	}
 
+	public Map<String, ? extends Object> getProperties(Resolution resolution)
+	{
+		Map<String, ? extends Object> p = super.getProperties(resolution.getComponentIdentifier());
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(resolution);
+		return node == null
+				? p
+				: new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
+	}
+
 	public String getSuffixedName(Resolution resolution, String remoteName) throws CoreException
 	{
 		MaterializationSpec mspec = getMaterializationSpec();
 		IComponentName cName = resolution.getComponentIdentifier();
-		if(!(resolution.isUnpack() || mspec.isUnpack(cName)))
+		if(!(resolution.isUnpack() || mspec.isUnpack(resolution)))
 			return null;
 
-		String name = mspec.getSuffix(cName);
+		String name = mspec.getSuffix(resolution);
 		if(name == null)
 			name = remoteName;
 
@@ -266,13 +274,13 @@ public class MaterializationContext extends RMContext
 	{
 		IPath nodeLocation = null;
 		ComponentIdentifier ci = resolution.getComponentIdentifier();
-		IMaterializationNode node = m_materializationSpec.getMatchingNode(ci);
+		IMaterializationNode node = m_materializationSpec.getMatchingNode(resolution);
 		if(node != null)
 		{
 			nodeLocation = node.getWorkspaceLocation();
 			if(nodeLocation != null)
 			{
-				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(ci),
+				nodeLocation = Path.fromOSString(ExpandingProperties.expand(getProperties(resolution),
 						nodeLocation.toOSString(), 0));
 				IPath tmp = expand(nodeLocation);
 				if(tmp.isAbsolute())

@@ -11,12 +11,16 @@ package org.eclipse.buckminster.core.mspec.builder;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.IComponentName;
+import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.Platform;
 import org.xml.sax.ContentHandler;
@@ -81,6 +85,11 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return getMatchingNodeBuilder(cName);
 	}
 
+	public IMaterializationNode getMatchingNode(Resolution res)
+	{
+		return getMatchingNodeBuilder(res);
+	}
+
 	public MaterializationNodeBuilder getMatchingNodeBuilder(IComponentName cName)
 	{
 		String name = cName.getName();
@@ -93,6 +102,33 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 				if(matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
+		}
+		return null;
+	}
+
+	public MaterializationNodeBuilder getMatchingNodeBuilder(Resolution res)
+	{
+		Map<String, ? extends Object> props = null;
+		ComponentIdentifier ci = res.getComponentIdentifier();
+		for(MaterializationNodeBuilder aNode : m_nodes)
+		{
+			Pattern pattern = aNode.getNamePattern();
+			if(!(pattern == null || pattern.matcher(ci.getName()).find()))
+				continue;
+
+			String matchingCType = aNode.getComponentTypeID();
+			if(!(matchingCType == null || matchingCType.equals(ci.getComponentTypeID())))
+				continue;
+
+			Filter filter = aNode.getFilter();
+			if(filter != null)
+			{
+				if(props == null)
+					props = res.getProperties();
+				if(!filter.match(props))
+					continue;
+			}
+			return aNode;
 		}
 		return null;
 	}

@@ -252,7 +252,7 @@ public class ResolvedNode extends BOMNode
 				child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
 
 			ComponentIdentifier ci = resolution.getComponentIdentifier();
-			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(ci)))
+			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(resolution)))
 				resolutions.add(resolution);
 		}
 	}

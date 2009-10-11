@@ -59,8 +59,7 @@ public class MaterializerJob extends Job implements IJobInfo
 	public String getOperationName()
 	{
 		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
-		return NLS.bind(Messages.Materialization_of_0, lastResolution.getComponentIdentifier()
-				.toString());
+		return NLS.bind(Messages.Materialization_of_0, lastResolution.getComponentIdentifier().toString());
 	}
 
 	@Override
@@ -72,8 +71,8 @@ public class MaterializerJob extends Job implements IJobInfo
 		}
 		catch(CoreException e)
 		{
-			m_context.addRequestStatus(m_resolutions.get(m_resolutions.size() - 1).getRequest(), BuckminsterException
-					.wrap(e).getStatus());
+			m_context.addRequestStatus(m_resolutions.get(m_resolutions.size() - 1).getRequest(),
+					BuckminsterException.wrap(e).getStatus());
 			if(!m_context.isContinueOnError())
 				return e.getStatus();
 		}

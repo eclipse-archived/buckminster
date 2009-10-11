@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,9 +21,11 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
@@ -32,6 +35,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -98,6 +102,8 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	private final URL m_contextURL;
 
+	private BillOfMaterials m_currentBom;
+
 	public MaterializationSpec(MaterializationSpecBuilder builder)
 	{
 		super(builder);
@@ -124,20 +130,15 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return super.getAdapter(adapter);
 	}
 
+	@Deprecated
 	public ConflictResolution getConflictResolution(IComponentName cName)
 	{
-		IMaterializationNode node = getMatchingNode(cName);
-		ConflictResolution cr = null;
-		if(node != null)
-			cr = node.getConflictResolution();
+		return getConflictResolution(getMatchingNode(cName));
+	}
 
-		if(cr == null)
-		{
-			cr = getConflictResolution();
-			if(cr == null)
-				cr = ConflictResolution.getDefault();
-		}
-		return cr;
+	public ConflictResolution getConflictResolution(Resolution res)
+	{
+		return getConflictResolution(getMatchingNode(res));
 	}
 
 	public URL getContextURL()
@@ -150,6 +151,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return TAG;
 	}
 
+	@Deprecated
 	public IPath getLeafArtifact(IComponentName cname)
 	{
 		IMaterializationNode node = getMatchingNode(cname);
@@ -158,21 +160,32 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 				: node.getLeafArtifact();
 	}
 
+	public IPath getLeafArtifact(Resolution resolution)
+	{
+		IMaterializationNode node = getMatchingNode(resolution);
+		return node == null
+				? null
+				: node.getLeafArtifact();
+	}
+
 	public IMaterializationNode getMatchingNode(IComponentName cName)
 	{
-		String name = cName.getName();
-		for(MaterializationNode aNode : m_nodes)
+		if(m_currentBom != null && cName instanceof IComponentIdentifier)
 		{
-			Pattern pattern = aNode.getNamePattern();
-			if(pattern.matcher(name).find())
+			try
 			{
-				String matchingCType = aNode.getComponentTypeID();
-
-				if(matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
-					return aNode;
+				return getMatchingNode(m_currentBom.getResolvedNode(((IComponentIdentifier)cName)).getResolution());
+			}
+			catch(CoreException e)
+			{
 			}
 		}
-		return null;
+		return getMatchingNode(cName, ((ComponentName)cName).getProperties());
+	}
+
+	public IMaterializationNode getMatchingNode(Resolution res)
+	{
+		return getMatchingNode(res.getComponentIdentifier(), res.getProperties());
 	}
 
 	public IMaterializer getMaterializer(Resolution resolution) throws CoreException
@@ -182,7 +195,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	public String getMaterializerID(Resolution resolution) throws CoreException
 	{
-		IMaterializationNode node = getMatchingNode(resolution.getComponentIdentifier());
+		IMaterializationNode node = getMatchingNode(resolution);
 		String materializer = (node == null)
 				? null
 				: node.getMaterializerID();
@@ -205,25 +218,15 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_nodes;
 	}
 
+	@Deprecated
 	public String getProjectName(ComponentName cName) throws CoreException
 	{
-		IMaterializationNode node = getMatchingNode(cName);
-		if(node == null)
-			return cName.getProjectName();
+		return getProjectName(cName, getMatchingNode(cName));
+	}
 
-		Pattern bindingNamePattern = node.getBindingNamePattern();
-		String bindingNameReplacement = node.getBindingNameReplacement();
-		if(bindingNamePattern == null || bindingNameReplacement == null)
-			return cName.getProjectName();
-
-		Matcher matcher = bindingNamePattern.matcher(cName.getName());
-		if(matcher.matches())
-		{
-			String repl = matcher.replaceAll(bindingNameReplacement).trim();
-			if(repl.length() > 0)
-				return repl;
-		}
-		return cName.getProjectName();
+	public String getProjectName(Resolution res) throws CoreException
+	{
+		return getProjectName(res.getComponentIdentifier(), getMatchingNode(res));
 	}
 
 	public URL getResolvedURL()
@@ -232,9 +235,18 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 				m_url, 0));
 	}
 
+	@Deprecated
 	public IPath getResourcePath(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
+		return node == null
+				? null
+				: node.getResourcePath();
+	}
+
+	public IPath getResourcePath(Resolution res)
+	{
+		IMaterializationNode node = getMatchingNode(res);
 		return node == null
 				? null
 				: node.getResourcePath();
@@ -245,9 +257,18 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_shortDesc;
 	}
 
+	@Deprecated
 	public String getSuffix(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
+		return node == null
+				? null
+				: node.getSuffix();
+	}
+
+	public String getSuffix(Resolution res)
+	{
+		IMaterializationNode node = getMatchingNode(res);
 		return node == null
 				? null
 				: node.getSuffix();
@@ -264,15 +285,35 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node != null && node.isExclude();
 	}
 
+	public boolean isExcluded(Resolution res)
+	{
+		IMaterializationNode node = getMatchingNode(res);
+		return node != null && node.isExclude();
+	}
+
+	@Deprecated
 	public boolean isExpand(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
 		return node != null && (node.isUnpack() && node.isExpand());
 	}
 
+	public boolean isExpand(Resolution res)
+	{
+		IMaterializationNode node = getMatchingNode(res);
+		return node != null && (node.isUnpack() && node.isExpand());
+	}
+
+	@Deprecated
 	public boolean isUnpack(IComponentName cName)
 	{
 		IMaterializationNode node = getMatchingNode(cName);
+		return node != null && node.isUnpack();
+	}
+
+	public boolean isUnpack(Resolution res)
+	{
+		IMaterializationNode node = getMatchingNode(res);
 		return node != null && node.isUnpack();
 	}
 
@@ -299,5 +340,60 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		super.emitElements(receiver, namespace, prefix);
 		for(MaterializationNode node : m_nodes)
 			node.toSax(receiver, namespace, prefix, node.getDefaultTag());
+	}
+
+	private ConflictResolution getConflictResolution(IMaterializationNode node)
+	{
+		ConflictResolution cr = null;
+		if(node != null)
+			cr = node.getConflictResolution();
+
+		if(cr == null)
+		{
+			cr = getConflictResolution();
+			if(cr == null)
+				cr = ConflictResolution.getDefault();
+		}
+		return cr;
+	}
+
+	private IMaterializationNode getMatchingNode(IComponentName cName, Map<String, ? extends Object> props)
+	{
+		for(MaterializationNode aNode : m_nodes)
+		{
+			Pattern pattern = aNode.getNamePattern();
+			if(!(pattern == null || pattern.matcher(cName.getName()).find()))
+				continue;
+
+			String matchingCType = aNode.getComponentTypeID();
+			if(!(matchingCType == null || matchingCType.equals(cName.getComponentTypeID())))
+				continue;
+
+			Filter filter = aNode.getFilter();
+			if(!(filter == null || filter.match(props)))
+				continue;
+			return aNode;
+		}
+		return null;
+	}
+
+	private String getProjectName(ComponentName cName, IMaterializationNode node) throws CoreException
+	{
+		if(node == null)
+			return cName.getProjectName();
+
+		Pattern bindingNamePattern = node.getBindingNamePattern();
+		String bindingNameReplacement = node.getBindingNameReplacement();
+		if(bindingNamePattern == null || bindingNameReplacement == null)
+			return cName.getProjectName();
+
+		Matcher matcher = bindingNamePattern.matcher(cName.getName());
+		if(matcher.matches())
+		{
+			String repl = matcher.replaceAll(bindingNameReplacement).trim();
+			if(repl.length() > 0)
+				return repl;
+		}
+		return cName.getProjectName();
 	}
 }

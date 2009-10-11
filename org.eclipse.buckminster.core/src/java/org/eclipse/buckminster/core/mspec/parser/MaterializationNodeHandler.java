@@ -10,11 +10,14 @@ package org.eclipse.buckminster.core.mspec.parser;
 
 import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -55,7 +58,19 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler
 	{
 		super.handleAttributes(attrs);
 		MaterializationNodeBuilder builder = getMaterializationNodeBuilder();
-		builder.setNamePattern(getPatternValue(attrs, MaterializationNode.ATTR_NAME_PATTERN));
+		builder.setNamePattern(getOptionalPatternValue(attrs, MaterializationNode.ATTR_NAME_PATTERN));
+		String filterStr = getOptionalStringValue(attrs, MaterializationNode.ATTR_FILTER);
+		if(filterStr != null)
+		{
+			try
+			{
+				builder.setFilter(FilterFactory.newInstance(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
 		builder.setComponentTypeID(getComponentType(attrs));
 		builder.setExclude(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXCLUDE, false));
 		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_LEAF_ARTIFACT);

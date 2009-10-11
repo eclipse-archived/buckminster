@@ -17,7 +17,6 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -142,10 +141,9 @@ public class P2Materializer extends AbstractMaterializer
 
 		for(Resolution res : resolutions)
 		{
-			ComponentIdentifier ci = res.getComponentIdentifier();
-			IMaterializationNode node = mspec.getMatchingNode(ci);
+			IMaterializationNode node = mspec.getMatchingNode(res);
 			IPath installLocation = null;
-			Map<String, ? extends Object> props = context.getProperties(ci);
+			Map<String, ? extends Object> props = context.getProperties(res);
 			if(node != null)
 			{
 				installLocation = node.getInstallLocation();

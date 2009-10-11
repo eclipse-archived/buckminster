@@ -9,11 +9,13 @@ package org.eclipse.buckminster.core.metadata.model;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
@@ -115,6 +117,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	private final VersionMatch m_versionMatch;
 
+	private Map<String, ? extends Object> m_properties;
+
 	public Resolution(CSpec cspec, OPML opml, Resolution old)
 	{
 		m_cspec = cspec;
@@ -197,8 +201,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
 	{
 		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
-		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, m_versionMatch
-				.getDefaultTag());
+		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX,
+				m_versionMatch.getDefaultTag());
 	}
 
 	public String getArtifactInfo()
@@ -315,6 +319,20 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return m_persistentId;
 	}
 
+	public synchronized Map<String, ? extends Object> getProperties()
+	{
+		if(m_properties == null)
+		{
+			HashMap<String, Object> props = new HashMap<String, Object>();
+			props.put(KeyConstants.READER_TYPE, m_provider.getReaderTypeId());
+			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(m_provider.isMutable()));
+			props.put(KeyConstants.IS_SOURCE, Boolean.toString(m_provider.hasSource()));
+			props.putAll(m_cspec.getComponentIdentifier().getProperties());
+			m_properties = props;
+		}
+		return m_properties;
+	}
+
 	/**
 	 * Returns the provider used when reading the repository.
 	 * 
@@ -337,8 +355,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	public ProviderMatch getProviderMatch(RMContext context) throws CoreException
 	{
-		ProviderMatch pm = new ProviderMatch(m_provider, getComponentType(), getVersionMatch(), context
-				.getNodeQuery(getQualifiedDependency()));
+		ProviderMatch pm = new ProviderMatch(m_provider, getComponentType(), getVersionMatch(),
+				context.getNodeQuery(getQualifiedDependency()));
 		pm.setRepositoryURI(m_repository);
 		return pm;
 	}

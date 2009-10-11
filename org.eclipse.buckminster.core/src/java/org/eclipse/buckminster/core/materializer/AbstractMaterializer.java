@@ -80,7 +80,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			Set<String> readerTypes = new LinkedHashSet<String>();
 			for(Resolution res : perused)
 			{
-				if(!mspec.isExcluded(res.getComponentIdentifier()))
+				if(!mspec.isExcluded(res))
 					readerTypes.add(mspec.getMaterializer(res).getMaterializationReaderType(res).getId());
 			}
 
@@ -173,7 +173,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 			for(BOMNode child : node.getChildren())
 				delegateAndInstallRecursive(child, context, generated, perused, monitor);
 
-			if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier()))
+			if(!context.getMaterializationSpec().isExcluded(resolution))
 			{
 				// The local reader might create resolutions that are not materialized and
 				// hence not stored so we must make sure it's stored here.

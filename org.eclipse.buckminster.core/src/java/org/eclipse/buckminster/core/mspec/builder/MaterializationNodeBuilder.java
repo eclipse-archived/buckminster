@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationNode;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 
@@ -22,6 +23,8 @@ import org.eclipse.core.runtime.Platform;
 public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder implements IMaterializationNode
 {
 	private Pattern m_namePattern;
+
+	private Filter m_filter;
 
 	private IPath m_leafArtifact;
 
@@ -48,6 +51,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 	{
 		super.clear();
 		m_namePattern = null;
+		m_filter = null;
 		m_leafArtifact = null;
 		m_componentTypeID = null;
 		m_resourcePath = null;
@@ -89,6 +93,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		return m_componentTypeID;
 	}
 
+	public Filter getFilter()
+	{
+		return m_filter;
+	}
+
 	public IPath getLeafArtifact()
 	{
 		return m_leafArtifact;
@@ -113,6 +122,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 	{
 		super.initFrom(mn);
 		m_namePattern = mn.getNamePattern();
+		m_filter = mn.getFilter();
 		m_leafArtifact = mn.getLeafArtifact();
 		m_componentTypeID = mn.getComponentTypeID();
 		m_resourcePath = mn.getResourcePath();
@@ -162,6 +172,11 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 	public void setExpand(boolean expand)
 	{
 		m_expand = expand;
+	}
+
+	public void setFilter(Filter filter)
+	{
+		m_filter = filter;
 	}
 
 	public void setLeafArtifact(IPath leafArtifact)

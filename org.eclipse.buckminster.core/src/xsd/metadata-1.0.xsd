@@ -186,7 +186,7 @@
 						minOccurs="0" maxOccurs="1" />
 				</sequence>
 				<attribute name="namePattern" type="string"
-					use="required">
+					use="optional">
 					<annotation>
 						<documentation>
 							A regular expression pattern that will be
@@ -197,6 +197,15 @@
 							takes place once a node is found.
 						</documentation>
 					</annotation>
+				</attribute>
+                <attribute name="filter" type="string"
+					use="optional">
+					<annotation>
+						<documentation>
+							Filter used in combination with the namePattern
+							when matching the resolutions.
+						</documentation>
+	          		</annotation>
 				</attribute>
 				<attribute name="leafArtifact" type="string"
 					use="optional">

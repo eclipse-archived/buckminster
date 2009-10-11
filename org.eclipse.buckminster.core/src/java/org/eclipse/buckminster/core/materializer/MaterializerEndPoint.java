@@ -30,7 +30,7 @@ public class MaterializerEndPoint
 		Installer installer = (suffixedName == null)
 				? Installer.getPlainInstaller()
 				: Installer.getInstaller(suffixedName, resolution.isUnpack()
-						|| ctx.getMaterializationSpec().isExpand(resolution.getComponentIdentifier()));
+						|| ctx.getMaterializationSpec().isExpand(resolution));
 		return new MaterializerEndPoint(location, installer);
 	}
 

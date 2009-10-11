@@ -49,11 +49,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class FileSystemMaterializer extends AbstractMaterializer
 {
-	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
-	{
-		return context.getArtifactLocation(resolution);
-	}
-
 	@Override
 	public String getMaterializerRootDir()
 	{
@@ -102,7 +97,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 				{
 					cr.store(sm);
 					ci = cr.getComponentIdentifier();
-					ConflictResolution conflictRes = mspec.getConflictResolution(ci);
+					ConflictResolution conflictRes = mspec.getConflictResolution(cr);
 					IPath artifactLocation = getArtifactLocation(context, cr);
 					String syncLock = artifactLocation.toOSString().intern();
 					synchronized(syncLock)
@@ -143,9 +138,8 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							// just did.
 							//
 							statistics.addKept(ci);
-							logger.info(NLS.bind(
-									Messages.Skipping_materialization_of_0_Instead_reusing_1,
-									ci, artifactLocation));
+							logger.info(NLS.bind(Messages.Skipping_materialization_of_0_Instead_reusing_1, ci,
+									artifactLocation));
 
 							mat.store(sm);
 							adjustedMinfos.add(mat);
@@ -160,7 +154,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 						{
 							// We are installing into folder
 							//
-							IMaterializationNode node = mspec.getMatchingNode(ci);
+							IMaterializationNode node = mspec.getMatchingNode(cr);
 							if(node != null && node.isUnpack())
 							{
 								// An unpack must never clear the folder that it uses as parent for the unpack
@@ -318,5 +312,10 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 			monitor.done();
 		}
+	}
+
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
+	{
+		return context.getArtifactLocation(resolution);
 	}
 }

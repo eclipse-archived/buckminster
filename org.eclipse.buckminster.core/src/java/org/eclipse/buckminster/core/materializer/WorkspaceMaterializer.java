@@ -17,7 +17,6 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -144,7 +143,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		//
 		if(leaf == null)
 		{
-			if(context.getMaterializationSpec().isUnpack(resolution.getComponentIdentifier()))
+			if(context.getMaterializationSpec().isUnpack(resolution))
 				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
 		}
 		else if(!leaf.hasTrailingSeparator())
@@ -224,8 +223,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				// Don't install in this workspace. Instead store it for later installation
 				// in the appointed workspace
 				//
-				ExternalDataArea dataArea = new ExternalDataArea(wsRoot, context.getMaterializationSpec()
-						.getConflictResolution(resolution.getComponentIdentifier()));
+				ExternalDataArea dataArea = new ExternalDataArea(wsRoot,
+						context.getMaterializationSpec().getConflictResolution(resolution));
 				StorageManager sm = new StorageManager(dataArea.getStateLocation(CorePlugin.getID()).toFile());
 				wb.store(sm);
 				storeBelow(resolution, context.getBillOfMaterials(), sm, false);
@@ -269,8 +268,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		IPath bmProjLoc = CorePlugin.getDefault().getBuckminsterProjectLocation();
 		if(matLoc.hasTrailingSeparator() && !bmProjLoc.isPrefixOf(matLoc))
 		{
-			ComponentIdentifier ci = resolution.getComponentIdentifier();
-			wsRelativePath = context.getMaterializationSpec().getResourcePath(ci);
+			wsRelativePath = context.getMaterializationSpec().getResourcePath(resolution);
 			if(wsRelativePath == null)
 				//
 				// Default to project.
@@ -388,11 +386,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 					if(ifile.exists())
 					{
 						if(!(ifile.isLinked() && FileUtils.pathEquals(ifile.getRawLocation(), locationPath)))
-							throw BuckminsterException
-									.fromMessage(NLS
-											.bind(
-													Messages.Unable_to_create_file_link_from_workspace_0_to_1_link_origin_2_already_in_use,
-													new Object[] { wsRelativePath, locationPath, projRelativePath }));
+							throw BuckminsterException.fromMessage(NLS.bind(
+									Messages.Unable_to_create_file_link_from_workspace_0_to_1_link_origin_2_already_in_use,
+									new Object[] { wsRelativePath, locationPath, projRelativePath }));
 						MonitorUtils.worked(monitor, 50);
 					}
 					else
@@ -410,8 +406,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_obtain_resource_0_from_workspace_1,
 						wsRelativePath, projRelativePath));
 
-			WorkspaceInfo.setComponentIdentifier(projectForBinding.findMember(projRelativePath), mat
-					.getComponentIdentifier());
+			WorkspaceInfo.setComponentIdentifier(projectForBinding.findMember(projRelativePath),
+					mat.getComponentIdentifier());
 		}
 		finally
 		{
@@ -500,7 +496,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 
 	private String getDefaultProjectName(MaterializationSpec mspec, Resolution resolution) throws CoreException
 	{
-		return mspec.getProjectName(resolution.getRequest());
+		return mspec.getProjectName(resolution);
 	}
 
 	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, RMContext context, IProgressMonitor monitor)
@@ -533,8 +529,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 			Resolution newRes = LocalResolver.fromPath(productPath, resolution.getName());
 			newRes = new Resolution(newRes.getCSpec(), newRes.getOPML(), resolution);
 			newRes.store(sm);
-			Materialization newMat = new Materialization(productPath.addTrailingSeparator(), newRes
-					.getComponentIdentifier());
+			Materialization newMat = new Materialization(productPath.addTrailingSeparator(),
+					newRes.getComponentIdentifier());
 			newMat.store(sm);
 			return new WorkspaceBinding(newMat.getComponentLocation(), newRes, wb.getWorkspaceRoot(), new Path(
 					bindingName), null);

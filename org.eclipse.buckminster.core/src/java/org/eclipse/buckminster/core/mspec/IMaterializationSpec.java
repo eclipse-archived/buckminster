@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.IComponentName;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.sax.ISaxable;
 
 public interface IMaterializationSpec extends IMaterializationDirective, ISaxable
@@ -11,6 +12,8 @@ public interface IMaterializationSpec extends IMaterializationDirective, ISaxabl
 	URL getContextURL();
 
 	IMaterializationNode getMatchingNode(IComponentName cName);
+
+	IMaterializationNode getMatchingNode(Resolution res);
 
 	String getName();
 

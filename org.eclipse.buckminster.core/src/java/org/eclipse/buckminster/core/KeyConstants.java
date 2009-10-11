@@ -21,6 +21,12 @@ public interface KeyConstants
 
 	public static final String COMPONENT_VERSION = "buckminster.version"; //$NON-NLS-1$
 
+	public static final String READER_TYPE = "buckminster.readerType"; //$NON-NLS-1$
+
+	public static final String IS_MUTABLE = "buckminster.mutable"; //$NON-NLS-1$
+
+	public static final String IS_SOURCE = "buckminster.source"; //$NON-NLS-1$
+
 	public static final String MUTABLERULE = "buckminster.rule.mutable"; //$NON-NLS-1$
 
 	public static final String SOURCERULE = "buckminster.rule.source"; //$NON-NLS-1$
