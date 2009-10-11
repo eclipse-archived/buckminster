@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="bc" ecore:package="org.eclipse.buckminster.model.common" targetNamespace="http://www.eclipse.org/buckminster/Common-1.0">
   <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
-  <xsd:element name="group" substitutionGroup="bc:rxPart" type="bc:RxGroup"/>
-  <xsd:element name="match" substitutionGroup="bc:rxPart" type="bc:RxPattern"/>
   <xsd:element abstract="true" name="rxPart" type="bc:RxPart"/>
+  <xsd:element abstract="true" name="basicProperty" type="bc:Property"/>
   <xsd:complexType name="Constant">
     <xsd:attribute name="value" type="ecore:EString" use="required"/>
   </xsd:complexType>
@@ -28,9 +27,9 @@
     <xsd:attribute default="false" name="quotePattern" type="ecore:EBoolean"/>
     <xsd:attribute name="replacement" type="ecore:EString" use="required"/>
   </xsd:complexType>
-  <xsd:complexType name="Property">
+  <xsd:complexType abstract="true" name="Property">
     <xsd:annotation>
-      <xsd:documentation>A property that maps a key to a value. Several attributes in the cspec and rmap may be subject to property expansion. TODO: Should subjected attributes use a special naming convention in order to clarify that they will be property expanded?</xsd:documentation>
+      <xsd:documentation>A property that maps a key to a value. Several attributes in the cspec and rmap may be subject to property expansion.</xsd:documentation>
     </xsd:annotation>
     <xsd:attribute name="key" type="bc:propertyKey" use="required"/>
     <xsd:attribute name="mutable" type="ecore:EBoolean"/>
@@ -52,12 +51,12 @@
     <xsd:complexContent>
       <xsd:extension base="bc:Property">
         <xsd:sequence>
-          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="constant" type="bc:Constant"/>
-          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="format" type="bc:Format"/>
-          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="propertyRef" type="bc:PropertyRef"/>
-          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="replace" type="bc:Replace"/>
-          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="toLower" type="bc:ToLower"/>
-          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="toUpper" type="bc:ToUpper"/>
+          <xsd:element form="qualified" minOccurs="0" name="constant" type="bc:Constant"/>
+          <xsd:element form="qualified" minOccurs="0" name="format" type="bc:Format"/>
+          <xsd:element form="qualified" minOccurs="0" name="propertyRef" type="bc:PropertyRef"/>
+          <xsd:element form="qualified" minOccurs="0" name="replace" type="bc:Replace"/>
+          <xsd:element form="qualified" minOccurs="0" name="toLower" type="bc:ToLower"/>
+          <xsd:element form="qualified" minOccurs="0" name="toUpper" type="bc:ToUpper"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -74,7 +73,7 @@
     <xsd:complexContent>
       <xsd:extension base="bc:ValueFilter">
         <xsd:sequence>
-          <xsd:element ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="matches" type="bc:Match"/>
+          <xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="matches" type="bc:Match"/>
         </xsd:sequence>
         <xsd:attribute name="pattern" type="ecore:EString"/>
         <xsd:attribute default="false" name="quotePattern" type="ecore:EBoolean"/>
@@ -172,12 +171,6 @@
       <xsd:extension base="bc:ValueFilter"/>
     </xsd:complexContent>
   </xsd:complexType>
-  <xsd:simpleType ecore:instanceClass="java.net.URL" name="URL">
-    <xsd:annotation>
-      <xsd:documentation>A type that describes an URL. TODO: Needs patterns that restrict the URL. Must be available from somewhere.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:anyURI"/>
-  </xsd:simpleType>
   <xsd:simpleType ecore:instanceClass="java.util.UUID" ecore:name="Uuid" name="uuid">
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"/>
@@ -185,16 +178,19 @@
   </xsd:simpleType>
   <xsd:complexType abstract="true" name="ValueFilter">
     <xsd:sequence>
-      <xsd:element ecore:name="constants" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="constant" type="bc:Constant"/>
-      <xsd:element ecore:name="formats" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="format" type="bc:Format"/>
-      <xsd:element ecore:name="propertyRefs" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="propertyRef" type="bc:PropertyRef"/>
-      <xsd:element ecore:name="replacements" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="replace" type="bc:Replace"/>
-      <xsd:element ecore:name="splits" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="split" type="bc:Split"/>
-      <xsd:element ecore:name="toLowers" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="toLower" type="bc:ToLower"/>
-      <xsd:element ecore:name="toUppers" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="toUpper" type="bc:ToUpper"/>
+      <xsd:element ecore:name="constants" form="qualified" maxOccurs="unbounded" minOccurs="0" name="constant" type="bc:Constant"/>
+      <xsd:element ecore:name="formats" form="qualified" maxOccurs="unbounded" minOccurs="0" name="format" type="bc:Format"/>
+      <xsd:element ecore:name="propertyRefs" form="qualified" maxOccurs="unbounded" minOccurs="0" name="propertyRef" type="bc:PropertyRef"/>
+      <xsd:element ecore:name="replacements" form="qualified" maxOccurs="unbounded" minOccurs="0" name="replace" type="bc:Replace"/>
+      <xsd:element ecore:name="splits" form="qualified" maxOccurs="unbounded" minOccurs="0" name="split" type="bc:Split"/>
+      <xsd:element ecore:name="toLowers" form="qualified" maxOccurs="unbounded" minOccurs="0" name="toLower" type="bc:ToLower"/>
+      <xsd:element ecore:name="toUppers" form="qualified" maxOccurs="unbounded" minOccurs="0" name="toUpper" type="bc:ToUpper"/>
     </xsd:sequence>
   </xsd:complexType>
   <xsd:simpleType ecore:instanceClass="java.util.regex.Pattern" ecore:name="Pattern" name="pattern">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="org.eclipse.buckminster.osgi.filter.Filter" name="Filter">
     <xsd:restriction base="xsd:string"/>
   </xsd:simpleType>
 </xsd:schema>

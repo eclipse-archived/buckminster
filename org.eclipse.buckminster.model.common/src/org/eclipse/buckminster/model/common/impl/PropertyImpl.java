@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * 
  * @generated
  */
-public class PropertyImpl extends EObjectImpl implements Property
+public abstract class PropertyImpl extends EObjectImpl implements Property
 {
 	/**
 	 * The default value of the '{@link #getKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc

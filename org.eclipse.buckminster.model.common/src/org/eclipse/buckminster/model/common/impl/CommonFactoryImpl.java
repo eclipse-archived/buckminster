@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.model.common.*;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -23,6 +25,7 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
@@ -80,6 +83,18 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	 * 
 	 * @generated NOT
 	 */
+	public String convertFilterToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public String convertPatternToString(EDataType eDataType, Object instanceValue)
 	{
 		return instanceValue == null
@@ -127,6 +142,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return convertUuidToString(eDataType, instanceValue);
 		case CommonPackage.PATTERN:
 			return convertPatternToString(eDataType, instanceValue);
+		case CommonPackage.FILTER:
+			return convertFilterToString(eDataType, instanceValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -135,11 +152,13 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public String convertUuidToString(EDataType eDataType, Object instanceValue)
 	{
-		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.STRING, instanceValue);
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
 	}
 
 	/**
@@ -160,8 +179,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return createFormat();
 		case CommonPackage.MATCH:
 			return createMatch();
-		case CommonPackage.PROPERTY:
-			return createProperty();
 		case CommonPackage.PROPERTY_CONSTANT:
 			return createPropertyConstant();
 		case CommonPackage.PROPERTY_ELEMENT:
@@ -223,6 +240,25 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public Filter createFilterFromString(EDataType eDataType, String initialValue)
+	{
+		try
+		{
+			return initialValue == null
+					? null
+					: FilterFactory.newInstance(initialValue);
+		}
+		catch(InvalidSyntaxException e)
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Format createFormat()
@@ -249,6 +285,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return createUuidFromString(eDataType, initialValue);
 		case CommonPackage.PATTERN:
 			return createPatternFromString(eDataType, initialValue);
+		case CommonPackage.FILTER:
+			return createFilterFromString(eDataType, initialValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -273,17 +311,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	public Pattern createPatternFromString(EDataType eDataType, String initialValue)
 	{
 		return Pattern.compile(initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Property createProperty()
-	{
-		PropertyImpl property = new PropertyImpl();
-		return property;
 	}
 
 	/**
@@ -412,11 +439,13 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public UUID createUuidFromString(EDataType eDataType, String initialValue)
 	{
-		return (UUID)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
+		return initialValue == null
+				? null
+				: UUID.fromString(initialValue);
 	}
 
 	/**

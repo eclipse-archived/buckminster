@@ -109,14 +109,6 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	protected MatchItemProvider matchItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.model.common.Property} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected PropertyItemProvider propertyItemProvider;
-
-	/**
 	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.model.common.PropertyConstant}
 	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -338,23 +330,6 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.model.common.Property}. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Adapter createPropertyAdapter()
-	{
-		if(propertyItemProvider == null)
-		{
-			propertyItemProvider = new PropertyItemProvider(this);
-		}
-
-		return propertyItemProvider;
-	}
-
-	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.model.common.PropertyConstant}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -522,8 +497,6 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 			formatItemProvider.dispose();
 		if(matchItemProvider != null)
 			matchItemProvider.dispose();
-		if(propertyItemProvider != null)
-			propertyItemProvider.dispose();
 		if(propertyConstantItemProvider != null)
 			propertyConstantItemProvider.dispose();
 		if(propertyElementItemProvider != null)

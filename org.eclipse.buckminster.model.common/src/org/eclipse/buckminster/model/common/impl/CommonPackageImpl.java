@@ -30,6 +30,7 @@ import org.eclipse.buckminster.model.common.ValueFilter;
 
 import org.eclipse.buckminster.model.common.util.CommonValidator;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -193,6 +194,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * @generated
 	 */
 	private EDataType patternEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EDataType filterEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -367,6 +375,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 
 		documentRootEClass = createEClass(DOCUMENT_ROOT);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__RX_PART);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__BASIC_PROPERTY);
 
 		// Create enums
 		splitTypeEEnum = createEEnum(SPLIT_TYPE);
@@ -375,6 +384,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		propertyKeyEDataType = createEDataType(PROPERTY_KEY);
 		uuidEDataType = createEDataType(UUID);
 		patternEDataType = createEDataType(PATTERN);
+		filterEDataType = createEDataType(FILTER);
 	}
 
 	/**
@@ -462,9 +472,29 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
+	public EReference getDocumentRoot_BasicProperty()
+	{
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EReference getDocumentRoot_RxPart()
 	{
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EDataType getFilter()
+	{
+		return filterEDataType;
 	}
 
 	/**
@@ -1058,7 +1088,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		initEAttribute(getMatch_Replacement(), ecorePackage.getEString(), "replacement", null, 1, 1, Match.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(propertyEClass, Property.class, "Property", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(propertyEClass, Property.class, "Property", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getProperty_Key(), this.getPropertyKey(), "key", null, 1, 1, Property.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProperty_Mutable(), ecorePackage.getEBoolean(), "mutable", null, 0, 1, Property.class,
@@ -1171,6 +1201,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		initEReference(getDocumentRoot_RxPart(), this.getRxPart(), null, "rxPart", null, 0, -2, null, IS_TRANSIENT,
 				IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
 				IS_ORDERED);
+		initEReference(getDocumentRoot_BasicProperty(), this.getProperty(), null, "basicProperty", null, 0, -2, null,
+				IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(splitTypeEEnum, SplitType.class, "SplitType");
@@ -1182,6 +1215,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		initEDataType(propertyKeyEDataType, String.class, "PropertyKey", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(uuidEDataType, java.util.UUID.class, "Uuid", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(patternEDataType, Pattern.class, "Pattern", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(filterEDataType, Filter.class, "Filter", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -1268,6 +1302,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" });
 		addAnnotation(getDocumentRoot_RxPart(), source, new String[] { "kind", "element", "name", "rxPart",
 				"namespace", "##targetNamespace" });
+		addAnnotation(getDocumentRoot_BasicProperty(), source, new String[] { "kind", "element", "name",
+				"basicProperty", "namespace", "##targetNamespace" });
 	}
 
 } // CommonPackageImpl

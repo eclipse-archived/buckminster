@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.model.common.*;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
 
@@ -144,6 +145,16 @@ public class CommonValidator extends EObjectValidator
 	public boolean validateDocumentRoot(EObject documentRoot, DiagnosticChain diagnostics, Map<Object, Object> context)
 	{
 		return validate_EveryDefaultConstraint(documentRoot, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateFilter(Filter filter, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
+		return true;
 	}
 
 	/**
@@ -416,6 +427,8 @@ public class CommonValidator extends EObjectValidator
 			return validateUuid((UUID)value, diagnostics, context);
 		case CommonPackage.PATTERN:
 			return validatePattern((Pattern)value, diagnostics, context);
+		case CommonPackage.FILTER:
+			return validateFilter((Filter)value, diagnostics, context);
 		default:
 			return true;
 		}

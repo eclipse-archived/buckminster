@@ -537,6 +537,14 @@ public interface CommonPackage extends EPackage
 		EReference DOCUMENT_ROOT__RX_PART = eINSTANCE.getDocumentRoot_RxPart();
 
 		/**
+		 * The meta object literal for the '<em><b>Basic Property</b></em>' containment reference feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__BASIC_PROPERTY = eINSTANCE.getDocumentRoot_BasicProperty();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}'
 		 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -573,6 +581,15 @@ public interface CommonPackage extends EPackage
 		 * @generated
 		 */
 		EDataType PATTERN = eINSTANCE.getPattern();
+
+		/**
+		 * The meta object literal for the '<em>Filter</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.osgi.filter.Filter
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getFilter()
+		 * @generated
+		 */
+		EDataType FILTER = eINSTANCE.getFilter();
 
 	}
 
@@ -1626,13 +1643,22 @@ public interface CommonPackage extends EPackage
 	int DOCUMENT_ROOT__RX_PART = 0;
 
 	/**
+	 * The feature id for the '<em><b>Basic Property</b></em>' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__BASIC_PROPERTY = 1;
+
+	/**
 	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = 1;
+	int DOCUMENT_ROOT_FEATURE_COUNT = 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}' enum.
@@ -1670,6 +1696,15 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	int PATTERN = 20;
+
+	/**
+	 * The meta object id for the '<em>Filter</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.osgi.filter.Filter
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getFilter()
+	 * @generated
+	 */
+	int FILTER = 21;
 
 	/**
 	 * Returns the factory that creates the instances of the model. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1757,6 +1792,17 @@ public interface CommonPackage extends EPackage
 	EClass getDocumentRoot();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getBasicProperty
+	 * <em>Basic Property</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Basic Property</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getBasicProperty()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_BasicProperty();
+
+	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRxPart
 	 * <em>Rx Part</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1766,6 +1812,17 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	EReference getDocumentRoot_RxPart();
+
+	/**
+	 * Returns the meta object for data type '{@link org.eclipse.buckminster.osgi.filter.Filter <em>Filter</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for data type '<em>Filter</em>'.
+	 * @see org.eclipse.buckminster.osgi.filter.Filter
+	 * @model instanceClass="org.eclipse.buckminster.osgi.filter.Filter"
+	 * @generated
+	 */
+	EDataType getFilter();
 
 	/**
 	 * Returns the meta object for class ' {@link org.eclipse.buckminster.model.common.Format <em>Format</em>}'. <!--

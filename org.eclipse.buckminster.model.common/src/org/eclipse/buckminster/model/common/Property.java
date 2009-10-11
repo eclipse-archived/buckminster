@@ -12,8 +12,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- begin-user-doc --> A representation of the model object ' <em><b>Property</b></em>'. <!-- end-user-doc -->
  * 
  * <!-- begin-model-doc --> A property that maps a key to a value. Several attributes in the cspec and rmap may be
- * subject to property expansion. TODO: Should subjected attributes use a special naming convention in order to clarify
- * that they will be property expanded? <!-- end-model-doc -->
+ * subject to property expansion. <!-- end-model-doc -->
  * 
  * <p>
  * The following features are supported:
@@ -24,7 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getProperty()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface Property extends EObject

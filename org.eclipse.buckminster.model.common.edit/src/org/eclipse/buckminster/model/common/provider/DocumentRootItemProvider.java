@@ -61,6 +61,7 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(CommonPackage.Literals.DOCUMENT_ROOT__RX_PART);
+			childrenFeatures.add(CommonPackage.Literals.DOCUMENT_ROOT__BASIC_PROPERTY);
 		}
 		return childrenFeatures;
 	}
@@ -129,6 +130,7 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 		switch(notification.getFeatureID(EObject.class))
 		{
 		case CommonPackage.DOCUMENT_ROOT__RX_PART:
+		case CommonPackage.DOCUMENT_ROOT__BASIC_PROPERTY:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}

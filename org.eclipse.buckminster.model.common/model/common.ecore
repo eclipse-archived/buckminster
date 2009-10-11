@@ -74,9 +74,9 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Property">
+  <eClassifiers xsi:type="ecore:EClass" name="Property" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A property that maps a key to a value. Several attributes in the cspec and rmap may be subject to property expansion. TODO: Should subjected attributes use a special naming convention in order to clarify that they will be property expanded?"/>
+      <details key="documentation" value="A property that maps a key to a value. Several attributes in the cspec and rmap may be subject to property expansion."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="#//PropertyKey">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -105,42 +105,42 @@
       <details key="documentation" value="A simple property that maps a key to a constant value."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="constant" eType="#//Constant"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="format" eType="#//Format"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyRef" eType="#//PropertyRef"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="replace" eType="#//Replace"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="toLower" eType="#//ToLower"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="toUpper" eType="#//ToUpper"
-        containment="true">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -164,7 +164,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Replace" eSuperTypes="#//ValueFilter">
     <eStructuralFeatures xsi:type="ecore:EReference" name="matches" upperBound="-1"
-        eType="#//Match" containment="true">
+        eType="#//Match" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -302,7 +302,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ValueFilter" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="constants" upperBound="-1"
-        eType="#//Constant" containment="true">
+        eType="#//Constant" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -310,7 +310,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="formats" upperBound="-1"
-        eType="#//Format" containment="true">
+        eType="#//Format" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -318,7 +318,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyRefs" upperBound="-1"
-        eType="#//PropertyRef" containment="true">
+        eType="#//PropertyRef" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -326,7 +326,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="replacements" upperBound="-1"
-        eType="#//Replace" containment="true">
+        eType="#//Replace" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -334,7 +334,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="splits" upperBound="-1"
-        eType="#//Split" containment="true">
+        eType="#//Split" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -342,7 +342,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="toLowers" upperBound="-1"
-        eType="#//ToLower" containment="true">
+        eType="#//ToLower" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -350,7 +350,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="toUppers" upperBound="-1"
-        eType="#//ToUpper" containment="true">
+        eType="#//ToUpper" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
@@ -378,5 +378,15 @@
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="basicProperty" upperBound="-2"
+        eType="#//Property" changeable="false" volatile="true" transient="true" derived="true"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="basicProperty"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Filter" instanceClassName="org.eclipse.buckminster.osgi.filter.Filter"/>
 </ecore:EPackage>
