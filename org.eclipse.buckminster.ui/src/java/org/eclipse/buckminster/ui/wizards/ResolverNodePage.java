@@ -406,7 +406,7 @@ public class ResolverNodePage extends AbstractQueryPage
 		if(ci == null)
 			return;
 
-		if(!mspec.isExcluded(ci.getComponentIdentifier()))
+		if(!mspec.isExcluded(ci))
 		{
 			Integer nc = m_masterDups.get(ci);
 			int nci;

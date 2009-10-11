@@ -116,8 +116,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			case 2:
 				try
 				{
-					if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier())
-							&& resolution.isMaterializable())
+					if(!context.getMaterializationSpec().isExcluded(resolution) && resolution.isMaterializable())
 					{
 						if(resolution.isMaterialized(context.getArtifactLocation(resolution)))
 							lbl = Messages.yes;
@@ -136,8 +135,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 			default:
 				try
 				{
-					if(!context.getMaterializationSpec().isExcluded(resolution.getComponentIdentifier())
-							&& resolution.isMaterializable())
+					if(!context.getMaterializationSpec().isExcluded(resolution) && resolution.isMaterializable())
 					{
 						if(WorkspaceInfo.getResources(resolution.getCSpec().getComponentIdentifier()).length > 0)
 							lbl = Messages.yes;
@@ -953,7 +951,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		MaterializationContext context = getQueryWizard().getMaterializationContext();
 		IMaterializationSpec mspec = context.getMaterializationSpec();
-		IMaterializationNode node = mspec.getMatchingNode(resolution.getComponentIdentifier());
+		IMaterializationNode node = mspec.getMatchingNode(resolution);
 		boolean useDefaults = node == null;
 		boolean skip = !useDefaults && node.isExclude();
 		boolean canMaterialize = resolution.isMaterializable();
@@ -976,8 +974,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 		try
 		{
 			MaterializationContext context = getQueryWizard().getMaterializationContext();
-			IMaterializationNode node = context.getMaterializationSpec().getMatchingNode(
-					resolution.getComponentIdentifier());
+			IMaterializationNode node = context.getMaterializationSpec().getMatchingNode(resolution);
 			if(skip)
 			{
 				if(node == null || !node.isExclude())
@@ -1012,7 +1009,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 
 		for(Resolution resolution : resolutions)
 		{
-			if(!resolution.isMaterializable() || mspec.isExcluded(resolution.getComponentIdentifier()))
+			if(!resolution.isMaterializable() || mspec.isExcluded(resolution))
 				continue;
 
 			String id = resolution.getRequest().getViewName();
@@ -1024,8 +1021,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage
 				return;
 			}
 
-			if(f.exists()
-					&& mspec.getConflictResolution(resolution.getComponentIdentifier()) == ConflictResolution.FAIL
+			if(f.exists() && mspec.getConflictResolution(resolution) == ConflictResolution.FAIL
 					&& !resolution.isMaterialized(destination))
 			{
 				if(f.isFile())
