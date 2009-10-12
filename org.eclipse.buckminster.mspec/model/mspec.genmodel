@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.mspec/src"
+    modelPluginID="org.eclipse.buckminster.mspec" modelName="Mspec" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="5.0" copyrightFields="false" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/buckminster/MetaData-1.0" value="mspec.xsd"/>
+    </genAnnotations>
+    <genAnnotations source="selectedReferencedPackages">
+      <details key="http://www.eclipse.org/buckminster/Common-1.0" value="common.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <foreignModel>mspec.ecore</foreignModel>
+  <genPackages prefix="Mspec" basePackage="org.eclipse.buckminster" resource="XML"
+      disposableProviderFactory="true" multipleEditorPages="false" extensibleProviderFactory="true"
+      childCreationExtenders="true" ecorePackage="mspec.ecore#/">
+    <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+      <genAnnotations source="mspec.xsd"/>
+    </genAnnotations>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mspec.ecore#//ConflictResolution">
+      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/FAIL"/>
+      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/KEEP"/>
+      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/REPLACE"/>
+      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/UPDATE"/>
+    </genEnums>
+    <genClasses dynamic="true" ecoreClass="mspec.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference mspec.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference mspec.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures children="true" createChild="true" propertyCategory="" ecoreFeature="ecore:EReference mspec.ecore#//DocumentRoot/mspec"/>
+    </genClasses>
+    <genClasses ecoreClass="mspec.ecore#//MaterializationNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/namePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/leafArtifact"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/componentType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/resourcePath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/exclude"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/bindingNamePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/bindingNameReplacement"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mspec.ecore#//MaterializationNode/unpack"/>
+    </genClasses>
+    <genClasses ecoreClass="mspec.ecore#//MaterializationDirective">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mspec.ecore#//MaterializationDirective/documentation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationDirective/propertyGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference mspec.ecore#//MaterializationDirective/properties"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationDirective/conflictResolution"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationDirective/installLocation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationDirective/materializer"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationDirective/workspaceLocation"/>
+    </genClasses>
+    <genClasses ecoreClass="mspec.ecore#//MaterializationSpec">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mspec.ecore#//MaterializationSpec/mspecNodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/shortDesc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/maxParallelJobs"/>
+    </genClasses>
+    <genClasses ecoreClass="mspec.ecore#//Unpack">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//Unpack/expand"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//Unpack/suffix"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

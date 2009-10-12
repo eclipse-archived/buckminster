@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:mspec="http://www.eclipse.org/buckminster/MetaData-1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="mspec" ecore:package="org.eclipse.buckminster.mspec" targetNamespace="http://www.eclipse.org/buckminster/MetaData-1.0">
+  <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="../../org.eclipse.buckminster.model.common/model/common.xsd"/>
+  <xsd:annotation>
+    <xsd:documentation>A replacement pattern matched against the component name when creating a workspace project name. Must be used in combination with bindingNameReplacement</xsd:documentation>
+  </xsd:annotation>
+  <xsd:element name="property" substitutionGroup="bc:basicProperty" type="bc:PropertyConstant"/>
+  <xsd:element name="propertyElement" substitutionGroup="bc:basicProperty" type="bc:PropertyElement"/>
+  <xsd:element name="mspec" type="mspec:MaterializationSpec"/>
+  <xsd:complexType name="MaterializationNode">
+    <xsd:complexContent>
+      <xsd:extension base="mspec:MaterializationDirective">
+        <xsd:sequence>
+          <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="unpack" type="mspec:Unpack"/>
+        </xsd:sequence>
+        <xsd:attribute name="namePattern" type="bc:pattern" use="required">
+          <xsd:annotation>
+            <xsd:documentation>A regular expression pattern that will be matched against component names. The matching occurs in the order that the nodes are declared. The first node that matches a given component is used. No further matching takes place once a node is found.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="leafArtifact" type="ecore:EString">
+          <xsd:annotation>
+            <xsd:documentation>The name of the file system artifact (file or folder) to materialize. This name is optional and normally derived from the remote location.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="componentType" type="ecore:EString">
+          <xsd:annotation>
+            <xsd:documentation>If set, this node will only match components of this type.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="resourcePath" type="ecore:EString">
+          <xsd:annotation>
+            <xsd:documentation>Path to where a match component will end up in the workspace. Only used by the workspace materializer. Typically used when resolving conflicts between equally named features and bundles.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute ecore:unsettable="false" name="exclude" type="ecore:EBoolean">
+          <xsd:annotation>
+            <xsd:documentation>If set, matched components will be excluded from materialization.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="bindingNamePattern" type="bc:pattern"/>
+        <xsd:attribute name="bindingNameReplacement" type="ecore:EString">
+          <xsd:annotation>
+            <xsd:documentation>A replacement string that produces the resulting project name from a name matched by pattern bindingNamePattern.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="filter" type="bc:Filter"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="MaterializationDirective">
+    <xsd:sequence>
+      <xsd:element ecore:resolveProxies="true" form="qualified" minOccurs="0" name="documentation" type="bc:Documentation"/>
+      <xsd:choice ecore:featureMap="propertyGroup" maxOccurs="unbounded">
+        <xsd:element ecore:changeable="false" ecore:lowerBound="1" ecore:name="properties" ecore:upperBound="-1" minOccurs="0" ref="bc:basicProperty"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute default="UPDATE" ecore:unsettable="false" name="conflictResolution" type="mspec:ConflictResolution"/>
+    <xsd:attribute name="installLocation" type="ecore:EString"/>
+    <xsd:attribute name="materializer" type="ecore:EString">
+      <xsd:annotation>
+        <xsd:documentation>The materializer to use. Possible values includes "filesystem", "workspace", and "p2" but other might be added through the buckminster.materializers extension point.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="workspaceLocation" type="ecore:EString">
+      <xsd:annotation>
+        <xsd:documentation>Path to the designated workspace. Only in effect for materializers that has a conceptual understanding of a workspace. Defaults to the installLocation. In a node, this path can be relative to the global path.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="MaterializationSpec">
+    <xsd:complexContent>
+      <xsd:extension base="mspec:MaterializationDirective">
+        <xsd:sequence>
+          <xsd:element ecore:name="mspecNodes" ecore:resolveProxies="true" form="qualified" maxOccurs="unbounded" minOccurs="0" name="mspecNode" type="mspec:MaterializationNode"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="ecore:EString"/>
+        <xsd:attribute name="shortDesc" type="ecore:EString"/>
+        <xsd:attribute name="url" type="ecore:EString">
+          <xsd:annotation>
+            <xsd:documentation>A URL appointing the BillOfMaterials or ComponentQuery to materialize</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute ecore:unsettable="false" name="maxParallelJobs" type="ecore:EInt"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:simpleType name="ConflictResolution">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FAIL"/>
+      <xsd:enumeration value="KEEP"/>
+      <xsd:enumeration value="REPLACE"/>
+      <xsd:enumeration value="UPDATE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="Unpack">
+    <xsd:attribute default="true" ecore:unsettable="false" name="expand" type="ecore:EBoolean">
+      <xsd:annotation>
+        <xsd:documentation>Indicates that the materializer should expand the artifact as part of the unpack.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="suffix" type="ecore:EString">
+      <xsd:annotation>
+        <xsd:documentation>The suffix to be assumed when a suffix cannot be derived from the resource locator appoints the remote resource. This suffix controls the choice of unpacker.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+</xsd:schema>
