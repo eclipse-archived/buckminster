@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmi:id="_H7-JELMIEd6NTfTR_UU7FA" type="EcoreTools" name="psf.ecorediag" measurementUnit="Pixel">
+  <children xmi:type="notation:Node" xmi:id="_H8OAsLMIEd6NTfTR_UU7FA" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_H8PO0LMIEd6NTfTR_UU7FA" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_H8P14LMIEd6NTfTR_UU7FA" type="5001">
+      <children xmi:type="notation:Node" xmi:id="_H8Y_0LMIEd6NTfTR_UU7FA" type="2001">
+        <element xmi:type="ecore:EAttribute" href="psf.ecore#//PSFProvider/psfFile"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_H8Y_0bMIEd6NTfTR_UU7FA"/>
+      </children>
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_H8P14bMIEd6NTfTR_UU7FA"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_H8P14rMIEd6NTfTR_UU7FA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_H8P147MIEd6NTfTR_UU7FA"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_H8Qc8LMIEd6NTfTR_UU7FA" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_H8Qc8bMIEd6NTfTR_UU7FA"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_H8Qc8rMIEd6NTfTR_UU7FA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_H8Qc87MIEd6NTfTR_UU7FA"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_H8OAsbMIEd6NTfTR_UU7FA" fontColor="4210752" fontName="Sans" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="psf.ecore#//PSFProvider"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_H8OAsrMIEd6NTfTR_UU7FA"/>
+  </children>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_H7-JEbMIEd6NTfTR_UU7FA"/>
+  <element xmi:type="ecore:EPackage" href="psf.ecore#/"/>
+</notation:Diagram>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="psf" ecore:package="org.eclipse.buckminster.team.psf">
+  <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:element name="psf" type="PSF"/>
+  <xsd:complexType name="PSF">
+    <xsd:sequence>
+      <xsd:element ecore:name="providers" maxOccurs="unbounded" minOccurs="0" name="provider" type="RepositoryProvider"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="workingSets" type="WorkingSet"/>
+    </xsd:sequence>
+    <xsd:attribute name="version" type="ecore:EString" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="RepositoryProvider">
+    <xsd:sequence>
+      <xsd:element ecore:name="projects" maxOccurs="unbounded" minOccurs="0" name="project" type="Project"/>
+    </xsd:sequence>
+    <xsd:attribute ecore:id="true" name="id" type="ecore:EString" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="WorkingSet">
+    <xsd:sequence>
+      <xsd:element ecore:name="items" maxOccurs="unbounded" minOccurs="0" name="item" type="Item"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="ecore:EString" use="required"/>
+    <xsd:attribute name="label" type="ecore:EString"/>
+    <xsd:attribute name="name" type="ecore:EString"/>
+    <xsd:attribute name="editPageId" type="ecore:EString"/>
+  </xsd:complexType>
+  <xsd:complexType name="Item">
+    <xsd:attribute name="factoryID" type="ecore:EString"/>
+    <xsd:attribute name="elementID" type="ecore:EString"/>
+    <xsd:attribute name="path" type="ecore:EString"/>
+    <xsd:attribute ecore:unsettable="false" name="type" type="ecore:EInt"/>
+  </xsd:complexType>
+  <xsd:complexType name="Project">
+    <xsd:attribute name="reference" type="ecore:EString" use="required"/>
+  </xsd:complexType>
+</xsd:schema>

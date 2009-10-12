@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:psf="http://www.eclipse.org/buckminster/PSFProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="psf" ecore:package="org.eclipse.buckminster.rmap.psf" targetNamespace="http://www.eclipse.org/buckminster/PSFProvider-1.0">
+  <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:import namespace="http://www.eclipse.org/buckminster/RMap-1.0" schemaLocation="../../org.eclipse.buckminster.rmap/model/rmap.xsd"/>
+  <xsd:element ecore:ignore="true" name="PSFProvider" type="psf:PSFProvider"/>
+  <xsd:complexType name="PSFProvider">
+    <xsd:complexContent>
+      <xsd:extension base="rm:Provider">
+        <xsd:attribute name="psfFile" type="ecore:EString"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>
