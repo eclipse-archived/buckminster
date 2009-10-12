@@ -19,27 +19,27 @@
 	</searchPath>
 
 	<searchPath name="platform">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.5))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
 			<uri format="{0}/eclipse/updates/3.5/R-3.5.1-200909170800">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
 			<uri format="{0}/eclipse/updates/3.5.x/M20091007-1025">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=I)(eclipse.release=3.6))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(build.type=I)(eclipse.release=3.6))">
 			<uri format="{0}/eclipse/updates/3.6-I-builds">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=M)(eclipse.release=3.6))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
 			<uri format="{0}/eclipse/updates/3.6milestones/S-3.6M2-200909170100">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.6))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.6))">
 			<uri format="{0}/eclipse/updates/3.6">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
@@ -47,22 +47,22 @@
 	</searchPath>
 
 	<searchPath name="simultanious.release">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
 			<uri format="{0}/releases/maintenance">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.5))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
 			<uri format="{0}/releases/galileo">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(|(build.type=M)(build.type=I))(eclipse.release=3.6))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.6))">
 			<uri format="{0}/releases/staging">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.6))">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.6))">
 			<uri format="{0}/releases/helios">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
