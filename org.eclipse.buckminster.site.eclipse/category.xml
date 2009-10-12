@@ -12,6 +12,9 @@
    <feature id="org.eclipse.buckminster.pde.feature" version="0.0.0">
       <category name="buckminster"/>
    </feature>
+   <feature id="org.eclipse.buckminster.psf.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
    <feature id="org.eclipse.buckminster.subclipse.feature" version="0.0.0">
       <category name="buckminster.subclipse"/>
    </feature>
@@ -28,6 +31,9 @@
       <category name="buckminster.source"/>
    </feature>
    <feature id="org.eclipse.buckminster.pde.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.psf.source.feature" version="0.0.0">
       <category name="buckminster.source"/>
    </feature>
    <feature id="org.eclipse.buckminster.subclipse.source.feature" version="0.0.0">
