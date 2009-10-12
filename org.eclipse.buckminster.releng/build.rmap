@@ -18,89 +18,70 @@
 		</provider>
 	</searchPath>
 
-	<searchPath name="platform_3.5.R">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/eclipse/updates/3.5/R-3.5.1-200909170800?importType=binary">
+	<searchPath name="platform">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.5))">
+			<uri format="{0}/eclipse/updates/3.5/R-3.5.1-200909170800">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
+			<uri format="{0}/eclipse/updates/3.5.x/M20091007-1025">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=I)(eclipse.release=3.6))">
+			<uri format="{0}/eclipse/updates/3.6-I-builds">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=M)(eclipse.release=3.6))">
+			<uri format="{0}/eclipse/updates/3.6milestones/S-3.6M2-200909170100">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.6))">
+			<uri format="{0}/eclipse/updates/3.6">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
 	</searchPath>
 
-	<searchPath name="platform_3.5.M">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/eclipse/updates/3.5.x/M20091007-1025?importType=binary">
+	<searchPath name="simultanious.release">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
+			<uri format="{0}/releases/maintenance">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.5))">
+			<uri format="{0}/releases/galileo">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(|(build.type=M)(build.type=I))(eclipse.release=3.6))">
+			<uri format="{0}/releases/staging">
+				<bc:propertyRef key="eclipse.download.prefix"/>
+			</uri>
+		</provider>
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(&(build.type=R)(eclipse.release=3.6))">
+			<uri format="{0}/releases/helios">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
 	</searchPath>
 
-	<searchPath name="platform_3.6.I">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/eclipse/updates/3.6-I-builds?importType=binary">
+	<searchPath name="orbit">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(build.type=R)">
+			<uri format="{0}/tools/orbit/downloads/drops/R20090825191606/updateSite">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-	</searchPath>
-
-	<searchPath name="platform_3.6.M">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/eclipse/updates/3.6milestones/S-3.6M2-200909170100?importType=binary">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(build.type=M)">
+			<uri format="{0}/tools/orbit/downloads/drops/S20090911225403/updateSite">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-	</searchPath>
-
-	<searchPath name="simultanious.release_3.5.R">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/releases/galileo?importType=binary">
-				<bc:propertyRef key="eclipse.download.prefix"/>
-			</uri>
-		</provider>
-	</searchPath>
-
-	<searchPath name="orbit.R">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/tools/orbit/downloads/drops/R20090529135407/updateSite?importType=binary">
-				<bc:propertyRef key="eclipse.download.prefix"/>
-			</uri>
-		</provider>
-	</searchPath>
-
-	<searchPath name="orbit.M">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/tools/orbit/downloads/drops/R20090825191606/updateSite?importType=binary">
-				<bc:propertyRef key="eclipse.download.prefix"/>
-			</uri>
-		</provider>
-	</searchPath>
-
-	<searchPath name="orbit.I">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/tools/orbit/downloads/drops/S20090911225403/updateSite?importType=binary">
-				<bc:propertyRef key="eclipse.download.prefix"/>
-			</uri>
-		</provider>
-	</searchPath>
-
-	<searchPath name="simultanious.release_3.5.M">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/releases/maintenance?importType=binary">
-				<bc:propertyRef key="eclipse.download.prefix"/>
-			</uri>
-		</provider>
-	</searchPath>
-
-	<searchPath name="simultanious.release_3.6.M">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/releases/staging?importType=binary">
-				<bc:propertyRef key="eclipse.download.prefix"/>
-			</uri>
-		</provider>
-	</searchPath>
-
-	<searchPath name="simultanious.release_3.6.I">
-		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false">
-			<uri format="{0}/releases/helios?importType=binary">
+		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="false" resolutionFilter="(build.type=I)">
+			<uri format="{0}/tools/orbit/downloads/drops/I20090920041100/updateSite">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
@@ -109,46 +90,43 @@
 	<searchPath name="subclipse">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
 			source="true">
-			<uri format="http://subclipse.tigris.org/update_1.6.x?importType=binary" />
+			<uri format="http://subclipse.tigris.org/update_1.6.x" />
 		</provider>
 	</searchPath>
 
 	<searchPath name="svnkit">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
 			source="true">
-			<uri format="http://eclipse.svnkit.com/1.3.x?importType=binary" />
+			<uri format="http://eclipse.svnkit.com/1.3.x" />
 		</provider>
 	</searchPath>
 
 	<searchPath name="polarion">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
 			source="true">
-			<uri format="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site?importType=binary" />
+			<uri format="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site" />
 		</provider>
 	</searchPath>
 
 	<searchPath name="amalgam">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
 			source="false">
-			<uri format="{0}/modeling/amalgam/dsltk/downloads/drops/S20090703-0844?importType=binary">
+			<uri format="{0}/modeling/amalgam/dsltk/downloads/drops/S20090703-0844">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
 	</searchPath>
 
-	<searchPath name="gef.R">
+	<searchPath name="gef">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
-			source="false">
-			<uri format="{0}/tools/gef/updates/releases?importType=binary">
+			source="false" resolutionFilter="(build.type=R)">
+			<uri format="{0}/tools/gef/updates/releases">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
-	</searchPath>
-
-	<searchPath name="gef.M">
 		<provider readerType="eclipse.import" componentTypes="osgi.bundle,eclipse.feature" mutable="false"
-			source="false">
-			<uri format="{0}/tools/gef/updates/milestones?importType=binary">
+			source="false" resolutionFilter="(!(build.type=R))">
+			<uri format="{0}/tools/gef/updates/milestones">
 				<bc:propertyRef key="eclipse.download.prefix"/>
 			</uri>
 		</provider>
@@ -173,11 +151,11 @@
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.buckminster(\..+)?" />
 	<locator searchPathRef="buckminster" pattern="^org\.slf4j\.extendable$" />
 	<locator searchPathRef="buckminster" pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" />
-	<locator searchPathRef="gef.${build.type}" pattern="^org\.eclipse\.zest(\..+)?$" />
-	<locator searchPathRef="gef.${build.type}" pattern="^org\.eclipse\.draw2d(\..+)?$" />
-	<locator searchPathRef="orbit.${build.type}" pattern="^com\.ibm\.icu\.base$" />
-	<locator searchPathRef="platform_${eclipse.release}.${build.type}" failOnError="false"/>
-	<locator searchPathRef="simultanious.release_${eclipse.release}.${build.type}" failOnError="false"/>
+	<locator searchPathRef="gef" pattern="^org\.eclipse\.zest(\..+)?$" />
+	<locator searchPathRef="gef" pattern="^org\.eclipse\.draw2d(\..+)?$" />
+	<locator searchPathRef="orbit" pattern="^com\.ibm\.icu\.base$" />
+	<locator searchPathRef="platform" failOnError="false"/>
+	<locator searchPathRef="simultanious.release" failOnError="false"/>
 	<locator searchPathRef="pde.cvs" pattern="^org\.eclipse\.pde\.launching$" />
 	<locator searchPathRef="emma" pattern="^com\.mountainminds\.eclemma\.core$" />
 	<locator searchPathRef="svnkit" pattern="^org\.tmatesoft\.svnkit(\..+)?" />
