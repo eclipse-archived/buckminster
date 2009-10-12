@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -78,8 +79,7 @@ public class SearchPath extends AbstractSaxableElement
 	}
 
 	/**
-	 * Find a provider that meets the requirements as closely as possible. All requirements has to be met but too much
-	 * capabilities is considered a minus.
+	 * Find a provider that meets the requirements as closely as possible.
 	 */
 	public ProviderMatch getProvider(NodeQuery query, List<Provider> noGoodList, MultiStatus problemCollector,
 			IProgressMonitor monitor) throws CoreException
@@ -99,9 +99,16 @@ public class SearchPath extends AbstractSaxableElement
 				if(noGoodList.contains(provider))
 					continue;
 
+				Filter[] filterHandle = new Filter[1];
+				if(!provider.isFilterMatchFor(query, filterHandle))
+				{
+					query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);
+					continue;
+				}
+
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, provider.getReaderTypeId(), provider.getURI());
-				ProviderMatch match = provider.findMatch(query, problemCollector, MonitorUtils
-						.subMonitor(monitor, 1000));
+				ProviderMatch match = provider.findMatch(query, problemCollector,
+						MonitorUtils.subMonitor(monitor, 1000));
 				if(match == null)
 				{
 					noGoodList.add(provider);
@@ -113,8 +120,8 @@ public class SearchPath extends AbstractSaxableElement
 
 				if((score.ordinal() >= ProviderScore.FAIR.ordinal() && IReaderType.LOCAL.equals(readerType))
 						|| (score.ordinal() >= ProviderScore.GOOD.ordinal() && desiredVersion != null
-								&& desiredVersion.getMinimum().equals(match.getVersionMatch().getVersion()) && desiredVersion
-								.getMinimum().equals(desiredVersion.getMaximum())))
+								&& desiredVersion.getMinimum().equals(match.getVersionMatch().getVersion()) && desiredVersion.getMinimum().equals(
+								desiredVersion.getMaximum())))
 				{
 					// No use continuing the search. It won't get better
 					// than this.
@@ -128,18 +135,18 @@ public class SearchPath extends AbstractSaxableElement
 					if(bestMatch != null)
 					{
 						Provider rejected = bestMatch.getOriginalProvider();
-						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), rejected
-								.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, provider
-								.getReaderTypeId(), provider.getURI()));
+						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(),
+								rejected.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match,
+										provider.getReaderTypeId(), provider.getURI()));
 					}
 					bestMatch = match;
 					continue;
 				}
 
 				Provider best = bestMatch.getOriginalProvider();
-				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), provider
-						.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), best
-						.getURI()));
+				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(),
+						provider.getURI(), NLS.bind(Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(),
+								best.getURI()));
 			}
 
 			if(bestMatch == null)

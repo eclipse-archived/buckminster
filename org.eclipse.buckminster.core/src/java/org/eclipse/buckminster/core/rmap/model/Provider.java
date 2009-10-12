@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
@@ -215,8 +216,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
 								readerType, getURI(), String.format(NLS.bind(
 										Messages.Components_of_type_0_are_not_supported, componentTypeID)));
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision
-								.toString(), null));
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK,
+								decision.toString(), null));
 					}
 					return null;
 				}
@@ -383,6 +384,35 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	public final boolean hasSource()
 	{
 		return m_source;
+	}
+
+	/**
+	 * Returns true if this provider is a match for the given <code>query</code> with respect to provided properties.
+	 * The method will update the filter attributes map of the query context.
+	 * 
+	 * @param The
+	 *            query to match
+	 * @param A
+	 *            one element array that will receive the failing filter. Can be <code>null</code>.
+	 * @return True if this resolution is a match for the given query.
+	 * @see RMContext#getFilterAttributeUsageMap()
+	 */
+	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter)
+	{
+		if(m_resolutionFilter == null)
+			return true;
+
+		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
+		Filter resFilter = getResolutionFilter();
+		Map<String, ? extends Object> properties = query.getProperties();
+
+		m_resolutionFilter.addConsultedAttributes(attributeUsageMap);
+		if(m_resolutionFilter.matchCase(properties))
+			return true;
+
+		if(failingFilter != null)
+			failingFilter[0] = resFilter;
+		return false;
 	}
 
 	/**

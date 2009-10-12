@@ -486,33 +486,19 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 */
 	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter)
 	{
-		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
-		Filter resFilter = getProvider().getResolutionFilter();
-		Map<String, ? extends Object> properties = query.getProperties();
-
-		if(resFilter != null)
-		{
-			resFilter.addConsultedAttributes(attributeUsageMap);
-			if(!resFilter.matchCase(properties))
-			{
-				if(failingFilter != null)
-					failingFilter[0] = resFilter;
-				return false;
-			}
-		}
-
 		Filter cspecFilter = getCSpec().getFilter();
-		if(cspecFilter != null)
-		{
-			cspecFilter.addConsultedAttributes(attributeUsageMap);
-			if(!cspecFilter.matchCase(properties))
-			{
-				if(failingFilter != null)
-					failingFilter[0] = cspecFilter;
-				return false;
-			}
-		}
-		return true;
+		if(cspecFilter == null)
+			return true;
+
+		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
+		Map<String, ? extends Object> properties = query.getProperties();
+		cspecFilter.addConsultedAttributes(attributeUsageMap);
+		if(cspecFilter.matchCase(properties))
+			return true;
+
+		if(failingFilter != null)
+			failingFilter[0] = cspecFilter;
+		return false;
 	}
 
 	/**
