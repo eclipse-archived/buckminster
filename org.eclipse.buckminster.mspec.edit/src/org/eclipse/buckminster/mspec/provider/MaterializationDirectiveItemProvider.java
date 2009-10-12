@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.provider.util.ExtensionPropertyDescriptor;
 import org.eclipse.buckminster.mspec.ConflictResolution;
 import org.eclipse.buckminster.mspec.MaterializationDirective;
 import org.eclipse.buckminster.mspec.MspecPackage;
@@ -198,17 +199,18 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	/**
 	 * This adds a property descriptor for the Materializer feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected void addMaterializerPropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+		itemPropertyDescriptors.add(new ExtensionPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_MaterializationDirective_materializer_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_materializer_feature",
 						"_UI_MaterializationDirective_type"),
 				MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__MATERIALIZER, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null, "org.eclipse.buckminster.core.materializers",
+				"id", true));
 	}
 
 	/**

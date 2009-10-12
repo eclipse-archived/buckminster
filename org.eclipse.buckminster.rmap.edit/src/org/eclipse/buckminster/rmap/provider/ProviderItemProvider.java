@@ -172,7 +172,7 @@ public class ProviderItemProvider extends ItemProviderAdapter implements IEditin
 						"_UI_Provider_componentTypes_feature", "_UI_Provider_type"),
 				RmapPackage.Literals.PROVIDER__COMPONENT_TYPES, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null, "org.eclipse.buckminster.core.componentTypes",
-				"id"));
+				"id", false));
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class ProviderItemProvider extends ItemProviderAdapter implements IEditin
 						"_UI_Provider_readerType_feature", "_UI_Provider_type"),
 				RmapPackage.Literals.PROVIDER__READER_TYPE, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null, "org.eclipse.buckminster.core.readerTypes",
-				"id"));
+				"id", false));
 	}
 
 	/**

@@ -11,6 +11,7 @@ import java.util.List;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.model.common.provider.util.ExtensionPropertyDescriptor;
 import org.eclipse.buckminster.mspec.MaterializationNode;
 import org.eclipse.buckminster.mspec.MspecPackage;
 
@@ -165,16 +166,17 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	/**
 	 * This adds a property descriptor for the Component Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected void addComponentTypePropertyDescriptor(Object object)
 	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+		itemPropertyDescriptors.add(new ExtensionPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_MaterializationNode_componentType_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_MaterializationNode_componentType_feature",
 						"_UI_MaterializationNode_type"), MspecPackage.Literals.MATERIALIZATION_NODE__COMPONENT_TYPE,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null,
+				"org.eclipse.buckminster.core.componentTypes", "id", true));
 	}
 
 	/**
