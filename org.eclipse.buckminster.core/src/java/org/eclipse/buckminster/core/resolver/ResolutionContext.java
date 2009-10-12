@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
+import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.runtime.Logger;
@@ -55,6 +56,13 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 				: new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), parentContext));
 		m_componentQuery = componentQuery;
 		m_parentContext = parentContext;
+	}
+
+	public ResolutionContext(MaterializationSpec mspec, ComponentQuery componentQuery)
+	{
+		super(new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), mspec.getProperties()));
+		m_componentQuery = componentQuery;
+		m_parentContext = null;
 	}
 
 	@Override
