@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.model.common.provider.util.ExtensionPropertyDescriptor;
 import org.eclipse.buckminster.mspec.MaterializationNode;
 import org.eclipse.buckminster.mspec.MspecPackage;
+import org.eclipse.buckminster.osgi.filter.Filter;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -87,18 +88,27 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object)
 	{
-		Pattern labelValue = ((MaterializationNode)object).getNamePattern();
-		String label = labelValue == null
-				? null
-				: labelValue.toString();
-		return label == null || label.length() == 0
-				? getString("_UI_MaterializationNode_type")
-				: getString("_UI_MaterializationNode_type") + " " + label;
+		MaterializationNode node = (MaterializationNode)object;
+		StringBuilder bld = new StringBuilder();
+		bld.append(getString("_UI_MaterializationNode_type"));
+		Pattern pattern = node.getNamePattern();
+		if(pattern != null)
+		{
+			bld.append(' ');
+			bld.append(pattern);
+		}
+		Filter rule = node.getFilter();
+		if(rule != null)
+		{
+			bld.append(' ');
+			bld.append(rule);
+		}
+		return bld.toString();
 	}
 
 	/**
