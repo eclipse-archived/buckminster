@@ -152,6 +152,50 @@ public class PropertyItemProvider extends ItemProviderAdapter implements IEditin
 				true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
+	protected static void appendSanitized(StringBuilder bld, String str)
+	{
+		if(str == null)
+		{
+			bld.append("<null>");
+			return;
+		}
+		boolean truncated = false;
+		int top = str.length();
+		if(top > 40)
+		{
+			top = 37;
+			truncated = true;
+		}
+
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = str.charAt(idx);
+			switch(c)
+			{
+			case '\n':
+				bld.append("\\n");
+				continue;
+			case '\r':
+				bld.append("\\r");
+				continue;
+			case '\t':
+				bld.append("\\t");
+				continue;
+			case ' ':
+				break;
+			default:
+				if(Character.isWhitespace(c) || Character.isISOControl(c))
+				{
+					bld.append(String.format("\\u%04x", Character.valueOf(c)));
+					continue;
+				}
+			}				
+			bld.append(c);
+		}
+		if(truncated)
+			bld.append("...");
+	}
+
 	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
