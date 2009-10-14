@@ -93,7 +93,7 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 			images[0] = image;
 			positions[0] = OverlaidImage.BASIC;
 
-			images[1] = getResourceLocator().getImage("full/ovr16/Warning");
+			images[1] = getResourceLocator().getImage("full/ovr16/Error");
 			positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
 
 			image = new OverlaidImage(images, positions);
