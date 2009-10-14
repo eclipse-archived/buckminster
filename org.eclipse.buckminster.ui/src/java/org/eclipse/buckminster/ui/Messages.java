@@ -654,6 +654,24 @@ public class Messages extends NLS
 
 	public static String yes;
 
+	public static String buckminster_console_preferences;
+
+	public static String show_SVN_console_automatically_when_command_is_run;
+
+	public static String show_SVN_console_automatically_when_an_error_is_encountered;
+
+	public static String console_text_color_settings_with_colon;
+
+	public static String command_line_with_colon;
+
+	public static String message_with_colon;
+
+	public static String error_with_colon;
+
+	public static String limit_console_output;
+
+	public static String console_buffer_size_bracket_characters_bracket_with_colon;
+
 	static
 	{
 		// initialize resource bundle

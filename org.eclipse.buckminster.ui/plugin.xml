@@ -62,6 +62,15 @@
 			name="%PreferencePage.name">
 		</page>
 	</extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.eclipse.buckminster.ui.prefs.BuckminsterPreferencePage"
+          class="org.eclipse.buckminster.ui.prefs.ConsolePreferencePage"
+          id="org.eclipse.buckminster.ui.prefs.ConsolePreferencePage"
+          name="%ConsolePreferencePage.name">
+    </page>
+ </extension>
 	<extension point="org.eclipse.buckminster.runtime.logReceivers">
 		<logreceiver
 			class="org.eclipse.buckminster.ui.internal.EclipseConsoleLogReceiver" />

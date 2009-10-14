@@ -13,12 +13,9 @@ package org.eclipse.buckminster.ui.internal;
 import java.io.OutputStream;
 
 import org.eclipse.buckminster.runtime.ILogReceiver;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 /**
@@ -29,39 +26,26 @@ public class EclipseConsoleLogReceiver implements ILogReceiver
 	public OutputStream start(String title, String type, boolean activateOnWrite, boolean errorStream)
 	{
 		IConsoleManager mgr = ConsolePlugin.getDefault().getConsoleManager();
-		IOConsole ourConsole = null;
+		BuckminsterIOConsole ourConsole = null;
 		for(IConsole console : mgr.getConsoles())
 		{
-			if(console instanceof IOConsole && title.equals(console.getName()) && type.equals(console.getType()))
+			if(console instanceof BuckminsterIOConsole && title.equals(console.getName())
+					&& type.equals(console.getType()))
 			{
-				ourConsole = (IOConsole)console;
+				ourConsole = (BuckminsterIOConsole)console;
 				break;
 			}
 		}
 		if(ourConsole == null)
 		{
-			ourConsole = new IOConsole(title, type, null);
+			ourConsole = new BuckminsterIOConsole(title, type);
 			mgr.addConsoles(new IConsole[] { ourConsole });
 
 			// Don't activate the console. It will be activated on
 			// first write.
 		}
 
-		final IOConsoleOutputStream stream = ourConsole.newOutputStream();
-		if(errorStream)
-		{
-			// Use red color to distinguish errors and warnings from normal output
-			//
-			final Display display = Display.getDefault();
-			display.syncExec(new Runnable()
-			{
-				public void run()
-				{
-					stream.setColor(display.getSystemColor(SWT.COLOR_RED));
-				}
-			});
-		}
-		stream.setActivateOnWrite(activateOnWrite);
+		final IOConsoleOutputStream stream = ourConsole.newOutputStream(errorStream);
 		return stream;
 	}
 }

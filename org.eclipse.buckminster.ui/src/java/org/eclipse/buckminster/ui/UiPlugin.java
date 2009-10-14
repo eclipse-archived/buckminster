@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -109,6 +110,20 @@ public class UiPlugin extends AbstractUIPlugin
 	public static ImageDescriptor getImageDescriptor(String path)
 	{
 		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.buckminster.ui", path); //$NON-NLS-1$
+	}
+
+	/**
+	 * Returns the standard display to be used. The method first checks, if the thread calling this method has an
+	 * associated display. If so, this display is returned. Otherwise the method returns the default display.
+	 */
+	public static Display getStandardDisplay()
+	{
+		Display display = Display.getCurrent();
+		if(display == null)
+		{
+			display = Display.getDefault();
+		}
+		return display;
 	}
 
 	public static IStatus toStatus(Throwable t)
@@ -228,5 +243,4 @@ public class UiPlugin extends AbstractUIPlugin
 		super.stop(context);
 		s_plugin = null;
 	}
-
 }
