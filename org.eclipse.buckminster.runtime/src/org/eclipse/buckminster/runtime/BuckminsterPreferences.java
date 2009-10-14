@@ -37,6 +37,13 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		s_defaultNode.putInt(CONNECTION_RETRY_COUNT, CONNECTION_RETRY_COUNT_DEFAULT);
 		s_defaultNode.putInt(CONNECTION_RETRY_DELAY, CONNECTION_RETRY_DELAY_DEFAULT);
 		s_defaultNode.putBoolean(OPML_SUPPORT, OPML_SUPPORT_DEFAULT);
+		s_defaultNode.putBoolean(PREF_CONSOLE_SHOW_ON_MESSAGE, PREF_CONSOLE_SHOW_ON_MESSAGE_DEFAULT);
+		s_defaultNode.putBoolean(PREF_CONSOLE_SHOW_ON_ERROR, PREF_CONSOLE_SHOW_ON_ERROR_DEFAULT);
+		s_defaultNode.putBoolean(PREF_CONSOLE_LIMIT_OUTPUT, PREF_CONSOLE_LIMIT_OUTPUT_DEFAULT);
+		s_defaultNode.putInt(PREF_CONSOLE_HIGH_WATER_MARK, PREF_CONSOLE_HIGH_WATER_MARK_DEFAULT);
+		s_defaultNode.put(PREF_CONSOLE_MESSAGE_COLOR, PREF_CONSOLE_MESSAGE_COLOR_DEFAULT);
+		s_defaultNode.put(PREF_CONSOLE_ERROR_COLOR, PREF_CONSOLE_ERROR_COLOR_DEFAULT);
+
 		try
 		{
 			s_defaultNode.flush();
@@ -95,6 +102,21 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		return s_prefsNode.getInt(CONNECTION_RETRY_DELAY, CONNECTION_RETRY_DELAY_DEFAULT);
 	}
 
+	public static String getConsoleErrorColor()
+	{
+		return s_prefsNode.get(PREF_CONSOLE_ERROR_COLOR, PREF_CONSOLE_ERROR_COLOR_DEFAULT);
+	}
+
+	public static int getConsoleHighWaterMark()
+	{
+		return s_prefsNode.getInt(PREF_CONSOLE_HIGH_WATER_MARK, PREF_CONSOLE_HIGH_WATER_MARK_DEFAULT);
+	}
+
+	public static String getConsoleMessageColor()
+	{
+		return s_prefsNode.get(PREF_CONSOLE_MESSAGE_COLOR, PREF_CONSOLE_MESSAGE_COLOR_DEFAULT);
+	}
+
 	public static IEclipsePreferences getDefaultNode()
 	{
 		return s_defaultNode;
@@ -129,6 +151,21 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static String getSiteName()
 	{
 		return s_prefsNode.get(SITE_NAME, SITE_NAME_DEFAULT);
+	}
+
+	public static boolean isConsoleLimitOutput()
+	{
+		return s_prefsNode.getBoolean(PREF_CONSOLE_LIMIT_OUTPUT, PREF_CONSOLE_LIMIT_OUTPUT_DEFAULT);
+	}
+
+	public static boolean isConsoleShowOnError()
+	{
+		return s_prefsNode.getBoolean(PREF_CONSOLE_SHOW_ON_ERROR, PREF_CONSOLE_SHOW_ON_ERROR_DEFAULT);
+	}
+
+	public static boolean isConsoleShowOnMessage()
+	{
+		return s_prefsNode.getBoolean(PREF_CONSOLE_SHOW_ON_MESSAGE, PREF_CONSOLE_SHOW_ON_MESSAGE_DEFAULT);
 	}
 
 	public static boolean isCustomQuerySortOrder()
@@ -172,6 +209,42 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static void setConnectionRetryDelay(int retryDelay)
 	{
 		s_prefsNode.putInt(CONNECTION_RETRY_DELAY, retryDelay);
+	}
+
+	public static void setConsoleErrorColor(String color)
+	{
+		if(color == null)
+			s_prefsNode.remove(PREF_CONSOLE_ERROR_COLOR);
+		else
+			s_prefsNode.put(PREF_CONSOLE_ERROR_COLOR, color);
+	}
+
+	public static void setConsoleHighWaterMark(int waterMark)
+	{
+		s_prefsNode.putInt(PREF_CONSOLE_HIGH_WATER_MARK, waterMark);
+	}
+
+	public static void setConsoleLimitOutput(boolean flag)
+	{
+		s_prefsNode.putBoolean(PREF_CONSOLE_LIMIT_OUTPUT, flag);
+	}
+
+	public static void setConsoleMessageColor(String color)
+	{
+		if(color == null)
+			s_prefsNode.remove(PREF_CONSOLE_MESSAGE_COLOR);
+		else
+			s_prefsNode.put(PREF_CONSOLE_MESSAGE_COLOR, color);
+	}
+
+	public static void setConsoleShowOnError(boolean flag)
+	{
+		s_prefsNode.putBoolean(PREF_CONSOLE_SHOW_ON_ERROR, flag);
+	}
+
+	public static void setConsoleShowOnMessage(boolean flag)
+	{
+		s_prefsNode.putBoolean(PREF_CONSOLE_SHOW_ON_MESSAGE, flag);
 	}
 
 	public static void setCustomQueryResolverSortOrder(boolean flag)

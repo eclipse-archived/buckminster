@@ -51,4 +51,28 @@ public interface IBuckminsterPreferenceConstants
 
 	public static final boolean OPML_SUPPORT_DEFAULT = false;
 
+	public static final String PREF_CONSOLE_MESSAGE_COLOR = "pref_console_message_color"; //$NON-NLS-1$
+
+	public static final String PREF_CONSOLE_MESSAGE_COLOR_DEFAULT = "0,0,0"; //$NON-NLS-1$
+
+	public static final String PREF_CONSOLE_ERROR_COLOR = "pref_console_error_color"; //$NON-NLS-1$
+
+	public static final String PREF_CONSOLE_ERROR_COLOR_DEFAULT = "255,0,0"; //$NON-NLS-1$
+
+	public static final String PREF_CONSOLE_SHOW_ON_ERROR = "pref_console_show_on_error"; //$NON-NLS-1$
+
+	public static final boolean PREF_CONSOLE_SHOW_ON_ERROR_DEFAULT = true;
+
+	public static final String PREF_CONSOLE_SHOW_ON_MESSAGE = "pref_console_show_on_message"; //$NON-NLS-1$
+
+	public static final boolean PREF_CONSOLE_SHOW_ON_MESSAGE_DEFAULT = false;
+
+	public static final String PREF_CONSOLE_LIMIT_OUTPUT = "pref_console_limit_output"; //$NON-NLS-1$
+
+	public static final boolean PREF_CONSOLE_LIMIT_OUTPUT_DEFAULT = true;
+
+	public static final String PREF_CONSOLE_HIGH_WATER_MARK = "pref_console_high_water_mark"; //$NON-NLS-1$
+
+	public static final int PREF_CONSOLE_HIGH_WATER_MARK_DEFAULT = 500000;
+
 }
