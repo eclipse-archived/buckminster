@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.emf.cdo.site.eclipse"
+      label="Eclipse"
+      version="1.0.0.qualifier">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.emf.cdo"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.cdo.defs"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.cdo.doc"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.cdo.examples"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.cdo.server"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.cdo.server.product"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.cdo.sdk"
+         version="0.0.0"/>
+
+</feature>
