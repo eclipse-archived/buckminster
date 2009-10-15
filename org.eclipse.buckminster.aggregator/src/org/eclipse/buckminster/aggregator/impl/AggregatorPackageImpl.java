@@ -1242,6 +1242,10 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEBoolean(), "enabledOnly", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		op = addEOperation(aggregatorEClass, this.getMetadataRepositoryReference(),
+				"getAllMetadataRepositoryReferences", 0, -1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEBoolean(), "enabledOnly", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(mappedRepositoryEClass, MappedRepository.class, "MappedRepository", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getMappedRepository_Products(), this.getProduct(), null, "products", null, 0, -1,

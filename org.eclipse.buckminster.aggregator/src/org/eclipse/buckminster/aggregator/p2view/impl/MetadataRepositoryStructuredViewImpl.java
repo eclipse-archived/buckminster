@@ -38,6 +38,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * Properties</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getMetadataRepository
  * <em>Metadata Repository</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#isLoaded <em>Loaded
+ * </em>}</li>
  * </ul>
  * </p>
  * 
@@ -106,13 +108,33 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	protected MetadataRepository metadataRepository;
 
 	/**
+	 * The default value of the '{@link #isLoaded() <em>Loaded</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #isLoaded()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean LOADED_EDEFAULT = false;
+
+	/**
+	 * The flag representing the value of the '{@link #isLoaded() <em>Loaded</em>}' attribute. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @see #isLoaded()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int LOADED_EFLAG = 1 << 0;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected MetadataRepositoryStructuredViewImpl()
 	{
-		super();
+		this(null);
 	}
 
 	/**
@@ -124,6 +146,7 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	{
 		super();
 		setMetadataRepository(metadataRepository);
+		setLoaded(false);
 	}
 
 	/**
@@ -209,6 +232,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return getProperties();
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
 			return getMetadataRepository();
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED:
+			return isLoaded();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -253,6 +278,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return properties != null;
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
 			return metadataRepository != null;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED:
+			return ((eFlags & LOADED_EFLAG) != 0) != LOADED_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -278,6 +305,9 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return;
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
 			setMetadataRepository((MetadataRepository)newValue);
+			return;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED:
+			setLoaded((Boolean)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -305,6 +335,9 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY:
 			setMetadataRepository((MetadataRepository)null);
 			return;
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED:
+			setLoaded(LOADED_EDEFAULT);
+			return;
 		}
 		super.eUnset(featureID);
 	}
@@ -322,9 +355,22 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public MetadataRepository getMetadataRepository()
+	{
+		if(!isLoaded())
+			return null;
+
+		return getMetadataRepositoryGen();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public MetadataRepository getMetadataRepositoryGen()
 	{
 		return metadataRepository;
 	}
@@ -354,6 +400,16 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	 * 
 	 * @generated
 	 */
+	public boolean isLoaded()
+	{
+		return (eFlags & LOADED_EFLAG) != 0;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setInstallableUnitList(InstallableUnits newInstallableUnitList)
 	{
 		if(newInstallableUnitList != installableUnitList)
@@ -373,6 +429,23 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			eNotify(new ENotificationImpl(this, Notification.SET,
 					P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST, newInstallableUnitList,
 					newInstallableUnitList));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setLoaded(boolean newLoaded)
+	{
+		boolean oldLoaded = (eFlags & LOADED_EFLAG) != 0;
+		if(newLoaded)
+			eFlags |= LOADED_EFLAG;
+		else
+			eFlags &= ~LOADED_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED, oldLoaded, newLoaded));
 	}
 
 	/**
@@ -454,6 +527,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", loaded: ");
+		result.append((eFlags & LOADED_EFLAG) != 0);
 		result.append(')');
 		return result.toString();
 	}

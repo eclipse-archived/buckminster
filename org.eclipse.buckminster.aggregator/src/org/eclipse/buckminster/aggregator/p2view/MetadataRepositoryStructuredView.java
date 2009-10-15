@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * </em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getMetadataRepository <em>
  * Metadata Repository</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#isLoaded <em>Loaded</em>}</li>
  * </ul>
  * </p>
  * 
@@ -100,6 +101,22 @@ public interface MetadataRepositoryStructuredView extends EObject
 	Properties getProperties();
 
 	/**
+	 * Returns the value of the '<em><b>Loaded</b></em>' attribute. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Loaded</em>' attribute isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Loaded</em>' attribute.
+	 * @see #setLoaded(boolean)
+	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getMetadataRepositoryStructuredView_Loaded()
+	 * @model
+	 * @generated
+	 */
+	boolean isLoaded();
+
+	/**
 	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#getInstallableUnitList
 	 * <em>Installable Unit List</em>}' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -110,6 +127,18 @@ public interface MetadataRepositoryStructuredView extends EObject
 	 * @generated
 	 */
 	void setInstallableUnitList(InstallableUnits value);
+
+	/**
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#isLoaded <em>Loaded</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Loaded</em>' attribute.
+	 * @see #isLoaded()
+	 * @generated
+	 */
+	void setLoaded(boolean value);
 
 	/**
 	 * Sets the value of the '

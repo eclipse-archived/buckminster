@@ -185,7 +185,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		switch(notification.getFeatureID(MetadataRepositoryReference.class))
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
-			onLocationChange(repoRef);
+			if(notification.getNewStringValue() != null
+					&& !notification.getNewStringValue().equals(notification.getOldStringValue())
+					|| notification.getOldStringValue() != null
+					&& !notification.getOldStringValue().equals(notification.getNewStringValue()))
+				onLocationChange(repoRef);
 			// no 'break' here is an intention - refresh nodes that may have been affected
 
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:

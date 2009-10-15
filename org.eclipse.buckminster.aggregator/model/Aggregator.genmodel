@@ -365,6 +365,7 @@
         <genFeatures property="Readonly" children="true" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/properties"/>
         <genFeatures property="Readonly" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/metadataRepository"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/loaded"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/InstallableUnits">
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"

@@ -88,6 +88,14 @@ public interface P2viewPackage extends EPackage
 		EReference METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY = eINSTANCE.getMetadataRepositoryStructuredView_MetadataRepository();
 
 		/**
+		 * The meta object literal for the '<em><b>Loaded</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED = eINSTANCE.getMetadataRepositoryStructuredView_Loaded();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.InstallableUnitsImpl
 		 * <em>Installable Units</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -719,13 +727,21 @@ public interface P2viewPackage extends EPackage
 	int METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY = 3;
 
 	/**
+	 * The feature id for the '<em><b>Loaded</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED = 4;
+
+	/**
 	 * The number of structural features of the '<em>Metadata Repository Structured View</em>' class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW_FEATURE_COUNT = 4;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.InstallableUnitsImpl
@@ -2839,6 +2855,18 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMetadataRepositoryStructuredView_InstallableUnitList();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#isLoaded <em>Loaded</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Loaded</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView#isLoaded()
+	 * @see #getMetadataRepositoryStructuredView()
+	 * @generated
+	 */
+	EAttribute getMetadataRepositoryStructuredView_Loaded();
 
 	/**
 	 * Returns the meta object for the containment reference '

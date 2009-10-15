@@ -316,6 +316,7 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		createEReference(metadataRepositoryStructuredViewEClass, METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES);
 		createEReference(metadataRepositoryStructuredViewEClass,
 				METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY);
+		createEAttribute(metadataRepositoryStructuredViewEClass, METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED);
 
 		installableUnitsEClass = createEClass(INSTALLABLE_UNITS);
 		createEReference(installableUnitsEClass, INSTALLABLE_UNITS__CATEGORY_CONTAINER);
@@ -887,6 +888,16 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 	 * 
 	 * @generated
 	 */
+	public EAttribute getMetadataRepositoryStructuredView_Loaded()
+	{
+		return (EAttribute)metadataRepositoryStructuredViewEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EReference getMetadataRepositoryStructuredView_MetadataRepository()
 	{
 		return (EReference)metadataRepositoryStructuredViewEClass.getEStructuralFeatures().get(3);
@@ -1154,6 +1165,9 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 				null, "metadataRepository", null, 1, 1, MetadataRepositoryStructuredView.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
 				!IS_ORDERED);
+		initEAttribute(getMetadataRepositoryStructuredView_Loaded(), ecorePackage.getEBoolean(), "loaded", null, 0, 1,
+				MetadataRepositoryStructuredView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+				!IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(installableUnitsEClass, InstallableUnits.class, "InstallableUnits", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);

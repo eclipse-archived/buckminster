@@ -8,22 +8,17 @@ package org.eclipse.buckminster.aggregator.presentation;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.buckminster.aggregator.Aggregator;
-import org.eclipse.buckminster.aggregator.Contribution;
-import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
@@ -41,7 +36,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
@@ -67,6 +65,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProvider;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
@@ -89,7 +88,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -634,55 +632,112 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			if(contents.size() == 1 && contents.get(0) instanceof Aggregator)
 			{
 				Aggregator aggregator = (Aggregator)contents.get(0);
-				final Set<MetadataRepositoryReference> repositoriesToLoad = new HashSet<MetadataRepositoryReference>();
 
-				for(Contribution contribution : aggregator.getContributions())
-					if(contribution.isEnabled())
-						for(MappedRepository mappedRepository : contribution.getRepositories())
-							if(mappedRepository.isEnabled())
-								repositoriesToLoad.add(mappedRepository);
-				for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
-					if(repoRef.isEnabled())
-						repositoriesToLoad.add(repoRef);
+				// initialize item providers for all MDR references so that they could handle notifications from
+				// repository loaders
+				for(MetadataRepositoryReference mdrReference : aggregator.getAllMetadataRepositoryReferences(false))
+					adapterFactory.adapt(mdrReference, IItemLabelProvider.class);
 
-				try
+				final List<MetadataRepositoryReference> repositoriesToLoad = aggregator.getAllMetadataRepositoryReferences(true);
+
+				Job wrapperJob = new Job("Loading repositories...")
 				{
-					new ProgressMonitorDialog(getSite().getShell()).run(true, true, new IRunnableWithProgress()
+					@Override
+					protected IStatus run(IProgressMonitor monitor)
 					{
-
-						public void run(IProgressMonitor monitor) throws InvocationTargetException,
-								InterruptedException
+						try
 						{
-							if(monitor == null)
-								monitor = new NullProgressMonitor();
-
-							monitor.beginTask("Loading repositories...", repositoriesToLoad.size());
+							IProgressMonitor progressGroup = Job.getJobManager().createProgressGroup();
+							progressGroup.beginTask("Loading repositories...", repositoriesToLoad.size());
 
 							try
 							{
-								for(MetadataRepositoryReference repo : repositoriesToLoad)
+								List<Job> jobsToJoin = new ArrayList<Job>(repositoriesToLoad.size());
+								Collections.sort(repositoriesToLoad, new Comparator<MetadataRepositoryReference>()
 								{
-									if(monitor.isCanceled())
-										throw new InterruptedException("Operation was cancelled");
 
-									monitor.subTask(repo.getLocation());
-									repo.getMetadataRepository();
-									monitor.worked(1);
+									public int compare(MetadataRepositoryReference mdr1,
+											MetadataRepositoryReference mdr2)
+									{
+										String location1 = mdr1 != null
+												? mdr1.getResolvedLocation()
+												: null;
+										if(location1 == null)
+											location1 = "";
+										String location2 = mdr2 != null
+												? mdr2.getResolvedLocation()
+												: null;
+										if(location2 == null)
+											location2 = "";
+
+										return location1.compareTo(location2);
+									}
+
+								});
+
+								// initialize all resources in alphabetical order
+								for(MetadataRepositoryReference repo : repositoriesToLoad)
+									MetadataRepositoryResourceImpl.getResourceForURI(repo.getLocation(),
+											repo.getAggregator());
+
+								for(final MetadataRepositoryReference repo : repositoriesToLoad)
+								{
+									if(monitor.isCanceled() || progressGroup.isCanceled())
+										break;
+
+									Job repoJob = new Job("Loading " + repo.getLocation() + "...")
+									{
+										@Override
+										protected IStatus run(IProgressMonitor monitor)
+										{
+											monitor.beginTask("Loading " + repo.getLocation(), 1);
+											try
+											{
+												MetadataRepositoryResourceImpl.loadRepository(
+														repo.getResolvedLocation(), repo.getAggregator());
+											}
+											finally
+											{
+												monitor.worked(1);
+												monitor.done();
+											}
+											return Status.OK_STATUS;
+										}
+
+									};
+									repoJob.setProgressGroup(progressGroup, 1);
+									repoJob.setUser(false);
+									repoJob.setSystem(true);
+									repoJob.schedule();
+									jobsToJoin.add(repoJob);
 								}
+
+								for(Job job : jobsToJoin)
+									try
+									{
+										job.join();
+									}
+									catch(InterruptedException e)
+									{
+										// ignore
+									}
 							}
 							finally
 							{
-								monitor.done();
+								progressGroup.done();
 							}
-
+							return Status.OK_STATUS;
 						}
+						finally
+						{
+							if(monitor != null)
+								monitor.done();
+						}
+					}
+				};
 
-					});
-				}
-				catch(Exception e)
-				{
-					throw new RuntimeException("Unable to load repositories: " + e.getMessage(), e);
-				}
+				wrapperJob.setSystem(true);
+				wrapperJob.schedule();
 			}
 		}
 	}
@@ -1604,9 +1659,23 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					public Object getImage(Object object)
 					{
 						if(object instanceof MetadataRepositoryResourceImpl)
+						{
+							// TODO Add overlays depending on status: loading, ok, error
 							return AggregatorEditPlugin.INSTANCE.getImage("full/obj16/MetadataRepository");
+						}
 
 						return super.getImage(object);
+					}
+
+					@Override
+					public void notifyChanged(Notification notification)
+					{
+						super.notifyChanged(notification);
+
+						// TODO Refresh label if status changes (suggestion below, commented out)
+						// if(notification.getEventType() == Notification.ADD)
+						// fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false,
+						// true));
 					}
 				};
 			}

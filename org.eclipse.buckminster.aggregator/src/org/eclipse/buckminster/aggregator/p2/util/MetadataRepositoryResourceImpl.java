@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
@@ -30,6 +31,7 @@ import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredVie
 import org.eclipse.buckminster.aggregator.p2view.OtherIU;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.Product;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
@@ -76,6 +78,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			this.location = location;
 			this.repoView = repoView;
 			setUser(false);
+			setSystem(true);
 			setPriority(Job.SHORT);
 		}
 
@@ -265,6 +268,25 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				Collections.sort(propList);
 				repoView.getProperties().getPropertyList().addAll(propList);
 			}
+
+			repoView.setLoaded(true);
+			getContents().add(repoView);
+
+			Aggregator aggregator = ResourceUtils.getAggregator(getResourceSet());
+			if(aggregator != null)
+			{
+				for(MetadataRepositoryReference mdrReference : aggregator.getAllMetadataRepositoryReferences(true))
+				{
+					String refLocation = mdrReference.getLocation();
+					if(refLocation != null && refLocation.endsWith("/"))
+						refLocation = refLocation.substring(0, refLocation.length() - 1);
+					if(repository.getLocation().toString().equals(refLocation))
+						// force notification by formal setting the value to current value
+						// once the adapter (if exists) receives the notification, it will take care of
+						// refreshing labels and content of itself and its parents
+						mdrReference.setLocation(mdrReference.getLocation());
+				}
+			}
 		}
 
 		private void exploreCategory(Category category, Map<String, Map<Version, IUPresentation>> iuMap)
@@ -348,6 +370,63 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 	}
 
+	@SuppressWarnings("serial")
+	class UnknownStatusException extends Exception
+	{
+		UnknownStatusException(String message)
+		{
+			super(message);
+		}
+	}
+
+	public static Resource getResourceForURI(String repositoryURI, Aggregator aggregator)
+	{
+		ResourceSet topSet = aggregator.eResource().getResourceSet();
+		URI repoURI = URI.createGenericURI("p2", repositoryURI, null);
+		Resource mdr = null;
+
+		synchronized(topSet)
+		{
+			mdr = topSet.getResource(repoURI, false);
+			if(mdr == null)
+				mdr = topSet.createResource(repoURI);
+		}
+
+		return mdr;
+	}
+
+	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator, boolean force)
+	{
+		Resource mdr = getResourceForURI(repositoryURI, aggregator);
+
+		try
+		{
+			if(mdr != null)
+			{
+				if(force)
+				{
+					mdr.unload();
+					mdr.load(Collections.emptyMap());
+				}
+				else if(!mdr.isLoaded())
+					mdr.load(Collections.emptyMap());
+
+				List<EObject> contents = mdr.getContents();
+				if(contents.size() != 1
+						|| ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository().getLocation() == null)
+					throw new Exception(String.format("Unable to load repository %s", repositoryURI));
+
+				return ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository();
+			}
+			else
+				throw new Exception(String.format("Unable to obtain a resource for repository %s", repositoryURI));
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+	}
+
 	private Exception m_lastException = null;
 
 	public static final Query QUERY_ALL_IUS = new MatchQuery()
@@ -362,46 +441,6 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator)
 	{
 		return loadRepository(repositoryURI, aggregator, false);
-	}
-
-	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator, boolean force)
-	{
-		ResourceSet topSet = aggregator.eResource().getResourceSet();
-		URI repoURI = URI.createGenericURI("p2", repositoryURI, null);
-		Resource mdr = topSet.getResource(repoURI, !force);
-
-		if(mdr == null)
-		{
-			force = false;
-			mdr = topSet.getResource(repoURI, true);
-		}
-
-		try
-		{
-			if(mdr != null)
-			{
-				if(force)
-				{
-					mdr.unload();
-					mdr.load(Collections.emptyMap());
-				}
-
-				List<EObject> contents = mdr.getContents();
-				if(contents.size() != 1
-						|| ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository().getLocation() == null)
-					throw new Exception(String.format("Unable to load repository %s", repositoryURI));
-
-				return ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository();
-			}
-			else
-				throw new Exception(String.format("Unable to obtain a resource for repository %s", repositoryURI));
-		}
-		catch(Exception e)
-		{
-			if(mdr != null)
-				topSet.getResources().remove(mdr);
-			return null;
-		}
 	}
 
 	public MetadataRepositoryResourceImpl(URI uri)
@@ -444,35 +483,35 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			warnings.clear();
 		}
 
-		P2Factory factory = P2Factory.eINSTANCE;
-		synchronized(factory)
+		MetadataRepositoryImpl repository = (MetadataRepositoryImpl)P2Factory.eINSTANCE.createMetadataRepository();
+		MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView(repository);
+		RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, repoView);
+		try
 		{
-			MetadataRepositoryImpl repository = (MetadataRepositoryImpl)factory.createMetadataRepository();
-			MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView(repository);
-			RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, repoView);
+			boolean jobManagerReadyBeforeJobScheduled = !Job.getJobManager().isSuspended();
 			job.schedule();
-			try
-			{
-				job.join();
-				Exception e = job.getException();
-				if(e != null)
-				{
-					m_lastException = new Resource.IOWrappedException(e);
-					return;
-				}
+			job.join();
 
-				getContents().add(repoView);
-			}
-			catch(InterruptedException e)
+			Exception e = job.getException();
+			if(e != null)
 			{
+				m_lastException = new Resource.IOWrappedException(e);
+				return;
 			}
-			finally
-			{
-				isLoading = false;
-				if(notification != null)
-					eNotify(notification);
-				setModified(false);
-			}
+
+			if(!jobManagerReadyBeforeJobScheduled)
+				m_lastException = new UnknownStatusException(
+						"Unknown repository status - loading job was scheduled while job manager was suspended");
+		}
+		catch(InterruptedException e)
+		{
+		}
+		finally
+		{
+			isLoading = false;
+			if(notification != null)
+				eNotify(notification);
+			setModified(false);
 		}
 	}
 

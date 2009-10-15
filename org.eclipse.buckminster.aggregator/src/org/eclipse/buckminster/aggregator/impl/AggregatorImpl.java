@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.StatusProvider;
@@ -514,6 +515,24 @@ public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggr
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<MetadataRepositoryReference> getAllMetadataRepositoryReferences(boolean enabledOnly)
+	{
+		EList<MetadataRepositoryReference> allRepos = new BasicEList<MetadataRepositoryReference>();
+
+		for(Contribution contribution : getContributions(enabledOnly))
+			for(MappedRepository mappedRepository : contribution.getRepositories(enabledOnly))
+				allRepos.add(mappedRepository);
+
+		allRepos.addAll(getValidationRepositories(enabledOnly));
+
+		return allRepos;
 	}
 
 	/**

@@ -446,7 +446,8 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	{
 		if(isBranchEnabled())
 		{
-			if(getMetadataRepository() != null)
+			// status is ok only if MDR is not null and is resolvable
+			if(getMetadataRepository() != null && !getMetadataRepository().eIsProxy())
 			{
 				for(MappedUnit unit : getEnabledUnits())
 					if(unit.getStatus() != StatusProvider.OK)

@@ -40,6 +40,14 @@ import org.eclipse.emf.ecore.EObject;
 public interface Aggregator extends EObject, StatusProvider
 {
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	EList<MetadataRepositoryReference> getAllMetadataRepositoryReferences(boolean enabledOnly);
+
+	/**
 	 * Returns the value of the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Buildmaster</em>' containment reference isn't clear, there really should be more of a

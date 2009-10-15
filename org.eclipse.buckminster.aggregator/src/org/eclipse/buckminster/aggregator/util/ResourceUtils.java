@@ -23,6 +23,7 @@ import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -89,6 +90,30 @@ public class ResourceUtils
 	}
 
 	/**
+	 * Returns the main aggregator node
+	 * 
+	 * @param resourceSet
+	 * @return the aggregator instance, or null if it is not available
+	 */
+	public static Aggregator getAggregator(ResourceSet resourceSet)
+	{
+		if(resourceSet == null)
+			return null;
+
+		EList<Resource> resources = resourceSet.getResources();
+		Resource aggregatorResource = null;
+		for(Resource resource : resources)
+			if(resource instanceof AggregatorResourceImpl)
+			{
+				aggregatorResource = resource;
+				break;
+			}
+		return aggregatorResource == null
+				? null
+				: (Aggregator)aggregatorResource.getContents().get(0);
+	}
+
+	/**
 	 * Tries to get metadata repository from mapped repository. If it fails to load, an exception is thrown.
 	 * 
 	 * @param repoRef
@@ -106,7 +131,7 @@ public class ResourceUtils
 					&& ((MetadataRepositoryResourceImpl)resource).getLastException() != null)
 				throw BuckminsterException.wrap(((MetadataRepositoryResourceImpl)resource).getLastException());
 
-			throw BuckminsterException.fromMessage("Unable to load repository " + repoRef.getResolvedLocation());
+			throw BuckminsterException.fromMessage("Error loading repository " + repoRef.getResolvedLocation());
 		}
 
 		return mdr;

@@ -10,6 +10,9 @@
     <eOperations name="getValidationRepositories" upperBound="-1" eType="#//MetadataRepositoryReference">
       <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
+    <eOperations name="getAllMetadataRepositoryReferences" upperBound="-1" eType="#//MetadataRepositoryReference">
+      <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="configurations" lowerBound="1"
         upperBound="-1" eType="#//Configuration" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contributions" upperBound="-1"
@@ -439,6 +442,7 @@
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="metadataRepository" ordered="false"
           lowerBound="1" eType="#//p2/MetadataRepository" containment="true" resolveProxies="false"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="loaded" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstallableUnits">
       <eOperations name="getNotNullCategoryContainer" eType="#//p2view/Categories"/>
