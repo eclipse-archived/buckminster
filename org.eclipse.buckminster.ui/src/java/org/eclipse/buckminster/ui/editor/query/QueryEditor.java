@@ -1105,6 +1105,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		m_namePattern.setEnabled(!disableFields);
 		m_category.setEnabled(!disableFields);
 		m_skipComponent.setEnabled(!disableFields);
+		m_nodeDocumentation.setEnabled(!disableFields);
 		enableDisableSkipSensitive(disableFields);
 	}
 
@@ -1134,7 +1135,6 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		m_versionOverride.setEnabled(enableRest && m_enableOverride.getSelection());
 
 		m_nodeProperties.setEnabled(enableRest);
-		m_nodeDocumentation.setEnabled(enableRest);
 	}
 
 	private Control getAdvisorTabControl(Composite parent)
