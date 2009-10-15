@@ -1,0 +1,344 @@
+// import - TBD
+
+synchronized unit "my.unit" version 2.3  implements _foo._bar , fee.fum {
+
+	// Single line comment
+	/* Multi line comment
+	 */
+	
+	/* PROPERTIES 
+	** Properties supports strings, integers, booleans, expressions and references to properties
+	*/	
+	property foo= "hello";
+	// a property can be set to null (but not immutable properties)
+	property foo;
+	immutable property bar = 32;
+	immutable property bar = 32+10;
+	
+	// checks if a calculation has the same value as a property
+	immutable property meaningful = 32+10 == the.meaning.of.life;
+	
+	// a property can be "unset", that means that if it was set in this context, it will revert to
+	// it's value (if any) in an enclosing context.
+	//
+	unset property yellow.banana;
+	
+	// Several properties can be set in a compound "properties" clause. It also works for unset.
+	// Note that the "property" keyword is no longer required per setting.
+	properties {
+		bar = "bar";
+		immutable politician = "oxymoron";
+		unset yellow.banana;
+		}
+	
+	/* PROVIDES
+	** Provides clause is used to declare that the BuildUnit provides capabilities.
+	** A capability consists of interface/unitname and an optional /version at the end.
+	** If an interface, unitname or version requires use of reserved words or characters, the corresponding
+	** part is entered as a string (i.e. within " ").
+	** As with properties, there is a compound provides clause.
+	** 
+	** Provide Capabilities can be filtered - some capabilities may only be provided under certain circumstances.
+	** This is declared with a leading when(BooleanExpression).
+	*/
+	provides osgi.bundle/bundlebar;
+	provides osgi.bundle/bundlebar/1.0;
+	provides {
+		osgi.bundle/barbara.bundle/2.0;
+		eclipse.feature/inflateable.pleasure/6.6.6;
+		}
+	// when(target.platform == platforms.win32) provides native.thing/windowsInstaller/12.23.r1234;
+	
+	/* REQUIRES 
+	** Requires clause is used to declare that the BuildUnit requires certain capabilities. 
+	** The differences between required and provided capabilities are that:
+	** - the version is always a range (althoug a single version means >= version
+	*/
+	requires osgi.bundle/air/1.0;
+	requires when (!target.platform != "sparc" && target.platform < "hpUx") osgi.bundle/pillow/3.0 ;
+	requires {
+		osgi.bundle/pillow/1.0;
+		when (a == b) osgi.bundle/blanket/1.0;
+		}
+	
+	/* META REQUIRES 
+	** With a leading meta keyword, the requiremens are requirements on the environment (i.e. on b3 itself)
+	** As an example, a meta requirement may be that a certain meta data provider is installed or it will be impossible to
+	** use this definition. 
+	*/
+	meta requires osgi.bundle/air/1.0;
+	meta requires when (42 >= 32) osgi.bundle/pillow/"3.0";
+	meta requires {
+		osgi.bundle/pillow/1.0;
+		when (myorg.foo ~= "[a-z].*") osgi.bundle/blanket/1.0;
+		}
+	
+	/* ARTIFACTS
+	** Artifact is a vector of path groups.
+	** A group of paths may have a base path - the rest of the paths in the group are relative to the
+	** base path.
+	** File names that include reserved words or reserved characters are entered within " "
+	** File names containing spaces must always be quoted, as the compiler removes whitespace from non strings.
+	** Standard  XText implementation allows a unary ^ before a keyword as an escape (Remove?)
+	** Inclusion of a vector can be controlled with a leading when(BooleanExpression).
+	**
+	** VISIBILITY
+	** Visibility is either private or public (the default). Private means that the part is only accesable
+	** from within the b3 unit whene the part is declared.
+	**
+	** PROPERTIES
+	** It is possible to set (and unset) properties in the list using basic or compound property statements.
+	** These properties are set on the resulting path group vector and are available to the user of the
+	** set of files. 
+	** Since file group vectors are merged, so will the properties. Use of immutable properties will guarantee
+	** that the property values set will surface (or an error will be generated if merging causes the value
+	** to change), but is ok if multiple vectors are tagged the same way.
+	** 
+	** Note that individual property settings per file is not supported. To flag an individual file it is
+	** recommended to use dottiefied properties - example - mark the path /a/b as being little endian
+	** property org.myorg.fileinfo.endian.a.b=little.
+	**
+	** DISCUSS - is it of value to have properties/annotations per file?
+	** 
+	*/
+	private artifacts test.a1 provides myorg.food/fruit.sallad/2.0, myorg.projectiles/fruit.salad
+		{
+		a; // a vector with one entry
+		a, b; // a vector with two entries
+		a [ b, c]; // a base path (a), with two relative paths in a vector
+		/a/b;
+		/ a / b ; // is equivalent to /a/b - not /" a"/" b"
+		 
+		
+		// names that must be quoted
+		"unit"; // a keyword
+		"1a"; // does not look like a qualified name
+		"a b"; // has space in name
+		"aŒŠš"; // has NLS characters
+		"//f"; // looks like a comment
+		"123"; // is an integer
+		
+		"my.unit", "my.unit"; // unit is a keyword
+		my.^unit; // unit is keyword - standard XText grammar escape of keywords in ID
+		when(target.platform == "osx")  MacApp.app ;
+		when(true) banana.txt, pineapple.txt, mango.txt;
+		when (true) exotic [ rambustan.txt, tamarind.txt ];
+		a1 [apple.txt, "ban ana.txt"];
+		fee/apa.boo [ a/b/c.d, a.b.c.d, o/b/d ];
+		property apa="banan";
+		property defaultsToNull;
+		properties { a; b; }
+		}
+	
+	// An empty artifacts vecor	
+	artifacts empty {
+	}
+	
+	/* ARTIFACTS PROVIDING CAPABILITIES
+	** It is possible to declare that the resulting path group vector is a capability layed out on disk.
+	** They layout can represent many capabilities at the same time.
+	*/
+	artifacts providesMany provides  a/b/1.0, c/d/2.0, x/y/3.0 {a;}
+	
+	/* GROUP
+	** A group is similar to artifacts in that it creates a path group vector, but it creates this
+	** by aggregating path group vectors from other parts. 
+	** Just as with artifacts; the resulting path group vector can represent capabilities.
+	**
+	** The group consists of a list of required capabilities. The syntax is the same as for
+	** the units requires { } clause, with the following additions:
+	** - A trailing '#partname'  is used after the requirement to pick a particular part.
+	** - A reference can be made to parts in the same build unit by using a single identifier
+	** - A reference to a required capability without a trailing '#partname' is taken as a reference to '#self', meaning the
+	**   aggregation of all its public parts.
+	** - It is possible to define a closure where properties and advise are declared. They have downstream effect
+	**   (i.e. when evaluating the part). The closure is defined using a trailing with { } statement.
+	** - A closure can be defined for several requirements at the same time by enclosing the requirements in curly
+	**   brackets {r r r} with { }
+	** - A leading void keyword indicates that the resulting path group vector from the evaluation of the part should
+	**   not be included in the resulting path group vector.
+	** - The result of individual part evaluation, or evaluation of a group of requirements can be assigned to an alias.
+	**   The alias is a property that is included in the resulting path group vector. This makes it possible for a user
+	**   of the vector to reference a particular part of the set.
+	** - void and alias can be used at the same time, but for a group that represents a part (as in this case), neither the
+	**   property nor its value survive the group's context. For other types of grouping (in actions), this is very
+	**   valuable, but in a group part, this construct simply has no effect. 
+	**
+	** WITH CLOSURE
+	** In the with closure, properties can be set using the single or compound properties statements.
+	** Advice can be set using advice syntax.
+	** 
+	*/
+	private synchronized group "foo/bar" provides  myorg.food/fruit.coctail/2.0, a / b / "2.3"
+	{
+	 	a; // referense to part in self
+		foo/bar; // reference to #self in interface foo, name bar
+		a/a#b; // reference to #b in interface a, name a
+		fubbla= osgi.bundle/foo.bar/1.0; // sets the property fubbla to to the pathGroup reference in runtime - typically not used in groups
+		osgi.bundle/fee.fum/1.0#jars;
+		osgi.bundle/zeBundle/1.0#jars;
+		void a/a#b; // only performed for side effect
+		void alias.nbr1 = b; // only performed for side effect, but sets a property to the result (that is then ignored)
+		a/a#b with { property nice = "yes"; }; // sets and passes the property nice downsteam
+		a/a#b with { // passes several properties downstream.
+			properties {
+				a="2"; b="2"; c="3";
+				}
+			};
+		// includes result of three references, all with the same set of downstream properties	
+		{ a/a#b; a/b#c; a/c#d; } with { property target.platform="sparc"; }; 
+		// sets an alias on a non included result, result is a group of items with downstream properties
+		void aliasedButNotIncluded = { a/a#b; a/b#c; a/c#d; } with { property foo="hpux"; };
+		// sets an alias on an included item, result is a group of items with downstream properties, a nested alias is set
+		aliasedAndIncluded = { alias.nbr3=a/a#b; a/b#c; a/c#d; } with { property foo="hpux"; };
+		
+		// inclusion can be filtered with a boolean expression - here "true" makes it always included
+		when (true) { a/a#b; a/b#c; a/c#d; } with { property foo="z80"; };
+		// filtering - here, never ever included because boolean value is false
+		when (false) a/a#b;
+		// a non included and filtered reference to a/a#b
+		void when (true) a/a#b;
+	} 
+
+	// The keyword 'syncronized' declares that parallell execution of any part is dissallowed
+	private synchronized group foo {}
+	public synchronized group foo {}
+	private group foo {}
+	group foo {}
+	synchronized  group foo {}
+	
+		
+	/*
+	** ACTION
+	** An action has an embedded group declaration that defines the input to an actor. The actor is told to
+	** produce the result(s) decalred for the input group. Input groups and results can be nested.
+	** This is used to decalre common input, input for a group of results (such as input to actions for linux),
+	** and then specific input for building a linx flavor, for different windowing systems etc.
+	**
+	** The result can consist be declared with public or private visibility, or follow the visibility of the action.
+	** Public result are available as first class members of the unit (even if the enclosing action is private).
+	** Public result must be named. Private result must be named if it should be referenced individually (and not as
+	** part of the action's result).
+	**
+	** The actor is declared in the preamble of the action part and is instantiated once.
+	** Parameters to the actor instantiation can be passed with parentheses using named parameters
+	** (order is not important).
+	** - An action can provide the resulting path group vector as provided capabilities
+	**
+	** Aliases
+	** Aliases for input parts have an additional meaning in actions - these properties are available to the actor.
+	** This means that the combination of void alias={ } is meaningful (as opposed to when used in a group part).
+	**
+	** RESULT
+	** Result clauses behave like artifact parts, but they typically refer to files that were produce by the actor.
+	** Properties in these sets may be set by the actor. This means that an actor can pass information back - such as
+	** a version qualifier, location of certain files on disk etc.
+	** 
+	*/
+	private synchronized action foo 
+		actor ZipActor(serviceKey="WooHoo - woot")
+		provides  myorg.food/fruit.coctail/2.0
+	{
+		group {
+			a; // defaults to #self
+			when (apa > 11) a/a#b;
+			osgi.bundle/foo.bar/"1.2.3.qualifier#,./"#jars; // defaults to #self
+			
+			
+			osgi.bundle/fee.fum/1.0#jars;
+			osgi.bundle/zeBundle#jars;
+			void a/a#b; // only performed for side effect
+			void alias.nbr1 = a/a#b; // only performed for side effect
+			a/a#b with { property nice = "yes"; };
+			a/a#b with {
+				properties {
+					a="2"; b="2"; c="3";
+					}
+				};
+			{ a/a#b; a/b#c; a/c#d; } with { property target.platform="sparc"; };
+			void { a/a#b; a/b#c; a/c#d; } with { property foo="hpux"; };
+			void alias.nbr2 = { alias.nbr3=a/a#b; a/b#c; a/c#d; } with { property foo="hpux"; };
+			when (true) { a/a#b; a/b#c; a/c#d; } with { property foo="z80"; };
+			when (false) a/a#b;
+			void when (true) a/a#b;
+			}{ 
+				result a { a; }
+			}
+	}
+	action test1 actor Test(test="test") provides a/b/"1"
+	{	// no dependencies, no special input, just "do it and produce result"
+			result b { b.txt; }
+	}
+	action test2 actor Test(test="test") provides a/b/"1"
+	{	// no dependencies, no special input, just "do it and produce result"
+		// but set a properties
+		//
+			result b { b.txt; } with { property target.platform = "win32"; }
+	}
+
+/* NON WORKING SYNTAX, due to problems in language specification. Help Wanted.
+
+	action test3 actor Test(test="test") provides a/b/"1"
+	{
+	// NON working example - need help with parser
+
+		// group input to one results
+		group { 
+			a;
+			} 
+		result b { b.txt; }
+	}
+*/
+	
+	action test3 actor Test(test="test") provides a/b/"1"
+	{
+		// group input to one or several results
+		group { a; }
+			{
+			result b { b.txt; }
+			}
+	}
+	action Test actor Test(test="test") provides a/b/"1"
+	{
+		group { a;
+		} {
+			result b { b; }
+			result b { b; }
+			result b { b; }
+		}
+	}
+	action Test actor Test(test="test") provides a/b/"1"
+	{
+		group { a;
+		} {
+			group  { x; } { result b { b; } }
+			result b {b;}			
+			group  { x; } { result b { b; } } 
+		}
+	}
+	
+	action makeWin32Zip 
+	actor ZipActor(serviceKey="tjoho")
+	provides foodstuff.sallad/fruitsallad/1.0, x/b/"23"
+	{
+		group {
+			{ site = createSite; } with { property target.platform="win32";};
+		}{
+			group { 
+				extraInput = a/a/2.0#jarFiles; 
+			}{
+				public result makeSomeoneHappy  {
+		    		apa/banan.zip ;
+					when(true) chimp/banan.zip ; 
+				} with { properties { target.platform = "win32"; prerequisite.flag = "a#b"; }}
+				
+				group {
+					special;
+				}{
+					when (true) private result a { a;} with { /* for a only */ }
+					when (true) result b {} with { /* for b only */ }
+				} with { /* for a and b */ }
+			}
+		}
+	}	
+}

@@ -1,0 +1,383 @@
+grammar org.eclipse.b3.BeeLang with org.eclipse.xtext.common.Terminals
+
+generate beeLang "http://www.eclipse.org/b3/BeeLang"
+
+BeeModel :
+	(imports += Import)*
+	body = Unit;
+
+/*
+** Qualified name
+** TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+*/
+QualifiedName : ID ('.' ID)* ;
+
+EscapedQualifiedName:  STRING | QualifiedName;
+InterfaceName: QualifiedName ;
+
+/*
+** CompoundName TODO: Disallow white space between parts and /. See QualifiedName for more info.
+*/
+CompoundName : EscapedQualifiedName '/' EscapedQualifiedName ;
+
+/* Aliases that help with unified naming (good for experiments - the indirection can be removed later) */
+UnitName : EscapedQualifiedName;
+PartName : EscapedQualifiedName;
+
+enum Visibility : public | private ;
+enum AssertionScope : precondition | postcondition ;
+
+/*
+** Version, and VersionRange
+** TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
+** TODO: uncertain if the set of allowed chars is definitive.
+*/
+Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' | '/' | '+' | '=' | '*' | '<' | '>' | ':' | '?';
+AlfanumSym : (ID | INT) (Separator|ID|INT)* ;
+
+Version
+	: STRING
+	| AlfanumSym
+	;
+
+/*
+** VersionRange TODO: Uses two instances of Version. This works because use of [Ê]  ( ) must be escaped with " " in Version. Omni
+** version uses version strings with \[ when a range is presented/parsed in string format.
+*/
+VersionRange
+	: ('[' | '(') Version (',' Version)? (']'|')')
+	| Version
+	;
+
+/*
+** Import
+** TODO: Is specified as import of URI, a String, should be QID
+*/	
+Import :
+	'import' importClass=QualifiedName ('.*')? ';' ; 
+		
+/* UNIT - the body (compare to java class)
+*/	
+Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
+	(synchronized ?= 'synchronized')?
+	'unit' (name=UnitName)? ('version' version = Version)?
+		('implements' implements += InterfaceName (',' implements+=InterfaceName)*)? 
+	'{'
+		( 	//-- PROVIDES
+			  ('provides' '{' (providedCapability += ProvidedCapability ';')+ '}')
+			| ('provides' providedCapability += ProvidedCapability ';')
+			//-- REQUIRES & META REQUIRES
+			| ('requires' '{' (requiredCapabilities += RequiredCapability ';')+ '}')
+			| ('requires' requiredCapabilities += RequiredCapability ';')
+			| ('meta' 'requires' '{' (metaRequiredCapabilities += RequiredCapability ';')+ '}' )
+			| ('meta' 'requires' metaRequiredCapabilities += RequiredCapability ';')
+			//-- PROPERTIES
+			| ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += StringProperty)+ '}' )
+			| ('unset' 'property' unsetProperties += QualifiedName ';' )
+			| (setProperties += StringProperty2)
+			//--ADVICE
+			| ('advice' advice+=NamedAdvice )
+			//--SYNCHRONIZE
+			| ('synchronize' '{' (synchronize += Synchronization )+  '}' )
+			| ('synchronize' synchronize += Synchronization  )
+			//--PARTS
+			| (parts += BuildPart )			
+			//-- REPOSITORIES
+			| ('repositories' '{' (repositoryConfig+=RepositoryConfiguration)* '}' )
+		)*
+	'}';
+	
+
+ProvidedCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName  ('/' version=Version)?  ;
+RequiredCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName ('/' range=VersionRange)?  ;
+
+/*
+** Property in properties  lists (i-e. without keyword "property" 
+*/
+StringProperty returns StringProperty
+	: (((immutable ?= 'immutable') key=QualifiedName '=' value=PropertyExpression ';')
+	|	(key=QualifiedName ('='  value=PropertyExpression)? )';')  
+	;
+
+/* 
+** Properties with keyword "property" 
+*/	
+StringProperty2 returns StringProperty
+	:  (((immutable ?= 'immutable') 'property' key=QualifiedName '=' value=PropertyExpression ';') 
+	| 	('property' key=QualifiedName ('=' value=PropertyExpression)? )';')  
+	;
+
+PropertyExpression : Expression ; 
+
+Synchronization 
+	: (partrefs += SynchronizedPart)(',' partrefs += SynchronizedPart)+ ';' // at least 2
+	;
+	
+SynchronizedPart
+	: CompoundName ('#' PartName)?
+	| PartName
+	;
+	
+BuildPart 
+	: Artifacts
+	| Group
+	| Action
+	;
+	
+Artifacts returns ArtifactsPart 
+	: (visibility = Visibility)? 'artifacts' name=PartName
+		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
+		(asserts += PostConditionAssert)?
+		'{' (paths += PathGroup)* '}'
+	;
+	
+/* PATH GROUP
+* TODO: Allow basePath without paths?
+*/
+PathGroup 
+	: ('when' filter=Filter)? 
+		( paths+=Path (',' paths+=Path)* ';'
+		| basePath=Path '[' paths+=Path (',' paths+=Path)* ']' ';'
+		| ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += StringProperty)+ '}' )
+		| ('unset' 'property' unsetProperties += QualifiedName ';' )
+		| (setProperties += StringProperty2)
+		)
+	;
+
+/*
+* A path can be written without quotes if it consists of safe chars 
+* TODO: repace use of ID with better definition.
+* TODO: Validation of path syntax (MS, n*x) ?
+*/
+Path
+	: STRING
+	| ('/')? QualifiedName ('/' QualifiedName)* ('/')?
+	;
+
+Group returns GroupPart 
+	: (visibility = Visibility)?
+	  (synchronized ?= 'synchronized')?
+	  'group' name=PartName
+		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
+		(asserts += PreConditionAssert)?
+		(asserts += PostConditionAssert)?
+		'{' ( prerequisites += Prerequisite )*
+		'}'
+	;
+
+Prerequisite
+	: ((surpressed ?= 'void')? ('when' filter=Filter )? (alias=QualifiedName '=')? partReference=PrerequisiteEntry) 
+	 (closure = Closure)? ';'
+	;
+	
+Closure : 'with' '{'
+			//--PROPERTIES
+			( ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += StringProperty)+ '}' )
+			| ('unset' 'property' unsetProperties += QualifiedName ';' )
+			| (setProperties += StringProperty2)
+			//--ADVICE
+			| ( 'advice' advice += CompoundAdvice)
+			)*
+		'}'
+		;
+		
+PrerequisiteEntry 
+	: PartInSelf
+	| CapabilityReferencedPart
+	| CompoundReferences
+	;
+	
+PartInSelf	: partName=PartName  // i.e. self#partName
+	;
+	
+CapabilityReferencedPart
+	: interface=InterfaceName '/' name=UnitName ('/' range=VersionRange)? '#' partName=PartName
+	| interface=InterfaceName '/' name=UnitName ('/' range=VersionRange)?
+	;
+	
+CompoundReferences
+	: '{' (prerequisites += Prerequisite)* '}'
+	;
+
+Action returns ActionPart
+	: (visibility = Visibility)?
+      (synchronized ?= 'synchronized')?
+	 'action' PartName
+	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? ')'
+		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
+	(asserts += PreConditionAssert)?
+	(asserts += PostConditionAssert)?
+	 '{' (resultGroups+=Result)* '}'
+	;
+
+Parameter
+	: name=QualifiedName '=' value= Expression
+	;
+/*	
+Result
+	: result += BasicResult
+	| '[' (result+=Result)* ']'
+// 	| group=ResultGroup result+=Result 	// TODO: Wanted, but creates Left recursion
+	| group=ResultGroup '{' (result+=Result)* '}' (closure=Closure)?	
+	; 
+*/
+Result
+	: result += ResultPart (group = ResultGroup)?
+	; 
+	
+ResultPart returns Result
+	: BasicResult
+	| '{' (result+=BasicResult)* '}'
+	;
+	
+/* SIMPLIFIED VERSION OF THE ABOVE (FOR TESTING) - DO NOT REMOVE YET - see issue above.
+//  Result R, and Group G, Closure C, syntax
+R 	: result += BR
+	| '[' (result +=R)* ']'
+	| group=G result+=R
+	| group=G '{' (result+=R)* '}' (closure=C)?
+	;
+	
+BR	returns R: 'R' '{'  '}' (closure=C)? ;
+G	: 'G' '{'  (prerequisites += P)* '}' ;
+C	: 'C' ;
+P	: 'P' 
+	| '{' P* '}'
+	;
+*/
+
+BasicResult returns Result
+	: ('when' filter=Filter)? (visibility=Visibility)? 'result' (name=PartName )? 
+		(asserts += PreConditionAssert)?
+		(asserts += PostConditionAssert)?
+	
+		'{' (paths += PathGroup)* '}' 
+		(closure = Closure )?
+	;
+
+ResultGroup
+	: 'group'
+		(asserts += PreConditionAssert)?
+		(asserts += PostConditionAssert)?	 
+		'{' (prerequisites += Prerequisite)* '}' (closure = Closure)?
+	;
+
+RepositoryConfiguration
+	: (location=URI | 'resolver' resolverClass=QualifiedName ) (advice=CompoundAdvice)? ';'
+	;
+
+/*
+** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
+** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
+** The ':' clashes with 'scheme:' which is the only known part in an opaque URI. 
+*/
+URI : STRING
+	;
+
+/* ADVICE
+** TODO: Had to use '?' instead if '*', and '??' intead of '**' as these operators are intermixed with / which sometimes
+** makes them look like comments. (Forbidding // comments is not the wanted sollution). 
+**
+*/
+NamedAdvice 
+	: (name=QualifiedName)? advice=CompoundAdvice ;
+
+CompoundAdvice : '{' (advice += AdviceStatement ';')* '}' ;
+
+AdviceStatement :  path = AdvicePath (('=' value=Expression) | advice=CompoundAdvice) ;
+		
+AdvicePath
+	: (pathElements+=AdvicePathSeparator)? pathElements+=AdvicePathElement 
+		(pathElements+=AdvicePathSeparator pathElement+=AdvicePathElement)* 
+	;
+
+AdvicePathSeparator returns AdvicePathElement
+	: AdvicePathChildren
+	;
+AdvicePathChildren 
+	: {AdvicePathChildren} "/"
+	;
+
+AdvicePathElement
+	: node=(QualifiedName | WildcardNode | '.') ('[' predicate=Expression ']')? 
+	| node='..'
+	;
+	
+WildcardNode : '?' ('?')? ;
+
+Filter : '(' predicate = Expression ')' ;
+
+/* ASSERTS */
+PreConditionAssert : scope="precondition" '{' (asserts += AssertionExpression)* '}' ;
+PostConditionAssert : scope="postcondition" '{' (asserts += AssertionExpression)* '}' ;
+
+AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';' 
+;
+/* EXPRESSIONS */
+SyntaxElement : Expression ;
+
+Expression 
+	: ValueExpression
+	;
+
+ValueExpression
+	: value=OrExpression 
+	;
+	
+//LetExpression:
+//	"let" identifier=ID "=" varExpr=Expression ":" target=Expression;
+	
+OrExpression returns Expression:
+	AndExpression ({BooleanOperation.left=current} operator="||" right=AndExpression)*;
+	
+AndExpression returns Expression:
+	RelationalExpression ({BooleanOperation.left=current} operator="&&" right=RelationalExpression)*;
+
+RelationalExpression returns Expression:
+	AdditiveExpression ({BooleanOperation.left=current} operator=("~=" | "==" | "!=" | ">=" | "<=" | ">" | "<") right=AdditiveExpression)*;
+	
+AdditiveExpression returns Expression:
+	MultiplicativeExpression ({OperationCall.params+=current} name=("+" | "-") params+=MultiplicativeExpression)*;
+
+MultiplicativeExpression returns Expression:
+	UnaryOrInfixExpression ({OperationCall.params+=current} name=("*" | "/") params+=UnaryOrInfixExpression)*;
+
+	
+UnaryOrInfixExpression returns Expression:
+	UnaryExpression | InfixExpression; 
+
+UnaryExpression returns OperationCall:
+	name=("!" | "-") params+=InfixExpression;
+	
+InfixExpression returns Expression:
+	PrimaryExpression (
+		({OperationCall.target=current} "->" name=ID "(" (params+=Parameter ("," params+=Parameter)*)? ")") // |
+//		({FeatureCall.target=current} "." type=Type) |
+//		({TypeSelectExpression.target=current} "." name="typeSelect" "(" type=Type ")") |
+//		({CollectionExpression.target=current} name=("collect"|"select"|"selectFirst"|"reject"|"exists"|"notExists"|"sortBy"|"forAll") "(" (var=ID "|")? exp=Expression ")")
+	)*;
+
+PrimaryExpression returns Expression:
+	Literal | 
+//	FeatureCall |
+//	ListLiteral |
+//	ConstructorCallExpression |
+	GlobalVarExpression |
+	ParanthesizedExpression;
+	
+Literal:
+	BooleanLiteral | IntegerLiteral | NullLiteral
+	| StringLiteral;
+	
+BooleanLiteral: val=("true" | "false");
+IntegerLiteral: val=INT;
+NullLiteral:    val="null";
+StringLiteral:	val=STRING;
+
+ParanthesizedExpression returns Expression
+	: "(" Expression ")"
+	;	
+	
+GlobalVarExpression 
+	: name=QualifiedName
+	;

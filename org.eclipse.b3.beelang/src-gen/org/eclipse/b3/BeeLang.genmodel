@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.b3.beelang/src-gen"
+    editDirectory="/org.eclipse.b3.beelang.edit/src" editorDirectory="/org.eclipse.b3.beelang.editor/src"
+    modelPluginID="org.eclipse.b3.beelang" forceOverwrite="true" modelName="BeeLang"
+    updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.b3.beelang.edit"
+    editorPluginID="org.eclipse.b3.beelang.editor">
+  <genPackages prefix="BeeLang" basePackage="org.eclipse.b3" disposableProviderFactory="true"
+      ecorePackage="BeeLang.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="BeeLang.ecore#//Visibility">
+      <genEnumLiterals ecoreEnumLiteral="BeeLang.ecore#//Visibility/public"/>
+      <genEnumLiterals ecoreEnumLiteral="BeeLang.ecore#//Visibility/private"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="BeeLang.ecore#//AssertionScope">
+      <genEnumLiterals ecoreEnumLiteral="BeeLang.ecore#//AssertionScope/precondition"/>
+      <genEnumLiterals ecoreEnumLiteral="BeeLang.ecore#//AssertionScope/postcondition"/>
+    </genEnums>
+    <genClasses ecoreClass="BeeLang.ecore#//BeeModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BeeModel/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BeeModel/body"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Import/importClass"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//BuildUnit">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BuildUnit/synchronized"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BuildUnit/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BuildUnit/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BuildUnit/implements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/providedCapability"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/requiredCapabilities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/metaRequiredCapabilities"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BuildUnit/unsetProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/setProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/advice"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/synchronize"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/parts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildUnit/repositoryConfig"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//ProvidedCapability">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ProvidedCapability/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//ProvidedCapability/interface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//ProvidedCapability/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//ProvidedCapability/version"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//RequiredCapability">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//RequiredCapability/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RequiredCapability/interface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RequiredCapability/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RequiredCapability/range"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//StringProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//StringProperty/immutable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//StringProperty/key"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//StringProperty/value"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//PropertyExpression"/>
+    <genClasses ecoreClass="BeeLang.ecore#//Synchronization">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Synchronization/partrefs"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//BuildPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BuildPart/visibility"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuildPart/providedCapabilities"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//ArtifactsPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//ArtifactsPart/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ArtifactsPart/asserts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ArtifactsPart/paths"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//PathGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PathGroup/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//PathGroup/paths"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//PathGroup/basePath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//PathGroup/unsetProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PathGroup/setProperties"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//GroupPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//GroupPart/synchronized"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//GroupPart/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//GroupPart/asserts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//GroupPart/prerequisites"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//Prerequisite">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Prerequisite/surpressed"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Prerequisite/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Prerequisite/alias"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Prerequisite/partReference"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Prerequisite/closure"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//Closure">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Closure/unsetProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Closure/setProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Closure/advice"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//PrerequisiteEntry"/>
+    <genClasses ecoreClass="BeeLang.ecore#//PartInSelf">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//PartInSelf/partName"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//CapabilityReferencedPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//CapabilityReferencedPart/interface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//CapabilityReferencedPart/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//CapabilityReferencedPart/range"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//CapabilityReferencedPart/partName"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//CompoundReferences">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//CompoundReferences/prerequisites"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//ActionPart">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//ActionPart/synchronized"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ActionPart/actorParameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ActionPart/asserts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ActionPart/resultGroups"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//Parameter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Parameter/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Parameter/value"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//Result">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Result/result"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Result/group"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Result/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Result/visibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Result/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Result/asserts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Result/paths"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Result/closure"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//ResultGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ResultGroup/asserts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ResultGroup/prerequisites"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ResultGroup/closure"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//RepositoryConfiguration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RepositoryConfiguration/location"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RepositoryConfiguration/resolverClass"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//RepositoryConfiguration/advice"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//NamedAdvice">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//NamedAdvice/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//NamedAdvice/advice"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//CompoundAdvice">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//CompoundAdvice/advice"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//AdviceStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AdviceStatement/path"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AdviceStatement/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AdviceStatement/advice"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//AdvicePath">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AdvicePath/pathElements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AdvicePath/pathElement"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//AdvicePathElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//AdvicePathElement/node"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AdvicePathElement/predicate"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//AdvicePathChildren"/>
+    <genClasses ecoreClass="BeeLang.ecore#//Filter">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Filter/predicate"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//PreConditionAssert">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//PreConditionAssert/scope"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PreConditionAssert/asserts"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//PostConditionAssert">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//PostConditionAssert/scope"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PostConditionAssert/asserts"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//AssertionExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//AssertionExpression/expr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//AssertionExpression/message"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//SyntaxElement"/>
+    <genClasses ecoreClass="BeeLang.ecore#//Expression"/>
+    <genClasses ecoreClass="BeeLang.ecore#//ValueExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ValueExpression/value"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//OperationCall">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//OperationCall/params"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//OperationCall/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//OperationCall/target"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//Literal"/>
+    <genClasses ecoreClass="BeeLang.ecore#//BooleanLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BooleanLiteral/val"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//IntegerLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//IntegerLiteral/val"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//NullLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//NullLiteral/val"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//StringLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//StringLiteral/val"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//GlobalVarExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//GlobalVarExpression/name"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//BooleanOperation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BooleanOperation/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//BooleanOperation/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BooleanOperation/right"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

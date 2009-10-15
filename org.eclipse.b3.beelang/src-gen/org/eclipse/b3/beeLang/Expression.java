@@ -1,0 +1,21 @@
+/**
+ * <copyright>
+ * </copyright>
+ *
+ */
+package org.eclipse.b3.beeLang;
+
+
+/**
+ * <!-- begin-user-doc -->
+ * A representation of the model object '<em><b>Expression</b></em>'.
+ * <!-- end-user-doc -->
+ *
+ *
+ * @see org.eclipse.b3.beeLang.BeeLangPackage#getExpression()
+ * @model
+ * @generated
+ */
+public interface Expression extends PropertyExpression, SyntaxElement
+{
+} // Expression
