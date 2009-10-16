@@ -38,6 +38,7 @@ import org.eclipse.buckminster.core.rmap.model.URIMatcher;
 import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -62,7 +63,6 @@ import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-@SuppressWarnings("restriction")
 public class PSFProvider extends Provider
 {
 	public static final String BM_PFS_PROVIDER_NS = XMLConstants.BM_PREFIX + "PSFProvider-1.0"; //$NON-NLS-1$
@@ -189,77 +189,40 @@ public class PSFProvider extends Provider
 
 			try
 			{
-				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(
-						IComponentType.UNKNOWN), new VersionMatch(null, null, -1, new Date(), null),
-						ProviderScore.GOOD, query);
-
-				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 10));
-				IStreamConsumer<PSF> psfReader = new IStreamConsumer<PSF>()
-				{
-
-					public PSF consumeStream(IComponentReader rdr, String streamName, InputStream stream,
-							IProgressMonitor consumerMon) throws CoreException, IOException
-					{
-						File tempFile = File.createTempFile("bm-", ".psf"); //$NON-NLS-1$ //$NON-NLS-2$
-						try
-						{
-							OutputStream out = null;
-							try
-							{
-								out = new FileOutputStream(tempFile);
-								IOUtils.copy(stream, out, consumerMon);
-							}
-							finally
-							{
-								IOUtils.close(out);
-							}
-							ResourceSet rs = new ResourceSetImpl();
-							Resource resource = rs.getResource(URI.createFileURI(tempFile.getAbsolutePath()), true);
-							EList<EObject> content = resource.getContents();
-							if(content.size() != 1)
-								throw BuckminsterException.fromMessage(NLS.bind("Unable to parse psf file from {0}",
-										streamName));
-
-							return (PSF)content.get(0);
-						}
-						finally
-						{
-							tempFile.delete();
-						}
-					}
-				};
-
-				if(reader instanceof ICatalogReader)
-				{
-					if(psfFile == null)
-						throw BuckminsterException.fromMessage(NLS.bind(
-								"The psfFile attribute is mandatory when using reader of type {0}", getReaderTypeId()));
-
-					psf = ((ICatalogReader)reader).readFile(psfFile, psfReader, MonitorUtils.subMonitor(monitor, 100));
-				}
+				VersionSelector[] btPath = query.getBranchTagPath();
+				if(btPath.length == 0)
+					psf = getPSF(null, query, MonitorUtils.subMonitor(monitor, 100));
 				else
 				{
-					if(psfFile != null)
-						throw BuckminsterException.fromMessage(NLS.bind(
-								"The psfFile attribute cannot be used in conjunction with reader of type {0}",
-								getReaderTypeId()));
-					psf = ((IFileReader)reader).readFile(psfReader, MonitorUtils.subMonitor(monitor, 100));
+					CoreException lastException = null;
+					for(VersionSelector bt : btPath)
+					{
+						try
+						{
+							psf = getPSF(bt, query, MonitorUtils.subMonitor(monitor, 100));
+							lastException = null;
+						}
+						catch(CoreException e)
+						{
+							lastException = e;
+						}
+					}
+					if(lastException != null)
+						throw lastException;
 				}
-
 				cachePSF(userCache, psf);
 				return psf;
-			}
-			catch(IOException e)
-			{
-				problemCollector.add(BuckminsterException.createStatus(e));
-				Buckminster.getLogger().debug(e.getMessage());
 			}
 			catch(CoreException e)
 			{
 				problemCollector.add(e.getStatus());
 				Buckminster.getLogger().debug(e.getMessage());
+				return null;
 			}
-			return null;
+			finally
+			{
+				monitor.done();
+			}
 		}
 	}
 
@@ -281,5 +244,70 @@ public class PSFProvider extends Provider
 	private PSF getCachedPSF(Map<UUID, Object> userCache)
 	{
 		return (PSF)userCache.get(getId());
+	}
+
+	private PSF getPSF(VersionSelector vs, NodeQuery query, IProgressMonitor monitor)
+			throws CoreException
+	{
+		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(
+				IComponentType.UNKNOWN), new VersionMatch(null, vs, -1, new Date(), null),
+				ProviderScore.GOOD, query);
+
+		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 10));
+		IStreamConsumer<PSF> psfReader = new IStreamConsumer<PSF>()
+		{
+			public PSF consumeStream(IComponentReader rdr, String streamName, InputStream stream,
+					IProgressMonitor consumerMon) throws CoreException, IOException
+			{
+				File tempFile = File.createTempFile("bm-", ".psf"); //$NON-NLS-1$ //$NON-NLS-2$
+				try
+				{
+					OutputStream out = null;
+					try
+					{
+						out = new FileOutputStream(tempFile);
+						IOUtils.copy(stream, out, consumerMon);
+					}
+					finally
+					{
+						IOUtils.close(out);
+					}
+					ResourceSet rs = new ResourceSetImpl();
+					Resource resource = rs.getResource(URI.createFileURI(tempFile.getAbsolutePath()), true);
+					EList<EObject> content = resource.getContents();
+					if(content.size() != 1)
+						throw BuckminsterException.fromMessage(NLS.bind("Unable to parse psf file from {0}",
+								streamName));
+
+					return (PSF)content.get(0);
+				}
+				finally
+				{
+					tempFile.delete();
+				}
+			}
+		};
+
+		try
+		{
+			if(reader instanceof ICatalogReader)
+			{
+				if(psfFile == null)
+					throw BuckminsterException.fromMessage(NLS.bind(
+							"The psfFile attribute is mandatory when using reader of type {0}", getReaderTypeId()));
+	
+				return ((ICatalogReader)reader).readFile(psfFile, psfReader, MonitorUtils.subMonitor(monitor, 100));
+			}
+	
+			if(psfFile != null)
+				throw BuckminsterException.fromMessage(NLS.bind(
+						"The psfFile attribute cannot be used in conjunction with reader of type {0}",
+						getReaderTypeId()));
+			return ((IFileReader)reader).readFile(psfReader, MonitorUtils.subMonitor(monitor, 100));
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 }
