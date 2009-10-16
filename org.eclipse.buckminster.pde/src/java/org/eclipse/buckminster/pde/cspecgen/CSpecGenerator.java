@@ -638,7 +638,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld)
 	{
-		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()));
+		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()),
+				getReader().getNodeQuery().getContext());
 	}
 
 	private void addProduct(FileHandle productConfig, boolean theOneAndOnly, IProgressMonitor monitor)

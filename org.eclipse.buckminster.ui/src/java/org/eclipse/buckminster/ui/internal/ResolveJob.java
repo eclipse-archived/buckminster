@@ -111,7 +111,7 @@ public class ResolveJob extends Job
 
 			try
 			{
-				if(bom.isFullyResolved() || ctx.isContinueOnError())
+				if(bom.isFullyResolved(ctx) || ctx.isContinueOnError())
 				{
 					setName(Messages.materializing);
 

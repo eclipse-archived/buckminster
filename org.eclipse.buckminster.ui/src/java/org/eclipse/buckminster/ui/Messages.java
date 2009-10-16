@@ -424,7 +424,7 @@ public class Messages extends NLS
 
 	public static String override_version;
 
-	public static String overwrite_existing_node_with_same_pattern;
+	public static String overwrite_existing_node_with_same_criteria;
 
 	public static String parnet_folder_with_colon;
 
@@ -572,7 +572,7 @@ public class Messages extends NLS
 
 	public static String the_location_0_for_1_is_not_an_absolute_path;
 
-	public static String the_name_pattern_cannot_be_empty;
+	public static String name_pattern_component_type_or_filter_must_be_set;
 
 	public static String timestamp_must_conform_to_format_with_colon;
 

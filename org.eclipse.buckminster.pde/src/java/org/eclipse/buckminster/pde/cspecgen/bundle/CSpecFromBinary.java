@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -231,7 +232,8 @@ public class CSpecFromBinary extends CSpecGenerator
 		IPluginModelBase model = m_plugin.getPluginModel();
 		boolean isFragment = model.isFragmentModel();
 
-		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
+		NodeQuery query = getReader().getNodeQuery();
+		ComponentQuery cquery = query.getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
@@ -243,7 +245,8 @@ public class CSpecFromBinary extends CSpecGenerator
 			// Just add the mandatory system bundle. It's needed since
 			// that bundle defines the execution environments.
 			//
-			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName()) || query.skipComponent(SYSTEM_BUNDLE_CNAME)))
+			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName()) || cquery.skipComponent(SYSTEM_BUNDLE_CNAME,
+					query.getContext())))
 				cspec.addDependency(createDependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, (String)null, null));
 			return;
 		}
@@ -263,7 +266,7 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 
 			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
-			if(skipComponent(query, dependency) || !addDependency(dependency))
+			if(skipComponent(cquery, dependency) || !addDependency(dependency))
 				continue;
 
 			String component = dependency.getName();

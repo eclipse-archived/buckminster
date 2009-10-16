@@ -36,6 +36,8 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -117,6 +119,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.part.EditorPart;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * @author Karel Brezina
@@ -144,6 +147,10 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 				break;
 			case 1:
 				lbl = node.getComponentTypeID();
+				break;
+			case 2:
+				lbl = node.getFilter() == null
+						? "" : node.getFilter().toString(); //$NON-NLS-1$
 				break;
 			default:
 				lbl = null;
@@ -247,6 +254,8 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 	private Combo m_mutableLevel;
 
 	private Text m_namePattern;
+
+	private Text m_filter;
 
 	private Combo m_category;
 
@@ -821,6 +830,11 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		m_category.setItems(AbstractComponentType.getComponentTypeIDs(true));
 		m_category.addModifyListener(m_compoundModifyListener);
 
+		UiUtils.createGridLabel(geComposite, Messages.filter_with_colon, 1, 0, SWT.NONE);
+
+		m_filter = UiUtils.createGridText(geComposite, 1, 0, SWT.NONE);
+		m_filter.addModifyListener(m_compoundModifyListener);
+
 		UiUtils.createGridLabel(geComposite, Messages.skip_component_with_colon, 1, 0, SWT.NONE);
 		m_skipComponent = UiUtils.createCheckButton(geComposite, null, new SelectionAdapter()
 		{
@@ -1017,8 +1031,8 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 
 		table.setHeaderVisible(false);
 
-		String[] columnNames = new String[] { Messages.name_pattern, Messages.category };
-		int[] columnWeights = new int[] { 10, 5 };
+		String[] columnNames = new String[] { Messages.name_pattern, Messages.component_type, Messages.filter };
+		int[] columnWeights = new int[] { 10, 5, 5 };
 
 		table.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(50);
@@ -1103,6 +1117,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 
 		boolean disableFields = getSelectionIndex() == -1;
 		m_namePattern.setEnabled(!disableFields);
+		m_filter.setEnabled(!disableFields);
 		m_category.setEnabled(!disableFields);
 		m_skipComponent.setEnabled(!disableFields);
 		m_nodeDocumentation.setEnabled(!disableFields);
@@ -1502,6 +1517,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 
 			m_allowCircular.setSelection(node.allowCircularDependency());
 			m_namePattern.setText(TextUtils.notNullString(node.getNamePattern()));
+			m_filter.setText(TextUtils.notNullString(node.getFilter()));
 			m_category.select(m_category.indexOf(TextUtils.notNullString(node.getComponentTypeID())));
 			m_overlayFolder.setText(TextUtils.notNullString(node.getOverlayFolder()));
 			m_wantedAttributes.setText(TextUtils.notNullString(TextUtils.concat(node.getAttributes(), ","))); //$NON-NLS-1$
@@ -1636,43 +1652,64 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 		if(category.length() == 0)
 			category = null;
 
-		if(patternStr == null)
+		String filterStr = UiUtils.trimmedValue(m_filter);
+		if(patternStr == null && filterStr == null && category == null)
 		{
 			failureActivator.activate();
-			MessageDialog.openError(getSite().getShell(), null, Messages.the_name_pattern_cannot_be_empty);
-			return false;
-		}
-		Pattern pattern;
-		try
-		{
-			pattern = Pattern.compile(patternStr);
-		}
-		catch(PatternSyntaxException e)
-		{
-			failureActivator.activate();
-			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+			MessageDialog.openError(getSite().getShell(), null,
+					Messages.name_pattern_component_type_or_filter_must_be_set);
 			return false;
 		}
 
-		String currentCategory = node.getComponentTypeID();
-		Pattern currentPattern = node.getNamePattern();
-		if(currentPattern == null || !currentPattern.toString().equals(patternStr)
-				|| !Trivial.equalsAllowNull(currentCategory, category))
+		Pattern pattern = null;
+		if(patternStr != null)
 		{
-			// Pattern changed. Verify that it's not a duplicate
+			try
+			{
+				pattern = Pattern.compile(patternStr);
+			}
+			catch(PatternSyntaxException e)
+			{
+				failureActivator.activate();
+				MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+				return false;
+			}
+		}
+
+		Filter filter = null;
+		if(filterStr != null)
+		{
+			try
+			{
+				filter = FilterFactory.newInstance(filterStr);
+			}
+			catch(InvalidSyntaxException e)
+			{
+				failureActivator.activate();
+				MessageDialog.openError(getSite().getShell(), null, e.getMessage());
+				return false;
+			}
+		}
+
+		if(!(Trivial.equalsAllowNull(pattern, node.getNamePattern())
+				&& Trivial.equalsAllowNull(category, node.getComponentTypeID()) && Trivial.equalsAllowNull(filter,
+				node.getFilter())))
+		{
+			// Selection criteria changed. Verify that it's not a duplicate
 			//
-			AdvisorNodeBuilder patternEqual = m_componentQuery.getNodeByPattern(patternStr, category);
+			AdvisorNodeBuilder patternEqual = m_componentQuery.getNodeByCriteria(pattern, category, filter);
 			if(patternEqual != null)
 			{
 				failureActivator.activate();
 				if(!MessageDialog.openQuestion(getSite().getShell(), null,
-						Messages.overwrite_existing_node_with_same_pattern))
+						Messages.overwrite_existing_node_with_same_criteria))
 					return false;
 				m_componentQuery.removeAdvisorNode(patternEqual);
 			}
 			refreshListNeeded = true;
 		}
 		node.setNamePattern(pattern);
+		node.setFilter(filter);
 		node.setComponentTypeID(category);
 		node.setAllowCircularDependency(m_allowCircular.getSelection());
 

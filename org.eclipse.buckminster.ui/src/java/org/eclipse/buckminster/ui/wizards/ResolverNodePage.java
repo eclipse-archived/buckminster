@@ -237,7 +237,7 @@ public class ResolverNodePage extends AbstractQueryPage
 				m_detailGroup.setText(""); //$NON-NLS-1$
 			}
 			BillOfMaterials bom = getQueryWizard().getBOM();
-			m_reresolveButton.setEnabled(!bom.isFullyResolved());
+			m_reresolveButton.setEnabled(!bom.isFullyResolved(getContext()));
 			m_unresolveButton.setEnabled(isResolved);
 		}
 		catch(CoreException e)
@@ -301,7 +301,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			m_masterTree.removeAll();
 			m_masterTree.clearAll(false);
 			addMasterItem(new TreeItem(m_masterTree, SWT.NONE), null, bom);
-			m_reresolveButton.setEnabled(!bom.isFullyResolved());
+			m_reresolveButton.setEnabled(!bom.isFullyResolved(wizard.getContext()));
 			updatePageCompletion();
 		}
 		catch(CoreException e)
@@ -364,7 +364,7 @@ public class ResolverNodePage extends AbstractQueryPage
 
 		if(node instanceof UnresolvedNode)
 		{
-			if(node.isFullyResolved(getContext().getComponentQuery()))
+			if(node.isFullyResolved(getContext().getComponentQuery(), getContext()))
 				ti.setImage(m_yellowDotImage);
 			else
 				ti.setImage(m_redDotImage);
@@ -619,7 +619,7 @@ public class ResolverNodePage extends AbstractQueryPage
 			complete = (bom != null);
 			if(complete)
 			{
-				if(!bom.isFullyResolved())
+				if(!bom.isFullyResolved(qw.getContext()))
 					complete = qw.getContext().isContinueOnError();
 			}
 		}
