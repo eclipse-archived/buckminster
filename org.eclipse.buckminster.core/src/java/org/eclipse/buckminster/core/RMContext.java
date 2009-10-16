@@ -415,7 +415,7 @@ public class RMContext extends ExpandingProperties<Object>
 
 	public NodeQuery getNodeQuery(ComponentRequest request)
 	{
-		return getNodeQuery(new QualifiedDependency(request, getComponentQuery().getAttributes(request)));
+		return getNodeQuery(new QualifiedDependency(request, getComponentQuery().getAttributes(request, this)));
 	}
 
 	public synchronized NodeQuery getNodeQuery(QualifiedDependency qualifiedDependency)

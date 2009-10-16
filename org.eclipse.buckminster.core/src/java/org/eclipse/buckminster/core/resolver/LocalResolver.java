@@ -263,7 +263,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
-		if(bom.isFullyResolved())
+		if(bom.isFullyResolved(m_context))
 		{
 			MonitorUtils.complete(monitor);
 			return bom;

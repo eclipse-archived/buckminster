@@ -253,7 +253,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public VersionSelector[] getBranchTagPath()
 	{
-		return getComponentQuery().getBranchTagPath(getComponentRequest());
+		return getComponentQuery().getBranchTagPath(getComponentRequest(), m_context);
 	}
 
 	public final ComponentQuery getComponentQuery()
@@ -289,7 +289,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 
 	public final URL getOverlayFolder()
 	{
-		return getComponentQuery().getOverlayFolder(getComponentRequest());
+		return getComponentQuery().getOverlayFolder(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public ProviderScore getProviderScore(boolean mutable, boolean source)
 	{
-		return getComponentQuery().getProviderScore(getComponentRequest(), mutable, source);
+		return getComponentQuery().getProviderScore(getComponentRequest(), mutable, source, m_context);
 	}
 
 	/**
@@ -342,7 +342,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public List<String> getRequiredAttributes()
 	{
-		return getComponentQuery().getAttributes(getComponentRequest());
+		return getComponentQuery().getAttributes(getComponentRequest(), m_context);
 	}
 
 	public ResolutionContext getResolutionContext()
@@ -354,7 +354,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 
 	public int[] getResolutionPrio()
 	{
-		return getComponentQuery().getResolutionPrio(getComponentRequest());
+		return getComponentQuery().getResolutionPrio(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -364,7 +364,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public long getRevision()
 	{
-		return getComponentQuery().getRevision(getComponentRequest());
+		return getComponentQuery().getRevision(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -374,7 +374,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public Date getTimestamp()
 	{
-		return getComponentQuery().getTimestamp(getComponentRequest());
+		return getComponentQuery().getTimestamp(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -385,7 +385,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public VersionRange getVersionRange()
 	{
 		ComponentRequest request = getComponentRequest();
-		VersionRange vds = getComponentQuery().getVersionOverride(request);
+		VersionRange vds = getComponentQuery().getVersionOverride(request, m_context);
 		if(vds == null)
 			vds = request.getVersionRange();
 		if(vds == null)
@@ -496,7 +496,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean isPrune()
 	{
-		return getComponentQuery().isPrune(getComponentRequest());
+		return getComponentQuery().isPrune(getComponentRequest(), m_context);
 	}
 
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
@@ -517,7 +517,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean skipComponent()
 	{
-		return getComponentQuery().skipComponent(getComponentRequest());
+		return getComponentQuery().skipComponent(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -528,7 +528,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean useMaterialization()
 	{
-		return getComponentQuery().useMaterialization(getComponentRequest());
+		return getComponentQuery().useMaterialization(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -538,7 +538,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean useResolutionService()
 	{
-		return getComponentQuery().useResolutionService(getComponentRequest());
+		return getComponentQuery().useResolutionService(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -549,7 +549,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean useTargetPlatform()
 	{
-		return getComponentQuery().useTargetPlatform(getComponentRequest());
+		return getComponentQuery().useTargetPlatform(getComponentRequest(), m_context);
 	}
 
 	/**
@@ -562,7 +562,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean useWorkspace()
 	{
-		return getComponentQuery().useWorkspace(getComponentRequest());
+		return getComponentQuery().useWorkspace(getComponentRequest(), m_context);
 	}
 
 	private int compareSelectors(VersionMatch vm1, VersionMatch vm2)

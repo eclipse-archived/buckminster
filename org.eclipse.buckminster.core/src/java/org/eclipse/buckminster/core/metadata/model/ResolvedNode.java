@@ -74,7 +74,7 @@ public class ResolvedNode extends BOMNode
 			for(QualifiedDependency qDep : qDeps)
 			{
 				ComponentRequest request = qDep.getRequest();
-				IAdvisorNode override = cquery.getMatchingNode(request);
+				IAdvisorNode override = cquery.getMatchingNode(request, query.getContext());
 				if(override != null)
 				{
 					qDep = qDep.applyAdvice(override);
@@ -230,12 +230,13 @@ public class ResolvedNode extends BOMNode
 	}
 
 	@Override
-	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen) throws CoreException
+	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen,
+			Map<String, ? extends Object> properties) throws CoreException
 	{
 		if(seen.add(this))
 		{
 			for(BOMNode child : getChildren())
-				if(!child.isFullyResolved(query, seen))
+				if(!child.isFullyResolved(query, seen, properties))
 					return false;
 		}
 		return true;
@@ -252,7 +253,7 @@ public class ResolvedNode extends BOMNode
 				child.addMaterializationCandidates(context, resolutions, query, mspec, perused);
 
 			ComponentIdentifier ci = resolution.getComponentIdentifier();
-			if(resolution.isMaterializable() && !(query.skipComponent(ci) || mspec.isExcluded(resolution)))
+			if(resolution.isMaterializable() && !(query.skipComponent(ci, context) || mspec.isExcluded(resolution)))
 				resolutions.add(resolution);
 		}
 	}

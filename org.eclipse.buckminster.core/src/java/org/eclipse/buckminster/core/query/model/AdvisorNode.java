@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
@@ -37,6 +38,8 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
+
+	public static final String ATTR_FILTER = "filter"; //$NON-NLS-1$
 
 	public static final String ATTR_MUTABLE_LEVEL = "mutableLevel"; //$NON-NLS-1$
 
@@ -86,6 +89,8 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 
 	private final String m_componentTypeID;
 
+	private final Filter m_filter;
+
 	private final MutableLevel m_mutableLevel;
 
 	private final Pattern m_namePattern;
@@ -125,6 +130,7 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		m_documentation = bld.getDocumentation();
 		m_allowCircularDependency = bld.allowCircularDependency();
 		m_namePattern = bld.getNamePattern();
+		m_filter = bld.getFilter();
 		m_componentTypeID = bld.getComponentTypeID();
 		m_overlayFolder = bld.getOverlayFolder();
 		m_prune = bld.isPrune();
@@ -173,6 +179,11 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public final MutableLevel getMutableLevel()
@@ -258,7 +269,10 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
+		if(m_namePattern != null)
+			Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
+		if(m_filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
 		if(m_overlayFolder != null)
 			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, m_overlayFolder.toString());
 		if(m_componentTypeID != null)

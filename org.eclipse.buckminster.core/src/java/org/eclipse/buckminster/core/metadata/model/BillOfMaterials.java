@@ -59,6 +59,26 @@ public class BillOfMaterials extends BOMNode
 	@SuppressWarnings("hiding")
 	public static final String TAG = "billOfMaterials"; //$NON-NLS-1$
 
+	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query) throws CoreException
+	{
+		return create(topNode, query, null);
+	}
+
+	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query, Date timestamp) throws CoreException
+	{
+		if(topNode == null)
+			throw new IllegalArgumentException(Messages.Top_node_cannot_be_null);
+		if(query == null)
+			throw new IllegalArgumentException(Messages.Component_query_cannot_be_null);
+		if(topNode instanceof BillOfMaterials)
+		{
+			BillOfMaterials bom = (BillOfMaterials)topNode;
+			if(bom.getQuery().equals(query))
+				return bom;
+		}
+		return new BillOfMaterials(topNode, query, timestamp);
+	}
+
 	private static void addIfNotAdded(UUIDKeyed object, Set<UUID> unique, List<IDWrapper> wrappers)
 	{
 		UUID key = object.getId();
@@ -130,26 +150,6 @@ public class BillOfMaterials extends BOMNode
 		wrappers.add(new IDWrapper(nodeId, node));
 	}
 
-	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query) throws CoreException
-	{
-		return create(topNode, query, null);
-	}
-
-	public static BillOfMaterials create(BOMNode topNode, ComponentQuery query, Date timestamp) throws CoreException
-	{
-		if(topNode == null)
-			throw new IllegalArgumentException(Messages.Top_node_cannot_be_null);
-		if(query == null)
-			throw new IllegalArgumentException(Messages.Component_query_cannot_be_null);
-		if(topNode instanceof BillOfMaterials)
-		{
-			BillOfMaterials bom = (BillOfMaterials)topNode;
-			if(bom.getQuery().equals(query))
-				return bom;
-		}
-		return new BillOfMaterials(topNode, query, timestamp);
-	}
-
 	// Private cache that speeds up the identifier to resolved node map. A cache
 	// here is quite safe since both its scope and everything it contains is immutable
 	//
@@ -171,22 +171,6 @@ public class BillOfMaterials extends BOMNode
 				: timestamp;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		if(m_topNode != null)
-			Utils.addAttribute(attrs, ATTR_TOP_NODE_ID, m_topNode.getId().toString());
-		Utils.addAttribute(attrs, ATTR_QUERY_ID, m_query.getId().toString());
-		Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
-	}
-
-	@Override
-	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
-			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
-	{
-		getTopNode().addMaterializationCandidates(context, resolutions, query, mspec, perused);
-	}
-
 	public void addMaterializationNodes(MaterializationSpecBuilder bld) throws CoreException
 	{
 		for(Resolution res : findAll(null))
@@ -195,12 +179,6 @@ public class BillOfMaterials extends BOMNode
 				continue;
 			res.getProvider().getReaderType().addMaterializationNode(bld, res);
 		}
-	}
-
-	@Override
-	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
-	{
-		getTopNode().collectAll(notThese, all);
 	}
 
 	/**
@@ -310,11 +288,6 @@ public class BillOfMaterials extends BOMNode
 		return m_timestamp;
 	}
 
-	private synchronized BOMNode getTopNode()
-	{
-		return m_topNode;
-	}
-
 	public List<ComponentRequest> getUnresolvedList()
 	{
 		ArrayList<ComponentRequest> unresolved = new ArrayList<ComponentRequest>();
@@ -334,15 +307,34 @@ public class BillOfMaterials extends BOMNode
 		return getTopNode().isChild(node);
 	}
 
+	/**
+	 * @deprecated Use {@link #isFullyResolved(Map)}
+	 */
+	@Deprecated
 	public boolean isFullyResolved() throws CoreException
 	{
 		return getTopNode().isFullyResolved(getQuery());
 	}
 
+	/**
+	 * @deprecated Use {@link #isFullyResolved(ComponentQuery, Map)}
+	 */
+	@Deprecated
 	@Override
 	public boolean isFullyResolved(ComponentQuery query) throws CoreException
 	{
 		return getTopNode().isFullyResolved(query);
+	}
+
+	@Override
+	public boolean isFullyResolved(ComponentQuery query, Map<String, ? extends Object> properties) throws CoreException
+	{
+		return getTopNode().isFullyResolved(query, properties);
+	}
+
+	public boolean isFullyResolved(Map<String, ? extends Object> properties) throws CoreException
+	{
+		return getTopNode().isFullyResolved(getQuery(), properties);
 	}
 
 	@Override
@@ -354,35 +346,6 @@ public class BillOfMaterials extends BOMNode
 	public BillOfMaterials replaceNode(BOMNode node) throws CoreException
 	{
 		return replaceNode(node, node);
-	}
-
-	BillOfMaterials replaceNode(BOMNode topReplacer, BOMNode node) throws CoreException
-	{
-		List<BOMNode> children = node.getChildren();
-		int idx = children.size();
-		BillOfMaterials self = this;
-		while(--idx >= 0)
-			self = self.replaceNode(node, children.get(idx));
-		return (BillOfMaterials)self.replaceNode(node, node, new HashMap<BOMNode, BOMNode>());
-	}
-
-	@Override
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
-	{
-		if(node instanceof BillOfMaterials && node.getQuery().equals(getQuery()))
-			node = ((BillOfMaterials)node).getTopNode();
-		else
-		{
-			BOMNode newNode = super.replaceNode(topReplacer, node, visited);
-			if(newNode != this)
-				return newNode;
-		}
-
-		BOMNode oldTop = getTopNode();
-		BOMNode newTop = oldTop.replaceNode(topReplacer, node, visited);
-		return (oldTop == newTop)
-				? this
-				: create(newTop, getQuery());
 	}
 
 	public BillOfMaterials switchContent(BillOfMaterials other)
@@ -436,6 +399,57 @@ public class BillOfMaterials extends BOMNode
 		}
 	}
 
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		if(m_topNode != null)
+			Utils.addAttribute(attrs, ATTR_TOP_NODE_ID, m_topNode.getId().toString());
+		Utils.addAttribute(attrs, ATTR_QUERY_ID, m_query.getId().toString());
+		Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
+	}
+
+	@Override
+	void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,
+			MaterializationSpec mspec, Set<Resolution> perused) throws CoreException
+	{
+		getTopNode().addMaterializationCandidates(context, resolutions, query, mspec, perused);
+	}
+
+	@Override
+	void collectAll(Set<Resolution> notThese, List<Resolution> all) throws CoreException
+	{
+		getTopNode().collectAll(notThese, all);
+	}
+
+	BillOfMaterials replaceNode(BOMNode topReplacer, BOMNode node) throws CoreException
+	{
+		List<BOMNode> children = node.getChildren();
+		int idx = children.size();
+		BillOfMaterials self = this;
+		while(--idx >= 0)
+			self = self.replaceNode(node, children.get(idx));
+		return (BillOfMaterials)self.replaceNode(node, node, new HashMap<BOMNode, BOMNode>());
+	}
+
+	@Override
+	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
+	{
+		if(node instanceof BillOfMaterials && node.getQuery().equals(getQuery()))
+			node = ((BillOfMaterials)node).getTopNode();
+		else
+		{
+			BOMNode newNode = super.replaceNode(topReplacer, node, visited);
+			if(newNode != this)
+				return newNode;
+		}
+
+		BOMNode oldTop = getTopNode();
+		BOMNode newTop = oldTop.replaceNode(topReplacer, node, visited);
+		return (oldTop == newTop)
+				? this
+				: create(newTop, getQuery());
+	}
+
 	/**
 	 * Special sax output method that is used for BillOfMaterials inlined in other BillOfMaterials since the attributes
 	 * are sufficient here. All IdWrapper instances will be emitted in the outermost BillOfMaterials
@@ -453,5 +467,10 @@ public class BillOfMaterials extends BOMNode
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, attrs);
 		receiver.endElement(namespace, localName, qName);
+	}
+
+	private synchronized BOMNode getTopNode()
+	{
+		return m_topNode;
 	}
 }

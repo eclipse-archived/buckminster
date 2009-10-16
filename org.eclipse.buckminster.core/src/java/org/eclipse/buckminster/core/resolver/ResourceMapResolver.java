@@ -90,9 +90,10 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		beginTopMonitor(monitor);
 		try
 		{
-			ComponentQuery query = getContext().getComponentQuery();
-			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(getContext(), new QualifiedDependency(
-					request, query.getAttributes(request)), null);
+			ResolutionContext ctx = getContext();
+			ComponentQuery query = ctx.getComponentQuery();
+			ResolverNodeWithJob topNode = (ResolverNodeWithJob)getResolverNode(ctx, new QualifiedDependency(request,
+					query.getAttributes(request, ctx)), null);
 
 			if(m_singleThreaded)
 			{
@@ -116,7 +117,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 	@Override
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
-		if(bom.isFullyResolved())
+		if(bom.isFullyResolved(getContext()))
 		{
 			MonitorUtils.complete(monitor);
 			return bom;

@@ -26,10 +26,12 @@ import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.CoreException;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -84,8 +86,21 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_builder = new AdvisorNodeBuilder();
-		m_builder.setNamePattern(getPatternValue(attrs, AdvisorNode.ATTR_NAME_PATTERN));
+		m_builder.setNamePattern(getOptionalPatternValue(attrs, AdvisorNode.ATTR_NAME_PATTERN));
 		m_builder.setComponentTypeID(getComponentType(attrs));
+
+		String filterStr = getOptionalStringValue(attrs, AdvisorNode.ATTR_FILTER);
+		if(filterStr != null)
+		{
+			try
+			{
+				m_builder.setFilter(FilterFactory.newInstance(filterStr));
+			}
+			catch(InvalidSyntaxException e)
+			{
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		}
 
 		String tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_OVERLAY_FOLDER);
 		if(tmp != null)
@@ -183,8 +198,8 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 					prios[idx++] = Integer.parseInt(tokens.nextToken());
 				}
 				if(idx != max)
-					throw new SAXParseException(Messages.Incorrect_number_of_resolution_priorites, this
-							.getDocumentLocator());
+					throw new SAXParseException(Messages.Incorrect_number_of_resolution_priorites,
+							this.getDocumentLocator());
 			}
 			catch(NumberFormatException e)
 			{

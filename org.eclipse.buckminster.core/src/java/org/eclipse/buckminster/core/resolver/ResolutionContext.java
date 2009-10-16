@@ -124,9 +124,9 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		IAdvisorNode node = null;
 		Map<String, ? extends Object> p = super.getProperties(cName);
 		if(m_parentContext != null)
-			parentNode = m_parentContext.getComponentQuery().getMatchingNode(cName);
+			parentNode = m_parentContext.getComponentQuery().getMatchingNode(cName, this);
 
-		node = getComponentQuery().getMatchingNode(cName);
+		node = getComponentQuery().getMatchingNode(cName, this);
 		if(parentNode == null && node == null)
 			return p;
 

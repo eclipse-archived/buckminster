@@ -40,7 +40,7 @@
 				<element name="propertyElement" type="com:PropertyElement" />
 			</choice>
 		</sequence>
-		<attribute name="namePattern" type="string" use="required">
+		<attribute name="namePattern" type="string" use="optional">
 			<annotation>
 				<documentation>
 					A regular expression pattern that will be matched against component names. The matching occurs in
@@ -53,6 +53,13 @@
 			<annotation>
 				<documentation>
 					If set, this advisor node will only match requests that has this component type.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="filter" type="string" use="optional">
+			<annotation>
+				<documentation>
+					If set, this advisor node will only match requests where the filter evaluates to true.
 				</documentation>
 			</annotation>
 		</attribute>

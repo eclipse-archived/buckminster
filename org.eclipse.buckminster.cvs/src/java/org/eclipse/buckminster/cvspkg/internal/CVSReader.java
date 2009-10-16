@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.cvspkg.Messages;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IResource;
@@ -102,17 +103,27 @@ public class CVSReader extends AbstractCatalogReader
 
 		MonitorUtils.testCancelStatus(monitor);
 		ICVSFolder root = new RemoteFolder(null, cvsLocation, m_session.getModuleName(), tag);
-		ICVSFolder folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, tag,
-				IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 90));
-		FileSystemCopier copier = new FileSystemCopier(folder, destination, MonitorUtils.subMonitor(monitor, 80));
 		try
 		{
-			folder.accept(copier, true);
+			ICVSFolder folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, tag,
+					IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 90));
+			if(folder == null)
+				throw new FileNotFoundException(toString());
+
+			FileSystemCopier copier = new FileSystemCopier(folder, destination, MonitorUtils.subMonitor(monitor, 80));
+			try
+			{
+				folder.accept(copier, true);
+			}
+			finally
+			{
+				copier.done();
+				monitor.done();
+			}
 		}
-		finally
+		catch(IOException e)
 		{
-			copier.done();
-			monitor.done();
+			throw BuckminsterException.wrap(e);
 		}
 	}
 
@@ -264,8 +275,7 @@ public class CVSReader extends AbstractCatalogReader
 		RemoteFolder folder = m_flatRoot;
 		if(filePath.segmentCount() > 1)
 		{
-			IPath parentPath = Path.fromPortableString(m_session.getModuleName())
-					.append(filePath.removeLastSegments(1));
+			IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
 			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
 			folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), m_fixed);
 			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, m_fixed, IResource.DEPTH_ONE,
@@ -279,6 +289,9 @@ public class CVSReader extends AbstractCatalogReader
 				MonitorUtils.complete(monitor);
 			folder = m_flatRoot;
 		}
+
+		if(folder == null)
+			throw new FileNotFoundException(toString());
 
 		ICVSResource cvsFile;
 		try

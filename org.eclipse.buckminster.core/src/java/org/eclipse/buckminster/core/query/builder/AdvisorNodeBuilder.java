@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.query.model.AdvisorNode;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
@@ -36,6 +37,8 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 	private String m_componentType;
 
 	private Documentation m_documentation;
+
+	private Filter m_filter;
 
 	private MutableLevel m_mutableLevel;
 
@@ -95,6 +98,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_properties = null;
 		m_documentation = null;
 		m_componentType = null;
+		m_filter = null;
 		m_mutableLevel = MutableLevel.INDIFFERENT;
 		m_namePattern = null;
 		m_overlayFolder = null;
@@ -137,6 +141,11 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 	public Documentation getDocumentation()
 	{
 		return m_documentation;
+	}
+
+	public Filter getFilter()
+	{
+		return m_filter;
 	}
 
 	public IPath getMaterializationLocation(String projectName)
@@ -199,6 +208,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_attributes.addAll(node.getAttributes());
 		m_componentType = node.getComponentTypeID();
 		m_documentation = node.getDocumentation();
+		m_filter = node.getFilter();
 		m_mutableLevel = node.getMutableLevel();
 		m_namePattern = node.getNamePattern();
 		m_overlayFolder = node.getOverlayFolder();
@@ -270,6 +280,11 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 	public void setDocumentation(Documentation documentation)
 	{
 		m_documentation = documentation;
+	}
+
+	public void setFilter(Filter filter)
+	{
+		m_filter = filter;
 	}
 
 	public void setMutableLevel(MutableLevel mutableLevel)

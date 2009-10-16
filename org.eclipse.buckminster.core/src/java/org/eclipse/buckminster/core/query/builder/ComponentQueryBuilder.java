@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -22,6 +23,7 @@ import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 
 /**
@@ -96,6 +98,20 @@ public class ComponentQueryBuilder implements IComponentQuery
 		return m_documentation;
 	}
 
+	public AdvisorNodeBuilder getNodeByCriteria(Pattern pattern, String componentType, Filter filter)
+	{
+		for(AdvisorNodeBuilder node : m_advisorNodes)
+			if(Trivial.equalsAllowNull(node.getNamePattern(), pattern)
+					&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentType)
+					&& Trivial.equalsAllowNull(node.getFilter(), filter))
+				return node;
+		return null;
+	}
+
+	/**
+	 * @deprecated Use {@link #getNodeByCriteria(Pattern, String, Filter)}
+	 */
+	@Deprecated
 	public AdvisorNodeBuilder getNodeByPattern(String pattern, String componentType)
 	{
 		for(AdvisorNodeBuilder node : m_advisorNodes)

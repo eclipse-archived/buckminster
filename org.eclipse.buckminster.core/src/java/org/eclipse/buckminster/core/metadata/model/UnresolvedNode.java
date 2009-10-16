@@ -98,7 +98,7 @@ public class UnresolvedNode extends BOMNode
 		try
 		{
 			ComponentRequest request = getRequest();
-			if(!(request.isOptional() || query.skipComponent(request) || mspec.isExcluded(request)))
+			if(!(request.isOptional() || query.skipComponent(request, context) || mspec.isExcluded(request)))
 				throw new UnresolvedNodeException(request);
 		}
 		catch(CoreException e)

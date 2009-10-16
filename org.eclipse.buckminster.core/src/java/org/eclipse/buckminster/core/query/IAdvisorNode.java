@@ -10,6 +10,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 
 @SuppressWarnings("restriction")
@@ -31,6 +32,8 @@ public interface IAdvisorNode
 	String getComponentTypeID();
 
 	Documentation getDocumentation();
+
+	Filter getFilter();
 
 	MutableLevel getMutableLevel();
 

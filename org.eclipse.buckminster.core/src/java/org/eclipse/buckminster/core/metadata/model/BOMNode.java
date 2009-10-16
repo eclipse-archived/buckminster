@@ -80,9 +80,18 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		return false;
 	}
 
+	/**
+	 * @deprecated Use {@link #isFullyResolved(ComponentQuery, Map)}
+	 */
+	@Deprecated
 	public boolean isFullyResolved(ComponentQuery query) throws CoreException
 	{
 		return isFullyResolved(query, new HashSet<BOMNode>());
+	}
+
+	public boolean isFullyResolved(ComponentQuery query, Map<String, ? extends Object> properties) throws CoreException
+	{
+		return isFullyResolved(query, new HashSet<BOMNode>(), properties);
 	}
 
 	public boolean isPersisted(StorageManager sm) throws CoreException
@@ -132,10 +141,20 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		return allNodes.size();
 	}
 
+	/**
+	 * @deprecated Use {@link #isFullyResolved(ComponentQuery, HashSet, Map)}
+	 */
+	@Deprecated
 	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen) throws CoreException
 	{
+		return isFullyResolved(query, seen, query.getGlobalProperties());
+	}
+
+	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen,
+			Map<String, ? extends Object> properties) throws CoreException
+	{
 		ComponentRequest request = getRequest();
-		return query.skipComponent(request) || request.isOptional();
+		return query.skipComponent(request, properties) || request.isOptional();
 	}
 
 	abstract void addMaterializationCandidates(RMContext context, List<Resolution> resolutions, ComponentQuery query,

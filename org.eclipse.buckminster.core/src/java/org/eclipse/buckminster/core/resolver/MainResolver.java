@@ -70,7 +70,7 @@ public class MainResolver implements IResolver
 
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
 	{
-		if(bom.isFullyResolved())
+		if(bom.isFullyResolved(m_context))
 			return bom;
 
 		m_context.addTagInfo(bom.getRequest(), bom.getQuery().getTagInfo());
@@ -124,7 +124,7 @@ public class MainResolver implements IResolver
 							bomAtIterationStart = bom;
 
 						bom = newBom;
-						if(!m_recursiveResolve || bom.isFullyResolved())
+						if(!m_recursiveResolve || bom.isFullyResolved(m_context))
 						{
 							// Something happened with the BOM so we consider ourselves done here
 							//
@@ -141,7 +141,7 @@ public class MainResolver implements IResolver
 						break;
 				}
 
-				if(bom.isFullyResolved())
+				if(bom.isFullyResolved(m_context))
 					m_context.clearStatus();
 				else if(!continueOnError)
 				{
