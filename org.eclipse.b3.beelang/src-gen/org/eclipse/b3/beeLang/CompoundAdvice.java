@@ -7,8 +7,6 @@ package org.eclipse.b3.beeLang;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Compound Advice</b></em>'.
@@ -25,7 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface CompoundAdvice extends EObject
+public interface CompoundAdvice extends Advice
 {
   /**
    * Returns the value of the '<em><b>Advice</b></em>' containment reference list.

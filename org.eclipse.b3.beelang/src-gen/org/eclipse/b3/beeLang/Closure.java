@@ -47,7 +47,7 @@ public interface Closure extends EObject
 
   /**
    * Returns the value of the '<em><b>Set Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.StringProperty}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyStatement}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Set Properties</em>' containment reference list isn't clear,
@@ -59,7 +59,7 @@ public interface Closure extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<StringProperty> getSetProperties();
+  EList<PropertyStatement> getSetProperties();
 
   /**
    * Returns the value of the '<em><b>Advice</b></em>' containment reference list.

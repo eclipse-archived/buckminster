@@ -10,7 +10,7 @@ import java.util.Collection;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Closure;
 import org.eclipse.b3.beeLang.CompoundAdvice;
-import org.eclipse.b3.beeLang.StringProperty;
+import org.eclipse.b3.beeLang.PropertyStatement;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -60,7 +60,7 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
    * @generated
    * @ordered
    */
-  protected EList<StringProperty> setProperties;
+  protected EList<PropertyStatement> setProperties;
 
   /**
    * The cached value of the '{@link #getAdvice() <em>Advice</em>}' containment reference list.
@@ -112,11 +112,11 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<StringProperty> getSetProperties()
+  public EList<PropertyStatement> getSetProperties()
   {
     if (setProperties == null)
     {
-      setProperties = new EObjectContainmentEList<StringProperty>(StringProperty.class, this, BeeLangPackage.CLOSURE__SET_PROPERTIES);
+      setProperties = new EObjectContainmentEList<PropertyStatement>(PropertyStatement.class, this, BeeLangPackage.CLOSURE__SET_PROPERTIES);
     }
     return setProperties;
   }
@@ -190,7 +190,7 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
         return;
       case BeeLangPackage.CLOSURE__SET_PROPERTIES:
         getSetProperties().clear();
-        getSetProperties().addAll((Collection<? extends StringProperty>)newValue);
+        getSetProperties().addAll((Collection<? extends PropertyStatement>)newValue);
         return;
       case BeeLangPackage.CLOSURE__ADVICE:
         getAdvice().clear();

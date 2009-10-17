@@ -16,6 +16,6 @@ package org.eclipse.b3.beeLang;
  * @model
  * @generated
  */
-public interface Expression extends PropertyExpression, SyntaxElement
+public interface Expression extends PropertyExpression, AnonymousParameter, SyntaxElement
 {
 } // Expression

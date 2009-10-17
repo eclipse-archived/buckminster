@@ -103,9 +103,14 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createRequiredCapabilityAdapter();
       }
       @Override
-      public Adapter caseStringProperty(StringProperty object)
+      public Adapter casePropertyStatements(PropertyStatements object)
       {
-        return createStringPropertyAdapter();
+        return createPropertyStatementsAdapter();
+      }
+      @Override
+      public Adapter casePropertyStatement(PropertyStatement object)
+      {
+        return createPropertyStatementAdapter();
       }
       @Override
       public Adapter casePropertyExpression(PropertyExpression object)
@@ -131,6 +136,16 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
       public Adapter casePathGroup(PathGroup object)
       {
         return createPathGroupAdapter();
+      }
+      @Override
+      public Adapter casePathExpression(PathExpression object)
+      {
+        return createPathExpressionAdapter();
+      }
+      @Override
+      public Adapter caseExprStatement(ExprStatement object)
+      {
+        return createExprStatementAdapter();
       }
       @Override
       public Adapter caseGroupPart(GroupPart object)
@@ -178,14 +193,19 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createParameterAdapter();
       }
       @Override
-      public Adapter caseResult(Result object)
+      public Adapter caseAnonymousParameter(AnonymousParameter object)
       {
-        return createResultAdapter();
+        return createAnonymousParameterAdapter();
       }
       @Override
-      public Adapter caseResultGroup(ResultGroup object)
+      public Adapter caseLayout(Layout object)
       {
-        return createResultGroupAdapter();
+        return createLayoutAdapter();
+      }
+      @Override
+      public Adapter caseActionInputGroup(ActionInputGroup object)
+      {
+        return createActionInputGroupAdapter();
       }
       @Override
       public Adapter caseRepositoryConfiguration(RepositoryConfiguration object)
@@ -196,6 +216,11 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
       public Adapter caseNamedAdvice(NamedAdvice object)
       {
         return createNamedAdviceAdapter();
+      }
+      @Override
+      public Adapter caseAdvice(Advice object)
+      {
+        return createAdviceAdapter();
       }
       @Override
       public Adapter caseCompoundAdvice(CompoundAdvice object)
@@ -261,6 +286,11 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
       public Adapter caseOperationCall(OperationCall object)
       {
         return createOperationCallAdapter();
+      }
+      @Override
+      public Adapter caseFeatureCall(FeatureCall object)
+      {
+        return createFeatureCallAdapter();
       }
       @Override
       public Adapter caseLiteral(Literal object)
@@ -395,16 +425,31 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.StringProperty <em>String Property</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.PropertyStatements <em>Property Statements</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.StringProperty
+   * @see org.eclipse.b3.beeLang.PropertyStatements
    * @generated
    */
-  public Adapter createStringPropertyAdapter()
+  public Adapter createPropertyStatementsAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.PropertyStatement <em>Property Statement</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.PropertyStatement
+   * @generated
+   */
+  public Adapter createPropertyStatementAdapter()
   {
     return null;
   }
@@ -480,6 +525,36 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createPathGroupAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.PathExpression <em>Path Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.PathExpression
+   * @generated
+   */
+  public Adapter createPathExpressionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.ExprStatement <em>Expr Statement</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.ExprStatement
+   * @generated
+   */
+  public Adapter createExprStatementAdapter()
   {
     return null;
   }
@@ -620,31 +695,46 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Result <em>Result</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.AnonymousParameter <em>Anonymous Parameter</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.Result
+   * @see org.eclipse.b3.beeLang.AnonymousParameter
    * @generated
    */
-  public Adapter createResultAdapter()
+  public Adapter createAnonymousParameterAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.ResultGroup <em>Result Group</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Layout <em>Layout</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.ResultGroup
+   * @see org.eclipse.b3.beeLang.Layout
    * @generated
    */
-  public Adapter createResultGroupAdapter()
+  public Adapter createLayoutAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.ActionInputGroup <em>Action Input Group</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.ActionInputGroup
+   * @generated
+   */
+  public Adapter createActionInputGroupAdapter()
   {
     return null;
   }
@@ -675,6 +765,21 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createNamedAdviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Advice <em>Advice</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.Advice
+   * @generated
+   */
+  public Adapter createAdviceAdapter()
   {
     return null;
   }
@@ -870,6 +975,21 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createOperationCallAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.FeatureCall <em>Feature Call</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.FeatureCall
+   * @generated
+   */
+  public Adapter createFeatureCallAdapter()
   {
     return null;
   }

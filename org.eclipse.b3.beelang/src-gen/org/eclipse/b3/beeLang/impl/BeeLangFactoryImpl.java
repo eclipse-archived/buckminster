@@ -73,12 +73,15 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.BUILD_UNIT: return createBuildUnit();
       case BeeLangPackage.PROVIDED_CAPABILITY: return createProvidedCapability();
       case BeeLangPackage.REQUIRED_CAPABILITY: return createRequiredCapability();
-      case BeeLangPackage.STRING_PROPERTY: return createStringProperty();
+      case BeeLangPackage.PROPERTY_STATEMENTS: return createPropertyStatements();
+      case BeeLangPackage.PROPERTY_STATEMENT: return createPropertyStatement();
       case BeeLangPackage.PROPERTY_EXPRESSION: return createPropertyExpression();
       case BeeLangPackage.SYNCHRONIZATION: return createSynchronization();
       case BeeLangPackage.BUILD_PART: return createBuildPart();
       case BeeLangPackage.ARTIFACTS_PART: return createArtifactsPart();
       case BeeLangPackage.PATH_GROUP: return createPathGroup();
+      case BeeLangPackage.PATH_EXPRESSION: return createPathExpression();
+      case BeeLangPackage.EXPR_STATEMENT: return createExprStatement();
       case BeeLangPackage.GROUP_PART: return createGroupPart();
       case BeeLangPackage.PREREQUISITE: return createPrerequisite();
       case BeeLangPackage.CLOSURE: return createClosure();
@@ -88,10 +91,12 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.COMPOUND_REFERENCES: return createCompoundReferences();
       case BeeLangPackage.ACTION_PART: return createActionPart();
       case BeeLangPackage.PARAMETER: return createParameter();
-      case BeeLangPackage.RESULT: return createResult();
-      case BeeLangPackage.RESULT_GROUP: return createResultGroup();
+      case BeeLangPackage.ANONYMOUS_PARAMETER: return createAnonymousParameter();
+      case BeeLangPackage.LAYOUT: return createLayout();
+      case BeeLangPackage.ACTION_INPUT_GROUP: return createActionInputGroup();
       case BeeLangPackage.REPOSITORY_CONFIGURATION: return createRepositoryConfiguration();
       case BeeLangPackage.NAMED_ADVICE: return createNamedAdvice();
+      case BeeLangPackage.ADVICE: return createAdvice();
       case BeeLangPackage.COMPOUND_ADVICE: return createCompoundAdvice();
       case BeeLangPackage.ADVICE_STATEMENT: return createAdviceStatement();
       case BeeLangPackage.ADVICE_PATH: return createAdvicePath();
@@ -105,6 +110,7 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.EXPRESSION: return createExpression();
       case BeeLangPackage.VALUE_EXPRESSION: return createValueExpression();
       case BeeLangPackage.OPERATION_CALL: return createOperationCall();
+      case BeeLangPackage.FEATURE_CALL: return createFeatureCall();
       case BeeLangPackage.LITERAL: return createLiteral();
       case BeeLangPackage.BOOLEAN_LITERAL: return createBooleanLiteral();
       case BeeLangPackage.INTEGER_LITERAL: return createIntegerLiteral();
@@ -131,6 +137,8 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
         return createVisibilityFromString(eDataType, initialValue);
       case BeeLangPackage.ASSERTION_SCOPE:
         return createAssertionScopeFromString(eDataType, initialValue);
+      case BeeLangPackage.EXECUTION_MODE:
+        return createExecutionModeFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -150,6 +158,8 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
         return convertVisibilityToString(eDataType, instanceValue);
       case BeeLangPackage.ASSERTION_SCOPE:
         return convertAssertionScopeToString(eDataType, instanceValue);
+      case BeeLangPackage.EXECUTION_MODE:
+        return convertExecutionModeToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -215,10 +225,21 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public StringProperty createStringProperty()
+  public PropertyStatements createPropertyStatements()
   {
-    StringPropertyImpl stringProperty = new StringPropertyImpl();
-    return stringProperty;
+    PropertyStatementsImpl propertyStatements = new PropertyStatementsImpl();
+    return propertyStatements;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PropertyStatement createPropertyStatement()
+  {
+    PropertyStatementImpl propertyStatement = new PropertyStatementImpl();
+    return propertyStatement;
   }
 
   /**
@@ -274,6 +295,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     PathGroupImpl pathGroup = new PathGroupImpl();
     return pathGroup;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PathExpression createPathExpression()
+  {
+    PathExpressionImpl pathExpression = new PathExpressionImpl();
+    return pathExpression;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ExprStatement createExprStatement()
+  {
+    ExprStatementImpl exprStatement = new ExprStatementImpl();
+    return exprStatement;
   }
 
   /**
@@ -380,10 +423,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Result createResult()
+  public AnonymousParameter createAnonymousParameter()
   {
-    ResultImpl result = new ResultImpl();
-    return result;
+    AnonymousParameterImpl anonymousParameter = new AnonymousParameterImpl();
+    return anonymousParameter;
   }
 
   /**
@@ -391,10 +434,21 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public ResultGroup createResultGroup()
+  public Layout createLayout()
   {
-    ResultGroupImpl resultGroup = new ResultGroupImpl();
-    return resultGroup;
+    LayoutImpl layout = new LayoutImpl();
+    return layout;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ActionInputGroup createActionInputGroup()
+  {
+    ActionInputGroupImpl actionInputGroup = new ActionInputGroupImpl();
+    return actionInputGroup;
   }
 
   /**
@@ -417,6 +471,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     NamedAdviceImpl namedAdvice = new NamedAdviceImpl();
     return namedAdvice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Advice createAdvice()
+  {
+    AdviceImpl advice = new AdviceImpl();
+    return advice;
   }
 
   /**
@@ -567,6 +632,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public FeatureCall createFeatureCall()
+  {
+    FeatureCallImpl featureCall = new FeatureCallImpl();
+    return featureCall;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Literal createLiteral()
   {
     LiteralImpl literal = new LiteralImpl();
@@ -679,6 +755,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * @generated
    */
   public String convertAssertionScopeToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ExecutionMode createExecutionModeFromString(EDataType eDataType, String initialValue)
+  {
+    ExecutionMode result = ExecutionMode.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertExecutionModeToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

@@ -17,25 +17,27 @@
     <eLiterals name="precondition" literal="precondition"/>
     <eLiterals name="postcondition" value="1" literal="postcondition"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ExecutionMode">
+    <eLiterals name="parallel" literal="parallel"/>
+    <eLiterals name="sequential" value="1" literal="sequential"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BuildUnit">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchronized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="executionMode" eType="#//ExecutionMode"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="implements" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyStatements" upperBound="-1"
+        eType="#//PropertyStatements" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providedCapability" upperBound="-1"
         eType="#//ProvidedCapability" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="requiredCapabilities" upperBound="-1"
         eType="#//RequiredCapability" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metaRequiredCapabilities"
         upperBound="-1" eType="#//RequiredCapability" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsetProperties" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="setProperties" upperBound="-1"
-        eType="#//StringProperty" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
         eType="#//NamedAdvice" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="synchronize" upperBound="-1"
@@ -59,11 +61,23 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StringProperty">
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyStatements">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" eType="#//PropertyStatement"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyStatement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="#//Filter"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+        eType="#//PropertyStatement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="local" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="immutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//PropertyExpression"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsetProperties" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PropertyExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="Synchronization">
@@ -85,16 +99,21 @@
   <eClassifiers xsi:type="ecore:EClass" name="PathGroup">
     <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="#//Filter"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="paths" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="basePath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="paths" upperBound="-1"
+        eType="#//PathExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstIsBase" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsetProperties" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="setProperties" upperBound="-1"
-        eType="#//StringProperty" containment="true"/>
+        eType="#//PropertyStatement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PathExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ExprStatement" eSuperTypes="#//PathExpression #//PrerequisiteEntry">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GroupPart" eSuperTypes="#//BuildPart">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchronized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="executionMode" eType="#//ExecutionMode"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="asserts" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
@@ -115,7 +134,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsetProperties" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="setProperties" upperBound="-1"
-        eType="#//StringProperty" containment="true"/>
+        eType="#//PropertyStatement" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
         eType="#//CompoundAdvice" containment="true"/>
   </eClassifiers>
@@ -134,42 +153,40 @@
         eType="#//Prerequisite" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ActionPart" eSuperTypes="#//BuildPart">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchronized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="executionMode" eType="#//ExecutionMode"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="actorParameters" upperBound="-1"
-        eType="#//Parameter" containment="true"/>
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="asserts" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="resultGroups" upperBound="-1"
-        eType="#//Result" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//PropertyStatement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="advice" eType="#//Advice"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="resultGroup" eType="#//ActionInputGroup"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="layout" upperBound="-1"
+        eType="#//Layout" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Parameter">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Result">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="result" upperBound="-1"
-        eType="#//Result" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="group" eType="#//ResultGroup"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AnonymousParameter"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Layout">
     <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="#//Filter"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibility" eType="#//Visibility"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="asserts" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
+        eType="#//PostConditionAssert" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="paths" upperBound="-1"
         eType="#//PathGroup" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="closure" eType="#//Closure"
-        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ResultGroup">
+  <eClassifiers xsi:type="ecore:EClass" name="ActionInputGroup">
     <eStructuralFeatures xsi:type="ecore:EReference" name="asserts" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="prerequisites" upperBound="-1"
         eType="#//Prerequisite" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="closure" eType="#//Closure"
-        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RepositoryConfiguration">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -182,7 +199,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="advice" eType="#//CompoundAdvice"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CompoundAdvice">
+  <eClassifiers xsi:type="ecore:EClass" name="Advice"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CompoundAdvice" eSuperTypes="#//Advice">
     <eStructuralFeatures xsi:type="ecore:EReference" name="advice" upperBound="-1"
         eType="#//AdviceStatement" containment="true"/>
   </eClassifiers>
@@ -226,17 +244,22 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SyntaxElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="#//PropertyExpression #//SyntaxElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="#//PropertyExpression #//AnonymousParameter #//SyntaxElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="ValueExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OperationCall" eSuperTypes="#//Expression">
+  <eClassifiers xsi:type="ecore:EClass" name="OperationCall" eSuperTypes="#//Expression #//FeatureCall">
     <eStructuralFeatures xsi:type="ecore:EReference" name="params" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="paramsParameters" upperBound="-1"
+        eType="#//AnonymousParameter" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureCall" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Expression"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Literal" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="BooleanLiteral" eSuperTypes="#//Literal">

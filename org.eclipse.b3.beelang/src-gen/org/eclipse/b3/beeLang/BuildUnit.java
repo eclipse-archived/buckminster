@@ -17,15 +17,14 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#isSynchronized <em>Synchronized</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getExecutionMode <em>Execution Mode</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getImplements <em>Implements</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getPropertyStatements <em>Property Statements</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getProvidedCapability <em>Provided Capability</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRequiredCapabilities <em>Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getMetaRequiredCapabilities <em>Meta Required Capabilities</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getUnsetProperties <em>Unset Properties</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getSetProperties <em>Set Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getAdvice <em>Advice</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getSynchronize <em>Synchronize</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getParts <em>Parts</em>}</li>
@@ -40,30 +39,33 @@ import org.eclipse.emf.ecore.EObject;
 public interface BuildUnit extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Synchronized</b></em>' attribute.
+   * Returns the value of the '<em><b>Execution Mode</b></em>' attribute.
+   * The literals are from the enumeration {@link org.eclipse.b3.beeLang.ExecutionMode}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Synchronized</em>' attribute isn't clear,
+   * If the meaning of the '<em>Execution Mode</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Synchronized</em>' attribute.
-   * @see #setSynchronized(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Synchronized()
+   * @return the value of the '<em>Execution Mode</em>' attribute.
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @see #setExecutionMode(ExecutionMode)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_ExecutionMode()
    * @model
    * @generated
    */
-  boolean isSynchronized();
+  ExecutionMode getExecutionMode();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.BuildUnit#isSynchronized <em>Synchronized</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.BuildUnit#getExecutionMode <em>Execution Mode</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Synchronized</em>' attribute.
-   * @see #isSynchronized()
+   * @param value the new value of the '<em>Execution Mode</em>' attribute.
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @see #getExecutionMode()
    * @generated
    */
-  void setSynchronized(boolean value);
+  void setExecutionMode(ExecutionMode value);
 
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -134,6 +136,22 @@ public interface BuildUnit extends EObject
   EList<String> getImplements();
 
   /**
+   * Returns the value of the '<em><b>Property Statements</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyStatements}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Property Statements</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Property Statements</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_PropertyStatements()
+   * @model containment="true"
+   * @generated
+   */
+  EList<PropertyStatements> getPropertyStatements();
+
+  /**
    * Returns the value of the '<em><b>Provided Capability</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.b3.beeLang.ProvidedCapability}.
    * <!-- begin-user-doc -->
@@ -180,38 +198,6 @@ public interface BuildUnit extends EObject
    * @generated
    */
   EList<RequiredCapability> getMetaRequiredCapabilities();
-
-  /**
-   * Returns the value of the '<em><b>Unset Properties</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Unset Properties</em>' attribute list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Unset Properties</em>' attribute list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_UnsetProperties()
-   * @model unique="false"
-   * @generated
-   */
-  EList<String> getUnsetProperties();
-
-  /**
-   * Returns the value of the '<em><b>Set Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.StringProperty}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Set Properties</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Set Properties</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_SetProperties()
-   * @model containment="true"
-   * @generated
-   */
-  EList<StringProperty> getSetProperties();
 
   /**
    * Returns the value of the '<em><b>Advice</b></em>' containment reference list.

@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.GroupPart#isSynchronized <em>Synchronized</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.GroupPart#getExecutionMode <em>Execution Mode</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.GroupPart#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.GroupPart#getAsserts <em>Asserts</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.GroupPart#getPrerequisites <em>Prerequisites</em>}</li>
@@ -31,30 +31,33 @@ import org.eclipse.emf.ecore.EObject;
 public interface GroupPart extends BuildPart
 {
   /**
-   * Returns the value of the '<em><b>Synchronized</b></em>' attribute.
+   * Returns the value of the '<em><b>Execution Mode</b></em>' attribute.
+   * The literals are from the enumeration {@link org.eclipse.b3.beeLang.ExecutionMode}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Synchronized</em>' attribute isn't clear,
+   * If the meaning of the '<em>Execution Mode</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Synchronized</em>' attribute.
-   * @see #setSynchronized(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getGroupPart_Synchronized()
+   * @return the value of the '<em>Execution Mode</em>' attribute.
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @see #setExecutionMode(ExecutionMode)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getGroupPart_ExecutionMode()
    * @model
    * @generated
    */
-  boolean isSynchronized();
+  ExecutionMode getExecutionMode();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.GroupPart#isSynchronized <em>Synchronized</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.GroupPart#getExecutionMode <em>Execution Mode</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Synchronized</em>' attribute.
-   * @see #isSynchronized()
+   * @param value the new value of the '<em>Execution Mode</em>' attribute.
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @see #getExecutionMode()
    * @generated
    */
-  void setSynchronized(boolean value);
+  void setExecutionMode(ExecutionMode value);
 
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.

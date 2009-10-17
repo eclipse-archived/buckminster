@@ -9,8 +9,9 @@ import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Filter;
+import org.eclipse.b3.beeLang.PathExpression;
 import org.eclipse.b3.beeLang.PathGroup;
-import org.eclipse.b3.beeLang.StringProperty;
+import org.eclipse.b3.beeLang.PropertyStatement;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -36,7 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getPaths <em>Paths</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getBasePath <em>Base Path</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#isFirstIsBase <em>First Is Base</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getUnsetProperties <em>Unset Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getSetProperties <em>Set Properties</em>}</li>
  * </ul>
@@ -57,34 +58,34 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
   protected Filter filter;
 
   /**
-   * The cached value of the '{@link #getPaths() <em>Paths</em>}' attribute list.
+   * The cached value of the '{@link #getPaths() <em>Paths</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getPaths()
    * @generated
    * @ordered
    */
-  protected EList<String> paths;
+  protected EList<PathExpression> paths;
 
   /**
-   * The default value of the '{@link #getBasePath() <em>Base Path</em>}' attribute.
+   * The default value of the '{@link #isFirstIsBase() <em>First Is Base</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBasePath()
+   * @see #isFirstIsBase()
    * @generated
    * @ordered
    */
-  protected static final String BASE_PATH_EDEFAULT = null;
+  protected static final boolean FIRST_IS_BASE_EDEFAULT = false;
 
   /**
-   * The cached value of the '{@link #getBasePath() <em>Base Path</em>}' attribute.
+   * The cached value of the '{@link #isFirstIsBase() <em>First Is Base</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBasePath()
+   * @see #isFirstIsBase()
    * @generated
    * @ordered
    */
-  protected String basePath = BASE_PATH_EDEFAULT;
+  protected boolean firstIsBase = FIRST_IS_BASE_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getUnsetProperties() <em>Unset Properties</em>}' attribute list.
@@ -104,7 +105,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * @generated
    * @ordered
    */
-  protected EList<StringProperty> setProperties;
+  protected EList<PropertyStatement> setProperties;
 
   /**
    * <!-- begin-user-doc -->
@@ -180,11 +181,11 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<String> getPaths()
+  public EList<PathExpression> getPaths()
   {
     if (paths == null)
     {
-      paths = new EDataTypeEList<String>(String.class, this, BeeLangPackage.PATH_GROUP__PATHS);
+      paths = new EObjectContainmentEList<PathExpression>(PathExpression.class, this, BeeLangPackage.PATH_GROUP__PATHS);
     }
     return paths;
   }
@@ -194,9 +195,9 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getBasePath()
+  public boolean isFirstIsBase()
   {
-    return basePath;
+    return firstIsBase;
   }
 
   /**
@@ -204,12 +205,12 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setBasePath(String newBasePath)
+  public void setFirstIsBase(boolean newFirstIsBase)
   {
-    String oldBasePath = basePath;
-    basePath = newBasePath;
+    boolean oldFirstIsBase = firstIsBase;
+    firstIsBase = newFirstIsBase;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__BASE_PATH, oldBasePath, basePath));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__FIRST_IS_BASE, oldFirstIsBase, firstIsBase));
   }
 
   /**
@@ -231,11 +232,11 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<StringProperty> getSetProperties()
+  public EList<PropertyStatement> getSetProperties()
   {
     if (setProperties == null)
     {
-      setProperties = new EObjectContainmentEList<StringProperty>(StringProperty.class, this, BeeLangPackage.PATH_GROUP__SET_PROPERTIES);
+      setProperties = new EObjectContainmentEList<PropertyStatement>(PropertyStatement.class, this, BeeLangPackage.PATH_GROUP__SET_PROPERTIES);
     }
     return setProperties;
   }
@@ -252,6 +253,8 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
     {
       case BeeLangPackage.PATH_GROUP__FILTER:
         return basicSetFilter(null, msgs);
+      case BeeLangPackage.PATH_GROUP__PATHS:
+        return ((InternalEList<?>)getPaths()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
         return ((InternalEList<?>)getSetProperties()).basicRemove(otherEnd, msgs);
     }
@@ -272,8 +275,8 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
         return getFilter();
       case BeeLangPackage.PATH_GROUP__PATHS:
         return getPaths();
-      case BeeLangPackage.PATH_GROUP__BASE_PATH:
-        return getBasePath();
+      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
+        return isFirstIsBase();
       case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
         return getUnsetProperties();
       case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
@@ -298,10 +301,10 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
         return;
       case BeeLangPackage.PATH_GROUP__PATHS:
         getPaths().clear();
-        getPaths().addAll((Collection<? extends String>)newValue);
+        getPaths().addAll((Collection<? extends PathExpression>)newValue);
         return;
-      case BeeLangPackage.PATH_GROUP__BASE_PATH:
-        setBasePath((String)newValue);
+      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
+        setFirstIsBase((Boolean)newValue);
         return;
       case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
         getUnsetProperties().clear();
@@ -309,7 +312,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
         return;
       case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
         getSetProperties().clear();
-        getSetProperties().addAll((Collection<? extends StringProperty>)newValue);
+        getSetProperties().addAll((Collection<? extends PropertyStatement>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -331,8 +334,8 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
       case BeeLangPackage.PATH_GROUP__PATHS:
         getPaths().clear();
         return;
-      case BeeLangPackage.PATH_GROUP__BASE_PATH:
-        setBasePath(BASE_PATH_EDEFAULT);
+      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
+        setFirstIsBase(FIRST_IS_BASE_EDEFAULT);
         return;
       case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
         getUnsetProperties().clear();
@@ -358,8 +361,8 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
         return filter != null;
       case BeeLangPackage.PATH_GROUP__PATHS:
         return paths != null && !paths.isEmpty();
-      case BeeLangPackage.PATH_GROUP__BASE_PATH:
-        return BASE_PATH_EDEFAULT == null ? basePath != null : !BASE_PATH_EDEFAULT.equals(basePath);
+      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
+        return firstIsBase != FIRST_IS_BASE_EDEFAULT;
       case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
         return unsetProperties != null && !unsetProperties.isEmpty();
       case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
@@ -379,10 +382,8 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (paths: ");
-    result.append(paths);
-    result.append(", basePath: ");
-    result.append(basePath);
+    result.append(" (firstIsBase: ");
+    result.append(firstIsBase);
     result.append(", unsetProperties: ");
     result.append(unsetProperties);
     result.append(')');

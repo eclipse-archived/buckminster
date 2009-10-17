@@ -7,12 +7,10 @@ package org.eclipse.b3.beeLang.impl;
 
 import java.util.Collection;
 
+import org.eclipse.b3.beeLang.ActionInputGroup;
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Closure;
 import org.eclipse.b3.beeLang.Prerequisite;
-import org.eclipse.b3.beeLang.ResultGroup;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -21,7 +19,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -29,20 +26,19 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Result Group</b></em>'.
+ * An implementation of the model object '<em><b>Action Input Group</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ResultGroupImpl#getAsserts <em>Asserts</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ResultGroupImpl#getPrerequisites <em>Prerequisites</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ResultGroupImpl#getClosure <em>Closure</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ActionInputGroupImpl#getAsserts <em>Asserts</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ActionInputGroupImpl#getPrerequisites <em>Prerequisites</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ResultGroupImpl extends MinimalEObjectImpl.Container implements ResultGroup
+public class ActionInputGroupImpl extends MinimalEObjectImpl.Container implements ActionInputGroup
 {
   /**
    * The cached value of the '{@link #getAsserts() <em>Asserts</em>}' containment reference list.
@@ -65,21 +61,11 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   protected EList<Prerequisite> prerequisites;
 
   /**
-   * The cached value of the '{@link #getClosure() <em>Closure</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getClosure()
-   * @generated
-   * @ordered
-   */
-  protected Closure closure;
-
-  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ResultGroupImpl()
+  protected ActionInputGroupImpl()
   {
     super();
   }
@@ -92,7 +78,7 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.RESULT_GROUP;
+    return BeeLangPackage.Literals.ACTION_INPUT_GROUP;
   }
 
   /**
@@ -104,7 +90,7 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     if (asserts == null)
     {
-      asserts = new EObjectContainmentEList<EObject>(EObject.class, this, BeeLangPackage.RESULT_GROUP__ASSERTS);
+      asserts = new EObjectContainmentEList<EObject>(EObject.class, this, BeeLangPackage.ACTION_INPUT_GROUP__ASSERTS);
     }
     return asserts;
   }
@@ -118,57 +104,9 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     if (prerequisites == null)
     {
-      prerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this, BeeLangPackage.RESULT_GROUP__PREREQUISITES);
+      prerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this, BeeLangPackage.ACTION_INPUT_GROUP__PREREQUISITES);
     }
     return prerequisites;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Closure getClosure()
-  {
-    return closure;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetClosure(Closure newClosure, NotificationChain msgs)
-  {
-    Closure oldClosure = closure;
-    closure = newClosure;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.RESULT_GROUP__CLOSURE, oldClosure, newClosure);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setClosure(Closure newClosure)
-  {
-    if (newClosure != closure)
-    {
-      NotificationChain msgs = null;
-      if (closure != null)
-        msgs = ((InternalEObject)closure).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.RESULT_GROUP__CLOSURE, null, msgs);
-      if (newClosure != null)
-        msgs = ((InternalEObject)newClosure).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.RESULT_GROUP__CLOSURE, null, msgs);
-      msgs = basicSetClosure(newClosure, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.RESULT_GROUP__CLOSURE, newClosure, newClosure));
   }
 
   /**
@@ -181,12 +119,10 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     switch (featureID)
     {
-      case BeeLangPackage.RESULT_GROUP__ASSERTS:
+      case BeeLangPackage.ACTION_INPUT_GROUP__ASSERTS:
         return ((InternalEList<?>)getAsserts()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.RESULT_GROUP__PREREQUISITES:
+      case BeeLangPackage.ACTION_INPUT_GROUP__PREREQUISITES:
         return ((InternalEList<?>)getPrerequisites()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.RESULT_GROUP__CLOSURE:
-        return basicSetClosure(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -201,12 +137,10 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     switch (featureID)
     {
-      case BeeLangPackage.RESULT_GROUP__ASSERTS:
+      case BeeLangPackage.ACTION_INPUT_GROUP__ASSERTS:
         return getAsserts();
-      case BeeLangPackage.RESULT_GROUP__PREREQUISITES:
+      case BeeLangPackage.ACTION_INPUT_GROUP__PREREQUISITES:
         return getPrerequisites();
-      case BeeLangPackage.RESULT_GROUP__CLOSURE:
-        return getClosure();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -222,16 +156,13 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     switch (featureID)
     {
-      case BeeLangPackage.RESULT_GROUP__ASSERTS:
+      case BeeLangPackage.ACTION_INPUT_GROUP__ASSERTS:
         getAsserts().clear();
         getAsserts().addAll((Collection<? extends EObject>)newValue);
         return;
-      case BeeLangPackage.RESULT_GROUP__PREREQUISITES:
+      case BeeLangPackage.ACTION_INPUT_GROUP__PREREQUISITES:
         getPrerequisites().clear();
         getPrerequisites().addAll((Collection<? extends Prerequisite>)newValue);
-        return;
-      case BeeLangPackage.RESULT_GROUP__CLOSURE:
-        setClosure((Closure)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -247,14 +178,11 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     switch (featureID)
     {
-      case BeeLangPackage.RESULT_GROUP__ASSERTS:
+      case BeeLangPackage.ACTION_INPUT_GROUP__ASSERTS:
         getAsserts().clear();
         return;
-      case BeeLangPackage.RESULT_GROUP__PREREQUISITES:
+      case BeeLangPackage.ACTION_INPUT_GROUP__PREREQUISITES:
         getPrerequisites().clear();
-        return;
-      case BeeLangPackage.RESULT_GROUP__CLOSURE:
-        setClosure((Closure)null);
         return;
     }
     super.eUnset(featureID);
@@ -270,14 +198,12 @@ public class ResultGroupImpl extends MinimalEObjectImpl.Container implements Res
   {
     switch (featureID)
     {
-      case BeeLangPackage.RESULT_GROUP__ASSERTS:
+      case BeeLangPackage.ACTION_INPUT_GROUP__ASSERTS:
         return asserts != null && !asserts.isEmpty();
-      case BeeLangPackage.RESULT_GROUP__PREREQUISITES:
+      case BeeLangPackage.ACTION_INPUT_GROUP__PREREQUISITES:
         return prerequisites != null && !prerequisites.isEmpty();
-      case BeeLangPackage.RESULT_GROUP__CLOSURE:
-        return closure != null;
     }
     return super.eIsSet(featureID);
   }
 
-} //ResultGroupImpl
+} //ActionInputGroupImpl

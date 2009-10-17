@@ -8,9 +8,10 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.ExecutionMode;
-import org.eclipse.b3.beeLang.GroupPart;
-import org.eclipse.b3.beeLang.Prerequisite;
+import org.eclipse.b3.beeLang.Filter;
+import org.eclipse.b3.beeLang.Layout;
+import org.eclipse.b3.beeLang.PathGroup;
+import org.eclipse.b3.beeLang.PostConditionAssert;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -18,51 +19,41 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Group Part</b></em>'.
+ * An implementation of the model object '<em><b>Layout</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.GroupPartImpl#getExecutionMode <em>Execution Mode</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.GroupPartImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.GroupPartImpl#getAsserts <em>Asserts</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.GroupPartImpl#getPrerequisites <em>Prerequisites</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getFilter <em>Filter</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getAsserts <em>Asserts</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getPaths <em>Paths</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class GroupPartImpl extends BuildPartImpl implements GroupPart
+public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
 {
   /**
-   * The default value of the '{@link #getExecutionMode() <em>Execution Mode</em>}' attribute.
+   * The cached value of the '{@link #getFilter() <em>Filter</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getExecutionMode()
+   * @see #getFilter()
    * @generated
    * @ordered
    */
-  protected static final ExecutionMode EXECUTION_MODE_EDEFAULT = ExecutionMode.PARALLEL;
-
-  /**
-   * The cached value of the '{@link #getExecutionMode() <em>Execution Mode</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getExecutionMode()
-   * @generated
-   * @ordered
-   */
-  protected ExecutionMode executionMode = EXECUTION_MODE_EDEFAULT;
+  protected Filter filter;
 
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -92,24 +83,24 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
    * @generated
    * @ordered
    */
-  protected EList<EObject> asserts;
+  protected EList<PostConditionAssert> asserts;
 
   /**
-   * The cached value of the '{@link #getPrerequisites() <em>Prerequisites</em>}' containment reference list.
+   * The cached value of the '{@link #getPaths() <em>Paths</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getPrerequisites()
+   * @see #getPaths()
    * @generated
    * @ordered
    */
-  protected EList<Prerequisite> prerequisites;
+  protected EList<PathGroup> paths;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected GroupPartImpl()
+  protected LayoutImpl()
   {
     super();
   }
@@ -122,7 +113,7 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.GROUP_PART;
+    return BeeLangPackage.Literals.LAYOUT;
   }
 
   /**
@@ -130,9 +121,9 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
    * <!-- end-user-doc -->
    * @generated
    */
-  public ExecutionMode getExecutionMode()
+  public Filter getFilter()
   {
-    return executionMode;
+    return filter;
   }
 
   /**
@@ -140,12 +131,37 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setExecutionMode(ExecutionMode newExecutionMode)
+  public NotificationChain basicSetFilter(Filter newFilter, NotificationChain msgs)
   {
-    ExecutionMode oldExecutionMode = executionMode;
-    executionMode = newExecutionMode == null ? EXECUTION_MODE_EDEFAULT : newExecutionMode;
+    Filter oldFilter = filter;
+    filter = newFilter;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.GROUP_PART__EXECUTION_MODE, oldExecutionMode, executionMode));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__FILTER, oldFilter, newFilter);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setFilter(Filter newFilter)
+  {
+    if (newFilter != filter)
+    {
+      NotificationChain msgs = null;
+      if (filter != null)
+        msgs = ((InternalEObject)filter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__FILTER, null, msgs);
+      if (newFilter != null)
+        msgs = ((InternalEObject)newFilter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__FILTER, null, msgs);
+      msgs = basicSetFilter(newFilter, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__FILTER, newFilter, newFilter));
   }
 
   /**
@@ -168,7 +184,7 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.GROUP_PART__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__NAME, oldName, name));
   }
 
   /**
@@ -176,11 +192,11 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<EObject> getAsserts()
+  public EList<PostConditionAssert> getAsserts()
   {
     if (asserts == null)
     {
-      asserts = new EObjectContainmentEList<EObject>(EObject.class, this, BeeLangPackage.GROUP_PART__ASSERTS);
+      asserts = new EObjectContainmentEList<PostConditionAssert>(PostConditionAssert.class, this, BeeLangPackage.LAYOUT__ASSERTS);
     }
     return asserts;
   }
@@ -190,13 +206,13 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Prerequisite> getPrerequisites()
+  public EList<PathGroup> getPaths()
   {
-    if (prerequisites == null)
+    if (paths == null)
     {
-      prerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this, BeeLangPackage.GROUP_PART__PREREQUISITES);
+      paths = new EObjectContainmentEList<PathGroup>(PathGroup.class, this, BeeLangPackage.LAYOUT__PATHS);
     }
-    return prerequisites;
+    return paths;
   }
 
   /**
@@ -209,10 +225,12 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.GROUP_PART__ASSERTS:
+      case BeeLangPackage.LAYOUT__FILTER:
+        return basicSetFilter(null, msgs);
+      case BeeLangPackage.LAYOUT__ASSERTS:
         return ((InternalEList<?>)getAsserts()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.GROUP_PART__PREREQUISITES:
-        return ((InternalEList<?>)getPrerequisites()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.LAYOUT__PATHS:
+        return ((InternalEList<?>)getPaths()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -227,14 +245,14 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.GROUP_PART__EXECUTION_MODE:
-        return getExecutionMode();
-      case BeeLangPackage.GROUP_PART__NAME:
+      case BeeLangPackage.LAYOUT__FILTER:
+        return getFilter();
+      case BeeLangPackage.LAYOUT__NAME:
         return getName();
-      case BeeLangPackage.GROUP_PART__ASSERTS:
+      case BeeLangPackage.LAYOUT__ASSERTS:
         return getAsserts();
-      case BeeLangPackage.GROUP_PART__PREREQUISITES:
-        return getPrerequisites();
+      case BeeLangPackage.LAYOUT__PATHS:
+        return getPaths();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -250,19 +268,19 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.GROUP_PART__EXECUTION_MODE:
-        setExecutionMode((ExecutionMode)newValue);
+      case BeeLangPackage.LAYOUT__FILTER:
+        setFilter((Filter)newValue);
         return;
-      case BeeLangPackage.GROUP_PART__NAME:
+      case BeeLangPackage.LAYOUT__NAME:
         setName((String)newValue);
         return;
-      case BeeLangPackage.GROUP_PART__ASSERTS:
+      case BeeLangPackage.LAYOUT__ASSERTS:
         getAsserts().clear();
-        getAsserts().addAll((Collection<? extends EObject>)newValue);
+        getAsserts().addAll((Collection<? extends PostConditionAssert>)newValue);
         return;
-      case BeeLangPackage.GROUP_PART__PREREQUISITES:
-        getPrerequisites().clear();
-        getPrerequisites().addAll((Collection<? extends Prerequisite>)newValue);
+      case BeeLangPackage.LAYOUT__PATHS:
+        getPaths().clear();
+        getPaths().addAll((Collection<? extends PathGroup>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -278,17 +296,17 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.GROUP_PART__EXECUTION_MODE:
-        setExecutionMode(EXECUTION_MODE_EDEFAULT);
+      case BeeLangPackage.LAYOUT__FILTER:
+        setFilter((Filter)null);
         return;
-      case BeeLangPackage.GROUP_PART__NAME:
+      case BeeLangPackage.LAYOUT__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case BeeLangPackage.GROUP_PART__ASSERTS:
+      case BeeLangPackage.LAYOUT__ASSERTS:
         getAsserts().clear();
         return;
-      case BeeLangPackage.GROUP_PART__PREREQUISITES:
-        getPrerequisites().clear();
+      case BeeLangPackage.LAYOUT__PATHS:
+        getPaths().clear();
         return;
     }
     super.eUnset(featureID);
@@ -304,14 +322,14 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.GROUP_PART__EXECUTION_MODE:
-        return executionMode != EXECUTION_MODE_EDEFAULT;
-      case BeeLangPackage.GROUP_PART__NAME:
+      case BeeLangPackage.LAYOUT__FILTER:
+        return filter != null;
+      case BeeLangPackage.LAYOUT__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case BeeLangPackage.GROUP_PART__ASSERTS:
+      case BeeLangPackage.LAYOUT__ASSERTS:
         return asserts != null && !asserts.isEmpty();
-      case BeeLangPackage.GROUP_PART__PREREQUISITES:
-        return prerequisites != null && !prerequisites.isEmpty();
+      case BeeLangPackage.LAYOUT__PATHS:
+        return paths != null && !paths.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -327,12 +345,10 @@ public class GroupPartImpl extends BuildPartImpl implements GroupPart
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (executionMode: ");
-    result.append(executionMode);
-    result.append(", name: ");
+    result.append(" (name: ");
     result.append(name);
     result.append(')');
     return result.toString();
   }
 
-} //GroupPartImpl
+} //LayoutImpl

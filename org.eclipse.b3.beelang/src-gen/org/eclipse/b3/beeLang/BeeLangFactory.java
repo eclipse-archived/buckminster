@@ -71,13 +71,22 @@ public interface BeeLangFactory extends EFactory
   RequiredCapability createRequiredCapability();
 
   /**
-   * Returns a new object of class '<em>String Property</em>'.
+   * Returns a new object of class '<em>Property Statements</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>String Property</em>'.
+   * @return a new object of class '<em>Property Statements</em>'.
    * @generated
    */
-  StringProperty createStringProperty();
+  PropertyStatements createPropertyStatements();
+
+  /**
+   * Returns a new object of class '<em>Property Statement</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Property Statement</em>'.
+   * @generated
+   */
+  PropertyStatement createPropertyStatement();
 
   /**
    * Returns a new object of class '<em>Property Expression</em>'.
@@ -123,6 +132,24 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   PathGroup createPathGroup();
+
+  /**
+   * Returns a new object of class '<em>Path Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Path Expression</em>'.
+   * @generated
+   */
+  PathExpression createPathExpression();
+
+  /**
+   * Returns a new object of class '<em>Expr Statement</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Expr Statement</em>'.
+   * @generated
+   */
+  ExprStatement createExprStatement();
 
   /**
    * Returns a new object of class '<em>Group Part</em>'.
@@ -206,22 +233,31 @@ public interface BeeLangFactory extends EFactory
   Parameter createParameter();
 
   /**
-   * Returns a new object of class '<em>Result</em>'.
+   * Returns a new object of class '<em>Anonymous Parameter</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Result</em>'.
+   * @return a new object of class '<em>Anonymous Parameter</em>'.
    * @generated
    */
-  Result createResult();
+  AnonymousParameter createAnonymousParameter();
 
   /**
-   * Returns a new object of class '<em>Result Group</em>'.
+   * Returns a new object of class '<em>Layout</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Result Group</em>'.
+   * @return a new object of class '<em>Layout</em>'.
    * @generated
    */
-  ResultGroup createResultGroup();
+  Layout createLayout();
+
+  /**
+   * Returns a new object of class '<em>Action Input Group</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Action Input Group</em>'.
+   * @generated
+   */
+  ActionInputGroup createActionInputGroup();
 
   /**
    * Returns a new object of class '<em>Repository Configuration</em>'.
@@ -240,6 +276,15 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   NamedAdvice createNamedAdvice();
+
+  /**
+   * Returns a new object of class '<em>Advice</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Advice</em>'.
+   * @generated
+   */
+  Advice createAdvice();
 
   /**
    * Returns a new object of class '<em>Compound Advice</em>'.
@@ -357,6 +402,15 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   OperationCall createOperationCall();
+
+  /**
+   * Returns a new object of class '<em>Feature Call</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Feature Call</em>'.
+   * @generated
+   */
+  FeatureCall createFeatureCall();
 
   /**
    * Returns a new object of class '<em>Literal</em>'.

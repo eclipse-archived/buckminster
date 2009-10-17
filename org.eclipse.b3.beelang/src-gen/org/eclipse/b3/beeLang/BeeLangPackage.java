@@ -136,13 +136,13 @@ public interface BeeLangPackage extends EPackage
   int BUILD_UNIT = 2;
 
   /**
-   * The feature id for the '<em><b>Synchronized</b></em>' attribute.
+   * The feature id for the '<em><b>Execution Mode</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__SYNCHRONIZED = 0;
+  int BUILD_UNIT__EXECUTION_MODE = 0;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -172,13 +172,22 @@ public interface BeeLangPackage extends EPackage
   int BUILD_UNIT__IMPLEMENTS = 3;
 
   /**
+   * The feature id for the '<em><b>Property Statements</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BUILD_UNIT__PROPERTY_STATEMENTS = 4;
+
+  /**
    * The feature id for the '<em><b>Provided Capability</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__PROVIDED_CAPABILITY = 4;
+  int BUILD_UNIT__PROVIDED_CAPABILITY = 5;
 
   /**
    * The feature id for the '<em><b>Required Capabilities</b></em>' containment reference list.
@@ -187,7 +196,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__REQUIRED_CAPABILITIES = 5;
+  int BUILD_UNIT__REQUIRED_CAPABILITIES = 6;
 
   /**
    * The feature id for the '<em><b>Meta Required Capabilities</b></em>' containment reference list.
@@ -196,25 +205,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__META_REQUIRED_CAPABILITIES = 6;
-
-  /**
-   * The feature id for the '<em><b>Unset Properties</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BUILD_UNIT__UNSET_PROPERTIES = 7;
-
-  /**
-   * The feature id for the '<em><b>Set Properties</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BUILD_UNIT__SET_PROPERTIES = 8;
+  int BUILD_UNIT__META_REQUIRED_CAPABILITIES = 7;
 
   /**
    * The feature id for the '<em><b>Advice</b></em>' containment reference list.
@@ -223,7 +214,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__ADVICE = 9;
+  int BUILD_UNIT__ADVICE = 8;
 
   /**
    * The feature id for the '<em><b>Synchronize</b></em>' containment reference list.
@@ -232,7 +223,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__SYNCHRONIZE = 10;
+  int BUILD_UNIT__SYNCHRONIZE = 9;
 
   /**
    * The feature id for the '<em><b>Parts</b></em>' containment reference list.
@@ -241,7 +232,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__PARTS = 11;
+  int BUILD_UNIT__PARTS = 10;
 
   /**
    * The feature id for the '<em><b>Repository Config</b></em>' containment reference list.
@@ -250,7 +241,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__REPOSITORY_CONFIG = 12;
+  int BUILD_UNIT__REPOSITORY_CONFIG = 11;
 
   /**
    * The number of structural features of the '<em>Build Unit</em>' class.
@@ -259,7 +250,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BUILD_UNIT_FEATURE_COUNT = 13;
+  int BUILD_UNIT_FEATURE_COUNT = 12;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ProvidedCapabilityImpl <em>Provided Capability</em>}' class.
@@ -372,14 +363,78 @@ public interface BeeLangPackage extends EPackage
   int REQUIRED_CAPABILITY_FEATURE_COUNT = 4;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.StringPropertyImpl <em>String Property</em>}' class.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PropertyStatementsImpl <em>Property Statements</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.StringPropertyImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStringProperty()
+   * @see org.eclipse.b3.beeLang.impl.PropertyStatementsImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyStatements()
    * @generated
    */
-  int STRING_PROPERTY = 5;
+  int PROPERTY_STATEMENTS = 5;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENTS__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Statements</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENTS__STATEMENTS = 1;
+
+  /**
+   * The number of structural features of the '<em>Property Statements</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENTS_FEATURE_COUNT = 2;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl <em>Property Statement</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.PropertyStatementImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyStatement()
+   * @generated
+   */
+  int PROPERTY_STATEMENT = 6;
+
+  /**
+   * The feature id for the '<em><b>Filter</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENT__FILTER = 0;
+
+  /**
+   * The feature id for the '<em><b>Statements</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENT__STATEMENTS = 1;
+
+  /**
+   * The feature id for the '<em><b>Local</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENT__LOCAL = 2;
 
   /**
    * The feature id for the '<em><b>Immutable</b></em>' attribute.
@@ -388,7 +443,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRING_PROPERTY__IMMUTABLE = 0;
+  int PROPERTY_STATEMENT__IMMUTABLE = 3;
 
   /**
    * The feature id for the '<em><b>Key</b></em>' attribute.
@@ -397,7 +452,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRING_PROPERTY__KEY = 1;
+  int PROPERTY_STATEMENT__KEY = 4;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' containment reference.
@@ -406,16 +461,25 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRING_PROPERTY__VALUE = 2;
+  int PROPERTY_STATEMENT__VALUE = 5;
 
   /**
-   * The number of structural features of the '<em>String Property</em>' class.
+   * The feature id for the '<em><b>Unset Properties</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int STRING_PROPERTY_FEATURE_COUNT = 3;
+  int PROPERTY_STATEMENT__UNSET_PROPERTIES = 6;
+
+  /**
+   * The number of structural features of the '<em>Property Statement</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROPERTY_STATEMENT_FEATURE_COUNT = 7;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PropertyExpressionImpl <em>Property Expression</em>}' class.
@@ -425,7 +489,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyExpression()
    * @generated
    */
-  int PROPERTY_EXPRESSION = 6;
+  int PROPERTY_EXPRESSION = 7;
 
   /**
    * The number of structural features of the '<em>Property Expression</em>' class.
@@ -444,7 +508,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSynchronization()
    * @generated
    */
-  int SYNCHRONIZATION = 7;
+  int SYNCHRONIZATION = 8;
 
   /**
    * The feature id for the '<em><b>Partrefs</b></em>' attribute list.
@@ -472,7 +536,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBuildPart()
    * @generated
    */
-  int BUILD_PART = 8;
+  int BUILD_PART = 9;
 
   /**
    * The feature id for the '<em><b>Visibility</b></em>' attribute.
@@ -509,7 +573,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getArtifactsPart()
    * @generated
    */
-  int ARTIFACTS_PART = 9;
+  int ARTIFACTS_PART = 10;
 
   /**
    * The feature id for the '<em><b>Visibility</b></em>' attribute.
@@ -573,7 +637,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPathGroup()
    * @generated
    */
-  int PATH_GROUP = 10;
+  int PATH_GROUP = 11;
 
   /**
    * The feature id for the '<em><b>Filter</b></em>' containment reference.
@@ -585,7 +649,7 @@ public interface BeeLangPackage extends EPackage
   int PATH_GROUP__FILTER = 0;
 
   /**
-   * The feature id for the '<em><b>Paths</b></em>' attribute list.
+   * The feature id for the '<em><b>Paths</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -594,13 +658,13 @@ public interface BeeLangPackage extends EPackage
   int PATH_GROUP__PATHS = 1;
 
   /**
-   * The feature id for the '<em><b>Base Path</b></em>' attribute.
+   * The feature id for the '<em><b>First Is Base</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PATH_GROUP__BASE_PATH = 2;
+  int PATH_GROUP__FIRST_IS_BASE = 2;
 
   /**
    * The feature id for the '<em><b>Unset Properties</b></em>' attribute list.
@@ -630,6 +694,53 @@ public interface BeeLangPackage extends EPackage
   int PATH_GROUP_FEATURE_COUNT = 5;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PathExpressionImpl <em>Path Expression</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.PathExpressionImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPathExpression()
+   * @generated
+   */
+  int PATH_EXPRESSION = 12;
+
+  /**
+   * The number of structural features of the '<em>Path Expression</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PATH_EXPRESSION_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ExprStatementImpl <em>Expr Statement</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.ExprStatementImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExprStatement()
+   * @generated
+   */
+  int EXPR_STATEMENT = 13;
+
+  /**
+   * The feature id for the '<em><b>Expression</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXPR_STATEMENT__EXPRESSION = PATH_EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Expr Statement</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXPR_STATEMENT_FEATURE_COUNT = PATH_EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.GroupPartImpl <em>Group Part</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -637,7 +748,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getGroupPart()
    * @generated
    */
-  int GROUP_PART = 11;
+  int GROUP_PART = 14;
 
   /**
    * The feature id for the '<em><b>Visibility</b></em>' attribute.
@@ -658,13 +769,13 @@ public interface BeeLangPackage extends EPackage
   int GROUP_PART__PROVIDED_CAPABILITIES = BUILD_PART__PROVIDED_CAPABILITIES;
 
   /**
-   * The feature id for the '<em><b>Synchronized</b></em>' attribute.
+   * The feature id for the '<em><b>Execution Mode</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GROUP_PART__SYNCHRONIZED = BUILD_PART_FEATURE_COUNT + 0;
+  int GROUP_PART__EXECUTION_MODE = BUILD_PART_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -710,7 +821,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPrerequisite()
    * @generated
    */
-  int PREREQUISITE = 12;
+  int PREREQUISITE = 15;
 
   /**
    * The feature id for the '<em><b>Surpressed</b></em>' attribute.
@@ -774,7 +885,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getClosure()
    * @generated
    */
-  int CLOSURE = 13;
+  int CLOSURE = 16;
 
   /**
    * The feature id for the '<em><b>Unset Properties</b></em>' attribute list.
@@ -820,7 +931,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPrerequisiteEntry()
    * @generated
    */
-  int PREREQUISITE_ENTRY = 14;
+  int PREREQUISITE_ENTRY = 17;
 
   /**
    * The number of structural features of the '<em>Prerequisite Entry</em>' class.
@@ -839,7 +950,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPartInSelf()
    * @generated
    */
-  int PART_IN_SELF = 15;
+  int PART_IN_SELF = 18;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -867,7 +978,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCapabilityReferencedPart()
    * @generated
    */
-  int CAPABILITY_REFERENCED_PART = 16;
+  int CAPABILITY_REFERENCED_PART = 19;
 
   /**
    * The feature id for the '<em><b>Interface</b></em>' attribute.
@@ -922,7 +1033,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCompoundReferences()
    * @generated
    */
-  int COMPOUND_REFERENCES = 17;
+  int COMPOUND_REFERENCES = 20;
 
   /**
    * The feature id for the '<em><b>Prerequisites</b></em>' containment reference list.
@@ -950,7 +1061,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getActionPart()
    * @generated
    */
-  int ACTION_PART = 18;
+  int ACTION_PART = 21;
 
   /**
    * The feature id for the '<em><b>Visibility</b></em>' attribute.
@@ -971,13 +1082,13 @@ public interface BeeLangPackage extends EPackage
   int ACTION_PART__PROVIDED_CAPABILITIES = BUILD_PART__PROVIDED_CAPABILITIES;
 
   /**
-   * The feature id for the '<em><b>Synchronized</b></em>' attribute.
+   * The feature id for the '<em><b>Execution Mode</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACTION_PART__SYNCHRONIZED = BUILD_PART_FEATURE_COUNT + 0;
+  int ACTION_PART__EXECUTION_MODE = BUILD_PART_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Actor Parameters</b></em>' containment reference list.
@@ -998,13 +1109,40 @@ public interface BeeLangPackage extends EPackage
   int ACTION_PART__ASSERTS = BUILD_PART_FEATURE_COUNT + 2;
 
   /**
-   * The feature id for the '<em><b>Result Groups</b></em>' containment reference list.
+   * The feature id for the '<em><b>Properties</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACTION_PART__RESULT_GROUPS = BUILD_PART_FEATURE_COUNT + 3;
+  int ACTION_PART__PROPERTIES = BUILD_PART_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Advice</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTION_PART__ADVICE = BUILD_PART_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Result Group</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTION_PART__RESULT_GROUP = BUILD_PART_FEATURE_COUNT + 5;
+
+  /**
+   * The feature id for the '<em><b>Layout</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTION_PART__LAYOUT = BUILD_PART_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>Action Part</em>' class.
@@ -1013,7 +1151,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTION_PART_FEATURE_COUNT = BUILD_PART_FEATURE_COUNT + 4;
+  int ACTION_PART_FEATURE_COUNT = BUILD_PART_FEATURE_COUNT + 7;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ParameterImpl <em>Parameter</em>}' class.
@@ -1023,7 +1161,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getParameter()
    * @generated
    */
-  int PARAMETER = 19;
+  int PARAMETER = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1053,32 +1191,33 @@ public interface BeeLangPackage extends EPackage
   int PARAMETER_FEATURE_COUNT = 2;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ResultImpl <em>Result</em>}' class.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.AnonymousParameterImpl <em>Anonymous Parameter</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.ResultImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getResult()
+   * @see org.eclipse.b3.beeLang.impl.AnonymousParameterImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAnonymousParameter()
    * @generated
    */
-  int RESULT = 20;
+  int ANONYMOUS_PARAMETER = 23;
 
   /**
-   * The feature id for the '<em><b>Result</b></em>' containment reference list.
+   * The number of structural features of the '<em>Anonymous Parameter</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RESULT__RESULT = 0;
+  int ANONYMOUS_PARAMETER_FEATURE_COUNT = 0;
 
   /**
-   * The feature id for the '<em><b>Group</b></em>' containment reference.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.LayoutImpl <em>Layout</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.LayoutImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLayout()
    * @generated
-   * @ordered
    */
-  int RESULT__GROUP = 1;
+  int LAYOUT = 24;
 
   /**
    * The feature id for the '<em><b>Filter</b></em>' containment reference.
@@ -1087,16 +1226,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RESULT__FILTER = 2;
-
-  /**
-   * The feature id for the '<em><b>Visibility</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT__VISIBILITY = 3;
+  int LAYOUT__FILTER = 0;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1105,7 +1235,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RESULT__NAME = 4;
+  int LAYOUT__NAME = 1;
 
   /**
    * The feature id for the '<em><b>Asserts</b></em>' containment reference list.
@@ -1114,7 +1244,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RESULT__ASSERTS = 5;
+  int LAYOUT__ASSERTS = 2;
 
   /**
    * The feature id for the '<em><b>Paths</b></em>' containment reference list.
@@ -1123,35 +1253,26 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RESULT__PATHS = 6;
+  int LAYOUT__PATHS = 3;
 
   /**
-   * The feature id for the '<em><b>Closure</b></em>' containment reference.
+   * The number of structural features of the '<em>Layout</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RESULT__CLOSURE = 7;
+  int LAYOUT_FEATURE_COUNT = 4;
 
   /**
-   * The number of structural features of the '<em>Result</em>' class.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ActionInputGroupImpl <em>Action Input Group</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_FEATURE_COUNT = 8;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ResultGroupImpl <em>Result Group</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.ResultGroupImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getResultGroup()
+   * @see org.eclipse.b3.beeLang.impl.ActionInputGroupImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getActionInputGroup()
    * @generated
    */
-  int RESULT_GROUP = 21;
+  int ACTION_INPUT_GROUP = 25;
 
   /**
    * The feature id for the '<em><b>Asserts</b></em>' containment reference list.
@@ -1160,7 +1281,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RESULT_GROUP__ASSERTS = 0;
+  int ACTION_INPUT_GROUP__ASSERTS = 0;
 
   /**
    * The feature id for the '<em><b>Prerequisites</b></em>' containment reference list.
@@ -1169,25 +1290,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RESULT_GROUP__PREREQUISITES = 1;
+  int ACTION_INPUT_GROUP__PREREQUISITES = 1;
 
   /**
-   * The feature id for the '<em><b>Closure</b></em>' containment reference.
+   * The number of structural features of the '<em>Action Input Group</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RESULT_GROUP__CLOSURE = 2;
-
-  /**
-   * The number of structural features of the '<em>Result Group</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RESULT_GROUP_FEATURE_COUNT = 3;
+  int ACTION_INPUT_GROUP_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.RepositoryConfigurationImpl <em>Repository Configuration</em>}' class.
@@ -1197,7 +1309,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRepositoryConfiguration()
    * @generated
    */
-  int REPOSITORY_CONFIGURATION = 22;
+  int REPOSITORY_CONFIGURATION = 26;
 
   /**
    * The feature id for the '<em><b>Location</b></em>' attribute.
@@ -1243,7 +1355,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNamedAdvice()
    * @generated
    */
-  int NAMED_ADVICE = 23;
+  int NAMED_ADVICE = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1273,6 +1385,25 @@ public interface BeeLangPackage extends EPackage
   int NAMED_ADVICE_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.AdviceImpl <em>Advice</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.AdviceImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvice()
+   * @generated
+   */
+  int ADVICE = 28;
+
+  /**
+   * The number of structural features of the '<em>Advice</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ADVICE_FEATURE_COUNT = 0;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.CompoundAdviceImpl <em>Compound Advice</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1280,7 +1411,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCompoundAdvice()
    * @generated
    */
-  int COMPOUND_ADVICE = 24;
+  int COMPOUND_ADVICE = 29;
 
   /**
    * The feature id for the '<em><b>Advice</b></em>' containment reference list.
@@ -1289,7 +1420,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COMPOUND_ADVICE__ADVICE = 0;
+  int COMPOUND_ADVICE__ADVICE = ADVICE_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Compound Advice</em>' class.
@@ -1298,7 +1429,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COMPOUND_ADVICE_FEATURE_COUNT = 1;
+  int COMPOUND_ADVICE_FEATURE_COUNT = ADVICE_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl <em>Advice Statement</em>}' class.
@@ -1308,7 +1439,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdviceStatement()
    * @generated
    */
-  int ADVICE_STATEMENT = 25;
+  int ADVICE_STATEMENT = 30;
 
   /**
    * The feature id for the '<em><b>Path</b></em>' containment reference.
@@ -1354,7 +1485,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvicePath()
    * @generated
    */
-  int ADVICE_PATH = 26;
+  int ADVICE_PATH = 31;
 
   /**
    * The feature id for the '<em><b>Path Elements</b></em>' containment reference list.
@@ -1391,7 +1522,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvicePathElement()
    * @generated
    */
-  int ADVICE_PATH_ELEMENT = 27;
+  int ADVICE_PATH_ELEMENT = 32;
 
   /**
    * The feature id for the '<em><b>Node</b></em>' attribute.
@@ -1428,7 +1559,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvicePathChildren()
    * @generated
    */
-  int ADVICE_PATH_CHILDREN = 28;
+  int ADVICE_PATH_CHILDREN = 33;
 
   /**
    * The feature id for the '<em><b>Node</b></em>' attribute.
@@ -1465,7 +1596,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFilter()
    * @generated
    */
-  int FILTER = 29;
+  int FILTER = 34;
 
   /**
    * The feature id for the '<em><b>Predicate</b></em>' containment reference.
@@ -1493,7 +1624,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPreConditionAssert()
    * @generated
    */
-  int PRE_CONDITION_ASSERT = 30;
+  int PRE_CONDITION_ASSERT = 35;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -1530,7 +1661,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPostConditionAssert()
    * @generated
    */
-  int POST_CONDITION_ASSERT = 31;
+  int POST_CONDITION_ASSERT = 36;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -1567,7 +1698,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssertionExpression()
    * @generated
    */
-  int ASSERTION_EXPRESSION = 32;
+  int ASSERTION_EXPRESSION = 37;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -1604,7 +1735,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSyntaxElement()
    * @generated
    */
-  int SYNTAX_ELEMENT = 33;
+  int SYNTAX_ELEMENT = 38;
 
   /**
    * The number of structural features of the '<em>Syntax Element</em>' class.
@@ -1623,7 +1754,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 34;
+  int EXPRESSION = 39;
 
   /**
    * The number of structural features of the '<em>Expression</em>' class.
@@ -1642,7 +1773,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getValueExpression()
    * @generated
    */
-  int VALUE_EXPRESSION = 35;
+  int VALUE_EXPRESSION = 40;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' containment reference.
@@ -1670,25 +1801,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getOperationCall()
    * @generated
    */
-  int OPERATION_CALL = 36;
-
-  /**
-   * The feature id for the '<em><b>Params</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int OPERATION_CALL__PARAMS = EXPRESSION_FEATURE_COUNT + 0;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int OPERATION_CALL__NAME = EXPRESSION_FEATURE_COUNT + 1;
+  int OPERATION_CALL = 41;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' containment reference.
@@ -1697,7 +1810,43 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OPERATION_CALL__TARGET = EXPRESSION_FEATURE_COUNT + 2;
+  int OPERATION_CALL__TARGET = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OPERATION_CALL__TYPE = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Params</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OPERATION_CALL__PARAMS = EXPRESSION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OPERATION_CALL__NAME = EXPRESSION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Params Parameters</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OPERATION_CALL__PARAMS_PARAMETERS = EXPRESSION_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>Operation Call</em>' class.
@@ -1706,7 +1855,44 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OPERATION_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
+  int OPERATION_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 5;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.FeatureCallImpl <em>Feature Call</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.FeatureCallImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeatureCall()
+   * @generated
+   */
+  int FEATURE_CALL = 42;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FEATURE_CALL__TARGET = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FEATURE_CALL__TYPE = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Feature Call</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FEATURE_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.LiteralImpl <em>Literal</em>}' class.
@@ -1716,7 +1902,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteral()
    * @generated
    */
-  int LITERAL = 37;
+  int LITERAL = 43;
 
   /**
    * The number of structural features of the '<em>Literal</em>' class.
@@ -1735,7 +1921,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanLiteral()
    * @generated
    */
-  int BOOLEAN_LITERAL = 38;
+  int BOOLEAN_LITERAL = 44;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -1763,7 +1949,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIntegerLiteral()
    * @generated
    */
-  int INTEGER_LITERAL = 39;
+  int INTEGER_LITERAL = 45;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -1791,7 +1977,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNullLiteral()
    * @generated
    */
-  int NULL_LITERAL = 40;
+  int NULL_LITERAL = 46;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -1819,7 +2005,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 41;
+  int STRING_LITERAL = 47;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -1847,7 +2033,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getGlobalVarExpression()
    * @generated
    */
-  int GLOBAL_VAR_EXPRESSION = 42;
+  int GLOBAL_VAR_EXPRESSION = 48;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1875,7 +2061,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanOperation()
    * @generated
    */
-  int BOOLEAN_OPERATION = 43;
+  int BOOLEAN_OPERATION = 49;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -1921,7 +2107,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
    * @generated
    */
-  int VISIBILITY = 44;
+  int VISIBILITY = 50;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.AssertionScope <em>Assertion Scope</em>}' enum.
@@ -1931,7 +2117,17 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssertionScope()
    * @generated
    */
-  int ASSERTION_SCOPE = 45;
+  int ASSERTION_SCOPE = 51;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
+   * @generated
+   */
+  int EXECUTION_MODE = 52;
 
 
   /**
@@ -1998,15 +2194,15 @@ public interface BeeLangPackage extends EPackage
   EClass getBuildUnit();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.BuildUnit#isSynchronized <em>Synchronized</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.BuildUnit#getExecutionMode <em>Execution Mode</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Synchronized</em>'.
-   * @see org.eclipse.b3.beeLang.BuildUnit#isSynchronized()
+   * @return the meta object for the attribute '<em>Execution Mode</em>'.
+   * @see org.eclipse.b3.beeLang.BuildUnit#getExecutionMode()
    * @see #getBuildUnit()
    * @generated
    */
-  EAttribute getBuildUnit_Synchronized();
+  EAttribute getBuildUnit_ExecutionMode();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.BuildUnit#getName <em>Name</em>}'.
@@ -2042,6 +2238,17 @@ public interface BeeLangPackage extends EPackage
   EAttribute getBuildUnit_Implements();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getPropertyStatements <em>Property Statements</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Property Statements</em>'.
+   * @see org.eclipse.b3.beeLang.BuildUnit#getPropertyStatements()
+   * @see #getBuildUnit()
+   * @generated
+   */
+  EReference getBuildUnit_PropertyStatements();
+
+  /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getProvidedCapability <em>Provided Capability</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2073,28 +2280,6 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getBuildUnit_MetaRequiredCapabilities();
-
-  /**
-   * Returns the meta object for the attribute list '{@link org.eclipse.b3.beeLang.BuildUnit#getUnsetProperties <em>Unset Properties</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>Unset Properties</em>'.
-   * @see org.eclipse.b3.beeLang.BuildUnit#getUnsetProperties()
-   * @see #getBuildUnit()
-   * @generated
-   */
-  EAttribute getBuildUnit_UnsetProperties();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getSetProperties <em>Set Properties</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Set Properties</em>'.
-   * @see org.eclipse.b3.beeLang.BuildUnit#getSetProperties()
-   * @see #getBuildUnit()
-   * @generated
-   */
-  EReference getBuildUnit_SetProperties();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getAdvice <em>Advice</em>}'.
@@ -2249,47 +2434,123 @@ public interface BeeLangPackage extends EPackage
   EAttribute getRequiredCapability_Range();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.StringProperty <em>String Property</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PropertyStatements <em>Property Statements</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>String Property</em>'.
-   * @see org.eclipse.b3.beeLang.StringProperty
+   * @return the meta object for class '<em>Property Statements</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatements
    * @generated
    */
-  EClass getStringProperty();
+  EClass getPropertyStatements();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.StringProperty#isImmutable <em>Immutable</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.PropertyStatements#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatements#getName()
+   * @see #getPropertyStatements()
+   * @generated
+   */
+  EAttribute getPropertyStatements_Name();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.PropertyStatements#getStatements <em>Statements</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Statements</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatements#getStatements()
+   * @see #getPropertyStatements()
+   * @generated
+   */
+  EReference getPropertyStatements_Statements();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PropertyStatement <em>Property Statement</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Property Statement</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatement
+   * @generated
+   */
+  EClass getPropertyStatement();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.PropertyStatement#getFilter <em>Filter</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Filter</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatement#getFilter()
+   * @see #getPropertyStatement()
+   * @generated
+   */
+  EReference getPropertyStatement_Filter();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.PropertyStatement#getStatements <em>Statements</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Statements</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatement#getStatements()
+   * @see #getPropertyStatement()
+   * @generated
+   */
+  EReference getPropertyStatement_Statements();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.PropertyStatement#isLocal <em>Local</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Local</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatement#isLocal()
+   * @see #getPropertyStatement()
+   * @generated
+   */
+  EAttribute getPropertyStatement_Local();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.PropertyStatement#isImmutable <em>Immutable</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Immutable</em>'.
-   * @see org.eclipse.b3.beeLang.StringProperty#isImmutable()
-   * @see #getStringProperty()
+   * @see org.eclipse.b3.beeLang.PropertyStatement#isImmutable()
+   * @see #getPropertyStatement()
    * @generated
    */
-  EAttribute getStringProperty_Immutable();
+  EAttribute getPropertyStatement_Immutable();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.StringProperty#getKey <em>Key</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.PropertyStatement#getKey <em>Key</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Key</em>'.
-   * @see org.eclipse.b3.beeLang.StringProperty#getKey()
-   * @see #getStringProperty()
+   * @see org.eclipse.b3.beeLang.PropertyStatement#getKey()
+   * @see #getPropertyStatement()
    * @generated
    */
-  EAttribute getStringProperty_Key();
+  EAttribute getPropertyStatement_Key();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.StringProperty#getValue <em>Value</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.PropertyStatement#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Value</em>'.
-   * @see org.eclipse.b3.beeLang.StringProperty#getValue()
-   * @see #getStringProperty()
+   * @see org.eclipse.b3.beeLang.PropertyStatement#getValue()
+   * @see #getPropertyStatement()
    * @generated
    */
-  EReference getStringProperty_Value();
+  EReference getPropertyStatement_Value();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.b3.beeLang.PropertyStatement#getUnsetProperties <em>Unset Properties</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Unset Properties</em>'.
+   * @see org.eclipse.b3.beeLang.PropertyStatement#getUnsetProperties()
+   * @see #getPropertyStatement()
+   * @generated
+   */
+  EAttribute getPropertyStatement_UnsetProperties();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PropertyExpression <em>Property Expression</em>}'.
@@ -2419,26 +2680,26 @@ public interface BeeLangPackage extends EPackage
   EReference getPathGroup_Filter();
 
   /**
-   * Returns the meta object for the attribute list '{@link org.eclipse.b3.beeLang.PathGroup#getPaths <em>Paths</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.PathGroup#getPaths <em>Paths</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>Paths</em>'.
+   * @return the meta object for the containment reference list '<em>Paths</em>'.
    * @see org.eclipse.b3.beeLang.PathGroup#getPaths()
    * @see #getPathGroup()
    * @generated
    */
-  EAttribute getPathGroup_Paths();
+  EReference getPathGroup_Paths();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.PathGroup#getBasePath <em>Base Path</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.PathGroup#isFirstIsBase <em>First Is Base</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Base Path</em>'.
-   * @see org.eclipse.b3.beeLang.PathGroup#getBasePath()
+   * @return the meta object for the attribute '<em>First Is Base</em>'.
+   * @see org.eclipse.b3.beeLang.PathGroup#isFirstIsBase()
    * @see #getPathGroup()
    * @generated
    */
-  EAttribute getPathGroup_BasePath();
+  EAttribute getPathGroup_FirstIsBase();
 
   /**
    * Returns the meta object for the attribute list '{@link org.eclipse.b3.beeLang.PathGroup#getUnsetProperties <em>Unset Properties</em>}'.
@@ -2463,6 +2724,37 @@ public interface BeeLangPackage extends EPackage
   EReference getPathGroup_SetProperties();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PathExpression <em>Path Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Path Expression</em>'.
+   * @see org.eclipse.b3.beeLang.PathExpression
+   * @generated
+   */
+  EClass getPathExpression();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ExprStatement <em>Expr Statement</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Expr Statement</em>'.
+   * @see org.eclipse.b3.beeLang.ExprStatement
+   * @generated
+   */
+  EClass getExprStatement();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.ExprStatement#getExpression <em>Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Expression</em>'.
+   * @see org.eclipse.b3.beeLang.ExprStatement#getExpression()
+   * @see #getExprStatement()
+   * @generated
+   */
+  EReference getExprStatement_Expression();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.GroupPart <em>Group Part</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2473,15 +2765,15 @@ public interface BeeLangPackage extends EPackage
   EClass getGroupPart();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.GroupPart#isSynchronized <em>Synchronized</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.GroupPart#getExecutionMode <em>Execution Mode</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Synchronized</em>'.
-   * @see org.eclipse.b3.beeLang.GroupPart#isSynchronized()
+   * @return the meta object for the attribute '<em>Execution Mode</em>'.
+   * @see org.eclipse.b3.beeLang.GroupPart#getExecutionMode()
    * @see #getGroupPart()
    * @generated
    */
-  EAttribute getGroupPart_Synchronized();
+  EAttribute getGroupPart_ExecutionMode();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.GroupPart#getName <em>Name</em>}'.
@@ -2741,15 +3033,15 @@ public interface BeeLangPackage extends EPackage
   EClass getActionPart();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.ActionPart#isSynchronized <em>Synchronized</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.ActionPart#getExecutionMode <em>Execution Mode</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Synchronized</em>'.
-   * @see org.eclipse.b3.beeLang.ActionPart#isSynchronized()
+   * @return the meta object for the attribute '<em>Execution Mode</em>'.
+   * @see org.eclipse.b3.beeLang.ActionPart#getExecutionMode()
    * @see #getActionPart()
    * @generated
    */
-  EAttribute getActionPart_Synchronized();
+  EAttribute getActionPart_ExecutionMode();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ActionPart#getActorParameters <em>Actor Parameters</em>}'.
@@ -2774,15 +3066,48 @@ public interface BeeLangPackage extends EPackage
   EReference getActionPart_Asserts();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ActionPart#getResultGroups <em>Result Groups</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ActionPart#getProperties <em>Properties</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Result Groups</em>'.
-   * @see org.eclipse.b3.beeLang.ActionPart#getResultGroups()
+   * @return the meta object for the containment reference list '<em>Properties</em>'.
+   * @see org.eclipse.b3.beeLang.ActionPart#getProperties()
    * @see #getActionPart()
    * @generated
    */
-  EReference getActionPart_ResultGroups();
+  EReference getActionPart_Properties();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.ActionPart#getAdvice <em>Advice</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Advice</em>'.
+   * @see org.eclipse.b3.beeLang.ActionPart#getAdvice()
+   * @see #getActionPart()
+   * @generated
+   */
+  EReference getActionPart_Advice();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.ActionPart#getResultGroup <em>Result Group</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Result Group</em>'.
+   * @see org.eclipse.b3.beeLang.ActionPart#getResultGroup()
+   * @see #getActionPart()
+   * @generated
+   */
+  EReference getActionPart_ResultGroup();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ActionPart#getLayout <em>Layout</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Layout</em>'.
+   * @see org.eclipse.b3.beeLang.ActionPart#getLayout()
+   * @see #getActionPart()
+   * @generated
+   */
+  EReference getActionPart_Layout();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Parameter <em>Parameter</em>}'.
@@ -2817,145 +3142,100 @@ public interface BeeLangPackage extends EPackage
   EReference getParameter_Value();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Result <em>Result</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.AnonymousParameter <em>Anonymous Parameter</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Result</em>'.
-   * @see org.eclipse.b3.beeLang.Result
+   * @return the meta object for class '<em>Anonymous Parameter</em>'.
+   * @see org.eclipse.b3.beeLang.AnonymousParameter
    * @generated
    */
-  EClass getResult();
+  EClass getAnonymousParameter();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Result#getResult <em>Result</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Layout <em>Layout</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Result</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getResult()
-   * @see #getResult()
+   * @return the meta object for class '<em>Layout</em>'.
+   * @see org.eclipse.b3.beeLang.Layout
    * @generated
    */
-  EReference getResult_Result();
+  EClass getLayout();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Result#getGroup <em>Group</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Group</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getGroup()
-   * @see #getResult()
-   * @generated
-   */
-  EReference getResult_Group();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Result#getFilter <em>Filter</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Layout#getFilter <em>Filter</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Filter</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getFilter()
-   * @see #getResult()
+   * @see org.eclipse.b3.beeLang.Layout#getFilter()
+   * @see #getLayout()
    * @generated
    */
-  EReference getResult_Filter();
+  EReference getLayout_Filter();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Result#getVisibility <em>Visibility</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Visibility</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getVisibility()
-   * @see #getResult()
-   * @generated
-   */
-  EAttribute getResult_Visibility();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Result#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Layout#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getName()
-   * @see #getResult()
+   * @see org.eclipse.b3.beeLang.Layout#getName()
+   * @see #getLayout()
    * @generated
    */
-  EAttribute getResult_Name();
+  EAttribute getLayout_Name();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Result#getAsserts <em>Asserts</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Layout#getAsserts <em>Asserts</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Asserts</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getAsserts()
-   * @see #getResult()
+   * @see org.eclipse.b3.beeLang.Layout#getAsserts()
+   * @see #getLayout()
    * @generated
    */
-  EReference getResult_Asserts();
+  EReference getLayout_Asserts();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Result#getPaths <em>Paths</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Layout#getPaths <em>Paths</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Paths</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getPaths()
-   * @see #getResult()
+   * @see org.eclipse.b3.beeLang.Layout#getPaths()
+   * @see #getLayout()
    * @generated
    */
-  EReference getResult_Paths();
+  EReference getLayout_Paths();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Result#getClosure <em>Closure</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ActionInputGroup <em>Action Input Group</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Closure</em>'.
-   * @see org.eclipse.b3.beeLang.Result#getClosure()
-   * @see #getResult()
+   * @return the meta object for class '<em>Action Input Group</em>'.
+   * @see org.eclipse.b3.beeLang.ActionInputGroup
    * @generated
    */
-  EReference getResult_Closure();
+  EClass getActionInputGroup();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ResultGroup <em>Result Group</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Result Group</em>'.
-   * @see org.eclipse.b3.beeLang.ResultGroup
-   * @generated
-   */
-  EClass getResultGroup();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ResultGroup#getAsserts <em>Asserts</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ActionInputGroup#getAsserts <em>Asserts</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Asserts</em>'.
-   * @see org.eclipse.b3.beeLang.ResultGroup#getAsserts()
-   * @see #getResultGroup()
+   * @see org.eclipse.b3.beeLang.ActionInputGroup#getAsserts()
+   * @see #getActionInputGroup()
    * @generated
    */
-  EReference getResultGroup_Asserts();
+  EReference getActionInputGroup_Asserts();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ResultGroup#getPrerequisites <em>Prerequisites</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ActionInputGroup#getPrerequisites <em>Prerequisites</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Prerequisites</em>'.
-   * @see org.eclipse.b3.beeLang.ResultGroup#getPrerequisites()
-   * @see #getResultGroup()
+   * @see org.eclipse.b3.beeLang.ActionInputGroup#getPrerequisites()
+   * @see #getActionInputGroup()
    * @generated
    */
-  EReference getResultGroup_Prerequisites();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.ResultGroup#getClosure <em>Closure</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Closure</em>'.
-   * @see org.eclipse.b3.beeLang.ResultGroup#getClosure()
-   * @see #getResultGroup()
-   * @generated
-   */
-  EReference getResultGroup_Closure();
+  EReference getActionInputGroup_Prerequisites();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.RepositoryConfiguration <em>Repository Configuration</em>}'.
@@ -3031,6 +3311,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getNamedAdvice_Advice();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Advice <em>Advice</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Advice</em>'.
+   * @see org.eclipse.b3.beeLang.Advice
+   * @generated
+   */
+  EClass getAdvice();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.CompoundAdvice <em>Compound Advice</em>}'.
@@ -3361,15 +3651,47 @@ public interface BeeLangPackage extends EPackage
   EAttribute getOperationCall_Name();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.OperationCall#getTarget <em>Target</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.OperationCall#getParamsParameters <em>Params Parameters</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Target</em>'.
-   * @see org.eclipse.b3.beeLang.OperationCall#getTarget()
+   * @return the meta object for the containment reference list '<em>Params Parameters</em>'.
+   * @see org.eclipse.b3.beeLang.OperationCall#getParamsParameters()
    * @see #getOperationCall()
    * @generated
    */
-  EReference getOperationCall_Target();
+  EReference getOperationCall_ParamsParameters();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.FeatureCall <em>Feature Call</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Feature Call</em>'.
+   * @see org.eclipse.b3.beeLang.FeatureCall
+   * @generated
+   */
+  EClass getFeatureCall();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.FeatureCall#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Target</em>'.
+   * @see org.eclipse.b3.beeLang.FeatureCall#getTarget()
+   * @see #getFeatureCall()
+   * @generated
+   */
+  EReference getFeatureCall_Target();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FeatureCall#getType <em>Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Type</em>'.
+   * @see org.eclipse.b3.beeLang.FeatureCall#getType()
+   * @see #getFeatureCall()
+   * @generated
+   */
+  EAttribute getFeatureCall_Type();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Literal <em>Literal</em>}'.
@@ -3550,6 +3872,16 @@ public interface BeeLangPackage extends EPackage
   EEnum getAssertionScope();
 
   /**
+   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Execution Mode</em>'.
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @generated
+   */
+  EEnum getExecutionMode();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3627,12 +3959,12 @@ public interface BeeLangPackage extends EPackage
     EClass BUILD_UNIT = eINSTANCE.getBuildUnit();
 
     /**
-     * The meta object literal for the '<em><b>Synchronized</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Execution Mode</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute BUILD_UNIT__SYNCHRONIZED = eINSTANCE.getBuildUnit_Synchronized();
+    EAttribute BUILD_UNIT__EXECUTION_MODE = eINSTANCE.getBuildUnit_ExecutionMode();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -3659,6 +3991,14 @@ public interface BeeLangPackage extends EPackage
     EAttribute BUILD_UNIT__IMPLEMENTS = eINSTANCE.getBuildUnit_Implements();
 
     /**
+     * The meta object literal for the '<em><b>Property Statements</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference BUILD_UNIT__PROPERTY_STATEMENTS = eINSTANCE.getBuildUnit_PropertyStatements();
+
+    /**
      * The meta object literal for the '<em><b>Provided Capability</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3681,22 +4021,6 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference BUILD_UNIT__META_REQUIRED_CAPABILITIES = eINSTANCE.getBuildUnit_MetaRequiredCapabilities();
-
-    /**
-     * The meta object literal for the '<em><b>Unset Properties</b></em>' attribute list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute BUILD_UNIT__UNSET_PROPERTIES = eINSTANCE.getBuildUnit_UnsetProperties();
-
-    /**
-     * The meta object literal for the '<em><b>Set Properties</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference BUILD_UNIT__SET_PROPERTIES = eINSTANCE.getBuildUnit_SetProperties();
 
     /**
      * The meta object literal for the '<em><b>Advice</b></em>' containment reference list feature.
@@ -3815,14 +4139,64 @@ public interface BeeLangPackage extends EPackage
     EAttribute REQUIRED_CAPABILITY__RANGE = eINSTANCE.getRequiredCapability_Range();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.StringPropertyImpl <em>String Property</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PropertyStatementsImpl <em>Property Statements</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.StringPropertyImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStringProperty()
+     * @see org.eclipse.b3.beeLang.impl.PropertyStatementsImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyStatements()
      * @generated
      */
-    EClass STRING_PROPERTY = eINSTANCE.getStringProperty();
+    EClass PROPERTY_STATEMENTS = eINSTANCE.getPropertyStatements();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROPERTY_STATEMENTS__NAME = eINSTANCE.getPropertyStatements_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Statements</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROPERTY_STATEMENTS__STATEMENTS = eINSTANCE.getPropertyStatements_Statements();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl <em>Property Statement</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.PropertyStatementImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyStatement()
+     * @generated
+     */
+    EClass PROPERTY_STATEMENT = eINSTANCE.getPropertyStatement();
+
+    /**
+     * The meta object literal for the '<em><b>Filter</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROPERTY_STATEMENT__FILTER = eINSTANCE.getPropertyStatement_Filter();
+
+    /**
+     * The meta object literal for the '<em><b>Statements</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROPERTY_STATEMENT__STATEMENTS = eINSTANCE.getPropertyStatement_Statements();
+
+    /**
+     * The meta object literal for the '<em><b>Local</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROPERTY_STATEMENT__LOCAL = eINSTANCE.getPropertyStatement_Local();
 
     /**
      * The meta object literal for the '<em><b>Immutable</b></em>' attribute feature.
@@ -3830,7 +4204,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute STRING_PROPERTY__IMMUTABLE = eINSTANCE.getStringProperty_Immutable();
+    EAttribute PROPERTY_STATEMENT__IMMUTABLE = eINSTANCE.getPropertyStatement_Immutable();
 
     /**
      * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
@@ -3838,7 +4212,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute STRING_PROPERTY__KEY = eINSTANCE.getStringProperty_Key();
+    EAttribute PROPERTY_STATEMENT__KEY = eINSTANCE.getPropertyStatement_Key();
 
     /**
      * The meta object literal for the '<em><b>Value</b></em>' containment reference feature.
@@ -3846,7 +4220,15 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference STRING_PROPERTY__VALUE = eINSTANCE.getStringProperty_Value();
+    EReference PROPERTY_STATEMENT__VALUE = eINSTANCE.getPropertyStatement_Value();
+
+    /**
+     * The meta object literal for the '<em><b>Unset Properties</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROPERTY_STATEMENT__UNSET_PROPERTIES = eINSTANCE.getPropertyStatement_UnsetProperties();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PropertyExpressionImpl <em>Property Expression</em>}' class.
@@ -3955,20 +4337,20 @@ public interface BeeLangPackage extends EPackage
     EReference PATH_GROUP__FILTER = eINSTANCE.getPathGroup_Filter();
 
     /**
-     * The meta object literal for the '<em><b>Paths</b></em>' attribute list feature.
+     * The meta object literal for the '<em><b>Paths</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute PATH_GROUP__PATHS = eINSTANCE.getPathGroup_Paths();
+    EReference PATH_GROUP__PATHS = eINSTANCE.getPathGroup_Paths();
 
     /**
-     * The meta object literal for the '<em><b>Base Path</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>First Is Base</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute PATH_GROUP__BASE_PATH = eINSTANCE.getPathGroup_BasePath();
+    EAttribute PATH_GROUP__FIRST_IS_BASE = eINSTANCE.getPathGroup_FirstIsBase();
 
     /**
      * The meta object literal for the '<em><b>Unset Properties</b></em>' attribute list feature.
@@ -3987,6 +4369,34 @@ public interface BeeLangPackage extends EPackage
     EReference PATH_GROUP__SET_PROPERTIES = eINSTANCE.getPathGroup_SetProperties();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PathExpressionImpl <em>Path Expression</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.PathExpressionImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPathExpression()
+     * @generated
+     */
+    EClass PATH_EXPRESSION = eINSTANCE.getPathExpression();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ExprStatementImpl <em>Expr Statement</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.ExprStatementImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExprStatement()
+     * @generated
+     */
+    EClass EXPR_STATEMENT = eINSTANCE.getExprStatement();
+
+    /**
+     * The meta object literal for the '<em><b>Expression</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference EXPR_STATEMENT__EXPRESSION = eINSTANCE.getExprStatement_Expression();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.GroupPartImpl <em>Group Part</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3997,12 +4407,12 @@ public interface BeeLangPackage extends EPackage
     EClass GROUP_PART = eINSTANCE.getGroupPart();
 
     /**
-     * The meta object literal for the '<em><b>Synchronized</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Execution Mode</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute GROUP_PART__SYNCHRONIZED = eINSTANCE.getGroupPart_Synchronized();
+    EAttribute GROUP_PART__EXECUTION_MODE = eINSTANCE.getGroupPart_ExecutionMode();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -4211,12 +4621,12 @@ public interface BeeLangPackage extends EPackage
     EClass ACTION_PART = eINSTANCE.getActionPart();
 
     /**
-     * The meta object literal for the '<em><b>Synchronized</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Execution Mode</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ACTION_PART__SYNCHRONIZED = eINSTANCE.getActionPart_Synchronized();
+    EAttribute ACTION_PART__EXECUTION_MODE = eINSTANCE.getActionPart_ExecutionMode();
 
     /**
      * The meta object literal for the '<em><b>Actor Parameters</b></em>' containment reference list feature.
@@ -4235,12 +4645,36 @@ public interface BeeLangPackage extends EPackage
     EReference ACTION_PART__ASSERTS = eINSTANCE.getActionPart_Asserts();
 
     /**
-     * The meta object literal for the '<em><b>Result Groups</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ACTION_PART__RESULT_GROUPS = eINSTANCE.getActionPart_ResultGroups();
+    EReference ACTION_PART__PROPERTIES = eINSTANCE.getActionPart_Properties();
+
+    /**
+     * The meta object literal for the '<em><b>Advice</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ACTION_PART__ADVICE = eINSTANCE.getActionPart_Advice();
+
+    /**
+     * The meta object literal for the '<em><b>Result Group</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ACTION_PART__RESULT_GROUP = eINSTANCE.getActionPart_ResultGroup();
+
+    /**
+     * The meta object literal for the '<em><b>Layout</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ACTION_PART__LAYOUT = eINSTANCE.getActionPart_Layout();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ParameterImpl <em>Parameter</em>}' class.
@@ -4269,30 +4703,24 @@ public interface BeeLangPackage extends EPackage
     EReference PARAMETER__VALUE = eINSTANCE.getParameter_Value();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ResultImpl <em>Result</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.AnonymousParameterImpl <em>Anonymous Parameter</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.ResultImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getResult()
+     * @see org.eclipse.b3.beeLang.impl.AnonymousParameterImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAnonymousParameter()
      * @generated
      */
-    EClass RESULT = eINSTANCE.getResult();
+    EClass ANONYMOUS_PARAMETER = eINSTANCE.getAnonymousParameter();
 
     /**
-     * The meta object literal for the '<em><b>Result</b></em>' containment reference list feature.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.LayoutImpl <em>Layout</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.LayoutImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLayout()
      * @generated
      */
-    EReference RESULT__RESULT = eINSTANCE.getResult_Result();
-
-    /**
-     * The meta object literal for the '<em><b>Group</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference RESULT__GROUP = eINSTANCE.getResult_Group();
+    EClass LAYOUT = eINSTANCE.getLayout();
 
     /**
      * The meta object literal for the '<em><b>Filter</b></em>' containment reference feature.
@@ -4300,15 +4728,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RESULT__FILTER = eINSTANCE.getResult_Filter();
-
-    /**
-     * The meta object literal for the '<em><b>Visibility</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute RESULT__VISIBILITY = eINSTANCE.getResult_Visibility();
+    EReference LAYOUT__FILTER = eINSTANCE.getLayout_Filter();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -4316,7 +4736,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute RESULT__NAME = eINSTANCE.getResult_Name();
+    EAttribute LAYOUT__NAME = eINSTANCE.getLayout_Name();
 
     /**
      * The meta object literal for the '<em><b>Asserts</b></em>' containment reference list feature.
@@ -4324,7 +4744,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RESULT__ASSERTS = eINSTANCE.getResult_Asserts();
+    EReference LAYOUT__ASSERTS = eINSTANCE.getLayout_Asserts();
 
     /**
      * The meta object literal for the '<em><b>Paths</b></em>' containment reference list feature.
@@ -4332,25 +4752,17 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RESULT__PATHS = eINSTANCE.getResult_Paths();
+    EReference LAYOUT__PATHS = eINSTANCE.getLayout_Paths();
 
     /**
-     * The meta object literal for the '<em><b>Closure</b></em>' containment reference feature.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ActionInputGroupImpl <em>Action Input Group</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.ActionInputGroupImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getActionInputGroup()
      * @generated
      */
-    EReference RESULT__CLOSURE = eINSTANCE.getResult_Closure();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ResultGroupImpl <em>Result Group</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.ResultGroupImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getResultGroup()
-     * @generated
-     */
-    EClass RESULT_GROUP = eINSTANCE.getResultGroup();
+    EClass ACTION_INPUT_GROUP = eINSTANCE.getActionInputGroup();
 
     /**
      * The meta object literal for the '<em><b>Asserts</b></em>' containment reference list feature.
@@ -4358,7 +4770,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RESULT_GROUP__ASSERTS = eINSTANCE.getResultGroup_Asserts();
+    EReference ACTION_INPUT_GROUP__ASSERTS = eINSTANCE.getActionInputGroup_Asserts();
 
     /**
      * The meta object literal for the '<em><b>Prerequisites</b></em>' containment reference list feature.
@@ -4366,15 +4778,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RESULT_GROUP__PREREQUISITES = eINSTANCE.getResultGroup_Prerequisites();
-
-    /**
-     * The meta object literal for the '<em><b>Closure</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference RESULT_GROUP__CLOSURE = eINSTANCE.getResultGroup_Closure();
+    EReference ACTION_INPUT_GROUP__PREREQUISITES = eINSTANCE.getActionInputGroup_Prerequisites();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.RepositoryConfigurationImpl <em>Repository Configuration</em>}' class.
@@ -4435,6 +4839,16 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference NAMED_ADVICE__ADVICE = eINSTANCE.getNamedAdvice_Advice();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.AdviceImpl <em>Advice</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.AdviceImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvice()
+     * @generated
+     */
+    EClass ADVICE = eINSTANCE.getAdvice();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.CompoundAdviceImpl <em>Compound Advice</em>}' class.
@@ -4711,12 +5125,38 @@ public interface BeeLangPackage extends EPackage
     EAttribute OPERATION_CALL__NAME = eINSTANCE.getOperationCall_Name();
 
     /**
+     * The meta object literal for the '<em><b>Params Parameters</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference OPERATION_CALL__PARAMS_PARAMETERS = eINSTANCE.getOperationCall_ParamsParameters();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.FeatureCallImpl <em>Feature Call</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.FeatureCallImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeatureCall()
+     * @generated
+     */
+    EClass FEATURE_CALL = eINSTANCE.getFeatureCall();
+
+    /**
      * The meta object literal for the '<em><b>Target</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference OPERATION_CALL__TARGET = eINSTANCE.getOperationCall_Target();
+    EReference FEATURE_CALL__TARGET = eINSTANCE.getFeatureCall_Target();
+
+    /**
+     * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FEATURE_CALL__TYPE = eINSTANCE.getFeatureCall_Type();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.LiteralImpl <em>Literal</em>}' class.
@@ -4871,6 +5311,16 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EEnum ASSERTION_SCOPE = eINSTANCE.getAssertionScope();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.ExecutionMode
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
+     * @generated
+     */
+    EEnum EXECUTION_MODE = eINSTANCE.getExecutionMode();
 
   }
 

@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getParams <em>Params</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getTarget <em>Target</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getParamsParameters <em>Params Parameters</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface OperationCall extends Expression
+public interface OperationCall extends Expression, FeatureCall
 {
   /**
    * Returns the value of the '<em><b>Params</b></em>' containment reference list.
@@ -72,29 +72,19 @@ public interface OperationCall extends Expression
   void setName(String value);
 
   /**
-   * Returns the value of the '<em><b>Target</b></em>' containment reference.
+   * Returns the value of the '<em><b>Params Parameters</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.AnonymousParameter}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Target</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Params Parameters</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' containment reference.
-   * @see #setTarget(Expression)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getOperationCall_Target()
+   * @return the value of the '<em>Params Parameters</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getOperationCall_ParamsParameters()
    * @model containment="true"
    * @generated
    */
-  Expression getTarget();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.OperationCall#getTarget <em>Target</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' containment reference.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(Expression value);
+  EList<AnonymousParameter> getParamsParameters();
 
 } // OperationCall

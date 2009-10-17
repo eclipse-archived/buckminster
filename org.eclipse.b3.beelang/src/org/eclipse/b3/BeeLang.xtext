@@ -2,36 +2,37 @@ grammar org.eclipse.b3.BeeLang with org.eclipse.xtext.common.Terminals
 
 generate beeLang "http://www.eclipse.org/b3/BeeLang"
 
-BeeModel :
-	(imports += Import)*
-	body = Unit;
+BeeModel : (imports += Import)* body = Unit ;
 
-/*
-** Qualified name
-** TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
-*/
-QualifiedName : ID ('.' ID)* ;
+// Redeclare the default ID without the ^ keyword escape mechanism
+terminal ID : (('a'..'z')|('A'..'Z')|('_')) (('a'..'z')|('A'..'Z')|('0'..'9')|('_'))* ;
+
+// Qualified name
+// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+//
+QualifiedName hidden(): ID ('.' ID)* HIDDENBUG;
+HIDDENBUG hidden(WS, SL_COMMENT, ML_COMMENT): ('~~~~~')? ; // TODO: REPLACE HACK WHEN HIDDEN WORKS.
 
 EscapedQualifiedName:  STRING | QualifiedName;
 InterfaceName: QualifiedName ;
 
-/*
-** CompoundName TODO: Disallow white space between parts and /. See QualifiedName for more info.
-*/
+// CompoundName (whitespace and comments allowed, as sequence can be very long. name parts
+// do not allow being broken across lines.
+//
 CompoundName : EscapedQualifiedName '/' EscapedQualifiedName ;
 
-/* Aliases that help with unified naming (good for experiments - the indirection can be removed later) */
+// Aliases that help with unified naming (good for experiments - the indirection can be removed later)
 UnitName : EscapedQualifiedName;
 PartName : EscapedQualifiedName;
 
-enum Visibility : public | private ;
+enum Visibility 	: public | private ;
 enum AssertionScope : precondition | postcondition ;
+enum ExecutionMode 	: parallel | sequential ;
 
-/*
-** Version, and VersionRange
-** TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
-** TODO: uncertain if the set of allowed chars is definitive.
-*/
+// Version, and VersionRange
+// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
+// TODO: uncertain if the set of allowed chars is definitive.
+//
 Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' | '/' | '+' | '=' | '*' | '<' | '>' | ':' | '?';
 AlfanumSym : (ID | INT) (Separator|ID|INT)* ;
 
@@ -59,10 +60,16 @@ Import :
 /* UNIT - the body (compare to java class)
 */	
 Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
-	(synchronized ?= 'synchronized')?
+	(executionMode = ExecutionMode)?
 	'unit' (name=UnitName)? ('version' version = Version)?
 		('implements' implements += InterfaceName (',' implements+=InterfaceName)*)? 
 	'{'
+		(	//-- PROPERTIES
+			// goes first, because they may be used in the other clauses.
+			//
+			  ('properties'  propertyStatements += NamedPropertyStatements)
+//			| (propertyStatements += SinglePropertyStatement)
+		)*
 		( 	//-- PROVIDES
 			  ('provides' '{' (providedCapability += ProvidedCapability ';')+ '}')
 			| ('provides' providedCapability += ProvidedCapability ';')
@@ -71,15 +78,11 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			| ('requires' requiredCapabilities += RequiredCapability ';')
 			| ('meta' 'requires' '{' (metaRequiredCapabilities += RequiredCapability ';')+ '}' )
 			| ('meta' 'requires' metaRequiredCapabilities += RequiredCapability ';')
-			//-- PROPERTIES
-			| ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += StringProperty)+ '}' )
-			| ('unset' 'property' unsetProperties += QualifiedName ';' )
-			| (setProperties += StringProperty2)
 			//--ADVICE
 			| ('advice' advice+=NamedAdvice )
 			//--SYNCHRONIZE
-			| ('synchronize' '{' (synchronize += Synchronization )+  '}' )
-			| ('synchronize' synchronize += Synchronization  )
+			| ('sequential' '{' (synchronize += Synchronization )+  '}' )
+			| ('sequential' synchronize += Synchronization  )
 			//--PARTS
 			| (parts += BuildPart )			
 			//-- REPOSITORIES
@@ -88,24 +91,40 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 	'}';
 	
 
+	
 ProvidedCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName  ('/' version=Version)?  ;
 RequiredCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName ('/' range=VersionRange)?  ;
 
-/*
-** Property in properties  lists (i-e. without keyword "property" 
-*/
-StringProperty returns StringProperty
-	: (((immutable ?= 'immutable') key=QualifiedName '=' value=PropertyExpression ';')
-	|	(key=QualifiedName ('='  value=PropertyExpression)? )';')  
+// An optionally named sequence of property statements
+NamedPropertyStatements returns PropertyStatements
+	: (name = QualifiedName)? statements = PropertyStatements ;
+//		( (statements += UnsetPropertyStatement |  statements += PropertyStatement)* ) '}'
+//	;
+
+// Sequence of property statements	
+PropertyStatements returns PropertyStatement
+	:  '{' 
+		( ('when' filter=Filter)? 
+			  (statements += UnsetPropertyStatement 
+			| statements += PropertyStatement
+			| statements += PropertyStatements
+		) 
+		)* '}'
+	;
+	
+PropertyStatement
+	: ( (local ?= 'local' )? (immutable ?= 'immutable')? key=QualifiedName '=' value=PropertyExpression ';')
 	;
 
-/* 
-** Properties with keyword "property" 
-*/	
-StringProperty2 returns StringProperty
-	:  (((immutable ?= 'immutable') 'property' key=QualifiedName '=' value=PropertyExpression ';') 
-	| 	('property' key=QualifiedName ('=' value=PropertyExpression)? )';')  
+UnsetPropertyStatement returns PropertyStatement
+	:  ('unset' unsetProperties += QualifiedName ';' )
 	;
+
+// identical to nested properties statement, but used to get a separate data type
+AnnotationStatement returns PropertyStatement
+	: (('when' filter=Filter)? (immutable ?= 'immutable')? key=QualifiedName '=' value=PropertyExpression ';')
+	;
+
 
 PropertyExpression : Expression ; 
 
@@ -133,30 +152,37 @@ Artifacts returns ArtifactsPart
 	
 /* PATH GROUP
 * TODO: Allow basePath without paths?
+* TODO: generated structure is wrong . should be in sequence, basepath and expr are out of band !!
 */
 PathGroup 
 	: ('when' filter=Filter)? 
-		( paths+=Path (',' paths+=Path)* ';'
-		| basePath=Path '[' paths+=Path (',' paths+=Path)* ']' ';'
-		| ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += StringProperty)+ '}' )
-		| ('unset' 'property' unsetProperties += QualifiedName ';' )
-		| (setProperties += StringProperty2)
+		( paths+=PathExpression 
+		    ( ((',' paths+=PathExpression)* ) 
+		    | (firstIsBase ?='[' paths+=PathExpression (',' paths+=PathExpression)* ']')
+		    ) ';'
+//		| basePath=PathExpression '[' paths+=PathExpression (',' paths+=PathExpression)* ']' ';'
+//		| ('expr' pathExpressions += Expression ';' ) 
+		| ('annotations' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += AnnotationStatement)+ '}' )
 		)
 	;
+
+PathExpression : Path | ExprStatement ;
+
+ExprStatement : 'expr'  expression = Expression  ;
 
 /*
 * A path can be written without quotes if it consists of safe chars 
 * TODO: repace use of ID with better definition.
 * TODO: Validation of path syntax (MS, n*x) ?
 */
-Path
+Path hidden()
 	: STRING
-	| ('/')? QualifiedName ('/' QualifiedName)* ('/')?
+	| ('/')? QualifiedName ('/' QualifiedName)* ('/')? // HIDDENBUG
 	;
 
 Group returns GroupPart 
 	: (visibility = Visibility)?
-	  (synchronized ?= 'synchronized')?
+	  (executionMode = ExecutionMode)?
 	  'group' name=PartName
 		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
 		(asserts += PreConditionAssert)?
@@ -166,16 +192,12 @@ Group returns GroupPart
 	;
 
 Prerequisite
-	: ((surpressed ?= 'void')? ('when' filter=Filter )? (alias=QualifiedName '=')? partReference=PrerequisiteEntry) 
-	 (closure = Closure)? ';'
+	: ((surpressed ?= 'hidden')? ('when' filter=Filter )? (alias=QualifiedName '=')? ((partReference=PrerequisiteEntry) 
+	 (closure = Closure)?) /*| (partReference=ExprStatement) */) ';'
 	;
 	
 Closure : 'with' '{'
-			//--PROPERTIES
-			( ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += StringProperty)+ '}' )
-			| ('unset' 'property' unsetProperties += QualifiedName ';' )
-			| (setProperties += StringProperty2)
-			//--ADVICE
+			( ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += PropertyStatement)+ '}' )
 			| ( 'advice' advice += CompoundAdvice)
 			)*
 		'}'
@@ -185,6 +207,7 @@ PrerequisiteEntry
 	: PartInSelf
 	| CapabilityReferencedPart
 	| CompoundReferences
+	| ExprStatement
 	;
 	
 PartInSelf	: partName=PartName  // i.e. self#partName
@@ -201,65 +224,42 @@ CompoundReferences
 
 Action returns ActionPart
 	: (visibility = Visibility)?
-      (synchronized ?= 'synchronized')?
+      (executionMode = ExecutionMode)?
 	 'action' PartName
-	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? ')'
+	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? 
+	 	('...' actorParameters += AnonymousParameter (',' actorParameters += AnonymousParameter)*)?')'
 		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
 	(asserts += PreConditionAssert)?
 	(asserts += PostConditionAssert)?
-	 '{' (resultGroups+=Result)* '}'
+	 '{'
+		('properties' properties += PropertyStatements)?
+	     ( advice = Advice )?
+	     ( resultGroup = ActionInputGroup )? 
+	     ( layout += Layout )*
+	 '}'
 	;
 
 Parameter
 	: name=QualifiedName '=' value= Expression
 	;
-/*	
-Result
-	: result += BasicResult
-	| '[' (result+=Result)* ']'
-// 	| group=ResultGroup result+=Result 	// TODO: Wanted, but creates Left recursion
-	| group=ResultGroup '{' (result+=Result)* '}' (closure=Closure)?	
-	; 
-*/
-Result
-	: result += ResultPart (group = ResultGroup)?
-	; 
 	
-ResultPart returns Result
-	: BasicResult
-	| '{' (result+=BasicResult)* '}'
+AnonymousParameter 
+	: Expression
 	;
 	
-/* SIMPLIFIED VERSION OF THE ABOVE (FOR TESTING) - DO NOT REMOVE YET - see issue above.
-//  Result R, and Group G, Closure C, syntax
-R 	: result += BR
-	| '[' (result +=R)* ']'
-	| group=G result+=R
-	| group=G '{' (result+=R)* '}' (closure=C)?
-	;
-	
-BR	returns R: 'R' '{'  '}' (closure=C)? ;
-G	: 'G' '{'  (prerequisites += P)* '}' ;
-C	: 'C' ;
-P	: 'P' 
-	| '{' P* '}'
-	;
-*/
-
-BasicResult returns Result
-	: ('when' filter=Filter)? (visibility=Visibility)? 'result' (name=PartName )? 
-		(asserts += PreConditionAssert)?
+Layout returns Layout
+	: ('when' filter=Filter)?  'layout' (name=QualifiedName )? 
+//		(asserts += PreConditionAssert)? // precondition does not make sense
 		(asserts += PostConditionAssert)?
 	
 		'{' (paths += PathGroup)* '}' 
-		(closure = Closure )?
 	;
-
-ResultGroup
+	
+ActionInputGroup
 	: 'group'
 		(asserts += PreConditionAssert)?
 		(asserts += PostConditionAssert)?	 
-		'{' (prerequisites += Prerequisite)* '}' (closure = Closure)?
+		'{' (prerequisites += Prerequisite)* '}'
 	;
 
 RepositoryConfiguration
@@ -281,6 +281,8 @@ URI : STRING
 */
 NamedAdvice 
 	: (name=QualifiedName)? advice=CompoundAdvice ;
+
+Advice : 'advice' CompoundAdvice ;
 
 CompoundAdvice : '{' (advice += AdviceStatement ';')* '}' ;
 
@@ -351,19 +353,33 @@ UnaryExpression returns OperationCall:
 	
 InfixExpression returns Expression:
 	PrimaryExpression (
-		({OperationCall.target=current} "->" name=ID "(" (params+=Parameter ("," params+=Parameter)*)? ")") // |
-//		({FeatureCall.target=current} "." type=Type) |
+		({OperationCall.target=current} ":" name=ID "(" (params+=Parameter ("," params+=Parameter)*)? 
+			 	('...' paramsParameters += AnonymousParameter (',' paramsParameters += AnonymousParameter)*)? ")")  |
+		({FeatureCall.target=current} ":" type=ID) // |
 //		({TypeSelectExpression.target=current} "." name="typeSelect" "(" type=Type ")") |
 //		({CollectionExpression.target=current} name=("collect"|"select"|"selectFirst"|"reject"|"exists"|"notExists"|"sortBy"|"forAll") "(" (var=ID "|")? exp=Expression ")")
 	)*;
 
-PrimaryExpression returns Expression:
-	Literal | 
-//	FeatureCall |
+PrimaryExpression returns Expression
+	: Literal 
+	| FeatureCall 
 //	ListLiteral |
 //	ConstructorCallExpression |
-	GlobalVarExpression |
-	ParanthesizedExpression;
+	| GlobalVarExpression
+	| ParanthesizedExpression
+	;
+FeatureCall:
+	OperationCall //|
+//	(type=Type) |
+//	CollectionExpression | 
+//	TypeSelectExpression
+	;
+	
+OperationCall:
+	name=QualifiedName "(" (params+=Parameter ("," params+=Parameter)*)? 
+		('...' paramsParameters += AnonymousParameter (',' paramsParameters += AnonymousParameter)*)? 
+	")"
+	;
 	
 Literal:
 	BooleanLiteral | IntegerLiteral | NullLiteral

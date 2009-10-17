@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getPaths <em>Paths</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getBasePath <em>Base Path</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.PathGroup#isFirstIsBase <em>First Is Base</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getUnsetProperties <em>Unset Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getSetProperties <em>Set Properties</em>}</li>
  * </ul>
@@ -58,46 +58,46 @@ public interface PathGroup extends EObject
   void setFilter(Filter value);
 
   /**
-   * Returns the value of the '<em><b>Paths</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
+   * Returns the value of the '<em><b>Paths</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.PathExpression}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Paths</em>' attribute list isn't clear,
+   * If the meaning of the '<em>Paths</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Paths</em>' attribute list.
+   * @return the value of the '<em>Paths</em>' containment reference list.
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_Paths()
-   * @model unique="false"
+   * @model containment="true"
    * @generated
    */
-  EList<String> getPaths();
+  EList<PathExpression> getPaths();
 
   /**
-   * Returns the value of the '<em><b>Base Path</b></em>' attribute.
+   * Returns the value of the '<em><b>First Is Base</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Base Path</em>' attribute isn't clear,
+   * If the meaning of the '<em>First Is Base</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Base Path</em>' attribute.
-   * @see #setBasePath(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_BasePath()
+   * @return the value of the '<em>First Is Base</em>' attribute.
+   * @see #setFirstIsBase(boolean)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_FirstIsBase()
    * @model
    * @generated
    */
-  String getBasePath();
+  boolean isFirstIsBase();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.PathGroup#getBasePath <em>Base Path</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.PathGroup#isFirstIsBase <em>First Is Base</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Base Path</em>' attribute.
-   * @see #getBasePath()
+   * @param value the new value of the '<em>First Is Base</em>' attribute.
+   * @see #isFirstIsBase()
    * @generated
    */
-  void setBasePath(String value);
+  void setFirstIsBase(boolean value);
 
   /**
    * Returns the value of the '<em><b>Unset Properties</b></em>' attribute list.
@@ -117,7 +117,7 @@ public interface PathGroup extends EObject
 
   /**
    * Returns the value of the '<em><b>Set Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.StringProperty}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyStatement}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Set Properties</em>' containment reference list isn't clear,
@@ -129,6 +129,6 @@ public interface PathGroup extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<StringProperty> getSetProperties();
+  EList<PropertyStatement> getSetProperties();
 
 } // PathGroup
