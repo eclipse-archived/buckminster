@@ -76,7 +76,7 @@
 					<arg value="-data" />
 					<arg value="@{workspace}" />
 					<arg value="--loglevel" />
-					<arg value="DEBUG" />
+					<arg value="INFO" />
 					<globargs />
 					<arg value="@{command}" />
 					<arg value="-P" />
