@@ -71,34 +71,6 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		super(readerType, rInfo, monitor);
 	}
 
-	@Override
-	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor)
-			throws Exception
-	{
-		final ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(subMonitor, 100);
-		final ISVNConnector proxy = getSession().getSVNProxy();
-		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), null, revision);
-		proxy.streamFileContent(entry, GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
-	}
-
-	private SubversiveSession getSession()
-	{
-		return (SubversiveSession)m_session;
-	}
-
-	@Override
-	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException
-	{
-		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
-	}
-
-	@Override
-	protected SVNEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException
-	{
-		return m_session.listFolder(m_session.getSVNUrl(), monitor);
-	}
-
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
 		boolean success = false;
@@ -109,7 +81,7 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		{
 			getSession().getSVNProxy().checkout(
 					new SVNEntryRevisionReference(m_session.getSVNUrl().toString(), null, m_session.getRevision()),
-					destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.IGNORE_EXTERNALS, svnMon);
+					destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.FORCE, svnMon);
 			success = true;
 		}
 		catch(SVNConnectorException e)
@@ -134,6 +106,29 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	}
 
 	@Override
+	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor)
+			throws Exception
+	{
+		final ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(subMonitor, 100);
+		final ISVNConnector proxy = getSession().getSVNProxy();
+		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), null, revision);
+		proxy.streamFileContent(entry, GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
+	}
+
+	@Override
+	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag,
+			long revision, Date timestamp, RMContext context) throws CoreException
+	{
+		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
+	protected SVNEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException
+	{
+		return m_session.listFolder(m_session.getSVNUrl(), monitor);
+	}
+
+	@Override
 	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException
 	{
 		return getSession().getDirEntry(url, revision, monitor) != null;
@@ -145,5 +140,10 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		final URI url = m_session.getSVNUrl(fileName);
 		final SVNRevision revision = m_session.getRevision();
 		return GenericCache.cacheKey(url, revision);
+	}
+
+	private SubversiveSession getSession()
+	{
+		return (SubversiveSession)m_session;
 	}
 }
