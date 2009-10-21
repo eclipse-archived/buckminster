@@ -367,7 +367,7 @@ public class CSpecFromSource extends CSpecGenerator
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		copyFeatures.addLocalPrerequisite(ATTRIBUTE_FEATURE_JAR, null, INCLUDE_TOP_FILTER);
-		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JAR, null, INCLUDE_TOP_FILTER);
+		copyFeatures.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JAR, null, INCLUDE_TOP_SOURCE_FILTER);
 		copyFeatures.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 		copyFeatures.setProductAlias(ALIAS_OUTPUT);
 		copyFeatures.setProductBase(OUTPUT_DIR_SITE.append(FEATURES_FOLDER));

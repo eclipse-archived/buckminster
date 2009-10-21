@@ -125,12 +125,15 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final Filter INCLUDE_TOP_FILTER;
 
+	public static final Filter INCLUDE_TOP_SOURCE_FILTER;
+
 	static
 	{
 		try
 		{
 			SOURCE_FILTER = FilterFactory.newInstance("(!(cbi.include.source=false))"); //$NON-NLS-1$
 			INCLUDE_TOP_FILTER = FilterFactory.newInstance("(site.include.top=true)"); //$NON-NLS-1$
+			INCLUDE_TOP_SOURCE_FILTER = FilterFactory.newInstance("(&(site.include.top=true)(!(cbi.include.source=false)))"); //$NON-NLS-1$
 			SIGNING_ENABLED = FilterFactory.newInstance("(site.signing=true)"); //$NON-NLS-1$
 			SIGNING_DISABLED = FilterFactory.newInstance("(!(site.signing=true))"); //$NON-NLS-1$
 			PACK_ENABLED = FilterFactory.newInstance("(site.pack200=true)"); //$NON-NLS-1$

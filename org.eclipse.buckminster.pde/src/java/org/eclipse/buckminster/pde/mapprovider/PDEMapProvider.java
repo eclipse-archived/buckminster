@@ -200,20 +200,28 @@ public class PDEMapProvider extends Provider
 			File tempFolder = null;
 			try
 			{
-				ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(
-						IComponentType.UNKNOWN), new VersionMatch(null, null, -1, new Date(), null),
-						ProviderScore.GOOD, query);
-
 				tempFolder = FileUtils.createTempFolder("bucky", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-				IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
-				try
+				VersionSelector[] btPath = query.getBranchTagPath();
+				if(btPath.length == 0)
+					materializeMaps(tempFolder, null, query, MonitorUtils.subMonitor(monitor, 500));
+				else
 				{
-					((ICatalogReader)reader).innerMaterialize(new Path(tempFolder.toString()), MonitorUtils.subMonitor(
-							monitor, 400));
-				}
-				finally
-				{
-					IOUtils.close(reader);
+					CoreException lastException = null;
+					for(VersionSelector bt : btPath)
+					{
+						try
+						{
+							materializeMaps(tempFolder, bt, query, MonitorUtils.subMonitor(monitor, 500));
+							lastException = null;
+							break;
+						}
+						catch(CoreException e)
+						{
+							lastException = e;
+						}
+					}
+					if(lastException != null)
+						throw lastException;
 				}
 
 				map = new HashMap<ComponentIdentifier, MapFileEntry>();
@@ -315,5 +323,25 @@ public class PDEMapProvider extends Provider
 			PDEPlugin.getLogger().debug(msg);
 		}
 		return candidateEntry;
+	}
+
+	private void materializeMaps(File tempFolder, VersionSelector vs, NodeQuery query, IProgressMonitor monitor)
+			throws CoreException
+	{
+		MonitorUtils.begin(monitor, 500);
+
+		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
+				new VersionMatch(null, vs, -1, new Date(), null), ProviderScore.GOOD, query);
+		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
+		try
+		{
+			((ICatalogReader)reader).innerMaterialize(new Path(tempFolder.toString()), MonitorUtils.subMonitor(monitor,
+					400));
+		}
+		finally
+		{
+			IOUtils.close(reader);
+			MonitorUtils.done(monitor);
+		}
 	}
 }
