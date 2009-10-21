@@ -17,7 +17,7 @@ package org.eclipse.buckminster.aggregator;
  * @model abstract="true"
  * @generated
  */
-public interface MapRule extends InstallableUnitReference
+public interface MapRule extends InstallableUnitReference, DescriptionProvider
 {
 
 } // MapRule

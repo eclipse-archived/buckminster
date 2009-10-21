@@ -30,7 +30,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface MappedRepository extends MetadataRepositoryReference, StatusProvider
+public interface MappedRepository extends MetadataRepositoryReference, DescriptionProvider, StatusProvider
 {
 	/**
 	 * Adds MappedUnit to the collection of either features, categories, bundles or products

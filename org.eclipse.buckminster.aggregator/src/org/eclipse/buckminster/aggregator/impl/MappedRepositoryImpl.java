@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MapRule;
@@ -50,6 +51,26 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implements MappedRepository
 {
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = "";
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
+
 	/**
 	 * The cached value of the '{@link #getProducts() <em>Products</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -171,10 +192,54 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	 * @generated
 	 */
 	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == DescriptionProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION:
+				return AggregatorPackage.DESCRIPTION_PROVIDER__DESCRIPTION;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == DescriptionProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.DESCRIPTION_PROVIDER__DESCRIPTION:
+				return AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION:
+			return getDescription();
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			return getProducts();
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -227,6 +292,10 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION:
+			return DESCRIPTION_EDEFAULT == null
+					? description != null
+					: !DESCRIPTION_EDEFAULT.equals(description);
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			return products != null && !products.isEmpty();
 		case AggregatorPackage.MAPPED_REPOSITORY__BUNDLES:
@@ -258,6 +327,9 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION:
+			setDescription((String)newValue);
+			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			getProducts().clear();
 			getProducts().addAll((Collection<? extends Product>)newValue);
@@ -298,6 +370,9 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION:
+			setDescription(DESCRIPTION_EDEFAULT);
+			return;
 		case AggregatorPackage.MAPPED_REPOSITORY__PRODUCTS:
 			getProducts().clear();
 			return;
@@ -367,6 +442,16 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	public String getCategoryPrefix()
 	{
 		return categoryPrefix;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getDescription()
+	{
+		return description;
 	}
 
 	/**
@@ -565,6 +650,20 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	 * 
 	 * @generated
 	 */
+	public void setDescription(String newDescription)
+	{
+		String oldDescription = description;
+		description = newDescription;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION,
+					oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setMirrorArtifacts(boolean newMirrorArtifacts)
 	{
 		boolean oldMirrorArtifacts = (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
@@ -589,7 +688,9 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (mirrorArtifacts: ");
+		result.append(" (description: ");
+		result.append(description);
+		result.append(", mirrorArtifacts: ");
 		result.append((eFlags & MIRROR_ARTIFACTS_EFLAG) != 0);
 		result.append(", categoryPrefix: ");
 		result.append(categoryPrefix);

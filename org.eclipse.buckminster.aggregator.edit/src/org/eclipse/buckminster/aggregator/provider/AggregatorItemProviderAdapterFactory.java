@@ -176,6 +176,14 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	protected MetadataRepositoryReferenceItemProvider metadataRepositoryReferenceItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.DescriptionProvider}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected DescriptionProviderItemProvider descriptionProviderItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -352,6 +360,23 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.DescriptionProvider}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createDescriptionProviderAdapter()
+	{
+		if(descriptionProviderItemProvider == null)
+		{
+			descriptionProviderItemProvider = new DescriptionProviderItemProvider(this);
+		}
+
+		return descriptionProviderItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.ExclusionRule}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -505,6 +530,8 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 			validConfigurationsRuleItemProvider.dispose();
 		if(metadataRepositoryReferenceItemProvider != null)
 			metadataRepositoryReferenceItemProvider.dispose();
+		if(descriptionProviderItemProvider != null)
+			descriptionProviderItemProvider.dispose();
 	}
 
 	/**

@@ -11,6 +11,7 @@ import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 
@@ -36,6 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#isEnabled <em>Enabled</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getDescription <em>Description</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getRepositories <em>Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getContacts <em>Contacts</em>}</li>
@@ -74,6 +76,26 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * @ordered
 	 */
 	protected static final int ENABLED_EFLAG = 1 << 0;
+
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = "";
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -132,12 +154,56 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * @generated
 	 */
 	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == DescriptionProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
+				return AggregatorPackage.DESCRIPTION_PROVIDER__DESCRIPTION;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == DescriptionProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.DESCRIPTION_PROVIDER__DESCRIPTION:
+				return AggregatorPackage.CONTRIBUTION__DESCRIPTION;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
 			return isEnabled();
+		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
+			return getDescription();
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return getLabel();
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
@@ -176,6 +242,10 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		{
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
 			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
+		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
+			return DESCRIPTION_EDEFAULT == null
+					? description != null
+					: !DESCRIPTION_EDEFAULT.equals(description);
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return LABEL_EDEFAULT == null
 					? label != null
@@ -201,6 +271,9 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		{
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
 			setEnabled((Boolean)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
+			setDescription((String)newValue);
 			return;
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			setLabel((String)newValue);
@@ -230,6 +303,9 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
 			setEnabled(ENABLED_EDEFAULT);
 			return;
+		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
+			setDescription(DESCRIPTION_EDEFAULT);
+			return;
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			setLabel(LABEL_EDEFAULT);
 			return;
@@ -255,6 +331,16 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			contacts = new EObjectResolvingEList<Contact>(Contact.class, this, AggregatorPackage.CONTRIBUTION__CONTACTS);
 		}
 		return contacts;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getDescription()
+	{
+		return description;
 	}
 
 	/**
@@ -342,6 +428,20 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * 
 	 * @generated
 	 */
+	public void setDescription(String newDescription)
+	{
+		String oldDescription = description;
+		description = newDescription;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.CONTRIBUTION__DESCRIPTION,
+					oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setEnabled(boolean newEnabled)
 	{
 		boolean oldEnabled = (eFlags & ENABLED_EFLAG) != 0;
@@ -382,6 +482,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (enabled: ");
 		result.append((eFlags & ENABLED_EFLAG) != 0);
+		result.append(", description: ");
+		result.append(description);
 		result.append(", label: ");
 		result.append(label);
 		result.append(')');

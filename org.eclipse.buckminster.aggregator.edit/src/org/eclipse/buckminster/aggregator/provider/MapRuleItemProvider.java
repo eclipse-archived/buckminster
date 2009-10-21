@@ -12,11 +12,14 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -24,6 +27,8 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
@@ -59,6 +64,7 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 		{
 			super.getPropertyDescriptors(object);
 
+			addDescriptionPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -71,7 +77,10 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 	@Override
 	public String getText(Object object)
 	{
-		return getString("_UI_MapRule_type");
+		String label = crop(((MapRule)object).getDescription());
+		return label == null || label.length() == 0
+				? getString("_UI_MapRule_type")
+				: getString("_UI_MapRule_type") + " " + label;
 	}
 
 	/**
@@ -85,7 +94,29 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
+
+		switch(notification.getFeatureID(MapRule.class))
+		{
+		case AggregatorPackage.MAP_RULE__DESCRIPTION:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Description feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addDescriptionPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_DescriptionProvider_description_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_DescriptionProvider_description_feature",
+						"_UI_DescriptionProvider_type"), AggregatorPackage.Literals.DESCRIPTION_PROVIDER__DESCRIPTION,
+				true, true, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

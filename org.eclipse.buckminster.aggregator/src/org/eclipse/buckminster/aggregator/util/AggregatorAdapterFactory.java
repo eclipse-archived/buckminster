@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
@@ -101,6 +102,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseCustomCategory(CustomCategory object)
 		{
 			return createCustomCategoryAdapter();
+		}
+
+		@Override
+		public Adapter caseDescriptionProvider(DescriptionProvider object)
+		{
+			return createDescriptionProviderAdapter();
 		}
 
 		@Override
@@ -328,6 +335,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createCustomCategoryAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.DescriptionProvider
+	 * <em>Description Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.DescriptionProvider
+	 * @generated
+	 */
+	public Adapter createDescriptionProviderAdapter()
 	{
 		return null;
 	}

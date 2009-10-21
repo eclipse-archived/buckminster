@@ -591,6 +591,24 @@ public interface AggregatorPackage extends EPackage
 		EAttribute LABEL_PROVIDER__LABEL = eINSTANCE.getLabelProvider_Label();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.DescriptionProviderImpl
+		 * <em>Description Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.DescriptionProviderImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getDescriptionProvider()
+		 * @generated
+		 */
+		EClass DESCRIPTION_PROVIDER = eINSTANCE.getDescriptionProvider();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute DESCRIPTION_PROVIDER__DESCRIPTION = eINSTANCE.getDescriptionProvider_Description();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -680,6 +698,33 @@ public interface AggregatorPackage extends EPackage
 	AggregatorPackage eINSTANCE = org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl.init();
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.DescriptionProviderImpl
+	 * <em>Description Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.DescriptionProviderImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getDescriptionProvider()
+	 * @generated
+	 */
+	int DESCRIPTION_PROVIDER = 21;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DESCRIPTION_PROVIDER__DESCRIPTION = 0;
+
+	/**
+	 * The number of structural features of the '<em>Description Provider</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int DESCRIPTION_PROVIDER_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl <em>Aggregator</em>}'
 	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -690,13 +735,21 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR = 0;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__DESCRIPTION = DESCRIPTION_PROVIDER__DESCRIPTION;
+
+	/**
 	 * The feature id for the '<em><b>Configurations</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CONFIGURATIONS = 0;
+	int AGGREGATOR__CONFIGURATIONS = DESCRIPTION_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Contributions</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -705,7 +758,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CONTRIBUTIONS = 1;
+	int AGGREGATOR__CONTRIBUTIONS = DESCRIPTION_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Buildmaster</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -713,7 +766,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__BUILDMASTER = 2;
+	int AGGREGATOR__BUILDMASTER = DESCRIPTION_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Contacts</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -722,7 +775,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CONTACTS = 3;
+	int AGGREGATOR__CONTACTS = DESCRIPTION_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Custom Categories</b></em>' containment reference list. <!-- begin-user-doc -->
@@ -731,7 +784,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__CUSTOM_CATEGORIES = 4;
+	int AGGREGATOR__CUSTOM_CATEGORIES = DESCRIPTION_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -739,7 +792,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__LABEL = 5;
+	int AGGREGATOR__LABEL = DESCRIPTION_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Build Root</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -747,7 +800,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__BUILD_ROOT = 6;
+	int AGGREGATOR__BUILD_ROOT = DESCRIPTION_PROVIDER_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Packed Strategy</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -755,7 +808,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__PACKED_STRATEGY = 7;
+	int AGGREGATOR__PACKED_STRATEGY = DESCRIPTION_PROVIDER_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Sendmail</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -763,7 +816,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__SENDMAIL = 8;
+	int AGGREGATOR__SENDMAIL = DESCRIPTION_PROVIDER_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -771,7 +824,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__TYPE = 9;
+	int AGGREGATOR__TYPE = DESCRIPTION_PROVIDER_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Validation Repositories</b></em>' containment reference list. <!-- begin-user-doc
@@ -780,7 +833,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__VALIDATION_REPOSITORIES = 10;
+	int AGGREGATOR__VALIDATION_REPOSITORIES = DESCRIPTION_PROVIDER_FEATURE_COUNT + 10;
 
 	/**
 	 * The number of structural features of the '<em>Aggregator</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -789,7 +842,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR_FEATURE_COUNT = 11;
+	int AGGREGATOR_FEATURE_COUNT = DESCRIPTION_PROVIDER_FEATURE_COUNT + 11;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
@@ -898,13 +951,21 @@ public interface AggregatorPackage extends EPackage
 	int MAPPED_REPOSITORY__LOCATION = METADATA_REPOSITORY_REFERENCE__LOCATION;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__DESCRIPTION = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 0;
+
+	/**
 	 * The feature id for the '<em><b>Products</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__PRODUCTS = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 0;
+	int MAPPED_REPOSITORY__PRODUCTS = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Bundles</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -913,7 +974,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__BUNDLES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 1;
+	int MAPPED_REPOSITORY__BUNDLES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Features</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -922,7 +983,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__FEATURES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 2;
+	int MAPPED_REPOSITORY__FEATURES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Categories</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -931,7 +992,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORIES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 3;
+	int MAPPED_REPOSITORY__CATEGORIES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Mirror Artifacts</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -940,7 +1001,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 4;
+	int MAPPED_REPOSITORY__MIRROR_ARTIFACTS = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Category Prefix</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -948,7 +1009,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__CATEGORY_PREFIX = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 5;
+	int MAPPED_REPOSITORY__CATEGORY_PREFIX = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Map Rules</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -957,7 +1018,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY__MAP_RULES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 6;
+	int MAPPED_REPOSITORY__MAP_RULES = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of structural features of the '<em>Mapped Repository</em>' class. <!-- begin-user-doc --> <!--
@@ -966,7 +1027,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPED_REPOSITORY_FEATURE_COUNT = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 7;
+	int MAPPED_REPOSITORY_FEATURE_COUNT = METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT + 8;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ConfigurationImpl
@@ -1051,12 +1112,20 @@ public interface AggregatorPackage extends EPackage
 	int CONTRIBUTION__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CONTRIBUTION__DESCRIPTION = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
+
+	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION__LABEL = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
+	int CONTRIBUTION__LABEL = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Repositories</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -1065,7 +1134,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION__REPOSITORIES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
+	int CONTRIBUTION__REPOSITORIES = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Contacts</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1073,7 +1142,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION__CONTACTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
+	int CONTRIBUTION__CONTACTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Contribution</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1082,7 +1151,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
+	int CONTRIBUTION_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1515,12 +1584,20 @@ public interface AggregatorPackage extends EPackage
 	int MAP_RULE__INSTALLABLE_UNIT = INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAP_RULE__DESCRIPTION = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Map Rule</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAP_RULE_FEATURE_COUNT = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 0;
+	int MAP_RULE_FEATURE_COUNT = INSTALLABLE_UNIT_REFERENCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ExclusionRuleImpl
@@ -1540,6 +1617,14 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int EXCLUSION_RULE__INSTALLABLE_UNIT = MAP_RULE__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int EXCLUSION_RULE__DESCRIPTION = MAP_RULE__DESCRIPTION;
 
 	/**
 	 * The number of structural features of the '<em>Exclusion Rule</em>' class. <!-- begin-user-doc --> <!--
@@ -1568,6 +1653,14 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int VALID_CONFIGURATIONS_RULE__INSTALLABLE_UNIT = MAP_RULE__INSTALLABLE_UNIT;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int VALID_CONFIGURATIONS_RULE__DESCRIPTION = MAP_RULE__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Valid Configurations</b></em>' reference list. <!-- begin-user-doc --> <!--
@@ -1622,7 +1715,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 21;
+	int AGGREGATE_TYPE = 22;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1632,7 +1725,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 22;
+	int OPERATING_SYSTEM = 23;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1642,7 +1735,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 23;
+	int WINDOW_SYSTEM = 24;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1652,7 +1745,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 24;
+	int ARCHITECTURE = 25;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1662,7 +1755,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 25;
+	int PACKED_STRATEGY = 26;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1671,7 +1764,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 26;
+	int URI = 27;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -2071,6 +2164,28 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getCustomCategory_Label();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.DescriptionProvider
+	 * <em>Description Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Description Provider</em>'.
+	 * @see org.eclipse.buckminster.aggregator.DescriptionProvider
+	 * @generated
+	 */
+	EClass getDescriptionProvider();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.DescriptionProvider#getDescription <em>Description</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.buckminster.aggregator.DescriptionProvider#getDescription()
+	 * @see #getDescriptionProvider()
+	 * @generated
+	 */
+	EAttribute getDescriptionProvider_Description();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider

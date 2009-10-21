@@ -19,6 +19,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -225,6 +226,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createValidConfigurationsRule();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE:
 			return createMetadataRepositoryReference();
+		case AggregatorPackage.DESCRIPTION_PROVIDER:
+			return createDescriptionProvider();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -333,6 +336,17 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		CustomCategoryImpl customCategory = new CustomCategoryImpl();
 		return customCategory;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public DescriptionProvider createDescriptionProvider()
+	{
+		DescriptionProviderImpl descriptionProvider = new DescriptionProviderImpl();
+		return descriptionProvider;
 	}
 
 	/**

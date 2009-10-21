@@ -8,8 +8,6 @@ package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Aggregator</b></em>'.
  * 
@@ -37,7 +35,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Aggregator extends EObject, StatusProvider
+public interface Aggregator extends DescriptionProvider, StatusProvider
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

@@ -18,6 +18,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
@@ -262,6 +263,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EClass descriptionProviderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EEnum aggregateTypeEEnum = null;
 
 	/**
@@ -434,6 +442,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		labelProviderEClass = createEClass(LABEL_PROVIDER);
 		createEAttribute(labelProviderEClass, LABEL_PROVIDER__LABEL);
+
+		descriptionProviderEClass = createEClass(DESCRIPTION_PROVIDER);
+		createEAttribute(descriptionProviderEClass, DESCRIPTION_PROVIDER__DESCRIPTION);
 
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
@@ -811,6 +822,26 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EClass getDescriptionProvider()
+	{
+		return descriptionProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getDescriptionProvider_Description()
+	{
+		return (EAttribute)descriptionProviderEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EClass getEnabledStatusProvider()
 	{
 		return enabledStatusProviderEClass;
@@ -1178,8 +1209,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		aggregatorEClass.getESuperTypes().add(this.getDescriptionProvider());
 		mappedRepositoryEClass.getESuperTypes().add(this.getMetadataRepositoryReference());
+		mappedRepositoryEClass.getESuperTypes().add(this.getDescriptionProvider());
 		contributionEClass.getESuperTypes().add(this.getEnabledStatusProvider());
+		contributionEClass.getESuperTypes().add(this.getDescriptionProvider());
 		featureEClass.getESuperTypes().add(this.getMappedUnit());
 		bundleEClass.getESuperTypes().add(this.getMappedUnit());
 		mappedUnitEClass.getESuperTypes().add(this.getInstallableUnitReference());
@@ -1191,6 +1225,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		propertyEClass.getEGenericSuperTypes().add(g1);
 		categoryEClass.getESuperTypes().add(this.getMappedUnit());
 		mapRuleEClass.getESuperTypes().add(this.getInstallableUnitReference());
+		mapRuleEClass.getESuperTypes().add(this.getDescriptionProvider());
 		installableUnitReferenceEClass.getESuperTypes().add(this.getStatusProvider());
 		exclusionRuleEClass.getESuperTypes().add(this.getMapRule());
 		validConfigurationsRuleEClass.getESuperTypes().add(this.getMapRule());
@@ -1430,6 +1465,12 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEAttribute(getLabelProvider_Label(), theXMLTypePackage.getString(), "label", null, 0, 1,
 				LabelProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
 				!IS_DERIVED, IS_ORDERED);
+
+		initEClass(descriptionProviderEClass, DescriptionProvider.class, "DescriptionProvider", !IS_ABSTRACT,
+				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDescriptionProvider_Description(), theXMLTypePackage.getString(), "description", "", 0, 1,
+				DescriptionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

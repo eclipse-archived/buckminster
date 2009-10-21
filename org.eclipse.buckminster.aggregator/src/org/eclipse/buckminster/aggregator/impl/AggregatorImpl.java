@@ -26,7 +26,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -53,17 +52,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * 
  * @generated
  */
-public class AggregatorImpl extends MinimalEObjectImpl.Container implements Aggregator
+public class AggregatorImpl extends DescriptionProviderImpl implements Aggregator
 {
-	/**
-	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	protected int eFlags = 0;
-
 	/**
 	 * The cached value of the '{@link #getConfigurations() <em>Configurations</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->

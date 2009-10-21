@@ -83,6 +83,14 @@ public interface AggregatorFactory extends EFactory
 	CustomCategory createCustomCategory();
 
 	/**
+	 * Returns a new object of class '<em>Description Provider</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Description Provider</em>'.
+	 * @generated
+	 */
+	DescriptionProvider createDescriptionProvider();
+
+	/**
 	 * Returns a new object of class '<em>Exclusion Rule</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Exclusion Rule</em>'.

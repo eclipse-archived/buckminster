@@ -16,6 +16,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
@@ -180,6 +181,22 @@ public class AggregatorSwitch<T1>
 	 * @generated
 	 */
 	public T1 caseCustomCategory(CustomCategory object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Description Provider</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Description Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseDescriptionProvider(DescriptionProvider object)
 	{
 		return null;
 	}
@@ -453,6 +470,8 @@ public class AggregatorSwitch<T1>
 			Aggregator aggregator = (Aggregator)theEObject;
 			T1 result = caseAggregator(aggregator);
 			if(result == null)
+				result = caseDescriptionProvider(aggregator);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -462,6 +481,8 @@ public class AggregatorSwitch<T1>
 			T1 result = caseMappedRepository(mappedRepository);
 			if(result == null)
 				result = caseMetadataRepositoryReference(mappedRepository);
+			if(result == null)
+				result = caseDescriptionProvider(mappedRepository);
 			if(result == null)
 				result = caseEnabledStatusProvider(mappedRepository);
 			if(result == null)
@@ -482,6 +503,8 @@ public class AggregatorSwitch<T1>
 			T1 result = caseContribution(contribution);
 			if(result == null)
 				result = caseEnabledStatusProvider(contribution);
+			if(result == null)
+				result = caseDescriptionProvider(contribution);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -605,6 +628,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseInstallableUnitReference(mapRule);
 			if(result == null)
+				result = caseDescriptionProvider(mapRule);
+			if(result == null)
 				result = caseStatusProvider(mapRule);
 			if(result == null)
 				result = defaultCase(theEObject);
@@ -629,6 +654,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseInstallableUnitReference(exclusionRule);
 			if(result == null)
+				result = caseDescriptionProvider(exclusionRule);
+			if(result == null)
 				result = caseStatusProvider(exclusionRule);
 			if(result == null)
 				result = defaultCase(theEObject);
@@ -642,6 +669,8 @@ public class AggregatorSwitch<T1>
 				result = caseMapRule(validConfigurationsRule);
 			if(result == null)
 				result = caseInstallableUnitReference(validConfigurationsRule);
+			if(result == null)
+				result = caseDescriptionProvider(validConfigurationsRule);
 			if(result == null)
 				result = caseStatusProvider(validConfigurationsRule);
 			if(result == null)
@@ -670,6 +699,14 @@ public class AggregatorSwitch<T1>
 		{
 			LabelProvider labelProvider = (LabelProvider)theEObject;
 			T1 result = caseLabelProvider(labelProvider);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.DESCRIPTION_PROVIDER:
+		{
+			DescriptionProvider descriptionProvider = (DescriptionProvider)theEObject;
+			T1 result = caseDescriptionProvider(descriptionProvider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

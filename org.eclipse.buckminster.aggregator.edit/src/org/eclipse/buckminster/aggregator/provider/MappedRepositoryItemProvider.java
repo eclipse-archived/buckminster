@@ -133,6 +133,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 		{
 			super.getPropertyDescriptors(object);
 
+			addDescriptionPropertyDescriptor(object);
 			addMirrorArtifactsPropertyDescriptor(object);
 			addCategoryPrefixPropertyDescriptor(object);
 		}
@@ -164,6 +165,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 
 		switch(notification.getFeatureID(MappedRepository.class))
 		{
+		case AggregatorPackage.MAPPED_REPOSITORY__DESCRIPTION:
 		case AggregatorPackage.MAPPED_REPOSITORY__MIRROR_ARTIFACTS:
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORY_PREFIX:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -192,6 +194,21 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_categoryPrefix_feature",
 						"_UI_MappedRepository_type"), AggregatorPackage.Literals.MAPPED_REPOSITORY__CATEGORY_PREFIX,
 				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Description feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addDescriptionPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_DescriptionProvider_description_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_DescriptionProvider_description_feature",
+						"_UI_DescriptionProvider_type"), AggregatorPackage.Literals.DESCRIPTION_PROVIDER__DESCRIPTION,
+				true, true, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

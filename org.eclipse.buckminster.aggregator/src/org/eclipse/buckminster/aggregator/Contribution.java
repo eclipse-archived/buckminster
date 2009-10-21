@@ -26,7 +26,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Contribution extends EnabledStatusProvider, StatusProvider
+public interface Contribution extends EnabledStatusProvider, DescriptionProvider, StatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Contacts</b></em>' reference list. The list contents are of type

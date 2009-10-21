@@ -203,6 +203,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 			super.getPropertyDescriptors(object);
 
 			addEnabledPropertyDescriptor(object);
+			addDescriptionPropertyDescriptor(object);
 			addLabelPropertyDescriptor(object);
 			addContactsPropertyDescriptor(object);
 		}
@@ -347,6 +348,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		switch(notification.getFeatureID(Contribution.class))
 		{
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
+		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -370,6 +372,21 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				getString("_UI_Contribution_contacts_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Contribution_contacts_feature", "_UI_Contribution_type"),
 				AggregatorPackage.Literals.CONTRIBUTION__CONTACTS, true, false, false, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Description feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addDescriptionPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_DescriptionProvider_description_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_DescriptionProvider_description_feature",
+						"_UI_DescriptionProvider_type"), AggregatorPackage.Literals.DESCRIPTION_PROVIDER__DESCRIPTION,
+				true, true, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
