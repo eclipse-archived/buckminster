@@ -1789,8 +1789,8 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.89"/>
-        <tokens xsi:type="xtext:Group" cardinality="*">
-          <tokens xsi:type="xtext:Action" feature="left" operator="+=">
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Action" feature="left" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
               <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperation"/>
             </type>
@@ -1805,8 +1805,8 @@
               <groups xsi:type="xtext:Keyword" value="%="/>
             </terminal>
           </tokens>
-          <tokens xsi:type="xtext:Assignment" feature="right" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.89"/>
+          <tokens xsi:type="xtext:Assignment" feature="right" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.88"/>
           </tokens>
         </tokens>
       </alternatives>

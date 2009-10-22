@@ -421,9 +421,13 @@ ValueExpression
 	;
 
 //TODO: This is left associative, should be right...
+//AssignmentExpression returns Expression:
+//	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+//		right+=ChainExpression)*
+//	;
 AssignmentExpression returns Expression:
-	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
-		right+=ChainExpression)*
+	 ChainExpression ({AssignmentOperation.left=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+		right=AssignmentExpression)?
 	;
 
 

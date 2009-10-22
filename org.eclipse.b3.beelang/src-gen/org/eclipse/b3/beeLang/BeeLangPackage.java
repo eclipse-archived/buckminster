@@ -2880,7 +2880,7 @@ public interface BeeLangPackage extends EPackage
   int ASSIGNMENT_OPERATION__EXPR = EXPRESSION__EXPR;
 
   /**
-   * The feature id for the '<em><b>Left</b></em>' containment reference list.
+   * The feature id for the '<em><b>Left</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -2898,7 +2898,7 @@ public interface BeeLangPackage extends EPackage
   int ASSIGNMENT_OPERATION__OP = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Right</b></em>' containment reference list.
+   * The feature id for the '<em><b>Right</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -5224,10 +5224,10 @@ public interface BeeLangPackage extends EPackage
   EClass getAssignmentOperation();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.AssignmentOperation#getLeft <em>Left</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.AssignmentOperation#getLeft <em>Left</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Left</em>'.
+   * @return the meta object for the containment reference '<em>Left</em>'.
    * @see org.eclipse.b3.beeLang.AssignmentOperation#getLeft()
    * @see #getAssignmentOperation()
    * @generated
@@ -5246,10 +5246,10 @@ public interface BeeLangPackage extends EPackage
   EAttribute getAssignmentOperation_Op();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.AssignmentOperation#getRight <em>Right</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.AssignmentOperation#getRight <em>Right</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Right</em>'.
+   * @return the meta object for the containment reference '<em>Right</em>'.
    * @see org.eclipse.b3.beeLang.AssignmentOperation#getRight()
    * @see #getAssignmentOperation()
    * @generated
@@ -7094,7 +7094,7 @@ public interface BeeLangPackage extends EPackage
     EClass ASSIGNMENT_OPERATION = eINSTANCE.getAssignmentOperation();
 
     /**
-     * The meta object literal for the '<em><b>Left</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Left</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -7110,7 +7110,7 @@ public interface BeeLangPackage extends EPackage
     EAttribute ASSIGNMENT_OPERATION__OP = eINSTANCE.getAssignmentOperation_Op();
 
     /**
-     * The meta object literal for the '<em><b>Right</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated

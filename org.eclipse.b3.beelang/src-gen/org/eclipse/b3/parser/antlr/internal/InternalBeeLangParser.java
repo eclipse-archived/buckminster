@@ -5552,11 +5552,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                     {
                     int LA44_4 = input.LA(3);
 
-                    if ( (LA44_4==65) ) {
-                        alt44=3;
-                    }
-                    else if ( (LA44_4==62) ) {
+                    if ( (LA44_4==62) ) {
                         alt44=2;
+                    }
+                    else if ( (LA44_4==65) ) {
+                        alt44=3;
                     }
                     else {
                         NoViableAltException nvae =
@@ -5570,11 +5570,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                     {
                     int LA44_5 = input.LA(3);
 
-                    if ( (LA44_5==62) ) {
-                        alt44=2;
-                    }
-                    else if ( (LA44_5==65) ) {
+                    if ( (LA44_5==65) ) {
                         alt44=3;
+                    }
+                    else if ( (LA44_5==62) ) {
+                        alt44=2;
                     }
                     else {
                         NoViableAltException nvae =
@@ -5582,6 +5582,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
 
                         throw nvae;
                     }
+                    }
+                    break;
+                case 65:
+                    {
+                    alt44=3;
                     }
                     break;
                 case 62:
@@ -5592,11 +5597,6 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                 case 59:
                     {
                     alt44=1;
-                    }
-                    break;
-                case 65:
-                    {
-                    alt44=3;
                     }
                     break;
                 default:
@@ -5615,11 +5615,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                     {
                     int LA44_4 = input.LA(3);
 
-                    if ( (LA44_4==65) ) {
-                        alt44=3;
-                    }
-                    else if ( (LA44_4==62) ) {
+                    if ( (LA44_4==62) ) {
                         alt44=2;
+                    }
+                    else if ( (LA44_4==65) ) {
+                        alt44=3;
                     }
                     else {
                         NoViableAltException nvae =
@@ -5633,11 +5633,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                     {
                     int LA44_5 = input.LA(3);
 
-                    if ( (LA44_5==62) ) {
-                        alt44=2;
-                    }
-                    else if ( (LA44_5==65) ) {
+                    if ( (LA44_5==65) ) {
                         alt44=3;
+                    }
+                    else if ( (LA44_5==62) ) {
+                        alt44=2;
                     }
                     else {
                         NoViableAltException nvae =
@@ -5645,6 +5645,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
 
                         throw nvae;
                     }
+                    }
+                    break;
+                case 62:
+                    {
+                    alt44=2;
                     }
                     break;
                 case 65:
@@ -5655,11 +5660,6 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                 case 59:
                     {
                     alt44=1;
-                    }
-                    break;
-                case 62:
-                    {
-                    alt44=2;
                     }
                     break;
                 default:
@@ -5680,11 +5680,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                 {
                 int LA44_4 = input.LA(2);
 
-                if ( (LA44_4==65) ) {
-                    alt44=3;
-                }
-                else if ( (LA44_4==62) ) {
+                if ( (LA44_4==62) ) {
                     alt44=2;
+                }
+                else if ( (LA44_4==65) ) {
+                    alt44=3;
                 }
                 else {
                     NoViableAltException nvae =
@@ -5698,11 +5698,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                 {
                 int LA44_5 = input.LA(2);
 
-                if ( (LA44_5==62) ) {
-                    alt44=2;
-                }
-                else if ( (LA44_5==65) ) {
+                if ( (LA44_5==65) ) {
                     alt44=3;
+                }
+                else if ( (LA44_5==62) ) {
+                    alt44=2;
                 }
                 else {
                     NoViableAltException nvae =
@@ -14461,7 +14461,7 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start ruleAssignmentExpression
-    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6260:1: ruleAssignmentExpression returns [EObject current=null] : (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression ) )* ) ;
+    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6260:1: ruleAssignmentExpression returns [EObject current=null] : (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression ) )? ) ;
     public final EObject ruleAssignmentExpression() throws RecognitionException {
         EObject current = null;
         int ruleAssignmentExpression_StartIndex = input.index();
@@ -14475,11 +14475,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
             
         try {
             if ( backtracking>0 && alreadyParsedRule(input, 146) ) { return current; }
-            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6265:6: ( (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression ) )* ) )
-            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6266:1: (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression ) )* )
+            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6265:6: ( (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression ) )? ) )
+            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6266:1: (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression ) )? )
             {
-            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6266:1: (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression ) )* )
-            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6267:5: this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression ) )*
+            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6266:1: (this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression ) )? )
+            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6267:5: this_ChainExpression_0= ruleChainExpression ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression ) )?
             {
              
                     currentNode=createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getChainExpressionParserRuleCall_0(), currentNode); 
@@ -14492,198 +14492,191 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                     current = this_ChainExpression_0; 
                     currentNode = currentNode.getParent();
                 
-            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6275:1: ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression ) )*
-            loop121:
-            do {
-                int alt121=2;
-                int LA121_0 = input.LA(1);
+            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6275:1: ( () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression ) )?
+            int alt121=2;
+            int LA121_0 = input.LA(1);
 
-                if ( (LA121_0==25||(LA121_0>=53 && LA121_0<=56)||LA121_0==81) ) {
-                    alt121=1;
-                }
+            if ( (LA121_0==25||(LA121_0>=53 && LA121_0<=56)||LA121_0==81) ) {
+                alt121=1;
+            }
+            switch (alt121) {
+                case 1 :
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6275:2: () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleAssignmentExpression )
+                    {
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6275:2: ()
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6276:5: 
+                    {
+                     
+                            temp=factory.create(grammarAccess.getAssignmentExpressionAccess().getAssignmentOperationLeftAction_1_0().getType().getClassifier());
+                            try {
+                            	factory.set(temp, "left", current, null /*ParserRule*/, currentNode);
+                            } catch(ValueConverterException vce) {
+                            	handleValueConverterException(vce);
+                            }
+                            current = temp; 
+                            temp = null;
+                            CompositeNode newNode = createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getAssignmentOperationLeftAction_1_0(), currentNode.getParent());
+                        newNode.getChildren().add(currentNode);
+                        moveLookaheadInfo(currentNode, newNode);
+                        currentNode = newNode; 
+                            associateNodeWithAstElement(currentNode, current); 
+                        
 
+                    }
 
-                switch (alt121) {
-            	case 1 :
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6275:2: () (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) ) (lv_right_3= ruleChainExpression )
-            	    {
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6275:2: ()
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6276:5: 
-            	    {
-            	     
-            	            temp=factory.create(grammarAccess.getAssignmentExpressionAccess().getAssignmentOperationLeftAction_1_0().getType().getClassifier());
-            	            try {
-            	            	factory.add(temp, "left", current, null /*ParserRule*/, currentNode);
-            	            } catch(ValueConverterException vce) {
-            	            	handleValueConverterException(vce);
-            	            }
-            	            current = temp; 
-            	            temp = null;
-            	            CompositeNode newNode = createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getAssignmentOperationLeftAction_1_0(), currentNode.getParent());
-            	        newNode.getChildren().add(currentNode);
-            	        moveLookaheadInfo(currentNode, newNode);
-            	        currentNode = newNode; 
-            	            associateNodeWithAstElement(currentNode, current); 
-            	        
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6291:2: (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) )
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6293:6: lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' )
+                    {
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6293:14: ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' )
+                    int alt120=6;
+                    switch ( input.LA(1) ) {
+                    case 25:
+                        {
+                        alt120=1;
+                        }
+                        break;
+                    case 53:
+                        {
+                        alt120=2;
+                        }
+                        break;
+                    case 54:
+                        {
+                        alt120=3;
+                        }
+                        break;
+                    case 55:
+                        {
+                        alt120=4;
+                        }
+                        break;
+                    case 56:
+                        {
+                        alt120=5;
+                        }
+                        break;
+                    case 81:
+                        {
+                        alt120=6;
+                        }
+                        break;
+                    default:
+                        NoViableAltException nvae =
+                            new NoViableAltException("6293:14: ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' )", 120, 0, input);
 
-            	    }
+                        throw nvae;
+                    }
 
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6291:2: (lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' ) )
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6293:6: lv_op_2= ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' )
-            	    {
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6293:14: ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' )
-            	    int alt120=6;
-            	    switch ( input.LA(1) ) {
-            	    case 25:
-            	        {
-            	        alt120=1;
-            	        }
-            	        break;
-            	    case 53:
-            	        {
-            	        alt120=2;
-            	        }
-            	        break;
-            	    case 54:
-            	        {
-            	        alt120=3;
-            	        }
-            	        break;
-            	    case 55:
-            	        {
-            	        alt120=4;
-            	        }
-            	        break;
-            	    case 56:
-            	        {
-            	        alt120=5;
-            	        }
-            	        break;
-            	    case 81:
-            	        {
-            	        alt120=6;
-            	        }
-            	        break;
-            	    default:
-            	        NoViableAltException nvae =
-            	            new NoViableAltException("6293:14: ( '=' | '+=' | '-=' | '*=' | '/=' | '%=' )", 120, 0, input);
+                    switch (alt120) {
+                        case 1 :
+                            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6293:15: '='
+                            {
+                            match(input,25,FOLLOW_25_in_ruleAssignmentExpression14716); 
 
-            	        throw nvae;
-            	    }
+                                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpEqualsSignKeyword_1_1_0_0(), "op"); 
+                                
 
-            	    switch (alt120) {
-            	        case 1 :
-            	            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6293:15: '='
-            	            {
-            	            match(input,25,FOLLOW_25_in_ruleAssignmentExpression14716); 
+                            }
+                            break;
+                        case 2 :
+                            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6299:6: '+='
+                            {
+                            match(input,53,FOLLOW_53_in_ruleAssignmentExpression14732); 
 
-            	                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpEqualsSignKeyword_1_1_0_0(), "op"); 
-            	                
+                                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpPlusSignEqualsSignKeyword_1_1_0_1(), "op"); 
+                                
 
-            	            }
-            	            break;
-            	        case 2 :
-            	            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6299:6: '+='
-            	            {
-            	            match(input,53,FOLLOW_53_in_ruleAssignmentExpression14732); 
+                            }
+                            break;
+                        case 3 :
+                            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6305:6: '-='
+                            {
+                            match(input,54,FOLLOW_54_in_ruleAssignmentExpression14748); 
 
-            	                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpPlusSignEqualsSignKeyword_1_1_0_1(), "op"); 
-            	                
+                                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpHyphenMinusEqualsSignKeyword_1_1_0_2(), "op"); 
+                                
 
-            	            }
-            	            break;
-            	        case 3 :
-            	            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6305:6: '-='
-            	            {
-            	            match(input,54,FOLLOW_54_in_ruleAssignmentExpression14748); 
+                            }
+                            break;
+                        case 4 :
+                            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6311:6: '*='
+                            {
+                            match(input,55,FOLLOW_55_in_ruleAssignmentExpression14764); 
 
-            	                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpHyphenMinusEqualsSignKeyword_1_1_0_2(), "op"); 
-            	                
+                                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpAsteriskEqualsSignKeyword_1_1_0_3(), "op"); 
+                                
 
-            	            }
-            	            break;
-            	        case 4 :
-            	            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6311:6: '*='
-            	            {
-            	            match(input,55,FOLLOW_55_in_ruleAssignmentExpression14764); 
+                            }
+                            break;
+                        case 5 :
+                            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6317:6: '/='
+                            {
+                            match(input,56,FOLLOW_56_in_ruleAssignmentExpression14780); 
 
-            	                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpAsteriskEqualsSignKeyword_1_1_0_3(), "op"); 
-            	                
+                                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpSolidusEqualsSignKeyword_1_1_0_4(), "op"); 
+                                
 
-            	            }
-            	            break;
-            	        case 5 :
-            	            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6317:6: '/='
-            	            {
-            	            match(input,56,FOLLOW_56_in_ruleAssignmentExpression14780); 
+                            }
+                            break;
+                        case 6 :
+                            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6323:6: '%='
+                            {
+                            match(input,81,FOLLOW_81_in_ruleAssignmentExpression14796); 
 
-            	                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpSolidusEqualsSignKeyword_1_1_0_4(), "op"); 
-            	                
+                                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpPercentSignEqualsSignKeyword_1_1_0_5(), "op"); 
+                                
 
-            	            }
-            	            break;
-            	        case 6 :
-            	            // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6323:6: '%='
-            	            {
-            	            match(input,81,FOLLOW_81_in_ruleAssignmentExpression14796); 
+                            }
+                            break;
 
-            	                    createLeafNode(grammarAccess.getAssignmentExpressionAccess().getOpPercentSignEqualsSignKeyword_1_1_0_5(), "op"); 
-            	                
-
-            	            }
-            	            break;
-
-            	    }
+                    }
 
 
-            	    	        if (current==null) {
-            	    	            current = factory.create(grammarAccess.getAssignmentExpressionRule().getType().getClassifier());
-            	    	            associateNodeWithAstElement(currentNode, current);
-            	    	        }
-            	    	        
-            	    	        try {
-            	    	       		set(current, "op", /* lv_op_2 */ input.LT(-1), null, lastConsumedNode);
-            	    	        } catch (ValueConverterException vce) {
-            	    				handleValueConverterException(vce);
-            	    	        }
-            	    	    
+                    	        if (current==null) {
+                    	            current = factory.create(grammarAccess.getAssignmentExpressionRule().getType().getClassifier());
+                    	            associateNodeWithAstElement(currentNode, current);
+                    	        }
+                    	        
+                    	        try {
+                    	       		set(current, "op", /* lv_op_2 */ input.LT(-1), null, lastConsumedNode);
+                    	        } catch (ValueConverterException vce) {
+                    				handleValueConverterException(vce);
+                    	        }
+                    	    
 
-            	    }
+                    }
 
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6343:2: (lv_right_3= ruleChainExpression )
-            	    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6346:6: lv_right_3= ruleChainExpression
-            	    {
-            	     
-            	    	        currentNode=createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0(), currentNode); 
-            	    	    
-            	    pushFollow(FOLLOW_ruleChainExpression_in_ruleAssignmentExpression14845);
-            	    lv_right_3=ruleChainExpression();
-            	    _fsp--;
-
-
-            	    	        if (current==null) {
-            	    	            current = factory.create(grammarAccess.getAssignmentExpressionRule().getType().getClassifier());
-            	    	            associateNodeWithAstElement(currentNode.getParent(), current);
-            	    	        }
-            	    	        
-            	    	        try {
-            	    	       		add(current, "right", lv_right_3, "ChainExpression", currentNode);
-            	    	        } catch (ValueConverterException vce) {
-            	    				handleValueConverterException(vce);
-            	    	        }
-            	    	        currentNode = currentNode.getParent();
-            	    	    
-
-            	    }
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6343:2: (lv_right_3= ruleAssignmentExpression )
+                    // ../org.eclipse.b3.beelang/src-gen/org/eclipse/b3/parser/antlr/internal/InternalBeeLang.g:6346:6: lv_right_3= ruleAssignmentExpression
+                    {
+                     
+                    	        currentNode=createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0(), currentNode); 
+                    	    
+                    pushFollow(FOLLOW_ruleAssignmentExpression_in_ruleAssignmentExpression14845);
+                    lv_right_3=ruleAssignmentExpression();
+                    _fsp--;
 
 
-            	    }
-            	    break;
+                    	        if (current==null) {
+                    	            current = factory.create(grammarAccess.getAssignmentExpressionRule().getType().getClassifier());
+                    	            associateNodeWithAstElement(currentNode.getParent(), current);
+                    	        }
+                    	        
+                    	        try {
+                    	       		set(current, "right", lv_right_3, "AssignmentExpression", currentNode);
+                    	        } catch (ValueConverterException vce) {
+                    				handleValueConverterException(vce);
+                    	        }
+                    	        currentNode = currentNode.getParent();
+                    	    
 
-            	default :
-            	    break loop121;
-                }
-            } while (true);
+                    }
+
+
+                    }
+                    break;
+
+            }
 
 
             }
@@ -17331,11 +17324,11 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
                 {
                 int LA141_3 = input.LA(2);
 
-                if ( (LA141_3==EOF||LA141_3==15||(LA141_3>=17 && LA141_3<=18)||LA141_3==22||(LA141_3>=24 && LA141_3<=31)||(LA141_3>=33 && LA141_3<=35)||LA141_3==38||(LA141_3>=53 && LA141_3<=56)||(LA141_3>=81 && LA141_3<=90)) ) {
-                    alt141=4;
-                }
-                else if ( (LA141_3==32) ) {
+                if ( (LA141_3==32) ) {
                     alt141=2;
+                }
+                else if ( (LA141_3==EOF||LA141_3==15||(LA141_3>=17 && LA141_3<=18)||LA141_3==22||(LA141_3>=24 && LA141_3<=31)||(LA141_3>=33 && LA141_3<=35)||LA141_3==38||(LA141_3>=53 && LA141_3<=56)||(LA141_3>=81 && LA141_3<=90)) ) {
+                    alt141=4;
                 }
                 else {
                     NoViableAltException nvae =
@@ -20180,7 +20173,7 @@ public class InternalBeeLangParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_55_in_ruleAssignmentExpression14764 = new BitSet(new long[]{0x00000001000C07F0L,0x000000003E000000L});
     public static final BitSet FOLLOW_56_in_ruleAssignmentExpression14780 = new BitSet(new long[]{0x00000001000C07F0L,0x000000003E000000L});
     public static final BitSet FOLLOW_81_in_ruleAssignmentExpression14796 = new BitSet(new long[]{0x00000001000C07F0L,0x000000003E000000L});
-    public static final BitSet FOLLOW_ruleChainExpression_in_ruleAssignmentExpression14845 = new BitSet(new long[]{0x01E0000002000002L,0x0000000000020000L});
+    public static final BitSet FOLLOW_ruleAssignmentExpression_in_ruleAssignmentExpression14845 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleChainExpression_in_entryRuleChainExpression14884 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleChainExpression14894 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleChainedExpression_in_ruleChainExpression14940 = new BitSet(new long[]{0x0000000000000002L});

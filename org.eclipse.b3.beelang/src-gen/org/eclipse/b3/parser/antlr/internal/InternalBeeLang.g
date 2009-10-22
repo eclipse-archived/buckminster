@@ -6276,7 +6276,7 @@ ruleAssignmentExpression returns [EObject current=null]
     { 
         temp=factory.create(grammarAccess.getAssignmentExpressionAccess().getAssignmentOperationLeftAction_1_0().getType().getClassifier());
         try {
-        	factory.add(temp, "left", $current, null /*ParserRule*/, currentNode);
+        	factory.set(temp, "left", $current, null /*ParserRule*/, currentNode);
         } catch(ValueConverterException vce) {
         	handleValueConverterException(vce);
         }
@@ -6344,9 +6344,9 @@ ruleAssignmentExpression returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0(), currentNode); 
 	    }
-	    lv_right_3=ruleChainExpression 
+	    lv_right_3=ruleAssignmentExpression 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getAssignmentExpressionRule().getType().getClassifier());
@@ -6354,14 +6354,14 @@ ruleAssignmentExpression returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		add($current, "right", lv_right_3, "ChainExpression", currentNode);
+	       		set($current, "right", lv_right_3, "AssignmentExpression", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
 	        currentNode = currentNode.getParent();
 	    }
 	
-))*);
+))?);
 
 
 

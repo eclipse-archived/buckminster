@@ -5,8 +5,6 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import java.util.Collection;
-
 import org.eclipse.b3.beeLang.AssignmentOperation;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
@@ -14,15 +12,10 @@ import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -42,14 +35,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class AssignmentOperationImpl extends ExpressionImpl implements AssignmentOperation
 {
   /**
-   * The cached value of the '{@link #getLeft() <em>Left</em>}' containment reference list.
+   * The cached value of the '{@link #getLeft() <em>Left</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getLeft()
    * @generated
    * @ordered
    */
-  protected EList<Expression> left;
+  protected Expression left;
 
   /**
    * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
@@ -72,14 +65,14 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
   protected String op = OP_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference list.
+   * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getRight()
    * @generated
    * @ordered
    */
-  protected EList<Expression> right;
+  protected Expression right;
 
   /**
    * <!-- begin-user-doc -->
@@ -107,13 +100,47 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Expression> getLeft()
+  public Expression getLeft()
   {
-    if (left == null)
-    {
-      left = new EObjectContainmentEList<Expression>(Expression.class, this, BeeLangPackage.ASSIGNMENT_OPERATION__LEFT);
-    }
     return left;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetLeft(Expression newLeft, NotificationChain msgs)
+  {
+    Expression oldLeft = left;
+    left = newLeft;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.ASSIGNMENT_OPERATION__LEFT, oldLeft, newLeft);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setLeft(Expression newLeft)
+  {
+    if (newLeft != left)
+    {
+      NotificationChain msgs = null;
+      if (left != null)
+        msgs = ((InternalEObject)left).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.ASSIGNMENT_OPERATION__LEFT, null, msgs);
+      if (newLeft != null)
+        msgs = ((InternalEObject)newLeft).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.ASSIGNMENT_OPERATION__LEFT, null, msgs);
+      msgs = basicSetLeft(newLeft, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ASSIGNMENT_OPERATION__LEFT, newLeft, newLeft));
   }
 
   /**
@@ -144,13 +171,47 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Expression> getRight()
+  public Expression getRight()
   {
-    if (right == null)
-    {
-      right = new EObjectContainmentEList<Expression>(Expression.class, this, BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT);
-    }
     return right;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetRight(Expression newRight, NotificationChain msgs)
+  {
+    Expression oldRight = right;
+    right = newRight;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT, oldRight, newRight);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRight(Expression newRight)
+  {
+    if (newRight != right)
+    {
+      NotificationChain msgs = null;
+      if (right != null)
+        msgs = ((InternalEObject)right).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT, null, msgs);
+      if (newRight != null)
+        msgs = ((InternalEObject)newRight).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT, null, msgs);
+      msgs = basicSetRight(newRight, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT, newRight, newRight));
   }
 
   /**
@@ -164,9 +225,9 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
     switch (featureID)
     {
       case BeeLangPackage.ASSIGNMENT_OPERATION__LEFT:
-        return ((InternalEList<?>)getLeft()).basicRemove(otherEnd, msgs);
+        return basicSetLeft(null, msgs);
       case BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT:
-        return ((InternalEList<?>)getRight()).basicRemove(otherEnd, msgs);
+        return basicSetRight(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -196,22 +257,19 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
       case BeeLangPackage.ASSIGNMENT_OPERATION__LEFT:
-        getLeft().clear();
-        getLeft().addAll((Collection<? extends Expression>)newValue);
+        setLeft((Expression)newValue);
         return;
       case BeeLangPackage.ASSIGNMENT_OPERATION__OP:
         setOp((String)newValue);
         return;
       case BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT:
-        getRight().clear();
-        getRight().addAll((Collection<? extends Expression>)newValue);
+        setRight((Expression)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -228,13 +286,13 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
     switch (featureID)
     {
       case BeeLangPackage.ASSIGNMENT_OPERATION__LEFT:
-        getLeft().clear();
+        setLeft((Expression)null);
         return;
       case BeeLangPackage.ASSIGNMENT_OPERATION__OP:
         setOp(OP_EDEFAULT);
         return;
       case BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT:
-        getRight().clear();
+        setRight((Expression)null);
         return;
     }
     super.eUnset(featureID);
@@ -251,11 +309,11 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
     switch (featureID)
     {
       case BeeLangPackage.ASSIGNMENT_OPERATION__LEFT:
-        return left != null && !left.isEmpty();
+        return left != null;
       case BeeLangPackage.ASSIGNMENT_OPERATION__OP:
         return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
       case BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT:
-        return right != null && !right.isEmpty();
+        return right != null;
     }
     return super.eIsSet(featureID);
   }

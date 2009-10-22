@@ -333,11 +333,11 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AssignmentOperation" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="left" upperBound="-1" eType="#//Expression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Expression"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="right" upperBound="-1"
-        eType="#//Expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IfExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Expression"

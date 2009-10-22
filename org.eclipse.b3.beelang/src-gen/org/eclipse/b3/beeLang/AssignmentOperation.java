@@ -5,7 +5,6 @@
  */
 package org.eclipse.b3.beeLang;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,20 +27,30 @@ import org.eclipse.emf.common.util.EList;
 public interface AssignmentOperation extends Expression
 {
   /**
-   * Returns the value of the '<em><b>Left</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.Expression}.
+   * Returns the value of the '<em><b>Left</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Left</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Left</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Left</em>' containment reference list.
+   * @return the value of the '<em>Left</em>' containment reference.
+   * @see #setLeft(Expression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getAssignmentOperation_Left()
    * @model containment="true"
    * @generated
    */
-  EList<Expression> getLeft();
+  Expression getLeft();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.AssignmentOperation#getLeft <em>Left</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Left</em>' containment reference.
+   * @see #getLeft()
+   * @generated
+   */
+  void setLeft(Expression value);
 
   /**
    * Returns the value of the '<em><b>Op</b></em>' attribute.
@@ -70,19 +79,29 @@ public interface AssignmentOperation extends Expression
   void setOp(String value);
 
   /**
-   * Returns the value of the '<em><b>Right</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.Expression}.
+   * Returns the value of the '<em><b>Right</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Right</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Right</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Right</em>' containment reference list.
+   * @return the value of the '<em>Right</em>' containment reference.
+   * @see #setRight(Expression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getAssignmentOperation_Right()
    * @model containment="true"
    * @generated
    */
-  EList<Expression> getRight();
+  Expression getRight();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.AssignmentOperation#getRight <em>Right</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Right</em>' containment reference.
+   * @see #getRight()
+   * @generated
+   */
+  void setRight(Expression value);
 
 } // AssignmentOperation

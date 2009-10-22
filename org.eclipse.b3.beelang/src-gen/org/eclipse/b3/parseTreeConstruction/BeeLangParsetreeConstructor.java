@@ -13574,6 +13574,10 @@ protected class Expression_ValueExpressionParserRuleCall extends RuleCallToken {
  * 	
  * 
  * //TODO: This is left associative, should be right...
+ * //AssignmentExpression returns Expression:
+ * //	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+ * //		right+=ChainExpression)*
+ * //	;
  *
  **/
 
@@ -13628,15 +13632,19 @@ protected class ValueExpression_ValueAssignment extends AssignmentToken  {
 /************ begin Rule AssignmentExpression ****************
  *
  * AssignmentExpression returns Expression:
- *   ChainExpression ({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
- *   "%=" ) right+=ChainExpression)*; 
+ *   ChainExpression ({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
+ *   "%=" ) right=AssignmentExpression)?; 
  * 
  * //TODO: This is left associative, should be right...
+ * //AssignmentExpression returns Expression:
+ * //	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+ * //		right+=ChainExpression)*
+ * //	;
  *
  **/
 
-// ChainExpression ({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
-// "%=" ) right+=ChainExpression)*
+// ChainExpression ({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
+// "%=" ) right=AssignmentExpression)?
 protected class AssignmentExpression_Group extends GroupToken {
 	
 	public AssignmentExpression_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -13692,8 +13700,8 @@ protected class AssignmentExpression_ChainExpressionParserRuleCall_0 extends Rul
 	}	
 }
 
-// ({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" | "%=" ) right+=
-// ChainExpression)*
+// ({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" | "%=" ) right=
+// AssignmentExpression)?
 protected class AssignmentExpression_Group_1 extends GroupToken {
 	
 	public AssignmentExpression_Group_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -13713,7 +13721,7 @@ protected class AssignmentExpression_Group_1 extends GroupToken {
 		
 }
 
-// {AssignmentOperation.left+=current}
+// {AssignmentOperation.left=current}
 protected class AssignmentExpression_AssignmentOperationLeftAction_1_0 extends ActionToken  {
 
 	public AssignmentExpression_AssignmentOperationLeftAction_1_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -13726,8 +13734,7 @@ protected class AssignmentExpression_AssignmentOperationLeftAction_1_0 extends A
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new AssignmentExpression_Group_1(parent, this, 0, inst);
-			case 1: return new AssignmentExpression_ChainExpressionParserRuleCall_0(parent, this, 1, inst);
+			case 0: return new AssignmentExpression_ChainExpressionParserRuleCall_0(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -13798,7 +13805,7 @@ protected class AssignmentExpression_OpAssignment_1_1 extends AssignmentToken  {
 
 }
 
-// right+=ChainExpression
+// right=AssignmentExpression
 protected class AssignmentExpression_RightAssignment_1_2 extends AssignmentToken  {
 	
 	public AssignmentExpression_RightAssignment_1_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -13811,7 +13818,7 @@ protected class AssignmentExpression_RightAssignment_1_2 extends AssignmentToken
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ChainExpression_ChainedExpressionParserRuleCall(this, this, 0, inst);
+			case 0: return new AssignmentExpression_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -13821,9 +13828,9 @@ protected class AssignmentExpression_RightAssignment_1_2 extends AssignmentToken
 		IInstanceDescription obj = current.cloneAndConsume("right");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getChainExpressionRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getAssignmentExpressionRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0(); 
+				element = grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0(); 
 				consumed = obj;
 				return param;
 			}

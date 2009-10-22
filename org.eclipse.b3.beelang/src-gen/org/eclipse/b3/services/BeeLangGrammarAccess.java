@@ -3889,6 +3889,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//	
 		//
 		////TODO: This is left associative, should be right...
+		////AssignmentExpression returns Expression:
+		////	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+		////		right+=ChainExpression)*
+		////	;
 		public ParserRule getRule() { return rule; }
 
 		//value=AssignmentExpression
@@ -3913,27 +3917,31 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cOpSolidusEqualsSignKeyword_1_1_0_4 = (Keyword)cOpAlternatives_1_1_0.eContents().get(4);
 		private final Keyword cOpPercentSignEqualsSignKeyword_1_1_0_5 = (Keyword)cOpAlternatives_1_1_0.eContents().get(5);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cRightChainExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
+		private final RuleCall cRightAssignmentExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//AssignmentExpression returns Expression:
-		//  ChainExpression ({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
-		//  "%=" ) right+=ChainExpression)*; 
+		//  ChainExpression ({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
+		//  "%=" ) right=AssignmentExpression)?; 
 		//
 		////TODO: This is left associative, should be right...
+		////AssignmentExpression returns Expression:
+		////	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+		////		right+=ChainExpression)*
+		////	;
 		public ParserRule getRule() { return rule; }
 
-		//ChainExpression ({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
-		//"%=" ) right+=ChainExpression)*
+		//ChainExpression ({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
+		//"%=" ) right=AssignmentExpression)?
 		public Group getGroup() { return cGroup; }
 
 		//ChainExpression
 		public RuleCall getChainExpressionParserRuleCall_0() { return cChainExpressionParserRuleCall_0; }
 
-		//({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" | "%=" ) right+=
-		//ChainExpression)*
+		//({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" | "%=" ) right=
+		//AssignmentExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 
-		//{AssignmentOperation.left+=current}
+		//{AssignmentOperation.left=current}
 		public Action getAssignmentOperationLeftAction_1_0() { return cAssignmentOperationLeftAction_1_0; }
 
 		//op=( "=" | "+=" | "-=" | "*=" | "/=" | "%=" )
@@ -3960,11 +3968,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//"%="
 		public Keyword getOpPercentSignEqualsSignKeyword_1_1_0_5() { return cOpPercentSignEqualsSignKeyword_1_1_0_5; }
 
-		//right+=ChainExpression
+		//right=AssignmentExpression
 		public Assignment getRightAssignment_1_2() { return cRightAssignment_1_2; }
 
-		//ChainExpression
-		public RuleCall getRightChainExpressionParserRuleCall_1_2_0() { return cRightChainExpressionParserRuleCall_1_2_0; }
+		//AssignmentExpression
+		public RuleCall getRightAssignmentExpressionParserRuleCall_1_2_0() { return cRightAssignmentExpressionParserRuleCall_1_2_0; }
 	}
 
 	public class ChainExpressionElements implements IParserRuleAccess {
@@ -6419,6 +6427,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//	
 	//
 	////TODO: This is left associative, should be right...
+	////AssignmentExpression returns Expression:
+	////	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+	////		right+=ChainExpression)*
+	////	;
 	public ValueExpressionElements getValueExpressionAccess() {
 		return (pValueExpression != null) ? pValueExpression : (pValueExpression = new ValueExpressionElements());
 	}
@@ -6428,10 +6440,14 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//AssignmentExpression returns Expression:
-	//  ChainExpression ({AssignmentOperation.left+=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
-	//  "%=" ) right+=ChainExpression)*; 
+	//  ChainExpression ({AssignmentOperation.left=current} op=( "=" | "+=" | "-=" | "*=" | "/=" |
+	//  "%=" ) right=AssignmentExpression)?; 
 	//
 	////TODO: This is left associative, should be right...
+	////AssignmentExpression returns Expression:
+	////	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+	////		right+=ChainExpression)*
+	////	;
 	public AssignmentExpressionElements getAssignmentExpressionAccess() {
 		return (pAssignmentExpression != null) ? pAssignmentExpression : (pAssignmentExpression = new AssignmentExpressionElements());
 	}

@@ -9584,6 +9584,11 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
             case 49:
                 {
                 switch ( input.LA(2) ) {
+                case 71:
+                    {
+                    alt18=1;
+                    }
+                    break;
                 case 51:
                     {
                     int LA18_4 = input.LA(3);
@@ -9606,11 +9611,11 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
                     {
                     int LA18_5 = input.LA(3);
 
-                    if ( (LA18_5==76) ) {
-                        alt18=3;
-                    }
-                    else if ( (LA18_5==74) ) {
+                    if ( (LA18_5==74) ) {
                         alt18=2;
+                    }
+                    else if ( (LA18_5==76) ) {
+                        alt18=3;
                     }
                     else {
                         NoViableAltException nvae =
@@ -9620,19 +9625,14 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
                     }
                     }
                     break;
-                case 74:
-                    {
-                    alt18=2;
-                    }
-                    break;
-                case 71:
-                    {
-                    alt18=1;
-                    }
-                    break;
                 case 76:
                     {
                     alt18=3;
+                    }
+                    break;
+                case 74:
+                    {
+                    alt18=2;
                     }
                     break;
                 default:
@@ -9669,11 +9669,11 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
                     {
                     int LA18_5 = input.LA(3);
 
-                    if ( (LA18_5==76) ) {
-                        alt18=3;
-                    }
-                    else if ( (LA18_5==74) ) {
+                    if ( (LA18_5==74) ) {
                         alt18=2;
+                    }
+                    else if ( (LA18_5==76) ) {
+                        alt18=3;
                     }
                     else {
                         NoViableAltException nvae =
@@ -9681,11 +9681,6 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
 
                         throw nvae;
                     }
-                    }
-                    break;
-                case 74:
-                    {
-                    alt18=2;
                     }
                     break;
                 case 76:
@@ -9696,6 +9691,11 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
                 case 71:
                     {
                     alt18=1;
+                    }
+                    break;
+                case 74:
+                    {
+                    alt18=2;
                     }
                     break;
                 default:
@@ -9734,11 +9734,11 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
                 {
                 int LA18_5 = input.LA(2);
 
-                if ( (LA18_5==76) ) {
-                    alt18=3;
-                }
-                else if ( (LA18_5==74) ) {
+                if ( (LA18_5==74) ) {
                     alt18=2;
+                }
+                else if ( (LA18_5==76) ) {
+                    alt18=3;
                 }
                 else {
                     NoViableAltException nvae =
@@ -31348,46 +31348,39 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AssignmentExpression__Group__1
-    // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12184:1: rule__AssignmentExpression__Group__1 : ( ( rule__AssignmentExpression__Group_1__0 )* ) ;
+    // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12184:1: rule__AssignmentExpression__Group__1 : ( ( rule__AssignmentExpression__Group_1__0 )? ) ;
     public final void rule__AssignmentExpression__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12188:1: ( ( ( rule__AssignmentExpression__Group_1__0 )* ) )
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12189:1: ( ( rule__AssignmentExpression__Group_1__0 )* )
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12188:1: ( ( ( rule__AssignmentExpression__Group_1__0 )? ) )
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12189:1: ( ( rule__AssignmentExpression__Group_1__0 )? )
             {
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12189:1: ( ( rule__AssignmentExpression__Group_1__0 )* )
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12190:1: ( rule__AssignmentExpression__Group_1__0 )*
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12189:1: ( ( rule__AssignmentExpression__Group_1__0 )? )
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12190:1: ( rule__AssignmentExpression__Group_1__0 )?
             {
              before(grammarAccess.getAssignmentExpressionAccess().getGroup_1()); 
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12191:1: ( rule__AssignmentExpression__Group_1__0 )*
-            loop143:
-            do {
-                int alt143=2;
-                int LA143_0 = input.LA(1);
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12191:1: ( rule__AssignmentExpression__Group_1__0 )?
+            int alt143=2;
+            int LA143_0 = input.LA(1);
 
-                if ( (LA143_0==24||(LA143_0>=34 && LA143_0<=38)) ) {
-                    alt143=1;
-                }
-
-
-                switch (alt143) {
-            	case 1 :
-            	    // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12191:2: rule__AssignmentExpression__Group_1__0
-            	    {
-            	    pushFollow(FOLLOW_rule__AssignmentExpression__Group_1__0_in_rule__AssignmentExpression__Group__124711);
-            	    rule__AssignmentExpression__Group_1__0();
-            	    _fsp--;
+            if ( (LA143_0==24||(LA143_0>=34 && LA143_0<=38)) ) {
+                alt143=1;
+            }
+            switch (alt143) {
+                case 1 :
+                    // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:12191:2: rule__AssignmentExpression__Group_1__0
+                    {
+                    pushFollow(FOLLOW_rule__AssignmentExpression__Group_1__0_in_rule__AssignmentExpression__Group__124711);
+                    rule__AssignmentExpression__Group_1__0();
+                    _fsp--;
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop143;
-                }
-            } while (true);
+            }
 
              after(grammarAccess.getAssignmentExpressionAccess().getGroup_1()); 
 
@@ -41256,24 +41249,24 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AssignmentExpression__RightAssignment_1_2
-    // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16122:1: rule__AssignmentExpression__RightAssignment_1_2 : ( ruleChainExpression ) ;
+    // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16122:1: rule__AssignmentExpression__RightAssignment_1_2 : ( ruleAssignmentExpression ) ;
     public final void rule__AssignmentExpression__RightAssignment_1_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16126:1: ( ( ruleChainExpression ) )
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16127:1: ( ruleChainExpression )
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16126:1: ( ( ruleAssignmentExpression ) )
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16127:1: ( ruleAssignmentExpression )
             {
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16127:1: ( ruleChainExpression )
-            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16128:1: ruleChainExpression
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16127:1: ( ruleAssignmentExpression )
+            // ../org.eclipse.b3.beelang.ui/src-gen/org/eclipse/b3/contentassist/antlr/internal/InternalBeeLang.g:16128:1: ruleAssignmentExpression
             {
-             before(grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0()); 
-            pushFollow(FOLLOW_ruleChainExpression_in_rule__AssignmentExpression__RightAssignment_1_232544);
-            ruleChainExpression();
+             before(grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0()); 
+            pushFollow(FOLLOW_ruleAssignmentExpression_in_rule__AssignmentExpression__RightAssignment_1_232544);
+            ruleAssignmentExpression();
             _fsp--;
 
-             after(grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0()); 
+             after(grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0()); 
 
             }
 
@@ -44187,7 +44180,7 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__VarExpression__ValueAssignment_1_3_in_rule__VarExpression__Group_1__324633 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleChainExpression_in_rule__AssignmentExpression__Group__024675 = new BitSet(new long[]{0x0000007C01000002L});
     public static final BitSet FOLLOW_rule__AssignmentExpression__Group__1_in_rule__AssignmentExpression__Group__024683 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AssignmentExpression__Group_1__0_in_rule__AssignmentExpression__Group__124711 = new BitSet(new long[]{0x0000007C01000002L});
+    public static final BitSet FOLLOW_rule__AssignmentExpression__Group_1__0_in_rule__AssignmentExpression__Group__124711 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AssignmentExpression__Group_1__1_in_rule__AssignmentExpression__Group_1__024760 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AssignmentExpression__OpAssignment_1_1_in_rule__AssignmentExpression__Group_1__124788 = new BitSet(new long[]{0x0001E000800607F0L,0x0000000100000000L});
     public static final BitSet FOLLOW_rule__AssignmentExpression__Group_1__2_in_rule__AssignmentExpression__Group_1__124797 = new BitSet(new long[]{0x0000000000000002L});
@@ -44456,7 +44449,7 @@ public class InternalBeeLangParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_ruleExpression_in_rule__VarExpression__ValueAssignment_1_332449 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleAssignmentExpression_in_rule__ValueExpression__ValueAssignment32480 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AssignmentExpression__OpAlternatives_1_1_0_in_rule__AssignmentExpression__OpAssignment_1_132511 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleChainExpression_in_rule__AssignmentExpression__RightAssignment_1_232544 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAssignmentExpression_in_rule__AssignmentExpression__RightAssignment_1_232544 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleChainedExpression_in_rule__IfExpression__ThenPartAssignment_1_232575 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleChainedExpression_in_rule__IfExpression__ElsePartAssignment_1_432606 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_94_in_rule__OrExpression__OperatorAssignment_1_132642 = new BitSet(new long[]{0x0000000000000002L});

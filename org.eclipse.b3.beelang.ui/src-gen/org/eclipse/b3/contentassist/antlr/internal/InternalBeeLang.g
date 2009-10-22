@@ -12188,7 +12188,7 @@ rule__AssignmentExpression__Group__1
 :
 (
 { before(grammarAccess.getAssignmentExpressionAccess().getGroup_1()); }
-(rule__AssignmentExpression__Group_1__0)*
+(rule__AssignmentExpression__Group_1__0)?
 { after(grammarAccess.getAssignmentExpressionAccess().getGroup_1()); }
 )
 
@@ -16125,8 +16125,8 @@ rule__AssignmentExpression__RightAssignment_1_2
     }
 :
 (
-{ before(grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0()); }
-	ruleChainExpression{ after(grammarAccess.getAssignmentExpressionAccess().getRightChainExpressionParserRuleCall_1_2_0()); }
+{ before(grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0()); }
+	ruleAssignmentExpression{ after(grammarAccess.getAssignmentExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0()); }
 )
 
 ;
