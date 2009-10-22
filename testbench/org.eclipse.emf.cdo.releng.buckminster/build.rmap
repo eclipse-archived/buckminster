@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:psf="http://www.eclipse.org/buckminster/PSFProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
   <rm:locator pattern="^org\.eclipse\.emf\.cdo\.all$" searchPathRef="cdo.features"/>
+  <rm:locator pattern="^org\.eclipse\.emf\.cdo\.(releng\.buckminster|site\.eclipse)" searchPathRef="buckminster.testbench"/>
   <rm:locator searchPathRef="cdo.source" failOnError="false"/>
   <rm:locator searchPathRef="target.platform"/>
-  <rm:locator pattern="^org\.eclipse\.emf\.cdo\.(releng\.buckminster|site\.eclipse)" searchPathRef="buckminster.testbench"/>
   <rm:searchPath name="cdo.features">
     <rm:provider componentTypes="eclipse.feature" readerType="cvs">
       <rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/modeling,org.eclipse.emf/org.eclipse.emf.cdo/features/{0}-feature">
