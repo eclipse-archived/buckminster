@@ -18,12 +18,12 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getExecutionMode <em>Execution Mode</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getActorParameters <em>Actor Parameters</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getAsserts <em>Asserts</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getProperties <em>Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getAdvice <em>Advice</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getResultGroup <em>Result Group</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getLayout <em>Layout</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.ActionPart#getStatements <em>Statements</em>}</li>
  * </ul>
  * </p>
  *
@@ -61,22 +61,6 @@ public interface ActionPart extends BuildPart
    * @generated
    */
   void setExecutionMode(ExecutionMode value);
-
-  /**
-   * Returns the value of the '<em><b>Actor Parameters</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Actor Parameters</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Actor Parameters</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getActionPart_ActorParameters()
-   * @model containment="true"
-   * @generated
-   */
-  EList<EObject> getActorParameters();
 
   /**
    * Returns the value of the '<em><b>Asserts</b></em>' containment reference list.
@@ -177,5 +161,31 @@ public interface ActionPart extends BuildPart
    * @generated
    */
   EList<Layout> getLayout();
+
+  /**
+   * Returns the value of the '<em><b>Statements</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Statements</em>' containment reference isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Statements</em>' containment reference.
+   * @see #setStatements(Statements)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getActionPart_Statements()
+   * @model containment="true"
+   * @generated
+   */
+  Statements getStatements();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.ActionPart#getStatements <em>Statements</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Statements</em>' containment reference.
+   * @see #getStatements()
+   * @generated
+   */
+  void setStatements(Statements value);
 
 } // ActionPart

@@ -14,6 +14,7 @@ import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.ExecutionMode;
 import org.eclipse.b3.beeLang.Layout;
 import org.eclipse.b3.beeLang.PropertyStatement;
+import org.eclipse.b3.beeLang.Statements;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -37,12 +38,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getExecutionMode <em>Execution Mode</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getActorParameters <em>Actor Parameters</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getAsserts <em>Asserts</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getAdvice <em>Advice</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getResultGroup <em>Result Group</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getLayout <em>Layout</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ActionPartImpl#getStatements <em>Statements</em>}</li>
  * </ul>
  * </p>
  *
@@ -69,16 +70,6 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
    * @ordered
    */
   protected ExecutionMode executionMode = EXECUTION_MODE_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getActorParameters() <em>Actor Parameters</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getActorParameters()
-   * @generated
-   * @ordered
-   */
-  protected EList<EObject> actorParameters;
 
   /**
    * The cached value of the '{@link #getAsserts() <em>Asserts</em>}' containment reference list.
@@ -131,6 +122,16 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
   protected EList<Layout> layout;
 
   /**
+   * The cached value of the '{@link #getStatements() <em>Statements</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getStatements()
+   * @generated
+   * @ordered
+   */
+  protected Statements statements;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -172,20 +173,6 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
     executionMode = newExecutionMode == null ? EXECUTION_MODE_EDEFAULT : newExecutionMode;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ACTION_PART__EXECUTION_MODE, oldExecutionMode, executionMode));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<EObject> getActorParameters()
-  {
-    if (actorParameters == null)
-    {
-      actorParameters = new EObjectContainmentEList<EObject>(EObject.class, this, BeeLangPackage.ACTION_PART__ACTOR_PARAMETERS);
-    }
-    return actorParameters;
   }
 
   /**
@@ -331,13 +318,59 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
    * <!-- end-user-doc -->
    * @generated
    */
+  public Statements getStatements()
+  {
+    return statements;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetStatements(Statements newStatements, NotificationChain msgs)
+  {
+    Statements oldStatements = statements;
+    statements = newStatements;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.ACTION_PART__STATEMENTS, oldStatements, newStatements);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setStatements(Statements newStatements)
+  {
+    if (newStatements != statements)
+    {
+      NotificationChain msgs = null;
+      if (statements != null)
+        msgs = ((InternalEObject)statements).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.ACTION_PART__STATEMENTS, null, msgs);
+      if (newStatements != null)
+        msgs = ((InternalEObject)newStatements).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.ACTION_PART__STATEMENTS, null, msgs);
+      msgs = basicSetStatements(newStatements, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ACTION_PART__STATEMENTS, newStatements, newStatements));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
-      case BeeLangPackage.ACTION_PART__ACTOR_PARAMETERS:
-        return ((InternalEList<?>)getActorParameters()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.ACTION_PART__ASSERTS:
         return ((InternalEList<?>)getAsserts()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.ACTION_PART__PROPERTIES:
@@ -348,6 +381,8 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
         return basicSetResultGroup(null, msgs);
       case BeeLangPackage.ACTION_PART__LAYOUT:
         return ((InternalEList<?>)getLayout()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.ACTION_PART__STATEMENTS:
+        return basicSetStatements(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -364,8 +399,6 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
     {
       case BeeLangPackage.ACTION_PART__EXECUTION_MODE:
         return getExecutionMode();
-      case BeeLangPackage.ACTION_PART__ACTOR_PARAMETERS:
-        return getActorParameters();
       case BeeLangPackage.ACTION_PART__ASSERTS:
         return getAsserts();
       case BeeLangPackage.ACTION_PART__PROPERTIES:
@@ -376,6 +409,8 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
         return getResultGroup();
       case BeeLangPackage.ACTION_PART__LAYOUT:
         return getLayout();
+      case BeeLangPackage.ACTION_PART__STATEMENTS:
+        return getStatements();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -393,10 +428,6 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
     {
       case BeeLangPackage.ACTION_PART__EXECUTION_MODE:
         setExecutionMode((ExecutionMode)newValue);
-        return;
-      case BeeLangPackage.ACTION_PART__ACTOR_PARAMETERS:
-        getActorParameters().clear();
-        getActorParameters().addAll((Collection<? extends EObject>)newValue);
         return;
       case BeeLangPackage.ACTION_PART__ASSERTS:
         getAsserts().clear();
@@ -416,6 +447,9 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
         getLayout().clear();
         getLayout().addAll((Collection<? extends Layout>)newValue);
         return;
+      case BeeLangPackage.ACTION_PART__STATEMENTS:
+        setStatements((Statements)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -433,9 +467,6 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
       case BeeLangPackage.ACTION_PART__EXECUTION_MODE:
         setExecutionMode(EXECUTION_MODE_EDEFAULT);
         return;
-      case BeeLangPackage.ACTION_PART__ACTOR_PARAMETERS:
-        getActorParameters().clear();
-        return;
       case BeeLangPackage.ACTION_PART__ASSERTS:
         getAsserts().clear();
         return;
@@ -450,6 +481,9 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
         return;
       case BeeLangPackage.ACTION_PART__LAYOUT:
         getLayout().clear();
+        return;
+      case BeeLangPackage.ACTION_PART__STATEMENTS:
+        setStatements((Statements)null);
         return;
     }
     super.eUnset(featureID);
@@ -467,8 +501,6 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
     {
       case BeeLangPackage.ACTION_PART__EXECUTION_MODE:
         return executionMode != EXECUTION_MODE_EDEFAULT;
-      case BeeLangPackage.ACTION_PART__ACTOR_PARAMETERS:
-        return actorParameters != null && !actorParameters.isEmpty();
       case BeeLangPackage.ACTION_PART__ASSERTS:
         return asserts != null && !asserts.isEmpty();
       case BeeLangPackage.ACTION_PART__PROPERTIES:
@@ -479,6 +511,8 @@ public class ActionPartImpl extends BuildPartImpl implements ActionPart
         return resultGroup != null;
       case BeeLangPackage.ACTION_PART__LAYOUT:
         return layout != null && !layout.isEmpty();
+      case BeeLangPackage.ACTION_PART__STATEMENTS:
+        return statements != null;
     }
     return super.eIsSet(featureID);
   }

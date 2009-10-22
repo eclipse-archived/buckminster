@@ -7,7 +7,6 @@ package org.eclipse.b3.beeLang.impl;
 
 import java.util.Collection;
 
-import org.eclipse.b3.beeLang.AnonymousParameter;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.FeatureCall;
@@ -37,8 +36,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getTarget <em>Target</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getParams <em>Params</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getParamsParameters <em>Params Parameters</em>}</li>
  * </ul>
  * </p>
  *
@@ -85,36 +82,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
    * @ordered
    */
   protected EList<EObject> params;
-
-  /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected static final String NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected String name = NAME_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getParamsParameters() <em>Params Parameters</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getParamsParameters()
-   * @generated
-   * @ordered
-   */
-  protected EList<AnonymousParameter> paramsParameters;
 
   /**
    * <!-- begin-user-doc -->
@@ -227,43 +194,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
-  {
-    return name;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setName(String newName)
-  {
-    String oldName = name;
-    name = newName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__NAME, oldName, name));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<AnonymousParameter> getParamsParameters()
-  {
-    if (paramsParameters == null)
-    {
-      paramsParameters = new EObjectContainmentEList<AnonymousParameter>(AnonymousParameter.class, this, BeeLangPackage.OPERATION_CALL__PARAMS_PARAMETERS);
-    }
-    return paramsParameters;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -273,8 +203,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
         return basicSetTarget(null, msgs);
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         return ((InternalEList<?>)getParams()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.OPERATION_CALL__PARAMS_PARAMETERS:
-        return ((InternalEList<?>)getParamsParameters()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -295,10 +223,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
         return getType();
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         return getParams();
-      case BeeLangPackage.OPERATION_CALL__NAME:
-        return getName();
-      case BeeLangPackage.OPERATION_CALL__PARAMS_PARAMETERS:
-        return getParamsParameters();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -324,13 +248,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
         getParams().clear();
         getParams().addAll((Collection<? extends EObject>)newValue);
         return;
-      case BeeLangPackage.OPERATION_CALL__NAME:
-        setName((String)newValue);
-        return;
-      case BeeLangPackage.OPERATION_CALL__PARAMS_PARAMETERS:
-        getParamsParameters().clear();
-        getParamsParameters().addAll((Collection<? extends AnonymousParameter>)newValue);
-        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -354,12 +271,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         getParams().clear();
         return;
-      case BeeLangPackage.OPERATION_CALL__NAME:
-        setName(NAME_EDEFAULT);
-        return;
-      case BeeLangPackage.OPERATION_CALL__PARAMS_PARAMETERS:
-        getParamsParameters().clear();
-        return;
     }
     super.eUnset(featureID);
   }
@@ -380,10 +291,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
         return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         return params != null && !params.isEmpty();
-      case BeeLangPackage.OPERATION_CALL__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case BeeLangPackage.OPERATION_CALL__PARAMS_PARAMETERS:
-        return paramsParameters != null && !paramsParameters.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -441,8 +348,6 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (type: ");
     result.append(type);
-    result.append(", name: ");
-    result.append(name);
     result.append(')');
     return result.toString();
   }

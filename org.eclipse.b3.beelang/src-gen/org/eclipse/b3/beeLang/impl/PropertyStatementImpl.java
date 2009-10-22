@@ -36,9 +36,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#getStatements <em>Statements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#isLocal <em>Local</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#isImmutable <em>Immutable</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#getKey <em>Key</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#getOp <em>Op</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#getValue <em>Value</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyStatementImpl#getUnsetProperties <em>Unset Properties</em>}</li>
  * </ul>
@@ -67,26 +67,6 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected EList<PropertyStatement> statements;
-
-  /**
-   * The default value of the '{@link #isLocal() <em>Local</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isLocal()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean LOCAL_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isLocal() <em>Local</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isLocal()
-   * @generated
-   * @ordered
-   */
-  protected boolean local = LOCAL_EDEFAULT;
 
   /**
    * The default value of the '{@link #isImmutable() <em>Immutable</em>}' attribute.
@@ -127,6 +107,26 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String key = KEY_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOp()
+   * @generated
+   * @ordered
+   */
+  protected static final String OP_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOp()
+   * @generated
+   * @ordered
+   */
+  protected String op = OP_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference.
@@ -236,29 +236,6 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public boolean isLocal()
-  {
-    return local;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setLocal(boolean newLocal)
-  {
-    boolean oldLocal = local;
-    local = newLocal;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROPERTY_STATEMENT__LOCAL, oldLocal, local));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public boolean isImmutable()
   {
     return immutable;
@@ -298,6 +275,29 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
     key = newKey;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROPERTY_STATEMENT__KEY, oldKey, key));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getOp()
+  {
+    return op;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOp(String newOp)
+  {
+    String oldOp = op;
+    op = newOp;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROPERTY_STATEMENT__OP, oldOp, op));
   }
 
   /**
@@ -396,12 +396,12 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
         return getFilter();
       case BeeLangPackage.PROPERTY_STATEMENT__STATEMENTS:
         return getStatements();
-      case BeeLangPackage.PROPERTY_STATEMENT__LOCAL:
-        return isLocal();
       case BeeLangPackage.PROPERTY_STATEMENT__IMMUTABLE:
         return isImmutable();
       case BeeLangPackage.PROPERTY_STATEMENT__KEY:
         return getKey();
+      case BeeLangPackage.PROPERTY_STATEMENT__OP:
+        return getOp();
       case BeeLangPackage.PROPERTY_STATEMENT__VALUE:
         return getValue();
       case BeeLangPackage.PROPERTY_STATEMENT__UNSET_PROPERTIES:
@@ -428,14 +428,14 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
         getStatements().clear();
         getStatements().addAll((Collection<? extends PropertyStatement>)newValue);
         return;
-      case BeeLangPackage.PROPERTY_STATEMENT__LOCAL:
-        setLocal((Boolean)newValue);
-        return;
       case BeeLangPackage.PROPERTY_STATEMENT__IMMUTABLE:
         setImmutable((Boolean)newValue);
         return;
       case BeeLangPackage.PROPERTY_STATEMENT__KEY:
         setKey((String)newValue);
+        return;
+      case BeeLangPackage.PROPERTY_STATEMENT__OP:
+        setOp((String)newValue);
         return;
       case BeeLangPackage.PROPERTY_STATEMENT__VALUE:
         setValue((PropertyExpression)newValue);
@@ -464,14 +464,14 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
       case BeeLangPackage.PROPERTY_STATEMENT__STATEMENTS:
         getStatements().clear();
         return;
-      case BeeLangPackage.PROPERTY_STATEMENT__LOCAL:
-        setLocal(LOCAL_EDEFAULT);
-        return;
       case BeeLangPackage.PROPERTY_STATEMENT__IMMUTABLE:
         setImmutable(IMMUTABLE_EDEFAULT);
         return;
       case BeeLangPackage.PROPERTY_STATEMENT__KEY:
         setKey(KEY_EDEFAULT);
+        return;
+      case BeeLangPackage.PROPERTY_STATEMENT__OP:
+        setOp(OP_EDEFAULT);
         return;
       case BeeLangPackage.PROPERTY_STATEMENT__VALUE:
         setValue((PropertyExpression)null);
@@ -497,12 +497,12 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
         return filter != null;
       case BeeLangPackage.PROPERTY_STATEMENT__STATEMENTS:
         return statements != null && !statements.isEmpty();
-      case BeeLangPackage.PROPERTY_STATEMENT__LOCAL:
-        return local != LOCAL_EDEFAULT;
       case BeeLangPackage.PROPERTY_STATEMENT__IMMUTABLE:
         return immutable != IMMUTABLE_EDEFAULT;
       case BeeLangPackage.PROPERTY_STATEMENT__KEY:
         return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
+      case BeeLangPackage.PROPERTY_STATEMENT__OP:
+        return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
       case BeeLangPackage.PROPERTY_STATEMENT__VALUE:
         return value != null;
       case BeeLangPackage.PROPERTY_STATEMENT__UNSET_PROPERTIES:
@@ -522,12 +522,12 @@ public class PropertyStatementImpl extends MinimalEObjectImpl.Container implemen
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (local: ");
-    result.append(local);
-    result.append(", immutable: ");
+    result.append(" (immutable: ");
     result.append(immutable);
     result.append(", key: ");
     result.append(key);
+    result.append(", op: ");
+    result.append(op);
     result.append(", unsetProperties: ");
     result.append(unsetProperties);
     result.append(')');

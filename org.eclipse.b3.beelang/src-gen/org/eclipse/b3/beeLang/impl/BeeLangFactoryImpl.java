@@ -91,7 +91,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.COMPOUND_REFERENCES: return createCompoundReferences();
       case BeeLangPackage.ACTION_PART: return createActionPart();
       case BeeLangPackage.PARAMETER: return createParameter();
-      case BeeLangPackage.ANONYMOUS_PARAMETER: return createAnonymousParameter();
       case BeeLangPackage.LAYOUT: return createLayout();
       case BeeLangPackage.ACTION_INPUT_GROUP: return createActionInputGroup();
       case BeeLangPackage.REPOSITORY_CONFIGURATION: return createRepositoryConfiguration();
@@ -106,18 +105,38 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.PRE_CONDITION_ASSERT: return createPreConditionAssert();
       case BeeLangPackage.POST_CONDITION_ASSERT: return createPostConditionAssert();
       case BeeLangPackage.ASSERTION_EXPRESSION: return createAssertionExpression();
+      case BeeLangPackage.STATEMENT: return createStatement();
+      case BeeLangPackage.BREAK_STATEMENT: return createBreakStatement();
+      case BeeLangPackage.CONTINUE_STATEMENT: return createContinueStatement();
+      case BeeLangPackage.COMPOUND_STATEMENT: return createCompoundStatement();
+      case BeeLangPackage.STATEMENTS: return createStatements();
+      case BeeLangPackage.WHILE_STATEMENT: return createWhileStatement();
+      case BeeLangPackage.SWITCH_STATEMENT: return createSwitchStatement();
+      case BeeLangPackage.CASE: return createCase();
+      case BeeLangPackage.FOR_STATEMENT: return createForStatement();
+      case BeeLangPackage.RETURN_STATEMENT: return createReturnStatement();
       case BeeLangPackage.SYNTAX_ELEMENT: return createSyntaxElement();
+      case BeeLangPackage.VAR_EXPRESSION_LIST: return createVarExpressionList();
       case BeeLangPackage.EXPRESSION: return createExpression();
+      case BeeLangPackage.VAR_EXPRESSION: return createVarExpression();
       case BeeLangPackage.VALUE_EXPRESSION: return createValueExpression();
       case BeeLangPackage.OPERATION_CALL: return createOperationCall();
+      case BeeLangPackage.PROPERTY_VALUE: return createPropertyValue();
+      case BeeLangPackage.VARIABLE_VALUE: return createVariableValue();
       case BeeLangPackage.FEATURE_CALL: return createFeatureCall();
       case BeeLangPackage.LITERAL: return createLiteral();
+      case BeeLangPackage.VALUE_LITERAL: return createValueLiteral();
       case BeeLangPackage.BOOLEAN_LITERAL: return createBooleanLiteral();
       case BeeLangPackage.INTEGER_LITERAL: return createIntegerLiteral();
       case BeeLangPackage.NULL_LITERAL: return createNullLiteral();
       case BeeLangPackage.STRING_LITERAL: return createStringLiteral();
-      case BeeLangPackage.GLOBAL_VAR_EXPRESSION: return createGlobalVarExpression();
+      case BeeLangPackage.REAL_LITERAL: return createRealLiteral();
+      case BeeLangPackage.REGEXP_LITERAL: return createRegexpLiteral();
+      case BeeLangPackage.ASSIGNMENT_OPERATION: return createAssignmentOperation();
+      case BeeLangPackage.IF_EXPRESSION: return createIfExpression();
       case BeeLangPackage.BOOLEAN_OPERATION: return createBooleanOperation();
+      case BeeLangPackage.POST_OP_CALL: return createPostOpCall();
+      case BeeLangPackage.AT_CALL: return createAtCall();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -423,17 +442,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public AnonymousParameter createAnonymousParameter()
-  {
-    AnonymousParameterImpl anonymousParameter = new AnonymousParameterImpl();
-    return anonymousParameter;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public Layout createLayout()
   {
     LayoutImpl layout = new LayoutImpl();
@@ -588,6 +596,116 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public Statement createStatement()
+  {
+    StatementImpl statement = new StatementImpl();
+    return statement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BreakStatement createBreakStatement()
+  {
+    BreakStatementImpl breakStatement = new BreakStatementImpl();
+    return breakStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ContinueStatement createContinueStatement()
+  {
+    ContinueStatementImpl continueStatement = new ContinueStatementImpl();
+    return continueStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CompoundStatement createCompoundStatement()
+  {
+    CompoundStatementImpl compoundStatement = new CompoundStatementImpl();
+    return compoundStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Statements createStatements()
+  {
+    StatementsImpl statements = new StatementsImpl();
+    return statements;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public WhileStatement createWhileStatement()
+  {
+    WhileStatementImpl whileStatement = new WhileStatementImpl();
+    return whileStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SwitchStatement createSwitchStatement()
+  {
+    SwitchStatementImpl switchStatement = new SwitchStatementImpl();
+    return switchStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Case createCase()
+  {
+    CaseImpl case_ = new CaseImpl();
+    return case_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ForStatement createForStatement()
+  {
+    ForStatementImpl forStatement = new ForStatementImpl();
+    return forStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ReturnStatement createReturnStatement()
+  {
+    ReturnStatementImpl returnStatement = new ReturnStatementImpl();
+    return returnStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public SyntaxElement createSyntaxElement()
   {
     SyntaxElementImpl syntaxElement = new SyntaxElementImpl();
@@ -599,10 +717,32 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public VarExpressionList createVarExpressionList()
+  {
+    VarExpressionListImpl varExpressionList = new VarExpressionListImpl();
+    return varExpressionList;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Expression createExpression()
   {
     ExpressionImpl expression = new ExpressionImpl();
     return expression;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VarExpression createVarExpression()
+  {
+    VarExpressionImpl varExpression = new VarExpressionImpl();
+    return varExpression;
   }
 
   /**
@@ -632,6 +772,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public PropertyValue createPropertyValue()
+  {
+    PropertyValueImpl propertyValue = new PropertyValueImpl();
+    return propertyValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VariableValue createVariableValue()
+  {
+    VariableValueImpl variableValue = new VariableValueImpl();
+    return variableValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public FeatureCall createFeatureCall()
   {
     FeatureCallImpl featureCall = new FeatureCallImpl();
@@ -647,6 +809,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     LiteralImpl literal = new LiteralImpl();
     return literal;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ValueLiteral createValueLiteral()
+  {
+    ValueLiteralImpl valueLiteral = new ValueLiteralImpl();
+    return valueLiteral;
   }
 
   /**
@@ -698,10 +871,43 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public GlobalVarExpression createGlobalVarExpression()
+  public RealLiteral createRealLiteral()
   {
-    GlobalVarExpressionImpl globalVarExpression = new GlobalVarExpressionImpl();
-    return globalVarExpression;
+    RealLiteralImpl realLiteral = new RealLiteralImpl();
+    return realLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RegexpLiteral createRegexpLiteral()
+  {
+    RegexpLiteralImpl regexpLiteral = new RegexpLiteralImpl();
+    return regexpLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AssignmentOperation createAssignmentOperation()
+  {
+    AssignmentOperationImpl assignmentOperation = new AssignmentOperationImpl();
+    return assignmentOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IfExpression createIfExpression()
+  {
+    IfExpressionImpl ifExpression = new IfExpressionImpl();
+    return ifExpression;
   }
 
   /**
@@ -713,6 +919,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     BooleanOperationImpl booleanOperation = new BooleanOperationImpl();
     return booleanOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PostOpCall createPostOpCall()
+  {
+    PostOpCallImpl postOpCall = new PostOpCallImpl();
+    return postOpCall;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AtCall createAtCall()
+  {
+    AtCallImpl atCall = new AtCallImpl();
+    return atCall;
   }
 
   /**

@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#getStatements <em>Statements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#isLocal <em>Local</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#isImmutable <em>Immutable</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#getKey <em>Key</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#getOp <em>Op</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#getValue <em>Value</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PropertyStatement#getUnsetProperties <em>Unset Properties</em>}</li>
  * </ul>
@@ -76,32 +76,6 @@ public interface PropertyStatement extends EObject
   EList<PropertyStatement> getStatements();
 
   /**
-   * Returns the value of the '<em><b>Local</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Local</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Local</em>' attribute.
-   * @see #setLocal(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPropertyStatement_Local()
-   * @model
-   * @generated
-   */
-  boolean isLocal();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.PropertyStatement#isLocal <em>Local</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Local</em>' attribute.
-   * @see #isLocal()
-   * @generated
-   */
-  void setLocal(boolean value);
-
-  /**
    * Returns the value of the '<em><b>Immutable</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -152,6 +126,32 @@ public interface PropertyStatement extends EObject
    * @generated
    */
   void setKey(String value);
+
+  /**
+   * Returns the value of the '<em><b>Op</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Op</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Op</em>' attribute.
+   * @see #setOp(String)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPropertyStatement_Op()
+   * @model
+   * @generated
+   */
+  String getOp();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.PropertyStatement#getOp <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Op</em>' attribute.
+   * @see #getOp()
+   * @generated
+   */
+  void setOp(String value);
 
   /**
    * Returns the value of the '<em><b>Value</b></em>' containment reference.

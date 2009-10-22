@@ -25,8 +25,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ParameterImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ParameterImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ParameterImpl#getVal <em>Val</em>}</li>
  * </ul>
  * </p>
  *
@@ -35,34 +34,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class ParameterImpl extends MinimalEObjectImpl.Container implements Parameter
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The cached value of the '{@link #getVal() <em>Val</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getVal()
    * @generated
    * @ordered
    */
-  protected static final String NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected String name = NAME_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected Expression value;
+  protected Expression val;
 
   /**
    * <!-- begin-user-doc -->
@@ -90,9 +69,9 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
+  public Expression getVal()
   {
-    return name;
+    return val;
   }
 
   /**
@@ -100,36 +79,13 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setName(String newName)
+  public NotificationChain basicSetVal(Expression newVal, NotificationChain msgs)
   {
-    String oldName = name;
-    name = newName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PARAMETER__NAME, oldName, name));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Expression getValue()
-  {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetValue(Expression newValue, NotificationChain msgs)
-  {
-    Expression oldValue = value;
-    value = newValue;
+    Expression oldVal = val;
+    val = newVal;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PARAMETER__VALUE, oldValue, newValue);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PARAMETER__VAL, oldVal, newVal);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -140,20 +96,20 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setValue(Expression newValue)
+  public void setVal(Expression newVal)
   {
-    if (newValue != value)
+    if (newVal != val)
     {
       NotificationChain msgs = null;
-      if (value != null)
-        msgs = ((InternalEObject)value).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PARAMETER__VALUE, null, msgs);
-      if (newValue != null)
-        msgs = ((InternalEObject)newValue).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PARAMETER__VALUE, null, msgs);
-      msgs = basicSetValue(newValue, msgs);
+      if (val != null)
+        msgs = ((InternalEObject)val).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PARAMETER__VAL, null, msgs);
+      if (newVal != null)
+        msgs = ((InternalEObject)newVal).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PARAMETER__VAL, null, msgs);
+      msgs = basicSetVal(newVal, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PARAMETER__VALUE, newValue, newValue));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PARAMETER__VAL, newVal, newVal));
   }
 
   /**
@@ -166,8 +122,8 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BeeLangPackage.PARAMETER__VALUE:
-        return basicSetValue(null, msgs);
+      case BeeLangPackage.PARAMETER__VAL:
+        return basicSetVal(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -182,10 +138,8 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BeeLangPackage.PARAMETER__NAME:
-        return getName();
-      case BeeLangPackage.PARAMETER__VALUE:
-        return getValue();
+      case BeeLangPackage.PARAMETER__VAL:
+        return getVal();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -200,11 +154,8 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BeeLangPackage.PARAMETER__NAME:
-        setName((String)newValue);
-        return;
-      case BeeLangPackage.PARAMETER__VALUE:
-        setValue((Expression)newValue);
+      case BeeLangPackage.PARAMETER__VAL:
+        setVal((Expression)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -220,11 +171,8 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BeeLangPackage.PARAMETER__NAME:
-        setName(NAME_EDEFAULT);
-        return;
-      case BeeLangPackage.PARAMETER__VALUE:
-        setValue((Expression)null);
+      case BeeLangPackage.PARAMETER__VAL:
+        setVal((Expression)null);
         return;
     }
     super.eUnset(featureID);
@@ -240,29 +188,10 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BeeLangPackage.PARAMETER__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case BeeLangPackage.PARAMETER__VALUE:
-        return value != null;
+      case BeeLangPackage.PARAMETER__VAL:
+        return val != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
-    result.append(')');
-    return result.toString();
   }
 
 } //ParameterImpl

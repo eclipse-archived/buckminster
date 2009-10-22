@@ -6,7 +6,7 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.GlobalVarExpression;
+import org.eclipse.b3.beeLang.RealLiteral;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -16,45 +16,45 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Global Var Expression</b></em>'.
+ * An implementation of the model object '<em><b>Real Literal</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.GlobalVarExpressionImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.RealLiteralImpl#getVal <em>Val</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVarExpression
+public class RealLiteralImpl extends ValueLiteralImpl implements RealLiteral
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getVal()
    * @generated
    * @ordered
    */
-  protected static final String NAME_EDEFAULT = null;
+  protected static final String VAL_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getVal()
    * @generated
    * @ordered
    */
-  protected String name = NAME_EDEFAULT;
+  protected String val = VAL_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected GlobalVarExpressionImpl()
+  protected RealLiteralImpl()
   {
     super();
   }
@@ -67,7 +67,7 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.GLOBAL_VAR_EXPRESSION;
+    return BeeLangPackage.Literals.REAL_LITERAL;
   }
 
   /**
@@ -75,9 +75,9 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
+  public String getVal()
   {
-    return name;
+    return val;
   }
 
   /**
@@ -85,12 +85,12 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setName(String newName)
+  public void setVal(String newVal)
   {
-    String oldName = name;
-    name = newName;
+    String oldVal = val;
+    val = newVal;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.GLOBAL_VAR_EXPRESSION__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REAL_LITERAL__VAL, oldVal, val));
   }
 
   /**
@@ -103,8 +103,8 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
   {
     switch (featureID)
     {
-      case BeeLangPackage.GLOBAL_VAR_EXPRESSION__NAME:
-        return getName();
+      case BeeLangPackage.REAL_LITERAL__VAL:
+        return getVal();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,8 +119,8 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
   {
     switch (featureID)
     {
-      case BeeLangPackage.GLOBAL_VAR_EXPRESSION__NAME:
-        setName((String)newValue);
+      case BeeLangPackage.REAL_LITERAL__VAL:
+        setVal((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -136,8 +136,8 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
   {
     switch (featureID)
     {
-      case BeeLangPackage.GLOBAL_VAR_EXPRESSION__NAME:
-        setName(NAME_EDEFAULT);
+      case BeeLangPackage.REAL_LITERAL__VAL:
+        setVal(VAL_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -153,8 +153,8 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
   {
     switch (featureID)
     {
-      case BeeLangPackage.GLOBAL_VAR_EXPRESSION__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case BeeLangPackage.REAL_LITERAL__VAL:
+        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
     }
     return super.eIsSet(featureID);
   }
@@ -170,10 +170,10 @@ public class GlobalVarExpressionImpl extends ExpressionImpl implements GlobalVar
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
+    result.append(" (val: ");
+    result.append(val);
     result.append(')');
     return result.toString();
   }
 
-} //GlobalVarExpressionImpl
+} //RealLiteralImpl

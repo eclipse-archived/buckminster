@@ -22,7 +22,7 @@ package org.eclipse.b3.beeLang;
  * @model
  * @generated
  */
-public interface IntegerLiteral extends Literal
+public interface IntegerLiteral extends ValueLiteral
 {
   /**
    * Returns the value of the '<em><b>Val</b></em>' attribute.

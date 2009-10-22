@@ -5,30 +5,28 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import org.eclipse.b3.beeLang.AnonymousParameter;
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.PropertyValue;
 
 import org.eclipse.emf.ecore.EClass;
 
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Anonymous Parameter</b></em>'.
+ * An implementation of the model object '<em><b>Property Value</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * </p>
  *
  * @generated
  */
-public class AnonymousParameterImpl extends MinimalEObjectImpl.Container implements AnonymousParameter
+public class PropertyValueImpl extends ExpressionImpl implements PropertyValue
 {
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected AnonymousParameterImpl()
+  protected PropertyValueImpl()
   {
     super();
   }
@@ -41,7 +39,7 @@ public class AnonymousParameterImpl extends MinimalEObjectImpl.Container impleme
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.ANONYMOUS_PARAMETER;
+    return BeeLangPackage.Literals.PROPERTY_VALUE;
   }
 
-} //AnonymousParameterImpl
+} //PropertyValueImpl

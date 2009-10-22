@@ -1,18 +1,81 @@
 grammar org.eclipse.b3.BeeLang with org.eclipse.xtext.common.Terminals
 
-generate beeLang "http://www.eclipse.org/b3/BeeLang"
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
+generate beeLang "http://www.eclipse.org/b3/BeeLang"
 BeeModel : (imports += Import)* body = Unit ;
 
-// Redeclare the default ID without the ^ keyword escape mechanism
-terminal ID : (('a'..'z')|('A'..'Z')|('_')) (('a'..'z')|('A'..'Z')|('0'..'9')|('_'))* ;
+// Redeclare the default ID without the ^ keyword escape mechanism, and including
+// the JS $ char which is allowed in the first position.
+//
+terminal ID : (('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
+
+// Property Names start with $ and are qualified. Must be handled by lexer as
+// a.b.c is otherwise ambigous in expressions.
+
+terminal PID : '$' ID ('.' ID)* ;
+
+// JS Regexp - but cheating by using @ instead of / because of inability to push back terminators
+// and / clashes with / in math.
+//
+terminal REGEX 
+	: "~/" ( '\\' ('/'|'f'|'n'|'r'|'t'|'v'|'\\'|'.'|'*'|'+'|'?'
+					| 'w'|'W'|'s'|'S'|'d'|'D'|'b'
+					|'|'|'{'|'}'|'['|']'|'('|')'
+					| (('0'..'7')('0'..'7')('0'..'7')) 
+					| ('x' (('0'..'9')|('a'..'f')|('A'..'F')) (('0'..'9')|('a'..'f')|('A'..'F'))) 
+					| ('c' ('A'..'Z'))
+				)
+			| (!('\\'|'/'|' '|'\t'|'\r'|'\n')))* "/" ('g'|'m'|'i')?
+			;
+
+// JS String support escaped b,t,n,f,r, and u HEX*4, x HEX*2, and (deprecated (0-7)), 
+// A string converter may need to handle the u, x, and octal escapes.
+// Regular java string handles XXXX , and gives syntax error if
+// format is not ok, the other two remains, and possibly the null.
+terminal STRING :
+'"' ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|'"'|'\r'|'\n') )* '"' |
+"'" ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|"'"|'\r'|'\n') )* "'";
+
+terminal ML_COMMENT : '/*' -> '*/' ;
+terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')? ;
+terminal WS : (' '|'\t'|'\r'|'\n')+ ;
+
+// TODO: Should return EInt, but uncerain if converter handles hex
+//
+terminal HEX : '0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+ ;
+
+// A JS integer is one of
+// 0
+// 0(0..7)*
+// 0(x|X)(0-91-fA-F)*
+// Validation can handle the octal case, and illegal 08, 09 00 sequencese
+// TODO: converter must handle octal case if we want to support it.
+//
+terminal INT returns ecore::EInt: ('0'..'9')+;
+
+// TODO: should be a floating point value and have a converter
+// and check for illegal INT sequences "000" etc.
+// Suppressing REAL without a decimal (INT '.') as well as ('.' INT) as
+// a real otherwise can look as part of an Qualified name ('a'.e+1), the
+// combination 'n.n' is not valid in a name.
+//
+terminal REAL : ((INT '.' INT)|(INT '.')|('.' INT) | INT) (('e'|'E')('-'|'+')INT)? ;
+
+
+terminal ANY_OTHER : . ;
 
 // Qualified name
 // TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
 //
-QualifiedName hidden(): ID ('.' ID)* HIDDENBUG;
+QualifiedName hidden(): ID (INT|HEX|ID)* ('.' ID (INT|HEX|ID)*)* HIDDENBUG;
 HIDDENBUG hidden(WS, SL_COMMENT, ML_COMMENT): ('~~~~~')? ; // TODO: REPLACE HACK WHEN HIDDEN WORKS.
 
+
+// Declare Property ID to include '.'
+PROP hidden(): '$' '{' QualifiedName '}' ;
+
+PropertyName : PID ;
 EscapedQualifiedName:  STRING | QualifiedName;
 InterfaceName: QualifiedName ;
 
@@ -33,16 +96,17 @@ enum ExecutionMode 	: parallel | sequential ;
 // TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 // TODO: uncertain if the set of allowed chars is definitive.
 //
-Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' | '/' | '+' | '=' | '*' | '<' | '>' | ':' | '?';
-AlfanumSym : (ID | INT) (Separator|ID|INT)* ;
+Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' |'+' | '=' | '*' | '<' | '>' | ':' | '?';
+AlfanumSym : (ID | INT |HEX|REAL) (Separator|ID|INT|HEX|REAL)* ;
 
 Version
-	: STRING
+	: STRING  
 	| AlfanumSym
 	;
 
 /*
-** VersionRange TODO: Uses two instances of Version. This works because use of [Ê]  ( ) must be escaped with " " in Version. Omni
+** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
+** escaped with " ". Omni
 ** version uses version strings with \[ when a range is presented/parsed in string format.
 */
 VersionRange
@@ -68,7 +132,6 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			// goes first, because they may be used in the other clauses.
 			//
 			  ('properties'  propertyStatements += NamedPropertyStatements)
-//			| (propertyStatements += SinglePropertyStatement)
 		)*
 		( 	//-- PROVIDES
 			  ('provides' '{' (providedCapability += ProvidedCapability ';')+ '}')
@@ -97,9 +160,8 @@ RequiredCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=Qu
 
 // An optionally named sequence of property statements
 NamedPropertyStatements returns PropertyStatements
-	: (name = QualifiedName)? statements = PropertyStatements ;
-//		( (statements += UnsetPropertyStatement |  statements += PropertyStatement)* ) '}'
-//	;
+	: (name = ID)? statements = PropertyStatements 
+	;
 
 // Sequence of property statements	
 PropertyStatements returns PropertyStatement
@@ -112,19 +174,18 @@ PropertyStatements returns PropertyStatement
 		)* '}'
 	;
 	
-PropertyStatement
-	: ( (local ?= 'local' )? (immutable ?= 'immutable')? key=QualifiedName '=' value=PropertyExpression ';')
+PropertyStatement returns PropertyStatement 
+	: ( (immutable ?= 'immutable')? key=PropertyName op=('='|'+='|'-='|'*='|'/=') value=PropertyExpression ';')
 	;
 
 UnsetPropertyStatement returns PropertyStatement
-	:  ('unset' unsetProperties += QualifiedName ';' )
+	:  ('unset' unsetProperties += PropertyName ';' )
 	;
 
 // identical to nested properties statement, but used to get a separate data type
 AnnotationStatement returns PropertyStatement
-	: (('when' filter=Filter)? (immutable ?= 'immutable')? key=QualifiedName '=' value=PropertyExpression ';')
+	: (('when' filter=Filter)? (immutable ?= 'immutable')? key=PropertyName op=('='|'+='|'-='|'*='|'/=') value=PropertyExpression ';')
 	;
-
 
 PropertyExpression : Expression ; 
 
@@ -162,13 +223,13 @@ PathGroup
 		    ) ';'
 //		| basePath=PathExpression '[' paths+=PathExpression (',' paths+=PathExpression)* ']' ';'
 //		| ('expr' pathExpressions += Expression ';' ) 
-		| ('annotations' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += AnnotationStatement)+ '}' )
+		| ('annotations' '{' ('unset' unsetProperties += PropertyName ';' |  setProperties += AnnotationStatement)+ '}' )
 		)
 	;
 
 PathExpression : Path | ExprStatement ;
 
-ExprStatement : 'expr'  expression = Expression  ;
+ExprStatement : 'expr'  '(' expression = Expression ')'  ;
 
 /*
 * A path can be written without quotes if it consists of safe chars 
@@ -192,12 +253,12 @@ Group returns GroupPart
 	;
 
 Prerequisite
-	: ((surpressed ?= 'hidden')? ('when' filter=Filter )? (alias=QualifiedName '=')? ((partReference=PrerequisiteEntry) 
+	: ((surpressed ?= 'hidden')? ('when' filter=Filter )? (alias=ID '=')? ((partReference=PrerequisiteEntry) 
 	 (closure = Closure)?) /*| (partReference=ExprStatement) */) ';'
 	;
 	
 Closure : 'with' '{'
-			( ('properties' '{' ('unset' unsetProperties += QualifiedName ';' |  setProperties += PropertyStatement)+ '}' )
+			( ('properties' '{' ('unset' unsetProperties += PropertyName ';' |  setProperties += PropertyStatement)+ '}' )
 			| ( 'advice' advice += CompoundAdvice)
 			)*
 		'}'
@@ -226,8 +287,7 @@ Action returns ActionPart
 	: (visibility = Visibility)?
       (executionMode = ExecutionMode)?
 	 'action' PartName
-	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? 
-	 	('...' actorParameters += AnonymousParameter (',' actorParameters += AnonymousParameter)*)?')'
+//	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? ')'
 		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
 	(asserts += PreConditionAssert)?
 	(asserts += PostConditionAssert)?
@@ -236,16 +296,11 @@ Action returns ActionPart
 	     ( advice = Advice )?
 	     ( resultGroup = ActionInputGroup )? 
 	     ( layout += Layout )*
+	     statements = Statements
 	 '}'
 	;
 
-Parameter
-	: name=QualifiedName '=' value= Expression
-	;
-	
-AnonymousParameter 
-	: Expression
-	;
+Parameter : val = Expression ;
 	
 Layout returns Layout
 	: ('when' filter=Filter)?  'layout' (name=QualifiedName )? 
@@ -280,7 +335,7 @@ URI : STRING
 **
 */
 NamedAdvice 
-	: (name=QualifiedName)? advice=CompoundAdvice ;
+	: (name=ID)? advice=CompoundAdvice ;
 
 Advice : 'advice' CompoundAdvice ;
 
@@ -297,7 +352,7 @@ AdvicePathSeparator returns AdvicePathElement
 	: AdvicePathChildren
 	;
 AdvicePathChildren 
-	: {AdvicePathChildren} "/"
+	: {AdvicePathChildren} '/'
 	;
 
 AdvicePathElement
@@ -315,20 +370,73 @@ PostConditionAssert : scope="postcondition" '{' (asserts += AssertionExpression)
 
 AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';' 
 ;
+
+/* STATEMENTS */
+Statement
+	: SwitchStatement
+	| WhileStatement
+	| ForStatement
+	| CompoundStatement
+	| VarExpression ';'
+	| BreakStatement
+	| ContinueStatement
+	| ReturnStatement
+	;
+	
+BreakStatement : {BreakStatement} 'break' ';' ;
+ContinueStatement : {ContinueStatement} 'continue' ';' ;
+
+CompoundStatement : '{' statements = Statements '}' ;
+
+Statements : (statements += Statement)* ;
+
+WhileStatement : 'while' '(' condition=VarExpression ')' body=Statement ;
+
+SwitchStatement
+	: "switch" "(" switchExpr=VarExpression ")"
+		"{" case+=Case* ("default" ":" statements=Statements)? "}";
+		
+Case: "case" condition=ValueLiteral ":" statements+=Statement;
+
+ForStatement : {ForStatement} "for" '(' (init=VarExpressionList)? ';' (cond=Expression)? ';' (iterate=ExpressionList)? ')'
+	body = Statement
+	;
+	
+ReturnStatement 
+	: 'return' return=Expression ';'
+	;
+	
 /* EXPRESSIONS */
 SyntaxElement : Expression ;
 
-Expression 
-	: ValueExpression
+VarExpressionList : expr +=VarExpression ( ',' expr+=VarExpression)* ;
+ExpressionList returns Expression: expr +=Expression ( ',' expr += Expression)* ;
+
+VarExpression : Expression | 'var' name=ID '=' value=Expression ;
+
+Expression : ValueExpression ;
+
+ValueExpression 
+	: value=AssignmentExpression
 	;
 
-ValueExpression
-	: value=OrExpression 
+//TODO: This is left associative, should be right...
+AssignmentExpression returns Expression:
+	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+		right+=ChainExpression)*
+	;
+
+
+ChainExpression returns Expression:
+	ChainedExpression //({ChainExpression.first=current} ',' next=ChainedExpression)*
 	;
 	
-//LetExpression:
-//	"let" identifier=ID "=" varExpr=Expression ":" target=Expression;
-	
+ChainedExpression returns Expression:
+	IfExpression;
+ 
+IfExpression returns Expression:
+	OrExpression ({IfExpression.condition=current} "?" thenPart=ChainedExpression ":" elsePart=ChainedExpression)?;
+	 
 OrExpression returns Expression:
 	AndExpression ({BooleanOperation.left=current} operator="||" right=AndExpression)*;
 	
@@ -342,32 +450,53 @@ AdditiveExpression returns Expression:
 	MultiplicativeExpression ({OperationCall.params+=current} name=("+" | "-") params+=MultiplicativeExpression)*;
 
 MultiplicativeExpression returns Expression:
-	UnaryOrInfixExpression ({OperationCall.params+=current} name=("*" | "/") params+=UnaryOrInfixExpression)*;
+	UnaryOrInfixExpression ({OperationCall.params+=current} name=("*" | "/" | "%") params+=UnaryOrInfixExpression)*;
 
 	
 UnaryOrInfixExpression returns Expression:
-	UnaryExpression | InfixExpression; 
+	UnaryExpression | PostopExpression; 
 
 UnaryExpression returns OperationCall:
-	name=("!" | "-") params+=InfixExpression;
+	name=("!" | "-" | "++" | "--") params+=PostopExpression;
+
+PostopExpression returns Expression:
+	InfixExpression ({PostOpCall.target=current} name = ("--" | "++"))?
+	;
+
 	
 InfixExpression returns Expression:
-	PrimaryExpression (
-		({OperationCall.target=current} ":" name=ID "(" (params+=Parameter ("," params+=Parameter)*)? 
-			 	('...' paramsParameters += AnonymousParameter (',' paramsParameters += AnonymousParameter)*)? ")")  |
-		({FeatureCall.target=current} ":" type=ID) // |
+	PrimaryExpression ( 
+	  	({OperationCall.target=current} "." name=ID  "(" (params+=Parameter ("," params+=Parameter)*)? ")")
+	  |	({AtCall.target=current} '[' index=Expression ']'
+	  		("(" (params+=Parameter ("," params+=Parameter)*)? ")")?) 	  
+//	  ({OperationCall.target=current} name='[' nameExpr += Parameter ']' "(" (params+=Parameter ("," params+=Parameter)*)? ")") |
+//	  ({FeatureCall.target=current} type="[" expr=Expression "]") |
+	  | ({FeatureCall.target=current} "." type=ID)
 //		({TypeSelectExpression.target=current} "." name="typeSelect" "(" type=Type ")") |
 //		({CollectionExpression.target=current} name=("collect"|"select"|"selectFirst"|"reject"|"exists"|"notExists"|"sortBy"|"forAll") "(" (var=ID "|")? exp=Expression ")")
 	)*;
+
+//AtExpression returns Expression
+//	: PrimaryExpression ( 
+//		({AtCall.target=current} '[' feature=Parameter ']')
+//		    ("(" (params+=Parameter ("," params+=Parameter)*)? ")")?
+//		)*
+//	;
+
 
 PrimaryExpression returns Expression
 	: Literal 
 	| FeatureCall 
 //	ListLiteral |
 //	ConstructorCallExpression |
-	| GlobalVarExpression
+	| VariableValue
+	| PropertyValue
 	| ParanthesizedExpression
 	;
+
+PropertyValue : name = PID;
+VariableValue : name = ID ;
+
 FeatureCall:
 	OperationCall //|
 //	(type=Type) |
@@ -375,25 +504,33 @@ FeatureCall:
 //	TypeSelectExpression
 	;
 	
-OperationCall:
-	name=QualifiedName "(" (params+=Parameter ("," params+=Parameter)*)? 
-		('...' paramsParameters += AnonymousParameter (',' paramsParameters += AnonymousParameter)*)? 
-	")"
+OperationCall 
+	: name=(ID|PID) "(" (params+=Parameter ("," params+=Parameter)*)? ")" 
 	;
 	
-Literal:
-	BooleanLiteral | IntegerLiteral | NullLiteral
-	| StringLiteral;
+Literal
+	: ValueLiteral
+	| RegexpLiteral
+	;
 	
-BooleanLiteral: val=("true" | "false");
-IntegerLiteral: val=INT;
-NullLiteral:    val="null";
-StringLiteral:	val=STRING;
+ValueLiteral
+	: BooleanLiteral 
+	| IntegerLiteral 
+	| NullLiteral
+	| StringLiteral
+	| RealLiteral
+	;
+	
+BooleanLiteral	: val = ("true" | "false");
+IntegerLiteral	: val = INT|HEX;
+NullLiteral		: val = "null";
+StringLiteral	: val = STRING;
+RealLiteral		: val = REAL;
+RegexpLiteral	: val = REGEX;
 
+	
 ParanthesizedExpression returns Expression
 	: "(" Expression ")"
 	;	
-	
-GlobalVarExpression 
-	: name=QualifiedName
-	;
+
+
