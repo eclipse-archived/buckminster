@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://maven.apache.org/POM/4.0.0"
+            class="org.eclipse.buckminster.aggregator.engine.maven.pom.PomPackage"
+            genModel="model/pom.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://maven.apache.org/maven-metadata/1.0.0"
+            class="org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataPackage"
+            genModel="model/metadata.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="pom"
+            class="org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="xml"
+            class="org.eclipse.buckminster.aggregator.engine.maven.metadata.util.MetadataResourceFactoryImpl"/>
+   </extension>
+
+</plugin>
