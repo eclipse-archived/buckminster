@@ -92,9 +92,11 @@ public class ItemUtils
 	public static MappedRepository findMappedRepository(Aggregator aggregator, MetadataRepository mdr)
 	{
 		for(Contribution contribution : aggregator.getContributions())
-			for(MappedRepository repo : contribution.getRepositories())
-				if(repo.getMetadataRepository() == mdr)
-					return repo;
+		{
+			MappedRepository repo = findMappedRepository(contribution, mdr);
+			if(repo != null)
+				return repo;
+		}
 
 		return null;
 	}
@@ -112,8 +114,7 @@ public class ItemUtils
 			return null;
 
 		for(MappedRepository repo : contribution.getRepositories())
-			if(mdr.getLocation() != null && repo.getLocation() != null
-					&& mdr.getLocation().toString().equalsIgnoreCase(repo.getResolvedLocation()))
+			if(mdr.equals(repo.getMetadataRepository()) && repo.isBranchEnabled())
 				return repo;
 
 		return null;
@@ -126,11 +127,11 @@ public class ItemUtils
 		for(Contribution contribution : aggregator.getContributions())
 			for(MappedRepository repo : contribution.getRepositories())
 			{
-				if(repo.getMetadataRepository() != mdr)
+				if(!mdr.equals(repo.getMetadataRepository()))
 					continue;
 
 				for(MappedUnit unit : repo.getUnits(false))
-					if(unit.getInstallableUnit() == iu)
+					if(iu.equals(unit.getInstallableUnit()))
 						return unit;
 			}
 
@@ -140,7 +141,7 @@ public class ItemUtils
 	public static MappedUnit findMappedUnit(MappedRepository mappedRepo, InstallableUnit iu)
 	{
 		for(MappedUnit unit : mappedRepo.getUnits(false))
-			if(unit.getInstallableUnit() == iu)
+			if(iu.equals(unit.getInstallableUnit()))
 				return unit;
 
 		return null;

@@ -30,14 +30,15 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
+import org.eclipse.buckminster.aggregator.util.AddToParentRepositoryCommand;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
-import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -113,6 +114,36 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 			m_domain = domain;
 			m_command = new AddToCustomCategoryCommand(customCategory, selectedFeatures);
+
+			setText((customCategory.getLabel() == null || customCategory.getLabel().length() == 0)
+					? "''"
+					: customCategory.getLabel());
+			setEnabled(m_command.canExecute());
+		}
+
+		@Override
+		public void run()
+		{
+			m_domain.getCommandStack().execute(m_command);
+		}
+	}
+
+	class AddToParentRepositoryAction extends Action
+	{
+		private EditingDomain m_domain;
+
+		private AddToParentRepositoryCommand m_command;
+
+		public AddToParentRepositoryAction(EditingDomain domain, List<InstallableUnit> selectedIUs)
+		{
+			Object imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Contribution.gif");
+
+			if(imageURL != null && imageURL instanceof URL)
+				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
+
+			m_domain = domain;
+			m_command = new AddToParentRepositoryCommand(ResourceUtils.getAggregator(domain.getResourceSet()),
+					selectedIUs);
 
 			setText(m_command.getLabel());
 			setEnabled(m_command.canExecute());
@@ -515,7 +546,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected BuildRepoAction m_cleanBuildRepoAction;
 
-	protected List<IAction> m_mapToContributionActions = new ArrayList<IAction>();
+	protected IAction m_addToParentRepositoryAction;
 
 	protected List<IAction> m_addToCustomCategoriesActions = new ArrayList<IAction>();
 
@@ -602,27 +633,16 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		menuAboutToShowGen(menuManager);
 
-		if(m_mapToContributionActions != null && m_mapToContributionActions.size() > 0)
-			if(m_mapToContributionActions.size() == 1)
-				menuManager.insertBefore("edit", m_mapToContributionActions.get(0));
-			else
-			{
-				MenuManager submenuManager = new MenuManager(
-						AggregatorEditorPlugin.INSTANCE.getString("_UI_Map_to_menu_item"));
-				populateManager(submenuManager, m_mapToContributionActions, null);
-				menuManager.insertBefore("edit", submenuManager);
-			}
+		if(m_addToParentRepositoryAction != null)
+			menuManager.insertBefore("edit", m_addToParentRepositoryAction);
 
 		if(m_addToCustomCategoriesActions != null && m_addToCustomCategoriesActions.size() > 0)
-			if(m_addToCustomCategoriesActions.size() == 1)
-				menuManager.insertBefore("edit", m_addToCustomCategoriesActions.get(0));
-			else
-			{
-				MenuManager submenuManager = new MenuManager(
-						AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_to_menu_item"));
-				populateManager(submenuManager, m_addToCustomCategoriesActions, null);
-				menuManager.insertBefore("edit", submenuManager);
-			}
+		{
+			MenuManager submenuManager = new MenuManager(
+					AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_to_Custom_Category_menu_item"));
+			populateManager(submenuManager, m_addToCustomCategoriesActions, null);
+			menuManager.insertBefore("edit", submenuManager);
+		}
 
 		menuManager.insertBefore("edit", m_enabledStatusMenuItem);
 		menuManager.insertBefore("edit", m_reloadRepoMenuItem);
@@ -834,7 +854,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			createSiblingMenuManager.update(true);
 		}
 
-		m_mapToContributionActions = generateMapToContributionActions(selection);
+		m_addToParentRepositoryAction = generateAddToParentRepositoryAction(selection);
 		m_addToCustomCategoriesActions = generateAddToCustomCategoryActions(selection);
 	}
 
@@ -1009,36 +1029,30 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<IAction> generateMapToContributionActions(ISelection selection)
+	private IAction generateAddToParentRepositoryAction(ISelection selection)
 	{
+		IAction action = null;
+
 		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() > 0)
 		{
 			ItemSorter itemSorter = new ItemSorter(((IStructuredSelection)selection).toList());
 
-			List<IAction> mapToActions = new ArrayList<IAction>();
-
 			if(itemSorter.getTotalItemCount() > 0
-					&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(
-							ItemGroup.IU).size()) || (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(
-							ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size()))))
+					&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.IU).size() || (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
+							ItemGroup.IU_STRUCTURED).size())))
 			{
-				List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
 				List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
 
-				mdrs.addAll((List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR));
-				mdrs.addAll(ItemUtils.getMDRs((List<MetadataRepositoryStructuredView>)itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED)));
 				ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
 				ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
 
-				for(Contribution contribution : m_aggregator.getContributions())
-					if(contribution.isEnabled())
-						mapToActions.add(new MapToContributionAction(
-								((IEditingDomainProvider)activeEditorPart).getEditingDomain(), contribution, mdrs, ius));
+				action = new AddToParentRepositoryAction(((IEditingDomainProvider)activeEditorPart).getEditingDomain(),
+						ius);
 			}
 
-			return mapToActions;
+			return action;
 		}
 
-		return Collections.emptyList();
+		return action;
 	}
 }

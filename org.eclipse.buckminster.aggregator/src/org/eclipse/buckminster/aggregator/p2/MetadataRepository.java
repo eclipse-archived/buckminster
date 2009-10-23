@@ -90,4 +90,12 @@ public interface MetadataRepository extends EObject, IMetadataRepository
 	 * @generated
 	 */
 	EList<RepositoryReference> getRepositoryReferences();
+
+	/*
+	 * Returns location URI
+	 * 
+	 * @return if "getLocation()" is not null, then returns "getLocation()" otherwise it returns
+	 * "getLocationFromProxy()"
+	 */
+	URI getSafeLocation();
 } // MetadataRepository

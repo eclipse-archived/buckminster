@@ -531,6 +531,16 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 		return super.eObjectForURIFragmentSegment(uriFragmentSegment);
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(this == obj)
+			return true;
+		if(!(obj instanceof MetadataRepository))
+			return false;
+		return getSafeLocation().equals(((MetadataRepository)obj).getSafeLocation());
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -748,6 +758,13 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 					P2Package.METADATA_REPOSITORY__REPOSITORY_REFERENCES);
 		}
 		return repositoryReferences;
+	}
+
+	public URI getSafeLocation()
+	{
+		return location != null
+				? location
+				: getLocationFromProxy();
 	}
 
 	/**
