@@ -62,12 +62,28 @@ public interface AggregatorPackage extends EPackage
 		EAttribute AGGREGATOR__TYPE = eINSTANCE.getAggregator_Type();
 
 		/**
+		 * The meta object literal for the '<em><b>Maven Result</b></em>' attribute feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute AGGREGATOR__MAVEN_RESULT = eINSTANCE.getAggregator_MavenResult();
+
+		/**
 		 * The meta object literal for the '<em><b>Validation Repositories</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference AGGREGATOR__VALIDATION_REPOSITORIES = eINSTANCE.getAggregator_ValidationRepositories();
+
+		/**
+		 * The meta object literal for the '<em><b>Maven Mappings</b></em>' containment reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference AGGREGATOR__MAVEN_MAPPINGS = eINSTANCE.getAggregator_MavenMappings();
 
 		/**
 		 * The meta object literal for the '<em><b>Build Root</b></em>' attribute feature. <!-- begin-user-doc --> <!--
@@ -274,6 +290,14 @@ public interface AggregatorPackage extends EPackage
 		 * @generated
 		 */
 		EReference CONTRIBUTION__CONTACTS = eINSTANCE.getContribution_Contacts();
+
+		/**
+		 * The meta object literal for the '<em><b>Maven Mappings</b></em>' containment reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference CONTRIBUTION__MAVEN_MAPPINGS = eINSTANCE.getContribution_MavenMappings();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.ContactImpl <em>Contact</em>}
@@ -609,6 +633,66 @@ public interface AggregatorPackage extends EPackage
 		EAttribute DESCRIPTION_PROVIDER__DESCRIPTION = eINSTANCE.getDescriptionProvider_Description();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl
+		 * <em>Maven Mapping</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.MavenMappingImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMavenMapping()
+		 * @generated
+		 */
+		EClass MAVEN_MAPPING = eINSTANCE.getMavenMapping();
+
+		/**
+		 * The meta object literal for the '<em><b>Name Pattern</b></em>' attribute feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAVEN_MAPPING__NAME_PATTERN = eINSTANCE.getMavenMapping_NamePattern();
+
+		/**
+		 * The meta object literal for the '<em><b>Group Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAVEN_MAPPING__GROUP_ID = eINSTANCE.getMavenMapping_GroupId();
+
+		/**
+		 * The meta object literal for the '<em><b>Artifact Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAVEN_MAPPING__ARTIFACT_ID = eINSTANCE.getMavenMapping_ArtifactId();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.impl.MavenItemImpl
+		 * <em>Maven Item</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.impl.MavenItemImpl
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMavenItem()
+		 * @generated
+		 */
+		EClass MAVEN_ITEM = eINSTANCE.getMavenItem();
+
+		/**
+		 * The meta object literal for the '<em><b>Group Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAVEN_ITEM__GROUP_ID = eINSTANCE.getMavenItem_GroupId();
+
+		/**
+		 * The meta object literal for the '<em><b>Artifact Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAVEN_ITEM__ARTIFACT_ID = eINSTANCE.getMavenItem_ArtifactId();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -827,13 +911,30 @@ public interface AggregatorPackage extends EPackage
 	int AGGREGATOR__TYPE = DESCRIPTION_PROVIDER_FEATURE_COUNT + 9;
 
 	/**
+	 * The feature id for the '<em><b>Maven Result</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__MAVEN_RESULT = DESCRIPTION_PROVIDER_FEATURE_COUNT + 10;
+
+	/**
 	 * The feature id for the '<em><b>Validation Repositories</b></em>' containment reference list. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR__VALIDATION_REPOSITORIES = DESCRIPTION_PROVIDER_FEATURE_COUNT + 10;
+	int AGGREGATOR__VALIDATION_REPOSITORIES = DESCRIPTION_PROVIDER_FEATURE_COUNT + 11;
+
+	/**
+	 * The feature id for the '<em><b>Maven Mappings</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int AGGREGATOR__MAVEN_MAPPINGS = DESCRIPTION_PROVIDER_FEATURE_COUNT + 12;
 
 	/**
 	 * The number of structural features of the '<em>Aggregator</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -842,7 +943,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int AGGREGATOR_FEATURE_COUNT = DESCRIPTION_PROVIDER_FEATURE_COUNT + 11;
+	int AGGREGATOR_FEATURE_COUNT = DESCRIPTION_PROVIDER_FEATURE_COUNT + 13;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.EnabledStatusProvider
@@ -1145,13 +1246,22 @@ public interface AggregatorPackage extends EPackage
 	int CONTRIBUTION__CONTACTS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Maven Mappings</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CONTRIBUTION__MAVEN_MAPPINGS = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Contribution</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CONTRIBUTION_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 4;
+	int CONTRIBUTION_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1708,6 +1818,84 @@ public interface AggregatorPackage extends EPackage
 	int LABEL_PROVIDER_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl
+	 * <em>Maven Mapping</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.MavenMappingImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMavenMapping()
+	 * @generated
+	 */
+	int MAVEN_MAPPING = 22;
+
+	/**
+	 * The feature id for the '<em><b>Name Pattern</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_MAPPING__NAME_PATTERN = 0;
+
+	/**
+	 * The feature id for the '<em><b>Group Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_MAPPING__GROUP_ID = 1;
+
+	/**
+	 * The feature id for the '<em><b>Artifact Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_MAPPING__ARTIFACT_ID = 2;
+
+	/**
+	 * The number of structural features of the '<em>Maven Mapping</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_MAPPING_FEATURE_COUNT = 3;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MavenItemImpl <em>Maven Item</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.impl.MavenItemImpl
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getMavenItem()
+	 * @generated
+	 */
+	int MAVEN_ITEM = 23;
+
+	/**
+	 * The feature id for the '<em><b>Group Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_ITEM__GROUP_ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Artifact Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_ITEM__ARTIFACT_ID = 1;
+
+	/**
+	 * The number of structural features of the '<em>Maven Item</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_ITEM_FEATURE_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.AggregateType <em>Aggregate Type</em>}'
 	 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1715,7 +1903,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 22;
+	int AGGREGATE_TYPE = 24;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1725,7 +1913,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 23;
+	int OPERATING_SYSTEM = 25;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1735,7 +1923,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 24;
+	int WINDOW_SYSTEM = 26;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1745,7 +1933,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 25;
+	int ARCHITECTURE = 27;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1755,7 +1943,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 26;
+	int PACKED_STRATEGY = 28;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1764,7 +1952,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 27;
+	int URI = 29;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -1866,6 +2054,29 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getAggregator_Label();
+
+	/**
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.Aggregator#getMavenMappings <em>Maven Mappings</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference list '<em>Maven Mappings</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Aggregator#getMavenMappings()
+	 * @see #getAggregator()
+	 * @generated
+	 */
+	EReference getAggregator_MavenMappings();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.Aggregator#isMavenResult
+	 * <em>Maven Result</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Maven Result</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Aggregator#isMavenResult()
+	 * @see #getAggregator()
+	 * @generated
+	 */
+	EAttribute getAggregator_MavenResult();
 
 	/**
 	 * Returns the meta object for the attribute '
@@ -2095,6 +2306,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getContribution_Label();
+
+	/**
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.Contribution#getMavenMappings <em>Maven Mappings</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference list '<em>Maven Mappings</em>'.
+	 * @see org.eclipse.buckminster.aggregator.Contribution#getMavenMappings()
+	 * @see #getContribution()
+	 * @generated
+	 */
+	EReference getContribution_MavenMappings();
 
 	/**
 	 * Returns the meta object for the containment reference list '
@@ -2408,6 +2631,81 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EClass getMapRule();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MavenItem <em>Maven Item</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Maven Item</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenItem
+	 * @generated
+	 */
+	EClass getMavenItem();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MavenItem#getArtifactId
+	 * <em>Artifact Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Artifact Id</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenItem#getArtifactId()
+	 * @see #getMavenItem()
+	 * @generated
+	 */
+	EAttribute getMavenItem_ArtifactId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MavenItem#getGroupId
+	 * <em>Group Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Group Id</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenItem#getGroupId()
+	 * @see #getMavenItem()
+	 * @generated
+	 */
+	EAttribute getMavenItem_GroupId();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MavenMapping <em>Maven Mapping</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Maven Mapping</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenMapping
+	 * @generated
+	 */
+	EClass getMavenMapping();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MavenMapping#getArtifactId
+	 * <em>Artifact Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Artifact Id</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenMapping#getArtifactId()
+	 * @see #getMavenMapping()
+	 * @generated
+	 */
+	EAttribute getMavenMapping_ArtifactId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MavenMapping#getGroupId
+	 * <em>Group Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Group Id</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenMapping#getGroupId()
+	 * @see #getMavenMapping()
+	 * @generated
+	 */
+	EAttribute getMavenMapping_GroupId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.MavenMapping#getNamePattern
+	 * <em>Name Pattern</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Name Pattern</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MavenMapping#getNamePattern()
+	 * @see #getMavenMapping()
+	 * @generated
+	 */
+	EAttribute getMavenMapping_NamePattern();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference

@@ -149,6 +149,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES);
+			childrenFeatures.add(AggregatorPackage.Literals.CONTRIBUTION__MAVEN_MAPPINGS);
 		}
 		return childrenFeatures;
 	}
@@ -206,6 +207,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 			addDescriptionPropertyDescriptor(object);
 			addLabelPropertyDescriptor(object);
 			addContactsPropertyDescriptor(object);
+			addMavenMappingsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -354,6 +356,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
+		case AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -420,6 +423,20 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	}
 
 	/**
+	 * This adds a property descriptor for the Maven Mappings feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addMavenMappingsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Contribution_mavenMappings_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Contribution_mavenMappings_feature", "_UI_Contribution_type"),
+				AggregatorPackage.Literals.CONTRIBUTION__MAVEN_MAPPINGS, true, false, true, null, null, null));
+	}
+
+	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -432,6 +449,9 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__REPOSITORIES,
 				AggregatorFactory.eINSTANCE.createMappedRepository()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.CONTRIBUTION__MAVEN_MAPPINGS,
+				AggregatorFactory.eINSTANCE.createMavenMapping()));
 	}
 
 	/**

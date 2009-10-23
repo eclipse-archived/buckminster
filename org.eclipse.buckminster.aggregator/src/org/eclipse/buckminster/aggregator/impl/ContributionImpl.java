@@ -8,11 +8,13 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.Collection;
 
+import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -41,6 +43,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getRepositories <em>Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getContacts <em>Contacts</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getMavenMappings <em>Maven Mappings</em>}</li>
  * </ul>
  * </p>
  * 
@@ -138,6 +141,16 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	protected EList<Contact> contacts;
 
 	/**
+	 * The cached value of the '{@link #getMavenMappings() <em>Maven Mappings</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getMavenMappings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<MavenMapping> mavenMappings;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -210,6 +223,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return getRepositories();
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			return getContacts();
+		case AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS:
+			return getMavenMappings();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -226,6 +241,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		{
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
 			return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
+		case AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS:
+			return ((InternalEList<?>)getMavenMappings()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -254,6 +271,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return repositories != null && !repositories.isEmpty();
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			return contacts != null && !contacts.isEmpty();
+		case AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS:
+			return mavenMappings != null && !mavenMappings.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -286,6 +305,10 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			getContacts().clear();
 			getContacts().addAll((Collection<? extends Contact>)newValue);
 			return;
+		case AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS:
+			getMavenMappings().clear();
+			getMavenMappings().addAll((Collection<? extends MavenMapping>)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -315,8 +338,27 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			getContacts().clear();
 			return;
+		case AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS:
+			getMavenMappings().clear();
+			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<MavenMapping> getAllMavenMappings()
+	{
+		EList<MavenMapping> myMappings = getMavenMappings();
+		EList<MavenMapping> parentMappings = ((Aggregator)eContainer()).getMavenMappings();
+		EList<MavenMapping> allMappings = new BasicEList<MavenMapping>(myMappings.size() + parentMappings.size());
+		allMappings.addAll(myMappings);
+		allMappings.addAll(parentMappings);
+
+		return allMappings;
 	}
 
 	/**
@@ -351,6 +393,21 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	public String getLabel()
 	{
 		return label;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<MavenMapping> getMavenMappings()
+	{
+		if(mavenMappings == null)
+		{
+			mavenMappings = new EObjectContainmentEList<MavenMapping>(MavenMapping.class, this,
+					AggregatorPackage.CONTRIBUTION__MAVEN_MAPPINGS);
+		}
+		return mavenMappings;
 	}
 
 	/**

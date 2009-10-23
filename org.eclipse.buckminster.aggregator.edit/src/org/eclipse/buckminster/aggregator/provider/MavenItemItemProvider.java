@@ -7,22 +7,19 @@
  *
  * $Id$
  */
-package org.eclipse.buckminster.aggregator.p2view.provider;
+package org.eclipse.buckminster.aggregator.provider;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
-
-import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
-import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.MavenItem;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -31,14 +28,16 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.Miscellaneous} object. <!--
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.MavenItem} object. <!--
  * begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class MiscellaneousItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
+public class MavenItemItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IItemColorProvider
 {
@@ -47,39 +46,20 @@ public class MiscellaneousItemProvider extends AggregatorItemProviderAdapter imp
 	 * 
 	 * @generated
 	 */
-	public MiscellaneousItemProvider(AdapterFactory adapterFactory)
+	public MavenItemItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
-	{
-		if(childrenFeatures == null)
-		{
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(P2viewPackage.Literals.MISCELLANEOUS__OTHERS);
-		}
-		return childrenFeatures;
-	}
-
-	/**
-	 * This returns Miscellaneous.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns MavenItem.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Miscellaneous"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/MavenItem"));
 	}
 
 	/**
@@ -94,7 +74,8 @@ public class MiscellaneousItemProvider extends AggregatorItemProviderAdapter imp
 		{
 			super.getPropertyDescriptors(object);
 
-			addOthersPropertyDescriptor(object);
+			addGroupIdPropertyDescriptor(object);
+			addArtifactIdPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -118,7 +99,10 @@ public class MiscellaneousItemProvider extends AggregatorItemProviderAdapter imp
 	@Override
 	public String getText(Object object)
 	{
-		return getString("_UI_Miscellaneous_type");
+		String label = ((MavenItem)object).getGroupId();
+		return label == null || label.length() == 0
+				? getString("_UI_MavenItem_type")
+				: getString("_UI_MavenItem_type") + " " + label;
 	}
 
 	/**
@@ -132,21 +116,45 @@ public class MiscellaneousItemProvider extends AggregatorItemProviderAdapter imp
 	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
+
+		switch(notification.getFeatureID(MavenItem.class))
+		{
+		case AggregatorPackage.MAVEN_ITEM__GROUP_ID:
+		case AggregatorPackage.MAVEN_ITEM__ARTIFACT_ID:
+			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+			return;
+		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds a property descriptor for the Others feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Artifact Id feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addOthersPropertyDescriptor(Object object)
+	protected void addArtifactIdPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Miscellaneous_others_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Miscellaneous_others_feature", "_UI_Miscellaneous_type"),
-				P2viewPackage.Literals.MISCELLANEOUS__OTHERS, false, false, true, null, null, null));
+				getString("_UI_MavenItem_artifactId_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_MavenItem_artifactId_feature", "_UI_MavenItem_type"),
+				AggregatorPackage.Literals.MAVEN_ITEM__ARTIFACT_ID, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Group Id feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addGroupIdPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MavenItem_groupId_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_MavenItem_groupId_feature", "_UI_MavenItem_type"),
+				AggregatorPackage.Literals.MAVEN_ITEM__GROUP_ID, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -159,20 +167,6 @@ public class MiscellaneousItemProvider extends AggregatorItemProviderAdapter imp
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child)
-	{
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
 	}
 
 }

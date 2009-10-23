@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.EList;
  *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getRepositories <em>Repositories</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getContacts <em>Contacts</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getMavenMappings <em>Maven Mappings</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -28,6 +29,14 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Contribution extends EnabledStatusProvider, DescriptionProvider, StatusProvider
 {
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	EList<MavenMapping> getAllMavenMappings();
+
 	/**
 	 * Returns the value of the '<em><b>Contacts</b></em>' reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.aggregator.Contact}. <!-- begin-user-doc -->
@@ -59,6 +68,22 @@ public interface Contribution extends EnabledStatusProvider, DescriptionProvider
 	 * @generated
 	 */
 	String getLabel();
+
+	/**
+	 * Returns the value of the '<em><b>Maven Mappings</b></em>' containment reference list. The list contents are of
+	 * type {@link org.eclipse.buckminster.aggregator.MavenMapping}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Maven Mappings</em>' reference list isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Maven Mappings</em>' containment reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution_MavenMappings()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<MavenMapping> getMavenMappings();
 
 	/**
 	 * Returns the value of the '<em><b>Repositories</b></em>' containment reference list. The list contents are of type

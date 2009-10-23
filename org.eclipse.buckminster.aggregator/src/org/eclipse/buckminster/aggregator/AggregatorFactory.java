@@ -131,6 +131,22 @@ public interface AggregatorFactory extends EFactory
 	MappedUnit createMappedUnit(InstallableUnit iu);
 
 	/**
+	 * Returns a new object of class '<em>Maven Item</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Maven Item</em>'.
+	 * @generated
+	 */
+	MavenItem createMavenItem();
+
+	/**
+	 * Returns a new object of class '<em>Maven Mapping</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Maven Mapping</em>'.
+	 * @generated
+	 */
+	MavenMapping createMavenMapping();
+
+	/**
 	 * Returns a new object of class '<em>Metadata Repository Reference</em>'. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 

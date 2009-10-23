@@ -64,6 +64,11 @@ public final class AggregatorPlugin extends EMFPlugin
 		return plugin;
 	}
 
+	public static String getPluginID()
+	{
+		return plugin.getSymbolicName();
+	}
+
 	/**
 	 * Create the instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

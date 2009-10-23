@@ -15,6 +15,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
@@ -45,8 +46,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getPackedStrategy <em>Packed Strategy</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isSendmail <em>Sendmail</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#isMavenResult <em>Maven Result</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getValidationRepositories <em>Validation
  * Repositories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getMavenMappings <em>Maven Mappings</em>}</li>
  * </ul>
  * </p>
  * 
@@ -259,6 +262,26 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	protected static final int TYPE_EFLAG = 0x7 << TYPE_EFLAG_OFFSET;
 
 	/**
+	 * The default value of the '{@link #isMavenResult() <em>Maven Result</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #isMavenResult()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean MAVEN_RESULT_EDEFAULT = false;
+
+	/**
+	 * The flag representing the value of the '{@link #isMavenResult() <em>Maven Result</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #isMavenResult()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MAVEN_RESULT_EFLAG = 1 << 7;
+
+	/**
 	 * The cached value of the '{@link #getValidationRepositories() <em>Validation Repositories</em>}' containment
 	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -267,6 +290,16 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 * @ordered
 	 */
 	protected EList<MetadataRepositoryReference> validationRepositories;
+
+	/**
+	 * The cached value of the '{@link #getMavenMappings() <em>Maven Mappings</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getMavenMappings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<MavenMapping> mavenMappings;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -320,8 +353,12 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 			return isSendmail();
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			return getType();
+		case AggregatorPackage.AGGREGATOR__MAVEN_RESULT:
+			return isMavenResult();
 		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
 			return getValidationRepositories();
+		case AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS:
+			return getMavenMappings();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -363,6 +400,8 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 			return ((InternalEList<?>)getCustomCategories()).basicRemove(otherEnd, msgs);
 		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
 			return ((InternalEList<?>)getValidationRepositories()).basicRemove(otherEnd, msgs);
+		case AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS:
+			return ((InternalEList<?>)getMavenMappings()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -401,8 +440,12 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 			return ((eFlags & SENDMAIL_EFLAG) != 0) != SENDMAIL_EDEFAULT;
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			return (eFlags & TYPE_EFLAG) != TYPE_EFLAG_DEFAULT;
+		case AggregatorPackage.AGGREGATOR__MAVEN_RESULT:
+			return ((eFlags & MAVEN_RESULT_EFLAG) != 0) != MAVEN_RESULT_EDEFAULT;
 		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
 			return validationRepositories != null && !validationRepositories.isEmpty();
+		case AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS:
+			return mavenMappings != null && !mavenMappings.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -452,9 +495,16 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			setType((AggregateType)newValue);
 			return;
+		case AggregatorPackage.AGGREGATOR__MAVEN_RESULT:
+			setMavenResult((Boolean)newValue);
+			return;
 		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
 			getValidationRepositories().clear();
 			getValidationRepositories().addAll((Collection<? extends MetadataRepositoryReference>)newValue);
+			return;
+		case AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS:
+			getMavenMappings().clear();
+			getMavenMappings().addAll((Collection<? extends MavenMapping>)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -500,8 +550,14 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		case AggregatorPackage.AGGREGATOR__TYPE:
 			setType(TYPE_EDEFAULT);
 			return;
+		case AggregatorPackage.AGGREGATOR__MAVEN_RESULT:
+			setMavenResult(MAVEN_RESULT_EDEFAULT);
+			return;
 		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
 			getValidationRepositories().clear();
+			return;
+		case AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS:
+			getMavenMappings().clear();
 			return;
 		}
 		super.eUnset(featureID);
@@ -666,6 +722,21 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 * 
 	 * @generated
 	 */
+	public EList<MavenMapping> getMavenMappings()
+	{
+		if(mavenMappings == null)
+		{
+			mavenMappings = new EObjectContainmentEList<MavenMapping>(MavenMapping.class, this,
+					AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS);
+		}
+		return mavenMappings;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public PackedStrategy getPackedStrategy()
 	{
 		return PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET];
@@ -747,6 +818,16 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 * 
 	 * @generated
 	 */
+	public boolean isMavenResult()
+	{
+		return (eFlags & MAVEN_RESULT_EFLAG) != 0;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean isSendmail()
 	{
 		return (eFlags & SENDMAIL_EFLAG) != 0;
@@ -791,6 +872,23 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		label = newLabel;
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__LABEL, oldLabel, label));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setMavenResult(boolean newMavenResult)
+	{
+		boolean oldMavenResult = (eFlags & MAVEN_RESULT_EFLAG) != 0;
+		if(newMavenResult)
+			eFlags |= MAVEN_RESULT_EFLAG;
+		else
+			eFlags &= ~MAVEN_RESULT_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AggregatorPackage.AGGREGATOR__MAVEN_RESULT,
+					oldMavenResult, newMavenResult));
 	}
 
 	/**
@@ -863,6 +961,8 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		result.append((eFlags & SENDMAIL_EFLAG) != 0);
 		result.append(", type: ");
 		result.append(TYPE_EFLAG_VALUES[(eFlags & TYPE_EFLAG) >>> TYPE_EFLAG_OFFSET]);
+		result.append(", mavenResult: ");
+		result.append((eFlags & MAVEN_RESULT_EFLAG) != 0);
 		result.append(')');
 		return result.toString();
 	}

@@ -26,8 +26,10 @@ import org.eclipse.emf.common.util.EList;
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isMavenResult <em>Maven Result</em>}</li>
  *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getValidationRepositories <em>Validation
  *          Repositories</em>}</li>
+ *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getMavenMappings <em>Maven Mappings</em>}</li>
  *          </ul>
  *          </p>
  * 
@@ -169,6 +171,22 @@ public interface Aggregator extends DescriptionProvider, StatusProvider
 	String getLabel();
 
 	/**
+	 * Returns the value of the '<em><b>Maven Mappings</b></em>' containment reference list. The list contents are of
+	 * type {@link org.eclipse.buckminster.aggregator.MavenMapping}. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Maven Mappings</em>' reference list isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Maven Mappings</em>' containment reference list.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_MavenMappings()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<MavenMapping> getMavenMappings();
+
+	/**
 	 * Returns the value of the '<em><b>Packed Strategy</b></em>' attribute. The literals are from the enumeration
 	 * {@link org.eclipse.buckminster.aggregator.PackedStrategy}. <!-- begin-user-doc -->
 	 * <p>
@@ -228,6 +246,22 @@ public interface Aggregator extends DescriptionProvider, StatusProvider
 	EList<MetadataRepositoryReference> getValidationRepositories(boolean enabledOnly);
 
 	/**
+	 * Returns the value of the '<em><b>Maven Result</b></em>' attribute. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Maven Result</em>' attribute isn't clear, there really should be more of a description
+	 * here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Maven Result</em>' attribute.
+	 * @see #setMavenResult(boolean)
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator_MavenResult()
+	 * @model
+	 * @generated
+	 */
+	boolean isMavenResult();
+
+	/**
 	 * Returns the value of the '<em><b>Sendmail</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Sendmail</em>' attribute isn't clear, there really should be more of a description
@@ -275,6 +309,17 @@ public interface Aggregator extends DescriptionProvider, StatusProvider
 	 * @generated
 	 */
 	void setLabel(String value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#isMavenResult <em>Maven Result</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Maven Result</em>' attribute.
+	 * @see #isMavenResult()
+	 * @generated
+	 */
+	void setMavenResult(boolean value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy

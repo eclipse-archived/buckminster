@@ -23,6 +23,8 @@ import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MavenItem;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
@@ -156,6 +158,18 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseMapRule(MapRule object)
 		{
 			return createMapRuleAdapter();
+		}
+
+		@Override
+		public Adapter caseMavenItem(MavenItem object)
+		{
+			return createMavenItemAdapter();
+		}
+
+		@Override
+		public Adapter caseMavenMapping(MavenMapping object)
+		{
+			return createMavenMappingAdapter();
 		}
 
 		@Override
@@ -481,6 +495,36 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createMapRuleAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MavenItem
+	 * <em>Maven Item</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.MavenItem
+	 * @generated
+	 */
+	public Adapter createMavenItemAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.MavenMapping
+	 * <em>Maven Mapping</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.MavenMapping
+	 * @generated
+	 */
+	public Adapter createMavenMappingAdapter()
 	{
 		return null;
 	}

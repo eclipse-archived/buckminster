@@ -69,6 +69,7 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CONTACTS);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__CUSTOM_CATEGORIES);
 			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__VALIDATION_REPOSITORIES);
+			childrenFeatures.add(AggregatorPackage.Literals.AGGREGATOR__MAVEN_MAPPINGS);
 		}
 		return childrenFeatures;
 	}
@@ -102,6 +103,8 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 			addPackedStrategyPropertyDescriptor(object);
 			addSendmailPropertyDescriptor(object);
 			addTypePropertyDescriptor(object);
+			addMavenResultPropertyDescriptor(object);
+			addMavenMappingsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -165,6 +168,7 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 		case AggregatorPackage.AGGREGATOR__PACKED_STRATEGY:
 		case AggregatorPackage.AGGREGATOR__SENDMAIL:
 		case AggregatorPackage.AGGREGATOR__TYPE:
+		case AggregatorPackage.AGGREGATOR__MAVEN_RESULT:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
@@ -172,6 +176,7 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 		case AggregatorPackage.AGGREGATOR__CONTACTS:
 		case AggregatorPackage.AGGREGATOR__CUSTOM_CATEGORIES:
 		case AggregatorPackage.AGGREGATOR__VALIDATION_REPOSITORIES:
+		case AggregatorPackage.AGGREGATOR__MAVEN_MAPPINGS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 			return;
 		}
@@ -220,6 +225,35 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 						"_UI_Aggregator_label_feature", "_UI_Aggregator_type"),
 				AggregatorPackage.Literals.AGGREGATOR__LABEL, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Maven Mappings feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addMavenMappingsPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Aggregator_mavenMappings_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Aggregator_mavenMappings_feature", "_UI_Aggregator_type"),
+				AggregatorPackage.Literals.AGGREGATOR__MAVEN_MAPPINGS, true, false, true, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Maven Result feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addMavenResultPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_Aggregator_mavenResult_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Aggregator_mavenResult_feature", "_UI_Aggregator_type"),
+				AggregatorPackage.Literals.AGGREGATOR__MAVEN_RESULT, true, false, false,
+				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -292,6 +326,9 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 
 		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__VALIDATION_REPOSITORIES,
 				AggregatorFactory.eINSTANCE.createMetadataRepositoryReference()));
+
+		newChildDescriptors.add(createChildParameter(AggregatorPackage.Literals.AGGREGATOR__MAVEN_MAPPINGS,
+				AggregatorFactory.eINSTANCE.createMavenMapping()));
 	}
 
 	/**

@@ -25,6 +25,8 @@ import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MavenItem;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
@@ -322,6 +324,36 @@ public class AggregatorSwitch<T1>
 	 * @generated
 	 */
 	public T1 caseMapRule(MapRule object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Maven Item</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Maven Item</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseMavenItem(MavenItem object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Maven Mapping</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Maven Mapping</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseMavenMapping(MavenMapping object)
 	{
 		return null;
 	}
@@ -707,6 +739,22 @@ public class AggregatorSwitch<T1>
 		{
 			DescriptionProvider descriptionProvider = (DescriptionProvider)theEObject;
 			T1 result = caseDescriptionProvider(descriptionProvider);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.MAVEN_MAPPING:
+		{
+			MavenMapping mavenMapping = (MavenMapping)theEObject;
+			T1 result = caseMavenMapping(mavenMapping);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.MAVEN_ITEM:
+		{
+			MavenItem mavenItem = (MavenItem)theEObject;
+			T1 result = caseMavenItem(mavenItem);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

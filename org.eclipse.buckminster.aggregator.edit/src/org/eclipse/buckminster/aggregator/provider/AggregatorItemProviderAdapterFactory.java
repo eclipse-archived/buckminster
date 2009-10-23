@@ -176,6 +176,22 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	protected MetadataRepositoryReferenceItemProvider metadataRepositoryReferenceItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.MavenMapping}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected MavenMappingItemProvider mavenMappingItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.MavenItem} instances.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected MavenItemItemProvider mavenItemItemProvider;
+
+	/**
 	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.DescriptionProvider}
 	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -428,6 +444,40 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.MavenItem}. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createMavenItemAdapter()
+	{
+		if(mavenItemItemProvider == null)
+		{
+			mavenItemItemProvider = new MavenItemItemProvider(this);
+		}
+
+		return mavenItemItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.MavenMapping}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createMavenMappingAdapter()
+	{
+		if(mavenMappingItemProvider == null)
+		{
+			mavenMappingItemProvider = new MavenMappingItemProvider(this);
+		}
+
+		return mavenMappingItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference}. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -532,6 +582,10 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 			metadataRepositoryReferenceItemProvider.dispose();
 		if(descriptionProviderItemProvider != null)
 			descriptionProviderItemProvider.dispose();
+		if(mavenMappingItemProvider != null)
+			mavenMappingItemProvider.dispose();
+		if(mavenItemItemProvider != null)
+			mavenItemItemProvider.dispose();
 	}
 
 	/**

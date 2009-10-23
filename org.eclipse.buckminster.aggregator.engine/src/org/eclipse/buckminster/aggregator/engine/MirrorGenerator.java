@@ -14,7 +14,11 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
+import org.eclipse.buckminster.aggregator.engine.maven.InstallableUnitMapping;
+import org.eclipse.buckminster.aggregator.engine.maven.MavenManager;
+import org.eclipse.buckminster.aggregator.engine.maven.MavenRepositoryHelper;
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -35,6 +39,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.artifact.repository.MirrorRequest;
 import org.eclipse.equinox.internal.p2.artifact.repository.RawMirrorRequest;
+import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository;
 import org.eclipse.equinox.internal.p2.director.PermissiveSlicer;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
@@ -69,10 +74,16 @@ public class MirrorGenerator extends BuilderPhase
 		public CanonicalizeRequest(IArtifactDescriptor optimizedDescriptor, IArtifactDescriptor canonicalDescriptor,
 				IArtifactRepository targetRepository)
 		{
+			this(optimizedDescriptor, canonicalDescriptor, targetRepository, targetRepository);
+		}
+
+		public CanonicalizeRequest(IArtifactDescriptor optimizedDescriptor, IArtifactDescriptor canonicalDescriptor,
+				IArtifactRepository sourceRepository, IArtifactRepository targetRepository)
+		{
 			super(canonicalDescriptor.getArtifactKey(), targetRepository, null, null);
 			this.optimizedDescriptor = optimizedDescriptor;
 			this.canonicalDescriptor = canonicalDescriptor;
-			setSourceRepository(targetRepository);
+			setSourceRepository(sourceRepository);
 		}
 
 		@Override
@@ -191,16 +202,13 @@ public class MirrorGenerator extends BuilderPhase
 					throw BuckminsterException.fromMessage(
 							"Found no usable descriptor for artifact %s in repository %s", key, dest.getLocation());
 
-				if(optimized == null)
+				if(keyStrategy == PackedStrategy.SKIP && canonical == null)
 				{
-					if(!checkIfTargetPresent(dest, key, false))
-					{
-						log.debug("    doing copy of canonical artifact");
-						mirror(sourceForCopy, dest, canonical, createDestinationDescriptor(key, false),
-								MonitorUtils.subMonitor(monitor, 90));
-					}
-					continue;
+					log.warning("    canonical artifact unavailable, using optimized one instead");
+					keyStrategy = PackedStrategy.COPY;
 				}
+				else if(keyStrategy != PackedStrategy.SKIP && optimized == null)
+					keyStrategy = PackedStrategy.SKIP;
 
 				switch(keyStrategy)
 				{
@@ -226,7 +234,7 @@ public class MirrorGenerator extends BuilderPhase
 						if(!checkIfTargetPresent(dest, key, false))
 						{
 							log.debug("    doing copy of optimized artifact into canonical target");
-							mirror(sourceForCopy, dest, optimized, createDestinationDescriptor(key, false),
+							unpack(sourceForCopy, dest, optimized, createDestinationDescriptor(key, false),
 									MonitorUtils.subMonitor(monitor, 90));
 						}
 						continue;
@@ -242,7 +250,7 @@ public class MirrorGenerator extends BuilderPhase
 					else
 					{
 						log.debug("    doing copy of optimized artifact");
-						optimized = mirror(sourceForCopy, dest, optimized, createDestinationDescriptor(key, true),
+						mirror(sourceForCopy, dest, optimized, createDestinationDescriptor(key, true),
 								MonitorUtils.subMonitor(monitor, 70));
 					}
 
@@ -360,6 +368,24 @@ public class MirrorGenerator extends BuilderPhase
 	{
 		return desc != null && "packed".equals(desc.getProperty(IArtifactDescriptor.FORMAT))
 				&& ProcessingStepHandler.canProcess(desc);
+	}
+
+	private static void unpack(IArtifactRepository source, IArtifactRepository target, IArtifactDescriptor optimized,
+			IArtifactDescriptor canonical, IProgressMonitor monitor) throws CoreException
+	{
+		CanonicalizeRequest request = new CanonicalizeRequest(optimized, canonical, source, target);
+		request.perform(monitor);
+		IStatus result = request.getResult();
+		if(result.getSeverity() != IStatus.ERROR
+				|| result.getCode() == org.eclipse.equinox.internal.provisional.p2.core.ProvisionException.ARTIFACT_EXISTS)
+		{
+			return;
+		}
+
+		result = extractRootCause(result);
+		throw BuckminsterException.fromMessage(result.getException(),
+				"Unable to unpack artifact %s in repository %s: %s", optimized.getArtifactKey(), target.getLocation(),
+				result.getMessage());
 	}
 
 	private static void unpackToSibling(IArtifactRepository target, IArtifactDescriptor optimized,
@@ -529,9 +555,85 @@ public class MirrorGenerator extends BuilderPhase
 			SubMonitor childMonitor = subMon.newChild(900, SubMonitor.SUPPRESS_BEGINTASK
 					| SubMonitor.SUPPRESS_SETTASKNAME);
 			List<Contribution> contribs = aggregator.getContributions(true);
-			MonitorUtils.begin(childMonitor, contribs.size() * 100);
+
+			MonitorUtils.begin(childMonitor, contribs.size() * 100 + (aggregator.isMavenResult()
+					? 20
+					: 0));
 			boolean aggregatedMdrIsEmpty = true;
 			boolean aggregatedArIsEmpty = true;
+
+			PackedStrategy packedStrategy = aggregator.getPackedStrategy();
+
+			// If maven result is required, prepare the maven metadata structure
+			MavenRepositoryHelper mavenHelper = null;
+			if(aggregator.isMavenResult())
+			{
+				List<InstallableUnitMapping> iusToMaven = new ArrayList<InstallableUnitMapping>();
+				for(Contribution contrib : contribs)
+				{
+					SubMonitor contribMonitor = childMonitor.newChild(10);
+					List<MappedRepository> repos = contrib.getRepositories(true);
+					List<String> errors = new ArrayList<String>();
+					MonitorUtils.begin(contribMonitor, repos.size() * 100);
+					for(MappedRepository repo : repos)
+					{
+						if(!repo.isMirrorArtifacts())
+						{
+							errors.add(String.format(
+									"Repository %s must be set to mirror artifacts if maven result is required",
+									repo.getLocation()));
+							MonitorUtils.worked(contribMonitor, 100);
+							continue;
+						}
+
+						MetadataRepository childMdr = ResourceUtils.getMetadataRepository(repo);
+						ArrayList<InstallableUnit> iusToMirror = null;
+						for(InstallableUnit iu : childMdr.getInstallableUnits())
+						{
+							if(!unitsToAggregate.contains(iu))
+								continue;
+
+							if(iusToMirror == null)
+								iusToMirror = new ArrayList<InstallableUnit>();
+							iusToMirror.add(iu);
+						}
+
+						List<MavenMapping> allMavenMappings = contrib.getAllMavenMappings();
+						for(IInstallableUnit iu : iusToMirror)
+							iusToMaven.add(new InstallableUnitMapping(iu, allMavenMappings));
+
+						MonitorUtils.worked(contribMonitor, 100);
+					}
+					if(errors.size() > 0)
+					{
+						artifactErrors = true;
+						builder.sendEmail(contrib, errors);
+					}
+					MonitorUtils.done(contribMonitor);
+				}
+
+				mavenHelper = MavenManager.createMavenStructure(iusToMaven);
+
+				if(aggregateAr instanceof SimpleArtifactRepository)
+				{
+					SimpleArtifactRepository simpleAr = ((SimpleArtifactRepository)aggregateAr);
+					simpleAr.setRules(mavenHelper.getMappingRules());
+					simpleAr.initializeAfterLoad(aggregateURI);
+				}
+				else
+					throw BuckminsterException.fromMessage(
+							"Unexpected repository implementation: Expected %s, found %s",
+							SimpleArtifactRepository.class.getName(), aggregateAr.getClass().getName());
+
+				if(packedStrategy != PackedStrategy.SKIP && packedStrategy != PackedStrategy.UNPACK
+						&& packedStrategy != PackedStrategy.UNPACK_AS_SIBLING)
+				{
+					packedStrategy = PackedStrategy.UNPACK_AS_SIBLING;
+					log.info("Maven result is required, changing packed strategy from %s to %s",
+							aggregator.getPackedStrategy().getName(), packedStrategy.getName());
+				}
+			}
+
 			for(Contribution contrib : contribs)
 			{
 				SubMonitor contribMonitor = childMonitor.newChild(100);
@@ -591,7 +693,7 @@ public class MirrorGenerator extends BuilderPhase
 						IArtifactRepository childAr = arMgr.loadRepository(childMdr.getLocation(),
 								contribMonitor.newChild(1, SubMonitor.SUPPRESS_BEGINTASK
 										| SubMonitor.SUPPRESS_SETTASKNAME));
-						mirror(keysToMirror, tempAr, childAr, aggregateAr, aggregator.getPackedStrategy(), errors,
+						mirror(keysToMirror, tempAr, childAr, aggregateAr, packedStrategy, errors,
 								contribMonitor.newChild(94, SubMonitor.SUPPRESS_BEGINTASK
 										| SubMonitor.SUPPRESS_SETTASKNAME));
 						aggregatedArIsEmpty = false;
@@ -637,6 +739,17 @@ public class MirrorGenerator extends BuilderPhase
 				}
 			}
 
+			if(mavenHelper != null)
+			{
+				log.info("Adding maven metadata");
+				MavenManager.saveMetadata(
+						org.eclipse.emf.common.util.URI.createFileURI(aggregateDestination.getAbsolutePath()),
+						mavenHelper.getTop());
+
+				MonitorUtils.worked(childMonitor, 10);
+				log.info("Done adding maven metadata");
+			}
+
 			if(reposWithReferencedMetadata.isEmpty())
 			{
 				// The aggregated meta-data can serve as the final repository so
@@ -658,7 +771,7 @@ public class MirrorGenerator extends BuilderPhase
 				String name = builder.getAggregator().getLabel();
 				mdrMgr.removeRepository(finalURI);
 				CompositeMetadataRepository compositeMdr = (CompositeMetadataRepository)mdrMgr.createRepository(
-						finalURI, name, Builder.COMPOSITE_METADATA_TYPE, properties); //$NON-NLS-1$
+						finalURI, name, Builder.COMPOSITE_METADATA_TYPE, properties); 
 
 				for(MappedRepository referenced : reposWithReferencedArtifacts)
 					compositeMdr.addChild(referenced.getMetadataRepository().getLocation());

@@ -23,6 +23,8 @@ import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MavenItem;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.OperatingSystem;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
@@ -228,6 +230,10 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createMetadataRepositoryReference();
 		case AggregatorPackage.DESCRIPTION_PROVIDER:
 			return createDescriptionProvider();
+		case AggregatorPackage.MAVEN_MAPPING:
+			return createMavenMapping();
+		case AggregatorPackage.MAVEN_ITEM:
+			return createMavenItem();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -454,6 +460,28 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		mu.setInstallableUnit(iu);
 
 		return mu;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public MavenItem createMavenItem()
+	{
+		MavenItemImpl mavenItem = new MavenItemImpl();
+		return mavenItem;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public MavenMapping createMavenMapping()
+	{
+		MavenMappingImpl mavenMapping = new MavenMappingImpl();
+		return mavenMapping;
 	}
 
 	/**

@@ -55,7 +55,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/packedStrategy"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/sendmail"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Aggregator/mavenResult"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/validationRepositories"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/mavenMappings"/>
       <genOperations ecoreOperation="Aggregator.ecore#//Aggregator/getContributions">
         <genParameters ecoreParameter="Aggregator.ecore#//Aggregator/getContributions/enabledOnly"/>
       </genOperations>
@@ -90,9 +92,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contribution/label"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Contribution/repositories"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//Contribution/contacts"/>
+      <genFeatures children="true" createChild="true" propertyCategory="" propertySortChoices="true"
+          ecoreFeature="ecore:EReference Aggregator.ecore#//Contribution/mavenMappings"/>
       <genOperations ecoreOperation="Aggregator.ecore#//Contribution/getRepositories">
         <genParameters ecoreParameter="Aggregator.ecore#//Contribution/getRepositories/enabledOnly"/>
       </genOperations>
+      <genOperations ecoreOperation="Aggregator.ecore#//Contribution/getAllMavenMappings"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Contact">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Contact/name"/>
@@ -158,6 +163,18 @@
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//DescriptionProvider">
       <genFeatures createChild="false" propertyMultiLine="true" ecoreFeature="ecore:EAttribute Aggregator.ecore#//DescriptionProvider/description"/>
+    </genClasses>
+    <genClasses ecoreClass="Aggregator.ecore#//MavenMapping">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenMapping/namePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenMapping/groupId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenMapping/artifactId"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//MavenMapping/map">
+        <genParameters ecoreParameter="Aggregator.ecore#//MavenMapping/map/installableUnitID"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="Aggregator.ecore#//MavenItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenItem/groupId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenItem/artifactId"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" multipleEditorPages="false"
         generateModelWizard="false" ecorePackage="Aggregator.ecore#//p2">
