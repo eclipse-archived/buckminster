@@ -17,6 +17,7 @@ package org.eclipse.b3.beeLang;
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getInit <em>Init</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getCond <em>Cond</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getIterate <em>Iterate</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.ForStatement#isInLoop <em>In Loop</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
@@ -104,6 +105,32 @@ public interface ForStatement extends Statement
    * @generated
    */
   void setIterate(Expression value);
+
+  /**
+   * Returns the value of the '<em><b>In Loop</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>In Loop</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>In Loop</em>' attribute.
+   * @see #setInLoop(boolean)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getForStatement_InLoop()
+   * @model
+   * @generated
+   */
+  boolean isInLoop();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.ForStatement#isInLoop <em>In Loop</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>In Loop</em>' attribute.
+   * @see #isInLoop()
+   * @generated
+   */
+  void setInLoop(boolean value);
 
   /**
    * Returns the value of the '<em><b>Body</b></em>' containment reference.

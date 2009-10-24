@@ -34,12 +34,12 @@ public interface WhileStatement extends Statement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Condition</em>' containment reference.
-   * @see #setCondition(VarExpression)
+   * @see #setCondition(Expression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getWhileStatement_Condition()
    * @model containment="true"
    * @generated
    */
-  VarExpression getCondition();
+  Expression getCondition();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.WhileStatement#getCondition <em>Condition</em>}' containment reference.
@@ -49,7 +49,7 @@ public interface WhileStatement extends Statement
    * @see #getCondition()
    * @generated
    */
-  void setCondition(VarExpression value);
+  void setCondition(Expression value);
 
   /**
    * Returns the value of the '<em><b>Body</b></em>' containment reference.

@@ -233,7 +233,7 @@ public interface BuildUnit extends EObject
 
   /**
    * Returns the value of the '<em><b>Parts</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.BuildPart}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Part}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Parts</em>' containment reference list isn't clear,
@@ -245,7 +245,7 @@ public interface BuildUnit extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<BuildPart> getParts();
+  EList<Part> getParts();
 
   /**
    * Returns the value of the '<em><b>Repository Config</b></em>' containment reference list.

@@ -6,8 +6,8 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.Statement;
-import org.eclipse.b3.beeLang.VarExpression;
 import org.eclipse.b3.beeLang.WhileStatement;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -42,7 +42,7 @@ public class WhileStatementImpl extends StatementImpl implements WhileStatement
    * @generated
    * @ordered
    */
-  protected VarExpression condition;
+  protected Expression condition;
 
   /**
    * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
@@ -80,7 +80,7 @@ public class WhileStatementImpl extends StatementImpl implements WhileStatement
    * <!-- end-user-doc -->
    * @generated
    */
-  public VarExpression getCondition()
+  public Expression getCondition()
   {
     return condition;
   }
@@ -90,9 +90,9 @@ public class WhileStatementImpl extends StatementImpl implements WhileStatement
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetCondition(VarExpression newCondition, NotificationChain msgs)
+  public NotificationChain basicSetCondition(Expression newCondition, NotificationChain msgs)
   {
-    VarExpression oldCondition = condition;
+    Expression oldCondition = condition;
     condition = newCondition;
     if (eNotificationRequired())
     {
@@ -107,7 +107,7 @@ public class WhileStatementImpl extends StatementImpl implements WhileStatement
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setCondition(VarExpression newCondition)
+  public void setCondition(Expression newCondition)
   {
     if (newCondition != condition)
     {
@@ -218,7 +218,7 @@ public class WhileStatementImpl extends StatementImpl implements WhileStatement
     switch (featureID)
     {
       case BeeLangPackage.WHILE_STATEMENT__CONDITION:
-        setCondition((VarExpression)newValue);
+        setCondition((Expression)newValue);
         return;
       case BeeLangPackage.WHILE_STATEMENT__BODY:
         setBody((Statement)newValue);
@@ -238,7 +238,7 @@ public class WhileStatementImpl extends StatementImpl implements WhileStatement
     switch (featureID)
     {
       case BeeLangPackage.WHILE_STATEMENT__CONDITION:
-        setCondition((VarExpression)null);
+        setCondition((Expression)null);
         return;
       case BeeLangPackage.WHILE_STATEMENT__BODY:
         setBody((Statement)null);

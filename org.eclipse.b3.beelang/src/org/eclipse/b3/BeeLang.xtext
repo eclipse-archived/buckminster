@@ -147,7 +147,7 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			| ('sequential' '{' (synchronize += Synchronization )+  '}' )
 			| ('sequential' synchronize += Synchronization  )
 			//--PARTS
-			| (parts += BuildPart )			
+			| (parts += Part )			
 			//-- REPOSITORIES
 			| ('repositories' '{' (repositoryConfig+=RepositoryConfiguration)* '}' )
 		)*
@@ -198,18 +198,14 @@ SynchronizedPart
 	| PartName
 	;
 	
-BuildPart 
-	: Artifacts
-	| Group
-	| Action
-	;
-	
-Artifacts returns ArtifactsPart 
-	: (visibility = Visibility)? 'artifacts' name=PartName
-		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
-		(asserts += PostConditionAssert)?
-		'{' (paths += PathGroup)* '}'
-	;
+
+// NOT NEEDED - action can specify a layout and return it	
+//Artifacts returns ArtifactsPart 
+//	: (visibility = Visibility)? 'artifacts' name=PartName
+//		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
+//		(asserts += PostConditionAssert)?
+//		'{' (paths += PathGroup)* '}'
+//	;
 	
 /* PATH GROUP
 * TODO: Allow basePath without paths?
@@ -241,16 +237,16 @@ Path hidden()
 	| ('/')? QualifiedName ('/' QualifiedName)* ('/')? // HIDDENBUG
 	;
 
-Group returns GroupPart 
-	: (visibility = Visibility)?
-	  (executionMode = ExecutionMode)?
-	  'group' name=PartName
-		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
-		(asserts += PreConditionAssert)?
-		(asserts += PostConditionAssert)?
-		'{' ( prerequisites += Prerequisite )*
-		'}'
-	;
+//Group returns GroupPart 
+//	: (visibility = Visibility)?
+//	  (executionMode = ExecutionMode)?
+//	  'group' name=PartName
+//		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
+//		(asserts += PreConditionAssert)?
+//		(asserts += PostConditionAssert)?
+//		'{' ( prerequisites += Prerequisite )*
+//		'}'
+//	;
 
 Prerequisite
 	: ((surpressed ?= 'hidden')? ('when' filter=Filter )? (alias=ID '=')? ((partReference=PrerequisiteEntry) 
@@ -282,11 +278,9 @@ CapabilityReferencedPart
 CompoundReferences
 	: '{' (prerequisites += Prerequisite)* '}'
 	;
-
-Action returns ActionPart
-	: (visibility = Visibility)?
+Part returns Part: (visibility = Visibility)?
       (executionMode = ExecutionMode)?
-	 'action' PartName
+	 /*'part'*/ PartName
 //	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? ')'
 		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
 	(asserts += PreConditionAssert)?
@@ -373,46 +367,88 @@ AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';'
 
 /* STATEMENTS */
 Statement
-	: SwitchStatement
+	: IfStatement
+	| SwitchStatement
 	| WhileStatement
 	| ForStatement
+	| DoWhileStatement
 	| CompoundStatement
-	| VarExpression ';'
+	| (VarExpression)? ';'
 	| BreakStatement
 	| ContinueStatement
 	| ReturnStatement
+	| FunctionStatement
+	| LabelStatement
+	| ThrowStatement
+	| TryCatchStatement
+	| WithStatement
 	;
 	
-BreakStatement : {BreakStatement} 'break' ';' ;
-ContinueStatement : {ContinueStatement} 'continue' ';' ;
+BreakStatement : {BreakStatement} 'break' (label=ID)? ';' ;
+ContinueStatement : {ContinueStatement} 'continue' (label=ID)? ';' ;
 
 CompoundStatement : '{' statements = Statements '}' ;
 
-Statements : (statements += Statement)* ;
+Statements : (statements += Statement)+ ;
 
-WhileStatement : 'while' '(' condition=VarExpression ')' body=Statement ;
+WhileStatement : 'while' '(' condition=Expression ')' body=Statement ;
 
 SwitchStatement
 	: "switch" "(" switchExpr=VarExpression ")"
-		"{" case+=Case* ("default" ":" statements=Statements)? "}";
+		"{" case+=Case* ("default" ":" (statements=Statements)?)? "}";
 		
-Case: "case" condition=ValueLiteral ":" statements+=Statement;
+Case: "case" condition=ValueLiteral ":" (statements=Statements)?;
 
-ForStatement : {ForStatement} "for" '(' (init=VarExpressionList)? ';' (cond=Expression)? ';' (iterate=ExpressionList)? ')'
+// TODO: needs validation that expression list only has one entry and is a LHS value
+// if inLoop == true. Needs validation that RHS is a collection item if inLoop == true.
+//
+ForStatement : {ForStatement} "for" '(' (init=VarExpressionList)? 
+	( (';' (cond=Expression)? ';' (iterate=ExpressionList)?) 
+	| (inLoop ?= "in" iterate=Expression )
+	)
+	')'  
 	body = Statement
 	;
 	
+DoWhileStatement : 'do' statement = Statement 'while' '(' condition=Expression ')' ';' ;
+
+
 ReturnStatement 
 	: 'return' return=Expression ';'
 	;
+FunctionStatement
+	: "function" name=ID '(' (params += ID (',' params += ID)*) ')' 
+		'{' statements = Statements '}'
+	;
+
+IfStatement 
+	: "if" '(' cond = Expression ')' then = Statement ("else" else= Statement)?
+	;
 	
+LabelStatement : '@' name=ID ":" statement = Statement ;
+
+ThrowStatement: "throw" expr=Expression ";" ;
+
+TryCatchStatement 
+	: "try" tryBlock = CompoundStatement 
+		((catchBlock = CatchBlock (finallyBlock=FinallyBlock)?) | finally=FinallyBlock)
+		;
+		
+CatchBlock: "catch" '(' variable = ID ')' catchBlock = CompoundStatement ;
+FinallyBlock: "finally" finallyBlock = CompoundStatement ;
+		
+WithStatement : "with" '(' expr=Expression ')' statement = Statement;
+		
 /* EXPRESSIONS */
 SyntaxElement : Expression ;
 
 VarExpressionList : expr +=VarExpression ( ',' expr+=VarExpression)* ;
 ExpressionList returns Expression: expr +=Expression ( ',' expr += Expression)* ;
 
-VarExpression : Expression | 'var' name=ID '=' value=Expression ;
+// Assignment is optional i JS
+// Also makes it possible to use VarExpression in a for(var a in xxx) loop
+//
+VarExpression : Expression | 'var' name=ID ('=' value=Expression)? ;
 
 Expression : ValueExpression ;
 
@@ -426,7 +462,8 @@ ValueExpression
 //		right+=ChainExpression)*
 //	;
 AssignmentExpression returns Expression:
-	 ChainExpression ({AssignmentOperation.left=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
+	 ChainExpression ({AssignmentOperation.left=current} 
+	 	op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>="| ">>>=" | "&=" | "^=" | "|=")
 		right=AssignmentExpression)?
 	;
 
@@ -445,10 +482,14 @@ OrExpression returns Expression:
 	AndExpression ({BooleanOperation.left=current} operator="||" right=AndExpression)*;
 	
 AndExpression returns Expression:
-	RelationalExpression ({BooleanOperation.left=current} operator="&&" right=RelationalExpression)*;
+	BitwiseExpression ({BooleanOperation.left=current} operator="&&" right=BitwiseExpression)*;
 
+BitwiseExpression returns Expression :
+	RelationalExpression ({OperationCall.left=current} operator=("&" | "^" | "|") right=RelationalExpression)*;
+	
 RelationalExpression returns Expression:
-	AdditiveExpression ({BooleanOperation.left=current} operator=("~=" | "==" | "!=" | ">=" | "<=" | ">" | "<") right=AdditiveExpression)*;
+	AdditiveExpression ({BooleanOperation.left=current} 
+		operator=("~=" | "==" | "==="| "!=" | "!=="| ">=" | "<=" | ">" | "<" | "==." | "instanceof") right=AdditiveExpression)*;
 	
 AdditiveExpression returns Expression:
 	MultiplicativeExpression ({OperationCall.params+=current} name=("+" | "-") params+=MultiplicativeExpression)*;
@@ -461,7 +502,7 @@ UnaryOrInfixExpression returns Expression:
 	UnaryExpression | PostopExpression; 
 
 UnaryExpression returns OperationCall:
-	name=("!" | "-" | "++" | "--") params+=PostopExpression;
+	name=("!" | "-" | "++" | "--" | "typeof" | "delete" | "~") params+=PostopExpression;
 
 PostopExpression returns Expression:
 	InfixExpression ({PostOpCall.target=current} name = ("--" | "++"))?
@@ -469,58 +510,65 @@ PostopExpression returns Expression:
 
 	
 InfixExpression returns Expression:
-	PrimaryExpression ( 
+	CallExpression ( 
 	  	({OperationCall.target=current} "." name=ID  "(" (params+=Parameter ("," params+=Parameter)*)? ")")
 	  |	({AtCall.target=current} '[' index=Expression ']'
 	  		("(" (params+=Parameter ("," params+=Parameter)*)? ")")?) 	  
-//	  ({OperationCall.target=current} name='[' nameExpr += Parameter ']' "(" (params+=Parameter ("," params+=Parameter)*)? ")") |
-//	  ({FeatureCall.target=current} type="[" expr=Expression "]") |
 	  | ({FeatureCall.target=current} "." type=ID)
-//		({TypeSelectExpression.target=current} "." name="typeSelect" "(" type=Type ")") |
-//		({CollectionExpression.target=current} name=("collect"|"select"|"selectFirst"|"reject"|"exists"|"notExists"|"sortBy"|"forAll") "(" (var=ID "|")? exp=Expression ")")
 	)*;
-
-//AtExpression returns Expression
-//	: PrimaryExpression ( 
-//		({AtCall.target=current} '[' feature=Parameter ']')
-//		    ("(" (params+=Parameter ("," params+=Parameter)*)? ")")?
-//		)*
-//	;
-
-
+	
+CallExpression returns Expression: 
+	PrimaryExpression ( 
+		({OperationCall.target=current}"(" (params+=Parameter ("," params+=Parameter)*)? ")"))*
+		;
+		
 PrimaryExpression returns Expression
 	: Literal 
-	| FeatureCall 
-//	ListLiteral |
-//	ConstructorCallExpression |
+//	| FeatureCall 
+	| ConstructorCallExpression
 	| VariableValue
 	| PropertyValue
+	| KeywordVariables
 	| ParanthesizedExpression
 	;
 
 PropertyValue : name = PID;
 VariableValue : name = ID ;
+KeywordVariables : name = ("group" | "layout" | "properties") ;
 
-FeatureCall:
-	OperationCall //|
-//	(type=Type) |
-//	CollectionExpression | 
-//	TypeSelectExpression
-	;
-	
-OperationCall 
-	: name=(ID|PID) "(" (params+=Parameter ("," params+=Parameter)*)? ")" 
+//FeatureCall:
+//	OperationCall
+//	;
+//	
+//OperationCall 
+//	: name=(ID|PID) "(" (params+=Parameter ("," params+=Parameter)*)? ")" 
+//	;
+
+ConstructorCallExpression 
+	: 'new' class=QualifiedName '(' (params+=Parameter ("," params+=Parameter)*)? ")" 
 	;
 	
 Literal
 	: ValueLiteral
 	| RegexpLiteral
+	| LiteralArray
+	| LiteralObject
+	| LiteralFunction
 	;
 	
+LiteralArray : '[' (element += Expression (',' element += Expression)* )? ']' ;
+LiteralObject : '{' (features += Feature (',' features += Feature)* )? '}' ;
+LiteralFunction 
+	: "function" '(' (params += ID (',' params += ID)*) ')' 
+		'{' statements = Statements '}'
+	;
+
+Feature : name = (ID|PID|STRING) ':' value= Expression ;
+
 ValueLiteral
 	: BooleanLiteral 
 	| IntegerLiteral 
-	| NullLiteral
+	| NullLiteral | VoidLiteral // null == defined but null, void is undefined
 	| StringLiteral
 	| RealLiteral
 	;
@@ -528,6 +576,7 @@ ValueLiteral
 BooleanLiteral	: val = ("true" | "false");
 IntegerLiteral	: val = INT|HEX;
 NullLiteral		: val = "null";
+VoidLiteral 	: val = "void";
 StringLiteral	: val = STRING;
 RealLiteral		: val = REAL;
 RegexpLiteral	: val = REGEX;

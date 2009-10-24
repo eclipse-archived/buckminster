@@ -8,10 +8,10 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.BuildPart;
 import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.ExecutionMode;
 import org.eclipse.b3.beeLang.NamedAdvice;
+import org.eclipse.b3.beeLang.Part;
 import org.eclipse.b3.beeLang.PropertyStatements;
 import org.eclipse.b3.beeLang.ProvidedCapability;
 import org.eclipse.b3.beeLang.RepositoryConfiguration;
@@ -197,7 +197,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * @generated
    * @ordered
    */
-  protected EList<BuildPart> parts;
+  protected EList<Part> parts;
 
   /**
    * The cached value of the '{@link #getRepositoryConfig() <em>Repository Config</em>}' containment reference list.
@@ -402,11 +402,11 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<BuildPart> getParts()
+  public EList<Part> getParts()
   {
     if (parts == null)
     {
-      parts = new EObjectContainmentEList<BuildPart>(BuildPart.class, this, BeeLangPackage.BUILD_UNIT__PARTS);
+      parts = new EObjectContainmentEList<Part>(Part.class, this, BeeLangPackage.BUILD_UNIT__PARTS);
     }
     return parts;
   }
@@ -543,7 +543,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return;
       case BeeLangPackage.BUILD_UNIT__PARTS:
         getParts().clear();
-        getParts().addAll((Collection<? extends BuildPart>)newValue);
+        getParts().addAll((Collection<? extends Part>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIG:
         getRepositoryConfig().clear();

@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
-import org.eclipse.b3.beeLang.FeatureCall;
 import org.eclipse.b3.beeLang.OperationCall;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -33,9 +32,11 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getTarget <em>Target</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getLeft <em>Left</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getOperator <em>Operator</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getRight <em>Right</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getParams <em>Params</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.OperationCallImpl#getTarget <em>Target</em>}</li>
  * </ul>
  * </p>
  *
@@ -44,34 +45,44 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class OperationCallImpl extends ExpressionImpl implements OperationCall
 {
   /**
-   * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
+   * The cached value of the '{@link #getLeft() <em>Left</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTarget()
+   * @see #getLeft()
    * @generated
    * @ordered
    */
-  protected Expression target;
+  protected Expression left;
 
   /**
-   * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+   * The default value of the '{@link #getOperator() <em>Operator</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getOperator()
    * @generated
    * @ordered
    */
-  protected static final String TYPE_EDEFAULT = null;
+  protected static final String OPERATOR_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+   * The cached value of the '{@link #getOperator() <em>Operator</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getOperator()
    * @generated
    * @ordered
    */
-  protected String type = TYPE_EDEFAULT;
+  protected String operator = OPERATOR_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRight()
+   * @generated
+   * @ordered
+   */
+  protected Expression right;
 
   /**
    * The cached value of the '{@link #getParams() <em>Params</em>}' containment reference list.
@@ -82,6 +93,16 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
    * @ordered
    */
   protected EList<EObject> params;
+
+  /**
+   * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTarget()
+   * @generated
+   * @ordered
+   */
+  protected Expression target;
 
   /**
    * <!-- begin-user-doc -->
@@ -102,6 +123,139 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
   protected EClass eStaticClass()
   {
     return BeeLangPackage.Literals.OPERATION_CALL;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Expression getLeft()
+  {
+    return left;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetLeft(Expression newLeft, NotificationChain msgs)
+  {
+    Expression oldLeft = left;
+    left = newLeft;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__LEFT, oldLeft, newLeft);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setLeft(Expression newLeft)
+  {
+    if (newLeft != left)
+    {
+      NotificationChain msgs = null;
+      if (left != null)
+        msgs = ((InternalEObject)left).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.OPERATION_CALL__LEFT, null, msgs);
+      if (newLeft != null)
+        msgs = ((InternalEObject)newLeft).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.OPERATION_CALL__LEFT, null, msgs);
+      msgs = basicSetLeft(newLeft, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__LEFT, newLeft, newLeft));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getOperator()
+  {
+    return operator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOperator(String newOperator)
+  {
+    String oldOperator = operator;
+    operator = newOperator;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__OPERATOR, oldOperator, operator));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Expression getRight()
+  {
+    return right;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetRight(Expression newRight, NotificationChain msgs)
+  {
+    Expression oldRight = right;
+    right = newRight;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__RIGHT, oldRight, newRight);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRight(Expression newRight)
+  {
+    if (newRight != right)
+    {
+      NotificationChain msgs = null;
+      if (right != null)
+        msgs = ((InternalEObject)right).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.OPERATION_CALL__RIGHT, null, msgs);
+      if (newRight != null)
+        msgs = ((InternalEObject)newRight).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.OPERATION_CALL__RIGHT, null, msgs);
+      msgs = basicSetRight(newRight, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__RIGHT, newRight, newRight));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<EObject> getParams()
+  {
+    if (params == null)
+    {
+      params = new EObjectContainmentEList<EObject>(EObject.class, this, BeeLangPackage.OPERATION_CALL__PARAMS);
+    }
+    return params;
   }
 
   /**
@@ -157,52 +311,19 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getType()
-  {
-    return type;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setType(String newType)
-  {
-    String oldType = type;
-    type = newType;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.OPERATION_CALL__TYPE, oldType, type));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<EObject> getParams()
-  {
-    if (params == null)
-    {
-      params = new EObjectContainmentEList<EObject>(EObject.class, this, BeeLangPackage.OPERATION_CALL__PARAMS);
-    }
-    return params;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
-      case BeeLangPackage.OPERATION_CALL__TARGET:
-        return basicSetTarget(null, msgs);
+      case BeeLangPackage.OPERATION_CALL__LEFT:
+        return basicSetLeft(null, msgs);
+      case BeeLangPackage.OPERATION_CALL__RIGHT:
+        return basicSetRight(null, msgs);
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         return ((InternalEList<?>)getParams()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.OPERATION_CALL__TARGET:
+        return basicSetTarget(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -217,12 +338,16 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
   {
     switch (featureID)
     {
-      case BeeLangPackage.OPERATION_CALL__TARGET:
-        return getTarget();
-      case BeeLangPackage.OPERATION_CALL__TYPE:
-        return getType();
+      case BeeLangPackage.OPERATION_CALL__LEFT:
+        return getLeft();
+      case BeeLangPackage.OPERATION_CALL__OPERATOR:
+        return getOperator();
+      case BeeLangPackage.OPERATION_CALL__RIGHT:
+        return getRight();
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         return getParams();
+      case BeeLangPackage.OPERATION_CALL__TARGET:
+        return getTarget();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -238,15 +363,21 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
   {
     switch (featureID)
     {
-      case BeeLangPackage.OPERATION_CALL__TARGET:
-        setTarget((Expression)newValue);
+      case BeeLangPackage.OPERATION_CALL__LEFT:
+        setLeft((Expression)newValue);
         return;
-      case BeeLangPackage.OPERATION_CALL__TYPE:
-        setType((String)newValue);
+      case BeeLangPackage.OPERATION_CALL__OPERATOR:
+        setOperator((String)newValue);
+        return;
+      case BeeLangPackage.OPERATION_CALL__RIGHT:
+        setRight((Expression)newValue);
         return;
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         getParams().clear();
         getParams().addAll((Collection<? extends EObject>)newValue);
+        return;
+      case BeeLangPackage.OPERATION_CALL__TARGET:
+        setTarget((Expression)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -262,14 +393,20 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
   {
     switch (featureID)
     {
-      case BeeLangPackage.OPERATION_CALL__TARGET:
-        setTarget((Expression)null);
+      case BeeLangPackage.OPERATION_CALL__LEFT:
+        setLeft((Expression)null);
         return;
-      case BeeLangPackage.OPERATION_CALL__TYPE:
-        setType(TYPE_EDEFAULT);
+      case BeeLangPackage.OPERATION_CALL__OPERATOR:
+        setOperator(OPERATOR_EDEFAULT);
+        return;
+      case BeeLangPackage.OPERATION_CALL__RIGHT:
+        setRight((Expression)null);
         return;
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         getParams().clear();
+        return;
+      case BeeLangPackage.OPERATION_CALL__TARGET:
+        setTarget((Expression)null);
         return;
     }
     super.eUnset(featureID);
@@ -285,54 +422,18 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
   {
     switch (featureID)
     {
-      case BeeLangPackage.OPERATION_CALL__TARGET:
-        return target != null;
-      case BeeLangPackage.OPERATION_CALL__TYPE:
-        return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
+      case BeeLangPackage.OPERATION_CALL__LEFT:
+        return left != null;
+      case BeeLangPackage.OPERATION_CALL__OPERATOR:
+        return OPERATOR_EDEFAULT == null ? operator != null : !OPERATOR_EDEFAULT.equals(operator);
+      case BeeLangPackage.OPERATION_CALL__RIGHT:
+        return right != null;
       case BeeLangPackage.OPERATION_CALL__PARAMS:
         return params != null && !params.isEmpty();
+      case BeeLangPackage.OPERATION_CALL__TARGET:
+        return target != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-  {
-    if (baseClass == FeatureCall.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case BeeLangPackage.OPERATION_CALL__TARGET: return BeeLangPackage.FEATURE_CALL__TARGET;
-        case BeeLangPackage.OPERATION_CALL__TYPE: return BeeLangPackage.FEATURE_CALL__TYPE;
-        default: return -1;
-      }
-    }
-    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-  {
-    if (baseClass == FeatureCall.class)
-    {
-      switch (baseFeatureID)
-      {
-        case BeeLangPackage.FEATURE_CALL__TARGET: return BeeLangPackage.OPERATION_CALL__TARGET;
-        case BeeLangPackage.FEATURE_CALL__TYPE: return BeeLangPackage.OPERATION_CALL__TYPE;
-        default: return -1;
-      }
-    }
-    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
   /**
@@ -346,8 +447,8 @@ public class OperationCallImpl extends ExpressionImpl implements OperationCall
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (type: ");
-    result.append(type);
+    result.append(" (operator: ");
+    result.append(operator);
     result.append(')');
     return result.toString();
   }

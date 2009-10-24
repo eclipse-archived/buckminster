@@ -6,13 +6,11 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.ActionInputGroup;
-import org.eclipse.b3.beeLang.ActionPart;
 import org.eclipse.b3.beeLang.Advice;
 import org.eclipse.b3.beeLang.AdvicePath;
 import org.eclipse.b3.beeLang.AdvicePathChildren;
 import org.eclipse.b3.beeLang.AdvicePathElement;
 import org.eclipse.b3.beeLang.AdviceStatement;
-import org.eclipse.b3.beeLang.ArtifactsPart;
 import org.eclipse.b3.beeLang.AssertionExpression;
 import org.eclipse.b3.beeLang.AssertionScope;
 import org.eclipse.b3.beeLang.AssignmentOperation;
@@ -23,31 +21,42 @@ import org.eclipse.b3.beeLang.BeeModel;
 import org.eclipse.b3.beeLang.BooleanLiteral;
 import org.eclipse.b3.beeLang.BooleanOperation;
 import org.eclipse.b3.beeLang.BreakStatement;
-import org.eclipse.b3.beeLang.BuildPart;
 import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.CapabilityReferencedPart;
 import org.eclipse.b3.beeLang.Case;
+import org.eclipse.b3.beeLang.CatchBlock;
 import org.eclipse.b3.beeLang.Closure;
 import org.eclipse.b3.beeLang.CompoundAdvice;
 import org.eclipse.b3.beeLang.CompoundReferences;
 import org.eclipse.b3.beeLang.CompoundStatement;
+import org.eclipse.b3.beeLang.ConstructorCallExpression;
 import org.eclipse.b3.beeLang.ContinueStatement;
+import org.eclipse.b3.beeLang.DoWhileStatement;
 import org.eclipse.b3.beeLang.ExecutionMode;
 import org.eclipse.b3.beeLang.ExprStatement;
 import org.eclipse.b3.beeLang.Expression;
+import org.eclipse.b3.beeLang.Feature;
 import org.eclipse.b3.beeLang.FeatureCall;
 import org.eclipse.b3.beeLang.Filter;
+import org.eclipse.b3.beeLang.FinallyBlock;
 import org.eclipse.b3.beeLang.ForStatement;
-import org.eclipse.b3.beeLang.GroupPart;
+import org.eclipse.b3.beeLang.FunctionStatement;
 import org.eclipse.b3.beeLang.IfExpression;
+import org.eclipse.b3.beeLang.IfStatement;
 import org.eclipse.b3.beeLang.Import;
 import org.eclipse.b3.beeLang.IntegerLiteral;
+import org.eclipse.b3.beeLang.KeywordVariables;
+import org.eclipse.b3.beeLang.LabelStatement;
 import org.eclipse.b3.beeLang.Layout;
 import org.eclipse.b3.beeLang.Literal;
+import org.eclipse.b3.beeLang.LiteralArray;
+import org.eclipse.b3.beeLang.LiteralFunction;
+import org.eclipse.b3.beeLang.LiteralObject;
 import org.eclipse.b3.beeLang.NamedAdvice;
 import org.eclipse.b3.beeLang.NullLiteral;
 import org.eclipse.b3.beeLang.OperationCall;
 import org.eclipse.b3.beeLang.Parameter;
+import org.eclipse.b3.beeLang.Part;
 import org.eclipse.b3.beeLang.PartInSelf;
 import org.eclipse.b3.beeLang.PathExpression;
 import org.eclipse.b3.beeLang.PathGroup;
@@ -72,13 +81,17 @@ import org.eclipse.b3.beeLang.StringLiteral;
 import org.eclipse.b3.beeLang.SwitchStatement;
 import org.eclipse.b3.beeLang.Synchronization;
 import org.eclipse.b3.beeLang.SyntaxElement;
+import org.eclipse.b3.beeLang.ThrowStatement;
+import org.eclipse.b3.beeLang.TryCatchStatement;
 import org.eclipse.b3.beeLang.ValueExpression;
 import org.eclipse.b3.beeLang.ValueLiteral;
 import org.eclipse.b3.beeLang.VarExpression;
 import org.eclipse.b3.beeLang.VarExpressionList;
 import org.eclipse.b3.beeLang.VariableValue;
 import org.eclipse.b3.beeLang.Visibility;
+import org.eclipse.b3.beeLang.VoidLiteral;
 import org.eclipse.b3.beeLang.WhileStatement;
+import org.eclipse.b3.beeLang.WithStatement;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -164,20 +177,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass buildPartEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass artifactsPartEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EClass pathGroupEClass = null;
 
   /**
@@ -193,13 +192,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass exprStatementEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass groupPartEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -248,7 +240,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass actionPartEClass = null;
+  private EClass partEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -423,7 +415,70 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass doWhileStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass returnStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass functionStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ifStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass labelStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass throwStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tryCatchStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass catchBlockEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass finallyBlockEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass withStatementEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -486,7 +541,14 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass featureCallEClass = null;
+  private EClass keywordVariablesEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass constructorCallExpressionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -494,6 +556,34 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass literalEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass literalArrayEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass literalObjectEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass literalFunctionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass featureEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -522,6 +612,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass nullLiteralEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass voidLiteralEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -578,6 +675,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass atCallEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass featureCallEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1088,76 +1192,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getBuildPart()
-  {
-    return buildPartEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuildPart_Visibility()
-  {
-    return (EAttribute)buildPartEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuildPart_ProvidedCapabilities()
-  {
-    return (EReference)buildPartEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getArtifactsPart()
-  {
-    return artifactsPartEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getArtifactsPart_Name()
-  {
-    return (EAttribute)artifactsPartEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getArtifactsPart_Asserts()
-  {
-    return (EReference)artifactsPartEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getArtifactsPart_Paths()
-  {
-    return (EReference)artifactsPartEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getPathGroup()
   {
     return pathGroupEClass;
@@ -1241,56 +1275,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EReference getExprStatement_Expression()
   {
     return (EReference)exprStatementEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getGroupPart()
-  {
-    return groupPartEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getGroupPart_ExecutionMode()
-  {
-    return (EAttribute)groupPartEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getGroupPart_Name()
-  {
-    return (EAttribute)groupPartEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getGroupPart_Asserts()
-  {
-    return (EReference)groupPartEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getGroupPart_Prerequisites()
-  {
-    return (EReference)groupPartEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1498,9 +1482,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getActionPart()
+  public EClass getPart()
   {
-    return actionPartEClass;
+    return partEClass;
   }
 
   /**
@@ -1508,9 +1492,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionPart_ExecutionMode()
+  public EAttribute getPart_Visibility()
   {
-    return (EAttribute)actionPartEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)partEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1518,9 +1502,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionPart_Asserts()
+  public EAttribute getPart_ExecutionMode()
   {
-    return (EReference)actionPartEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)partEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1528,9 +1512,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionPart_Properties()
+  public EReference getPart_ProvidedCapabilities()
   {
-    return (EReference)actionPartEClass.getEStructuralFeatures().get(2);
+    return (EReference)partEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1538,9 +1522,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionPart_Advice()
+  public EReference getPart_Asserts()
   {
-    return (EReference)actionPartEClass.getEStructuralFeatures().get(3);
+    return (EReference)partEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1548,9 +1532,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionPart_ResultGroup()
+  public EReference getPart_Properties()
   {
-    return (EReference)actionPartEClass.getEStructuralFeatures().get(4);
+    return (EReference)partEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1558,9 +1542,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionPart_Layout()
+  public EReference getPart_Advice()
   {
-    return (EReference)actionPartEClass.getEStructuralFeatures().get(5);
+    return (EReference)partEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -1568,9 +1552,29 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getActionPart_Statements()
+  public EReference getPart_ResultGroup()
   {
-    return (EReference)actionPartEClass.getEStructuralFeatures().get(6);
+    return (EReference)partEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getPart_Layout()
+  {
+    return (EReference)partEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getPart_Statements()
+  {
+    return (EReference)partEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -2018,9 +2022,29 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getBreakStatement_Label()
+  {
+    return (EAttribute)breakStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getContinueStatement()
   {
     return continueStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getContinueStatement_Label()
+  {
+    return (EAttribute)continueStatementEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2208,9 +2232,49 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getForStatement_InLoop()
+  {
+    return (EAttribute)forStatementEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getForStatement_Body()
   {
-    return (EReference)forStatementEClass.getEStructuralFeatures().get(3);
+    return (EReference)forStatementEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDoWhileStatement()
+  {
+    return doWhileStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getDoWhileStatement_Statement()
+  {
+    return (EReference)doWhileStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getDoWhileStatement_Condition()
+  {
+    return (EReference)doWhileStatementEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2231,6 +2295,266 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EReference getReturnStatement_Return()
   {
     return (EReference)returnStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getFunctionStatement()
+  {
+    return functionStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFunctionStatement_Name()
+  {
+    return (EAttribute)functionStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFunctionStatement_Params()
+  {
+    return (EAttribute)functionStatementEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getFunctionStatement_Statements()
+  {
+    return (EReference)functionStatementEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getIfStatement()
+  {
+    return ifStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getIfStatement_Cond()
+  {
+    return (EReference)ifStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getIfStatement_Then()
+  {
+    return (EReference)ifStatementEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getIfStatement_Else()
+  {
+    return (EReference)ifStatementEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLabelStatement()
+  {
+    return labelStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLabelStatement_Name()
+  {
+    return (EAttribute)labelStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLabelStatement_Statement()
+  {
+    return (EReference)labelStatementEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getThrowStatement()
+  {
+    return throwStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getThrowStatement_Expr()
+  {
+    return (EReference)throwStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTryCatchStatement()
+  {
+    return tryCatchStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTryCatchStatement_TryBlock()
+  {
+    return (EReference)tryCatchStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTryCatchStatement_CatchBlock()
+  {
+    return (EReference)tryCatchStatementEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTryCatchStatement_FinallyBlock()
+  {
+    return (EReference)tryCatchStatementEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTryCatchStatement_Finally()
+  {
+    return (EReference)tryCatchStatementEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getCatchBlock()
+  {
+    return catchBlockEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCatchBlock_Variable()
+  {
+    return (EAttribute)catchBlockEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getCatchBlock_CatchBlock()
+  {
+    return (EReference)catchBlockEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getFinallyBlock()
+  {
+    return finallyBlockEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getFinallyBlock_FinallyBlock()
+  {
+    return (EReference)finallyBlockEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getWithStatement()
+  {
+    return withStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getWithStatement_Expr()
+  {
+    return (EReference)withStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getWithStatement_Statement()
+  {
+    return (EReference)withStatementEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2338,9 +2662,49 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getOperationCall_Params()
+  public EReference getOperationCall_Left()
   {
     return (EReference)operationCallEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getOperationCall_Operator()
+  {
+    return (EAttribute)operationCallEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOperationCall_Right()
+  {
+    return (EReference)operationCallEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOperationCall_Params()
+  {
+    return (EReference)operationCallEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOperationCall_Target()
+  {
+    return (EReference)operationCallEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -2368,9 +2732,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getFeatureCall()
+  public EClass getKeywordVariables()
   {
-    return featureCallEClass;
+    return keywordVariablesEClass;
   }
 
   /**
@@ -2378,9 +2742,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getFeatureCall_Target()
+  public EClass getConstructorCallExpression()
   {
-    return (EReference)featureCallEClass.getEStructuralFeatures().get(0);
+    return constructorCallExpressionEClass;
   }
 
   /**
@@ -2388,9 +2752,19 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getFeatureCall_Type()
+  public EAttribute getConstructorCallExpression_Class()
   {
-    return (EAttribute)featureCallEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)constructorCallExpressionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getConstructorCallExpression_Params()
+  {
+    return (EReference)constructorCallExpressionEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2401,6 +2775,106 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EClass getLiteral()
   {
     return literalEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLiteralArray()
+  {
+    return literalArrayEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLiteralArray_Element()
+  {
+    return (EReference)literalArrayEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLiteralObject()
+  {
+    return literalObjectEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLiteralObject_Features()
+  {
+    return (EReference)literalObjectEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLiteralFunction()
+  {
+    return literalFunctionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLiteralFunction_Params()
+  {
+    return (EAttribute)literalFunctionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLiteralFunction_Statements()
+  {
+    return (EReference)literalFunctionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getFeature()
+  {
+    return featureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFeature_Name()
+  {
+    return (EAttribute)featureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getFeature_Value()
+  {
+    return (EReference)featureEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2471,6 +2945,26 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EAttribute getNullLiteral_Val()
   {
     return (EAttribute)nullLiteralEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getVoidLiteral()
+  {
+    return voidLiteralEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVoidLiteral_Val()
+  {
+    return (EAttribute)voidLiteralEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2718,6 +3212,36 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getFeatureCall()
+  {
+    return featureCallEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getFeatureCall_Target()
+  {
+    return (EReference)featureCallEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFeatureCall_Type()
+  {
+    return (EAttribute)featureCallEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getVisibility()
   {
     return visibilityEEnum;
@@ -2824,15 +3348,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     synchronizationEClass = createEClass(SYNCHRONIZATION);
     createEAttribute(synchronizationEClass, SYNCHRONIZATION__PARTREFS);
 
-    buildPartEClass = createEClass(BUILD_PART);
-    createEAttribute(buildPartEClass, BUILD_PART__VISIBILITY);
-    createEReference(buildPartEClass, BUILD_PART__PROVIDED_CAPABILITIES);
-
-    artifactsPartEClass = createEClass(ARTIFACTS_PART);
-    createEAttribute(artifactsPartEClass, ARTIFACTS_PART__NAME);
-    createEReference(artifactsPartEClass, ARTIFACTS_PART__ASSERTS);
-    createEReference(artifactsPartEClass, ARTIFACTS_PART__PATHS);
-
     pathGroupEClass = createEClass(PATH_GROUP);
     createEReference(pathGroupEClass, PATH_GROUP__FILTER);
     createEReference(pathGroupEClass, PATH_GROUP__PATHS);
@@ -2844,12 +3359,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     exprStatementEClass = createEClass(EXPR_STATEMENT);
     createEReference(exprStatementEClass, EXPR_STATEMENT__EXPRESSION);
-
-    groupPartEClass = createEClass(GROUP_PART);
-    createEAttribute(groupPartEClass, GROUP_PART__EXECUTION_MODE);
-    createEAttribute(groupPartEClass, GROUP_PART__NAME);
-    createEReference(groupPartEClass, GROUP_PART__ASSERTS);
-    createEReference(groupPartEClass, GROUP_PART__PREREQUISITES);
 
     prerequisiteEClass = createEClass(PREREQUISITE);
     createEAttribute(prerequisiteEClass, PREREQUISITE__SURPRESSED);
@@ -2877,14 +3386,16 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     compoundReferencesEClass = createEClass(COMPOUND_REFERENCES);
     createEReference(compoundReferencesEClass, COMPOUND_REFERENCES__PREREQUISITES);
 
-    actionPartEClass = createEClass(ACTION_PART);
-    createEAttribute(actionPartEClass, ACTION_PART__EXECUTION_MODE);
-    createEReference(actionPartEClass, ACTION_PART__ASSERTS);
-    createEReference(actionPartEClass, ACTION_PART__PROPERTIES);
-    createEReference(actionPartEClass, ACTION_PART__ADVICE);
-    createEReference(actionPartEClass, ACTION_PART__RESULT_GROUP);
-    createEReference(actionPartEClass, ACTION_PART__LAYOUT);
-    createEReference(actionPartEClass, ACTION_PART__STATEMENTS);
+    partEClass = createEClass(PART);
+    createEAttribute(partEClass, PART__VISIBILITY);
+    createEAttribute(partEClass, PART__EXECUTION_MODE);
+    createEReference(partEClass, PART__PROVIDED_CAPABILITIES);
+    createEReference(partEClass, PART__ASSERTS);
+    createEReference(partEClass, PART__PROPERTIES);
+    createEReference(partEClass, PART__ADVICE);
+    createEReference(partEClass, PART__RESULT_GROUP);
+    createEReference(partEClass, PART__LAYOUT);
+    createEReference(partEClass, PART__STATEMENTS);
 
     parameterEClass = createEClass(PARAMETER);
     createEReference(parameterEClass, PARAMETER__VAL);
@@ -2946,8 +3457,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     statementEClass = createEClass(STATEMENT);
 
     breakStatementEClass = createEClass(BREAK_STATEMENT);
+    createEAttribute(breakStatementEClass, BREAK_STATEMENT__LABEL);
 
     continueStatementEClass = createEClass(CONTINUE_STATEMENT);
+    createEAttribute(continueStatementEClass, CONTINUE_STATEMENT__LABEL);
 
     compoundStatementEClass = createEClass(COMPOUND_STATEMENT);
     createEReference(compoundStatementEClass, COMPOUND_STATEMENT__STATEMENTS);
@@ -2972,10 +3485,49 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(forStatementEClass, FOR_STATEMENT__INIT);
     createEReference(forStatementEClass, FOR_STATEMENT__COND);
     createEReference(forStatementEClass, FOR_STATEMENT__ITERATE);
+    createEAttribute(forStatementEClass, FOR_STATEMENT__IN_LOOP);
     createEReference(forStatementEClass, FOR_STATEMENT__BODY);
+
+    doWhileStatementEClass = createEClass(DO_WHILE_STATEMENT);
+    createEReference(doWhileStatementEClass, DO_WHILE_STATEMENT__STATEMENT);
+    createEReference(doWhileStatementEClass, DO_WHILE_STATEMENT__CONDITION);
 
     returnStatementEClass = createEClass(RETURN_STATEMENT);
     createEReference(returnStatementEClass, RETURN_STATEMENT__RETURN);
+
+    functionStatementEClass = createEClass(FUNCTION_STATEMENT);
+    createEAttribute(functionStatementEClass, FUNCTION_STATEMENT__NAME);
+    createEAttribute(functionStatementEClass, FUNCTION_STATEMENT__PARAMS);
+    createEReference(functionStatementEClass, FUNCTION_STATEMENT__STATEMENTS);
+
+    ifStatementEClass = createEClass(IF_STATEMENT);
+    createEReference(ifStatementEClass, IF_STATEMENT__COND);
+    createEReference(ifStatementEClass, IF_STATEMENT__THEN);
+    createEReference(ifStatementEClass, IF_STATEMENT__ELSE);
+
+    labelStatementEClass = createEClass(LABEL_STATEMENT);
+    createEAttribute(labelStatementEClass, LABEL_STATEMENT__NAME);
+    createEReference(labelStatementEClass, LABEL_STATEMENT__STATEMENT);
+
+    throwStatementEClass = createEClass(THROW_STATEMENT);
+    createEReference(throwStatementEClass, THROW_STATEMENT__EXPR);
+
+    tryCatchStatementEClass = createEClass(TRY_CATCH_STATEMENT);
+    createEReference(tryCatchStatementEClass, TRY_CATCH_STATEMENT__TRY_BLOCK);
+    createEReference(tryCatchStatementEClass, TRY_CATCH_STATEMENT__CATCH_BLOCK);
+    createEReference(tryCatchStatementEClass, TRY_CATCH_STATEMENT__FINALLY_BLOCK);
+    createEReference(tryCatchStatementEClass, TRY_CATCH_STATEMENT__FINALLY);
+
+    catchBlockEClass = createEClass(CATCH_BLOCK);
+    createEAttribute(catchBlockEClass, CATCH_BLOCK__VARIABLE);
+    createEReference(catchBlockEClass, CATCH_BLOCK__CATCH_BLOCK);
+
+    finallyBlockEClass = createEClass(FINALLY_BLOCK);
+    createEReference(finallyBlockEClass, FINALLY_BLOCK__FINALLY_BLOCK);
+
+    withStatementEClass = createEClass(WITH_STATEMENT);
+    createEReference(withStatementEClass, WITH_STATEMENT__EXPR);
+    createEReference(withStatementEClass, WITH_STATEMENT__STATEMENT);
 
     syntaxElementEClass = createEClass(SYNTAX_ELEMENT);
 
@@ -2992,17 +3544,37 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     valueExpressionEClass = createEClass(VALUE_EXPRESSION);
 
     operationCallEClass = createEClass(OPERATION_CALL);
+    createEReference(operationCallEClass, OPERATION_CALL__LEFT);
+    createEAttribute(operationCallEClass, OPERATION_CALL__OPERATOR);
+    createEReference(operationCallEClass, OPERATION_CALL__RIGHT);
     createEReference(operationCallEClass, OPERATION_CALL__PARAMS);
+    createEReference(operationCallEClass, OPERATION_CALL__TARGET);
 
     propertyValueEClass = createEClass(PROPERTY_VALUE);
 
     variableValueEClass = createEClass(VARIABLE_VALUE);
 
-    featureCallEClass = createEClass(FEATURE_CALL);
-    createEReference(featureCallEClass, FEATURE_CALL__TARGET);
-    createEAttribute(featureCallEClass, FEATURE_CALL__TYPE);
+    keywordVariablesEClass = createEClass(KEYWORD_VARIABLES);
+
+    constructorCallExpressionEClass = createEClass(CONSTRUCTOR_CALL_EXPRESSION);
+    createEAttribute(constructorCallExpressionEClass, CONSTRUCTOR_CALL_EXPRESSION__CLASS);
+    createEReference(constructorCallExpressionEClass, CONSTRUCTOR_CALL_EXPRESSION__PARAMS);
 
     literalEClass = createEClass(LITERAL);
+
+    literalArrayEClass = createEClass(LITERAL_ARRAY);
+    createEReference(literalArrayEClass, LITERAL_ARRAY__ELEMENT);
+
+    literalObjectEClass = createEClass(LITERAL_OBJECT);
+    createEReference(literalObjectEClass, LITERAL_OBJECT__FEATURES);
+
+    literalFunctionEClass = createEClass(LITERAL_FUNCTION);
+    createEAttribute(literalFunctionEClass, LITERAL_FUNCTION__PARAMS);
+    createEReference(literalFunctionEClass, LITERAL_FUNCTION__STATEMENTS);
+
+    featureEClass = createEClass(FEATURE);
+    createEAttribute(featureEClass, FEATURE__NAME);
+    createEReference(featureEClass, FEATURE__VALUE);
 
     valueLiteralEClass = createEClass(VALUE_LITERAL);
 
@@ -3014,6 +3586,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     nullLiteralEClass = createEClass(NULL_LITERAL);
     createEAttribute(nullLiteralEClass, NULL_LITERAL__VAL);
+
+    voidLiteralEClass = createEClass(VOID_LITERAL);
+    createEAttribute(voidLiteralEClass, VOID_LITERAL__VAL);
 
     stringLiteralEClass = createEClass(STRING_LITERAL);
     createEAttribute(stringLiteralEClass, STRING_LITERAL__VAL);
@@ -3046,6 +3621,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(atCallEClass, AT_CALL__TARGET);
     createEReference(atCallEClass, AT_CALL__INDEX);
     createEReference(atCallEClass, AT_CALL__PARAMS);
+
+    featureCallEClass = createEClass(FEATURE_CALL);
+    createEReference(featureCallEClass, FEATURE_CALL__TARGET);
+    createEAttribute(featureCallEClass, FEATURE_CALL__TYPE);
 
     // Create enums
     visibilityEEnum = createEEnum(VISIBILITY);
@@ -3082,14 +3661,11 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    artifactsPartEClass.getESuperTypes().add(this.getBuildPart());
     exprStatementEClass.getESuperTypes().add(this.getPathExpression());
     exprStatementEClass.getESuperTypes().add(this.getPrerequisiteEntry());
-    groupPartEClass.getESuperTypes().add(this.getBuildPart());
     partInSelfEClass.getESuperTypes().add(this.getPrerequisiteEntry());
     capabilityReferencedPartEClass.getESuperTypes().add(this.getPrerequisiteEntry());
     compoundReferencesEClass.getESuperTypes().add(this.getPrerequisiteEntry());
-    actionPartEClass.getESuperTypes().add(this.getBuildPart());
     compoundAdviceEClass.getESuperTypes().add(this.getAdvice());
     advicePathChildrenEClass.getESuperTypes().add(this.getAdvicePathElement());
     breakStatementEClass.getESuperTypes().add(this.getStatement());
@@ -3098,22 +3674,33 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     whileStatementEClass.getESuperTypes().add(this.getStatement());
     switchStatementEClass.getESuperTypes().add(this.getStatement());
     forStatementEClass.getESuperTypes().add(this.getStatement());
+    doWhileStatementEClass.getESuperTypes().add(this.getStatement());
     returnStatementEClass.getESuperTypes().add(this.getStatement());
+    functionStatementEClass.getESuperTypes().add(this.getStatement());
+    ifStatementEClass.getESuperTypes().add(this.getStatement());
+    labelStatementEClass.getESuperTypes().add(this.getStatement());
+    throwStatementEClass.getESuperTypes().add(this.getStatement());
+    tryCatchStatementEClass.getESuperTypes().add(this.getStatement());
+    withStatementEClass.getESuperTypes().add(this.getStatement());
     expressionEClass.getESuperTypes().add(this.getPropertyExpression());
     expressionEClass.getESuperTypes().add(this.getSyntaxElement());
     expressionEClass.getESuperTypes().add(this.getVarExpression());
     varExpressionEClass.getESuperTypes().add(this.getStatement());
     valueExpressionEClass.getESuperTypes().add(this.getExpression());
     operationCallEClass.getESuperTypes().add(this.getExpression());
-    operationCallEClass.getESuperTypes().add(this.getFeatureCall());
     propertyValueEClass.getESuperTypes().add(this.getExpression());
     variableValueEClass.getESuperTypes().add(this.getExpression());
-    featureCallEClass.getESuperTypes().add(this.getExpression());
+    keywordVariablesEClass.getESuperTypes().add(this.getExpression());
+    constructorCallExpressionEClass.getESuperTypes().add(this.getExpression());
     literalEClass.getESuperTypes().add(this.getExpression());
+    literalArrayEClass.getESuperTypes().add(this.getLiteral());
+    literalObjectEClass.getESuperTypes().add(this.getLiteral());
+    literalFunctionEClass.getESuperTypes().add(this.getLiteral());
     valueLiteralEClass.getESuperTypes().add(this.getLiteral());
     booleanLiteralEClass.getESuperTypes().add(this.getValueLiteral());
     integerLiteralEClass.getESuperTypes().add(this.getValueLiteral());
     nullLiteralEClass.getESuperTypes().add(this.getValueLiteral());
+    voidLiteralEClass.getESuperTypes().add(this.getValueLiteral());
     stringLiteralEClass.getESuperTypes().add(this.getValueLiteral());
     realLiteralEClass.getESuperTypes().add(this.getValueLiteral());
     regexpLiteralEClass.getESuperTypes().add(this.getLiteral());
@@ -3122,6 +3709,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     booleanOperationEClass.getESuperTypes().add(this.getExpression());
     postOpCallEClass.getESuperTypes().add(this.getExpression());
     atCallEClass.getESuperTypes().add(this.getExpression());
+    featureCallEClass.getESuperTypes().add(this.getExpression());
 
     // Initialize classes and features; add operations and parameters
     initEClass(beeModelEClass, BeeModel.class, "BeeModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3142,7 +3730,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBuildUnit_MetaRequiredCapabilities(), this.getRequiredCapability(), null, "metaRequiredCapabilities", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Advice(), this.getNamedAdvice(), null, "advice", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Synchronize(), this.getSynchronization(), null, "synchronize", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuildUnit_Parts(), this.getBuildPart(), null, "parts", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildUnit_Parts(), this.getPart(), null, "parts", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_RepositoryConfig(), this.getRepositoryConfiguration(), null, "repositoryConfig", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(providedCapabilityEClass, ProvidedCapability.class, "ProvidedCapability", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3175,15 +3763,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(synchronizationEClass, Synchronization.class, "Synchronization", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getSynchronization_Partrefs(), ecorePackage.getEString(), "partrefs", null, 0, -1, Synchronization.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(buildPartEClass, BuildPart.class, "BuildPart", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getBuildPart_Visibility(), this.getVisibility(), "visibility", null, 0, 1, BuildPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuildPart_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, BuildPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(artifactsPartEClass, ArtifactsPart.class, "ArtifactsPart", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getArtifactsPart_Name(), ecorePackage.getEString(), "name", null, 0, 1, ArtifactsPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactsPart_Asserts(), this.getPostConditionAssert(), null, "asserts", null, 0, -1, ArtifactsPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactsPart_Paths(), this.getPathGroup(), null, "paths", null, 0, -1, ArtifactsPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(pathGroupEClass, PathGroup.class, "PathGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getPathGroup_Filter(), this.getFilter(), null, "filter", null, 0, 1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getPathGroup_Paths(), this.getPathExpression(), null, "paths", null, 0, -1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3195,12 +3774,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(exprStatementEClass, ExprStatement.class, "ExprStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getExprStatement_Expression(), this.getExpression(), null, "expression", null, 0, 1, ExprStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(groupPartEClass, GroupPart.class, "GroupPart", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getGroupPart_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, GroupPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGroupPart_Name(), ecorePackage.getEString(), "name", null, 0, 1, GroupPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getGroupPart_Asserts(), ecorePackage.getEObject(), null, "asserts", null, 0, -1, GroupPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getGroupPart_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1, GroupPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(prerequisiteEClass, Prerequisite.class, "Prerequisite", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getPrerequisite_Surpressed(), ecorePackage.getEBoolean(), "surpressed", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3228,14 +3801,16 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(compoundReferencesEClass, CompoundReferences.class, "CompoundReferences", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCompoundReferences_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1, CompoundReferences.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(actionPartEClass, ActionPart.class, "ActionPart", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getActionPart_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getActionPart_Asserts(), ecorePackage.getEObject(), null, "asserts", null, 0, -1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getActionPart_Properties(), this.getPropertyStatement(), null, "properties", null, 0, -1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getActionPart_Advice(), this.getAdvice(), null, "advice", null, 0, 1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getActionPart_ResultGroup(), this.getActionInputGroup(), null, "resultGroup", null, 0, 1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getActionPart_Layout(), this.getLayout(), null, "layout", null, 0, -1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getActionPart_Statements(), this.getStatements(), null, "statements", null, 0, 1, ActionPart.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(partEClass, Part.class, "Part", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPart_Visibility(), this.getVisibility(), "visibility", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPart_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_Asserts(), ecorePackage.getEObject(), null, "asserts", null, 0, -1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_Properties(), this.getPropertyStatement(), null, "properties", null, 0, -1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_Advice(), this.getAdvice(), null, "advice", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_ResultGroup(), this.getActionInputGroup(), null, "resultGroup", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_Layout(), this.getLayout(), null, "layout", null, 0, -1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPart_Statements(), this.getStatements(), null, "statements", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(parameterEClass, Parameter.class, "Parameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getParameter_Val(), this.getExpression(), null, "val", null, 0, 1, Parameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3297,8 +3872,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(statementEClass, Statement.class, "Statement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(breakStatementEClass, BreakStatement.class, "BreakStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBreakStatement_Label(), ecorePackage.getEString(), "label", null, 0, 1, BreakStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(continueStatementEClass, ContinueStatement.class, "ContinueStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getContinueStatement_Label(), ecorePackage.getEString(), "label", null, 0, 1, ContinueStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(compoundStatementEClass, CompoundStatement.class, "CompoundStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCompoundStatement_Statements(), this.getStatements(), null, "statements", null, 0, 1, CompoundStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3307,7 +3884,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getStatements_Statements(), this.getStatement(), null, "statements", null, 0, -1, Statements.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(whileStatementEClass, WhileStatement.class, "WhileStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getWhileStatement_Condition(), this.getVarExpression(), null, "condition", null, 0, 1, WhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getWhileStatement_Condition(), this.getExpression(), null, "condition", null, 0, 1, WhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getWhileStatement_Body(), this.getStatement(), null, "body", null, 0, 1, WhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(switchStatementEClass, SwitchStatement.class, "SwitchStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3317,16 +3894,55 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(caseEClass, Case.class, "Case", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCase_Condition(), this.getValueLiteral(), null, "condition", null, 0, 1, Case.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getCase_Statements(), this.getStatement(), null, "statements", null, 0, -1, Case.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getCase_Statements(), this.getStatements(), null, "statements", null, 0, 1, Case.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(forStatementEClass, ForStatement.class, "ForStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getForStatement_Init(), this.getVarExpressionList(), null, "init", null, 0, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getForStatement_Cond(), this.getExpression(), null, "cond", null, 0, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getForStatement_Iterate(), this.getExpression(), null, "iterate", null, 0, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForStatement_InLoop(), ecorePackage.getEBoolean(), "inLoop", null, 0, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getForStatement_Body(), this.getStatement(), null, "body", null, 0, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(doWhileStatementEClass, DoWhileStatement.class, "DoWhileStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getDoWhileStatement_Statement(), this.getStatement(), null, "statement", null, 0, 1, DoWhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getDoWhileStatement_Condition(), this.getExpression(), null, "condition", null, 0, 1, DoWhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(returnStatementEClass, ReturnStatement.class, "ReturnStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getReturnStatement_Return(), this.getExpression(), null, "return", null, 0, 1, ReturnStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(functionStatementEClass, FunctionStatement.class, "FunctionStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getFunctionStatement_Name(), ecorePackage.getEString(), "name", null, 0, 1, FunctionStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFunctionStatement_Params(), ecorePackage.getEString(), "params", null, 0, -1, FunctionStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getFunctionStatement_Statements(), this.getStatements(), null, "statements", null, 0, 1, FunctionStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ifStatementEClass, IfStatement.class, "IfStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getIfStatement_Cond(), this.getExpression(), null, "cond", null, 0, 1, IfStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getIfStatement_Then(), this.getStatement(), null, "then", null, 0, 1, IfStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getIfStatement_Else(), this.getStatement(), null, "else", null, 0, 1, IfStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(labelStatementEClass, LabelStatement.class, "LabelStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLabelStatement_Name(), ecorePackage.getEString(), "name", null, 0, 1, LabelStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLabelStatement_Statement(), this.getStatement(), null, "statement", null, 0, 1, LabelStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(throwStatementEClass, ThrowStatement.class, "ThrowStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getThrowStatement_Expr(), this.getExpression(), null, "expr", null, 0, 1, ThrowStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tryCatchStatementEClass, TryCatchStatement.class, "TryCatchStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getTryCatchStatement_TryBlock(), this.getCompoundStatement(), null, "tryBlock", null, 0, 1, TryCatchStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTryCatchStatement_CatchBlock(), this.getCatchBlock(), null, "catchBlock", null, 0, 1, TryCatchStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTryCatchStatement_FinallyBlock(), this.getFinallyBlock(), null, "finallyBlock", null, 0, 1, TryCatchStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTryCatchStatement_Finally(), this.getFinallyBlock(), null, "finally", null, 0, 1, TryCatchStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(catchBlockEClass, CatchBlock.class, "CatchBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getCatchBlock_Variable(), ecorePackage.getEString(), "variable", null, 0, 1, CatchBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getCatchBlock_CatchBlock(), this.getCompoundStatement(), null, "catchBlock", null, 0, 1, CatchBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(finallyBlockEClass, FinallyBlock.class, "FinallyBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getFinallyBlock_FinallyBlock(), this.getCompoundStatement(), null, "finallyBlock", null, 0, 1, FinallyBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(withStatementEClass, WithStatement.class, "WithStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getWithStatement_Expr(), this.getExpression(), null, "expr", null, 0, 1, WithStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getWithStatement_Statement(), this.getStatement(), null, "statement", null, 0, 1, WithStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(syntaxElementEClass, SyntaxElement.class, "SyntaxElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -3343,17 +3959,37 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(valueExpressionEClass, ValueExpression.class, "ValueExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(operationCallEClass, OperationCall.class, "OperationCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getOperationCall_Left(), this.getExpression(), null, "left", null, 0, 1, OperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOperationCall_Operator(), ecorePackage.getEString(), "operator", null, 0, 1, OperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOperationCall_Right(), this.getExpression(), null, "right", null, 0, 1, OperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOperationCall_Params(), ecorePackage.getEObject(), null, "params", null, 0, -1, OperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOperationCall_Target(), this.getExpression(), null, "target", null, 0, 1, OperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(propertyValueEClass, PropertyValue.class, "PropertyValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(variableValueEClass, VariableValue.class, "VariableValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(featureCallEClass, FeatureCall.class, "FeatureCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getFeatureCall_Target(), this.getExpression(), null, "target", null, 0, 1, FeatureCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getFeatureCall_Type(), ecorePackage.getEString(), "type", null, 0, 1, FeatureCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(keywordVariablesEClass, KeywordVariables.class, "KeywordVariables", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(constructorCallExpressionEClass, ConstructorCallExpression.class, "ConstructorCallExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getConstructorCallExpression_Class(), ecorePackage.getEString(), "class", null, 0, 1, ConstructorCallExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getConstructorCallExpression_Params(), this.getParameter(), null, "params", null, 0, -1, ConstructorCallExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(literalEClass, Literal.class, "Literal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(literalArrayEClass, LiteralArray.class, "LiteralArray", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLiteralArray_Element(), this.getExpression(), null, "element", null, 0, -1, LiteralArray.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(literalObjectEClass, LiteralObject.class, "LiteralObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLiteralObject_Features(), this.getFeature(), null, "features", null, 0, -1, LiteralObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(literalFunctionEClass, LiteralFunction.class, "LiteralFunction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLiteralFunction_Params(), ecorePackage.getEString(), "params", null, 0, -1, LiteralFunction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLiteralFunction_Statements(), this.getStatements(), null, "statements", null, 0, 1, LiteralFunction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(featureEClass, Feature.class, "Feature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getFeature_Name(), ecorePackage.getEString(), "name", null, 0, 1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getFeature_Value(), this.getExpression(), null, "value", null, 0, 1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(valueLiteralEClass, ValueLiteral.class, "ValueLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -3365,6 +4001,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(nullLiteralEClass, NullLiteral.class, "NullLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getNullLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, NullLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(voidLiteralEClass, VoidLiteral.class, "VoidLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVoidLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, VoidLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(stringLiteralEClass, StringLiteral.class, "StringLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getStringLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, StringLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3397,6 +4036,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getAtCall_Target(), this.getExpression(), null, "target", null, 0, 1, AtCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtCall_Index(), this.getExpression(), null, "index", null, 0, 1, AtCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtCall_Params(), this.getParameter(), null, "params", null, 0, -1, AtCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(featureCallEClass, FeatureCall.class, "FeatureCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getFeatureCall_Target(), this.getExpression(), null, "target", null, 0, 1, FeatureCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFeatureCall_Type(), ecorePackage.getEString(), "type", null, 0, 1, FeatureCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(visibilityEEnum, Visibility.class, "Visibility");

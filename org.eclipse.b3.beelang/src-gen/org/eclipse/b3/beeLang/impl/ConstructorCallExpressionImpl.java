@@ -8,9 +8,8 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.BuildPart;
-import org.eclipse.b3.beeLang.ProvidedCapability;
-import org.eclipse.b3.beeLang.Visibility;
+import org.eclipse.b3.beeLang.ConstructorCallExpression;
+import org.eclipse.b3.beeLang.Parameter;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -21,63 +20,62 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Build Part</b></em>'.
+ * An implementation of the model object '<em><b>Constructor Call Expression</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.BuildPartImpl#getVisibility <em>Visibility</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.BuildPartImpl#getProvidedCapabilities <em>Provided Capabilities</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ConstructorCallExpressionImpl#getClass_ <em>Class</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ConstructorCallExpressionImpl#getParams <em>Params</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class BuildPartImpl extends MinimalEObjectImpl.Container implements BuildPart
+public class ConstructorCallExpressionImpl extends ExpressionImpl implements ConstructorCallExpression
 {
   /**
-   * The default value of the '{@link #getVisibility() <em>Visibility</em>}' attribute.
+   * The default value of the '{@link #getClass_() <em>Class</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVisibility()
+   * @see #getClass_()
    * @generated
    * @ordered
    */
-  protected static final Visibility VISIBILITY_EDEFAULT = Visibility.PUBLIC;
+  protected static final String CLASS_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getVisibility() <em>Visibility</em>}' attribute.
+   * The cached value of the '{@link #getClass_() <em>Class</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVisibility()
+   * @see #getClass_()
    * @generated
    * @ordered
    */
-  protected Visibility visibility = VISIBILITY_EDEFAULT;
+  protected String class_ = CLASS_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getProvidedCapabilities() <em>Provided Capabilities</em>}' containment reference list.
+   * The cached value of the '{@link #getParams() <em>Params</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getProvidedCapabilities()
+   * @see #getParams()
    * @generated
    * @ordered
    */
-  protected EList<ProvidedCapability> providedCapabilities;
+  protected EList<Parameter> params;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected BuildPartImpl()
+  protected ConstructorCallExpressionImpl()
   {
     super();
   }
@@ -90,7 +88,7 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.BUILD_PART;
+    return BeeLangPackage.Literals.CONSTRUCTOR_CALL_EXPRESSION;
   }
 
   /**
@@ -98,9 +96,9 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public Visibility getVisibility()
+  public String getClass_()
   {
-    return visibility;
+    return class_;
   }
 
   /**
@@ -108,12 +106,12 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setVisibility(Visibility newVisibility)
+  public void setClass(String newClass)
   {
-    Visibility oldVisibility = visibility;
-    visibility = newVisibility == null ? VISIBILITY_EDEFAULT : newVisibility;
+    String oldClass = class_;
+    class_ = newClass;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_PART__VISIBILITY, oldVisibility, visibility));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__CLASS, oldClass, class_));
   }
 
   /**
@@ -121,13 +119,13 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<ProvidedCapability> getProvidedCapabilities()
+  public EList<Parameter> getParams()
   {
-    if (providedCapabilities == null)
+    if (params == null)
     {
-      providedCapabilities = new EObjectContainmentEList<ProvidedCapability>(ProvidedCapability.class, this, BeeLangPackage.BUILD_PART__PROVIDED_CAPABILITIES);
+      params = new EObjectContainmentEList<Parameter>(Parameter.class, this, BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__PARAMS);
     }
-    return providedCapabilities;
+    return params;
   }
 
   /**
@@ -140,8 +138,8 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
-      case BeeLangPackage.BUILD_PART__PROVIDED_CAPABILITIES:
-        return ((InternalEList<?>)getProvidedCapabilities()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__PARAMS:
+        return ((InternalEList<?>)getParams()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -156,10 +154,10 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
-      case BeeLangPackage.BUILD_PART__VISIBILITY:
-        return getVisibility();
-      case BeeLangPackage.BUILD_PART__PROVIDED_CAPABILITIES:
-        return getProvidedCapabilities();
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__CLASS:
+        return getClass_();
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__PARAMS:
+        return getParams();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -175,12 +173,12 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
-      case BeeLangPackage.BUILD_PART__VISIBILITY:
-        setVisibility((Visibility)newValue);
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__CLASS:
+        setClass((String)newValue);
         return;
-      case BeeLangPackage.BUILD_PART__PROVIDED_CAPABILITIES:
-        getProvidedCapabilities().clear();
-        getProvidedCapabilities().addAll((Collection<? extends ProvidedCapability>)newValue);
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__PARAMS:
+        getParams().clear();
+        getParams().addAll((Collection<? extends Parameter>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -196,11 +194,11 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
-      case BeeLangPackage.BUILD_PART__VISIBILITY:
-        setVisibility(VISIBILITY_EDEFAULT);
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__CLASS:
+        setClass(CLASS_EDEFAULT);
         return;
-      case BeeLangPackage.BUILD_PART__PROVIDED_CAPABILITIES:
-        getProvidedCapabilities().clear();
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__PARAMS:
+        getParams().clear();
         return;
     }
     super.eUnset(featureID);
@@ -216,10 +214,10 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
-      case BeeLangPackage.BUILD_PART__VISIBILITY:
-        return visibility != VISIBILITY_EDEFAULT;
-      case BeeLangPackage.BUILD_PART__PROVIDED_CAPABILITIES:
-        return providedCapabilities != null && !providedCapabilities.isEmpty();
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__CLASS:
+        return CLASS_EDEFAULT == null ? class_ != null : !CLASS_EDEFAULT.equals(class_);
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION__PARAMS:
+        return params != null && !params.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -235,10 +233,10 @@ public class BuildPartImpl extends MinimalEObjectImpl.Container implements Build
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (visibility: ");
-    result.append(visibility);
+    result.append(" (class: ");
+    result.append(class_);
     result.append(')');
     return result.toString();
   }
 
-} //BuildPartImpl
+} //ConstructorCallExpressionImpl

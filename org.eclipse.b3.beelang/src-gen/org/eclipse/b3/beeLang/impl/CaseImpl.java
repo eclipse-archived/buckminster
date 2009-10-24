@@ -5,26 +5,19 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import java.util.Collection;
-
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Case;
-import org.eclipse.b3.beeLang.Statement;
+import org.eclipse.b3.beeLang.Statements;
 import org.eclipse.b3.beeLang.ValueLiteral;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -53,14 +46,14 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
   protected ValueLiteral condition;
 
   /**
-   * The cached value of the '{@link #getStatements() <em>Statements</em>}' containment reference list.
+   * The cached value of the '{@link #getStatements() <em>Statements</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getStatements()
    * @generated
    * @ordered
    */
-  protected EList<Statement> statements;
+  protected Statements statements;
 
   /**
    * <!-- begin-user-doc -->
@@ -136,13 +129,47 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Statement> getStatements()
+  public Statements getStatements()
   {
-    if (statements == null)
-    {
-      statements = new EObjectContainmentEList<Statement>(Statement.class, this, BeeLangPackage.CASE__STATEMENTS);
-    }
     return statements;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetStatements(Statements newStatements, NotificationChain msgs)
+  {
+    Statements oldStatements = statements;
+    statements = newStatements;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CASE__STATEMENTS, oldStatements, newStatements);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setStatements(Statements newStatements)
+  {
+    if (newStatements != statements)
+    {
+      NotificationChain msgs = null;
+      if (statements != null)
+        msgs = ((InternalEObject)statements).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CASE__STATEMENTS, null, msgs);
+      if (newStatements != null)
+        msgs = ((InternalEObject)newStatements).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CASE__STATEMENTS, null, msgs);
+      msgs = basicSetStatements(newStatements, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CASE__STATEMENTS, newStatements, newStatements));
   }
 
   /**
@@ -158,7 +185,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
       case BeeLangPackage.CASE__CONDITION:
         return basicSetCondition(null, msgs);
       case BeeLangPackage.CASE__STATEMENTS:
-        return ((InternalEList<?>)getStatements()).basicRemove(otherEnd, msgs);
+        return basicSetStatements(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -186,7 +213,6 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -196,8 +222,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
         setCondition((ValueLiteral)newValue);
         return;
       case BeeLangPackage.CASE__STATEMENTS:
-        getStatements().clear();
-        getStatements().addAll((Collection<? extends Statement>)newValue);
+        setStatements((Statements)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -217,7 +242,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
         setCondition((ValueLiteral)null);
         return;
       case BeeLangPackage.CASE__STATEMENTS:
-        getStatements().clear();
+        setStatements((Statements)null);
         return;
     }
     super.eUnset(featureID);
@@ -236,7 +261,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
       case BeeLangPackage.CASE__CONDITION:
         return condition != null;
       case BeeLangPackage.CASE__STATEMENTS:
-        return statements != null && !statements.isEmpty();
+        return statements != null;
     }
     return super.eIsSet(featureID);
   }

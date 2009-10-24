@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link org.eclipse.b3.beeLang.impl.ForStatementImpl#getInit <em>Init</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ForStatementImpl#getCond <em>Cond</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ForStatementImpl#getIterate <em>Iterate</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ForStatementImpl#isInLoop <em>In Loop</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ForStatementImpl#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
@@ -66,6 +67,26 @@ public class ForStatementImpl extends StatementImpl implements ForStatement
    * @ordered
    */
   protected Expression iterate;
+
+  /**
+   * The default value of the '{@link #isInLoop() <em>In Loop</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isInLoop()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean IN_LOOP_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isInLoop() <em>In Loop</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isInLoop()
+   * @generated
+   * @ordered
+   */
+  protected boolean inLoop = IN_LOOP_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
@@ -247,6 +268,29 @@ public class ForStatementImpl extends StatementImpl implements ForStatement
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isInLoop()
+  {
+    return inLoop;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setInLoop(boolean newInLoop)
+  {
+    boolean oldInLoop = inLoop;
+    inLoop = newInLoop;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.FOR_STATEMENT__IN_LOOP, oldInLoop, inLoop));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Statement getBody()
   {
     return body;
@@ -328,6 +372,8 @@ public class ForStatementImpl extends StatementImpl implements ForStatement
         return getCond();
       case BeeLangPackage.FOR_STATEMENT__ITERATE:
         return getIterate();
+      case BeeLangPackage.FOR_STATEMENT__IN_LOOP:
+        return isInLoop();
       case BeeLangPackage.FOR_STATEMENT__BODY:
         return getBody();
     }
@@ -352,6 +398,9 @@ public class ForStatementImpl extends StatementImpl implements ForStatement
         return;
       case BeeLangPackage.FOR_STATEMENT__ITERATE:
         setIterate((Expression)newValue);
+        return;
+      case BeeLangPackage.FOR_STATEMENT__IN_LOOP:
+        setInLoop((Boolean)newValue);
         return;
       case BeeLangPackage.FOR_STATEMENT__BODY:
         setBody((Statement)newValue);
@@ -379,6 +428,9 @@ public class ForStatementImpl extends StatementImpl implements ForStatement
       case BeeLangPackage.FOR_STATEMENT__ITERATE:
         setIterate((Expression)null);
         return;
+      case BeeLangPackage.FOR_STATEMENT__IN_LOOP:
+        setInLoop(IN_LOOP_EDEFAULT);
+        return;
       case BeeLangPackage.FOR_STATEMENT__BODY:
         setBody((Statement)null);
         return;
@@ -402,10 +454,29 @@ public class ForStatementImpl extends StatementImpl implements ForStatement
         return cond != null;
       case BeeLangPackage.FOR_STATEMENT__ITERATE:
         return iterate != null;
+      case BeeLangPackage.FOR_STATEMENT__IN_LOOP:
+        return inLoop != IN_LOOP_EDEFAULT;
       case BeeLangPackage.FOR_STATEMENT__BODY:
         return body != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (inLoop: ");
+    result.append(inLoop);
+    result.append(')');
+    return result.toString();
   }
 
 } //ForStatementImpl

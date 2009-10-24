@@ -5,42 +5,33 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import java.util.Collection;
-
-import org.eclipse.b3.beeLang.ArtifactsPart;
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.PathGroup;
-import org.eclipse.b3.beeLang.PostConditionAssert;
+import org.eclipse.b3.beeLang.LabelStatement;
+import org.eclipse.b3.beeLang.Statement;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Artifacts Part</b></em>'.
+ * An implementation of the model object '<em><b>Label Statement</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ArtifactsPartImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ArtifactsPartImpl#getAsserts <em>Asserts</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ArtifactsPartImpl#getPaths <em>Paths</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LabelStatementImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LabelStatementImpl#getStatement <em>Statement</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
+public class LabelStatementImpl extends StatementImpl implements LabelStatement
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -63,31 +54,21 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getAsserts() <em>Asserts</em>}' containment reference list.
+   * The cached value of the '{@link #getStatement() <em>Statement</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAsserts()
+   * @see #getStatement()
    * @generated
    * @ordered
    */
-  protected EList<PostConditionAssert> asserts;
-
-  /**
-   * The cached value of the '{@link #getPaths() <em>Paths</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPaths()
-   * @generated
-   * @ordered
-   */
-  protected EList<PathGroup> paths;
+  protected Statement statement;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ArtifactsPartImpl()
+  protected LabelStatementImpl()
   {
     super();
   }
@@ -100,7 +81,7 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.ARTIFACTS_PART;
+    return BeeLangPackage.Literals.LABEL_STATEMENT;
   }
 
   /**
@@ -123,7 +104,7 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ARTIFACTS_PART__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LABEL_STATEMENT__NAME, oldName, name));
   }
 
   /**
@@ -131,13 +112,9 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<PostConditionAssert> getAsserts()
+  public Statement getStatement()
   {
-    if (asserts == null)
-    {
-      asserts = new EObjectContainmentEList<PostConditionAssert>(PostConditionAssert.class, this, BeeLangPackage.ARTIFACTS_PART__ASSERTS);
-    }
-    return asserts;
+    return statement;
   }
 
   /**
@@ -145,13 +122,37 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<PathGroup> getPaths()
+  public NotificationChain basicSetStatement(Statement newStatement, NotificationChain msgs)
   {
-    if (paths == null)
+    Statement oldStatement = statement;
+    statement = newStatement;
+    if (eNotificationRequired())
     {
-      paths = new EObjectContainmentEList<PathGroup>(PathGroup.class, this, BeeLangPackage.ARTIFACTS_PART__PATHS);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.LABEL_STATEMENT__STATEMENT, oldStatement, newStatement);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
     }
-    return paths;
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setStatement(Statement newStatement)
+  {
+    if (newStatement != statement)
+    {
+      NotificationChain msgs = null;
+      if (statement != null)
+        msgs = ((InternalEObject)statement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LABEL_STATEMENT__STATEMENT, null, msgs);
+      if (newStatement != null)
+        msgs = ((InternalEObject)newStatement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LABEL_STATEMENT__STATEMENT, null, msgs);
+      msgs = basicSetStatement(newStatement, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LABEL_STATEMENT__STATEMENT, newStatement, newStatement));
   }
 
   /**
@@ -164,10 +165,8 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.ARTIFACTS_PART__ASSERTS:
-        return ((InternalEList<?>)getAsserts()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.ARTIFACTS_PART__PATHS:
-        return ((InternalEList<?>)getPaths()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.LABEL_STATEMENT__STATEMENT:
+        return basicSetStatement(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -182,12 +181,10 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.ARTIFACTS_PART__NAME:
+      case BeeLangPackage.LABEL_STATEMENT__NAME:
         return getName();
-      case BeeLangPackage.ARTIFACTS_PART__ASSERTS:
-        return getAsserts();
-      case BeeLangPackage.ARTIFACTS_PART__PATHS:
-        return getPaths();
+      case BeeLangPackage.LABEL_STATEMENT__STATEMENT:
+        return getStatement();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -197,22 +194,16 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case BeeLangPackage.ARTIFACTS_PART__NAME:
+      case BeeLangPackage.LABEL_STATEMENT__NAME:
         setName((String)newValue);
         return;
-      case BeeLangPackage.ARTIFACTS_PART__ASSERTS:
-        getAsserts().clear();
-        getAsserts().addAll((Collection<? extends PostConditionAssert>)newValue);
-        return;
-      case BeeLangPackage.ARTIFACTS_PART__PATHS:
-        getPaths().clear();
-        getPaths().addAll((Collection<? extends PathGroup>)newValue);
+      case BeeLangPackage.LABEL_STATEMENT__STATEMENT:
+        setStatement((Statement)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -228,14 +219,11 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.ARTIFACTS_PART__NAME:
+      case BeeLangPackage.LABEL_STATEMENT__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case BeeLangPackage.ARTIFACTS_PART__ASSERTS:
-        getAsserts().clear();
-        return;
-      case BeeLangPackage.ARTIFACTS_PART__PATHS:
-        getPaths().clear();
+      case BeeLangPackage.LABEL_STATEMENT__STATEMENT:
+        setStatement((Statement)null);
         return;
     }
     super.eUnset(featureID);
@@ -251,12 +239,10 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
   {
     switch (featureID)
     {
-      case BeeLangPackage.ARTIFACTS_PART__NAME:
+      case BeeLangPackage.LABEL_STATEMENT__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case BeeLangPackage.ARTIFACTS_PART__ASSERTS:
-        return asserts != null && !asserts.isEmpty();
-      case BeeLangPackage.ARTIFACTS_PART__PATHS:
-        return paths != null && !paths.isEmpty();
+      case BeeLangPackage.LABEL_STATEMENT__STATEMENT:
+        return statement != null;
     }
     return super.eIsSet(featureID);
   }
@@ -278,4 +264,4 @@ public class ArtifactsPartImpl extends BuildPartImpl implements ArtifactsPart
     return result.toString();
   }
 
-} //ArtifactsPartImpl
+} //LabelStatementImpl

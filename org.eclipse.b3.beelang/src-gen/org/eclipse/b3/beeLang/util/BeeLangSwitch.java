@@ -158,21 +158,6 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.BUILD_PART:
-      {
-        BuildPart buildPart = (BuildPart)theEObject;
-        T result = caseBuildPart(buildPart);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.ARTIFACTS_PART:
-      {
-        ArtifactsPart artifactsPart = (ArtifactsPart)theEObject;
-        T result = caseArtifactsPart(artifactsPart);
-        if (result == null) result = caseBuildPart(artifactsPart);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case BeeLangPackage.PATH_GROUP:
       {
         PathGroup pathGroup = (PathGroup)theEObject;
@@ -193,14 +178,6 @@ public class BeeLangSwitch<T>
         T result = caseExprStatement(exprStatement);
         if (result == null) result = casePathExpression(exprStatement);
         if (result == null) result = casePrerequisiteEntry(exprStatement);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.GROUP_PART:
-      {
-        GroupPart groupPart = (GroupPart)theEObject;
-        T result = caseGroupPart(groupPart);
-        if (result == null) result = caseBuildPart(groupPart);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -249,11 +226,10 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.ACTION_PART:
+      case BeeLangPackage.PART:
       {
-        ActionPart actionPart = (ActionPart)theEObject;
-        T result = caseActionPart(actionPart);
-        if (result == null) result = caseBuildPart(actionPart);
+        Part part = (Part)theEObject;
+        T result = casePart(part);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -433,11 +409,81 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BeeLangPackage.DO_WHILE_STATEMENT:
+      {
+        DoWhileStatement doWhileStatement = (DoWhileStatement)theEObject;
+        T result = caseDoWhileStatement(doWhileStatement);
+        if (result == null) result = caseStatement(doWhileStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BeeLangPackage.RETURN_STATEMENT:
       {
         ReturnStatement returnStatement = (ReturnStatement)theEObject;
         T result = caseReturnStatement(returnStatement);
         if (result == null) result = caseStatement(returnStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.FUNCTION_STATEMENT:
+      {
+        FunctionStatement functionStatement = (FunctionStatement)theEObject;
+        T result = caseFunctionStatement(functionStatement);
+        if (result == null) result = caseStatement(functionStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.IF_STATEMENT:
+      {
+        IfStatement ifStatement = (IfStatement)theEObject;
+        T result = caseIfStatement(ifStatement);
+        if (result == null) result = caseStatement(ifStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.LABEL_STATEMENT:
+      {
+        LabelStatement labelStatement = (LabelStatement)theEObject;
+        T result = caseLabelStatement(labelStatement);
+        if (result == null) result = caseStatement(labelStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.THROW_STATEMENT:
+      {
+        ThrowStatement throwStatement = (ThrowStatement)theEObject;
+        T result = caseThrowStatement(throwStatement);
+        if (result == null) result = caseStatement(throwStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.TRY_CATCH_STATEMENT:
+      {
+        TryCatchStatement tryCatchStatement = (TryCatchStatement)theEObject;
+        T result = caseTryCatchStatement(tryCatchStatement);
+        if (result == null) result = caseStatement(tryCatchStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.CATCH_BLOCK:
+      {
+        CatchBlock catchBlock = (CatchBlock)theEObject;
+        T result = caseCatchBlock(catchBlock);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.FINALLY_BLOCK:
+      {
+        FinallyBlock finallyBlock = (FinallyBlock)theEObject;
+        T result = caseFinallyBlock(finallyBlock);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.WITH_STATEMENT:
+      {
+        WithStatement withStatement = (WithStatement)theEObject;
+        T result = caseWithStatement(withStatement);
+        if (result == null) result = caseStatement(withStatement);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -490,7 +536,6 @@ public class BeeLangSwitch<T>
       {
         OperationCall operationCall = (OperationCall)theEObject;
         T result = caseOperationCall(operationCall);
-        if (result == null) result = caseFeatureCall(operationCall);
         if (result == null) result = caseExpression(operationCall);
         if (result == null) result = casePropertyExpression(operationCall);
         if (result == null) result = caseSyntaxElement(operationCall);
@@ -523,15 +568,27 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.FEATURE_CALL:
+      case BeeLangPackage.KEYWORD_VARIABLES:
       {
-        FeatureCall featureCall = (FeatureCall)theEObject;
-        T result = caseFeatureCall(featureCall);
-        if (result == null) result = caseExpression(featureCall);
-        if (result == null) result = casePropertyExpression(featureCall);
-        if (result == null) result = caseSyntaxElement(featureCall);
-        if (result == null) result = caseVarExpression(featureCall);
-        if (result == null) result = caseStatement(featureCall);
+        KeywordVariables keywordVariables = (KeywordVariables)theEObject;
+        T result = caseKeywordVariables(keywordVariables);
+        if (result == null) result = caseExpression(keywordVariables);
+        if (result == null) result = casePropertyExpression(keywordVariables);
+        if (result == null) result = caseSyntaxElement(keywordVariables);
+        if (result == null) result = caseVarExpression(keywordVariables);
+        if (result == null) result = caseStatement(keywordVariables);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION:
+      {
+        ConstructorCallExpression constructorCallExpression = (ConstructorCallExpression)theEObject;
+        T result = caseConstructorCallExpression(constructorCallExpression);
+        if (result == null) result = caseExpression(constructorCallExpression);
+        if (result == null) result = casePropertyExpression(constructorCallExpression);
+        if (result == null) result = caseSyntaxElement(constructorCallExpression);
+        if (result == null) result = caseVarExpression(constructorCallExpression);
+        if (result == null) result = caseStatement(constructorCallExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -544,6 +601,52 @@ public class BeeLangSwitch<T>
         if (result == null) result = caseSyntaxElement(literal);
         if (result == null) result = caseVarExpression(literal);
         if (result == null) result = caseStatement(literal);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.LITERAL_ARRAY:
+      {
+        LiteralArray literalArray = (LiteralArray)theEObject;
+        T result = caseLiteralArray(literalArray);
+        if (result == null) result = caseLiteral(literalArray);
+        if (result == null) result = caseExpression(literalArray);
+        if (result == null) result = casePropertyExpression(literalArray);
+        if (result == null) result = caseSyntaxElement(literalArray);
+        if (result == null) result = caseVarExpression(literalArray);
+        if (result == null) result = caseStatement(literalArray);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.LITERAL_OBJECT:
+      {
+        LiteralObject literalObject = (LiteralObject)theEObject;
+        T result = caseLiteralObject(literalObject);
+        if (result == null) result = caseLiteral(literalObject);
+        if (result == null) result = caseExpression(literalObject);
+        if (result == null) result = casePropertyExpression(literalObject);
+        if (result == null) result = caseSyntaxElement(literalObject);
+        if (result == null) result = caseVarExpression(literalObject);
+        if (result == null) result = caseStatement(literalObject);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.LITERAL_FUNCTION:
+      {
+        LiteralFunction literalFunction = (LiteralFunction)theEObject;
+        T result = caseLiteralFunction(literalFunction);
+        if (result == null) result = caseLiteral(literalFunction);
+        if (result == null) result = caseExpression(literalFunction);
+        if (result == null) result = casePropertyExpression(literalFunction);
+        if (result == null) result = caseSyntaxElement(literalFunction);
+        if (result == null) result = caseVarExpression(literalFunction);
+        if (result == null) result = caseStatement(literalFunction);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.FEATURE:
+      {
+        Feature feature = (Feature)theEObject;
+        T result = caseFeature(feature);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -599,6 +702,20 @@ public class BeeLangSwitch<T>
         if (result == null) result = caseSyntaxElement(nullLiteral);
         if (result == null) result = caseVarExpression(nullLiteral);
         if (result == null) result = caseStatement(nullLiteral);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.VOID_LITERAL:
+      {
+        VoidLiteral voidLiteral = (VoidLiteral)theEObject;
+        T result = caseVoidLiteral(voidLiteral);
+        if (result == null) result = caseValueLiteral(voidLiteral);
+        if (result == null) result = caseLiteral(voidLiteral);
+        if (result == null) result = caseExpression(voidLiteral);
+        if (result == null) result = casePropertyExpression(voidLiteral);
+        if (result == null) result = caseSyntaxElement(voidLiteral);
+        if (result == null) result = caseVarExpression(voidLiteral);
+        if (result == null) result = caseStatement(voidLiteral);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -700,6 +817,18 @@ public class BeeLangSwitch<T>
         if (result == null) result = caseSyntaxElement(atCall);
         if (result == null) result = caseVarExpression(atCall);
         if (result == null) result = caseStatement(atCall);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.FEATURE_CALL:
+      {
+        FeatureCall featureCall = (FeatureCall)theEObject;
+        T result = caseFeatureCall(featureCall);
+        if (result == null) result = caseExpression(featureCall);
+        if (result == null) result = casePropertyExpression(featureCall);
+        if (result == null) result = caseSyntaxElement(featureCall);
+        if (result == null) result = caseVarExpression(featureCall);
+        if (result == null) result = caseStatement(featureCall);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -852,38 +981,6 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Build Part</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Build Part</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseBuildPart(BuildPart object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Artifacts Part</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Artifacts Part</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseArtifactsPart(ArtifactsPart object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Path Group</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -927,22 +1024,6 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseExprStatement(ExprStatement object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Group Part</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Group Part</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseGroupPart(GroupPart object)
   {
     return null;
   }
@@ -1044,17 +1125,17 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Action Part</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Part</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Action Part</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Part</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseActionPart(ActionPart object)
+  public T casePart(Part object)
   {
     return null;
   }
@@ -1444,6 +1525,22 @@ public class BeeLangSwitch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Do While Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Do While Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDoWhileStatement(DoWhileStatement object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Return Statement</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1455,6 +1552,134 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseReturnStatement(ReturnStatement object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Function Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Function Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFunctionStatement(FunctionStatement object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>If Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>If Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseIfStatement(IfStatement object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Label Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Label Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLabelStatement(LabelStatement object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Throw Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Throw Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseThrowStatement(ThrowStatement object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Try Catch Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Try Catch Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTryCatchStatement(TryCatchStatement object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Catch Block</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Catch Block</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCatchBlock(CatchBlock object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Finally Block</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Finally Block</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFinallyBlock(FinallyBlock object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>With Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>With Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseWithStatement(WithStatement object)
   {
     return null;
   }
@@ -1588,17 +1813,33 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Feature Call</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Keyword Variables</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Feature Call</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Keyword Variables</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseFeatureCall(FeatureCall object)
+  public T caseKeywordVariables(KeywordVariables object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Constructor Call Expression</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Constructor Call Expression</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseConstructorCallExpression(ConstructorCallExpression object)
   {
     return null;
   }
@@ -1615,6 +1856,70 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseLiteral(Literal object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Literal Array</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Literal Array</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLiteralArray(LiteralArray object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Literal Object</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Literal Object</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLiteralObject(LiteralObject object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Literal Function</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Literal Function</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLiteralFunction(LiteralFunction object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Feature</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Feature</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFeature(Feature object)
   {
     return null;
   }
@@ -1679,6 +1984,22 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseNullLiteral(NullLiteral object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Void Literal</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Void Literal</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVoidLiteral(VoidLiteral object)
   {
     return null;
   }
@@ -1807,6 +2128,22 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseAtCall(AtCall object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Feature Call</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Feature Call</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFeatureCall(FeatureCall object)
   {
     return null;
   }
