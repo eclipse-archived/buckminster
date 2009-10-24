@@ -1,0 +1,54 @@
+
+unit actionSamples {
+
+	// equivalent to a group part
+	a {
+		group { a/b/1.0;}
+		return group;
+	}
+	// equivalent to an artifacts part
+	b {
+		layout { root [bin/apa.exe, bin/bepa.exe];}
+		return layout;
+	}
+	// return only a part of the group
+	c {
+		group { a/b/1.0; partsToReturn = {a/b/2.0; a/c/3.0;};}
+		return returnedParts;
+	}
+	// return a new path group set based on combination of verbatim result
+	// with processing of another part.
+	//
+	d {
+		group { useAsIs = a/b/1.0; partsToProcess = {a/b/2.0; a/c/3.0;};}
+		return useAsIs + MyProcessor.doSomething(partsToProcess);
+	}
+	
+	// Filtering the group
+	e {
+		group{ a/b/1.0;}
+		return Paths.exclude(group,~/org\.myorg\..*/g);
+	}
+	// Call external builder
+	f {
+		group{ a/b/1.0;}
+		layout { bin [ a, b, c ]; }
+		
+		return CompileActor(group, layout);
+	}
+	// Call external builder
+	g {
+		group{ a/b/1.0;}
+		layout { bin [ a, b, c ]; }
+		var strategy = "normal";
+		switch(group[$optimized.files]) // get annotation property
+			{
+			case "O5": break;
+			case "O4": {strategy = "-O4"; break;}
+			default: strategy = "-O2";
+			}
+			
+		return CompileActor(group, layout, strategy);
+	}
+
+}

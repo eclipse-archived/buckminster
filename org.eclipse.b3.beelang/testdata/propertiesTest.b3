@@ -1,0 +1,17 @@
+
+unit a.b0x.a2 {
+	properties{}
+	properties a {}
+	properties {
+		$a = 1;
+		immutable $a=1;
+		unset $a;
+		}
+	properties when_test {
+		when(true) $a = 1;
+		when(false) immutable $a=1;
+		when(true) unset $a;
+		
+		when(true) { $a=10; $b=20; immutable $c = 30; unset $d;}
+		}
+	}

@@ -1,0 +1,54 @@
+
+unit "simple.b" {
+	properties numbers {
+		$chained2 = a = b = c = "properties set as equals";
+		}
+	a {
+		group{ a/b/1.0;}
+
+		while(true) a += 10;
+		
+		var a = 10;
+		return 10;
+		for (var a = 1; a < 10; a++)
+			break;
+		
+	}
+	// equivalent to a group part
+	b {
+		group { a/b/1.0;}
+		return group;
+	}
+	// equivalent to an artifacts part
+	c {
+		layout { root [bin/apa.exe, bin/bepa.exe];}
+		return layout;
+	}
+	// Filtering the group
+	d {
+		group{ a/b/1.0;}
+		return Paths.exclude(group,~/org\.myorg\..*/g);
+	}
+	// Call external builder
+	e {
+		group{ a/b/1.0;}
+		layout { bin [ a, b, c ]; }
+		
+		return CompileActor(group.fooBar(), layout);
+	}
+	// Call external builder
+	f {
+		group{ a/b/1.0;}
+		layout { bin [ a, b, c ]; }
+		var strategy = "normal";
+		switch(group[$optimized.files])
+			{
+			case "O5": break;
+			case "O4": {strategy = "-O4"; break;}
+			default: strategy = "-O2";
+			}
+			
+		return CompileActor(group.fooBar(), layout);
+	}
+
+}

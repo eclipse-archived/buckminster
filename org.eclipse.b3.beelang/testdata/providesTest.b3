@@ -1,0 +1,14 @@
+
+unit a {
+	provides a/b;
+	provides a/b/1;
+	provides a/b/1.2.3.4r34;
+	// provides a; // uncomment for syntax error
+	// provides a/b/; //uncomment for syntax error
+	provides a/b/"";
+	provides a/b/"1.2.3a&/()";
+	
+	provides a.b.c.d/x.y.z;
+	provides a.b.c.d/x.y.z/"";
+	provides a.b.c.d/x.y.z/"1..2..3<#>";
+}
