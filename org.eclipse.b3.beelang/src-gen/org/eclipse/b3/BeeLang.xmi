@@ -13,10 +13,10 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="imports" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.28"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.27"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.29"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.28"/>
         </tokens>
       </alternatives>
     </rules>
@@ -454,21 +454,6 @@
         </groups>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:EnumRule" name="AssertionScope">
-      <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/b3/BeeLang#//AssertionScope"/>
-      </type>
-      <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:EnumLiteralDeclaration">
-          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssertionScope/precondition"/>
-          <literal value="precondition"/>
-        </groups>
-        <groups xsi:type="xtext:EnumLiteralDeclaration">
-          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssertionScope/postcondition"/>
-          <literal value="postcondition"/>
-        </groups>
-      </alternatives>
-    </rules>
     <rules xsi:type="xtext:EnumRule" name="ExecutionMode">
       <type metamodel="/0/@metamodelDeclarations.1">
         <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/b3/BeeLang#//ExecutionMode"/>
@@ -517,7 +502,7 @@
           <groups xsi:type="xtext:RuleCall" rule="/0/@rules.10"/>
         </tokens>
         <tokens xsi:type="xtext:Alternatives" cardinality="*">
-          <groups xsi:type="xtext:RuleCall" rule="/0/@rules.24"/>
+          <groups xsi:type="xtext:RuleCall" rule="/0/@rules.23"/>
           <groups xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
           <groups xsi:type="xtext:RuleCall" rule="/0/@rules.9"/>
           <groups xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
@@ -526,35 +511,49 @@
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Version">
-      <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Version"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.25"/>
+        <groups xsi:type="xtext:Assignment" feature="original" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
+        </groups>
+        <groups xsi:type="xtext:Assignment" feature="original" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.24"/>
+        </groups>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="VersionRange">
-      <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//VersionRange"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
         <groups xsi:type="xtext:Group">
-          <tokens xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Keyword" value="["/>
-            <groups xsi:type="xtext:Keyword" value="("/>
+          <tokens xsi:type="xtext:Assignment" feature="minLimit" operator="=">
+            <terminal xsi:type="xtext:Alternatives">
+              <groups xsi:type="xtext:Keyword" value="["/>
+              <groups xsi:type="xtext:Keyword" value="("/>
+            </terminal>
           </tokens>
-          <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
+          <tokens xsi:type="xtext:Assignment" feature="min" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.25"/>
+          </tokens>
           <tokens xsi:type="xtext:Group" cardinality="?">
             <tokens xsi:type="xtext:Keyword" value=","/>
-            <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
+            <tokens xsi:type="xtext:Assignment" feature="max" operator="=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.25"/>
+            </tokens>
           </tokens>
-          <tokens xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Keyword" value="]"/>
-            <groups xsi:type="xtext:Keyword" value=")"/>
+          <tokens xsi:type="xtext:Assignment" feature="maxLimit" operator="=">
+            <terminal xsi:type="xtext:Alternatives">
+              <groups xsi:type="xtext:Keyword" value="]"/>
+              <groups xsi:type="xtext:Keyword" value=")"/>
+            </terminal>
           </tokens>
         </groups>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
+        <groups xsi:type="xtext:Assignment" feature="min" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.25"/>
+        </groups>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Import">
@@ -576,7 +575,7 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="executionMode" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.23"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.22"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="unit"/>
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="name" operator="=">
@@ -585,7 +584,7 @@
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="version"/>
           <tokens xsi:type="xtext:Assignment" feature="version" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.25"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="?">
@@ -603,8 +602,8 @@
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Keyword" value="properties"/>
-          <tokens xsi:type="xtext:Assignment" feature="propertyStatements" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+          <tokens xsi:type="xtext:Assignment" feature="CompoundPropertyOperation" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Alternatives" cardinality="*">
@@ -612,8 +611,8 @@
             <tokens xsi:type="xtext:Keyword" value="provides"/>
             <tokens xsi:type="xtext:Keyword" value="{"/>
             <tokens xsi:type="xtext:Group" cardinality="+">
-              <tokens xsi:type="xtext:Assignment" feature="providedCapability" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
+              <tokens xsi:type="xtext:Assignment" feature="providedCapabilities" operator="+=">
+                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.29"/>
               </tokens>
               <tokens xsi:type="xtext:Keyword" value=";"/>
             </tokens>
@@ -621,8 +620,8 @@
           </groups>
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="provides"/>
-            <tokens xsi:type="xtext:Assignment" feature="providedCapability" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
+            <tokens xsi:type="xtext:Assignment" feature="providedCapabilities" operator="+=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.29"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value=";"/>
           </groups>
@@ -631,7 +630,7 @@
             <tokens xsi:type="xtext:Keyword" value="{"/>
             <tokens xsi:type="xtext:Group" cardinality="+">
               <tokens xsi:type="xtext:Assignment" feature="requiredCapabilities" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
+                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
               </tokens>
               <tokens xsi:type="xtext:Keyword" value=";"/>
             </tokens>
@@ -640,7 +639,7 @@
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="requires"/>
             <tokens xsi:type="xtext:Assignment" feature="requiredCapabilities" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value=";"/>
           </groups>
@@ -650,7 +649,7 @@
             <tokens xsi:type="xtext:Keyword" value="{"/>
             <tokens xsi:type="xtext:Group" cardinality="+">
               <tokens xsi:type="xtext:Assignment" feature="metaRequiredCapabilities" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
+                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
               </tokens>
               <tokens xsi:type="xtext:Keyword" value=";"/>
             </tokens>
@@ -660,38 +659,38 @@
             <tokens xsi:type="xtext:Keyword" value="meta"/>
             <tokens xsi:type="xtext:Keyword" value="requires"/>
             <tokens xsi:type="xtext:Assignment" feature="metaRequiredCapabilities" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value=";"/>
           </groups>
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="advice"/>
             <tokens xsi:type="xtext:Assignment" feature="advice" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.56"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.58"/>
             </tokens>
           </groups>
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="sequential"/>
             <tokens xsi:type="xtext:Keyword" value="{"/>
-            <tokens xsi:type="xtext:Assignment" cardinality="+" feature="synchronize" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.38"/>
+            <tokens xsi:type="xtext:Assignment" cardinality="+" feature="synchronizations" operator="+=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.37"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value="}"/>
           </groups>
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="sequential"/>
-            <tokens xsi:type="xtext:Assignment" feature="synchronize" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.38"/>
+            <tokens xsi:type="xtext:Assignment" feature="synchronizations" operator="+=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.37"/>
             </tokens>
           </groups>
           <groups xsi:type="xtext:Assignment" feature="parts" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.50"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.52"/>
           </groups>
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="repositories"/>
             <tokens xsi:type="xtext:Keyword" value="{"/>
-            <tokens xsi:type="xtext:Assignment" cardinality="*" feature="repositoryConfig" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.54"/>
+            <tokens xsi:type="xtext:Assignment" cardinality="*" feature="repositoryConfigurations" operator="+=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.56"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value="}"/>
           </groups>
@@ -707,7 +706,7 @@
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="when"/>
           <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.74"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="interface" operator="=">
@@ -720,7 +719,7 @@
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="/"/>
           <tokens xsi:type="xtext:Assignment" feature="version" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.25"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -733,7 +732,7 @@
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="when"/>
           <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.74"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="interface" operator="=">
@@ -746,55 +745,68 @@
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="/"/>
           <tokens xsi:type="xtext:Assignment" feature="range" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.27"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
           </tokens>
         </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="NamedPropertyStatements">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyStatements"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NamedProperties"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="name" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" feature="statements" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
+        <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
         </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="PropertyStatements">
+    <rules xsi:type="xtext:ParserRule" name="CompoundPropertyOperation">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyStatement"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//CompoundPropertyOperation"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Group" cardinality="*">
-          <tokens xsi:type="xtext:Group" cardinality="?">
-            <tokens xsi:type="xtext:Keyword" value="when"/>
-            <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
-            </tokens>
-          </tokens>
-          <tokens xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Assignment" feature="statements" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.35"/>
-            </groups>
-            <groups xsi:type="xtext:Assignment" feature="statements" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.34"/>
-            </groups>
-            <groups xsi:type="xtext:Assignment" feature="statements" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
-            </groups>
-          </tokens>
+        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="operations" operator="+=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="PropertyStatement">
+    <rules xsi:type="xtext:ParserRule" name="PropertyOperation">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyStatement"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyOperation"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.34"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.35"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.36"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="FilteredPropertyOperation">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//FilteredPropertyOperation"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Keyword" value="when"/>
+        <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.74"/>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
+          <terminal xsi:type="xtext:Alternatives">
+            <groups xsi:type="xtext:RuleCall" rule="/0/@rules.35"/>
+            <groups xsi:type="xtext:RuleCall" rule="/0/@rules.36"/>
+            <groups xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+          </terminal>
+        </tokens>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="SetPropertyOperation">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//SetPropertyOperation"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="immutable" operator="?=">
@@ -804,69 +816,25 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.15"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="op" operator="=">
-          <terminal xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Keyword" value="="/>
-            <groups xsi:type="xtext:Keyword" value="+="/>
-            <groups xsi:type="xtext:Keyword" value="-="/>
-            <groups xsi:type="xtext:Keyword" value="*="/>
-            <groups xsi:type="xtext:Keyword" value="/="/>
-          </terminal>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.97"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="value" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.37"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="UnsetPropertyStatement">
+    <rules xsi:type="xtext:ParserRule" name="UnsetPropertyOperation">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyStatement"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//UnsetPropertyOperation"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="unset"/>
-        <tokens xsi:type="xtext:Assignment" feature="unsetProperties" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.15"/>
-        </tokens>
-        <tokens xsi:type="xtext:Keyword" value=";"/>
-      </alternatives>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="AnnotationStatement">
-      <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyStatement"/>
-      </type>
-      <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="when"/>
-          <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
-          </tokens>
-        </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="immutable" operator="?=">
-          <terminal xsi:type="xtext:Keyword" value="immutable"/>
-        </tokens>
         <tokens xsi:type="xtext:Assignment" feature="key" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.15"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" feature="op" operator="=">
-          <terminal xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Keyword" value="="/>
-            <groups xsi:type="xtext:Keyword" value="+="/>
-            <groups xsi:type="xtext:Keyword" value="-="/>
-            <groups xsi:type="xtext:Keyword" value="*="/>
-            <groups xsi:type="xtext:Keyword" value="/="/>
-          </terminal>
-        </tokens>
-        <tokens xsi:type="xtext:Assignment" feature="value" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.37"/>
-        </tokens>
         <tokens xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="PropertyExpression">
-      <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyExpression"/>
-      </type>
-      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Synchronization">
       <type metamodel="/0/@metamodelDeclarations.1">
@@ -874,12 +842,12 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" feature="partrefs" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.39"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.38"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="+">
           <tokens xsi:type="xtext:Keyword" value=","/>
           <tokens xsi:type="xtext:Assignment" feature="partrefs" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.39"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.38"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=";"/>
@@ -905,82 +873,96 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PathGroup"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="paths" operator="+=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.40"/>
+        </tokens>
         <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="when"/>
-          <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
+          <tokens xsi:type="xtext:Keyword" value="annotations"/>
+          <tokens xsi:type="xtext:Assignment" feature="annotations" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
           </tokens>
         </tokens>
-        <tokens xsi:type="xtext:Alternatives">
-          <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.41"/>
-            </tokens>
-            <tokens xsi:type="xtext:Alternatives">
-              <groups xsi:type="xtext:Group" cardinality="*">
-                <tokens xsi:type="xtext:Keyword" value=","/>
-                <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
-                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.41"/>
-                </tokens>
-              </groups>
-              <groups xsi:type="xtext:Group">
-                <tokens xsi:type="xtext:Assignment" feature="firstIsBase" operator="?=">
-                  <terminal xsi:type="xtext:Keyword" value="["/>
-                </tokens>
-                <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
-                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.41"/>
-                </tokens>
-                <tokens xsi:type="xtext:Group" cardinality="*">
-                  <tokens xsi:type="xtext:Keyword" value=","/>
-                  <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
-                    <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.41"/>
-                  </tokens>
-                </tokens>
-                <tokens xsi:type="xtext:Keyword" value="]"/>
-              </groups>
-            </tokens>
-            <tokens xsi:type="xtext:Keyword" value=";"/>
-          </groups>
-          <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Keyword" value="annotations"/>
-            <tokens xsi:type="xtext:Keyword" value="{"/>
-            <tokens xsi:type="xtext:Alternatives" cardinality="+">
-              <groups xsi:type="xtext:Group">
-                <tokens xsi:type="xtext:Keyword" value="unset"/>
-                <tokens xsi:type="xtext:Assignment" feature="unsetProperties" operator="+=">
-                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.15"/>
-                </tokens>
-                <tokens xsi:type="xtext:Keyword" value=";"/>
-              </groups>
-              <groups xsi:type="xtext:Assignment" feature="setProperties" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.36"/>
-              </groups>
-            </tokens>
-            <tokens xsi:type="xtext:Keyword" value="}"/>
-          </groups>
-        </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="PathExpression">
+    <rules xsi:type="xtext:ParserRule" name="PathVectorElement">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PathExpression"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PathVectorElement"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.43"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.41"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.42"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.43"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="ExprStatement">
+    <rules xsi:type="xtext:ParserRule" name="FilteredPathVector">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ExprStatement"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//FilteredPathVector"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Keyword" value="expr"/>
-        <tokens xsi:type="xtext:Keyword" value="("/>
-        <tokens xsi:type="xtext:Assignment" feature="expression" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+        <tokens xsi:type="xtext:Keyword" value="when"/>
+        <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.74"/>
         </tokens>
-        <tokens xsi:type="xtext:Keyword" value=")"/>
+        <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
+          <terminal xsi:type="xtext:Alternatives">
+            <groups xsi:type="xtext:RuleCall" rule="/0/@rules.42"/>
+            <groups xsi:type="xtext:RuleCall" rule="/0/@rules.43"/>
+            <groups xsi:type="xtext:RuleCall" rule="/0/@rules.44"/>
+          </terminal>
+        </tokens>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="BasePathVector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PathVector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Assignment" feature="basePath" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.45"/>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="["/>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.45"/>
+          </tokens>
+          <tokens xsi:type="xtext:Group" cardinality="*">
+            <tokens xsi:type="xtext:Keyword" value=","/>
+            <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.45"/>
+            </tokens>
+          </tokens>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="]"/>
+        <tokens xsi:type="xtext:Keyword" value=";"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="UnbasedPathVector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PathVector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.45"/>
+        </tokens>
+        <tokens xsi:type="xtext:Group" cardinality="*">
+          <tokens xsi:type="xtext:Keyword" value=","/>
+          <tokens xsi:type="xtext:Assignment" feature="paths" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.45"/>
+          </tokens>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value=";"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="CompoundPathVector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//CompoundPathVector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Keyword" value="{"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="body" operator="+=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.40"/>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Path" definesHiddenTokens="true">
@@ -1012,7 +994,7 @@
           <tokens xsi:type="xtext:Group" cardinality="?">
             <tokens xsi:type="xtext:Keyword" value="when"/>
             <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.74"/>
             </tokens>
           </tokens>
           <tokens xsi:type="xtext:Group" cardinality="?">
@@ -1023,10 +1005,10 @@
           </tokens>
           <tokens xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Assignment" feature="partReference" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.46"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.48"/>
             </tokens>
             <tokens xsi:type="xtext:Assignment" cardinality="?" feature="closure" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.45"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.47"/>
             </tokens>
           </tokens>
         </tokens>
@@ -1040,30 +1022,17 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="with"/>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Alternatives" cardinality="*">
-          <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Keyword" value="properties"/>
-            <tokens xsi:type="xtext:Keyword" value="{"/>
-            <tokens xsi:type="xtext:Alternatives" cardinality="+">
-              <groups xsi:type="xtext:Group">
-                <tokens xsi:type="xtext:Keyword" value="unset"/>
-                <tokens xsi:type="xtext:Assignment" feature="unsetProperties" operator="+=">
-                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.15"/>
-                </tokens>
-                <tokens xsi:type="xtext:Keyword" value=";"/>
-              </groups>
-              <groups xsi:type="xtext:Assignment" feature="setProperties" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.34"/>
-              </groups>
-            </tokens>
-            <tokens xsi:type="xtext:Keyword" value="}"/>
-          </groups>
-          <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Keyword" value="advice"/>
-            <tokens xsi:type="xtext:Assignment" feature="advice" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.58"/>
-            </tokens>
-          </groups>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="properties"/>
+          <tokens xsi:type="xtext:Assignment" feature="properties" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+          </tokens>
+        </tokens>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="advice"/>
+          <tokens xsi:type="xtext:Assignment" feature="advice" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.60"/>
+          </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1073,10 +1042,9 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PrerequisiteEntry"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.47"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.48"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.49"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.42"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.50"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="PartInSelf">
@@ -1103,7 +1071,7 @@
           <tokens xsi:type="xtext:Group" cardinality="?">
             <tokens xsi:type="xtext:Keyword" value="/"/>
             <tokens xsi:type="xtext:Assignment" feature="range" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.27"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
             </tokens>
           </tokens>
           <tokens xsi:type="xtext:Keyword" value="#"/>
@@ -1122,7 +1090,7 @@
           <tokens xsi:type="xtext:Group" cardinality="?">
             <tokens xsi:type="xtext:Keyword" value="/"/>
             <tokens xsi:type="xtext:Assignment" feature="range" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.27"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.26"/>
             </tokens>
           </tokens>
         </groups>
@@ -1135,7 +1103,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="prerequisites" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.44"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.46"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1149,45 +1117,45 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.21"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="executionMode" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.23"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.22"/>
         </tokens>
         <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.20"/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="provides"/>
           <tokens xsi:type="xtext:Assignment" feature="providedCapabilities" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.29"/>
           </tokens>
           <tokens xsi:type="xtext:Group" cardinality="*">
             <tokens xsi:type="xtext:Keyword" value=","/>
             <tokens xsi:type="xtext:Assignment" feature="providedCapabilities" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.30"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.29"/>
             </tokens>
           </tokens>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.66"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="preCondition" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.75"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.67"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="postCondition" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.76"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="properties"/>
-          <tokens xsi:type="xtext:Assignment" feature="properties" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
+          <tokens xsi:type="xtext:Assignment" feature="properties" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="advice" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.57"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.59"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="resultGroup" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="group" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.55"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="layout" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.52"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="layout" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.54"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" feature="statements" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.73"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="statements" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1197,7 +1165,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Parameter"/>
       </type>
       <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Layout">
@@ -1205,41 +1173,32 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Layout"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="when"/>
-          <tokens xsi:type="xtext:Assignment" feature="filter" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
-          </tokens>
-        </tokens>
         <tokens xsi:type="xtext:Keyword" value="layout"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="name" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
-        </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.67"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="postCondition" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.76"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="paths" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.40"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="body" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.39"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="ActionInputGroup">
+    <rules xsi:type="xtext:ParserRule" name="Group">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ActionInputGroup"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Group"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="group"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.66"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="preCondition" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.75"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.67"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="postCondition" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.76"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="prerequisites" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.44"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.46"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1251,7 +1210,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Alternatives">
           <groups xsi:type="xtext:Assignment" feature="location" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.55"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.57"/>
           </groups>
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Keyword" value="resolver"/>
@@ -1261,7 +1220,7 @@
           </groups>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="advice" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.58"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.60"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
@@ -1281,7 +1240,7 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="advice" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.58"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.60"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1291,7 +1250,7 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="advice"/>
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.58"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.60"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="CompoundAdvice">
@@ -1302,7 +1261,7 @@
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Assignment" feature="advice" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.59"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.61"/>
           </tokens>
           <tokens xsi:type="xtext:Keyword" value=";"/>
         </tokens>
@@ -1315,17 +1274,19 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" feature="path" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.60"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.62"/>
         </tokens>
         <tokens xsi:type="xtext:Alternatives">
           <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Keyword" value="="/>
+            <tokens xsi:type="xtext:Assignment" feature="op" operator="=">
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.97"/>
+            </tokens>
             <tokens xsi:type="xtext:Assignment" feature="value" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
             </tokens>
           </groups>
           <groups xsi:type="xtext:Assignment" feature="advice" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.58"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.60"/>
           </groups>
         </tokens>
       </alternatives>
@@ -1335,65 +1296,136 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AdvicePath"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="pathElements" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.61"/>
+        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="absolute" operator="?=">
+          <terminal xsi:type="xtext:Keyword" value=":"/>
         </tokens>
-        <tokens xsi:type="xtext:Assignment" feature="pathElements" operator="+=">
+        <tokens xsi:type="xtext:Assignment" feature="selectors" operator="+=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.63"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="*">
-          <tokens xsi:type="xtext:Assignment" feature="pathElements" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.61"/>
-          </tokens>
-          <tokens xsi:type="xtext:Assignment" feature="pathElement" operator="+=">
+          <tokens xsi:type="xtext:Keyword" value=":"/>
+          <tokens xsi:type="xtext:Assignment" feature="selectors" operator="+=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.63"/>
           </tokens>
         </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="AdvicePathSeparator">
+    <rules xsi:type="xtext:ParserRule" name="Selector">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AdvicePathElement"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Selector"/>
       </type>
-      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.62"/>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.65"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.64"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.66"/>
+      </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="AdvicePathChildren">
+    <rules xsi:type="xtext:ParserRule" name="MultiNodeSelector">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AdvicePathChildren"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Selector"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.67"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.68"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.70"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.71"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.72"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="DiscriminatingSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Selector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Assignment" feature="selector" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.64"/>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="["/>
+        <tokens xsi:type="xtext:Assignment" feature="predicate" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="]"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="NodeSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Selector"/>
+      </type>
+      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="NameSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NameSelector"/>
+      </type>
+      <alternatives xsi:type="xtext:Assignment" feature="name" operator="=">
+        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="ThisSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ThisSelector"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Action">
           <type metamodel="/0/@metamodelDeclarations.1">
-            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AdvicePathChildren"/>
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ThisSelector"/>
           </type>
         </tokens>
-        <tokens xsi:type="xtext:Keyword" value="/"/>
+        <tokens xsi:type="xtext:Keyword" value="."/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="AdvicePathElement">
+    <rules xsi:type="xtext:ParserRule" name="ParentSelector">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AdvicePathElement"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ParentSelector"/>
       </type>
-      <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:Group">
-          <tokens xsi:type="xtext:Assignment" feature="node" operator="=">
-            <terminal xsi:type="xtext:Alternatives">
-              <groups xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
-              <groups xsi:type="xtext:RuleCall" rule="/0/@rules.64"/>
-              <groups xsi:type="xtext:Keyword" value="."/>
-            </terminal>
-          </tokens>
-          <tokens xsi:type="xtext:Group" cardinality="?">
-            <tokens xsi:type="xtext:Keyword" value="["/>
-            <tokens xsi:type="xtext:Assignment" feature="predicate" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
-            </tokens>
-            <tokens xsi:type="xtext:Keyword" value="]"/>
-          </tokens>
-        </groups>
-        <groups xsi:type="xtext:Assignment" feature="node" operator="=">
-          <terminal xsi:type="xtext:Keyword" value=".."/>
-        </groups>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ParentSelector"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value=".."/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="ChildrenSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ChildrenSelector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ChildrenSelector"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="*"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="AncestorSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AncestorSelector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//AncestorSelector"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="**"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="RegexpSelector">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RegexpSelector"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RegexpSelector"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="pattern" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="WildcardNode">
@@ -1401,8 +1433,8 @@
         <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Keyword" value="?"/>
-        <tokens xsi:type="xtext:Keyword" cardinality="?" value="?"/>
+        <tokens xsi:type="xtext:Keyword" value="*"/>
+        <tokens xsi:type="xtext:Keyword" cardinality="?" value="*"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Filter">
@@ -1412,37 +1444,33 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" feature="predicate" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="PreConditionAssert">
+    <rules xsi:type="xtext:ParserRule" name="PreCondition">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PreConditionAssert"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PreCondition"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Assignment" feature="scope" operator="=">
-          <terminal xsi:type="xtext:Keyword" value="precondition"/>
-        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="precondition"/>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.68"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.77"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="PostConditionAssert">
+    <rules xsi:type="xtext:ParserRule" name="PostCondition">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PostConditionAssert"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PostCondition"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Assignment" feature="scope" operator="=">
-          <terminal xsi:type="xtext:Keyword" value="postcondition"/>
-        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="postcondition"/>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="asserts" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.68"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.77"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1454,7 +1482,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="assert"/>
         <tokens xsi:type="xtext:Assignment" feature="expr" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value=","/>
@@ -1470,24 +1498,24 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Statement"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.90"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.84"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.83"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.86"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.87"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.81"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.75"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.74"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.77"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.72"/>
         <groups xsi:type="xtext:Group">
-          <tokens xsi:type="xtext:RuleCall" cardinality="?" rule="/0/@rules.91"/>
+          <tokens xsi:type="xtext:RuleCall" cardinality="?" rule="/0/@rules.101"/>
           <tokens xsi:type="xtext:Keyword" value=";"/>
         </groups>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.70"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.71"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.79"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.80"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.83"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.84"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.87"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.88"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.89"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.91"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.93"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.96"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="BreakStatement">
@@ -1531,7 +1559,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" feature="statements" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.73"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1541,7 +1569,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Statements"/>
       </type>
       <alternatives xsi:type="xtext:Assignment" cardinality="+" feature="statements" operator="+=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="WhileStatement">
@@ -1552,11 +1580,11 @@
         <tokens xsi:type="xtext:Keyword" value="while"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" feature="condition" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1568,18 +1596,18 @@
         <tokens xsi:type="xtext:Keyword" value="switch"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" feature="switchExpr" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.91"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.101"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="case" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.76"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.85"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="default"/>
           <tokens xsi:type="xtext:Keyword" value=":"/>
           <tokens xsi:type="xtext:Assignment" cardinality="?" feature="statements" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.73"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
@@ -1592,11 +1620,11 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="case"/>
         <tokens xsi:type="xtext:Assignment" feature="condition" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.119"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.128"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=":"/>
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="statements" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.73"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1613,31 +1641,31 @@
         <tokens xsi:type="xtext:Keyword" value="for"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="init" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.89"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.99"/>
         </tokens>
         <tokens xsi:type="xtext:Alternatives">
           <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Keyword" value=";"/>
+            <tokens xsi:type="xtext:Assignment" feature="regular" operator="?=">
+              <terminal xsi:type="xtext:Keyword" value=";"/>
+            </tokens>
             <tokens xsi:type="xtext:Assignment" cardinality="?" feature="cond" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value=";"/>
             <tokens xsi:type="xtext:Assignment" cardinality="?" feature="iterate" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.90"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.100"/>
             </tokens>
           </groups>
           <groups xsi:type="xtext:Group">
-            <tokens xsi:type="xtext:Assignment" feature="inLoop" operator="?=">
-              <terminal xsi:type="xtext:Keyword" value="in"/>
-            </tokens>
+            <tokens xsi:type="xtext:Keyword" value="in"/>
             <tokens xsi:type="xtext:Assignment" feature="iterate" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
             </tokens>
           </groups>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1648,12 +1676,12 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="do"/>
         <tokens xsi:type="xtext:Assignment" feature="statement" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="while"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" feature="condition" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Keyword" value=";"/>
@@ -1666,7 +1694,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="return"/>
         <tokens xsi:type="xtext:Assignment" feature="return" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
@@ -1695,7 +1723,7 @@
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" feature="statements" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.73"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -1708,16 +1736,16 @@
         <tokens xsi:type="xtext:Keyword" value="if"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" feature="cond" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Assignment" feature="then" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Keyword" value="else"/>
           <tokens xsi:type="xtext:Assignment" feature="else" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -1727,13 +1755,12 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LabelStatement"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Keyword" value="@"/>
         <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=":"/>
         <tokens xsi:type="xtext:Assignment" feature="statement" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1744,7 +1771,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="throw"/>
         <tokens xsi:type="xtext:Assignment" feature="expr" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
@@ -1756,19 +1783,19 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="try"/>
         <tokens xsi:type="xtext:Assignment" feature="tryBlock" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.72"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.81"/>
         </tokens>
         <tokens xsi:type="xtext:Alternatives">
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Assignment" feature="catchBlock" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.85"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.94"/>
             </tokens>
             <tokens xsi:type="xtext:Assignment" cardinality="?" feature="finallyBlock" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.86"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.95"/>
             </tokens>
           </groups>
           <groups xsi:type="xtext:Assignment" feature="finally" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.86"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.95"/>
           </groups>
         </tokens>
       </alternatives>
@@ -1785,7 +1812,7 @@
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Assignment" feature="catchBlock" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.72"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.81"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1796,7 +1823,7 @@
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="finally"/>
         <tokens xsi:type="xtext:Assignment" feature="finallyBlock" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.72"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.81"/>
         </tokens>
       </alternatives>
     </rules>
@@ -1808,19 +1835,115 @@
         <tokens xsi:type="xtext:Keyword" value="with"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Assignment" feature="expr" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Assignment" feature="statement" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.69"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.78"/>
         </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="SyntaxElement">
+    <rules xsi:type="xtext:EnumRule" name="AssignmentOperator">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//SyntaxElement"/>
+        <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator"/>
       </type>
-      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET"/>
+          <literal value="="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_PLUS"/>
+          <literal value="+="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_MINUS"/>
+          <literal value="-="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_MUL"/>
+          <literal value="*="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_DIV"/>
+          <literal value="/="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_MOD"/>
+          <literal value="%="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_AND"/>
+          <literal value="&amp;="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_XOR"/>
+          <literal value="^="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_OR"/>
+          <literal value="|="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_LSHIFT"/>
+          <literal value="&lt;&lt;="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_RSHIFT"/>
+          <literal value=">>="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//AssignmentOperator/SET_RSHIFT_0"/>
+          <literal value=">>>="/>
+        </groups>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:EnumRule" name="RelationalOperator">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_MATCHES"/>
+          <literal value="~="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ"/>
+          <literal value="=="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_IDENTITY"/>
+          <literal value="==="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_NOT"/>
+          <literal value="!="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_NOT_IDENTITY"/>
+          <literal value="!=="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_GTEQ"/>
+          <literal value=">="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_LEEQ"/>
+          <literal value="&lt;="/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_GT"/>
+          <literal value=">"/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_LT"/>
+          <literal value="&lt;"/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/b3/BeeLang#//RelationalOperator/EQ_INSTANCEOF"/>
+          <literal value="instanceof"/>
+        </groups>
+      </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="VarExpressionList">
       <type metamodel="/0/@metamodelDeclarations.1">
@@ -1828,39 +1951,44 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" feature="expr" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.91"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.101"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Keyword" value=","/>
           <tokens xsi:type="xtext:Assignment" feature="expr" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.91"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.101"/>
           </tokens>
         </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="ExpressionList">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ExpressionList"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" feature="expr" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Keyword" value=","/>
           <tokens xsi:type="xtext:Assignment" feature="expr" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
           </tokens>
         </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="VarExpression">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//VarExpression"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         <groups xsi:type="xtext:Group">
+          <tokens xsi:type="xtext:Action">
+            <type metamodel="/0/@metamodelDeclarations.1">
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//VarExpression"/>
+            </type>
+          </tokens>
           <tokens xsi:type="xtext:Keyword" value="var"/>
           <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
@@ -1868,7 +1996,7 @@
           <tokens xsi:type="xtext:Group" cardinality="?">
             <tokens xsi:type="xtext:Keyword" value="="/>
             <tokens xsi:type="xtext:Assignment" feature="value" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
             </tokens>
           </tokens>
         </groups>
@@ -1878,22 +2006,14 @@
       <type metamodel="/0/@metamodelDeclarations.1">
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.93"/>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="ValueExpression">
-      <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ValueExpression"/>
-      </type>
-      <alternatives xsi:type="xtext:Assignment" feature="value" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.94"/>
-      </alternatives>
+      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.103"/>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="AssignmentExpression">
       <type metamodel="/0/@metamodelDeclarations.1">
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.95"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.105"/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Action" feature="left" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -1901,45 +2021,26 @@
             </type>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="op" operator="=">
-            <terminal xsi:type="xtext:Alternatives">
-              <groups xsi:type="xtext:Keyword" value="="/>
-              <groups xsi:type="xtext:Keyword" value="+="/>
-              <groups xsi:type="xtext:Keyword" value="-="/>
-              <groups xsi:type="xtext:Keyword" value="*="/>
-              <groups xsi:type="xtext:Keyword" value="/="/>
-              <groups xsi:type="xtext:Keyword" value="%="/>
-              <groups xsi:type="xtext:Keyword" value="&lt;&lt;="/>
-              <groups xsi:type="xtext:Keyword" value=">>="/>
-              <groups xsi:type="xtext:Keyword" value=">>>="/>
-              <groups xsi:type="xtext:Keyword" value="&amp;="/>
-              <groups xsi:type="xtext:Keyword" value="^="/>
-              <groups xsi:type="xtext:Keyword" value="|="/>
-            </terminal>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.97"/>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="right" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.94"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.103"/>
           </tokens>
         </tokens>
       </alternatives>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="ChainExpression">
-      <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
-      </type>
-      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.96"/>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="ChainedExpression">
       <type metamodel="/0/@metamodelDeclarations.1">
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.97"/>
+      <alternatives xsi:type="xtext:RuleCall" rule="/0/@rules.105"/>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="IfExpression">
       <type metamodel="/0/@metamodelDeclarations.1">
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.98"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.106"/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Action" feature="condition" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -1948,11 +2049,11 @@
           </tokens>
           <tokens xsi:type="xtext:Keyword" value="?"/>
           <tokens xsi:type="xtext:Assignment" feature="thenPart" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.96"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.104"/>
           </tokens>
           <tokens xsi:type="xtext:Keyword" value=":"/>
           <tokens xsi:type="xtext:Assignment" feature="elsePart" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.96"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.104"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -1962,7 +2063,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.99"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.107"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Action" feature="left" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -1973,7 +2074,7 @@
             <terminal xsi:type="xtext:Keyword" value="||"/>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="right" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.99"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.107"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -1983,7 +2084,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.100"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.108"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Action" feature="left" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -1994,7 +2095,7 @@
             <terminal xsi:type="xtext:Keyword" value="&amp;&amp;"/>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="right" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.100"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.108"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -2004,22 +2105,22 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.101"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.109"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
-          <tokens xsi:type="xtext:Action" feature="left" operator="=">
+          <tokens xsi:type="xtext:Action" feature="params" operator="+=">
             <type metamodel="/0/@metamodelDeclarations.1">
               <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//OperationCall"/>
             </type>
           </tokens>
-          <tokens xsi:type="xtext:Assignment" feature="operator" operator="=">
+          <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
             <terminal xsi:type="xtext:Alternatives">
               <groups xsi:type="xtext:Keyword" value="&amp;"/>
               <groups xsi:type="xtext:Keyword" value="^"/>
               <groups xsi:type="xtext:Keyword" value="|"/>
             </terminal>
           </tokens>
-          <tokens xsi:type="xtext:Assignment" feature="right" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.101"/>
+          <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.109"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -2029,30 +2130,43 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.110"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Action" feature="left" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//BooleanOperation"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RelationalOperation"/>
             </type>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="operator" operator="=">
-            <terminal xsi:type="xtext:Alternatives">
-              <groups xsi:type="xtext:Keyword" value="~="/>
-              <groups xsi:type="xtext:Keyword" value="=="/>
-              <groups xsi:type="xtext:Keyword" value="==="/>
-              <groups xsi:type="xtext:Keyword" value="!="/>
-              <groups xsi:type="xtext:Keyword" value="!=="/>
-              <groups xsi:type="xtext:Keyword" value=">="/>
-              <groups xsi:type="xtext:Keyword" value="&lt;="/>
-              <groups xsi:type="xtext:Keyword" value=">"/>
-              <groups xsi:type="xtext:Keyword" value="&lt;"/>
-              <groups xsi:type="xtext:Keyword" value="==."/>
-              <groups xsi:type="xtext:Keyword" value="instanceof"/>
-            </terminal>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.98"/>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="right" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.110"/>
+          </tokens>
+        </tokens>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="ShiftExpression">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.111"/>
+        <tokens xsi:type="xtext:Group" cardinality="*">
+          <tokens xsi:type="xtext:Action" feature="params" operator="+=">
+            <type metamodel="/0/@metamodelDeclarations.1">
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//OperationCall"/>
+            </type>
+          </tokens>
+          <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
+            <terminal xsi:type="xtext:Alternatives">
+              <groups xsi:type="xtext:Keyword" value="&lt;&lt;"/>
+              <groups xsi:type="xtext:Keyword" value=">>"/>
+              <groups xsi:type="xtext:Keyword" value=">>>"/>
+            </terminal>
+          </tokens>
+          <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.111"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -2062,7 +2176,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.103"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.112"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Action" feature="params" operator="+=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -2076,7 +2190,7 @@
             </terminal>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.103"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.112"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -2086,7 +2200,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.104"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.113"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Action" feature="params" operator="+=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -2101,7 +2215,7 @@
             </terminal>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.104"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.113"/>
           </tokens>
         </tokens>
       </alternatives>
@@ -2111,15 +2225,20 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.105"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.106"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.114"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.115"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="UnaryExpression">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//OperationCall"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//UnaryExpression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//UnaryOperation"/>
+          </type>
+        </tokens>
         <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
           <terminal xsi:type="xtext:Alternatives">
             <groups xsi:type="xtext:Keyword" value="!"/>
@@ -2132,7 +2251,7 @@
           </terminal>
         </tokens>
         <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.106"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.115"/>
         </tokens>
       </alternatives>
     </rules>
@@ -2141,11 +2260,11 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.107"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.116"/>
         <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Action" feature="target" operator="=">
+          <tokens xsi:type="xtext:Action" feature="postTarget" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PostOpCall"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//OperationCall"/>
             </type>
           </tokens>
           <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
@@ -2162,7 +2281,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.108"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.117"/>
         <tokens xsi:type="xtext:Alternatives" cardinality="*">
           <groups xsi:type="xtext:Group">
             <tokens xsi:type="xtext:Action" feature="target" operator="=">
@@ -2177,12 +2296,12 @@
             <tokens xsi:type="xtext:Keyword" value="("/>
             <tokens xsi:type="xtext:Group" cardinality="?">
               <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
               </tokens>
               <tokens xsi:type="xtext:Group" cardinality="*">
                 <tokens xsi:type="xtext:Keyword" value=","/>
                 <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
                 </tokens>
               </tokens>
             </tokens>
@@ -2196,19 +2315,19 @@
             </tokens>
             <tokens xsi:type="xtext:Keyword" value="["/>
             <tokens xsi:type="xtext:Assignment" feature="index" operator="=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
             </tokens>
             <tokens xsi:type="xtext:Keyword" value="]"/>
             <tokens xsi:type="xtext:Group" cardinality="?">
               <tokens xsi:type="xtext:Keyword" value="("/>
               <tokens xsi:type="xtext:Group" cardinality="?">
                 <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+                  <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
                 </tokens>
                 <tokens xsi:type="xtext:Group" cardinality="*">
                   <tokens xsi:type="xtext:Keyword" value=","/>
                   <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-                    <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+                    <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
                   </tokens>
                 </tokens>
               </tokens>
@@ -2234,7 +2353,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.109"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.118"/>
         <tokens xsi:type="xtext:Group" cardinality="*">
           <tokens xsi:type="xtext:Action" feature="target" operator="=">
             <type metamodel="/0/@metamodelDeclarations.1">
@@ -2244,12 +2363,12 @@
           <tokens xsi:type="xtext:Keyword" value="("/>
           <tokens xsi:type="xtext:Group" cardinality="?">
             <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
             </tokens>
             <tokens xsi:type="xtext:Group" cardinality="*">
               <tokens xsi:type="xtext:Keyword" value=","/>
               <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
               </tokens>
             </tokens>
           </tokens>
@@ -2262,60 +2381,88 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.114"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.113"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.111"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.110"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.112"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.127"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.123"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.122"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.120"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.119"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.121"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.137"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="PropertyValue">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyValue"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="name" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyValue"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="VariableValue">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//VariableValue"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="name" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//VariableValue"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="KeywordVariables">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//KeywordVariables"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="name" operator="=">
-        <terminal xsi:type="xtext:Alternatives">
-          <groups xsi:type="xtext:Keyword" value="group"/>
-          <groups xsi:type="xtext:Keyword" value="layout"/>
-          <groups xsi:type="xtext:Keyword" value="properties"/>
-        </terminal>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//KeywordVariable"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
+          <terminal xsi:type="xtext:Alternatives">
+            <groups xsi:type="xtext:Keyword" value="group"/>
+            <groups xsi:type="xtext:Keyword" value="layout"/>
+            <groups xsi:type="xtext:Keyword" value="properties"/>
+          </terminal>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="ConstructorCallExpression">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ConstructorCallExpression"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Keyword" value="new"/>
-        <tokens xsi:type="xtext:Assignment" feature="class" operator="=">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//CreatorCall"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
+          <terminal xsi:type="xtext:Keyword" value="new"/>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="target" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
           </tokens>
           <tokens xsi:type="xtext:Group" cardinality="*">
             <tokens xsi:type="xtext:Keyword" value=","/>
             <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.53"/>
             </tokens>
           </tokens>
         </tokens>
@@ -2324,30 +2471,35 @@
     </rules>
     <rules xsi:type="xtext:ParserRule" name="Literal">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Literal"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.119"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.128"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.135"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.124"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.125"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.126"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.115"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.116"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.117"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="LiteralArray">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LiteralArray"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LiteralArray"/>
+          </type>
+        </tokens>
         <tokens xsi:type="xtext:Keyword" value="["/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Assignment" feature="element" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
           </tokens>
           <tokens xsi:type="xtext:Group" cardinality="*">
             <tokens xsi:type="xtext:Keyword" value=","/>
             <tokens xsi:type="xtext:Assignment" feature="element" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
             </tokens>
           </tokens>
         </tokens>
@@ -2356,18 +2508,23 @@
     </rules>
     <rules xsi:type="xtext:ParserRule" name="LiteralObject">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LiteralObject"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LiteralObject"/>
+          </type>
+        </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Group" cardinality="?">
           <tokens xsi:type="xtext:Assignment" feature="features" operator="+=">
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.118"/>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.127"/>
           </tokens>
           <tokens xsi:type="xtext:Group" cardinality="*">
             <tokens xsi:type="xtext:Keyword" value=","/>
             <tokens xsi:type="xtext:Assignment" feature="features" operator="+=">
-              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.118"/>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.127"/>
             </tokens>
           </tokens>
         </tokens>
@@ -2376,18 +2533,23 @@
     </rules>
     <rules xsi:type="xtext:ParserRule" name="LiteralFunction">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LiteralFunction"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//LiteralFunction"/>
+          </type>
+        </tokens>
         <tokens xsi:type="xtext:Keyword" value="function"/>
         <tokens xsi:type="xtext:Keyword" value="("/>
         <tokens xsi:type="xtext:Group">
-          <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
+          <tokens xsi:type="xtext:Assignment" feature="parameters" operator="+=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
           </tokens>
           <tokens xsi:type="xtext:Group" cardinality="*">
             <tokens xsi:type="xtext:Keyword" value=","/>
-            <tokens xsi:type="xtext:Assignment" feature="params" operator="+=">
+            <tokens xsi:type="xtext:Assignment" feature="parameters" operator="+=">
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
             </tokens>
           </tokens>
@@ -2395,7 +2557,7 @@
         <tokens xsi:type="xtext:Keyword" value=")"/>
         <tokens xsi:type="xtext:Keyword" value="{"/>
         <tokens xsi:type="xtext:Assignment" feature="statements" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.73"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.82"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -2405,6 +2567,11 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Feature"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Feature"/>
+          </type>
+        </tokens>
         <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
           <terminal xsi:type="xtext:Alternatives">
             <groups xsi:type="xtext:RuleCall" rule="/0/@rules.1"/>
@@ -2414,83 +2581,152 @@
         </tokens>
         <tokens xsi:type="xtext:Keyword" value=":"/>
         <tokens xsi:type="xtext:Assignment" feature="value" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="ValueLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//ValueLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.120"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.121"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.122"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.123"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.124"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.125"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.129"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.130"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.131"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.132"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.133"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.134"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.136"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="BooleanLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//BooleanLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:Alternatives">
-          <groups xsi:type="xtext:Keyword" value="true"/>
-          <groups xsi:type="xtext:Keyword" value="false"/>
-        </terminal>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//BooleanLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:Alternatives">
+            <groups xsi:type="xtext:Keyword" value="true"/>
+            <groups xsi:type="xtext:Keyword" value="false"/>
+          </terminal>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="IntegerLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//IntegerLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <groups xsi:type="xtext:Assignment" feature="val" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.9"/>
+        <groups xsi:type="xtext:Group">
+          <tokens xsi:type="xtext:Action">
+            <type metamodel="/0/@metamodelDeclarations.1">
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//IntegerLiteral"/>
+            </type>
+          </tokens>
+          <tokens xsi:type="xtext:Assignment" feature="ival" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.9"/>
+          </tokens>
         </groups>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
+        <groups xsi:type="xtext:Assignment" feature="sval" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
+        </groups>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="NullLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NullLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:Keyword" value="null"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NullLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:Keyword" value="null"/>
+        </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="VoidLiteral">
+    <rules xsi:type="xtext:ParserRule" name="UndefinedLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//VoidLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:Keyword" value="void"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//UndefinedLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:Keyword" value="undefined"/>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="StringLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//StringLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//StringLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="RealLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RealLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.10"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RealLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.10"/>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="RegexpLiteral">
       <type metamodel="/0/@metamodelDeclarations.1">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RegexpLiteral"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
       </type>
-      <alternatives xsi:type="xtext:Assignment" feature="val" operator="=">
-        <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//RegexpLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
+        </tokens>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="QueryLiteral">
+      <type metamodel="/0/@metamodelDeclarations.1">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Expression"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <tokens xsi:type="xtext:Action">
+          <type metamodel="/0/@metamodelDeclarations.1">
+            <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//QueryLiteral"/>
+          </type>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="~{"/>
+        <tokens xsi:type="xtext:Assignment" feature="val" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.62"/>
+        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="ParanthesizedExpression">
@@ -2499,7 +2735,7 @@
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="("/>
-        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.92"/>
+        <tokens xsi:type="xtext:RuleCall" rule="/0/@rules.102"/>
         <tokens xsi:type="xtext:Keyword" value=")"/>
       </alternatives>
     </rules>

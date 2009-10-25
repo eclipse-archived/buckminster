@@ -69,17 +69,24 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
     switch (eClass.getClassifierID())
     {
       case BeeLangPackage.BEE_MODEL: return createBeeModel();
+      case BeeLangPackage.VERSION: return createVersion();
+      case BeeLangPackage.VERSION_RANGE: return createVersionRange();
       case BeeLangPackage.IMPORT: return createImport();
       case BeeLangPackage.BUILD_UNIT: return createBuildUnit();
       case BeeLangPackage.PROVIDED_CAPABILITY: return createProvidedCapability();
       case BeeLangPackage.REQUIRED_CAPABILITY: return createRequiredCapability();
-      case BeeLangPackage.PROPERTY_STATEMENTS: return createPropertyStatements();
-      case BeeLangPackage.PROPERTY_STATEMENT: return createPropertyStatement();
-      case BeeLangPackage.PROPERTY_EXPRESSION: return createPropertyExpression();
+      case BeeLangPackage.NAMED_PROPERTIES: return createNamedProperties();
+      case BeeLangPackage.COMPOUND_PROPERTY_OPERATION: return createCompoundPropertyOperation();
+      case BeeLangPackage.PROPERTY_OPERATION: return createPropertyOperation();
+      case BeeLangPackage.FILTERED_PROPERTY_OPERATION: return createFilteredPropertyOperation();
+      case BeeLangPackage.SET_PROPERTY_OPERATION: return createSetPropertyOperation();
+      case BeeLangPackage.UNSET_PROPERTY_OPERATION: return createUnsetPropertyOperation();
       case BeeLangPackage.SYNCHRONIZATION: return createSynchronization();
       case BeeLangPackage.PATH_GROUP: return createPathGroup();
-      case BeeLangPackage.PATH_EXPRESSION: return createPathExpression();
-      case BeeLangPackage.EXPR_STATEMENT: return createExprStatement();
+      case BeeLangPackage.PATH_VECTOR_ELEMENT: return createPathVectorElement();
+      case BeeLangPackage.FILTERED_PATH_VECTOR: return createFilteredPathVector();
+      case BeeLangPackage.PATH_VECTOR: return createPathVector();
+      case BeeLangPackage.COMPOUND_PATH_VECTOR: return createCompoundPathVector();
       case BeeLangPackage.PREREQUISITE: return createPrerequisite();
       case BeeLangPackage.CLOSURE: return createClosure();
       case BeeLangPackage.PREREQUISITE_ENTRY: return createPrerequisiteEntry();
@@ -89,18 +96,23 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.PART: return createPart();
       case BeeLangPackage.PARAMETER: return createParameter();
       case BeeLangPackage.LAYOUT: return createLayout();
-      case BeeLangPackage.ACTION_INPUT_GROUP: return createActionInputGroup();
+      case BeeLangPackage.GROUP: return createGroup();
       case BeeLangPackage.REPOSITORY_CONFIGURATION: return createRepositoryConfiguration();
       case BeeLangPackage.NAMED_ADVICE: return createNamedAdvice();
       case BeeLangPackage.ADVICE: return createAdvice();
       case BeeLangPackage.COMPOUND_ADVICE: return createCompoundAdvice();
       case BeeLangPackage.ADVICE_STATEMENT: return createAdviceStatement();
       case BeeLangPackage.ADVICE_PATH: return createAdvicePath();
-      case BeeLangPackage.ADVICE_PATH_ELEMENT: return createAdvicePathElement();
-      case BeeLangPackage.ADVICE_PATH_CHILDREN: return createAdvicePathChildren();
+      case BeeLangPackage.SELECTOR: return createSelector();
+      case BeeLangPackage.NAME_SELECTOR: return createNameSelector();
+      case BeeLangPackage.THIS_SELECTOR: return createThisSelector();
+      case BeeLangPackage.PARENT_SELECTOR: return createParentSelector();
+      case BeeLangPackage.CHILDREN_SELECTOR: return createChildrenSelector();
+      case BeeLangPackage.ANCESTOR_SELECTOR: return createAncestorSelector();
+      case BeeLangPackage.REGEXP_SELECTOR: return createRegexpSelector();
       case BeeLangPackage.FILTER: return createFilter();
-      case BeeLangPackage.PRE_CONDITION_ASSERT: return createPreConditionAssert();
-      case BeeLangPackage.POST_CONDITION_ASSERT: return createPostConditionAssert();
+      case BeeLangPackage.PRE_CONDITION: return createPreCondition();
+      case BeeLangPackage.POST_CONDITION: return createPostCondition();
       case BeeLangPackage.ASSERTION_EXPRESSION: return createAssertionExpression();
       case BeeLangPackage.STATEMENT: return createStatement();
       case BeeLangPackage.BREAK_STATEMENT: return createBreakStatement();
@@ -121,35 +133,35 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.CATCH_BLOCK: return createCatchBlock();
       case BeeLangPackage.FINALLY_BLOCK: return createFinallyBlock();
       case BeeLangPackage.WITH_STATEMENT: return createWithStatement();
-      case BeeLangPackage.SYNTAX_ELEMENT: return createSyntaxElement();
       case BeeLangPackage.VAR_EXPRESSION_LIST: return createVarExpressionList();
+      case BeeLangPackage.EXPRESSION_LIST: return createExpressionList();
       case BeeLangPackage.EXPRESSION: return createExpression();
-      case BeeLangPackage.VAR_EXPRESSION: return createVarExpression();
-      case BeeLangPackage.VALUE_EXPRESSION: return createValueExpression();
-      case BeeLangPackage.OPERATION_CALL: return createOperationCall();
-      case BeeLangPackage.PROPERTY_VALUE: return createPropertyValue();
-      case BeeLangPackage.VARIABLE_VALUE: return createVariableValue();
-      case BeeLangPackage.KEYWORD_VARIABLES: return createKeywordVariables();
-      case BeeLangPackage.CONSTRUCTOR_CALL_EXPRESSION: return createConstructorCallExpression();
-      case BeeLangPackage.LITERAL: return createLiteral();
-      case BeeLangPackage.LITERAL_ARRAY: return createLiteralArray();
-      case BeeLangPackage.LITERAL_OBJECT: return createLiteralObject();
-      case BeeLangPackage.LITERAL_FUNCTION: return createLiteralFunction();
+      case BeeLangPackage.UNARY_EXPRESSION: return createUnaryExpression();
       case BeeLangPackage.FEATURE: return createFeature();
-      case BeeLangPackage.VALUE_LITERAL: return createValueLiteral();
-      case BeeLangPackage.BOOLEAN_LITERAL: return createBooleanLiteral();
-      case BeeLangPackage.INTEGER_LITERAL: return createIntegerLiteral();
-      case BeeLangPackage.NULL_LITERAL: return createNullLiteral();
-      case BeeLangPackage.VOID_LITERAL: return createVoidLiteral();
-      case BeeLangPackage.STRING_LITERAL: return createStringLiteral();
-      case BeeLangPackage.REAL_LITERAL: return createRealLiteral();
-      case BeeLangPackage.REGEXP_LITERAL: return createRegexpLiteral();
+      case BeeLangPackage.VAR_EXPRESSION: return createVarExpression();
       case BeeLangPackage.ASSIGNMENT_OPERATION: return createAssignmentOperation();
       case BeeLangPackage.IF_EXPRESSION: return createIfExpression();
       case BeeLangPackage.BOOLEAN_OPERATION: return createBooleanOperation();
-      case BeeLangPackage.POST_OP_CALL: return createPostOpCall();
+      case BeeLangPackage.OPERATION_CALL: return createOperationCall();
+      case BeeLangPackage.RELATIONAL_OPERATION: return createRelationalOperation();
+      case BeeLangPackage.UNARY_OPERATION: return createUnaryOperation();
       case BeeLangPackage.AT_CALL: return createAtCall();
       case BeeLangPackage.FEATURE_CALL: return createFeatureCall();
+      case BeeLangPackage.PROPERTY_VALUE: return createPropertyValue();
+      case BeeLangPackage.VARIABLE_VALUE: return createVariableValue();
+      case BeeLangPackage.KEYWORD_VARIABLE: return createKeywordVariable();
+      case BeeLangPackage.CREATOR_CALL: return createCreatorCall();
+      case BeeLangPackage.LITERAL_ARRAY: return createLiteralArray();
+      case BeeLangPackage.LITERAL_OBJECT: return createLiteralObject();
+      case BeeLangPackage.LITERAL_FUNCTION: return createLiteralFunction();
+      case BeeLangPackage.BOOLEAN_LITERAL: return createBooleanLiteral();
+      case BeeLangPackage.INTEGER_LITERAL: return createIntegerLiteral();
+      case BeeLangPackage.NULL_LITERAL: return createNullLiteral();
+      case BeeLangPackage.UNDEFINED_LITERAL: return createUndefinedLiteral();
+      case BeeLangPackage.STRING_LITERAL: return createStringLiteral();
+      case BeeLangPackage.REAL_LITERAL: return createRealLiteral();
+      case BeeLangPackage.REGEXP_LITERAL: return createRegexpLiteral();
+      case BeeLangPackage.QUERY_LITERAL: return createQueryLiteral();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -167,10 +179,12 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
     {
       case BeeLangPackage.VISIBILITY:
         return createVisibilityFromString(eDataType, initialValue);
-      case BeeLangPackage.ASSERTION_SCOPE:
-        return createAssertionScopeFromString(eDataType, initialValue);
       case BeeLangPackage.EXECUTION_MODE:
         return createExecutionModeFromString(eDataType, initialValue);
+      case BeeLangPackage.ASSIGNMENT_OPERATOR:
+        return createAssignmentOperatorFromString(eDataType, initialValue);
+      case BeeLangPackage.RELATIONAL_OPERATOR:
+        return createRelationalOperatorFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -188,10 +202,12 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
     {
       case BeeLangPackage.VISIBILITY:
         return convertVisibilityToString(eDataType, instanceValue);
-      case BeeLangPackage.ASSERTION_SCOPE:
-        return convertAssertionScopeToString(eDataType, instanceValue);
       case BeeLangPackage.EXECUTION_MODE:
         return convertExecutionModeToString(eDataType, instanceValue);
+      case BeeLangPackage.ASSIGNMENT_OPERATOR:
+        return convertAssignmentOperatorToString(eDataType, instanceValue);
+      case BeeLangPackage.RELATIONAL_OPERATOR:
+        return convertRelationalOperatorToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -206,6 +222,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     BeeModelImpl beeModel = new BeeModelImpl();
     return beeModel;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Version createVersion()
+  {
+    VersionImpl version = new VersionImpl();
+    return version;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VersionRange createVersionRange()
+  {
+    VersionRangeImpl versionRange = new VersionRangeImpl();
+    return versionRange;
   }
 
   /**
@@ -257,10 +295,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyStatements createPropertyStatements()
+  public NamedProperties createNamedProperties()
   {
-    PropertyStatementsImpl propertyStatements = new PropertyStatementsImpl();
-    return propertyStatements;
+    NamedPropertiesImpl namedProperties = new NamedPropertiesImpl();
+    return namedProperties;
   }
 
   /**
@@ -268,10 +306,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyStatement createPropertyStatement()
+  public CompoundPropertyOperation createCompoundPropertyOperation()
   {
-    PropertyStatementImpl propertyStatement = new PropertyStatementImpl();
-    return propertyStatement;
+    CompoundPropertyOperationImpl compoundPropertyOperation = new CompoundPropertyOperationImpl();
+    return compoundPropertyOperation;
   }
 
   /**
@@ -279,10 +317,43 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyExpression createPropertyExpression()
+  public PropertyOperation createPropertyOperation()
   {
-    PropertyExpressionImpl propertyExpression = new PropertyExpressionImpl();
-    return propertyExpression;
+    PropertyOperationImpl propertyOperation = new PropertyOperationImpl();
+    return propertyOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public FilteredPropertyOperation createFilteredPropertyOperation()
+  {
+    FilteredPropertyOperationImpl filteredPropertyOperation = new FilteredPropertyOperationImpl();
+    return filteredPropertyOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SetPropertyOperation createSetPropertyOperation()
+  {
+    SetPropertyOperationImpl setPropertyOperation = new SetPropertyOperationImpl();
+    return setPropertyOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UnsetPropertyOperation createUnsetPropertyOperation()
+  {
+    UnsetPropertyOperationImpl unsetPropertyOperation = new UnsetPropertyOperationImpl();
+    return unsetPropertyOperation;
   }
 
   /**
@@ -312,10 +383,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PathExpression createPathExpression()
+  public PathVectorElement createPathVectorElement()
   {
-    PathExpressionImpl pathExpression = new PathExpressionImpl();
-    return pathExpression;
+    PathVectorElementImpl pathVectorElement = new PathVectorElementImpl();
+    return pathVectorElement;
   }
 
   /**
@@ -323,10 +394,32 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public ExprStatement createExprStatement()
+  public FilteredPathVector createFilteredPathVector()
   {
-    ExprStatementImpl exprStatement = new ExprStatementImpl();
-    return exprStatement;
+    FilteredPathVectorImpl filteredPathVector = new FilteredPathVectorImpl();
+    return filteredPathVector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PathVector createPathVector()
+  {
+    PathVectorImpl pathVector = new PathVectorImpl();
+    return pathVector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CompoundPathVector createCompoundPathVector()
+  {
+    CompoundPathVectorImpl compoundPathVector = new CompoundPathVectorImpl();
+    return compoundPathVector;
   }
 
   /**
@@ -433,10 +526,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public ActionInputGroup createActionInputGroup()
+  public Group createGroup()
   {
-    ActionInputGroupImpl actionInputGroup = new ActionInputGroupImpl();
-    return actionInputGroup;
+    GroupImpl group = new GroupImpl();
+    return group;
   }
 
   /**
@@ -510,10 +603,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public AdvicePathElement createAdvicePathElement()
+  public Selector createSelector()
   {
-    AdvicePathElementImpl advicePathElement = new AdvicePathElementImpl();
-    return advicePathElement;
+    SelectorImpl selector = new SelectorImpl();
+    return selector;
   }
 
   /**
@@ -521,10 +614,65 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public AdvicePathChildren createAdvicePathChildren()
+  public NameSelector createNameSelector()
   {
-    AdvicePathChildrenImpl advicePathChildren = new AdvicePathChildrenImpl();
-    return advicePathChildren;
+    NameSelectorImpl nameSelector = new NameSelectorImpl();
+    return nameSelector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ThisSelector createThisSelector()
+  {
+    ThisSelectorImpl thisSelector = new ThisSelectorImpl();
+    return thisSelector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ParentSelector createParentSelector()
+  {
+    ParentSelectorImpl parentSelector = new ParentSelectorImpl();
+    return parentSelector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ChildrenSelector createChildrenSelector()
+  {
+    ChildrenSelectorImpl childrenSelector = new ChildrenSelectorImpl();
+    return childrenSelector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AncestorSelector createAncestorSelector()
+  {
+    AncestorSelectorImpl ancestorSelector = new AncestorSelectorImpl();
+    return ancestorSelector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RegexpSelector createRegexpSelector()
+  {
+    RegexpSelectorImpl regexpSelector = new RegexpSelectorImpl();
+    return regexpSelector;
   }
 
   /**
@@ -543,10 +691,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PreConditionAssert createPreConditionAssert()
+  public PreCondition createPreCondition()
   {
-    PreConditionAssertImpl preConditionAssert = new PreConditionAssertImpl();
-    return preConditionAssert;
+    PreConditionImpl preCondition = new PreConditionImpl();
+    return preCondition;
   }
 
   /**
@@ -554,10 +702,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PostConditionAssert createPostConditionAssert()
+  public PostCondition createPostCondition()
   {
-    PostConditionAssertImpl postConditionAssert = new PostConditionAssertImpl();
-    return postConditionAssert;
+    PostConditionImpl postCondition = new PostConditionImpl();
+    return postCondition;
   }
 
   /**
@@ -785,10 +933,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public SyntaxElement createSyntaxElement()
+  public VarExpressionList createVarExpressionList()
   {
-    SyntaxElementImpl syntaxElement = new SyntaxElementImpl();
-    return syntaxElement;
+    VarExpressionListImpl varExpressionList = new VarExpressionListImpl();
+    return varExpressionList;
   }
 
   /**
@@ -796,10 +944,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public VarExpressionList createVarExpressionList()
+  public ExpressionList createExpressionList()
   {
-    VarExpressionListImpl varExpressionList = new VarExpressionListImpl();
-    return varExpressionList;
+    ExpressionListImpl expressionList = new ExpressionListImpl();
+    return expressionList;
   }
 
   /**
@@ -818,120 +966,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public VarExpression createVarExpression()
+  public UnaryExpression createUnaryExpression()
   {
-    VarExpressionImpl varExpression = new VarExpressionImpl();
-    return varExpression;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ValueExpression createValueExpression()
-  {
-    ValueExpressionImpl valueExpression = new ValueExpressionImpl();
-    return valueExpression;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public OperationCall createOperationCall()
-  {
-    OperationCallImpl operationCall = new OperationCallImpl();
-    return operationCall;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public PropertyValue createPropertyValue()
-  {
-    PropertyValueImpl propertyValue = new PropertyValueImpl();
-    return propertyValue;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public VariableValue createVariableValue()
-  {
-    VariableValueImpl variableValue = new VariableValueImpl();
-    return variableValue;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public KeywordVariables createKeywordVariables()
-  {
-    KeywordVariablesImpl keywordVariables = new KeywordVariablesImpl();
-    return keywordVariables;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ConstructorCallExpression createConstructorCallExpression()
-  {
-    ConstructorCallExpressionImpl constructorCallExpression = new ConstructorCallExpressionImpl();
-    return constructorCallExpression;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Literal createLiteral()
-  {
-    LiteralImpl literal = new LiteralImpl();
-    return literal;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public LiteralArray createLiteralArray()
-  {
-    LiteralArrayImpl literalArray = new LiteralArrayImpl();
-    return literalArray;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public LiteralObject createLiteralObject()
-  {
-    LiteralObjectImpl literalObject = new LiteralObjectImpl();
-    return literalObject;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public LiteralFunction createLiteralFunction()
-  {
-    LiteralFunctionImpl literalFunction = new LiteralFunctionImpl();
-    return literalFunction;
+    UnaryExpressionImpl unaryExpression = new UnaryExpressionImpl();
+    return unaryExpression;
   }
 
   /**
@@ -950,87 +988,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public ValueLiteral createValueLiteral()
+  public VarExpression createVarExpression()
   {
-    ValueLiteralImpl valueLiteral = new ValueLiteralImpl();
-    return valueLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public BooleanLiteral createBooleanLiteral()
-  {
-    BooleanLiteralImpl booleanLiteral = new BooleanLiteralImpl();
-    return booleanLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public IntegerLiteral createIntegerLiteral()
-  {
-    IntegerLiteralImpl integerLiteral = new IntegerLiteralImpl();
-    return integerLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NullLiteral createNullLiteral()
-  {
-    NullLiteralImpl nullLiteral = new NullLiteralImpl();
-    return nullLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public VoidLiteral createVoidLiteral()
-  {
-    VoidLiteralImpl voidLiteral = new VoidLiteralImpl();
-    return voidLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public StringLiteral createStringLiteral()
-  {
-    StringLiteralImpl stringLiteral = new StringLiteralImpl();
-    return stringLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RealLiteral createRealLiteral()
-  {
-    RealLiteralImpl realLiteral = new RealLiteralImpl();
-    return realLiteral;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RegexpLiteral createRegexpLiteral()
-  {
-    RegexpLiteralImpl regexpLiteral = new RegexpLiteralImpl();
-    return regexpLiteral;
+    VarExpressionImpl varExpression = new VarExpressionImpl();
+    return varExpression;
   }
 
   /**
@@ -1071,10 +1032,32 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PostOpCall createPostOpCall()
+  public OperationCall createOperationCall()
   {
-    PostOpCallImpl postOpCall = new PostOpCallImpl();
-    return postOpCall;
+    OperationCallImpl operationCall = new OperationCallImpl();
+    return operationCall;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RelationalOperation createRelationalOperation()
+  {
+    RelationalOperationImpl relationalOperation = new RelationalOperationImpl();
+    return relationalOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UnaryOperation createUnaryOperation()
+  {
+    UnaryOperationImpl unaryOperation = new UnaryOperationImpl();
+    return unaryOperation;
   }
 
   /**
@@ -1104,6 +1087,171 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public PropertyValue createPropertyValue()
+  {
+    PropertyValueImpl propertyValue = new PropertyValueImpl();
+    return propertyValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VariableValue createVariableValue()
+  {
+    VariableValueImpl variableValue = new VariableValueImpl();
+    return variableValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public KeywordVariable createKeywordVariable()
+  {
+    KeywordVariableImpl keywordVariable = new KeywordVariableImpl();
+    return keywordVariable;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CreatorCall createCreatorCall()
+  {
+    CreatorCallImpl creatorCall = new CreatorCallImpl();
+    return creatorCall;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LiteralArray createLiteralArray()
+  {
+    LiteralArrayImpl literalArray = new LiteralArrayImpl();
+    return literalArray;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LiteralObject createLiteralObject()
+  {
+    LiteralObjectImpl literalObject = new LiteralObjectImpl();
+    return literalObject;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LiteralFunction createLiteralFunction()
+  {
+    LiteralFunctionImpl literalFunction = new LiteralFunctionImpl();
+    return literalFunction;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BooleanLiteral createBooleanLiteral()
+  {
+    BooleanLiteralImpl booleanLiteral = new BooleanLiteralImpl();
+    return booleanLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IntegerLiteral createIntegerLiteral()
+  {
+    IntegerLiteralImpl integerLiteral = new IntegerLiteralImpl();
+    return integerLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NullLiteral createNullLiteral()
+  {
+    NullLiteralImpl nullLiteral = new NullLiteralImpl();
+    return nullLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UndefinedLiteral createUndefinedLiteral()
+  {
+    UndefinedLiteralImpl undefinedLiteral = new UndefinedLiteralImpl();
+    return undefinedLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public StringLiteral createStringLiteral()
+  {
+    StringLiteralImpl stringLiteral = new StringLiteralImpl();
+    return stringLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RealLiteral createRealLiteral()
+  {
+    RealLiteralImpl realLiteral = new RealLiteralImpl();
+    return realLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RegexpLiteral createRegexpLiteral()
+  {
+    RegexpLiteralImpl regexpLiteral = new RegexpLiteralImpl();
+    return regexpLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public QueryLiteral createQueryLiteral()
+  {
+    QueryLiteralImpl queryLiteral = new QueryLiteralImpl();
+    return queryLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Visibility createVisibilityFromString(EDataType eDataType, String initialValue)
   {
     Visibility result = Visibility.get(initialValue);
@@ -1126,28 +1274,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public AssertionScope createAssertionScopeFromString(EDataType eDataType, String initialValue)
-  {
-    AssertionScope result = AssertionScope.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String convertAssertionScopeToString(EDataType eDataType, Object instanceValue)
-  {
-    return instanceValue == null ? null : instanceValue.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public ExecutionMode createExecutionModeFromString(EDataType eDataType, String initialValue)
   {
     ExecutionMode result = ExecutionMode.get(initialValue);
@@ -1161,6 +1287,50 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * @generated
    */
   public String convertExecutionModeToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AssignmentOperator createAssignmentOperatorFromString(EDataType eDataType, String initialValue)
+  {
+    AssignmentOperator result = AssignmentOperator.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAssignmentOperatorToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RelationalOperator createRelationalOperatorFromString(EDataType eDataType, String initialValue)
+  {
+    RelationalOperator result = RelationalOperator.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertRelationalOperatorToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

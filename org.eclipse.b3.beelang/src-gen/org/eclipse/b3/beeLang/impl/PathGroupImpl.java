@@ -8,10 +8,9 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Filter;
-import org.eclipse.b3.beeLang.PathExpression;
+import org.eclipse.b3.beeLang.CompoundPropertyOperation;
 import org.eclipse.b3.beeLang.PathGroup;
-import org.eclipse.b3.beeLang.PropertyStatement;
+import org.eclipse.b3.beeLang.PathVectorElement;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -24,7 +23,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -35,11 +33,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getPaths <em>Paths</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#isFirstIsBase <em>First Is Base</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getUnsetProperties <em>Unset Properties</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getSetProperties <em>Set Properties</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PathGroupImpl#getAnnotations <em>Annotations</em>}</li>
  * </ul>
  * </p>
  *
@@ -48,16 +43,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathGroup
 {
   /**
-   * The cached value of the '{@link #getFilter() <em>Filter</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getFilter()
-   * @generated
-   * @ordered
-   */
-  protected Filter filter;
-
-  /**
    * The cached value of the '{@link #getPaths() <em>Paths</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -65,47 +50,17 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * @generated
    * @ordered
    */
-  protected EList<PathExpression> paths;
+  protected EList<PathVectorElement> paths;
 
   /**
-   * The default value of the '{@link #isFirstIsBase() <em>First Is Base</em>}' attribute.
+   * The cached value of the '{@link #getAnnotations() <em>Annotations</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isFirstIsBase()
+   * @see #getAnnotations()
    * @generated
    * @ordered
    */
-  protected static final boolean FIRST_IS_BASE_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isFirstIsBase() <em>First Is Base</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isFirstIsBase()
-   * @generated
-   * @ordered
-   */
-  protected boolean firstIsBase = FIRST_IS_BASE_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getUnsetProperties() <em>Unset Properties</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getUnsetProperties()
-   * @generated
-   * @ordered
-   */
-  protected EList<String> unsetProperties;
-
-  /**
-   * The cached value of the '{@link #getSetProperties() <em>Set Properties</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSetProperties()
-   * @generated
-   * @ordered
-   */
-  protected EList<PropertyStatement> setProperties;
+  protected CompoundPropertyOperation annotations;
 
   /**
    * <!-- begin-user-doc -->
@@ -133,9 +88,13 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public Filter getFilter()
+  public EList<PathVectorElement> getPaths()
   {
-    return filter;
+    if (paths == null)
+    {
+      paths = new EObjectContainmentEList<PathVectorElement>(PathVectorElement.class, this, BeeLangPackage.PATH_GROUP__PATHS);
+    }
+    return paths;
   }
 
   /**
@@ -143,13 +102,23 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetFilter(Filter newFilter, NotificationChain msgs)
+  public CompoundPropertyOperation getAnnotations()
   {
-    Filter oldFilter = filter;
-    filter = newFilter;
+    return annotations;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetAnnotations(CompoundPropertyOperation newAnnotations, NotificationChain msgs)
+  {
+    CompoundPropertyOperation oldAnnotations = annotations;
+    annotations = newAnnotations;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__FILTER, oldFilter, newFilter);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__ANNOTATIONS, oldAnnotations, newAnnotations);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -160,85 +129,20 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setFilter(Filter newFilter)
+  public void setAnnotations(CompoundPropertyOperation newAnnotations)
   {
-    if (newFilter != filter)
+    if (newAnnotations != annotations)
     {
       NotificationChain msgs = null;
-      if (filter != null)
-        msgs = ((InternalEObject)filter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PATH_GROUP__FILTER, null, msgs);
-      if (newFilter != null)
-        msgs = ((InternalEObject)newFilter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PATH_GROUP__FILTER, null, msgs);
-      msgs = basicSetFilter(newFilter, msgs);
+      if (annotations != null)
+        msgs = ((InternalEObject)annotations).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PATH_GROUP__ANNOTATIONS, null, msgs);
+      if (newAnnotations != null)
+        msgs = ((InternalEObject)newAnnotations).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PATH_GROUP__ANNOTATIONS, null, msgs);
+      msgs = basicSetAnnotations(newAnnotations, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__FILTER, newFilter, newFilter));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<PathExpression> getPaths()
-  {
-    if (paths == null)
-    {
-      paths = new EObjectContainmentEList<PathExpression>(PathExpression.class, this, BeeLangPackage.PATH_GROUP__PATHS);
-    }
-    return paths;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public boolean isFirstIsBase()
-  {
-    return firstIsBase;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setFirstIsBase(boolean newFirstIsBase)
-  {
-    boolean oldFirstIsBase = firstIsBase;
-    firstIsBase = newFirstIsBase;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__FIRST_IS_BASE, oldFirstIsBase, firstIsBase));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<String> getUnsetProperties()
-  {
-    if (unsetProperties == null)
-    {
-      unsetProperties = new EDataTypeEList<String>(String.class, this, BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES);
-    }
-    return unsetProperties;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<PropertyStatement> getSetProperties()
-  {
-    if (setProperties == null)
-    {
-      setProperties = new EObjectContainmentEList<PropertyStatement>(PropertyStatement.class, this, BeeLangPackage.PATH_GROUP__SET_PROPERTIES);
-    }
-    return setProperties;
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PATH_GROUP__ANNOTATIONS, newAnnotations, newAnnotations));
   }
 
   /**
@@ -251,12 +155,10 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
   {
     switch (featureID)
     {
-      case BeeLangPackage.PATH_GROUP__FILTER:
-        return basicSetFilter(null, msgs);
       case BeeLangPackage.PATH_GROUP__PATHS:
         return ((InternalEList<?>)getPaths()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
-        return ((InternalEList<?>)getSetProperties()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
+        return basicSetAnnotations(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -271,16 +173,10 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
   {
     switch (featureID)
     {
-      case BeeLangPackage.PATH_GROUP__FILTER:
-        return getFilter();
       case BeeLangPackage.PATH_GROUP__PATHS:
         return getPaths();
-      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
-        return isFirstIsBase();
-      case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
-        return getUnsetProperties();
-      case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
-        return getSetProperties();
+      case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
+        return getAnnotations();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -296,23 +192,12 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
   {
     switch (featureID)
     {
-      case BeeLangPackage.PATH_GROUP__FILTER:
-        setFilter((Filter)newValue);
-        return;
       case BeeLangPackage.PATH_GROUP__PATHS:
         getPaths().clear();
-        getPaths().addAll((Collection<? extends PathExpression>)newValue);
+        getPaths().addAll((Collection<? extends PathVectorElement>)newValue);
         return;
-      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
-        setFirstIsBase((Boolean)newValue);
-        return;
-      case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
-        getUnsetProperties().clear();
-        getUnsetProperties().addAll((Collection<? extends String>)newValue);
-        return;
-      case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
-        getSetProperties().clear();
-        getSetProperties().addAll((Collection<? extends PropertyStatement>)newValue);
+      case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
+        setAnnotations((CompoundPropertyOperation)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -328,20 +213,11 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
   {
     switch (featureID)
     {
-      case BeeLangPackage.PATH_GROUP__FILTER:
-        setFilter((Filter)null);
-        return;
       case BeeLangPackage.PATH_GROUP__PATHS:
         getPaths().clear();
         return;
-      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
-        setFirstIsBase(FIRST_IS_BASE_EDEFAULT);
-        return;
-      case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
-        getUnsetProperties().clear();
-        return;
-      case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
-        getSetProperties().clear();
+      case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
+        setAnnotations((CompoundPropertyOperation)null);
         return;
     }
     super.eUnset(featureID);
@@ -357,37 +233,12 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
   {
     switch (featureID)
     {
-      case BeeLangPackage.PATH_GROUP__FILTER:
-        return filter != null;
       case BeeLangPackage.PATH_GROUP__PATHS:
         return paths != null && !paths.isEmpty();
-      case BeeLangPackage.PATH_GROUP__FIRST_IS_BASE:
-        return firstIsBase != FIRST_IS_BASE_EDEFAULT;
-      case BeeLangPackage.PATH_GROUP__UNSET_PROPERTIES:
-        return unsetProperties != null && !unsetProperties.isEmpty();
-      case BeeLangPackage.PATH_GROUP__SET_PROPERTIES:
-        return setProperties != null && !setProperties.isEmpty();
+      case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
+        return annotations != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (firstIsBase: ");
-    result.append(firstIsBase);
-    result.append(", unsetProperties: ");
-    result.append(unsetProperties);
-    result.append(')');
-    return result.toString();
   }
 
 } //PathGroupImpl

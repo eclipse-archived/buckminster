@@ -21,33 +21,33 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.IntegerLiteralImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.IntegerLiteralImpl#getIval <em>Ival</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiteral
+public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
 {
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #getIval() <em>Ival</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getIval()
    * @generated
    * @ordered
    */
-  protected static final int VAL_EDEFAULT = 0;
+  protected static final int IVAL_EDEFAULT = 0;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #getIval() <em>Ival</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getIval()
    * @generated
    * @ordered
    */
-  protected int val = VAL_EDEFAULT;
+  protected int ival = IVAL_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -75,9 +75,9 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getVal()
+  public int getIval()
   {
-    return val;
+    return ival;
   }
 
   /**
@@ -85,12 +85,12 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setVal(int newVal)
+  public void setIval(int newIval)
   {
-    int oldVal = val;
-    val = newVal;
+    int oldIval = ival;
+    ival = newIval;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.INTEGER_LITERAL__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.INTEGER_LITERAL__IVAL, oldIval, ival));
   }
 
   /**
@@ -103,8 +103,8 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__VAL:
-        return getVal();
+      case BeeLangPackage.INTEGER_LITERAL__IVAL:
+        return getIval();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,8 +119,8 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__VAL:
-        setVal((Integer)newValue);
+      case BeeLangPackage.INTEGER_LITERAL__IVAL:
+        setIval((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -136,8 +136,8 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__VAL:
-        setVal(VAL_EDEFAULT);
+      case BeeLangPackage.INTEGER_LITERAL__IVAL:
+        setIval(IVAL_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -153,8 +153,8 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__VAL:
-        return val != VAL_EDEFAULT;
+      case BeeLangPackage.INTEGER_LITERAL__IVAL:
+        return ival != IVAL_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -170,8 +170,8 @@ public class IntegerLiteralImpl extends ValueLiteralImpl implements IntegerLiter
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (ival: ");
+    result.append(ival);
     result.append(')');
     return result.toString();
   }

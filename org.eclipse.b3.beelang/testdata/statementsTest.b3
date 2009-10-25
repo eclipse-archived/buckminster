@@ -55,12 +55,12 @@ unit statementsTest {
 			;
 			
 		// using labels to break out of multiple loops
-		@outerloop:
+		outerloop:
 		for(;;)
 			for(;;)
 				break outerloop;
 				
-		@secondloop:
+		secondloop:
 		for(;;)
 			for(;;)
 				continue secondloop;
@@ -98,6 +98,11 @@ unit statementsTest {
 			case 2:
 			case 3:
 			default:
+		}
+		switch(a) {
+			case "roy": ownsAGasStation = true; break;
+			case 1: var gibberish = true; break;
+			default: gibberish = ownsAGasStation = false; break;
 		}
 	}
 	functionTest {

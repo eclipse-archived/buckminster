@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.LiteralFunction#getParams <em>Params</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.LiteralFunction#getParameters <em>Parameters</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.LiteralFunction#getStatements <em>Statements</em>}</li>
  * </ul>
  * </p>
@@ -24,23 +24,23 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface LiteralFunction extends Literal
+public interface LiteralFunction extends Expression
 {
   /**
-   * Returns the value of the '<em><b>Params</b></em>' attribute list.
+   * Returns the value of the '<em><b>Parameters</b></em>' attribute list.
    * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Params</em>' attribute list isn't clear,
+   * If the meaning of the '<em>Parameters</em>' attribute list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Params</em>' attribute list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLiteralFunction_Params()
+   * @return the value of the '<em>Parameters</em>' attribute list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLiteralFunction_Parameters()
    * @model unique="false"
    * @generated
    */
-  EList<String> getParams();
+  EList<String> getParameters();
 
   /**
    * Returns the value of the '<em><b>Statements</b></em>' containment reference.

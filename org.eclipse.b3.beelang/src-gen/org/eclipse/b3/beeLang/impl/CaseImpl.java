@@ -7,8 +7,8 @@ package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Case;
+import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.Statements;
-import org.eclipse.b3.beeLang.ValueLiteral;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -43,7 +43,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
    * @generated
    * @ordered
    */
-  protected ValueLiteral condition;
+  protected Expression condition;
 
   /**
    * The cached value of the '{@link #getStatements() <em>Statements</em>}' containment reference.
@@ -81,7 +81,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
    * <!-- end-user-doc -->
    * @generated
    */
-  public ValueLiteral getCondition()
+  public Expression getCondition()
   {
     return condition;
   }
@@ -91,9 +91,9 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetCondition(ValueLiteral newCondition, NotificationChain msgs)
+  public NotificationChain basicSetCondition(Expression newCondition, NotificationChain msgs)
   {
-    ValueLiteral oldCondition = condition;
+    Expression oldCondition = condition;
     condition = newCondition;
     if (eNotificationRequired())
     {
@@ -108,7 +108,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setCondition(ValueLiteral newCondition)
+  public void setCondition(Expression newCondition)
   {
     if (newCondition != condition)
     {
@@ -219,7 +219,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
     switch (featureID)
     {
       case BeeLangPackage.CASE__CONDITION:
-        setCondition((ValueLiteral)newValue);
+        setCondition((Expression)newValue);
         return;
       case BeeLangPackage.CASE__STATEMENTS:
         setStatements((Statements)newValue);
@@ -239,7 +239,7 @@ public class CaseImpl extends MinimalEObjectImpl.Container implements Case
     switch (featureID)
     {
       case BeeLangPackage.CASE__CONDITION:
-        setCondition((ValueLiteral)null);
+        setCondition((Expression)null);
         return;
       case BeeLangPackage.CASE__STATEMENTS:
         setStatements((Statements)null);

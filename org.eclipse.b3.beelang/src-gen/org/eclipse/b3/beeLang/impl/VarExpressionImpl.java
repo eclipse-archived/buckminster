@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class VarExpressionImpl extends StatementImpl implements VarExpression
+public class VarExpressionImpl extends ExpressionImpl implements VarExpression
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.

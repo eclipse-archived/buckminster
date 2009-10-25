@@ -5,8 +5,6 @@
  */
 package org.eclipse.b3.beeLang;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -17,10 +15,8 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.Layout#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Layout#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Layout#getAsserts <em>Asserts</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Layout#getPaths <em>Paths</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Layout#getPostCondition <em>Post Condition</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Layout#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
  *
@@ -31,87 +27,55 @@ import org.eclipse.emf.ecore.EObject;
 public interface Layout extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Filter</b></em>' containment reference.
+   * Returns the value of the '<em><b>Post Condition</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Filter</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Post Condition</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Filter</em>' containment reference.
-   * @see #setFilter(Filter)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLayout_Filter()
+   * @return the value of the '<em>Post Condition</em>' containment reference.
+   * @see #setPostCondition(PostCondition)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLayout_PostCondition()
    * @model containment="true"
    * @generated
    */
-  Filter getFilter();
+  PostCondition getPostCondition();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Layout#getFilter <em>Filter</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Layout#getPostCondition <em>Post Condition</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Filter</em>' containment reference.
-   * @see #getFilter()
+   * @param value the new value of the '<em>Post Condition</em>' containment reference.
+   * @see #getPostCondition()
    * @generated
    */
-  void setFilter(Filter value);
+  void setPostCondition(PostCondition value);
 
   /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
+   * Returns the value of the '<em><b>Body</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Name</em>' attribute isn't clear,
+   * If the meaning of the '<em>Body</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLayout_Name()
-   * @model
-   * @generated
-   */
-  String getName();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Layout#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
-
-  /**
-   * Returns the value of the '<em><b>Asserts</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PostConditionAssert}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Asserts</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Asserts</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLayout_Asserts()
+   * @return the value of the '<em>Body</em>' containment reference.
+   * @see #setBody(PathGroup)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLayout_Body()
    * @model containment="true"
    * @generated
    */
-  EList<PostConditionAssert> getAsserts();
+  PathGroup getBody();
 
   /**
-   * Returns the value of the '<em><b>Paths</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PathGroup}.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Layout#getBody <em>Body</em>}' containment reference.
    * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Paths</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Paths</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLayout_Paths()
-   * @model containment="true"
+   * @param value the new value of the '<em>Body</em>' containment reference.
+   * @see #getBody()
    * @generated
    */
-  EList<PathGroup> getPaths();
+  void setBody(PathGroup value);
 
 } // Layout

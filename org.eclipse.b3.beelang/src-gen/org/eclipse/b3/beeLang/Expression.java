@@ -5,7 +5,6 @@
  */
 package org.eclipse.b3.beeLang;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,7 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.Expression#getExpr <em>Expr</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Expression#getSval <em>Sval</em>}</li>
  * </ul>
  * </p>
  *
@@ -23,22 +22,32 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Expression extends PropertyExpression, SyntaxElement, VarExpression
+public interface Expression extends Statement
 {
   /**
-   * Returns the value of the '<em><b>Expr</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.Expression}.
+   * Returns the value of the '<em><b>Sval</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Expr</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Sval</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Expr</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getExpression_Expr()
-   * @model containment="true"
+   * @return the value of the '<em>Sval</em>' attribute.
+   * @see #setSval(String)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getExpression_Sval()
+   * @model
    * @generated
    */
-  EList<Expression> getExpr();
+  String getSval();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Expression#getSval <em>Sval</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Sval</em>' attribute.
+   * @see #getSval()
+   * @generated
+   */
+  void setSval(String value);
 
 } // Expression

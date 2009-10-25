@@ -17,11 +17,8 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getPaths <em>Paths</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.PathGroup#isFirstIsBase <em>First Is Base</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getUnsetProperties <em>Unset Properties</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getSetProperties <em>Set Properties</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.PathGroup#getAnnotations <em>Annotations</em>}</li>
  * </ul>
  * </p>
  *
@@ -32,34 +29,8 @@ import org.eclipse.emf.ecore.EObject;
 public interface PathGroup extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Filter</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Filter</em>' containment reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Filter</em>' containment reference.
-   * @see #setFilter(Filter)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_Filter()
-   * @model containment="true"
-   * @generated
-   */
-  Filter getFilter();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.PathGroup#getFilter <em>Filter</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Filter</em>' containment reference.
-   * @see #getFilter()
-   * @generated
-   */
-  void setFilter(Filter value);
-
-  /**
    * Returns the value of the '<em><b>Paths</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PathExpression}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.PathVectorElement}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Paths</em>' containment reference list isn't clear,
@@ -71,64 +42,32 @@ public interface PathGroup extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<PathExpression> getPaths();
+  EList<PathVectorElement> getPaths();
 
   /**
-   * Returns the value of the '<em><b>First Is Base</b></em>' attribute.
+   * Returns the value of the '<em><b>Annotations</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>First Is Base</em>' attribute isn't clear,
+   * If the meaning of the '<em>Annotations</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>First Is Base</em>' attribute.
-   * @see #setFirstIsBase(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_FirstIsBase()
-   * @model
-   * @generated
-   */
-  boolean isFirstIsBase();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.PathGroup#isFirstIsBase <em>First Is Base</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>First Is Base</em>' attribute.
-   * @see #isFirstIsBase()
-   * @generated
-   */
-  void setFirstIsBase(boolean value);
-
-  /**
-   * Returns the value of the '<em><b>Unset Properties</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Unset Properties</em>' attribute list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Unset Properties</em>' attribute list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_UnsetProperties()
-   * @model unique="false"
-   * @generated
-   */
-  EList<String> getUnsetProperties();
-
-  /**
-   * Returns the value of the '<em><b>Set Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyStatement}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Set Properties</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Set Properties</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_SetProperties()
+   * @return the value of the '<em>Annotations</em>' containment reference.
+   * @see #setAnnotations(CompoundPropertyOperation)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_Annotations()
    * @model containment="true"
    * @generated
    */
-  EList<PropertyStatement> getSetProperties();
+  CompoundPropertyOperation getAnnotations();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.PathGroup#getAnnotations <em>Annotations</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Annotations</em>' containment reference.
+   * @see #getAnnotations()
+   * @generated
+   */
+  void setAnnotations(CompoundPropertyOperation value);
 
 } // PathGroup

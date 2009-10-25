@@ -54,6 +54,7 @@ public interface AssignmentOperation extends Expression
 
   /**
    * Returns the value of the '<em><b>Op</b></em>' attribute.
+   * The literals are from the enumeration {@link org.eclipse.b3.beeLang.AssignmentOperator}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Op</em>' attribute isn't clear,
@@ -61,22 +62,24 @@ public interface AssignmentOperation extends Expression
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Op</em>' attribute.
-   * @see #setOp(String)
+   * @see org.eclipse.b3.beeLang.AssignmentOperator
+   * @see #setOp(AssignmentOperator)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getAssignmentOperation_Op()
    * @model
    * @generated
    */
-  String getOp();
+  AssignmentOperator getOp();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.AssignmentOperation#getOp <em>Op</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Op</em>' attribute.
+   * @see org.eclipse.b3.beeLang.AssignmentOperator
    * @see #getOp()
    * @generated
    */
-  void setOp(String value);
+  void setOp(AssignmentOperator value);
 
   /**
    * Returns the value of the '<em><b>Right</b></em>' containment reference.

@@ -107,29 +107,29 @@ public interface RequiredCapability extends EObject
   void setName(String value);
 
   /**
-   * Returns the value of the '<em><b>Range</b></em>' attribute.
+   * Returns the value of the '<em><b>Range</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Range</em>' attribute isn't clear,
+   * If the meaning of the '<em>Range</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Range</em>' attribute.
-   * @see #setRange(String)
+   * @return the value of the '<em>Range</em>' containment reference.
+   * @see #setRange(VersionRange)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getRequiredCapability_Range()
-   * @model
+   * @model containment="true"
    * @generated
    */
-  String getRange();
+  VersionRange getRange();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.RequiredCapability#getRange <em>Range</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.RequiredCapability#getRange <em>Range</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Range</em>' attribute.
+   * @param value the new value of the '<em>Range</em>' containment reference.
    * @see #getRange()
    * @generated
    */
-  void setRange(String value);
+  void setRange(VersionRange value);
 
 } // RequiredCapability

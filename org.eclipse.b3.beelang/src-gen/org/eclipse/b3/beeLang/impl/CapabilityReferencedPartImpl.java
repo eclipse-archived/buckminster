@@ -7,10 +7,13 @@ package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.CapabilityReferencedPart;
+import org.eclipse.b3.beeLang.VersionRange;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
@@ -73,24 +76,14 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getRange() <em>Range</em>}' attribute.
+   * The cached value of the '{@link #getRange() <em>Range</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getRange()
    * @generated
    * @ordered
    */
-  protected static final String RANGE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getRange() <em>Range</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getRange()
-   * @generated
-   * @ordered
-   */
-  protected String range = RANGE_EDEFAULT;
+  protected VersionRange range;
 
   /**
    * The default value of the '{@link #getPartName() <em>Part Name</em>}' attribute.
@@ -184,7 +177,7 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getRange()
+  public VersionRange getRange()
   {
     return range;
   }
@@ -194,12 +187,37 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setRange(String newRange)
+  public NotificationChain basicSetRange(VersionRange newRange, NotificationChain msgs)
   {
-    String oldRange = range;
+    VersionRange oldRange = range;
     range = newRange;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE, oldRange, range));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE, oldRange, newRange);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRange(VersionRange newRange)
+  {
+    if (newRange != range)
+    {
+      NotificationChain msgs = null;
+      if (range != null)
+        msgs = ((InternalEObject)range).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE, null, msgs);
+      if (newRange != null)
+        msgs = ((InternalEObject)newRange).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE, null, msgs);
+      msgs = basicSetRange(newRange, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE, newRange, newRange));
   }
 
   /**
@@ -223,6 +241,22 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
     partName = newPartName;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CAPABILITY_REFERENCED_PART__PART_NAME, oldPartName, partName));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE:
+        return basicSetRange(null, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -264,7 +298,7 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
         setName((String)newValue);
         return;
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE:
-        setRange((String)newValue);
+        setRange((VersionRange)newValue);
         return;
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__PART_NAME:
         setPartName((String)newValue);
@@ -290,7 +324,7 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
         setName(NAME_EDEFAULT);
         return;
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE:
-        setRange(RANGE_EDEFAULT);
+        setRange((VersionRange)null);
         return;
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__PART_NAME:
         setPartName(PART_NAME_EDEFAULT);
@@ -314,7 +348,7 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__RANGE:
-        return RANGE_EDEFAULT == null ? range != null : !RANGE_EDEFAULT.equals(range);
+        return range != null;
       case BeeLangPackage.CAPABILITY_REFERENCED_PART__PART_NAME:
         return PART_NAME_EDEFAULT == null ? partName != null : !PART_NAME_EDEFAULT.equals(partName);
     }
@@ -336,8 +370,6 @@ public class CapabilityReferencedPartImpl extends PrerequisiteEntryImpl implemen
     result.append(interface_);
     result.append(", name: ");
     result.append(name);
-    result.append(", range: ");
-    result.append(range);
     result.append(", partName: ");
     result.append(partName);
     result.append(')');

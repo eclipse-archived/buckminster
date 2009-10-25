@@ -8,7 +8,7 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.VarExpression;
+import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.VarExpressionList;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -46,7 +46,7 @@ public class VarExpressionListImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected EList<VarExpression> expr;
+  protected EList<Expression> expr;
 
   /**
    * <!-- begin-user-doc -->
@@ -74,11 +74,11 @@ public class VarExpressionListImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<VarExpression> getExpr()
+  public EList<Expression> getExpr()
   {
     if (expr == null)
     {
-      expr = new EObjectContainmentEList<VarExpression>(VarExpression.class, this, BeeLangPackage.VAR_EXPRESSION_LIST__EXPR);
+      expr = new EObjectContainmentEList<Expression>(Expression.class, this, BeeLangPackage.VAR_EXPRESSION_LIST__EXPR);
     }
     return expr;
   }
@@ -128,7 +128,7 @@ public class VarExpressionListImpl extends MinimalEObjectImpl.Container implemen
     {
       case BeeLangPackage.VAR_EXPRESSION_LIST__EXPR:
         getExpr().clear();
-        getExpr().addAll((Collection<? extends VarExpression>)newValue);
+        getExpr().addAll((Collection<? extends Expression>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

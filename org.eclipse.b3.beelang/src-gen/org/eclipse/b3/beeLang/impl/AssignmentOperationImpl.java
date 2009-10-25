@@ -6,6 +6,7 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.AssignmentOperation;
+import org.eclipse.b3.beeLang.AssignmentOperator;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
 
@@ -52,7 +53,7 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * @generated
    * @ordered
    */
-  protected static final String OP_EDEFAULT = null;
+  protected static final AssignmentOperator OP_EDEFAULT = AssignmentOperator.SET;
 
   /**
    * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
@@ -62,7 +63,7 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * @generated
    * @ordered
    */
-  protected String op = OP_EDEFAULT;
+  protected AssignmentOperator op = OP_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
@@ -148,7 +149,7 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getOp()
+  public AssignmentOperator getOp()
   {
     return op;
   }
@@ -158,10 +159,10 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setOp(String newOp)
+  public void setOp(AssignmentOperator newOp)
   {
-    String oldOp = op;
-    op = newOp;
+    AssignmentOperator oldOp = op;
+    op = newOp == null ? OP_EDEFAULT : newOp;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ASSIGNMENT_OPERATION__OP, oldOp, op));
   }
@@ -266,7 +267,7 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
         setLeft((Expression)newValue);
         return;
       case BeeLangPackage.ASSIGNMENT_OPERATION__OP:
-        setOp((String)newValue);
+        setOp((AssignmentOperator)newValue);
         return;
       case BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT:
         setRight((Expression)newValue);
@@ -311,7 +312,7 @@ public class AssignmentOperationImpl extends ExpressionImpl implements Assignmen
       case BeeLangPackage.ASSIGNMENT_OPERATION__LEFT:
         return left != null;
       case BeeLangPackage.ASSIGNMENT_OPERATION__OP:
-        return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
+        return op != OP_EDEFAULT;
       case BeeLangPackage.ASSIGNMENT_OPERATION__RIGHT:
         return right != null;
     }

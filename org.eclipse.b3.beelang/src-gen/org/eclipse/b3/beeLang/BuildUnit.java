@@ -21,14 +21,14 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getImplements <em>Implements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getPropertyStatements <em>Property Statements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getProvidedCapability <em>Provided Capability</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getCompoundPropertyOperation <em>Compound Property Operation</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getProvidedCapabilities <em>Provided Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRequiredCapabilities <em>Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getMetaRequiredCapabilities <em>Meta Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getAdvice <em>Advice</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getSynchronize <em>Synchronize</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getSynchronizations <em>Synchronizations</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getParts <em>Parts</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRepositoryConfig <em>Repository Config</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
  * </ul>
  * </p>
  *
@@ -94,30 +94,30 @@ public interface BuildUnit extends EObject
   void setName(String value);
 
   /**
-   * Returns the value of the '<em><b>Version</b></em>' attribute.
+   * Returns the value of the '<em><b>Version</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Version</em>' attribute isn't clear,
+   * If the meaning of the '<em>Version</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Version</em>' attribute.
-   * @see #setVersion(String)
+   * @return the value of the '<em>Version</em>' containment reference.
+   * @see #setVersion(Version)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Version()
-   * @model
+   * @model containment="true"
    * @generated
    */
-  String getVersion();
+  Version getVersion();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.BuildUnit#getVersion <em>Version</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.BuildUnit#getVersion <em>Version</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Version</em>' attribute.
+   * @param value the new value of the '<em>Version</em>' containment reference.
    * @see #getVersion()
    * @generated
    */
-  void setVersion(String value);
+  void setVersion(Version value);
 
   /**
    * Returns the value of the '<em><b>Implements</b></em>' attribute list.
@@ -136,36 +136,36 @@ public interface BuildUnit extends EObject
   EList<String> getImplements();
 
   /**
-   * Returns the value of the '<em><b>Property Statements</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyStatements}.
+   * Returns the value of the '<em><b>Compound Property Operation</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.NamedProperties}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Property Statements</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Compound Property Operation</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Property Statements</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_PropertyStatements()
+   * @return the value of the '<em>Compound Property Operation</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_CompoundPropertyOperation()
    * @model containment="true"
    * @generated
    */
-  EList<PropertyStatements> getPropertyStatements();
+  EList<NamedProperties> getCompoundPropertyOperation();
 
   /**
-   * Returns the value of the '<em><b>Provided Capability</b></em>' containment reference list.
+   * Returns the value of the '<em><b>Provided Capabilities</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.b3.beeLang.ProvidedCapability}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Provided Capability</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Provided Capabilities</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Provided Capability</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_ProvidedCapability()
+   * @return the value of the '<em>Provided Capabilities</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_ProvidedCapabilities()
    * @model containment="true"
    * @generated
    */
-  EList<ProvidedCapability> getProvidedCapability();
+  EList<ProvidedCapability> getProvidedCapabilities();
 
   /**
    * Returns the value of the '<em><b>Required Capabilities</b></em>' containment reference list.
@@ -216,20 +216,20 @@ public interface BuildUnit extends EObject
   EList<NamedAdvice> getAdvice();
 
   /**
-   * Returns the value of the '<em><b>Synchronize</b></em>' containment reference list.
+   * Returns the value of the '<em><b>Synchronizations</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.b3.beeLang.Synchronization}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Synchronize</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Synchronizations</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Synchronize</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Synchronize()
+   * @return the value of the '<em>Synchronizations</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Synchronizations()
    * @model containment="true"
    * @generated
    */
-  EList<Synchronization> getSynchronize();
+  EList<Synchronization> getSynchronizations();
 
   /**
    * Returns the value of the '<em><b>Parts</b></em>' containment reference list.
@@ -248,19 +248,19 @@ public interface BuildUnit extends EObject
   EList<Part> getParts();
 
   /**
-   * Returns the value of the '<em><b>Repository Config</b></em>' containment reference list.
+   * Returns the value of the '<em><b>Repository Configurations</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.b3.beeLang.RepositoryConfiguration}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Repository Config</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Repository Configurations</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Repository Config</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_RepositoryConfig()
+   * @return the value of the '<em>Repository Configurations</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_RepositoryConfigurations()
    * @model containment="true"
    * @generated
    */
-  EList<RepositoryConfiguration> getRepositoryConfig();
+  EList<RepositoryConfiguration> getRepositoryConfigurations();
 
 } // BuildUnit

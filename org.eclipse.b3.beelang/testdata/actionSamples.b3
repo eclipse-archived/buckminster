@@ -1,5 +1,9 @@
 
 unit actionSamples {
+	// equivalent to a group part
+	a {
+		group { a/b/1.0;}
+	}
 
 	// equivalent to a group part
 	a {
@@ -29,6 +33,30 @@ unit actionSamples {
 		group{ a/b/1.0;}
 		return Paths.exclude(group,~/org\.myorg\..*/g);
 	}
+	// Filtering the group's definition
+	e {
+		group{ 
+			when(thePopeHasAFunnyHat) a/b/1.0;
+			when(dollySleepsOnHerTummy) {
+				a/c/2; a/c3;
+				a/d/2; a/d3;
+				};
+			}
+		return Paths.exclude(group,~/org\.myorg\..*/g);
+	}
+	// Filtering the group's definition
+	e {
+		layout{ 
+			when(thePopeHasAFunnyHat) a;
+			when(thePopeHasAFunnyHat) b;
+			
+			when(dollySleepsOnHerTummy) {
+				a;
+				b;
+				}
+			}
+		return Paths.exclude(group,~/org\.myorg\..*/g);
+	}
 	// Call external builder
 	f {
 		group{ a/b/1.0;}
@@ -49,6 +77,14 @@ unit actionSamples {
 			}
 			
 		return CompileActor(group, layout, strategy);
+	}
+	// Call external builder
+	f {
+		advice { a:*[apa==true]:c = 10; }
+		group{ a/b/1.0;}
+		layout { bin [ a, b, c ]; }
+		
+		return CompileActor(group, layout);
 	}
 
 }

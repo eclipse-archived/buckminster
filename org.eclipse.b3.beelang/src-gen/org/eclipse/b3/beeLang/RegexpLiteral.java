@@ -22,7 +22,7 @@ package org.eclipse.b3.beeLang;
  * @model
  * @generated
  */
-public interface RegexpLiteral extends Literal
+public interface RegexpLiteral extends Expression
 {
   /**
    * Returns the value of the '<em><b>Val</b></em>' attribute.

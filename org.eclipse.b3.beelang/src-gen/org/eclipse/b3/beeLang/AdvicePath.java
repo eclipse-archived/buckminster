@@ -17,8 +17,8 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.AdvicePath#getPathElements <em>Path Elements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.AdvicePath#getPathElement <em>Path Element</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.AdvicePath#isAbsolute <em>Absolute</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.AdvicePath#getSelectors <em>Selectors</em>}</li>
  * </ul>
  * </p>
  *
@@ -29,35 +29,45 @@ import org.eclipse.emf.ecore.EObject;
 public interface AdvicePath extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Path Elements</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.AdvicePathElement}.
+   * Returns the value of the '<em><b>Absolute</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Path Elements</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Absolute</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Path Elements</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAdvicePath_PathElements()
-   * @model containment="true"
+   * @return the value of the '<em>Absolute</em>' attribute.
+   * @see #setAbsolute(boolean)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAdvicePath_Absolute()
+   * @model
    * @generated
    */
-  EList<AdvicePathElement> getPathElements();
+  boolean isAbsolute();
 
   /**
-   * Returns the value of the '<em><b>Path Element</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.AdvicePathElement}.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.AdvicePath#isAbsolute <em>Absolute</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Absolute</em>' attribute.
+   * @see #isAbsolute()
+   * @generated
+   */
+  void setAbsolute(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Selectors</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Selector}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Path Element</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Selectors</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Path Element</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAdvicePath_PathElement()
+   * @return the value of the '<em>Selectors</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAdvicePath_Selectors()
    * @model containment="true"
    * @generated
    */
-  EList<AdvicePathElement> getPathElement();
+  EList<Selector> getSelectors();
 
 } // AdvicePath

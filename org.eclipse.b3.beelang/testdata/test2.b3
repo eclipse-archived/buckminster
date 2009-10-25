@@ -317,12 +317,8 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		"a1" [apple.txt, "ban ana.txt"];
 		"fee/apa.boo" [ "a/b/c.d", a.b.c.d, "o/b/d" ];
 		
-		// expr is used to write an expression that returns something that
-		// can be included in the list
-		expr (Path(a));
-		expr (Part(a).paths.sliceAndDice());
 		when(thePopeHasAFunnyHat) 
-			expr (someBasePath + "/subpath" ["/Users/fred/buildstuff"]); 
+			"/subpath" ["/Users/fred/buildstuff"]; 
 			
 		annotations { $monkey.food="banana"; $a=null; $b=null;}
 		}
@@ -405,46 +401,9 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		when (false) a/a#b;
 		// a non included and filtered reference to a/a#b
 		hidden when (true) a/a#b;
-		
-		// Advanced examples
-		
-		// Use an utility to filter out unwanted things
-		//
-		expr (Part(a).include("^plugins/org\\.myorg\\..*"));
-		
-		// if additional properties definitions/redefinitions are required to evaluate 
-		// the expression, these can be set in a with clause (either directly on the expr statement,
-		// or on an enclousing compound statement that includes the expr statement (alone or mixed with
-		// requirements).
-		//
-		 expr (Part(aVariableThatMustBeDefined)) with { properties { $aVariableThatMustBeDefined = "a/b";}};
-		
-		// cool example - if part is not up to date, do not include it (to avoid a lengthy compile if the
-		// result has not been built because other parts cause it to be built.
-		//
-		// NOTE: the parts must be stated declarativly in order to be part of the dependency calculation.
-		// Although it is possible to reference any part at any time using expressions, it may not be available unless
-		// having been resolved and evaluated first.
-		// The example above makes use of this fact - had it included the dependency, it would have been evaluated
-		// and thus automatically been brought up to date.
-		//
-		when(Part(a).isUpToDate()) {
-			expr (Part(a)); 
-			} with {properties {$a="sometype/somename/1.0"; }};
-			
-		// even cooler example - include the intersection of two results with all "org.myorg.*" 
-		// files stripped from the result. (Subject to the used methods being available on Part naturally :))
-		hidden a = a/b/1.0#x;
-		hidden b = c/d/2.0#x;
-		hidden c = expr (Part.intersection(a, b));
-		expr (Part(c).excludePaths("^org\\.myorg\\.*"));
-		
-		// the last line could have been written: (and the assignment to c, could have been skipped).
-		expr (Part.intersection(a, b).excludePaths("^org\\.myorg\\.*"));
-		
+					
 		// or, the shortest form
 		hidden a = { a/b/1.0#x; c/d/2.0#x;};
-		expr (Part.intersection(a).excludePaths("^org\\.myorg\\.*"));
 		}
 		return group;
 	} 
@@ -541,13 +500,10 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 			when (false) a/a#b;
 			hidden when (true) a/a#b;
 			}
-		when(simpleA) layout a
-			postcondition { assert 2 > 1, "Integer logic is flawed after the result was produced!!!"; }
-		{ a; }
-		when(advancedA) layout a
-			postcondition { assert 2 > 1, "Integer logic is flawed after the result was produced!!!"; }
-		{ a/a; a/b;
-		  annotations { $revision="r101010"; } 
+		layout postcondition { assert 2 > 1, "Integer logic is flawed after the result was produced!!!"; }
+		{	when(simpleA) a;
+			when(advancedA) a/a; a/b;
+			annotations { $revision="r101010"; } 
 		}
 		return SomeActor.doSomwthing(properties, group, layout);
 	}
@@ -578,20 +534,19 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		
 		properties{ $docAndSourceRoot = "outputFolder";}
 		group { a; } 
-		layout a { b.txt; }
-		layout b { a.txt; }
+		layout{ b.txt; }
 		SomeActor.doSomething(group, layout,properties);
 	}
 	test4 provides a/b/"1"
 	{
 		// Pick different layout based on target platform
 		group { a; } 
-		when($target.platform =="win32") 
-			layout a { b.exe; }
-		when($target.platform =="macosx") 
-			layout a { b.app; }
-		when(!($target.platform =="macosx" || $target.platform=="win32")) 
-			layout a { b; }
+		
+		layout{ 
+			when($target.platform =="win32")  b.exe; 
+			when($target.platform =="macosx") b.app;
+			when(!($target.platform =="macosx" || $target.platform=="win32")) b;
+			}
 		return SomeActor.doSomething(group, layout, properties);
 	}
 
@@ -637,7 +592,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		 	location="http:://www.somewhere.com";
 		 	apa = 10;
 		 	booleanFlag = 10;
-		 	options/advanced[featureA ~="[a-z]*"]/?[a>23]/b/?? {
+		 	options:advanced[featureA ~= "[a-z]*" ]:*[a>23]:b:** {
 		 		option1 = 10;
 		 		option2 = 20;
 		 		option3 = "hello";
@@ -645,11 +600,11 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		 	};
 		 }
 	advice import_This_Advice {
-	    /requests[name~="org.myorg.*"]/options {
+	    :requests[name~= ~/org.myorg\..*/g]:options {
 	        source=true;
 	        mutable=true;
 	        };
-	    /resolutions[name~="org.eclipse.*"]/options {
+	    :resolutions[name~= ~/org.eclipse\..*/g]:options {
 	        location = "platform:/plugin/";
 	        };
 	}	 

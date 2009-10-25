@@ -36,12 +36,12 @@ public interface SwitchStatement extends Statement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Switch Expr</em>' containment reference.
-   * @see #setSwitchExpr(VarExpression)
+   * @see #setSwitchExpr(Expression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getSwitchStatement_SwitchExpr()
    * @model containment="true"
    * @generated
    */
-  VarExpression getSwitchExpr();
+  Expression getSwitchExpr();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.SwitchStatement#getSwitchExpr <em>Switch Expr</em>}' containment reference.
@@ -51,7 +51,7 @@ public interface SwitchStatement extends Statement
    * @see #getSwitchExpr()
    * @generated
    */
-  void setSwitchExpr(VarExpression value);
+  void setSwitchExpr(Expression value);
 
   /**
    * Returns the value of the '<em><b>Case</b></em>' containment reference list.

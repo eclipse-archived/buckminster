@@ -107,29 +107,29 @@ public interface ProvidedCapability extends EObject
   void setName(String value);
 
   /**
-   * Returns the value of the '<em><b>Version</b></em>' attribute.
+   * Returns the value of the '<em><b>Version</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Version</em>' attribute isn't clear,
+   * If the meaning of the '<em>Version</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Version</em>' attribute.
-   * @see #setVersion(String)
+   * @return the value of the '<em>Version</em>' containment reference.
+   * @see #setVersion(Version)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getProvidedCapability_Version()
-   * @model
+   * @model containment="true"
    * @generated
    */
-  String getVersion();
+  Version getVersion();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.ProvidedCapability#getVersion <em>Version</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.ProvidedCapability#getVersion <em>Version</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Version</em>' attribute.
+   * @param value the new value of the '<em>Version</em>' containment reference.
    * @see #getVersion()
    * @generated
    */
-  void setVersion(String value);
+  void setVersion(Version value);
 
 } // ProvidedCapability

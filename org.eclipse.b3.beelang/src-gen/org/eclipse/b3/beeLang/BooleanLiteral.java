@@ -22,7 +22,7 @@ package org.eclipse.b3.beeLang;
  * @model
  * @generated
  */
-public interface BooleanLiteral extends ValueLiteral
+public interface BooleanLiteral extends Expression
 {
   /**
    * Returns the value of the '<em><b>Val</b></em>' attribute.

@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class LiteralArrayImpl extends LiteralImpl implements LiteralArray
+public class LiteralArrayImpl extends ExpressionImpl implements LiteralArray
 {
   /**
    * The cached value of the '{@link #getElement() <em>Element</em>}' containment reference list.

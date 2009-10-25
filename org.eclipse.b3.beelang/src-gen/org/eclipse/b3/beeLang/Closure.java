@@ -5,8 +5,6 @@
  */
 package org.eclipse.b3.beeLang;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -17,8 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.Closure#getUnsetProperties <em>Unset Properties</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Closure#getSetProperties <em>Set Properties</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Closure#getProperties <em>Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.Closure#getAdvice <em>Advice</em>}</li>
  * </ul>
  * </p>
@@ -30,51 +27,55 @@ import org.eclipse.emf.ecore.EObject;
 public interface Closure extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Unset Properties</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
+   * Returns the value of the '<em><b>Properties</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Unset Properties</em>' attribute list isn't clear,
+   * If the meaning of the '<em>Properties</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Unset Properties</em>' attribute list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getClosure_UnsetProperties()
-   * @model unique="false"
-   * @generated
-   */
-  EList<String> getUnsetProperties();
-
-  /**
-   * Returns the value of the '<em><b>Set Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyStatement}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Set Properties</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Set Properties</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getClosure_SetProperties()
+   * @return the value of the '<em>Properties</em>' containment reference.
+   * @see #setProperties(CompoundPropertyOperation)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getClosure_Properties()
    * @model containment="true"
    * @generated
    */
-  EList<PropertyStatement> getSetProperties();
+  CompoundPropertyOperation getProperties();
 
   /**
-   * Returns the value of the '<em><b>Advice</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.CompoundAdvice}.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Closure#getProperties <em>Properties</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Properties</em>' containment reference.
+   * @see #getProperties()
+   * @generated
+   */
+  void setProperties(CompoundPropertyOperation value);
+
+  /**
+   * Returns the value of the '<em><b>Advice</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Advice</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Advice</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Advice</em>' containment reference list.
+   * @return the value of the '<em>Advice</em>' containment reference.
+   * @see #setAdvice(CompoundAdvice)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getClosure_Advice()
    * @model containment="true"
    * @generated
    */
-  EList<CompoundAdvice> getAdvice();
+  CompoundAdvice getAdvice();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Closure#getAdvice <em>Advice</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Advice</em>' containment reference.
+   * @see #getAdvice()
+   * @generated
+   */
+  void setAdvice(CompoundAdvice value);
 
 } // Closure

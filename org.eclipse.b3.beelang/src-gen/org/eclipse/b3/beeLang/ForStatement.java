@@ -5,6 +5,7 @@
  */
 package org.eclipse.b3.beeLang;
 
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,9 +16,9 @@ package org.eclipse.b3.beeLang;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getInit <em>Init</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.ForStatement#isRegular <em>Regular</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getCond <em>Cond</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getIterate <em>Iterate</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.ForStatement#isInLoop <em>In Loop</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.ForStatement#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
@@ -55,6 +56,32 @@ public interface ForStatement extends Statement
   void setInit(VarExpressionList value);
 
   /**
+   * Returns the value of the '<em><b>Regular</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Regular</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Regular</em>' attribute.
+   * @see #setRegular(boolean)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getForStatement_Regular()
+   * @model
+   * @generated
+   */
+  boolean isRegular();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.ForStatement#isRegular <em>Regular</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Regular</em>' attribute.
+   * @see #isRegular()
+   * @generated
+   */
+  void setRegular(boolean value);
+
+  /**
    * Returns the value of the '<em><b>Cond</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
@@ -89,12 +116,12 @@ public interface ForStatement extends Statement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Iterate</em>' containment reference.
-   * @see #setIterate(Expression)
+   * @see #setIterate(EObject)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getForStatement_Iterate()
    * @model containment="true"
    * @generated
    */
-  Expression getIterate();
+  EObject getIterate();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.ForStatement#getIterate <em>Iterate</em>}' containment reference.
@@ -104,33 +131,7 @@ public interface ForStatement extends Statement
    * @see #getIterate()
    * @generated
    */
-  void setIterate(Expression value);
-
-  /**
-   * Returns the value of the '<em><b>In Loop</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>In Loop</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>In Loop</em>' attribute.
-   * @see #setInLoop(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getForStatement_InLoop()
-   * @model
-   * @generated
-   */
-  boolean isInLoop();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.ForStatement#isInLoop <em>In Loop</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>In Loop</em>' attribute.
-   * @see #isInLoop()
-   * @generated
-   */
-  void setInLoop(boolean value);
+  void setIterate(EObject value);
 
   /**
    * Returns the value of the '<em><b>Body</b></em>' containment reference.

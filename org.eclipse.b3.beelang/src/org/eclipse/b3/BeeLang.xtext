@@ -41,7 +41,7 @@ terminal ML_COMMENT : '/*' -> '*/' ;
 terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')? ;
 terminal WS : (' '|'\t'|'\r'|'\n')+ ;
 
-// TODO: Should return EInt, but uncerain if converter handles hex
+// TODO: Should return EInt, but std converter does not hand handles hex
 //
 terminal HEX : '0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+ ;
 
@@ -89,8 +89,8 @@ UnitName : EscapedQualifiedName;
 PartName : EscapedQualifiedName;
 
 enum Visibility 	: public | private ;
-enum AssertionScope : precondition | postcondition ;
 enum ExecutionMode 	: parallel | sequential ;
+
 
 // Version, and VersionRange
 // TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
@@ -99,9 +99,9 @@ enum ExecutionMode 	: parallel | sequential ;
 Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' |'+' | '=' | '*' | '<' | '>' | ':' | '?';
 AlfanumSym : (ID | INT |HEX|REAL) (Separator|ID|INT|HEX|REAL)* ;
 
-Version
-	: STRING  
-	| AlfanumSym
+Version returns Version
+	: original=STRING  
+	| original=AlfanumSym
 	;
 
 /*
@@ -109,9 +109,9 @@ Version
 ** escaped with " ". Omni
 ** version uses version strings with \[ when a range is presented/parsed in string format.
 */
-VersionRange
-	: ('[' | '(') Version (',' Version)? (']'|')')
-	| Version
+VersionRange returns VersionRange
+	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+	| min=Version
 	;
 
 /*
@@ -131,11 +131,11 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 		(	//-- PROPERTIES
 			// goes first, because they may be used in the other clauses.
 			//
-			  ('properties'  propertyStatements += NamedPropertyStatements)
+			  ('properties'  CompoundPropertyOperation += NamedPropertyStatements)
 		)*
 		( 	//-- PROVIDES
-			  ('provides' '{' (providedCapability += ProvidedCapability ';')+ '}')
-			| ('provides' providedCapability += ProvidedCapability ';')
+			  ('provides' '{' (providedCapabilities += ProvidedCapability ';')+ '}')
+			| ('provides' providedCapabilities += ProvidedCapability ';')
 			//-- REQUIRES & META REQUIRES
 			| ('requires' '{' (requiredCapabilities += RequiredCapability ';')+ '}')
 			| ('requires' requiredCapabilities += RequiredCapability ';')
@@ -144,12 +144,12 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			//--ADVICE
 			| ('advice' advice+=NamedAdvice )
 			//--SYNCHRONIZE
-			| ('sequential' '{' (synchronize += Synchronization )+  '}' )
-			| ('sequential' synchronize += Synchronization  )
+			| ('sequential' '{' (synchronizations += Synchronization )+  '}' )
+			| ('sequential' synchronizations += Synchronization  )
 			//--PARTS
 			| (parts += Part )			
 			//-- REPOSITORIES
-			| ('repositories' '{' (repositoryConfig+=RepositoryConfiguration)* '}' )
+			| ('repositories' '{' (repositoryConfigurations+=RepositoryConfiguration)* '}' )
 		)*
 	'}';
 	
@@ -159,35 +159,35 @@ ProvidedCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=Qu
 RequiredCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName ('/' range=VersionRange)?  ;
 
 // An optionally named sequence of property statements
-NamedPropertyStatements returns PropertyStatements
-	: (name = ID)? statements = PropertyStatements 
+NamedPropertyStatements returns NamedProperties
+	: (name = ID)? body = CompoundPropertyOperation 
 	;
 
-// Sequence of property statements	
-PropertyStatements returns PropertyStatement
-	:  '{' 
-		( ('when' filter=Filter)? 
-			  (statements += UnsetPropertyStatement 
-			| statements += PropertyStatement
-			| statements += PropertyStatements
-		) 
-		)* '}'
-	;
-	
-PropertyStatement returns PropertyStatement 
-	: ( (immutable ?= 'immutable')? key=PropertyName op=('='|'+='|'-='|'*='|'/=') value=PropertyExpression ';')
+// Sequence of possibly filtered property statements	
+CompoundPropertyOperation returns CompoundPropertyOperation
+	:  '{' (operations += PropertyOperation)* '}'
 	;
 
-UnsetPropertyStatement returns PropertyStatement
-	:  ('unset' unsetProperties += PropertyName ';' )
+// For model generation, to get supertype correct
+PropertyOperation 
+	: FilteredPropertyOperation 
+	| SetPropertyOperation 
+	| UnsetPropertyOperation 
+	| CompoundPropertyOperation
 	;
 
-// identical to nested properties statement, but used to get a separate data type
-AnnotationStatement returns PropertyStatement
-	: (('when' filter=Filter)? (immutable ?= 'immutable')? key=PropertyName op=('='|'+='|'-='|'*='|'/=') value=PropertyExpression ';')
+FilteredPropertyOperation returns FilteredPropertyOperation
+	: 'when' filter=Filter
+		body=(SetPropertyOperation | UnsetPropertyOperation | CompoundPropertyOperation) 
 	;
 
-PropertyExpression : Expression ; 
+SetPropertyOperation returns SetPropertyOperation
+	: ( (immutable ?= 'immutable')? key=PropertyName op=AssignmentOperator value=Expression ';')
+	;
+
+UnsetPropertyOperation returns UnsetPropertyOperation
+	: ('unset' key = PropertyName ';' )
+	;
 
 Synchronization 
 	: (partrefs += SynchronizedPart)(',' partrefs += SynchronizedPart)+ ';' // at least 2
@@ -198,34 +198,28 @@ SynchronizedPart
 	| PartName
 	;
 	
+/* PATH GROUP */
+PathGroup : paths+=PathVectorElement* ('annotations' annotations = CompoundPropertyOperation)? ;
 
-// NOT NEEDED - action can specify a layout and return it	
-//Artifacts returns ArtifactsPart 
-//	: (visibility = Visibility)? 'artifacts' name=PartName
-//		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
-//		(asserts += PostConditionAssert)?
-//		'{' (paths += PathGroup)* '}'
-//	;
+PathVectorElement returns PathVectorElement
+	: FilteredPathVector
+	| BasePathVector
+	| UnbasedPathVector
+	;
 	
-/* PATH GROUP
-* TODO: Allow basePath without paths?
-* TODO: generated structure is wrong . should be in sequence, basepath and expr are out of band !!
-*/
-PathGroup 
-	: ('when' filter=Filter)? 
-		( paths+=PathExpression 
-		    ( ((',' paths+=PathExpression)* ) 
-		    | (firstIsBase ?='[' paths+=PathExpression (',' paths+=PathExpression)* ']')
-		    ) ';'
-//		| basePath=PathExpression '[' paths+=PathExpression (',' paths+=PathExpression)* ']' ';'
-//		| ('expr' pathExpressions += Expression ';' ) 
-		| ('annotations' '{' ('unset' unsetProperties += PropertyName ';' |  setProperties += AnnotationStatement)+ '}' )
-		)
+FilteredPathVector returns FilteredPathVector 
+	: 'when' filter=Filter body=(BasePathVector|UnbasedPathVector|CompoundPathVector) 
 	;
 
-PathExpression : Path | ExprStatement ;
+BasePathVector returns PathVector
+	: basePath=Path '[' ( paths+=Path (',' paths+=Path)*)? ']' ';'
+	;
 
-ExprStatement : 'expr'  '(' expression = Expression ')'  ;
+UnbasedPathVector returns PathVector
+	: paths+=Path (',' paths+=Path)* ';'
+	;
+	
+CompoundPathVector returns CompoundPathVector: '{' body+=PathVectorElement* '}' ;
 
 /*
 * A path can be written without quotes if it consists of safe chars 
@@ -237,26 +231,14 @@ Path hidden()
 	| ('/')? QualifiedName ('/' QualifiedName)* ('/')? // HIDDENBUG
 	;
 
-//Group returns GroupPart 
-//	: (visibility = Visibility)?
-//	  (executionMode = ExecutionMode)?
-//	  'group' name=PartName
-//		( 'provides'  providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)* )?
-//		(asserts += PreConditionAssert)?
-//		(asserts += PostConditionAssert)?
-//		'{' ( prerequisites += Prerequisite )*
-//		'}'
-//	;
-
 Prerequisite
 	: ((surpressed ?= 'hidden')? ('when' filter=Filter )? (alias=ID '=')? ((partReference=PrerequisiteEntry) 
-	 (closure = Closure)?) /*| (partReference=ExprStatement) */) ';'
+	 (closure = Closure)?)) ';'
 	;
 	
 Closure : 'with' '{'
-			( ('properties' '{' ('unset' unsetProperties += PropertyName ';' |  setProperties += PropertyStatement)+ '}' )
-			| ( 'advice' advice += CompoundAdvice)
-			)*
+			('properties' properties = CompoundPropertyOperation )? 
+			( 'advice' advice = CompoundAdvice)?
 		'}'
 		;
 		
@@ -264,7 +246,6 @@ PrerequisiteEntry
 	: PartInSelf
 	| CapabilityReferencedPart
 	| CompoundReferences
-	| ExprStatement
 	;
 	
 PartInSelf	: partName=PartName  // i.e. self#partName
@@ -280,34 +261,27 @@ CompoundReferences
 	;
 Part returns Part: (visibility = Visibility)?
       (executionMode = ExecutionMode)?
-	 /*'part'*/ PartName
-//	 'actor' QualifiedName '(' (actorParameters += Parameter (',' actorParameters += Parameter)*)? ')'
+	 PartName
 		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
-	(asserts += PreConditionAssert)?
-	(asserts += PostConditionAssert)?
+	(preCondition = PreCondition)?
+	(postCondition = PostCondition)?
 	 '{'
-		('properties' properties += PropertyStatements)?
+		('properties' properties = CompoundPropertyOperation)?
 	     ( advice = Advice )?
-	     ( resultGroup = ActionInputGroup )? 
-	     ( layout += Layout )*
-	     statements = Statements
+	     ( group = Group )? 
+	     ( layout = Layout )?
+	     (statements = Statements)?
 	 '}'
 	;
 
 Parameter : val = Expression ;
 	
 Layout returns Layout
-	: ('when' filter=Filter)?  'layout' (name=QualifiedName )? 
-//		(asserts += PreConditionAssert)? // precondition does not make sense
-		(asserts += PostConditionAssert)?
-	
-		'{' (paths += PathGroup)* '}' 
+	: 'layout' (postCondition = PostCondition)? '{' (body = PathGroup)? '}' 
 	;
 	
-ActionInputGroup
-	: 'group'
-		(asserts += PreConditionAssert)?
-		(asserts += PostConditionAssert)?	 
+Group
+	: 'group' (preCondition = PreCondition)? (postCondition = PostCondition)?	 
 		'{' (prerequisites += Prerequisite)* '}'
 	;
 
@@ -335,32 +309,43 @@ Advice : 'advice' CompoundAdvice ;
 
 CompoundAdvice : '{' (advice += AdviceStatement ';')* '}' ;
 
-AdviceStatement :  path = AdvicePath (('=' value=Expression) | advice=CompoundAdvice) ;
-		
-AdvicePath
-	: (pathElements+=AdvicePathSeparator)? pathElements+=AdvicePathElement 
-		(pathElements+=AdvicePathSeparator pathElement+=AdvicePathElement)* 
-	;
+AdviceStatement :  path = AdvicePath ((op=AssignmentOperator value=Expression) | advice=CompoundAdvice) ;
 
-AdvicePathSeparator returns AdvicePathElement
-	: AdvicePathChildren
-	;
-AdvicePathChildren 
-	: {AdvicePathChildren} '/'
-	;
-
-AdvicePathElement
-	: node=(QualifiedName | WildcardNode | '.') ('[' predicate=Expression ']')? 
-	| node='..'
-	;
+// a | ** | [foo==bar] | .. | a 
+// a:**:[foo==bar]:..:a
 	
-WildcardNode : '?' ('?')? ;
+AdvicePath
+	: (absolute?=':')? selectors+=Selector (':' selectors+=Selector)* 
+	;
+
+Selector returns Selector
+	: DiscriminatingSelector | MultiNodeSelector | NodeSelector 
+	;
+MultiNodeSelector returns Selector
+	: NameSelector | ThisSelector | ChildrenSelector | AncestorSelector | RegexpSelector
+	;
+DiscriminatingSelector returns Selector
+	: selector=MultiNodeSelector '[' predicate=Expression ']' 
+	;
+NodeSelector returns Selector
+	: ParentSelector 
+	;
+
+	 
+NameSelector returns NameSelector: name=QualifiedName ;
+ThisSelector returns ThisSelector: {ThisSelector} '.' ;
+ParentSelector returns ParentSelector: {ParentSelector} '..' ;
+ChildrenSelector returns ChildrenSelector: {ChildrenSelector} '*' ;
+AncestorSelector returns AncestorSelector: {AncestorSelector} '**' ;
+RegexpSelector returns RegexpSelector: {RegexpSelector} pattern=REGEX ;
+
+WildcardNode : '*' ('*')? ;
 
 Filter : '(' predicate = Expression ')' ;
 
 /* ASSERTS */
-PreConditionAssert : scope="precondition" '{' (asserts += AssertionExpression)* '}' ;
-PostConditionAssert : scope="postcondition" '{' (asserts += AssertionExpression)* '}' ;
+PreCondition : "precondition" '{' (asserts += AssertionExpression)* '}' ;
+PostCondition : "postcondition" '{' (asserts += AssertionExpression)* '}' ;
 
 AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';' 
 ;
@@ -403,8 +388,8 @@ Case: "case" condition=ValueLiteral ":" (statements=Statements)?;
 // if inLoop == true. Needs validation that RHS is a collection item if inLoop == true.
 //
 ForStatement : {ForStatement} "for" '(' (init=VarExpressionList)? 
-	( (';' (cond=Expression)? ';' (iterate=ExpressionList)?) 
-	| (inLoop ?= "in" iterate=Expression )
+	( (regular ?= ';' (cond=Expression)? ';' (iterate=ExpressionList)?) 
+	| ("in" iterate=Expression )
 	)
 	')'  
 	body = Statement
@@ -425,7 +410,7 @@ IfStatement
 	: "if" '(' cond = Expression ')' then = Statement ("else" else= Statement)?
 	;
 	
-LabelStatement : '@' name=ID ":" statement = Statement ;
+LabelStatement :  name=ID ":" statement = Statement ;
 
 ThrowStatement: "throw" expr=Expression ";" ;
 
@@ -440,37 +425,37 @@ FinallyBlock: "finally" finallyBlock = CompoundStatement ;
 WithStatement : "with" '(' expr=Expression ')' statement = Statement;
 		
 /* EXPRESSIONS */
-SyntaxElement : Expression ;
+enum AssignmentOperator 
+	: SET = '=' 		| SET_PLUS ='+='	| SET_MINUS ='-='		| SET_MUL='*='	| SET_DIV='/='
+	| SET_MOD= "%=" 	| SET_AND = "&=" 	| SET_XOR = "^=" 		| SET_OR= "|=" 
+	| SET_LSHIFT="<<=" 	| SET_RSHIFT=">>=" 	| SET_RSHIFT_0= ">>>=" 
+	;
+	
+enum RelationalOperator 
+	: EQ_MATCHES="~=" 	| EQ="==" 		| EQ_IDENTITY="==="	| EQ_NOT="!=" 	| EQ_NOT_IDENTITY="!=="
+	| EQ_GTEQ=">=" 		| EQ_LEEQ="<=" 	| EQ_GT=">" 		| EQ_LT= "<"
+	| EQ_INSTANCEOF="instanceof" 
+	;
 
 VarExpressionList : expr +=VarExpression ( ',' expr+=VarExpression)* ;
-ExpressionList returns Expression: expr +=Expression ( ',' expr += Expression)* ;
+ExpressionList : expr +=Expression ( ',' expr += Expression)* ;
 
 // Assignment is optional i JS
 // Also makes it possible to use VarExpression in a for(var a in xxx) loop
 //
-VarExpression : Expression | 'var' name=ID ('=' value=Expression)? ;
+VarExpression returns Expression: Expression | {VarExpression}'var' name=ID ('=' value=Expression)? ;
 
-Expression : ValueExpression ;
 
-ValueExpression 
-	: value=AssignmentExpression
-	;
+//Expression returns Expression: value = AssignmentExpression ;
+Expression returns Expression: AssignmentExpression ;
 
-//TODO: This is left associative, should be right...
-//AssignmentExpression returns Expression:
-//	 ChainExpression ({AssignmentOperation.left+=current} op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" )
-//		right+=ChainExpression)*
-//	;
 AssignmentExpression returns Expression:
-	 ChainExpression ({AssignmentOperation.left=current} 
-	 	op=("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>="| ">>>=" | "&=" | "^=" | "|=")
-		right=AssignmentExpression)?
+	 IfExpression ({AssignmentOperation.left=current} op=AssignmentOperator right=AssignmentExpression)?
 	;
 
-
-ChainExpression returns Expression:
-	ChainedExpression //({ChainExpression.first=current} ',' next=ChainedExpression)*
-	;
+//ChainExpression returns Expression:
+//	ChainedExpression //({ChainExpression.first=current} ',' next=ChainedExpression)*
+//	;
 	
 ChainedExpression returns Expression:
 	IfExpression;
@@ -485,11 +470,13 @@ AndExpression returns Expression:
 	BitwiseExpression ({BooleanOperation.left=current} operator="&&" right=BitwiseExpression)*;
 
 BitwiseExpression returns Expression :
-	RelationalExpression ({OperationCall.left=current} operator=("&" | "^" | "|") right=RelationalExpression)*;
+	RelationalExpression ({OperationCall.params+=current} name=("&" | "^" | "|") params+=RelationalExpression)*;
 	
 RelationalExpression returns Expression:
-	AdditiveExpression ({BooleanOperation.left=current} 
-		operator=("~=" | "==" | "==="| "!=" | "!=="| ">=" | "<=" | ">" | "<" | "==." | "instanceof") right=AdditiveExpression)*;
+	ShiftExpression ({RelationalOperation.left=current} operator=RelationalOperator right=ShiftExpression)*;
+
+ShiftExpression returns Expression:
+	AdditiveExpression ({OperationCall.params+=current} name=("<<" | ">>" | ">>>") params+=AdditiveExpression)*;
 	
 AdditiveExpression returns Expression:
 	MultiplicativeExpression ({OperationCall.params+=current} name=("+" | "-") params+=MultiplicativeExpression)*;
@@ -497,15 +484,16 @@ AdditiveExpression returns Expression:
 MultiplicativeExpression returns Expression:
 	UnaryOrInfixExpression ({OperationCall.params+=current} name=("*" | "/" | "%") params+=UnaryOrInfixExpression)*;
 
-	
-UnaryOrInfixExpression returns Expression:
-	UnaryExpression | PostopExpression; 
+UnaryOrInfixExpression returns Expression
+	: UnaryExpression 
+	| PostopExpression
+	; 
 
-UnaryExpression returns OperationCall:
-	name=("!" | "-" | "++" | "--" | "typeof" | "delete" | "~") params+=PostopExpression;
+UnaryExpression :
+	 {UnaryOperation} name=("!" | "-" | "++" | "--" | "typeof" | "delete" | "~") params+=PostopExpression;
 
 PostopExpression returns Expression:
-	InfixExpression ({PostOpCall.target=current} name = ("--" | "++"))?
+	InfixExpression ({OperationCall.postTarget=current} name = ("--" | "++"))?
 	;
 
 	
@@ -532,9 +520,9 @@ PrimaryExpression returns Expression
 	| ParanthesizedExpression
 	;
 
-PropertyValue : name = PID;
-VariableValue : name = ID ;
-KeywordVariables : name = ("group" | "layout" | "properties") ;
+PropertyValue returns  Expression: {PropertyValue} name = PID;
+VariableValue returns  Expression: {VariableValue} name = ID ;
+KeywordVariables returns  Expression: {KeywordVariable} name = ("group" | "layout" | "properties") ;
 
 //FeatureCall:
 //	OperationCall
@@ -544,11 +532,11 @@ KeywordVariables : name = ("group" | "layout" | "properties") ;
 //	: name=(ID|PID) "(" (params+=Parameter ("," params+=Parameter)*)? ")" 
 //	;
 
-ConstructorCallExpression 
-	: 'new' class=QualifiedName '(' (params+=Parameter ("," params+=Parameter)*)? ")" 
+ConstructorCallExpression returns Expression
+	: {CreatorCall} name='new' target=QualifiedName '(' (params+=Parameter ("," params+=Parameter)*)? ")" 
 	;
 	
-Literal
+Literal returns Expression
 	: ValueLiteral
 	| RegexpLiteral
 	| LiteralArray
@@ -556,34 +544,38 @@ Literal
 	| LiteralFunction
 	;
 	
-LiteralArray : '[' (element += Expression (',' element += Expression)* )? ']' ;
-LiteralObject : '{' (features += Feature (',' features += Feature)* )? '}' ;
-LiteralFunction 
-	: "function" '(' (params += ID (',' params += ID)*) ')' 
+LiteralArray returns  Expression: {LiteralArray} '[' (element += Expression (',' element += Expression)* )? ']' ;
+LiteralObject returns  Expression: {LiteralObject} '{' (features += Feature (',' features += Feature)* )? '}' ;
+LiteralFunction returns Expression
+	: {LiteralFunction} "function" '(' (parameters += ID (',' parameters += ID)*) ')' 
 		'{' statements = Statements '}'
 	;
 
-Feature : name = (ID|PID|STRING) ':' value= Expression ;
+Feature returns Feature: {Feature} name = (ID|PID|STRING) ':' value= Expression ;
 
-ValueLiteral
+ValueLiteral returns Expression
 	: BooleanLiteral 
 	| IntegerLiteral 
-	| NullLiteral | VoidLiteral // null == defined but null, void is undefined
+	| NullLiteral 
+	| UndefinedLiteral
 	| StringLiteral
 	| RealLiteral
+	| QueryLiteral
 	;
 	
-BooleanLiteral	: val = ("true" | "false");
-IntegerLiteral	: val = INT|HEX;
-NullLiteral		: val = "null";
-VoidLiteral 	: val = "void";
-StringLiteral	: val = STRING;
-RealLiteral		: val = REAL;
-RegexpLiteral	: val = REGEX;
-
+BooleanLiteral returns  Expression: {BooleanLiteral} val=("true" | "false");
+// TODO: Hex is a string until an int converter is written for it
+IntegerLiteral returns  Expression: {IntegerLiteral} (ival = INT)|(sval=HEX);
+NullLiteral	returns  Expression: {NullLiteral} val="null";
+// Not a keyword in JS, but prevention of reassignment is wanted.
+UndefinedLiteral returns  Expression: {UndefinedLiteral} val="undefined";
+StringLiteral returns  Expression: {StringLiteral} val = STRING;
+RealLiteral	returns  Expression: {RealLiteral} val = REAL;
+RegexpLiteral returns Expression: {RegexpLiteral} val = REGEX;
+QueryLiteral returns Expression: {QueryLiteral} '~{' val = AdvicePath '}' ;
 	
 ParanthesizedExpression returns Expression
-	: "(" Expression ")"
+	:  "(" Expression ")"
 	;	
 
 

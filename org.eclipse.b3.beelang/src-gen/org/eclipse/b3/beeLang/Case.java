@@ -35,12 +35,12 @@ public interface Case extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Condition</em>' containment reference.
-   * @see #setCondition(ValueLiteral)
+   * @see #setCondition(Expression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getCase_Condition()
    * @model containment="true"
    * @generated
    */
-  ValueLiteral getCondition();
+  Expression getCondition();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.Case#getCondition <em>Condition</em>}' containment reference.
@@ -50,7 +50,7 @@ public interface Case extends EObject
    * @see #getCondition()
    * @generated
    */
-  void setCondition(ValueLiteral value);
+  void setCondition(Expression value);
 
   /**
    * Returns the value of the '<em><b>Statements</b></em>' containment reference.

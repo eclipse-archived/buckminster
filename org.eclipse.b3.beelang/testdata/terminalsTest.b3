@@ -61,6 +61,9 @@ unit a.b0x.a2 {
 		// regexp supports JS regexp syntax (?) - Java's has more features.
 		$a = ~/([Jj]ava([Ss]cript))\sis\s(fun\w*)/g;
 		$a = ~/pattern/g;
+		
+		// a prefix of ~ to {} creates a literal query
+		$literalQuery = ~{:**[name=="fred"]};
 		}
 	properties naming {
 		// hex in name
@@ -73,14 +76,6 @@ unit a.b0x.a2 {
 		$a.unit_ = 2;
 		}
 	properties _null {
-		// hex in name
 		$a = null;
 		}
-	properties arrays {
-		$a = [1,2,3,4];
-		$a = [ 1+2, "hello", [], ["a", "b", "c" ], $a["hello"]];
-	}
-	properties objects {
-		$a = {name: "Fred", occupation: "Build Engineer", livesAt: {long:"1234567", lat:"98765" } };
-	}
 }

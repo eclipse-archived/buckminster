@@ -5,27 +5,19 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import java.util.Collection;
-
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Filter;
 import org.eclipse.b3.beeLang.Layout;
 import org.eclipse.b3.beeLang.PathGroup;
-import org.eclipse.b3.beeLang.PostConditionAssert;
+import org.eclipse.b3.beeLang.PostCondition;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,10 +26,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getAsserts <em>Asserts</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getPaths <em>Paths</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getPostCondition <em>Post Condition</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LayoutImpl#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
  *
@@ -46,54 +36,24 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
 {
   /**
-   * The cached value of the '{@link #getFilter() <em>Filter</em>}' containment reference.
+   * The cached value of the '{@link #getPostCondition() <em>Post Condition</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getFilter()
+   * @see #getPostCondition()
    * @generated
    * @ordered
    */
-  protected Filter filter;
+  protected PostCondition postCondition;
 
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getBody()
    * @generated
    * @ordered
    */
-  protected static final String NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected String name = NAME_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getAsserts() <em>Asserts</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAsserts()
-   * @generated
-   * @ordered
-   */
-  protected EList<PostConditionAssert> asserts;
-
-  /**
-   * The cached value of the '{@link #getPaths() <em>Paths</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPaths()
-   * @generated
-   * @ordered
-   */
-  protected EList<PathGroup> paths;
+  protected PathGroup body;
 
   /**
    * <!-- begin-user-doc -->
@@ -121,9 +81,9 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  public Filter getFilter()
+  public PostCondition getPostCondition()
   {
-    return filter;
+    return postCondition;
   }
 
   /**
@@ -131,13 +91,13 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetFilter(Filter newFilter, NotificationChain msgs)
+  public NotificationChain basicSetPostCondition(PostCondition newPostCondition, NotificationChain msgs)
   {
-    Filter oldFilter = filter;
-    filter = newFilter;
+    PostCondition oldPostCondition = postCondition;
+    postCondition = newPostCondition;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__FILTER, oldFilter, newFilter);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__POST_CONDITION, oldPostCondition, newPostCondition);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -148,20 +108,20 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setFilter(Filter newFilter)
+  public void setPostCondition(PostCondition newPostCondition)
   {
-    if (newFilter != filter)
+    if (newPostCondition != postCondition)
     {
       NotificationChain msgs = null;
-      if (filter != null)
-        msgs = ((InternalEObject)filter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__FILTER, null, msgs);
-      if (newFilter != null)
-        msgs = ((InternalEObject)newFilter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__FILTER, null, msgs);
-      msgs = basicSetFilter(newFilter, msgs);
+      if (postCondition != null)
+        msgs = ((InternalEObject)postCondition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__POST_CONDITION, null, msgs);
+      if (newPostCondition != null)
+        msgs = ((InternalEObject)newPostCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__POST_CONDITION, null, msgs);
+      msgs = basicSetPostCondition(newPostCondition, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__FILTER, newFilter, newFilter));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__POST_CONDITION, newPostCondition, newPostCondition));
   }
 
   /**
@@ -169,9 +129,9 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
+  public PathGroup getBody()
   {
-    return name;
+    return body;
   }
 
   /**
@@ -179,12 +139,16 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setName(String newName)
+  public NotificationChain basicSetBody(PathGroup newBody, NotificationChain msgs)
   {
-    String oldName = name;
-    name = newName;
+    PathGroup oldBody = body;
+    body = newBody;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__NAME, oldName, name));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__BODY, oldBody, newBody);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -192,27 +156,20 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<PostConditionAssert> getAsserts()
+  public void setBody(PathGroup newBody)
   {
-    if (asserts == null)
+    if (newBody != body)
     {
-      asserts = new EObjectContainmentEList<PostConditionAssert>(PostConditionAssert.class, this, BeeLangPackage.LAYOUT__ASSERTS);
+      NotificationChain msgs = null;
+      if (body != null)
+        msgs = ((InternalEObject)body).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__BODY, null, msgs);
+      if (newBody != null)
+        msgs = ((InternalEObject)newBody).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.LAYOUT__BODY, null, msgs);
+      msgs = basicSetBody(newBody, msgs);
+      if (msgs != null) msgs.dispatch();
     }
-    return asserts;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<PathGroup> getPaths()
-  {
-    if (paths == null)
-    {
-      paths = new EObjectContainmentEList<PathGroup>(PathGroup.class, this, BeeLangPackage.LAYOUT__PATHS);
-    }
-    return paths;
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.LAYOUT__BODY, newBody, newBody));
   }
 
   /**
@@ -225,12 +182,10 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
   {
     switch (featureID)
     {
-      case BeeLangPackage.LAYOUT__FILTER:
-        return basicSetFilter(null, msgs);
-      case BeeLangPackage.LAYOUT__ASSERTS:
-        return ((InternalEList<?>)getAsserts()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.LAYOUT__PATHS:
-        return ((InternalEList<?>)getPaths()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.LAYOUT__POST_CONDITION:
+        return basicSetPostCondition(null, msgs);
+      case BeeLangPackage.LAYOUT__BODY:
+        return basicSetBody(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -245,14 +200,10 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
   {
     switch (featureID)
     {
-      case BeeLangPackage.LAYOUT__FILTER:
-        return getFilter();
-      case BeeLangPackage.LAYOUT__NAME:
-        return getName();
-      case BeeLangPackage.LAYOUT__ASSERTS:
-        return getAsserts();
-      case BeeLangPackage.LAYOUT__PATHS:
-        return getPaths();
+      case BeeLangPackage.LAYOUT__POST_CONDITION:
+        return getPostCondition();
+      case BeeLangPackage.LAYOUT__BODY:
+        return getBody();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -262,25 +213,16 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case BeeLangPackage.LAYOUT__FILTER:
-        setFilter((Filter)newValue);
+      case BeeLangPackage.LAYOUT__POST_CONDITION:
+        setPostCondition((PostCondition)newValue);
         return;
-      case BeeLangPackage.LAYOUT__NAME:
-        setName((String)newValue);
-        return;
-      case BeeLangPackage.LAYOUT__ASSERTS:
-        getAsserts().clear();
-        getAsserts().addAll((Collection<? extends PostConditionAssert>)newValue);
-        return;
-      case BeeLangPackage.LAYOUT__PATHS:
-        getPaths().clear();
-        getPaths().addAll((Collection<? extends PathGroup>)newValue);
+      case BeeLangPackage.LAYOUT__BODY:
+        setBody((PathGroup)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -296,17 +238,11 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
   {
     switch (featureID)
     {
-      case BeeLangPackage.LAYOUT__FILTER:
-        setFilter((Filter)null);
+      case BeeLangPackage.LAYOUT__POST_CONDITION:
+        setPostCondition((PostCondition)null);
         return;
-      case BeeLangPackage.LAYOUT__NAME:
-        setName(NAME_EDEFAULT);
-        return;
-      case BeeLangPackage.LAYOUT__ASSERTS:
-        getAsserts().clear();
-        return;
-      case BeeLangPackage.LAYOUT__PATHS:
-        getPaths().clear();
+      case BeeLangPackage.LAYOUT__BODY:
+        setBody((PathGroup)null);
         return;
     }
     super.eUnset(featureID);
@@ -322,33 +258,12 @@ public class LayoutImpl extends MinimalEObjectImpl.Container implements Layout
   {
     switch (featureID)
     {
-      case BeeLangPackage.LAYOUT__FILTER:
-        return filter != null;
-      case BeeLangPackage.LAYOUT__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case BeeLangPackage.LAYOUT__ASSERTS:
-        return asserts != null && !asserts.isEmpty();
-      case BeeLangPackage.LAYOUT__PATHS:
-        return paths != null && !paths.isEmpty();
+      case BeeLangPackage.LAYOUT__POST_CONDITION:
+        return postCondition != null;
+      case BeeLangPackage.LAYOUT__BODY:
+        return body != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
-    result.append(')');
-    return result.toString();
   }
 
 } //LayoutImpl

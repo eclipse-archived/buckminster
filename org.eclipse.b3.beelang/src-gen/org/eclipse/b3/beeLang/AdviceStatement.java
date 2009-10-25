@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.AdviceStatement#getPath <em>Path</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.AdviceStatement#getOp <em>Op</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.AdviceStatement#getValue <em>Value</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.AdviceStatement#getAdvice <em>Advice</em>}</li>
  * </ul>
@@ -52,6 +53,35 @@ public interface AdviceStatement extends EObject
    * @generated
    */
   void setPath(AdvicePath value);
+
+  /**
+   * Returns the value of the '<em><b>Op</b></em>' attribute.
+   * The literals are from the enumeration {@link org.eclipse.b3.beeLang.AssignmentOperator}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Op</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Op</em>' attribute.
+   * @see org.eclipse.b3.beeLang.AssignmentOperator
+   * @see #setOp(AssignmentOperator)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAdviceStatement_Op()
+   * @model
+   * @generated
+   */
+  AssignmentOperator getOp();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.AdviceStatement#getOp <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Op</em>' attribute.
+   * @see org.eclipse.b3.beeLang.AssignmentOperator
+   * @see #getOp()
+   * @generated
+   */
+  void setOp(AssignmentOperator value);
 
   /**
    * Returns the value of the '<em><b>Value</b></em>' containment reference.

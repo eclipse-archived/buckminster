@@ -29,7 +29,7 @@ public interface VarExpressionList extends EObject
 {
   /**
    * Returns the value of the '<em><b>Expr</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.VarExpression}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Expression}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Expr</em>' containment reference list isn't clear,
@@ -41,6 +41,6 @@ public interface VarExpressionList extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<VarExpression> getExpr();
+  EList<Expression> getExpr();
 
 } // VarExpressionList

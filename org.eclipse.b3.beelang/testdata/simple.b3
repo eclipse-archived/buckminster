@@ -1,5 +1,9 @@
 
 unit "simple.b" {
+	properties xxx {
+	$x = "kalle" + "olle";
+	
+	}
 	properties numbers {
 		$chained2 = a = b = c = "properties set as equals";
 		}

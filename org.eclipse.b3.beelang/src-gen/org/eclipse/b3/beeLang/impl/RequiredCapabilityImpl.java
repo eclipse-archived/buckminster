@@ -8,6 +8,7 @@ package org.eclipse.b3.beeLang.impl;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Filter;
 import org.eclipse.b3.beeLang.RequiredCapability;
+import org.eclipse.b3.beeLang.VersionRange;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -87,24 +88,14 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getRange() <em>Range</em>}' attribute.
+   * The cached value of the '{@link #getRange() <em>Range</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getRange()
    * @generated
    * @ordered
    */
-  protected static final String RANGE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getRange() <em>Range</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getRange()
-   * @generated
-   * @ordered
-   */
-  protected String range = RANGE_EDEFAULT;
+  protected VersionRange range;
 
   /**
    * <!-- begin-user-doc -->
@@ -226,7 +217,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getRange()
+  public VersionRange getRange()
   {
     return range;
   }
@@ -236,12 +227,37 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setRange(String newRange)
+  public NotificationChain basicSetRange(VersionRange newRange, NotificationChain msgs)
   {
-    String oldRange = range;
+    VersionRange oldRange = range;
     range = newRange;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__RANGE, oldRange, range));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__RANGE, oldRange, newRange);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRange(VersionRange newRange)
+  {
+    if (newRange != range)
+    {
+      NotificationChain msgs = null;
+      if (range != null)
+        msgs = ((InternalEObject)range).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REQUIRED_CAPABILITY__RANGE, null, msgs);
+      if (newRange != null)
+        msgs = ((InternalEObject)newRange).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REQUIRED_CAPABILITY__RANGE, null, msgs);
+      msgs = basicSetRange(newRange, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__RANGE, newRange, newRange));
   }
 
   /**
@@ -256,6 +272,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
     {
       case BeeLangPackage.REQUIRED_CAPABILITY__FILTER:
         return basicSetFilter(null, msgs);
+      case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
+        return basicSetRange(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -302,7 +320,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
         setName((String)newValue);
         return;
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
-        setRange((String)newValue);
+        setRange((VersionRange)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -328,7 +346,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
         setName(NAME_EDEFAULT);
         return;
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
-        setRange(RANGE_EDEFAULT);
+        setRange((VersionRange)null);
         return;
     }
     super.eUnset(featureID);
@@ -351,7 +369,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
       case BeeLangPackage.REQUIRED_CAPABILITY__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
-        return RANGE_EDEFAULT == null ? range != null : !RANGE_EDEFAULT.equals(range);
+        return range != null;
     }
     return super.eIsSet(featureID);
   }
@@ -371,8 +389,6 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
     result.append(interface_);
     result.append(", name: ");
     result.append(name);
-    result.append(", range: ");
-    result.append(range);
     result.append(')');
     return result.toString();
   }

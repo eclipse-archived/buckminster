@@ -23,7 +23,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface LiteralObject extends Literal
+public interface LiteralObject extends Expression
 {
   /**
    * Returns the value of the '<em><b>Features</b></em>' containment reference list.

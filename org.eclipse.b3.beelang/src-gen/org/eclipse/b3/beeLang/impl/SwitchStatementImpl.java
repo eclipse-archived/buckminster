@@ -9,9 +9,9 @@ import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Case;
+import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.Statements;
 import org.eclipse.b3.beeLang.SwitchStatement;
-import org.eclipse.b3.beeLang.VarExpression;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -51,7 +51,7 @@ public class SwitchStatementImpl extends StatementImpl implements SwitchStatemen
    * @generated
    * @ordered
    */
-  protected VarExpression switchExpr;
+  protected Expression switchExpr;
 
   /**
    * The cached value of the '{@link #getCase() <em>Case</em>}' containment reference list.
@@ -99,7 +99,7 @@ public class SwitchStatementImpl extends StatementImpl implements SwitchStatemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public VarExpression getSwitchExpr()
+  public Expression getSwitchExpr()
   {
     return switchExpr;
   }
@@ -109,9 +109,9 @@ public class SwitchStatementImpl extends StatementImpl implements SwitchStatemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetSwitchExpr(VarExpression newSwitchExpr, NotificationChain msgs)
+  public NotificationChain basicSetSwitchExpr(Expression newSwitchExpr, NotificationChain msgs)
   {
-    VarExpression oldSwitchExpr = switchExpr;
+    Expression oldSwitchExpr = switchExpr;
     switchExpr = newSwitchExpr;
     if (eNotificationRequired())
     {
@@ -126,7 +126,7 @@ public class SwitchStatementImpl extends StatementImpl implements SwitchStatemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSwitchExpr(VarExpression newSwitchExpr)
+  public void setSwitchExpr(Expression newSwitchExpr)
   {
     if (newSwitchExpr != switchExpr)
     {
@@ -256,7 +256,7 @@ public class SwitchStatementImpl extends StatementImpl implements SwitchStatemen
     switch (featureID)
     {
       case BeeLangPackage.SWITCH_STATEMENT__SWITCH_EXPR:
-        setSwitchExpr((VarExpression)newValue);
+        setSwitchExpr((Expression)newValue);
         return;
       case BeeLangPackage.SWITCH_STATEMENT__CASE:
         getCase().clear();
@@ -280,7 +280,7 @@ public class SwitchStatementImpl extends StatementImpl implements SwitchStatemen
     switch (featureID)
     {
       case BeeLangPackage.SWITCH_STATEMENT__SWITCH_EXPR:
-        setSwitchExpr((VarExpression)null);
+        setSwitchExpr((Expression)null);
         return;
       case BeeLangPackage.SWITCH_STATEMENT__CASE:
         getCase().clear();

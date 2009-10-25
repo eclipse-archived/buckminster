@@ -7,6 +7,7 @@ package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.AdvicePath;
 import org.eclipse.b3.beeLang.AdviceStatement;
+import org.eclipse.b3.beeLang.AssignmentOperator;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.CompoundAdvice;
 import org.eclipse.b3.beeLang.Expression;
@@ -28,6 +29,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl#getPath <em>Path</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl#getOp <em>Op</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl#getValue <em>Value</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl#getAdvice <em>Advice</em>}</li>
  * </ul>
@@ -46,6 +48,26 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * @ordered
    */
   protected AdvicePath path;
+
+  /**
+   * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOp()
+   * @generated
+   * @ordered
+   */
+  protected static final AssignmentOperator OP_EDEFAULT = AssignmentOperator.SET;
+
+  /**
+   * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOp()
+   * @generated
+   * @ordered
+   */
+  protected AssignmentOperator op = OP_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference.
@@ -134,6 +156,29 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
     }
     else if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ADVICE_STATEMENT__PATH, newPath, newPath));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AssignmentOperator getOp()
+  {
+    return op;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOp(AssignmentOperator newOp)
+  {
+    AssignmentOperator oldOp = op;
+    op = newOp == null ? OP_EDEFAULT : newOp;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ADVICE_STATEMENT__OP, oldOp, op));
   }
 
   /**
@@ -264,6 +309,8 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
     {
       case BeeLangPackage.ADVICE_STATEMENT__PATH:
         return getPath();
+      case BeeLangPackage.ADVICE_STATEMENT__OP:
+        return getOp();
       case BeeLangPackage.ADVICE_STATEMENT__VALUE:
         return getValue();
       case BeeLangPackage.ADVICE_STATEMENT__ADVICE:
@@ -284,6 +331,9 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
     {
       case BeeLangPackage.ADVICE_STATEMENT__PATH:
         setPath((AdvicePath)newValue);
+        return;
+      case BeeLangPackage.ADVICE_STATEMENT__OP:
+        setOp((AssignmentOperator)newValue);
         return;
       case BeeLangPackage.ADVICE_STATEMENT__VALUE:
         setValue((Expression)newValue);
@@ -308,6 +358,9 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
       case BeeLangPackage.ADVICE_STATEMENT__PATH:
         setPath((AdvicePath)null);
         return;
+      case BeeLangPackage.ADVICE_STATEMENT__OP:
+        setOp(OP_EDEFAULT);
+        return;
       case BeeLangPackage.ADVICE_STATEMENT__VALUE:
         setValue((Expression)null);
         return;
@@ -330,12 +383,31 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
     {
       case BeeLangPackage.ADVICE_STATEMENT__PATH:
         return path != null;
+      case BeeLangPackage.ADVICE_STATEMENT__OP:
+        return op != OP_EDEFAULT;
       case BeeLangPackage.ADVICE_STATEMENT__VALUE:
         return value != null;
       case BeeLangPackage.ADVICE_STATEMENT__ADVICE:
         return advice != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (op: ");
+    result.append(op);
+    result.append(')');
+    return result.toString();
   }
 
 } //AdviceStatementImpl

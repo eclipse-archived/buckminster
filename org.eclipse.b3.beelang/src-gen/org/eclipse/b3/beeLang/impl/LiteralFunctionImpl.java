@@ -30,24 +30,24 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.LiteralFunctionImpl#getParams <em>Params</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.LiteralFunctionImpl#getParameters <em>Parameters</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.LiteralFunctionImpl#getStatements <em>Statements</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
+public class LiteralFunctionImpl extends ExpressionImpl implements LiteralFunction
 {
   /**
-   * The cached value of the '{@link #getParams() <em>Params</em>}' attribute list.
+   * The cached value of the '{@link #getParameters() <em>Parameters</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getParams()
+   * @see #getParameters()
    * @generated
    * @ordered
    */
-  protected EList<String> params;
+  protected EList<String> parameters;
 
   /**
    * The cached value of the '{@link #getStatements() <em>Statements</em>}' containment reference.
@@ -85,13 +85,13 @@ public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<String> getParams()
+  public EList<String> getParameters()
   {
-    if (params == null)
+    if (parameters == null)
     {
-      params = new EDataTypeEList<String>(String.class, this, BeeLangPackage.LITERAL_FUNCTION__PARAMS);
+      parameters = new EDataTypeEList<String>(String.class, this, BeeLangPackage.LITERAL_FUNCTION__PARAMETERS);
     }
-    return params;
+    return parameters;
   }
 
   /**
@@ -168,8 +168,8 @@ public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
   {
     switch (featureID)
     {
-      case BeeLangPackage.LITERAL_FUNCTION__PARAMS:
-        return getParams();
+      case BeeLangPackage.LITERAL_FUNCTION__PARAMETERS:
+        return getParameters();
       case BeeLangPackage.LITERAL_FUNCTION__STATEMENTS:
         return getStatements();
     }
@@ -187,9 +187,9 @@ public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
   {
     switch (featureID)
     {
-      case BeeLangPackage.LITERAL_FUNCTION__PARAMS:
-        getParams().clear();
-        getParams().addAll((Collection<? extends String>)newValue);
+      case BeeLangPackage.LITERAL_FUNCTION__PARAMETERS:
+        getParameters().clear();
+        getParameters().addAll((Collection<? extends String>)newValue);
         return;
       case BeeLangPackage.LITERAL_FUNCTION__STATEMENTS:
         setStatements((Statements)newValue);
@@ -208,8 +208,8 @@ public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
   {
     switch (featureID)
     {
-      case BeeLangPackage.LITERAL_FUNCTION__PARAMS:
-        getParams().clear();
+      case BeeLangPackage.LITERAL_FUNCTION__PARAMETERS:
+        getParameters().clear();
         return;
       case BeeLangPackage.LITERAL_FUNCTION__STATEMENTS:
         setStatements((Statements)null);
@@ -228,8 +228,8 @@ public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
   {
     switch (featureID)
     {
-      case BeeLangPackage.LITERAL_FUNCTION__PARAMS:
-        return params != null && !params.isEmpty();
+      case BeeLangPackage.LITERAL_FUNCTION__PARAMETERS:
+        return parameters != null && !parameters.isEmpty();
       case BeeLangPackage.LITERAL_FUNCTION__STATEMENTS:
         return statements != null;
     }
@@ -247,8 +247,8 @@ public class LiteralFunctionImpl extends LiteralImpl implements LiteralFunction
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (params: ");
-    result.append(params);
+    result.append(" (parameters: ");
+    result.append(parameters);
     result.append(')');
     return result.toString();
   }

@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class LiteralObjectImpl extends LiteralImpl implements LiteralObject
+public class LiteralObjectImpl extends ExpressionImpl implements LiteralObject
 {
   /**
    * The cached value of the '{@link #getFeatures() <em>Features</em>}' containment reference list.

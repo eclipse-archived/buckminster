@@ -5,25 +5,19 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import java.util.Collection;
-
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Closure;
 import org.eclipse.b3.beeLang.CompoundAdvice;
-import org.eclipse.b3.beeLang.PropertyStatement;
+import org.eclipse.b3.beeLang.CompoundPropertyOperation;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -32,8 +26,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ClosureImpl#getUnsetProperties <em>Unset Properties</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ClosureImpl#getSetProperties <em>Set Properties</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ClosureImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ClosureImpl#getAdvice <em>Advice</em>}</li>
  * </ul>
  * </p>
@@ -43,34 +36,24 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
 {
   /**
-   * The cached value of the '{@link #getUnsetProperties() <em>Unset Properties</em>}' attribute list.
+   * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUnsetProperties()
+   * @see #getProperties()
    * @generated
    * @ordered
    */
-  protected EList<String> unsetProperties;
+  protected CompoundPropertyOperation properties;
 
   /**
-   * The cached value of the '{@link #getSetProperties() <em>Set Properties</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSetProperties()
-   * @generated
-   * @ordered
-   */
-  protected EList<PropertyStatement> setProperties;
-
-  /**
-   * The cached value of the '{@link #getAdvice() <em>Advice</em>}' containment reference list.
+   * The cached value of the '{@link #getAdvice() <em>Advice</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getAdvice()
    * @generated
    * @ordered
    */
-  protected EList<CompoundAdvice> advice;
+  protected CompoundAdvice advice;
 
   /**
    * <!-- begin-user-doc -->
@@ -98,13 +81,9 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<String> getUnsetProperties()
+  public CompoundPropertyOperation getProperties()
   {
-    if (unsetProperties == null)
-    {
-      unsetProperties = new EDataTypeEList<String>(String.class, this, BeeLangPackage.CLOSURE__UNSET_PROPERTIES);
-    }
-    return unsetProperties;
+    return properties;
   }
 
   /**
@@ -112,13 +91,16 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<PropertyStatement> getSetProperties()
+  public NotificationChain basicSetProperties(CompoundPropertyOperation newProperties, NotificationChain msgs)
   {
-    if (setProperties == null)
+    CompoundPropertyOperation oldProperties = properties;
+    properties = newProperties;
+    if (eNotificationRequired())
     {
-      setProperties = new EObjectContainmentEList<PropertyStatement>(PropertyStatement.class, this, BeeLangPackage.CLOSURE__SET_PROPERTIES);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CLOSURE__PROPERTIES, oldProperties, newProperties);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
     }
-    return setProperties;
+    return msgs;
   }
 
   /**
@@ -126,13 +108,68 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<CompoundAdvice> getAdvice()
+  public void setProperties(CompoundPropertyOperation newProperties)
   {
-    if (advice == null)
+    if (newProperties != properties)
     {
-      advice = new EObjectContainmentEList<CompoundAdvice>(CompoundAdvice.class, this, BeeLangPackage.CLOSURE__ADVICE);
+      NotificationChain msgs = null;
+      if (properties != null)
+        msgs = ((InternalEObject)properties).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CLOSURE__PROPERTIES, null, msgs);
+      if (newProperties != null)
+        msgs = ((InternalEObject)newProperties).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CLOSURE__PROPERTIES, null, msgs);
+      msgs = basicSetProperties(newProperties, msgs);
+      if (msgs != null) msgs.dispatch();
     }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CLOSURE__PROPERTIES, newProperties, newProperties));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CompoundAdvice getAdvice()
+  {
     return advice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetAdvice(CompoundAdvice newAdvice, NotificationChain msgs)
+  {
+    CompoundAdvice oldAdvice = advice;
+    advice = newAdvice;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CLOSURE__ADVICE, oldAdvice, newAdvice);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setAdvice(CompoundAdvice newAdvice)
+  {
+    if (newAdvice != advice)
+    {
+      NotificationChain msgs = null;
+      if (advice != null)
+        msgs = ((InternalEObject)advice).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CLOSURE__ADVICE, null, msgs);
+      if (newAdvice != null)
+        msgs = ((InternalEObject)newAdvice).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CLOSURE__ADVICE, null, msgs);
+      msgs = basicSetAdvice(newAdvice, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CLOSURE__ADVICE, newAdvice, newAdvice));
   }
 
   /**
@@ -145,10 +182,10 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
   {
     switch (featureID)
     {
-      case BeeLangPackage.CLOSURE__SET_PROPERTIES:
-        return ((InternalEList<?>)getSetProperties()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.CLOSURE__PROPERTIES:
+        return basicSetProperties(null, msgs);
       case BeeLangPackage.CLOSURE__ADVICE:
-        return ((InternalEList<?>)getAdvice()).basicRemove(otherEnd, msgs);
+        return basicSetAdvice(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -163,10 +200,8 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
   {
     switch (featureID)
     {
-      case BeeLangPackage.CLOSURE__UNSET_PROPERTIES:
-        return getUnsetProperties();
-      case BeeLangPackage.CLOSURE__SET_PROPERTIES:
-        return getSetProperties();
+      case BeeLangPackage.CLOSURE__PROPERTIES:
+        return getProperties();
       case BeeLangPackage.CLOSURE__ADVICE:
         return getAdvice();
     }
@@ -178,23 +213,16 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case BeeLangPackage.CLOSURE__UNSET_PROPERTIES:
-        getUnsetProperties().clear();
-        getUnsetProperties().addAll((Collection<? extends String>)newValue);
-        return;
-      case BeeLangPackage.CLOSURE__SET_PROPERTIES:
-        getSetProperties().clear();
-        getSetProperties().addAll((Collection<? extends PropertyStatement>)newValue);
+      case BeeLangPackage.CLOSURE__PROPERTIES:
+        setProperties((CompoundPropertyOperation)newValue);
         return;
       case BeeLangPackage.CLOSURE__ADVICE:
-        getAdvice().clear();
-        getAdvice().addAll((Collection<? extends CompoundAdvice>)newValue);
+        setAdvice((CompoundAdvice)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -210,14 +238,11 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
   {
     switch (featureID)
     {
-      case BeeLangPackage.CLOSURE__UNSET_PROPERTIES:
-        getUnsetProperties().clear();
-        return;
-      case BeeLangPackage.CLOSURE__SET_PROPERTIES:
-        getSetProperties().clear();
+      case BeeLangPackage.CLOSURE__PROPERTIES:
+        setProperties((CompoundPropertyOperation)null);
         return;
       case BeeLangPackage.CLOSURE__ADVICE:
-        getAdvice().clear();
+        setAdvice((CompoundAdvice)null);
         return;
     }
     super.eUnset(featureID);
@@ -233,31 +258,12 @@ public class ClosureImpl extends MinimalEObjectImpl.Container implements Closure
   {
     switch (featureID)
     {
-      case BeeLangPackage.CLOSURE__UNSET_PROPERTIES:
-        return unsetProperties != null && !unsetProperties.isEmpty();
-      case BeeLangPackage.CLOSURE__SET_PROPERTIES:
-        return setProperties != null && !setProperties.isEmpty();
+      case BeeLangPackage.CLOSURE__PROPERTIES:
+        return properties != null;
       case BeeLangPackage.CLOSURE__ADVICE:
-        return advice != null && !advice.isEmpty();
+        return advice != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (unsetProperties: ");
-    result.append(unsetProperties);
-    result.append(')');
-    return result.toString();
   }
 
 } //ClosureImpl

@@ -8,6 +8,7 @@ package org.eclipse.b3.beeLang.impl;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Filter;
 import org.eclipse.b3.beeLang.ProvidedCapability;
+import org.eclipse.b3.beeLang.Version;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -87,24 +88,14 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
+   * The cached value of the '{@link #getVersion() <em>Version</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getVersion()
    * @generated
    * @ordered
    */
-  protected static final String VERSION_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getVersion()
-   * @generated
-   * @ordered
-   */
-  protected String version = VERSION_EDEFAULT;
+  protected Version version;
 
   /**
    * <!-- begin-user-doc -->
@@ -226,7 +217,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getVersion()
+  public Version getVersion()
   {
     return version;
   }
@@ -236,12 +227,37 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setVersion(String newVersion)
+  public NotificationChain basicSetVersion(Version newVersion, NotificationChain msgs)
   {
-    String oldVersion = version;
+    Version oldVersion = version;
     version = newVersion;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROVIDED_CAPABILITY__VERSION, oldVersion, version));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROVIDED_CAPABILITY__VERSION, oldVersion, newVersion);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setVersion(Version newVersion)
+  {
+    if (newVersion != version)
+    {
+      NotificationChain msgs = null;
+      if (version != null)
+        msgs = ((InternalEObject)version).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PROVIDED_CAPABILITY__VERSION, null, msgs);
+      if (newVersion != null)
+        msgs = ((InternalEObject)newVersion).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PROVIDED_CAPABILITY__VERSION, null, msgs);
+      msgs = basicSetVersion(newVersion, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROVIDED_CAPABILITY__VERSION, newVersion, newVersion));
   }
 
   /**
@@ -256,6 +272,8 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
     {
       case BeeLangPackage.PROVIDED_CAPABILITY__FILTER:
         return basicSetFilter(null, msgs);
+      case BeeLangPackage.PROVIDED_CAPABILITY__VERSION:
+        return basicSetVersion(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -302,7 +320,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
         setName((String)newValue);
         return;
       case BeeLangPackage.PROVIDED_CAPABILITY__VERSION:
-        setVersion((String)newValue);
+        setVersion((Version)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -328,7 +346,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
         setName(NAME_EDEFAULT);
         return;
       case BeeLangPackage.PROVIDED_CAPABILITY__VERSION:
-        setVersion(VERSION_EDEFAULT);
+        setVersion((Version)null);
         return;
     }
     super.eUnset(featureID);
@@ -351,7 +369,7 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
       case BeeLangPackage.PROVIDED_CAPABILITY__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case BeeLangPackage.PROVIDED_CAPABILITY__VERSION:
-        return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
+        return version != null;
     }
     return super.eIsSet(featureID);
   }
@@ -371,8 +389,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
     result.append(interface_);
     result.append(", name: ");
     result.append(name);
-    result.append(", version: ");
-    result.append(version);
     result.append(')');
     return result.toString();
   }

@@ -8,9 +8,10 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.AdvicePath;
-import org.eclipse.b3.beeLang.AdvicePathElement;
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.Selector;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -18,6 +19,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -30,8 +32,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.AdvicePathImpl#getPathElements <em>Path Elements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.AdvicePathImpl#getPathElement <em>Path Element</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.AdvicePathImpl#isAbsolute <em>Absolute</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.AdvicePathImpl#getSelectors <em>Selectors</em>}</li>
  * </ul>
  * </p>
  *
@@ -40,24 +42,34 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class AdvicePathImpl extends MinimalEObjectImpl.Container implements AdvicePath
 {
   /**
-   * The cached value of the '{@link #getPathElements() <em>Path Elements</em>}' containment reference list.
+   * The default value of the '{@link #isAbsolute() <em>Absolute</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getPathElements()
+   * @see #isAbsolute()
    * @generated
    * @ordered
    */
-  protected EList<AdvicePathElement> pathElements;
+  protected static final boolean ABSOLUTE_EDEFAULT = false;
 
   /**
-   * The cached value of the '{@link #getPathElement() <em>Path Element</em>}' containment reference list.
+   * The cached value of the '{@link #isAbsolute() <em>Absolute</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getPathElement()
+   * @see #isAbsolute()
    * @generated
    * @ordered
    */
-  protected EList<AdvicePathElement> pathElement;
+  protected boolean absolute = ABSOLUTE_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getSelectors() <em>Selectors</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSelectors()
+   * @generated
+   * @ordered
+   */
+  protected EList<Selector> selectors;
 
   /**
    * <!-- begin-user-doc -->
@@ -85,13 +97,9 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<AdvicePathElement> getPathElements()
+  public boolean isAbsolute()
   {
-    if (pathElements == null)
-    {
-      pathElements = new EObjectContainmentEList<AdvicePathElement>(AdvicePathElement.class, this, BeeLangPackage.ADVICE_PATH__PATH_ELEMENTS);
-    }
-    return pathElements;
+    return absolute;
   }
 
   /**
@@ -99,13 +107,26 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<AdvicePathElement> getPathElement()
+  public void setAbsolute(boolean newAbsolute)
   {
-    if (pathElement == null)
+    boolean oldAbsolute = absolute;
+    absolute = newAbsolute;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.ADVICE_PATH__ABSOLUTE, oldAbsolute, absolute));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<Selector> getSelectors()
+  {
+    if (selectors == null)
     {
-      pathElement = new EObjectContainmentEList<AdvicePathElement>(AdvicePathElement.class, this, BeeLangPackage.ADVICE_PATH__PATH_ELEMENT);
+      selectors = new EObjectContainmentEList<Selector>(Selector.class, this, BeeLangPackage.ADVICE_PATH__SELECTORS);
     }
-    return pathElement;
+    return selectors;
   }
 
   /**
@@ -118,10 +139,8 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
   {
     switch (featureID)
     {
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENTS:
-        return ((InternalEList<?>)getPathElements()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENT:
-        return ((InternalEList<?>)getPathElement()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.ADVICE_PATH__SELECTORS:
+        return ((InternalEList<?>)getSelectors()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -136,10 +155,10 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
   {
     switch (featureID)
     {
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENTS:
-        return getPathElements();
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENT:
-        return getPathElement();
+      case BeeLangPackage.ADVICE_PATH__ABSOLUTE:
+        return isAbsolute();
+      case BeeLangPackage.ADVICE_PATH__SELECTORS:
+        return getSelectors();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -155,13 +174,12 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
   {
     switch (featureID)
     {
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENTS:
-        getPathElements().clear();
-        getPathElements().addAll((Collection<? extends AdvicePathElement>)newValue);
+      case BeeLangPackage.ADVICE_PATH__ABSOLUTE:
+        setAbsolute((Boolean)newValue);
         return;
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENT:
-        getPathElement().clear();
-        getPathElement().addAll((Collection<? extends AdvicePathElement>)newValue);
+      case BeeLangPackage.ADVICE_PATH__SELECTORS:
+        getSelectors().clear();
+        getSelectors().addAll((Collection<? extends Selector>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -177,11 +195,11 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
   {
     switch (featureID)
     {
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENTS:
-        getPathElements().clear();
+      case BeeLangPackage.ADVICE_PATH__ABSOLUTE:
+        setAbsolute(ABSOLUTE_EDEFAULT);
         return;
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENT:
-        getPathElement().clear();
+      case BeeLangPackage.ADVICE_PATH__SELECTORS:
+        getSelectors().clear();
         return;
     }
     super.eUnset(featureID);
@@ -197,12 +215,29 @@ public class AdvicePathImpl extends MinimalEObjectImpl.Container implements Advi
   {
     switch (featureID)
     {
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENTS:
-        return pathElements != null && !pathElements.isEmpty();
-      case BeeLangPackage.ADVICE_PATH__PATH_ELEMENT:
-        return pathElement != null && !pathElement.isEmpty();
+      case BeeLangPackage.ADVICE_PATH__ABSOLUTE:
+        return absolute != ABSOLUTE_EDEFAULT;
+      case BeeLangPackage.ADVICE_PATH__SELECTORS:
+        return selectors != null && !selectors.isEmpty();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (absolute: ");
+    result.append(absolute);
+    result.append(')');
+    return result.toString();
   }
 
 } //AdvicePathImpl
