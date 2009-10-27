@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2.provider;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
@@ -25,7 +24,6 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -103,15 +101,7 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 		StatusProvider iu = (StatusProvider)object;
 		Object image;
 		if(iu.getStatus() == StatusProvider.BROKEN)
-			try
-			{
-				image = new URL(
-						URI.createPlatformPluginURI("/org.eclipse.ui.ide/icons/full/obj16/warning.gif", false).toString());
-			}
-			catch(MalformedURLException e)
-			{
-				image = getResourceLocator().getImage("full/obj16/InstallableUnit");
-			}
+			image = getResourceLocator().getImage("full/obj16/Error");
 		else
 			image = getResourceLocator().getImage("full/obj16/InstallableUnit");
 
@@ -176,7 +166,7 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 		{
 			VersionedName vn = iu.getVersionedNameFromProxy();
 			if(vn != null)
-				label = vn.getId() + "/" + vn.getVersion() + " (broken)";
+				label = vn.getId() + " / " + vn.getVersion() + " (missing)";
 		}
 		else if("true".equalsIgnoreCase(iu.getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
 		{
@@ -187,7 +177,13 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 				label = name;
 		}
 		else
-			label += "/" + iu.getVersion();
+		{
+			String name = GeneralUtils.getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
+			if(name != null && name.startsWith("%"))
+				name = null;
+
+			label += " / " + iu.getVersion().toString()	+ (name != null && name.length() > 0 ? " (" + name + ")" : "");
+		}
 
 		return label == null || label.length() == 0
 				? getString("_UI_InstallableUnit_type")

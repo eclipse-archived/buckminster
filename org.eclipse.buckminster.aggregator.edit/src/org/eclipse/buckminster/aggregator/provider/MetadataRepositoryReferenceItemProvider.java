@@ -145,17 +145,17 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 				location = mdr.getLocationFromProxy();
 			}
 
-			if(name != null)
-			{
-				bld.append(name);
-				bld.append(' ');
-			}
-
 			if(location != null)
 				bld.append(location);
 			else
 				bld.append("no location");
 
+			if(name != null)
+			{
+				bld.append(" (");
+				bld.append(name);
+				bld.append(')');
+			}
 		}
 		else
 		{

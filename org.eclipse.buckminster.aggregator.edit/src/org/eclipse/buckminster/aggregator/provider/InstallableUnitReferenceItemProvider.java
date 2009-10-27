@@ -20,6 +20,7 @@ import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -35,6 +36,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.query.Query;
 
@@ -202,6 +204,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 		InstallableUnit iu = getInstallableUnit((InstallableUnitReference)iuRef);
 		String id = null;
 		Version version = null;
+		String name = null;
 		if(iu != null)
 		{
 			id = Trivial.trim(iu.getId());
@@ -213,9 +216,17 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 					id = vn.getId();
 					version = vn.getVersion();
 				}
+				
+				name = "missing";
 			}
 			else
+			{
 				version = iu.getVersion();
+				
+				name = GeneralUtils.getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
+				if(name != null && name.startsWith("%"))
+					name = null;
+			}
 		}
 
 		if(id == null)
@@ -227,8 +238,14 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 		if(id.endsWith(IAggregatorConstants.FEATURE_SUFFIX))
 			id = id.substring(0, id.length() - IAggregatorConstants.FEATURE_SUFFIX.length());
 		bld.append(id);
-		bld.append('/');
+		bld.append(" / ");
 		bld.append(version);
+		if(name != null)
+		{
+			bld.append(" (");
+			bld.append(name);
+			bld.append(")");
+		}
 		return true;
 	}
 

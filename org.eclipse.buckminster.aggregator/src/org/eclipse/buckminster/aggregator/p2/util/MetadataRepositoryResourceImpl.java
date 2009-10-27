@@ -31,6 +31,7 @@ import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredVie
 import org.eclipse.buckminster.aggregator.p2view.OtherIU;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.Product;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -197,7 +198,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				iuPresentation.setId(iu.getId());
 				iuPresentation.setVersion(iu.getVersion());
 
-				String name = getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
+				String name = GeneralUtils.getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
 				if(name == null || name.length() == 0)
 					iuPresentation.setName(iu.getId());
 				else
@@ -215,7 +216,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 							+ (name != null && name.length() > 0
 									? " (" + name + ")"
 									: ""));
-				iuPresentation.setDescription(getLocalizedProperty(iu, IInstallableUnit.PROP_DESCRIPTION));
+				iuPresentation.setDescription(GeneralUtils.getLocalizedProperty(iu, IInstallableUnit.PROP_DESCRIPTION));
 
 				Map<Version, IUPresentation> versionMap = iuMap.get(iu.getId());
 				if(versionMap == null)
@@ -351,22 +352,6 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				Collections.sort(fragments, IUPresentation.COMPARATOR);
 				category.getNotNullFragmentContainer().getFragments().addAll(fragments);
 			}
-		}
-
-		private String getLocalizedProperty(InstallableUnit iu, String key)
-		{
-			String value = iu.getProperty(key);
-
-			if(value != null && value.startsWith("%"))
-			{
-				String localizedKey = "df_LT." + value.substring(1);
-				String localizedValue = iu.getProperty(localizedKey);
-
-				if(localizedValue != null)
-					value = localizedValue;
-			}
-
-			return value;
 		}
 	}
 
