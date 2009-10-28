@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.junit;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -25,9 +26,11 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.core.commands.Launch;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.junit.internal.ResultSerializer;
 import org.eclipse.buckminster.junit.internal.TestListener;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.junit.JUnitCore;
 import org.xml.sax.InputSource;
 
@@ -87,6 +90,11 @@ public class JUnitCommand extends Launch
 	 */
 	private void exportTestRunSession(TestListener listener) throws Exception
 	{
+		// bug #292376 - JUnit reporting fails if output path does not exist
+		File parentFile = new File(m_outputPath).getParentFile();
+		if(parentFile != null)
+			FileUtils.createDirectory(parentFile, new NullProgressMonitor());
+
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(m_outputPath));
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		InputSource inputSource = new InputSource();
