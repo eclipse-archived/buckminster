@@ -504,9 +504,7 @@ public class InstallableUnitMapping implements IInstallableUnit
 
 	private String getFileName(String extension) throws CoreException
 	{
-		String fileId = getMainArtifact() != null
-				? getMainArtifact().getId()
-				: getId();
+		String fileId = getId();
 		StringBuilder fileName = new StringBuilder(fileId);
 		fileName.append('-');
 		// TODO Use mavenized toString
