@@ -74,7 +74,7 @@ public class ResourceUtils
 			if(repoRef.isBranchEnabled())
 			{
 				org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-						repoRef.getLocation(), null);
+						repoRef.getResolvedLocation(), null);
 				referencedResources.add(topSet.getResource(repoURI, false));
 			}
 			else

@@ -677,7 +677,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 								// initialize all resources in alphabetical order
 								for(MetadataRepositoryReference repo : repositoriesToLoad)
-									MetadataRepositoryResourceImpl.getResourceForURI(repo.getLocation(),
+									MetadataRepositoryResourceImpl.getResourceForURI(repo.getResolvedLocation(),
 											repo.getAggregator());
 
 								for(final MetadataRepositoryReference repo : repositoriesToLoad)
