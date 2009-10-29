@@ -7,8 +7,10 @@
 package org.eclipse.buckminster.rmap.psf.impl;
 
 import org.eclipse.buckminster.rmap.impl.ProviderImpl;
+
 import org.eclipse.buckminster.rmap.psf.PSFProvider;
-import org.eclipse.buckminster.rmap.psf.psfPackage;
+import org.eclipse.buckminster.rmap.psf.PsfPackage;
+
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
@@ -68,7 +70,7 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider
 	{
 		switch(featureID)
 		{
-		case psfPackage.PSF_PROVIDER__PSF_FILE:
+		case PsfPackage.PSF_PROVIDER__PSF_FILE:
 			return getPsfFile();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -84,7 +86,7 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider
 	{
 		switch(featureID)
 		{
-		case psfPackage.PSF_PROVIDER__PSF_FILE:
+		case PsfPackage.PSF_PROVIDER__PSF_FILE:
 			return PSF_FILE_EDEFAULT == null
 					? psfFile != null
 					: !PSF_FILE_EDEFAULT.equals(psfFile);
@@ -102,7 +104,7 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider
 	{
 		switch(featureID)
 		{
-		case psfPackage.PSF_PROVIDER__PSF_FILE:
+		case PsfPackage.PSF_PROVIDER__PSF_FILE:
 			setPsfFile((String)newValue);
 			return;
 		}
@@ -115,11 +117,22 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider
 	 * @generated
 	 */
 	@Override
+	protected EClass eStaticClass()
+	{
+		return PsfPackage.Literals.PSF_PROVIDER;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
 	public void eUnset(int featureID)
 	{
 		switch(featureID)
 		{
-		case psfPackage.PSF_PROVIDER__PSF_FILE:
+		case PsfPackage.PSF_PROVIDER__PSF_FILE:
 			setPsfFile(PSF_FILE_EDEFAULT);
 			return;
 		}
@@ -146,7 +159,7 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider
 		String oldPsfFile = psfFile;
 		psfFile = newPsfFile;
 		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, psfPackage.PSF_PROVIDER__PSF_FILE, oldPsfFile,
+			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.PSF_PROVIDER__PSF_FILE, oldPsfFile,
 					psfFile));
 	}
 
@@ -166,17 +179,6 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider
 		result.append(psfFile);
 		result.append(')');
 		return result.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass()
-	{
-		return psfPackage.Literals.PSF_PROVIDER;
 	}
 
 } // PSFProviderImpl

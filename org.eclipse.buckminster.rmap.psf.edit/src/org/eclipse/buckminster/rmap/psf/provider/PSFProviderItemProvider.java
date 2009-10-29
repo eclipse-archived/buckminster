@@ -12,7 +12,7 @@ import java.util.List;
 import org.eclipse.buckminster.rmap.provider.ProviderItemProvider;
 
 import org.eclipse.buckminster.rmap.psf.PSFProvider;
-import org.eclipse.buckminster.rmap.psf.psfPackage;
+import org.eclipse.buckminster.rmap.psf.PsfPackage;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -44,6 +44,33 @@ public class PSFProviderItemProvider extends ProviderItemProvider implements IEd
 	public PSFProviderItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
+	}
+
+	/**
+	 * This adds a property descriptor for the Psf File feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addPsfFilePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_PSFProvider_psfFile_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_PSFProvider_psfFile_feature", "_UI_PSFProvider_type"),
+				PsfPackage.Literals.PSF_PROVIDER__PSF_FILE, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
+	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
+	{
+		super.collectNewChildDescriptors(newChildDescriptors, object);
 	}
 
 	/**
@@ -102,38 +129,11 @@ public class PSFProviderItemProvider extends ProviderItemProvider implements IEd
 
 		switch(notification.getFeatureID(PSFProvider.class))
 		{
-		case psfPackage.PSF_PROVIDER__PSF_FILE:
+		case PsfPackage.PSF_PROVIDER__PSF_FILE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
 		super.notifyChanged(notification);
-	}
-
-	/**
-	 * This adds a property descriptor for the Psf File feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addPsfFilePropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_PSFProvider_psfFile_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_PSFProvider_psfFile_feature", "_UI_PSFProvider_type"),
-				psfPackage.Literals.PSF_PROVIDER__PSF_FILE, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
-	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
-	{
-		super.collectNewChildDescriptors(newChildDescriptors, object);
 	}
 
 }

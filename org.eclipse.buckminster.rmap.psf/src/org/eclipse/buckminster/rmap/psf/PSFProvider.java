@@ -18,7 +18,7 @@ import org.eclipse.buckminster.rmap.Provider;
  * </ul>
  * </p>
  * 
- * @see org.eclipse.buckminster.rmap.psf.psfPackage#getPSFProvider()
+ * @see org.eclipse.buckminster.rmap.psf.PsfPackage#getPSFProvider()
  * @model
  * @generated
  */
@@ -34,7 +34,7 @@ public interface PSFProvider extends Provider
 	 * 
 	 * @return the value of the '<em>Psf File</em>' attribute.
 	 * @see #setPsfFile(String)
-	 * @see org.eclipse.buckminster.rmap.psf.psfPackage#getPSFProvider_PsfFile()
+	 * @see org.eclipse.buckminster.rmap.psf.PsfPackage#getPSFProvider_PsfFile()
 	 * @model extendedMetaData="kind='attribute'"
 	 * @generated
 	 */

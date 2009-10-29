@@ -13,7 +13,7 @@
    <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
       <factory
             uri="http://www.eclipse.org/buckminster/PSFProvider-1.0"
-            class="org.eclipse.buckminster.rmap.psf.provider.psfItemProviderAdapterFactory"
+            class="org.eclipse.buckminster.rmap.psf.provider.PsfItemProviderAdapterFactory"
             supportedTypes=
               "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
                org.eclipse.emf.edit.provider.IStructuredItemContentProvider
@@ -25,7 +25,7 @@
    <extension point="org.eclipse.emf.edit.childCreationExtenders">
       <extender
             uri="http://www.eclipse.org/buckminster/RMap-1.0"
-            class="org.eclipse.buckminster.rmap.psf.provider.psfItemProviderAdapterFactory$RmapChildCreationExtender"/>
+            class="org.eclipse.buckminster.rmap.psf.provider.PsfItemProviderAdapterFactory$RmapChildCreationExtender"/>
    </extension>
 
 </plugin>

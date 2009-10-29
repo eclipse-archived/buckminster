@@ -84,6 +84,21 @@ public class PSFProvider extends Provider
 	}
 
 	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		super.addAttributes(attrs);
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				BM_PFS_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
+		if(psfFile != null)
+			Utils.addAttribute(attrs, ATTR_PSF_FILE, psfFile);
+	}
+
+	private void cachePSF(Map<UUID, Object> userCache, PSF psf)
+	{
+		userCache.put(getId(), psf);
+	}
+
+	@Override
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -177,6 +192,11 @@ public class PSFProvider extends Provider
 		}
 	}
 
+	private PSF getCachedPSF(Map<UUID, Object> userCache)
+	{
+		return (PSF)userCache.get(getId());
+	}
+
 	public PSF getPSF(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 700);
@@ -226,32 +246,10 @@ public class PSFProvider extends Provider
 		}
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	private PSF getPSF(VersionSelector vs, NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
-		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				BM_PFS_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
-		if(psfFile != null)
-			Utils.addAttribute(attrs, ATTR_PSF_FILE, psfFile);
-	}
-
-	private void cachePSF(Map<UUID, Object> userCache, PSF psf)
-	{
-		userCache.put(getId(), psf);
-	}
-
-	private PSF getCachedPSF(Map<UUID, Object> userCache)
-	{
-		return (PSF)userCache.get(getId());
-	}
-
-	private PSF getPSF(VersionSelector vs, NodeQuery query, IProgressMonitor monitor)
-			throws CoreException
-	{
-		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(
-				IComponentType.UNKNOWN), new VersionMatch(null, vs, -1, new Date(), null),
-				ProviderScore.GOOD, query);
+		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
+				new VersionMatch(null, vs, -1, new Date(), null), ProviderScore.GOOD, query);
 
 		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 10));
 		IStreamConsumer<PSF> psfReader = new IStreamConsumer<PSF>()
@@ -276,8 +274,7 @@ public class PSFProvider extends Provider
 					Resource resource = rs.getResource(URI.createFileURI(tempFile.getAbsolutePath()), true);
 					EList<EObject> content = resource.getContents();
 					if(content.size() != 1)
-						throw BuckminsterException.fromMessage(NLS.bind("Unable to parse psf file from {0}",
-								streamName));
+						throw BuckminsterException.fromMessage(NLS.bind("Unable to parse psf file from {0}", streamName));
 
 					return (PSF)content.get(0);
 				}
@@ -295,10 +292,10 @@ public class PSFProvider extends Provider
 				if(psfFile == null)
 					throw BuckminsterException.fromMessage(NLS.bind(
 							"The psfFile attribute is mandatory when using reader of type {0}", getReaderTypeId()));
-	
+
 				return ((ICatalogReader)reader).readFile(psfFile, psfReader, MonitorUtils.subMonitor(monitor, 100));
 			}
-	
+
 			if(psfFile != null)
 				throw BuckminsterException.fromMessage(NLS.bind(
 						"The psfFile attribute cannot be used in conjunction with reader of type {0}",
