@@ -8,11 +8,11 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.BuildMethod;
 import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.ExecutionMode;
 import org.eclipse.b3.beeLang.NamedAdvice;
 import org.eclipse.b3.beeLang.NamedProperties;
-import org.eclipse.b3.beeLang.Part;
 import org.eclipse.b3.beeLang.ProvidedCapability;
 import org.eclipse.b3.beeLang.RepositoryConfiguration;
 import org.eclipse.b3.beeLang.RequiredCapability;
@@ -51,7 +51,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getMetaRequiredCapabilities <em>Meta Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getAdvice <em>Advice</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getSynchronizations <em>Synchronizations</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getParts <em>Parts</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getBuildMethods <em>Build Methods</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
  * </ul>
  * </p>
@@ -181,14 +181,14 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   protected EList<Synchronization> synchronizations;
 
   /**
-   * The cached value of the '{@link #getParts() <em>Parts</em>}' containment reference list.
+   * The cached value of the '{@link #getBuildMethods() <em>Build Methods</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getParts()
+   * @see #getBuildMethods()
    * @generated
    * @ordered
    */
-  protected EList<Part> parts;
+  protected EList<BuildMethod> buildMethods;
 
   /**
    * The cached value of the '{@link #getRepositoryConfigurations() <em>Repository Configurations</em>}' containment reference list.
@@ -418,13 +418,13 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Part> getParts()
+  public EList<BuildMethod> getBuildMethods()
   {
-    if (parts == null)
+    if (buildMethods == null)
     {
-      parts = new EObjectContainmentEList<Part>(Part.class, this, BeeLangPackage.BUILD_UNIT__PARTS);
+      buildMethods = new EObjectContainmentEList<BuildMethod>(BuildMethod.class, this, BeeLangPackage.BUILD_UNIT__BUILD_METHODS);
     }
-    return parts;
+    return buildMethods;
   }
 
   /**
@@ -465,8 +465,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return ((InternalEList<?>)getAdvice()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         return ((InternalEList<?>)getSynchronizations()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.BUILD_UNIT__PARTS:
-        return ((InternalEList<?>)getParts()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
+        return ((InternalEList<?>)getBuildMethods()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         return ((InternalEList<?>)getRepositoryConfigurations()).basicRemove(otherEnd, msgs);
     }
@@ -503,8 +503,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return getAdvice();
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         return getSynchronizations();
-      case BeeLangPackage.BUILD_UNIT__PARTS:
-        return getParts();
+      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
+        return getBuildMethods();
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         return getRepositoryConfigurations();
     }
@@ -559,9 +559,9 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         getSynchronizations().clear();
         getSynchronizations().addAll((Collection<? extends Synchronization>)newValue);
         return;
-      case BeeLangPackage.BUILD_UNIT__PARTS:
-        getParts().clear();
-        getParts().addAll((Collection<? extends Part>)newValue);
+      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
+        getBuildMethods().clear();
+        getBuildMethods().addAll((Collection<? extends BuildMethod>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         getRepositoryConfigurations().clear();
@@ -611,8 +611,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         getSynchronizations().clear();
         return;
-      case BeeLangPackage.BUILD_UNIT__PARTS:
-        getParts().clear();
+      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
+        getBuildMethods().clear();
         return;
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         getRepositoryConfigurations().clear();
@@ -651,8 +651,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return advice != null && !advice.isEmpty();
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         return synchronizations != null && !synchronizations.isEmpty();
-      case BeeLangPackage.BUILD_UNIT__PARTS:
-        return parts != null && !parts.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
+        return buildMethods != null && !buildMethods.isEmpty();
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         return repositoryConfigurations != null && !repositoryConfigurations.isEmpty();
     }

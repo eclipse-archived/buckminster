@@ -1,0 +1,27 @@
+fragment unit org.myorg.myunit extends osgi.bundle {
+	properties{ $myfun = function(x){ for(var y = 1; y < 10; y++) x += y; }; }
+	}
+//    properties xyz { $build.location = "/tmp/mybuild";
+//    	include URL xyz;
+//    	}
+//    repositories {
+//    	include http://something.somewhere standardRepositories;
+//        "cvs:pserver:anonymous@dev.eclipse.org/cvsroot/modeling/emf/cdo";
+//        "p2:http://download.myorg.org/everythingBinary";
+//        "redirect:http://..../standard.b3"
+//    }
+//	requires nameHere {
+//		eclipse.feature/org.eclipse.cdo.sdk/1.0 as sdk;
+//		javadoc.org/eclipse.cdo.sdk/1.0;
+//		}
+//		
+//	 site {
+//		group { sdk#p2Site
+//			with{ properties { $target.os="*"; $target.ws="*"; $target.arch="*"; } };
+//			}
+//		}
+//		
+	abstract zipIt(x, y); {
+		
+	}
+}

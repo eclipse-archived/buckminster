@@ -69,9 +69,9 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
     switch (eClass.getClassifierID())
     {
       case BeeLangPackage.BEE_MODEL: return createBeeModel();
-      case BeeLangPackage.VERSION: return createVersion();
-      case BeeLangPackage.VERSION_RANGE: return createVersionRange();
       case BeeLangPackage.IMPORT: return createImport();
+      case BeeLangPackage.JAVA_IMPORTER: return createJavaImporter();
+      case BeeLangPackage.NATIVE_IMPORTER: return createNativeImporter();
       case BeeLangPackage.BUILD_UNIT: return createBuildUnit();
       case BeeLangPackage.PROVIDED_CAPABILITY: return createProvidedCapability();
       case BeeLangPackage.REQUIRED_CAPABILITY: return createRequiredCapability();
@@ -93,7 +93,7 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.PART_IN_SELF: return createPartInSelf();
       case BeeLangPackage.CAPABILITY_REFERENCED_PART: return createCapabilityReferencedPart();
       case BeeLangPackage.COMPOUND_REFERENCES: return createCompoundReferences();
-      case BeeLangPackage.PART: return createPart();
+      case BeeLangPackage.BUILD_METHOD: return createBuildMethod();
       case BeeLangPackage.PARAMETER: return createParameter();
       case BeeLangPackage.LAYOUT: return createLayout();
       case BeeLangPackage.GROUP: return createGroup();
@@ -138,12 +138,15 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.EXPRESSION: return createExpression();
       case BeeLangPackage.UNARY_EXPRESSION: return createUnaryExpression();
       case BeeLangPackage.FEATURE: return createFeature();
+      case BeeLangPackage.VERSION: return createVersion();
+      case BeeLangPackage.VERSION_RANGE: return createVersionRange();
       case BeeLangPackage.VAR_EXPRESSION: return createVarExpression();
       case BeeLangPackage.ASSIGNMENT_OPERATION: return createAssignmentOperation();
       case BeeLangPackage.IF_EXPRESSION: return createIfExpression();
       case BeeLangPackage.BOOLEAN_OPERATION: return createBooleanOperation();
       case BeeLangPackage.OPERATION_CALL: return createOperationCall();
       case BeeLangPackage.RELATIONAL_OPERATION: return createRelationalOperation();
+      case BeeLangPackage.SET_OPERATION_CALL: return createSetOperationCall();
       case BeeLangPackage.UNARY_OPERATION: return createUnaryOperation();
       case BeeLangPackage.AT_CALL: return createAtCall();
       case BeeLangPackage.FEATURE_CALL: return createFeatureCall();
@@ -177,14 +180,16 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case BeeLangPackage.VISIBILITY:
-        return createVisibilityFromString(eDataType, initialValue);
-      case BeeLangPackage.EXECUTION_MODE:
-        return createExecutionModeFromString(eDataType, initialValue);
       case BeeLangPackage.ASSIGNMENT_OPERATOR:
         return createAssignmentOperatorFromString(eDataType, initialValue);
       case BeeLangPackage.RELATIONAL_OPERATOR:
         return createRelationalOperatorFromString(eDataType, initialValue);
+      case BeeLangPackage.SET_OPERATOR:
+        return createSetOperatorFromString(eDataType, initialValue);
+      case BeeLangPackage.VISIBILITY:
+        return createVisibilityFromString(eDataType, initialValue);
+      case BeeLangPackage.EXECUTION_MODE:
+        return createExecutionModeFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -200,14 +205,16 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case BeeLangPackage.VISIBILITY:
-        return convertVisibilityToString(eDataType, instanceValue);
-      case BeeLangPackage.EXECUTION_MODE:
-        return convertExecutionModeToString(eDataType, instanceValue);
       case BeeLangPackage.ASSIGNMENT_OPERATOR:
         return convertAssignmentOperatorToString(eDataType, instanceValue);
       case BeeLangPackage.RELATIONAL_OPERATOR:
         return convertRelationalOperatorToString(eDataType, instanceValue);
+      case BeeLangPackage.SET_OPERATOR:
+        return convertSetOperatorToString(eDataType, instanceValue);
+      case BeeLangPackage.VISIBILITY:
+        return convertVisibilityToString(eDataType, instanceValue);
+      case BeeLangPackage.EXECUTION_MODE:
+        return convertExecutionModeToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -229,32 +236,32 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Version createVersion()
-  {
-    VersionImpl version = new VersionImpl();
-    return version;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public VersionRange createVersionRange()
-  {
-    VersionRangeImpl versionRange = new VersionRangeImpl();
-    return versionRange;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public Import createImport()
   {
     ImportImpl import_ = new ImportImpl();
     return import_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JavaImporter createJavaImporter()
+  {
+    JavaImporterImpl javaImporter = new JavaImporterImpl();
+    return javaImporter;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NativeImporter createNativeImporter()
+  {
+    NativeImporterImpl nativeImporter = new NativeImporterImpl();
+    return nativeImporter;
   }
 
   /**
@@ -493,10 +500,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Part createPart()
+  public BuildMethod createBuildMethod()
   {
-    PartImpl part = new PartImpl();
-    return part;
+    BuildMethodImpl buildMethod = new BuildMethodImpl();
+    return buildMethod;
   }
 
   /**
@@ -988,6 +995,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public Version createVersion()
+  {
+    VersionImpl version = new VersionImpl();
+    return version;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VersionRange createVersionRange()
+  {
+    VersionRangeImpl versionRange = new VersionRangeImpl();
+    return versionRange;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public VarExpression createVarExpression()
   {
     VarExpressionImpl varExpression = new VarExpressionImpl();
@@ -1047,6 +1076,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     RelationalOperationImpl relationalOperation = new RelationalOperationImpl();
     return relationalOperation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SetOperationCall createSetOperationCall()
+  {
+    SetOperationCallImpl setOperationCall = new SetOperationCallImpl();
+    return setOperationCall;
   }
 
   /**
@@ -1252,50 +1292,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Visibility createVisibilityFromString(EDataType eDataType, String initialValue)
-  {
-    Visibility result = Visibility.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String convertVisibilityToString(EDataType eDataType, Object instanceValue)
-  {
-    return instanceValue == null ? null : instanceValue.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ExecutionMode createExecutionModeFromString(EDataType eDataType, String initialValue)
-  {
-    ExecutionMode result = ExecutionMode.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String convertExecutionModeToString(EDataType eDataType, Object instanceValue)
-  {
-    return instanceValue == null ? null : instanceValue.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public AssignmentOperator createAssignmentOperatorFromString(EDataType eDataType, String initialValue)
   {
     AssignmentOperator result = AssignmentOperator.get(initialValue);
@@ -1331,6 +1327,72 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * @generated
    */
   public String convertRelationalOperatorToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SetOperator createSetOperatorFromString(EDataType eDataType, String initialValue)
+  {
+    SetOperator result = SetOperator.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertSetOperatorToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Visibility createVisibilityFromString(EDataType eDataType, String initialValue)
+  {
+    Visibility result = Visibility.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertVisibilityToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ExecutionMode createExecutionModeFromString(EDataType eDataType, String initialValue)
+  {
+    ExecutionMode result = ExecutionMode.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertExecutionModeToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

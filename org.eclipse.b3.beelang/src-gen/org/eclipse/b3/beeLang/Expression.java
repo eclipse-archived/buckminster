@@ -5,6 +5,7 @@
  */
 package org.eclipse.b3.beeLang;
 
+import org.eclipse.b3.HexInteger;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,12 +34,12 @@ public interface Expression extends Statement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Sval</em>' attribute.
-   * @see #setSval(String)
+   * @see #setSval(HexInteger)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getExpression_Sval()
-   * @model
+   * @model dataType="beelangtypes.HexInteger"
    * @generated
    */
-  String getSval();
+  HexInteger getSval();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.Expression#getSval <em>Sval</em>}' attribute.
@@ -48,6 +49,6 @@ public interface Expression extends Statement
    * @see #getSval()
    * @generated
    */
-  void setSval(String value);
+  void setSval(HexInteger value);
 
 } // Expression

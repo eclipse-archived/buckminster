@@ -35,24 +35,6 @@ public interface BeeLangFactory extends EFactory
   BeeModel createBeeModel();
 
   /**
-   * Returns a new object of class '<em>Version</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Version</em>'.
-   * @generated
-   */
-  Version createVersion();
-
-  /**
-   * Returns a new object of class '<em>Version Range</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Version Range</em>'.
-   * @generated
-   */
-  VersionRange createVersionRange();
-
-  /**
    * Returns a new object of class '<em>Import</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -60,6 +42,24 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   Import createImport();
+
+  /**
+   * Returns a new object of class '<em>Java Importer</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Java Importer</em>'.
+   * @generated
+   */
+  JavaImporter createJavaImporter();
+
+  /**
+   * Returns a new object of class '<em>Native Importer</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Native Importer</em>'.
+   * @generated
+   */
+  NativeImporter createNativeImporter();
 
   /**
    * Returns a new object of class '<em>Build Unit</em>'.
@@ -251,13 +251,13 @@ public interface BeeLangFactory extends EFactory
   CompoundReferences createCompoundReferences();
 
   /**
-   * Returns a new object of class '<em>Part</em>'.
+   * Returns a new object of class '<em>Build Method</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Part</em>'.
+   * @return a new object of class '<em>Build Method</em>'.
    * @generated
    */
-  Part createPart();
+  BuildMethod createBuildMethod();
 
   /**
    * Returns a new object of class '<em>Parameter</em>'.
@@ -656,6 +656,24 @@ public interface BeeLangFactory extends EFactory
   Feature createFeature();
 
   /**
+   * Returns a new object of class '<em>Version</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Version</em>'.
+   * @generated
+   */
+  Version createVersion();
+
+  /**
+   * Returns a new object of class '<em>Version Range</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Version Range</em>'.
+   * @generated
+   */
+  VersionRange createVersionRange();
+
+  /**
    * Returns a new object of class '<em>Var Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -708,6 +726,15 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   RelationalOperation createRelationalOperation();
+
+  /**
+   * Returns a new object of class '<em>Set Operation Call</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Set Operation Call</em>'.
+   * @generated
+   */
+  SetOperationCall createSetOperationCall();
 
   /**
    * Returns a new object of class '<em>Unary Operation</em>'.

@@ -8,7 +8,7 @@ unit "simple.b" {
 		$chained2 = a = b = c = "properties set as equals";
 		}
 	a {
-		group{ a/b/1.0;}
+		input{ a/b/1.0;}
 
 		while(true) a += 10;
 		
@@ -18,41 +18,40 @@ unit "simple.b" {
 			break;
 		
 	}
-	// equivalent to a group part
 	b {
-		group { a/b/1.0;}
-		return group;
+		input { a/b/1.0;}
+		return input;
 	}
 	// equivalent to an artifacts part
 	c {
-		layout { root [bin/apa.exe, bin/bepa.exe];}
-		return layout;
+		output { root [bin/apa.exe, bin/bepa.exe];}
+		return output;
 	}
-	// Filtering the group
+	// Filtering the input
 	d {
-		group{ a/b/1.0;}
-		return Paths.exclude(group,~/org\.myorg\..*/g);
+		input{ a/b/1.0;}
+		return Paths.exclude(input,~/org\.myorg\..*/g);
 	}
 	// Call external builder
 	e {
-		group{ a/b/1.0;}
-		layout { bin [ a, b, c ]; }
+		input{ a/b/1.0;}
+		output { bin [ a, b, c ]; }
 		
-		return CompileActor(group.fooBar(), layout);
+		return CompileActor(input.fooBar(), output);
 	}
 	// Call external builder
 	f {
-		group{ a/b/1.0;}
-		layout { bin [ a, b, c ]; }
+		input{ a/b/1.0;}
+		output { bin [ a, b, c ]; }
 		var strategy = "normal";
-		switch(group[$optimized.files])
+		switch(input[$optimized.files])
 			{
 			case "O5": break;
 			case "O4": {strategy = "-O4"; break;}
 			default: strategy = "-O2";
 			}
 			
-		return CompileActor(group.fooBar(), layout);
+		return CompileActor(input.fooBar(), output);
 	}
 
 }

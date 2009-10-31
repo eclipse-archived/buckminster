@@ -102,24 +102,24 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.VERSION:
-      {
-        Version version = (Version)theEObject;
-        T result = caseVersion(version);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.VERSION_RANGE:
-      {
-        VersionRange versionRange = (VersionRange)theEObject;
-        T result = caseVersionRange(versionRange);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case BeeLangPackage.IMPORT:
       {
         Import import_ = (Import)theEObject;
         T result = caseImport(import_);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.JAVA_IMPORTER:
+      {
+        JavaImporter javaImporter = (JavaImporter)theEObject;
+        T result = caseJavaImporter(javaImporter);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.NATIVE_IMPORTER:
+      {
+        NativeImporter nativeImporter = (NativeImporter)theEObject;
+        T result = caseNativeImporter(nativeImporter);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -279,10 +279,10 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.PART:
+      case BeeLangPackage.BUILD_METHOD:
       {
-        Part part = (Part)theEObject;
-        T result = casePart(part);
+        BuildMethod buildMethod = (BuildMethod)theEObject;
+        T result = caseBuildMethod(buildMethod);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -618,6 +618,20 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BeeLangPackage.VERSION:
+      {
+        Version version = (Version)theEObject;
+        T result = caseVersion(version);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.VERSION_RANGE:
+      {
+        VersionRange versionRange = (VersionRange)theEObject;
+        T result = caseVersionRange(versionRange);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BeeLangPackage.VAR_EXPRESSION:
       {
         VarExpression varExpression = (VarExpression)theEObject;
@@ -669,6 +683,15 @@ public class BeeLangSwitch<T>
         T result = caseRelationalOperation(relationalOperation);
         if (result == null) result = caseExpression(relationalOperation);
         if (result == null) result = caseStatement(relationalOperation);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.SET_OPERATION_CALL:
+      {
+        SetOperationCall setOperationCall = (SetOperationCall)theEObject;
+        T result = caseSetOperationCall(setOperationCall);
+        if (result == null) result = caseExpression(setOperationCall);
+        if (result == null) result = caseStatement(setOperationCall);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -856,38 +879,6 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Version</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Version</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseVersion(Version object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Version Range</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Version Range</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseVersionRange(VersionRange object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Import</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -899,6 +890,38 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseImport(Import object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Java Importer</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Java Importer</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJavaImporter(JavaImporter object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Native Importer</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Native Importer</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseNativeImporter(NativeImporter object)
   {
     return null;
   }
@@ -1240,17 +1263,17 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Part</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Build Method</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Part</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Build Method</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePart(Part object)
+  public T caseBuildMethod(BuildMethod object)
   {
     return null;
   }
@@ -1960,6 +1983,38 @@ public class BeeLangSwitch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Version</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Version</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVersion(Version object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Version Range</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Version Range</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVersionRange(VersionRange object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Var Expression</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -2051,6 +2106,22 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseRelationalOperation(RelationalOperation object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Set Operation Call</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Set Operation Call</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSetOperationCall(SetOperationCall object)
   {
     return null;
   }

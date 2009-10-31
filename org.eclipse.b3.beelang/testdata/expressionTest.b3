@@ -23,10 +23,10 @@ unit expressionTest {
 		$r = .0;
 		$r = 1.;
 		
-		$a = 2.0e+10 + 1e+10;
-		$a = 2.0e+10 - 1E+10;
-		$a = 2.0e+10 * 1e-10;
-		$a = 2.0e+10 / 1E-10;
+		$d = 2.0e+10 + 1e+10;
+		$d = 2.0e+10 - 1E+10;
+		$d = 2.0e+10 * 1e-10;
+		$d = 2.0e+10 / 1E-10;
 
 		// STRING
 		$a = "sing" + "sing";
@@ -100,11 +100,33 @@ unit expressionTest {
 		$a = typeof $a;
 		$b = $a instanceof $a;
 		
-		// existence check
-		$a = "z" isin $a;
 		$a = $a["z"] !== undefined;
 		}
+	properties setOperations {
+		// existence check
+		// $a = "z" in $a; // standard JS 1.6 - not supported, use general query instead
+		$a = $a select query{name}; // results in an empty set if $a does not have "name" feature
+		// best expressed as
+		$a = $a exists query{name}; // result is boolean if $a does not have "name" feature
+		$a = $a notexists query{name}; // result is boolean if $a has something that is not "name"
 		
+		$a = $a select query {name} > Set.EMPTY_SET;
+		$a = $a select query {name} == Set.EMPTY_SET;
+		
+		// This even works for regexp		
+		$a = $a select query {**:~/^debug.*/g} > Set.EMPTY_SET;  // query for features with name starting with "debug"
+		
+		// check if a has a property that is called 'creatNNN' [sic] where NNN is a sequence of 
+		// digits, and if so, if that property has a property status set to true, if so, return 
+		// the set consisting of all ancestors of this node's parent - then invoke a function that prints each.
+    	$a = $a select query{ ~/^creat[0-9]+/g[status==true]:..:**} foreach function(x){ print(x); };
+		
+		$a = $a reject query{clue} foreach function(x) { print(x + "does not have a 'clue'"); };
+
+		// $a is set to the gross IQ of all clueles 
+		$a = $a reject query{clue} foreach function(x,y) { return y + x.iq; }; 
+		$a = $a reject function(x){ return x.clue != "bertil"; } foreach function(x,y) { return y + x.iq; }; 
+	}
 	properties bitwise {
 		$a = 0xff | 0x1;
 		$a = 0xff & 0x1;

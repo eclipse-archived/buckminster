@@ -5,6 +5,8 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
+import org.eclipse.b3.HexInteger;
+
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
 
@@ -37,7 +39,7 @@ public class ExpressionImpl extends StatementImpl implements Expression
    * @generated
    * @ordered
    */
-  protected static final String SVAL_EDEFAULT = null;
+  protected static final HexInteger SVAL_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSval() <em>Sval</em>}' attribute.
@@ -47,7 +49,7 @@ public class ExpressionImpl extends StatementImpl implements Expression
    * @generated
    * @ordered
    */
-  protected String sval = SVAL_EDEFAULT;
+  protected HexInteger sval = SVAL_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -75,7 +77,7 @@ public class ExpressionImpl extends StatementImpl implements Expression
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getSval()
+  public HexInteger getSval()
   {
     return sval;
   }
@@ -85,9 +87,9 @@ public class ExpressionImpl extends StatementImpl implements Expression
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSval(String newSval)
+  public void setSval(HexInteger newSval)
   {
-    String oldSval = sval;
+    HexInteger oldSval = sval;
     sval = newSval;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.EXPRESSION__SVAL, oldSval, sval));
@@ -120,7 +122,7 @@ public class ExpressionImpl extends StatementImpl implements Expression
     switch (featureID)
     {
       case BeeLangPackage.EXPRESSION__SVAL:
-        setSval((String)newValue);
+        setSval((HexInteger)newValue);
         return;
     }
     super.eSet(featureID, newValue);

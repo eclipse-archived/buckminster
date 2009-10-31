@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#isSurpressed <em>Surpressed</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getAlias <em>Alias</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getPartReference <em>Part Reference</em>}</li>
@@ -39,26 +38,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  */
 public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Prerequisite
 {
-  /**
-   * The default value of the '{@link #isSurpressed() <em>Surpressed</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSurpressed()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean SURPRESSED_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isSurpressed() <em>Surpressed</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isSurpressed()
-   * @generated
-   * @ordered
-   */
-  protected boolean surpressed = SURPRESSED_EDEFAULT;
-
   /**
    * The cached value of the '{@link #getFilter() <em>Filter</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -128,29 +107,6 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
   protected EClass eStaticClass()
   {
     return BeeLangPackage.Literals.PREREQUISITE;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public boolean isSurpressed()
-  {
-    return surpressed;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setSurpressed(boolean newSurpressed)
-  {
-    boolean oldSurpressed = surpressed;
-    surpressed = newSurpressed;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__SURPRESSED, oldSurpressed, surpressed));
   }
 
   /**
@@ -350,8 +306,6 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
   {
     switch (featureID)
     {
-      case BeeLangPackage.PREREQUISITE__SURPRESSED:
-        return isSurpressed();
       case BeeLangPackage.PREREQUISITE__FILTER:
         return getFilter();
       case BeeLangPackage.PREREQUISITE__ALIAS:
@@ -374,9 +328,6 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
   {
     switch (featureID)
     {
-      case BeeLangPackage.PREREQUISITE__SURPRESSED:
-        setSurpressed((Boolean)newValue);
-        return;
       case BeeLangPackage.PREREQUISITE__FILTER:
         setFilter((Filter)newValue);
         return;
@@ -403,9 +354,6 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
   {
     switch (featureID)
     {
-      case BeeLangPackage.PREREQUISITE__SURPRESSED:
-        setSurpressed(SURPRESSED_EDEFAULT);
-        return;
       case BeeLangPackage.PREREQUISITE__FILTER:
         setFilter((Filter)null);
         return;
@@ -432,8 +380,6 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
   {
     switch (featureID)
     {
-      case BeeLangPackage.PREREQUISITE__SURPRESSED:
-        return surpressed != SURPRESSED_EDEFAULT;
       case BeeLangPackage.PREREQUISITE__FILTER:
         return filter != null;
       case BeeLangPackage.PREREQUISITE__ALIAS:
@@ -457,9 +403,7 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (surpressed: ");
-    result.append(surpressed);
-    result.append(", alias: ");
+    result.append(" (alias: ");
     result.append(alias);
     result.append(')');
     return result.toString();

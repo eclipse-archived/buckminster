@@ -5,6 +5,7 @@
  */
 package org.eclipse.b3.beeLang;
 
+import org.eclipse.b3.RegularExpression;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,12 +34,12 @@ public interface RegexpLiteral extends Expression
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Val</em>' attribute.
-   * @see #setVal(String)
+   * @see #setVal(RegularExpression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getRegexpLiteral_Val()
-   * @model
+   * @model dataType="beelangtypes.RegularExpression"
    * @generated
    */
-  String getVal();
+  RegularExpression getVal();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.RegexpLiteral#getVal <em>Val</em>}' attribute.
@@ -48,6 +49,6 @@ public interface RegexpLiteral extends Expression
    * @see #getVal()
    * @generated
    */
-  void setVal(String value);
+  void setVal(RegularExpression value);
 
 } // RegexpLiteral

@@ -5,58 +5,57 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import org.eclipse.b3.RegularExpression;
-
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.RegexpLiteral;
+import org.eclipse.b3.beeLang.NativeImporter;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Regexp Literal</b></em>'.
+ * An implementation of the model object '<em><b>Native Importer</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RegexpLiteralImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.NativeImporterImpl#getUriString <em>Uri String</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
+public class NativeImporterImpl extends MinimalEObjectImpl.Container implements NativeImporter
 {
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #getUriString() <em>Uri String</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getUriString()
    * @generated
    * @ordered
    */
-  protected static final RegularExpression VAL_EDEFAULT = null;
+  protected static final String URI_STRING_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #getUriString() <em>Uri String</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getUriString()
    * @generated
    * @ordered
    */
-  protected RegularExpression val = VAL_EDEFAULT;
+  protected String uriString = URI_STRING_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected RegexpLiteralImpl()
+  protected NativeImporterImpl()
   {
     super();
   }
@@ -69,7 +68,7 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.REGEXP_LITERAL;
+    return BeeLangPackage.Literals.NATIVE_IMPORTER;
   }
 
   /**
@@ -77,9 +76,9 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public RegularExpression getVal()
+  public String getUriString()
   {
-    return val;
+    return uriString;
   }
 
   /**
@@ -87,12 +86,12 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setVal(RegularExpression newVal)
+  public void setUriString(String newUriString)
   {
-    RegularExpression oldVal = val;
-    val = newVal;
+    String oldUriString = uriString;
+    uriString = newUriString;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REGEXP_LITERAL__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.NATIVE_IMPORTER__URI_STRING, oldUriString, uriString));
   }
 
   /**
@@ -105,8 +104,8 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.REGEXP_LITERAL__VAL:
-        return getVal();
+      case BeeLangPackage.NATIVE_IMPORTER__URI_STRING:
+        return getUriString();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -121,8 +120,8 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.REGEXP_LITERAL__VAL:
-        setVal((RegularExpression)newValue);
+      case BeeLangPackage.NATIVE_IMPORTER__URI_STRING:
+        setUriString((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -138,8 +137,8 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.REGEXP_LITERAL__VAL:
-        setVal(VAL_EDEFAULT);
+      case BeeLangPackage.NATIVE_IMPORTER__URI_STRING:
+        setUriString(URI_STRING_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -155,8 +154,8 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.REGEXP_LITERAL__VAL:
-        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
+      case BeeLangPackage.NATIVE_IMPORTER__URI_STRING:
+        return URI_STRING_EDEFAULT == null ? uriString != null : !URI_STRING_EDEFAULT.equals(uriString);
     }
     return super.eIsSet(featureID);
   }
@@ -172,10 +171,10 @@ public class RegexpLiteralImpl extends ExpressionImpl implements RegexpLiteral
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (uriString: ");
+    result.append(uriString);
     result.append(')');
     return result.toString();
   }
 
-} //RegexpLiteralImpl
+} //NativeImporterImpl

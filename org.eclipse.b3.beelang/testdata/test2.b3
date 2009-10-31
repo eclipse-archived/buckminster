@@ -194,7 +194,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		$path = Path($pathFromCommandLine);
 		// note, that to call a method on a property, it must be enclosed in (), as
 		// $a.b() is ambigous - call the function returned by $a.b, or an error
-		$flag = ($path).exists(); 
+		$flag = ($path).hello(); 
 		$flag = $var(fee);
 	}
 	
@@ -293,7 +293,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 					assert SomeAssertProvider.checksumValidation("test.a1"), "Checksum failed"; 
 					}
 		{
-		layout{
+		output{
 		a; // a vector with one entry
 		a, b; // a vector with two entries
 		a [ b, c]; // a base path (a), with two relative paths in a vector
@@ -327,7 +327,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 	
 	
 	providesMany provides  a/b/1.0, c/d/2.0, x/y/3.0 { 
-		layout {
+		output {
 		lotsOfStuff;
 		}
 		return layout;
@@ -373,7 +373,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 	precondition { assert 2 > 1, "Integer logic is flawed!"; }
 	postcondition { assert 2 > 1, "Integer logic is flawed after the group was built!!!"; }
 	{
-	group {
+	input {
 	 	a; // referense to part in self
 		foo/bar; // reference to #self in interface foo, name bar
 		a/a#b; // reference to #b in interface a, name a
@@ -474,7 +474,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 	postcondition { assert 2 > 1, "Integer logic is flawed after the action was performed!!!"; }
 	{
 		properties { $a = $b; }
-		group
+		input
 			precondition { assert 2 > 1, "Integer logic is flawed!"; }
 			postcondition { assert 2 > 1, "Integer logic is flawed after the group was evaluated!!!"; }
 		{
@@ -500,7 +500,7 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 			when (false) a/a#b;
 			hidden when (true) a/a#b;
 			}
-		layout postcondition { assert 2 > 1, "Integer logic is flawed after the result was produced!!!"; }
+		output postcondition { assert 2 > 1, "Integer logic is flawed after the result was produced!!!"; }
 		{	when(simpleA) a;
 			when(advancedA) a/a; a/b;
 			annotations { $revision="r101010"; } 
@@ -516,15 +516,15 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		// but set a property
 		//
 		properties{ $target.platform = "win32";}
-		layout { b.txt; }
+		output { b.txt; }
 		SomeActor.populateThisPlace(layout, properties);
 	}
 
 	test3 provides a/b/"1"
 	{
 		// group input with a specified wanted layout
-		group { a; } 
-		layout { b.txt; }
+		input { a; } 
+		output { b.txt; }
 		SomeActor.doSomething(group,layout);
 	}
 	test3 provides a/b/"1"
@@ -533,16 +533,16 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 		// that the actor knows how to handle.
 		
 		properties{ $docAndSourceRoot = "outputFolder";}
-		group { a; } 
-		layout{ b.txt; }
+		input { a; } 
+		output{ b.txt; }
 		SomeActor.doSomething(group, layout,properties);
 	}
 	test4 provides a/b/"1"
 	{
 		// Pick different layout based on target platform
-		group { a; } 
+		input { a; } 
 		
-		layout{ 
+		output{ 
 			when($target.platform =="win32")  b.exe; 
 			when($target.platform =="macosx") b.app;
 			when(!($target.platform =="macosx" || $target.platform=="win32")) b;
@@ -553,8 +553,8 @@ sequential unit test version 2.3  implements osgi.bundle, eclipse.ecore.model {
 	WithAnnotations  {
 		properties { $a = b; }
 		advice { } 
-		group { a; b; c;}
-		layout { a, b, c; base [x, y, z]; annotations{ $a = $a+$b;}}
+		input { a; b; c;}
+		output { a, b, c; base [x, y, z]; annotations{ $a = $a+$b;}}
 		return SomeActor.doSomething(group, layout, properties);
 	}
 

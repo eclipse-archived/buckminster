@@ -83,19 +83,19 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createBeeModelAdapter();
       }
       @Override
-      public Adapter caseVersion(Version object)
-      {
-        return createVersionAdapter();
-      }
-      @Override
-      public Adapter caseVersionRange(VersionRange object)
-      {
-        return createVersionRangeAdapter();
-      }
-      @Override
       public Adapter caseImport(Import object)
       {
         return createImportAdapter();
+      }
+      @Override
+      public Adapter caseJavaImporter(JavaImporter object)
+      {
+        return createJavaImporterAdapter();
+      }
+      @Override
+      public Adapter caseNativeImporter(NativeImporter object)
+      {
+        return createNativeImporterAdapter();
       }
       @Override
       public Adapter caseBuildUnit(BuildUnit object)
@@ -203,9 +203,9 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createCompoundReferencesAdapter();
       }
       @Override
-      public Adapter casePart(Part object)
+      public Adapter caseBuildMethod(BuildMethod object)
       {
-        return createPartAdapter();
+        return createBuildMethodAdapter();
       }
       @Override
       public Adapter caseParameter(Parameter object)
@@ -428,6 +428,16 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createFeatureAdapter();
       }
       @Override
+      public Adapter caseVersion(Version object)
+      {
+        return createVersionAdapter();
+      }
+      @Override
+      public Adapter caseVersionRange(VersionRange object)
+      {
+        return createVersionRangeAdapter();
+      }
+      @Override
       public Adapter caseVarExpression(VarExpression object)
       {
         return createVarExpressionAdapter();
@@ -456,6 +466,11 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
       public Adapter caseRelationalOperation(RelationalOperation object)
       {
         return createRelationalOperationAdapter();
+      }
+      @Override
+      public Adapter caseSetOperationCall(SetOperationCall object)
+      {
+        return createSetOperationCallAdapter();
       }
       @Override
       public Adapter caseUnaryOperation(UnaryOperation object)
@@ -585,36 +600,6 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Version <em>Version</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.Version
-   * @generated
-   */
-  public Adapter createVersionAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.VersionRange <em>Version Range</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.VersionRange
-   * @generated
-   */
-  public Adapter createVersionRangeAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Import <em>Import</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -625,6 +610,36 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createImportAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.JavaImporter <em>Java Importer</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.JavaImporter
+   * @generated
+   */
+  public Adapter createJavaImporterAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.NativeImporter <em>Native Importer</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.NativeImporter
+   * @generated
+   */
+  public Adapter createNativeImporterAdapter()
   {
     return null;
   }
@@ -945,16 +960,16 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Part <em>Part</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.BuildMethod <em>Build Method</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.Part
+   * @see org.eclipse.b3.beeLang.BuildMethod
    * @generated
    */
-  public Adapter createPartAdapter()
+  public Adapter createBuildMethodAdapter()
   {
     return null;
   }
@@ -1620,6 +1635,36 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Version <em>Version</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.Version
+   * @generated
+   */
+  public Adapter createVersionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.VersionRange <em>Version Range</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.VersionRange
+   * @generated
+   */
+  public Adapter createVersionRangeAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.VarExpression <em>Var Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1705,6 +1750,21 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createRelationalOperationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.SetOperationCall <em>Set Operation Call</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.SetOperationCall
+   * @generated
+   */
+  public Adapter createSetOperationCallAdapter()
   {
     return null;
   }

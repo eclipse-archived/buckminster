@@ -5,6 +5,7 @@
  */
 package org.eclipse.b3.beeLang;
 
+import org.eclipse.b3.RegularExpression;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,12 +34,12 @@ public interface RegexpSelector extends Selector
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Pattern</em>' attribute.
-   * @see #setPattern(String)
+   * @see #setPattern(RegularExpression)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getRegexpSelector_Pattern()
-   * @model
+   * @model dataType="beelangtypes.RegularExpression"
    * @generated
    */
-  String getPattern();
+  RegularExpression getPattern();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.RegexpSelector#getPattern <em>Pattern</em>}' attribute.
@@ -48,6 +49,6 @@ public interface RegexpSelector extends Selector
    * @see #getPattern()
    * @generated
    */
-  void setPattern(String value);
+  void setPattern(RegularExpression value);
 
 } // RegexpSelector

@@ -98,89 +98,6 @@ public interface BeeLangPackage extends EPackage
   int BEE_MODEL_FEATURE_COUNT = 2;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.VersionImpl <em>Version</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.VersionImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersion()
-   * @generated
-   */
-  int VERSION = 1;
-
-  /**
-   * The feature id for the '<em><b>Original</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION__ORIGINAL = 0;
-
-  /**
-   * The number of structural features of the '<em>Version</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_FEATURE_COUNT = 1;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.VersionRangeImpl <em>Version Range</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.VersionRangeImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersionRange()
-   * @generated
-   */
-  int VERSION_RANGE = 2;
-
-  /**
-   * The feature id for the '<em><b>Min Limit</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MIN_LIMIT = 0;
-
-  /**
-   * The feature id for the '<em><b>Min</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MIN = 1;
-
-  /**
-   * The feature id for the '<em><b>Max</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MAX = 2;
-
-  /**
-   * The feature id for the '<em><b>Max Limit</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MAX_LIMIT = 3;
-
-  /**
-   * The number of structural features of the '<em>Version Range</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE_FEATURE_COUNT = 4;
-
-  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ImportImpl <em>Import</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -188,16 +105,34 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getImport()
    * @generated
    */
-  int IMPORT = 3;
+  int IMPORT = 1;
 
   /**
-   * The feature id for the '<em><b>Import Class</b></em>' attribute.
+   * The feature id for the '<em><b>Reexport</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int IMPORT__IMPORT_CLASS = 0;
+  int IMPORT__REEXPORT = 0;
+
+  /**
+   * The feature id for the '<em><b>Importer</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMPORT__IMPORTER = 1;
+
+  /**
+   * The feature id for the '<em><b>Name Space</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMPORT__NAME_SPACE = 2;
 
   /**
    * The number of structural features of the '<em>Import</em>' class.
@@ -206,7 +141,72 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int IMPORT_FEATURE_COUNT = 1;
+  int IMPORT_FEATURE_COUNT = 3;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.JavaImporterImpl <em>Java Importer</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.JavaImporterImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getJavaImporter()
+   * @generated
+   */
+  int JAVA_IMPORTER = 2;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int JAVA_IMPORTER__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Package</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int JAVA_IMPORTER__PACKAGE = 1;
+
+  /**
+   * The number of structural features of the '<em>Java Importer</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int JAVA_IMPORTER_FEATURE_COUNT = 2;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.NativeImporterImpl <em>Native Importer</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.NativeImporterImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNativeImporter()
+   * @generated
+   */
+  int NATIVE_IMPORTER = 3;
+
+  /**
+   * The feature id for the '<em><b>Uri String</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int NATIVE_IMPORTER__URI_STRING = 0;
+
+  /**
+   * The number of structural features of the '<em>Native Importer</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int NATIVE_IMPORTER_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl <em>Build Unit</em>}' class.
@@ -309,13 +309,13 @@ public interface BeeLangPackage extends EPackage
   int BUILD_UNIT__SYNCHRONIZATIONS = 9;
 
   /**
-   * The feature id for the '<em><b>Parts</b></em>' containment reference list.
+   * The feature id for the '<em><b>Build Methods</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BUILD_UNIT__PARTS = 10;
+  int BUILD_UNIT__BUILD_METHODS = 10;
 
   /**
    * The feature id for the '<em><b>Repository Configurations</b></em>' containment reference list.
@@ -846,22 +846,13 @@ public interface BeeLangPackage extends EPackage
   int PREREQUISITE = 19;
 
   /**
-   * The feature id for the '<em><b>Surpressed</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PREREQUISITE__SURPRESSED = 0;
-
-  /**
    * The feature id for the '<em><b>Filter</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PREREQUISITE__FILTER = 1;
+  int PREREQUISITE__FILTER = 0;
 
   /**
    * The feature id for the '<em><b>Alias</b></em>' attribute.
@@ -870,7 +861,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PREREQUISITE__ALIAS = 2;
+  int PREREQUISITE__ALIAS = 1;
 
   /**
    * The feature id for the '<em><b>Part Reference</b></em>' containment reference.
@@ -879,7 +870,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PREREQUISITE__PART_REFERENCE = 3;
+  int PREREQUISITE__PART_REFERENCE = 2;
 
   /**
    * The feature id for the '<em><b>Closure</b></em>' containment reference.
@@ -888,7 +879,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PREREQUISITE__CLOSURE = 4;
+  int PREREQUISITE__CLOSURE = 3;
 
   /**
    * The number of structural features of the '<em>Prerequisite</em>' class.
@@ -897,7 +888,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PREREQUISITE_FEATURE_COUNT = 5;
+  int PREREQUISITE_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ClosureImpl <em>Closure</em>}' class.
@@ -1067,14 +1058,14 @@ public interface BeeLangPackage extends EPackage
   int COMPOUND_REFERENCES_FEATURE_COUNT = PREREQUISITE_ENTRY_FEATURE_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PartImpl <em>Part</em>}' class.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl <em>Build Method</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.PartImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPart()
+   * @see org.eclipse.b3.beeLang.impl.BuildMethodImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBuildMethod()
    * @generated
    */
-  int PART = 25;
+  int BUILD_METHOD = 25;
 
   /**
    * The feature id for the '<em><b>Visibility</b></em>' attribute.
@@ -1083,7 +1074,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__VISIBILITY = 0;
+  int BUILD_METHOD__VISIBILITY = 0;
 
   /**
    * The feature id for the '<em><b>Execution Mode</b></em>' attribute.
@@ -1092,7 +1083,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__EXECUTION_MODE = 1;
+  int BUILD_METHOD__EXECUTION_MODE = 1;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BUILD_METHOD__NAME = 2;
 
   /**
    * The feature id for the '<em><b>Provided Capabilities</b></em>' containment reference list.
@@ -1101,7 +1101,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__PROVIDED_CAPABILITIES = 2;
+  int BUILD_METHOD__PROVIDED_CAPABILITIES = 3;
 
   /**
    * The feature id for the '<em><b>Pre Condition</b></em>' containment reference.
@@ -1110,7 +1110,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__PRE_CONDITION = 3;
+  int BUILD_METHOD__PRE_CONDITION = 4;
 
   /**
    * The feature id for the '<em><b>Post Condition</b></em>' containment reference.
@@ -1119,7 +1119,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__POST_CONDITION = 4;
+  int BUILD_METHOD__POST_CONDITION = 5;
 
   /**
    * The feature id for the '<em><b>Properties</b></em>' containment reference.
@@ -1128,7 +1128,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__PROPERTIES = 5;
+  int BUILD_METHOD__PROPERTIES = 6;
 
   /**
    * The feature id for the '<em><b>Advice</b></em>' containment reference.
@@ -1137,7 +1137,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__ADVICE = 6;
+  int BUILD_METHOD__ADVICE = 7;
 
   /**
    * The feature id for the '<em><b>Group</b></em>' containment reference.
@@ -1146,7 +1146,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__GROUP = 7;
+  int BUILD_METHOD__GROUP = 8;
 
   /**
    * The feature id for the '<em><b>Layout</b></em>' containment reference.
@@ -1155,7 +1155,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__LAYOUT = 8;
+  int BUILD_METHOD__LAYOUT = 9;
 
   /**
    * The feature id for the '<em><b>Statements</b></em>' containment reference.
@@ -1164,16 +1164,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PART__STATEMENTS = 9;
+  int BUILD_METHOD__STATEMENTS = 10;
 
   /**
-   * The number of structural features of the '<em>Part</em>' class.
+   * The number of structural features of the '<em>Build Method</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PART_FEATURE_COUNT = 10;
+  int BUILD_METHOD_FEATURE_COUNT = 11;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ParameterImpl <em>Parameter</em>}' class.
@@ -2750,6 +2750,89 @@ public interface BeeLangPackage extends EPackage
   int FEATURE_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.VersionImpl <em>Version</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.VersionImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersion()
+   * @generated
+   */
+  int VERSION = 70;
+
+  /**
+   * The feature id for the '<em><b>Original</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION__ORIGINAL = 0;
+
+  /**
+   * The number of structural features of the '<em>Version</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_FEATURE_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.VersionRangeImpl <em>Version Range</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.VersionRangeImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersionRange()
+   * @generated
+   */
+  int VERSION_RANGE = 71;
+
+  /**
+   * The feature id for the '<em><b>Min Limit</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_RANGE__MIN_LIMIT = 0;
+
+  /**
+   * The feature id for the '<em><b>Min</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_RANGE__MIN = 1;
+
+  /**
+   * The feature id for the '<em><b>Max</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_RANGE__MAX = 2;
+
+  /**
+   * The feature id for the '<em><b>Max Limit</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_RANGE__MAX_LIMIT = 3;
+
+  /**
+   * The number of structural features of the '<em>Version Range</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_RANGE_FEATURE_COUNT = 4;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.VarExpressionImpl <em>Var Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2757,7 +2840,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVarExpression()
    * @generated
    */
-  int VAR_EXPRESSION = 70;
+  int VAR_EXPRESSION = 72;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -2803,7 +2886,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssignmentOperation()
    * @generated
    */
-  int ASSIGNMENT_OPERATION = 71;
+  int ASSIGNMENT_OPERATION = 73;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -2858,7 +2941,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIfExpression()
    * @generated
    */
-  int IF_EXPRESSION = 72;
+  int IF_EXPRESSION = 74;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -2913,7 +2996,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanOperation()
    * @generated
    */
-  int BOOLEAN_OPERATION = 73;
+  int BOOLEAN_OPERATION = 75;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -2968,7 +3051,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getOperationCall()
    * @generated
    */
-  int OPERATION_CALL = 74;
+  int OPERATION_CALL = 76;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3032,7 +3115,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRelationalOperation()
    * @generated
    */
-  int RELATIONAL_OPERATION = 75;
+  int RELATIONAL_OPERATION = 77;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3080,6 +3163,52 @@ public interface BeeLangPackage extends EPackage
   int RELATIONAL_OPERATION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.SetOperationCallImpl <em>Set Operation Call</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.SetOperationCallImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperationCall()
+   * @generated
+   */
+  int SET_OPERATION_CALL = 78;
+
+  /**
+   * The feature id for the '<em><b>Sval</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SET_OPERATION_CALL__SVAL = EXPRESSION__SVAL;
+
+  /**
+   * The feature id for the '<em><b>Params</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SET_OPERATION_CALL__PARAMS = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Op</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SET_OPERATION_CALL__OP = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Set Operation Call</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SET_OPERATION_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.UnaryOperationImpl <em>Unary Operation</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3087,7 +3216,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnaryOperation()
    * @generated
    */
-  int UNARY_OPERATION = 76;
+  int UNARY_OPERATION = 79;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3133,7 +3262,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAtCall()
    * @generated
    */
-  int AT_CALL = 77;
+  int AT_CALL = 80;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3188,7 +3317,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeatureCall()
    * @generated
    */
-  int FEATURE_CALL = 78;
+  int FEATURE_CALL = 81;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3234,7 +3363,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyValue()
    * @generated
    */
-  int PROPERTY_VALUE = 79;
+  int PROPERTY_VALUE = 82;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3271,7 +3400,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVariableValue()
    * @generated
    */
-  int VARIABLE_VALUE = 80;
+  int VARIABLE_VALUE = 83;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3308,7 +3437,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getKeywordVariable()
    * @generated
    */
-  int KEYWORD_VARIABLE = 81;
+  int KEYWORD_VARIABLE = 84;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3345,7 +3474,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCreatorCall()
    * @generated
    */
-  int CREATOR_CALL = 82;
+  int CREATOR_CALL = 85;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3400,7 +3529,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteralArray()
    * @generated
    */
-  int LITERAL_ARRAY = 83;
+  int LITERAL_ARRAY = 86;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3437,7 +3566,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteralObject()
    * @generated
    */
-  int LITERAL_OBJECT = 84;
+  int LITERAL_OBJECT = 87;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3474,7 +3603,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteralFunction()
    * @generated
    */
-  int LITERAL_FUNCTION = 85;
+  int LITERAL_FUNCTION = 88;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3520,7 +3649,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanLiteral()
    * @generated
    */
-  int BOOLEAN_LITERAL = 86;
+  int BOOLEAN_LITERAL = 89;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3557,7 +3686,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIntegerLiteral()
    * @generated
    */
-  int INTEGER_LITERAL = 87;
+  int INTEGER_LITERAL = 90;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3594,7 +3723,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNullLiteral()
    * @generated
    */
-  int NULL_LITERAL = 88;
+  int NULL_LITERAL = 91;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3631,7 +3760,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUndefinedLiteral()
    * @generated
    */
-  int UNDEFINED_LITERAL = 89;
+  int UNDEFINED_LITERAL = 92;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3668,7 +3797,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 90;
+  int STRING_LITERAL = 93;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3705,7 +3834,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRealLiteral()
    * @generated
    */
-  int REAL_LITERAL = 91;
+  int REAL_LITERAL = 94;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3742,7 +3871,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRegexpLiteral()
    * @generated
    */
-  int REGEXP_LITERAL = 92;
+  int REGEXP_LITERAL = 95;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3779,7 +3908,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQueryLiteral()
    * @generated
    */
-  int QUERY_LITERAL = 93;
+  int QUERY_LITERAL = 96;
 
   /**
    * The feature id for the '<em><b>Sval</b></em>' attribute.
@@ -3809,26 +3938,6 @@ public interface BeeLangPackage extends EPackage
   int QUERY_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}' enum.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.Visibility
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
-   * @generated
-   */
-  int VISIBILITY = 94;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.ExecutionMode
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
-   * @generated
-   */
-  int EXECUTION_MODE = 95;
-
-  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3836,7 +3945,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssignmentOperator()
    * @generated
    */
-  int ASSIGNMENT_OPERATOR = 96;
+  int ASSIGNMENT_OPERATOR = 97;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.RelationalOperator <em>Relational Operator</em>}' enum.
@@ -3846,7 +3955,37 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRelationalOperator()
    * @generated
    */
-  int RELATIONAL_OPERATOR = 97;
+  int RELATIONAL_OPERATOR = 98;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.SetOperator <em>Set Operator</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.SetOperator
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperator()
+   * @generated
+   */
+  int SET_OPERATOR = 99;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.Visibility
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
+   * @generated
+   */
+  int VISIBILITY = 100;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
+   * @generated
+   */
+  int EXECUTION_MODE = 101;
 
 
   /**
@@ -3882,81 +4021,6 @@ public interface BeeLangPackage extends EPackage
   EReference getBeeModel_Body();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Version <em>Version</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Version</em>'.
-   * @see org.eclipse.b3.beeLang.Version
-   * @generated
-   */
-  EClass getVersion();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Version#getOriginal <em>Original</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Original</em>'.
-   * @see org.eclipse.b3.beeLang.Version#getOriginal()
-   * @see #getVersion()
-   * @generated
-   */
-  EAttribute getVersion_Original();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.VersionRange <em>Version Range</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Version Range</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange
-   * @generated
-   */
-  EClass getVersionRange();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getMinLimit <em>Min Limit</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Min Limit</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMinLimit()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EAttribute getVersionRange_MinLimit();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.VersionRange#getMin <em>Min</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Min</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMin()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EReference getVersionRange_Min();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.VersionRange#getMax <em>Max</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Max</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMax()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EReference getVersionRange_Max();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getMaxLimit <em>Max Limit</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Max Limit</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMaxLimit()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EAttribute getVersionRange_MaxLimit();
-
-  /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Import <em>Import</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3967,15 +4031,90 @@ public interface BeeLangPackage extends EPackage
   EClass getImport();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Import#getImportClass <em>Import Class</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Import#isReexport <em>Reexport</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Import Class</em>'.
-   * @see org.eclipse.b3.beeLang.Import#getImportClass()
+   * @return the meta object for the attribute '<em>Reexport</em>'.
+   * @see org.eclipse.b3.beeLang.Import#isReexport()
    * @see #getImport()
    * @generated
    */
-  EAttribute getImport_ImportClass();
+  EAttribute getImport_Reexport();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Import#getImporter <em>Importer</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Importer</em>'.
+   * @see org.eclipse.b3.beeLang.Import#getImporter()
+   * @see #getImport()
+   * @generated
+   */
+  EReference getImport_Importer();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Import#getNameSpace <em>Name Space</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name Space</em>'.
+   * @see org.eclipse.b3.beeLang.Import#getNameSpace()
+   * @see #getImport()
+   * @generated
+   */
+  EAttribute getImport_NameSpace();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.JavaImporter <em>Java Importer</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Java Importer</em>'.
+   * @see org.eclipse.b3.beeLang.JavaImporter
+   * @generated
+   */
+  EClass getJavaImporter();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.JavaImporter#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.b3.beeLang.JavaImporter#getName()
+   * @see #getJavaImporter()
+   * @generated
+   */
+  EAttribute getJavaImporter_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.JavaImporter#isPackage <em>Package</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Package</em>'.
+   * @see org.eclipse.b3.beeLang.JavaImporter#isPackage()
+   * @see #getJavaImporter()
+   * @generated
+   */
+  EAttribute getJavaImporter_Package();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.NativeImporter <em>Native Importer</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Native Importer</em>'.
+   * @see org.eclipse.b3.beeLang.NativeImporter
+   * @generated
+   */
+  EClass getNativeImporter();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.NativeImporter#getUriString <em>Uri String</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Uri String</em>'.
+   * @see org.eclipse.b3.beeLang.NativeImporter#getUriString()
+   * @see #getNativeImporter()
+   * @generated
+   */
+  EAttribute getNativeImporter_UriString();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.BuildUnit <em>Build Unit</em>}'.
@@ -4098,15 +4237,15 @@ public interface BeeLangPackage extends EPackage
   EReference getBuildUnit_Synchronizations();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getParts <em>Parts</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getBuildMethods <em>Build Methods</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Parts</em>'.
-   * @see org.eclipse.b3.beeLang.BuildUnit#getParts()
+   * @return the meta object for the containment reference list '<em>Build Methods</em>'.
+   * @see org.eclipse.b3.beeLang.BuildUnit#getBuildMethods()
    * @see #getBuildUnit()
    * @generated
    */
-  EReference getBuildUnit_Parts();
+  EReference getBuildUnit_BuildMethods();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getRepositoryConfigurations <em>Repository Configurations</em>}'.
@@ -4556,17 +4695,6 @@ public interface BeeLangPackage extends EPackage
   EClass getPrerequisite();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Prerequisite#isSurpressed <em>Surpressed</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Surpressed</em>'.
-   * @see org.eclipse.b3.beeLang.Prerequisite#isSurpressed()
-   * @see #getPrerequisite()
-   * @generated
-   */
-  EAttribute getPrerequisite_Surpressed();
-
-  /**
    * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Prerequisite#getFilter <em>Filter</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4749,124 +4877,135 @@ public interface BeeLangPackage extends EPackage
   EReference getCompoundReferences_Prerequisites();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Part <em>Part</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.BuildMethod <em>Build Method</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Part</em>'.
-   * @see org.eclipse.b3.beeLang.Part
+   * @return the meta object for class '<em>Build Method</em>'.
+   * @see org.eclipse.b3.beeLang.BuildMethod
    * @generated
    */
-  EClass getPart();
+  EClass getBuildMethod();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Part#getVisibility <em>Visibility</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.BuildMethod#getVisibility <em>Visibility</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Visibility</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getVisibility()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getVisibility()
+   * @see #getBuildMethod()
    * @generated
    */
-  EAttribute getPart_Visibility();
+  EAttribute getBuildMethod_Visibility();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Part#getExecutionMode <em>Execution Mode</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.BuildMethod#getExecutionMode <em>Execution Mode</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Execution Mode</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getExecutionMode()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getExecutionMode()
+   * @see #getBuildMethod()
    * @generated
    */
-  EAttribute getPart_ExecutionMode();
+  EAttribute getBuildMethod_ExecutionMode();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Part#getProvidedCapabilities <em>Provided Capabilities</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.BuildMethod#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.b3.beeLang.BuildMethod#getName()
+   * @see #getBuildMethod()
+   * @generated
+   */
+  EAttribute getBuildMethod_Name();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildMethod#getProvidedCapabilities <em>Provided Capabilities</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Provided Capabilities</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getProvidedCapabilities()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getProvidedCapabilities()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_ProvidedCapabilities();
+  EReference getBuildMethod_ProvidedCapabilities();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getPreCondition <em>Pre Condition</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getPreCondition <em>Pre Condition</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Pre Condition</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getPreCondition()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getPreCondition()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_PreCondition();
+  EReference getBuildMethod_PreCondition();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getPostCondition <em>Post Condition</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getPostCondition <em>Post Condition</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Post Condition</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getPostCondition()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getPostCondition()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_PostCondition();
+  EReference getBuildMethod_PostCondition();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getProperties <em>Properties</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getProperties <em>Properties</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Properties</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getProperties()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getProperties()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_Properties();
+  EReference getBuildMethod_Properties();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getAdvice <em>Advice</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getAdvice <em>Advice</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Advice</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getAdvice()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getAdvice()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_Advice();
+  EReference getBuildMethod_Advice();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getGroup <em>Group</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getGroup <em>Group</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Group</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getGroup()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getGroup()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_Group();
+  EReference getBuildMethod_Group();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getLayout <em>Layout</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getLayout <em>Layout</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Layout</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getLayout()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getLayout()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_Layout();
+  EReference getBuildMethod_Layout();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Part#getStatements <em>Statements</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.BuildMethod#getStatements <em>Statements</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Statements</em>'.
-   * @see org.eclipse.b3.beeLang.Part#getStatements()
-   * @see #getPart()
+   * @see org.eclipse.b3.beeLang.BuildMethod#getStatements()
+   * @see #getBuildMethod()
    * @generated
    */
-  EReference getPart_Statements();
+  EReference getBuildMethod_Statements();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Parameter <em>Parameter</em>}'.
@@ -6068,6 +6207,81 @@ public interface BeeLangPackage extends EPackage
   EReference getFeature_Value();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Version <em>Version</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Version</em>'.
+   * @see org.eclipse.b3.beeLang.Version
+   * @generated
+   */
+  EClass getVersion();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Version#getOriginal <em>Original</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Original</em>'.
+   * @see org.eclipse.b3.beeLang.Version#getOriginal()
+   * @see #getVersion()
+   * @generated
+   */
+  EAttribute getVersion_Original();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.VersionRange <em>Version Range</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Version Range</em>'.
+   * @see org.eclipse.b3.beeLang.VersionRange
+   * @generated
+   */
+  EClass getVersionRange();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getMinLimit <em>Min Limit</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Min Limit</em>'.
+   * @see org.eclipse.b3.beeLang.VersionRange#getMinLimit()
+   * @see #getVersionRange()
+   * @generated
+   */
+  EAttribute getVersionRange_MinLimit();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.VersionRange#getMin <em>Min</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Min</em>'.
+   * @see org.eclipse.b3.beeLang.VersionRange#getMin()
+   * @see #getVersionRange()
+   * @generated
+   */
+  EReference getVersionRange_Min();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.VersionRange#getMax <em>Max</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Max</em>'.
+   * @see org.eclipse.b3.beeLang.VersionRange#getMax()
+   * @see #getVersionRange()
+   * @generated
+   */
+  EReference getVersionRange_Max();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getMaxLimit <em>Max Limit</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Max Limit</em>'.
+   * @see org.eclipse.b3.beeLang.VersionRange#getMaxLimit()
+   * @see #getVersionRange()
+   * @generated
+   */
+  EAttribute getVersionRange_MaxLimit();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.VarExpression <em>Var Expression</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6324,6 +6538,38 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getRelationalOperation_Right();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.SetOperationCall <em>Set Operation Call</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Set Operation Call</em>'.
+   * @see org.eclipse.b3.beeLang.SetOperationCall
+   * @generated
+   */
+  EClass getSetOperationCall();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.SetOperationCall#getParams <em>Params</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Params</em>'.
+   * @see org.eclipse.b3.beeLang.SetOperationCall#getParams()
+   * @see #getSetOperationCall()
+   * @generated
+   */
+  EReference getSetOperationCall_Params();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.SetOperationCall#getOp <em>Op</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Op</em>'.
+   * @see org.eclipse.b3.beeLang.SetOperationCall#getOp()
+   * @see #getSetOperationCall()
+   * @generated
+   */
+  EAttribute getSetOperationCall_Op();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.UnaryOperation <em>Unary Operation</em>}'.
@@ -6781,26 +7027,6 @@ public interface BeeLangPackage extends EPackage
   EReference getQueryLiteral_Val();
 
   /**
-   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for enum '<em>Visibility</em>'.
-   * @see org.eclipse.b3.beeLang.Visibility
-   * @generated
-   */
-  EEnum getVisibility();
-
-  /**
-   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for enum '<em>Execution Mode</em>'.
-   * @see org.eclipse.b3.beeLang.ExecutionMode
-   * @generated
-   */
-  EEnum getExecutionMode();
-
-  /**
    * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6819,6 +7045,36 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EEnum getRelationalOperator();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.SetOperator <em>Set Operator</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Set Operator</em>'.
+   * @see org.eclipse.b3.beeLang.SetOperator
+   * @generated
+   */
+  EEnum getSetOperator();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Visibility</em>'.
+   * @see org.eclipse.b3.beeLang.Visibility
+   * @generated
+   */
+  EEnum getVisibility();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Execution Mode</em>'.
+   * @see org.eclipse.b3.beeLang.ExecutionMode
+   * @generated
+   */
+  EEnum getExecutionMode();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -6870,66 +7126,6 @@ public interface BeeLangPackage extends EPackage
     EReference BEE_MODEL__BODY = eINSTANCE.getBeeModel_Body();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.VersionImpl <em>Version</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.VersionImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersion()
-     * @generated
-     */
-    EClass VERSION = eINSTANCE.getVersion();
-
-    /**
-     * The meta object literal for the '<em><b>Original</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute VERSION__ORIGINAL = eINSTANCE.getVersion_Original();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.VersionRangeImpl <em>Version Range</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.VersionRangeImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersionRange()
-     * @generated
-     */
-    EClass VERSION_RANGE = eINSTANCE.getVersionRange();
-
-    /**
-     * The meta object literal for the '<em><b>Min Limit</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute VERSION_RANGE__MIN_LIMIT = eINSTANCE.getVersionRange_MinLimit();
-
-    /**
-     * The meta object literal for the '<em><b>Min</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference VERSION_RANGE__MIN = eINSTANCE.getVersionRange_Min();
-
-    /**
-     * The meta object literal for the '<em><b>Max</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference VERSION_RANGE__MAX = eINSTANCE.getVersionRange_Max();
-
-    /**
-     * The meta object literal for the '<em><b>Max Limit</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute VERSION_RANGE__MAX_LIMIT = eINSTANCE.getVersionRange_MaxLimit();
-
-    /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ImportImpl <em>Import</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6940,12 +7136,72 @@ public interface BeeLangPackage extends EPackage
     EClass IMPORT = eINSTANCE.getImport();
 
     /**
-     * The meta object literal for the '<em><b>Import Class</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Reexport</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute IMPORT__IMPORT_CLASS = eINSTANCE.getImport_ImportClass();
+    EAttribute IMPORT__REEXPORT = eINSTANCE.getImport_Reexport();
+
+    /**
+     * The meta object literal for the '<em><b>Importer</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference IMPORT__IMPORTER = eINSTANCE.getImport_Importer();
+
+    /**
+     * The meta object literal for the '<em><b>Name Space</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute IMPORT__NAME_SPACE = eINSTANCE.getImport_NameSpace();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.JavaImporterImpl <em>Java Importer</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.JavaImporterImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getJavaImporter()
+     * @generated
+     */
+    EClass JAVA_IMPORTER = eINSTANCE.getJavaImporter();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute JAVA_IMPORTER__NAME = eINSTANCE.getJavaImporter_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Package</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute JAVA_IMPORTER__PACKAGE = eINSTANCE.getJavaImporter_Package();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.NativeImporterImpl <em>Native Importer</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.NativeImporterImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNativeImporter()
+     * @generated
+     */
+    EClass NATIVE_IMPORTER = eINSTANCE.getNativeImporter();
+
+    /**
+     * The meta object literal for the '<em><b>Uri String</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute NATIVE_IMPORTER__URI_STRING = eINSTANCE.getNativeImporter_UriString();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl <em>Build Unit</em>}' class.
@@ -7038,12 +7294,12 @@ public interface BeeLangPackage extends EPackage
     EReference BUILD_UNIT__SYNCHRONIZATIONS = eINSTANCE.getBuildUnit_Synchronizations();
 
     /**
-     * The meta object literal for the '<em><b>Parts</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Build Methods</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference BUILD_UNIT__PARTS = eINSTANCE.getBuildUnit_Parts();
+    EReference BUILD_UNIT__BUILD_METHODS = eINSTANCE.getBuildUnit_BuildMethods();
 
     /**
      * The meta object literal for the '<em><b>Repository Configurations</b></em>' containment reference list feature.
@@ -7412,14 +7668,6 @@ public interface BeeLangPackage extends EPackage
     EClass PREREQUISITE = eINSTANCE.getPrerequisite();
 
     /**
-     * The meta object literal for the '<em><b>Surpressed</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute PREREQUISITE__SURPRESSED = eINSTANCE.getPrerequisite_Surpressed();
-
-    /**
      * The meta object literal for the '<em><b>Filter</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7566,14 +7814,14 @@ public interface BeeLangPackage extends EPackage
     EReference COMPOUND_REFERENCES__PREREQUISITES = eINSTANCE.getCompoundReferences_Prerequisites();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PartImpl <em>Part</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl <em>Build Method</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.PartImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPart()
+     * @see org.eclipse.b3.beeLang.impl.BuildMethodImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBuildMethod()
      * @generated
      */
-    EClass PART = eINSTANCE.getPart();
+    EClass BUILD_METHOD = eINSTANCE.getBuildMethod();
 
     /**
      * The meta object literal for the '<em><b>Visibility</b></em>' attribute feature.
@@ -7581,7 +7829,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute PART__VISIBILITY = eINSTANCE.getPart_Visibility();
+    EAttribute BUILD_METHOD__VISIBILITY = eINSTANCE.getBuildMethod_Visibility();
 
     /**
      * The meta object literal for the '<em><b>Execution Mode</b></em>' attribute feature.
@@ -7589,7 +7837,15 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute PART__EXECUTION_MODE = eINSTANCE.getPart_ExecutionMode();
+    EAttribute BUILD_METHOD__EXECUTION_MODE = eINSTANCE.getBuildMethod_ExecutionMode();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BUILD_METHOD__NAME = eINSTANCE.getBuildMethod_Name();
 
     /**
      * The meta object literal for the '<em><b>Provided Capabilities</b></em>' containment reference list feature.
@@ -7597,7 +7853,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__PROVIDED_CAPABILITIES = eINSTANCE.getPart_ProvidedCapabilities();
+    EReference BUILD_METHOD__PROVIDED_CAPABILITIES = eINSTANCE.getBuildMethod_ProvidedCapabilities();
 
     /**
      * The meta object literal for the '<em><b>Pre Condition</b></em>' containment reference feature.
@@ -7605,7 +7861,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__PRE_CONDITION = eINSTANCE.getPart_PreCondition();
+    EReference BUILD_METHOD__PRE_CONDITION = eINSTANCE.getBuildMethod_PreCondition();
 
     /**
      * The meta object literal for the '<em><b>Post Condition</b></em>' containment reference feature.
@@ -7613,7 +7869,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__POST_CONDITION = eINSTANCE.getPart_PostCondition();
+    EReference BUILD_METHOD__POST_CONDITION = eINSTANCE.getBuildMethod_PostCondition();
 
     /**
      * The meta object literal for the '<em><b>Properties</b></em>' containment reference feature.
@@ -7621,7 +7877,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__PROPERTIES = eINSTANCE.getPart_Properties();
+    EReference BUILD_METHOD__PROPERTIES = eINSTANCE.getBuildMethod_Properties();
 
     /**
      * The meta object literal for the '<em><b>Advice</b></em>' containment reference feature.
@@ -7629,7 +7885,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__ADVICE = eINSTANCE.getPart_Advice();
+    EReference BUILD_METHOD__ADVICE = eINSTANCE.getBuildMethod_Advice();
 
     /**
      * The meta object literal for the '<em><b>Group</b></em>' containment reference feature.
@@ -7637,7 +7893,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__GROUP = eINSTANCE.getPart_Group();
+    EReference BUILD_METHOD__GROUP = eINSTANCE.getBuildMethod_Group();
 
     /**
      * The meta object literal for the '<em><b>Layout</b></em>' containment reference feature.
@@ -7645,7 +7901,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__LAYOUT = eINSTANCE.getPart_Layout();
+    EReference BUILD_METHOD__LAYOUT = eINSTANCE.getBuildMethod_Layout();
 
     /**
      * The meta object literal for the '<em><b>Statements</b></em>' containment reference feature.
@@ -7653,7 +7909,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PART__STATEMENTS = eINSTANCE.getPart_Statements();
+    EReference BUILD_METHOD__STATEMENTS = eINSTANCE.getBuildMethod_Statements();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ParameterImpl <em>Parameter</em>}' class.
@@ -8648,6 +8904,66 @@ public interface BeeLangPackage extends EPackage
     EReference FEATURE__VALUE = eINSTANCE.getFeature_Value();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.VersionImpl <em>Version</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.VersionImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersion()
+     * @generated
+     */
+    EClass VERSION = eINSTANCE.getVersion();
+
+    /**
+     * The meta object literal for the '<em><b>Original</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute VERSION__ORIGINAL = eINSTANCE.getVersion_Original();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.VersionRangeImpl <em>Version Range</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.VersionRangeImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersionRange()
+     * @generated
+     */
+    EClass VERSION_RANGE = eINSTANCE.getVersionRange();
+
+    /**
+     * The meta object literal for the '<em><b>Min Limit</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute VERSION_RANGE__MIN_LIMIT = eINSTANCE.getVersionRange_MinLimit();
+
+    /**
+     * The meta object literal for the '<em><b>Min</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VERSION_RANGE__MIN = eINSTANCE.getVersionRange_Min();
+
+    /**
+     * The meta object literal for the '<em><b>Max</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VERSION_RANGE__MAX = eINSTANCE.getVersionRange_Max();
+
+    /**
+     * The meta object literal for the '<em><b>Max Limit</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute VERSION_RANGE__MAX_LIMIT = eINSTANCE.getVersionRange_MaxLimit();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.VarExpressionImpl <em>Var Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8850,6 +9166,32 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference RELATIONAL_OPERATION__RIGHT = eINSTANCE.getRelationalOperation_Right();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.SetOperationCallImpl <em>Set Operation Call</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.SetOperationCallImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperationCall()
+     * @generated
+     */
+    EClass SET_OPERATION_CALL = eINSTANCE.getSetOperationCall();
+
+    /**
+     * The meta object literal for the '<em><b>Params</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference SET_OPERATION_CALL__PARAMS = eINSTANCE.getSetOperationCall_Params();
+
+    /**
+     * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SET_OPERATION_CALL__OP = eINSTANCE.getSetOperationCall_Op();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.UnaryOperationImpl <em>Unary Operation</em>}' class.
@@ -9232,26 +9574,6 @@ public interface BeeLangPackage extends EPackage
     EReference QUERY_LITERAL__VAL = eINSTANCE.getQueryLiteral_Val();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}' enum.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.Visibility
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
-     * @generated
-     */
-    EEnum VISIBILITY = eINSTANCE.getVisibility();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.ExecutionMode
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
-     * @generated
-     */
-    EEnum EXECUTION_MODE = eINSTANCE.getExecutionMode();
-
-    /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9270,6 +9592,36 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EEnum RELATIONAL_OPERATOR = eINSTANCE.getRelationalOperator();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.SetOperator <em>Set Operator</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.SetOperator
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperator()
+     * @generated
+     */
+    EEnum SET_OPERATOR = eINSTANCE.getSetOperator();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.Visibility
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
+     * @generated
+     */
+    EEnum VISIBILITY = eINSTANCE.getVisibility();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.ExecutionMode
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
+     * @generated
+     */
+    EEnum EXECUTION_MODE = eINSTANCE.getExecutionMode();
 
   }
 

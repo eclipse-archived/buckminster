@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#isSurpressed <em>Surpressed</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getFilter <em>Filter</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getAlias <em>Alias</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getPartReference <em>Part Reference</em>}</li>
@@ -29,32 +28,6 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Prerequisite extends EObject
 {
-  /**
-   * Returns the value of the '<em><b>Surpressed</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Surpressed</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Surpressed</em>' attribute.
-   * @see #setSurpressed(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPrerequisite_Surpressed()
-   * @model
-   * @generated
-   */
-  boolean isSurpressed();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Prerequisite#isSurpressed <em>Surpressed</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Surpressed</em>' attribute.
-   * @see #isSurpressed()
-   * @generated
-   */
-  void setSurpressed(boolean value);
-
   /**
    * Returns the value of the '<em><b>Filter</b></em>' containment reference.
    * <!-- begin-user-doc -->

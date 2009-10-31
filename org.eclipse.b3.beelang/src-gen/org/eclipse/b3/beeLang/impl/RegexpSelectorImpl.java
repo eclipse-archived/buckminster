@@ -5,6 +5,8 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
+import org.eclipse.b3.RegularExpression;
+
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.RegexpSelector;
 
@@ -37,7 +39,7 @@ public class RegexpSelectorImpl extends SelectorImpl implements RegexpSelector
    * @generated
    * @ordered
    */
-  protected static final String PATTERN_EDEFAULT = null;
+  protected static final RegularExpression PATTERN_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
@@ -47,7 +49,7 @@ public class RegexpSelectorImpl extends SelectorImpl implements RegexpSelector
    * @generated
    * @ordered
    */
-  protected String pattern = PATTERN_EDEFAULT;
+  protected RegularExpression pattern = PATTERN_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -75,7 +77,7 @@ public class RegexpSelectorImpl extends SelectorImpl implements RegexpSelector
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getPattern()
+  public RegularExpression getPattern()
   {
     return pattern;
   }
@@ -85,9 +87,9 @@ public class RegexpSelectorImpl extends SelectorImpl implements RegexpSelector
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setPattern(String newPattern)
+  public void setPattern(RegularExpression newPattern)
   {
-    String oldPattern = pattern;
+    RegularExpression oldPattern = pattern;
     pattern = newPattern;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REGEXP_SELECTOR__PATTERN, oldPattern, pattern));
@@ -120,7 +122,7 @@ public class RegexpSelectorImpl extends SelectorImpl implements RegexpSelector
     switch (featureID)
     {
       case BeeLangPackage.REGEXP_SELECTOR__PATTERN:
-        setPattern((String)newValue);
+        setPattern((RegularExpression)newValue);
         return;
     }
     super.eSet(featureID, newValue);

@@ -9,11 +9,11 @@ import java.util.Collection;
 
 import org.eclipse.b3.beeLang.Advice;
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.BuildMethod;
 import org.eclipse.b3.beeLang.CompoundPropertyOperation;
 import org.eclipse.b3.beeLang.ExecutionMode;
 import org.eclipse.b3.beeLang.Group;
 import org.eclipse.b3.beeLang.Layout;
-import org.eclipse.b3.beeLang.Part;
 import org.eclipse.b3.beeLang.PostCondition;
 import org.eclipse.b3.beeLang.PreCondition;
 import org.eclipse.b3.beeLang.ProvidedCapability;
@@ -36,27 +36,28 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Part</b></em>'.
+ * An implementation of the model object '<em><b>Build Method</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getVisibility <em>Visibility</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getExecutionMode <em>Execution Mode</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getProvidedCapabilities <em>Provided Capabilities</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getPreCondition <em>Pre Condition</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getPostCondition <em>Post Condition</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getProperties <em>Properties</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getAdvice <em>Advice</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getGroup <em>Group</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getLayout <em>Layout</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PartImpl#getStatements <em>Statements</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getVisibility <em>Visibility</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getExecutionMode <em>Execution Mode</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getProvidedCapabilities <em>Provided Capabilities</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getPreCondition <em>Pre Condition</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getPostCondition <em>Post Condition</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getProperties <em>Properties</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getAdvice <em>Advice</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getGroup <em>Group</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getLayout <em>Layout</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildMethodImpl#getStatements <em>Statements</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class PartImpl extends MinimalEObjectImpl.Container implements Part
+public class BuildMethodImpl extends MinimalEObjectImpl.Container implements BuildMethod
 {
   /**
    * The default value of the '{@link #getVisibility() <em>Visibility</em>}' attribute.
@@ -97,6 +98,26 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
    * @ordered
    */
   protected ExecutionMode executionMode = EXECUTION_MODE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getProvidedCapabilities() <em>Provided Capabilities</em>}' containment reference list.
@@ -183,7 +204,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
    * <!-- end-user-doc -->
    * @generated
    */
-  protected PartImpl()
+  protected BuildMethodImpl()
   {
     super();
   }
@@ -196,7 +217,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.PART;
+    return BeeLangPackage.Literals.BUILD_METHOD;
   }
 
   /**
@@ -219,7 +240,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     Visibility oldVisibility = visibility;
     visibility = newVisibility == null ? VISIBILITY_EDEFAULT : newVisibility;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__VISIBILITY, oldVisibility, visibility));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__VISIBILITY, oldVisibility, visibility));
   }
 
   /**
@@ -242,7 +263,30 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     ExecutionMode oldExecutionMode = executionMode;
     executionMode = newExecutionMode == null ? EXECUTION_MODE_EDEFAULT : newExecutionMode;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__EXECUTION_MODE, oldExecutionMode, executionMode));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__EXECUTION_MODE, oldExecutionMode, executionMode));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setName(String newName)
+  {
+    String oldName = name;
+    name = newName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__NAME, oldName, name));
   }
 
   /**
@@ -254,7 +298,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   {
     if (providedCapabilities == null)
     {
-      providedCapabilities = new EObjectContainmentEList<ProvidedCapability>(ProvidedCapability.class, this, BeeLangPackage.PART__PROVIDED_CAPABILITIES);
+      providedCapabilities = new EObjectContainmentEList<ProvidedCapability>(ProvidedCapability.class, this, BeeLangPackage.BUILD_METHOD__PROVIDED_CAPABILITIES);
     }
     return providedCapabilities;
   }
@@ -280,7 +324,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     preCondition = newPreCondition;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__PRE_CONDITION, oldPreCondition, newPreCondition);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__PRE_CONDITION, oldPreCondition, newPreCondition);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -297,14 +341,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (preCondition != null)
-        msgs = ((InternalEObject)preCondition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__PRE_CONDITION, null, msgs);
+        msgs = ((InternalEObject)preCondition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__PRE_CONDITION, null, msgs);
       if (newPreCondition != null)
-        msgs = ((InternalEObject)newPreCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__PRE_CONDITION, null, msgs);
+        msgs = ((InternalEObject)newPreCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__PRE_CONDITION, null, msgs);
       msgs = basicSetPreCondition(newPreCondition, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__PRE_CONDITION, newPreCondition, newPreCondition));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__PRE_CONDITION, newPreCondition, newPreCondition));
   }
 
   /**
@@ -328,7 +372,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     postCondition = newPostCondition;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__POST_CONDITION, oldPostCondition, newPostCondition);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__POST_CONDITION, oldPostCondition, newPostCondition);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -345,14 +389,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (postCondition != null)
-        msgs = ((InternalEObject)postCondition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__POST_CONDITION, null, msgs);
+        msgs = ((InternalEObject)postCondition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__POST_CONDITION, null, msgs);
       if (newPostCondition != null)
-        msgs = ((InternalEObject)newPostCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__POST_CONDITION, null, msgs);
+        msgs = ((InternalEObject)newPostCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__POST_CONDITION, null, msgs);
       msgs = basicSetPostCondition(newPostCondition, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__POST_CONDITION, newPostCondition, newPostCondition));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__POST_CONDITION, newPostCondition, newPostCondition));
   }
 
   /**
@@ -376,7 +420,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     properties = newProperties;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__PROPERTIES, oldProperties, newProperties);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__PROPERTIES, oldProperties, newProperties);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -393,14 +437,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (properties != null)
-        msgs = ((InternalEObject)properties).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__PROPERTIES, null, msgs);
+        msgs = ((InternalEObject)properties).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__PROPERTIES, null, msgs);
       if (newProperties != null)
-        msgs = ((InternalEObject)newProperties).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__PROPERTIES, null, msgs);
+        msgs = ((InternalEObject)newProperties).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__PROPERTIES, null, msgs);
       msgs = basicSetProperties(newProperties, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__PROPERTIES, newProperties, newProperties));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__PROPERTIES, newProperties, newProperties));
   }
 
   /**
@@ -424,7 +468,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     advice = newAdvice;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__ADVICE, oldAdvice, newAdvice);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__ADVICE, oldAdvice, newAdvice);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -441,14 +485,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (advice != null)
-        msgs = ((InternalEObject)advice).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__ADVICE, null, msgs);
+        msgs = ((InternalEObject)advice).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__ADVICE, null, msgs);
       if (newAdvice != null)
-        msgs = ((InternalEObject)newAdvice).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__ADVICE, null, msgs);
+        msgs = ((InternalEObject)newAdvice).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__ADVICE, null, msgs);
       msgs = basicSetAdvice(newAdvice, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__ADVICE, newAdvice, newAdvice));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__ADVICE, newAdvice, newAdvice));
   }
 
   /**
@@ -472,7 +516,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     group = newGroup;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__GROUP, oldGroup, newGroup);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__GROUP, oldGroup, newGroup);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -489,14 +533,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (group != null)
-        msgs = ((InternalEObject)group).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__GROUP, null, msgs);
+        msgs = ((InternalEObject)group).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__GROUP, null, msgs);
       if (newGroup != null)
-        msgs = ((InternalEObject)newGroup).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__GROUP, null, msgs);
+        msgs = ((InternalEObject)newGroup).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__GROUP, null, msgs);
       msgs = basicSetGroup(newGroup, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__GROUP, newGroup, newGroup));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__GROUP, newGroup, newGroup));
   }
 
   /**
@@ -520,7 +564,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     layout = newLayout;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__LAYOUT, oldLayout, newLayout);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__LAYOUT, oldLayout, newLayout);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -537,14 +581,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (layout != null)
-        msgs = ((InternalEObject)layout).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__LAYOUT, null, msgs);
+        msgs = ((InternalEObject)layout).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__LAYOUT, null, msgs);
       if (newLayout != null)
-        msgs = ((InternalEObject)newLayout).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__LAYOUT, null, msgs);
+        msgs = ((InternalEObject)newLayout).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__LAYOUT, null, msgs);
       msgs = basicSetLayout(newLayout, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__LAYOUT, newLayout, newLayout));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__LAYOUT, newLayout, newLayout));
   }
 
   /**
@@ -568,7 +612,7 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     statements = newStatements;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__STATEMENTS, oldStatements, newStatements);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__STATEMENTS, oldStatements, newStatements);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -585,14 +629,14 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     {
       NotificationChain msgs = null;
       if (statements != null)
-        msgs = ((InternalEObject)statements).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__STATEMENTS, null, msgs);
+        msgs = ((InternalEObject)statements).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__STATEMENTS, null, msgs);
       if (newStatements != null)
-        msgs = ((InternalEObject)newStatements).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PART__STATEMENTS, null, msgs);
+        msgs = ((InternalEObject)newStatements).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_METHOD__STATEMENTS, null, msgs);
       msgs = basicSetStatements(newStatements, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PART__STATEMENTS, newStatements, newStatements));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_METHOD__STATEMENTS, newStatements, newStatements));
   }
 
   /**
@@ -605,21 +649,21 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   {
     switch (featureID)
     {
-      case BeeLangPackage.PART__PROVIDED_CAPABILITIES:
+      case BeeLangPackage.BUILD_METHOD__PROVIDED_CAPABILITIES:
         return ((InternalEList<?>)getProvidedCapabilities()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.PART__PRE_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__PRE_CONDITION:
         return basicSetPreCondition(null, msgs);
-      case BeeLangPackage.PART__POST_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__POST_CONDITION:
         return basicSetPostCondition(null, msgs);
-      case BeeLangPackage.PART__PROPERTIES:
+      case BeeLangPackage.BUILD_METHOD__PROPERTIES:
         return basicSetProperties(null, msgs);
-      case BeeLangPackage.PART__ADVICE:
+      case BeeLangPackage.BUILD_METHOD__ADVICE:
         return basicSetAdvice(null, msgs);
-      case BeeLangPackage.PART__GROUP:
+      case BeeLangPackage.BUILD_METHOD__GROUP:
         return basicSetGroup(null, msgs);
-      case BeeLangPackage.PART__LAYOUT:
+      case BeeLangPackage.BUILD_METHOD__LAYOUT:
         return basicSetLayout(null, msgs);
-      case BeeLangPackage.PART__STATEMENTS:
+      case BeeLangPackage.BUILD_METHOD__STATEMENTS:
         return basicSetStatements(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -635,25 +679,27 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   {
     switch (featureID)
     {
-      case BeeLangPackage.PART__VISIBILITY:
+      case BeeLangPackage.BUILD_METHOD__VISIBILITY:
         return getVisibility();
-      case BeeLangPackage.PART__EXECUTION_MODE:
+      case BeeLangPackage.BUILD_METHOD__EXECUTION_MODE:
         return getExecutionMode();
-      case BeeLangPackage.PART__PROVIDED_CAPABILITIES:
+      case BeeLangPackage.BUILD_METHOD__NAME:
+        return getName();
+      case BeeLangPackage.BUILD_METHOD__PROVIDED_CAPABILITIES:
         return getProvidedCapabilities();
-      case BeeLangPackage.PART__PRE_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__PRE_CONDITION:
         return getPreCondition();
-      case BeeLangPackage.PART__POST_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__POST_CONDITION:
         return getPostCondition();
-      case BeeLangPackage.PART__PROPERTIES:
+      case BeeLangPackage.BUILD_METHOD__PROPERTIES:
         return getProperties();
-      case BeeLangPackage.PART__ADVICE:
+      case BeeLangPackage.BUILD_METHOD__ADVICE:
         return getAdvice();
-      case BeeLangPackage.PART__GROUP:
+      case BeeLangPackage.BUILD_METHOD__GROUP:
         return getGroup();
-      case BeeLangPackage.PART__LAYOUT:
+      case BeeLangPackage.BUILD_METHOD__LAYOUT:
         return getLayout();
-      case BeeLangPackage.PART__STATEMENTS:
+      case BeeLangPackage.BUILD_METHOD__STATEMENTS:
         return getStatements();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -670,35 +716,38 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   {
     switch (featureID)
     {
-      case BeeLangPackage.PART__VISIBILITY:
+      case BeeLangPackage.BUILD_METHOD__VISIBILITY:
         setVisibility((Visibility)newValue);
         return;
-      case BeeLangPackage.PART__EXECUTION_MODE:
+      case BeeLangPackage.BUILD_METHOD__EXECUTION_MODE:
         setExecutionMode((ExecutionMode)newValue);
         return;
-      case BeeLangPackage.PART__PROVIDED_CAPABILITIES:
+      case BeeLangPackage.BUILD_METHOD__NAME:
+        setName((String)newValue);
+        return;
+      case BeeLangPackage.BUILD_METHOD__PROVIDED_CAPABILITIES:
         getProvidedCapabilities().clear();
         getProvidedCapabilities().addAll((Collection<? extends ProvidedCapability>)newValue);
         return;
-      case BeeLangPackage.PART__PRE_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__PRE_CONDITION:
         setPreCondition((PreCondition)newValue);
         return;
-      case BeeLangPackage.PART__POST_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__POST_CONDITION:
         setPostCondition((PostCondition)newValue);
         return;
-      case BeeLangPackage.PART__PROPERTIES:
+      case BeeLangPackage.BUILD_METHOD__PROPERTIES:
         setProperties((CompoundPropertyOperation)newValue);
         return;
-      case BeeLangPackage.PART__ADVICE:
+      case BeeLangPackage.BUILD_METHOD__ADVICE:
         setAdvice((Advice)newValue);
         return;
-      case BeeLangPackage.PART__GROUP:
+      case BeeLangPackage.BUILD_METHOD__GROUP:
         setGroup((Group)newValue);
         return;
-      case BeeLangPackage.PART__LAYOUT:
+      case BeeLangPackage.BUILD_METHOD__LAYOUT:
         setLayout((Layout)newValue);
         return;
-      case BeeLangPackage.PART__STATEMENTS:
+      case BeeLangPackage.BUILD_METHOD__STATEMENTS:
         setStatements((Statements)newValue);
         return;
     }
@@ -715,34 +764,37 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   {
     switch (featureID)
     {
-      case BeeLangPackage.PART__VISIBILITY:
+      case BeeLangPackage.BUILD_METHOD__VISIBILITY:
         setVisibility(VISIBILITY_EDEFAULT);
         return;
-      case BeeLangPackage.PART__EXECUTION_MODE:
+      case BeeLangPackage.BUILD_METHOD__EXECUTION_MODE:
         setExecutionMode(EXECUTION_MODE_EDEFAULT);
         return;
-      case BeeLangPackage.PART__PROVIDED_CAPABILITIES:
+      case BeeLangPackage.BUILD_METHOD__NAME:
+        setName(NAME_EDEFAULT);
+        return;
+      case BeeLangPackage.BUILD_METHOD__PROVIDED_CAPABILITIES:
         getProvidedCapabilities().clear();
         return;
-      case BeeLangPackage.PART__PRE_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__PRE_CONDITION:
         setPreCondition((PreCondition)null);
         return;
-      case BeeLangPackage.PART__POST_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__POST_CONDITION:
         setPostCondition((PostCondition)null);
         return;
-      case BeeLangPackage.PART__PROPERTIES:
+      case BeeLangPackage.BUILD_METHOD__PROPERTIES:
         setProperties((CompoundPropertyOperation)null);
         return;
-      case BeeLangPackage.PART__ADVICE:
+      case BeeLangPackage.BUILD_METHOD__ADVICE:
         setAdvice((Advice)null);
         return;
-      case BeeLangPackage.PART__GROUP:
+      case BeeLangPackage.BUILD_METHOD__GROUP:
         setGroup((Group)null);
         return;
-      case BeeLangPackage.PART__LAYOUT:
+      case BeeLangPackage.BUILD_METHOD__LAYOUT:
         setLayout((Layout)null);
         return;
-      case BeeLangPackage.PART__STATEMENTS:
+      case BeeLangPackage.BUILD_METHOD__STATEMENTS:
         setStatements((Statements)null);
         return;
     }
@@ -759,25 +811,27 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
   {
     switch (featureID)
     {
-      case BeeLangPackage.PART__VISIBILITY:
+      case BeeLangPackage.BUILD_METHOD__VISIBILITY:
         return visibility != VISIBILITY_EDEFAULT;
-      case BeeLangPackage.PART__EXECUTION_MODE:
+      case BeeLangPackage.BUILD_METHOD__EXECUTION_MODE:
         return executionMode != EXECUTION_MODE_EDEFAULT;
-      case BeeLangPackage.PART__PROVIDED_CAPABILITIES:
+      case BeeLangPackage.BUILD_METHOD__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case BeeLangPackage.BUILD_METHOD__PROVIDED_CAPABILITIES:
         return providedCapabilities != null && !providedCapabilities.isEmpty();
-      case BeeLangPackage.PART__PRE_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__PRE_CONDITION:
         return preCondition != null;
-      case BeeLangPackage.PART__POST_CONDITION:
+      case BeeLangPackage.BUILD_METHOD__POST_CONDITION:
         return postCondition != null;
-      case BeeLangPackage.PART__PROPERTIES:
+      case BeeLangPackage.BUILD_METHOD__PROPERTIES:
         return properties != null;
-      case BeeLangPackage.PART__ADVICE:
+      case BeeLangPackage.BUILD_METHOD__ADVICE:
         return advice != null;
-      case BeeLangPackage.PART__GROUP:
+      case BeeLangPackage.BUILD_METHOD__GROUP:
         return group != null;
-      case BeeLangPackage.PART__LAYOUT:
+      case BeeLangPackage.BUILD_METHOD__LAYOUT:
         return layout != null;
-      case BeeLangPackage.PART__STATEMENTS:
+      case BeeLangPackage.BUILD_METHOD__STATEMENTS:
         return statements != null;
     }
     return super.eIsSet(featureID);
@@ -798,8 +852,10 @@ public class PartImpl extends MinimalEObjectImpl.Container implements Part
     result.append(visibility);
     result.append(", executionMode: ");
     result.append(executionMode);
+    result.append(", name: ");
+    result.append(name);
     result.append(')');
     return result.toString();
   }
 
-} //PartImpl
+} //BuildMethodImpl

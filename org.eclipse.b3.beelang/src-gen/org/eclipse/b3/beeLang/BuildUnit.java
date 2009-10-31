@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getMetaRequiredCapabilities <em>Meta Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getAdvice <em>Advice</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getSynchronizations <em>Synchronizations</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getParts <em>Parts</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getBuildMethods <em>Build Methods</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
  * </ul>
  * </p>
@@ -232,20 +232,20 @@ public interface BuildUnit extends EObject
   EList<Synchronization> getSynchronizations();
 
   /**
-   * Returns the value of the '<em><b>Parts</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.Part}.
+   * Returns the value of the '<em><b>Build Methods</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.BuildMethod}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Parts</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Build Methods</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Parts</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Parts()
+   * @return the value of the '<em>Build Methods</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_BuildMethods()
    * @model containment="true"
    * @generated
    */
-  EList<Part> getParts();
+  EList<BuildMethod> getBuildMethods();
 
   /**
    * Returns the value of the '<em><b>Repository Configurations</b></em>' containment reference list.

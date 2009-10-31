@@ -9,7 +9,7 @@ unit a.b0x.a2 {
 		// HEX
 		$a = 0x34;
 		$a = 0x0aA;
-		$a = 0x0123456789abcdefABCDEF;
+		$a = 0x7fffffffffffffff;
 		
 		// $a = 0x; // uncomment to test syntax error
 		// $a = 0xghijk; // uncomment to test syntax error
@@ -63,7 +63,7 @@ unit a.b0x.a2 {
 		$a = ~/pattern/g;
 		
 		// a prefix of ~ to {} creates a literal query
-		$literalQuery = ~{:**[name=="fred"]};
+		$literalQuery = query {:**[name=="fred"]};
 		}
 	properties naming {
 		// hex in name

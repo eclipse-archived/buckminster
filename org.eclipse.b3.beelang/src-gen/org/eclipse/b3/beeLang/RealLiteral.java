@@ -33,12 +33,12 @@ public interface RealLiteral extends Expression
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Val</em>' attribute.
-   * @see #setVal(String)
+   * @see #setVal(double)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getRealLiteral_Val()
    * @model
    * @generated
    */
-  String getVal();
+  double getVal();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.RealLiteral#getVal <em>Val</em>}' attribute.
@@ -48,6 +48,6 @@ public interface RealLiteral extends Expression
    * @see #getVal()
    * @generated
    */
-  void setVal(String value);
+  void setVal(double value);
 
 } // RealLiteral

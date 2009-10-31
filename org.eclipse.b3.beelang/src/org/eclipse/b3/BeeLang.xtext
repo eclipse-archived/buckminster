@@ -1,128 +1,18 @@
 grammar org.eclipse.b3.BeeLang with org.eclipse.xtext.common.Terminals
-
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
-
+import "platform:/resource/org.eclipse.b3.beelang/src/org/eclipse/b3/BeeLangTypes.ecore" as types
 generate beeLang "http://www.eclipse.org/b3/BeeLang"
+
 BeeModel : (imports += Import)* body = Unit ;
 
-// Redeclare the default ID without the ^ keyword escape mechanism, and including
-// the JS $ char which is allowed in the first position.
-//
-terminal ID : (('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
+Import
+	: (reexport ?='reexport')? 'import' importer=(JavaImporter | NativeImporter) ("as" nameSpace=ID)? ';' 
+	; 
 
-// Property Names start with $ and are qualified. Must be handled by lexer as
-// a.b.c is otherwise ambigous in expressions.
-
-terminal PID : '$' ID ('.' ID)* ;
-
-// JS Regexp - but cheating by using @ instead of / because of inability to push back terminators
-// and / clashes with / in math.
-//
-terminal REGEX 
-	: "~/" ( '\\' ('/'|'f'|'n'|'r'|'t'|'v'|'\\'|'.'|'*'|'+'|'?'
-					| 'w'|'W'|'s'|'S'|'d'|'D'|'b'
-					|'|'|'{'|'}'|'['|']'|'('|')'
-					| (('0'..'7')('0'..'7')('0'..'7')) 
-					| ('x' (('0'..'9')|('a'..'f')|('A'..'F')) (('0'..'9')|('a'..'f')|('A'..'F'))) 
-					| ('c' ('A'..'Z'))
-				)
-			| (!('\\'|'/'|' '|'\t'|'\r'|'\n')))* "/" ('g'|'m'|'i')?
-			;
-
-// JS String support escaped b,t,n,f,r, and u HEX*4, x HEX*2, and (deprecated (0-7)), 
-// A string converter may need to handle the u, x, and octal escapes.
-// Regular java string handles XXXX , and gives syntax error if
-// format is not ok, the other two remains, and possibly the null.
-terminal STRING :
-'"' ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|'"'|'\r'|'\n') )* '"' |
-"'" ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|"'"|'\r'|'\n') )* "'";
-
-terminal ML_COMMENT : '/*' -> '*/' ;
-terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')? ;
-terminal WS : (' '|'\t'|'\r'|'\n')+ ;
-
-// TODO: Should return EInt, but std converter does not hand handles hex
-//
-terminal HEX : '0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+ ;
-
-// A JS integer is one of
-// 0
-// 0(0..7)*
-// 0(x|X)(0-91-fA-F)*
-// Validation can handle the octal case, and illegal 08, 09 00 sequencese
-// TODO: converter must handle octal case if we want to support it.
-//
-terminal INT returns ecore::EInt: ('0'..'9')+;
-
-// TODO: should be a floating point value and have a converter
-// and check for illegal INT sequences "000" etc.
-// Suppressing REAL without a decimal (INT '.') as well as ('.' INT) as
-// a real otherwise can look as part of an Qualified name ('a'.e+1), the
-// combination 'n.n' is not valid in a name.
-//
-terminal REAL : ((INT '.' INT)|(INT '.')|('.' INT) | INT) (('e'|'E')('-'|'+')INT)? ;
-
-
-terminal ANY_OTHER : . ;
-
-// Qualified name
-// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
-//
-QualifiedName hidden(): ID (INT|HEX|ID)* ('.' ID (INT|HEX|ID)*)* HIDDENBUG;
-HIDDENBUG hidden(WS, SL_COMMENT, ML_COMMENT): ('~~~~~')? ; // TODO: REPLACE HACK WHEN HIDDEN WORKS.
-
-
-// Declare Property ID to include '.'
-PROP hidden(): '$' '{' QualifiedName '}' ;
-
-PropertyName : PID ;
-EscapedQualifiedName:  STRING | QualifiedName;
-InterfaceName: QualifiedName ;
-
-// CompoundName (whitespace and comments allowed, as sequence can be very long. name parts
-// do not allow being broken across lines.
-//
-CompoundName : EscapedQualifiedName '/' EscapedQualifiedName ;
-
-// Aliases that help with unified naming (good for experiments - the indirection can be removed later)
-UnitName : EscapedQualifiedName;
-PartName : EscapedQualifiedName;
-
-enum Visibility 	: public | private ;
-enum ExecutionMode 	: parallel | sequential ;
-
-
-// Version, and VersionRange
-// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
-// TODO: uncertain if the set of allowed chars is definitive.
-//
-Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' |'+' | '=' | '*' | '<' | '>' | ':' | '?';
-AlfanumSym : (ID | INT |HEX|REAL) (Separator|ID|INT|HEX|REAL)* ;
-
-Version returns Version
-	: original=STRING  
-	| original=AlfanumSym
-	;
-
-/*
-** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
-** escaped with " ". Omni
-** version uses version strings with \[ when a range is presented/parsed in string format.
-*/
-VersionRange returns VersionRange
-	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
-	| min=Version
-	;
-
-/*
-** Import
-** TODO: Is specified as import of URI, a String, should be QID
-*/	
-Import :
-	'import' importClass=QualifiedName ('.*')? ';' ; 
+JavaImporter 	:  name=QualifiedName (package ?='.*')? ;
+NativeImporter 	: uriString = STRING ;
 		
-/* UNIT - the body (compare to java class)
-*/	
+/* UNIT - the body (compare to java class) */	
 Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 	(executionMode = ExecutionMode)?
 	'unit' (name=UnitName)? ('version' version = Version)?
@@ -139,15 +29,15 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			//-- REQUIRES & META REQUIRES
 			| ('requires' '{' (requiredCapabilities += RequiredCapability ';')+ '}')
 			| ('requires' requiredCapabilities += RequiredCapability ';')
-			| ('meta' 'requires' '{' (metaRequiredCapabilities += RequiredCapability ';')+ '}' )
-			| ('meta' 'requires' metaRequiredCapabilities += RequiredCapability ';')
+			| ('env' 'requires' '{' (metaRequiredCapabilities += RequiredCapability ';')+ '}' )
+			| ('env' 'requires' metaRequiredCapabilities += RequiredCapability ';')
 			//--ADVICE
 			| ('advice' advice+=NamedAdvice )
 			//--SYNCHRONIZE
 			| ('sequential' '{' (synchronizations += Synchronization )+  '}' )
 			| ('sequential' synchronizations += Synchronization  )
-			//--PARTS
-			| (parts += Part )			
+			//--BUILD METHODS
+			| (buildMethods += BuildMethod )			
 			//-- REPOSITORIES
 			| ('repositories' '{' (repositoryConfigurations+=RepositoryConfiguration)* '}' )
 		)*
@@ -232,8 +122,7 @@ Path hidden()
 	;
 
 Prerequisite
-	: ((surpressed ?= 'hidden')? ('when' filter=Filter )? (alias=ID '=')? ((partReference=PrerequisiteEntry) 
-	 (closure = Closure)?)) ';'
+	: (('when' filter=Filter )? (alias=ID '=')? ((partReference=PrerequisiteEntry) (closure = Closure)?)) ';'
 	;
 	
 Closure : 'with' '{'
@@ -259,9 +148,10 @@ CapabilityReferencedPart
 CompoundReferences
 	: '{' (prerequisites += Prerequisite)* '}'
 	;
-Part returns Part: (visibility = Visibility)?
+	
+BuildMethod returns BuildMethod: (visibility = Visibility)?
       (executionMode = ExecutionMode)?
-	 PartName
+	 name=PartName
 		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
 	(preCondition = PreCondition)?
 	(postCondition = PostCondition)?
@@ -275,13 +165,17 @@ Part returns Part: (visibility = Visibility)?
 	;
 
 Parameter : val = Expression ;
+
+GroupKeyword : 'input' ; // used to be 'group'
+LayoutKeyword : 'output'; // used to be 'layout'
 	
 Layout returns Layout
-	: 'layout' (postCondition = PostCondition)? '{' (body = PathGroup)? '}' 
+	: LayoutKeyword (postCondition = PostCondition)? '{' (body = PathGroup)? '}' 
 	;
 	
+
 Group
-	: 'group' (preCondition = PreCondition)? (postCondition = PostCondition)?	 
+	: GroupKeyword (preCondition = PreCondition)? (postCondition = PostCondition)?	 
 		'{' (prerequisites += Prerequisite)* '}'
 	;
 
@@ -292,7 +186,7 @@ RepositoryConfiguration
 /*
 ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
 ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
-** The ':' clashes with 'scheme:' which is the only known part in an opaque URI. 
+** The ':' clashes with 'scheme:' which is the only known BuildMethod in an opaque URI. 
 */
 URI : STRING
 	;
@@ -399,7 +293,7 @@ DoWhileStatement : 'do' statement = Statement 'while' '(' condition=Expression '
 
 
 ReturnStatement 
-	: 'return' return=Expression ';'
+	: 'return' (return=Expression)? ';'
 	;
 FunctionStatement
 	: "function" name=ID '(' (params += ID (',' params += ID)*) ')' 
@@ -482,7 +376,12 @@ AdditiveExpression returns Expression:
 	MultiplicativeExpression ({OperationCall.params+=current} name=("+" | "-") params+=MultiplicativeExpression)*;
 
 MultiplicativeExpression returns Expression:
-	UnaryOrInfixExpression ({OperationCall.params+=current} name=("*" | "/" | "%") params+=UnaryOrInfixExpression)*;
+	SetExpression ({OperationCall.params+=current} name=("*" | "/" | "%") params+=SetExpression)*;
+
+enum SetOperator : select | collect | reject | exists | notexists | foreach ;
+
+SetExpression returns Expression:
+	UnaryOrInfixExpression ({SetOperationCall.params+=current} op=SetOperator params+=UnaryOrInfixExpression)*;
 
 UnaryOrInfixExpression returns Expression
 	: UnaryExpression 
@@ -522,7 +421,7 @@ PrimaryExpression returns Expression
 
 PropertyValue returns  Expression: {PropertyValue} name = PID;
 VariableValue returns  Expression: {VariableValue} name = ID ;
-KeywordVariables returns  Expression: {KeywordVariable} name = ("group" | "layout" | "properties") ;
+KeywordVariables returns  Expression: {KeywordVariable} name = (GroupKeyword | LayoutKeyword | "properties") ;
 
 //FeatureCall:
 //	OperationCall
@@ -547,7 +446,7 @@ Literal returns Expression
 LiteralArray returns  Expression: {LiteralArray} '[' (element += Expression (',' element += Expression)* )? ']' ;
 LiteralObject returns  Expression: {LiteralObject} '{' (features += Feature (',' features += Feature)* )? '}' ;
 LiteralFunction returns Expression
-	: {LiteralFunction} "function" '(' (parameters += ID (',' parameters += ID)*) ')' 
+	: {LiteralFunction} ("function"|"fun") '(' (parameters += ID (',' parameters += ID)*) ')' 
 		'{' statements = Statements '}'
 	;
 
@@ -570,12 +469,115 @@ NullLiteral	returns  Expression: {NullLiteral} val="null";
 // Not a keyword in JS, but prevention of reassignment is wanted.
 UndefinedLiteral returns  Expression: {UndefinedLiteral} val="undefined";
 StringLiteral returns  Expression: {StringLiteral} val = STRING;
-RealLiteral	returns  Expression: {RealLiteral} val = REAL;
+RealLiteral	returns  Expression: {RealLiteral} val = RealValue;
+RealValue returns ecore::EDouble: REAL ;
 RegexpLiteral returns Expression: {RegexpLiteral} val = REGEX;
-QueryLiteral returns Expression: {QueryLiteral} '~{' val = AdvicePath '}' ;
+QueryLiteral returns Expression: {QueryLiteral} "query" '{' val = AdvicePath '}' ;
 	
 ParanthesizedExpression returns Expression
 	:  "(" Expression ")"
 	;	
 
+Version returns Version
+	: original=STRING  
+	| original=AlfanumSym
+	;
+
+/*
+** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
+** escaped with " ". Omni
+** version uses version strings with \[ when a range is presented/parsed in string format.
+*/
+VersionRange returns VersionRange
+	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+	| min=Version
+	;
+
+// Qualified name
+// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+//
+QualifiedName hidden(): ID (INT|HEX|ID)* ('.' ID (INT|HEX|ID)*)* HIDDENBUG;
+HIDDENBUG hidden(WS, SL_COMMENT, ML_COMMENT): ('~~~~~')? ; // TODO: REPLACE HACK WHEN HIDDEN WORKS.
+
+
+// Declare Property ID to include '.'
+PROP hidden(): '$' '{' QualifiedName '}' ;
+
+PropertyName : PID ;
+EscapedQualifiedName:  STRING | QualifiedName;
+InterfaceName: QualifiedName ;
+
+// CompoundName (whitespace and comments allowed, as sequence can be very long. name parts
+// do not allow being broken across lines.
+//
+CompoundName : EscapedQualifiedName '/' EscapedQualifiedName ;
+
+// Aliases that help with unified naming (good for experiments - the indirection can be removed later)
+UnitName : EscapedQualifiedName;
+PartName : EscapedQualifiedName;
+
+enum Visibility 	: public | private ;
+enum ExecutionMode 	: parallel | sequential ;
+
+
+// Version, and VersionRange
+// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
+// TODO: uncertain if the set of allowed chars is definitive.
+//
+Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' |'+' | '=' | '*' | '<' | '>' | ':' | '?';
+AlfanumSym : (ID | INT |HEX|REAL) (Separator|ID|INT|HEX|REAL)* ;
+
+
+// Redeclare the default ID without the ^ keyword escape mechanism, and including
+// the JS $ char which is allowed in the first position.
+//
+terminal ID : (('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
+
+// Property Names start with $ and are qualified. Must be handled by lexer as
+// a.b.c is otherwise ambigous in expressions.
+
+terminal PID : '$' ID ('.' ID)* ;
+
+// JS Regexp - but cheating by using @ instead of / because of inability to push back terminators
+// and / clashes with / in math.
+//
+terminal REGEX returns types::RegularExpression
+	: "~/" ( '\\' ('/'|'f'|'n'|'r'|'t'|'v'|'\\'|'.'|'*'|'+'|'?'
+					| 'w'|'W'|'s'|'S'|'d'|'D'|'b'
+					|'|'|'{'|'}'|'['|']'|'('|')'
+					| (('0'..'7')('0'..'7')('0'..'7')) 
+					| ('x' (('0'..'9')|('a'..'f')|('A'..'F')) (('0'..'9')|('a'..'f')|('A'..'F'))) 
+					| ('c' ('A'..'Z'))
+				)
+			| (!('\\'|'/'|' '|'\t'|'\r'|'\n')))* "/" ('g'|'m'|'i')?
+			;
+
+// JS String support escaped b,t,n,f,r, and u HEX*4, x HEX*2, and (deprecated (0-7)), 
+// A string converter may need to handle the u, x, and octal escapes.
+// Regular java string handles XXXX , and gives syntax error if
+// format is not ok, the other two remains, and possibly the null.
+terminal STRING :
+'"' ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|'"'|'\r'|'\n') )* '"' |
+"'" ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|"'"|'\r'|'\n') )* "'";
+
+terminal ML_COMMENT : '/*' -> '*/' ;
+terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')? ;
+terminal WS : (' '|'\t'|'\r'|'\n')+ ;
+
+// TODO: Should return EHex, but this requires a separate model, as EHex can not be infered.
+//
+terminal HEX returns types::HexInteger: '0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+ ;
+
+// A JS integer is one of
+// 0
+// 0(0..7)*
+// 0(x|X)(0-91-fA-F)*
+// Validation can handle the octal case, and illegal 08, 09 00 sequencese
+// TODO: converter must handle octal case if we want to support it.
+//
+terminal INT returns ecore::EInt: ('0'..'9')+;
+
+terminal REAL : ((INT '.' INT)|(INT '.')|('.' INT) | INT) (('e'|'E')('-'|'+')INT)? ;
+
+terminal ANY_OTHER : . ;
 

@@ -5,6 +5,10 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
+import beelangtypes.BeelangtypesPackage;
+
+import beelangtypes.impl.BeelangtypesPackageImpl;
+
 import org.eclipse.b3.beeLang.Advice;
 import org.eclipse.b3.beeLang.AdvicePath;
 import org.eclipse.b3.beeLang.AdviceStatement;
@@ -19,6 +23,7 @@ import org.eclipse.b3.beeLang.BeeModel;
 import org.eclipse.b3.beeLang.BooleanLiteral;
 import org.eclipse.b3.beeLang.BooleanOperation;
 import org.eclipse.b3.beeLang.BreakStatement;
+import org.eclipse.b3.beeLang.BuildMethod;
 import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.CapabilityReferencedPart;
 import org.eclipse.b3.beeLang.Case;
@@ -49,6 +54,7 @@ import org.eclipse.b3.beeLang.IfExpression;
 import org.eclipse.b3.beeLang.IfStatement;
 import org.eclipse.b3.beeLang.Import;
 import org.eclipse.b3.beeLang.IntegerLiteral;
+import org.eclipse.b3.beeLang.JavaImporter;
 import org.eclipse.b3.beeLang.KeywordVariable;
 import org.eclipse.b3.beeLang.LabelStatement;
 import org.eclipse.b3.beeLang.Layout;
@@ -58,11 +64,11 @@ import org.eclipse.b3.beeLang.LiteralObject;
 import org.eclipse.b3.beeLang.NameSelector;
 import org.eclipse.b3.beeLang.NamedAdvice;
 import org.eclipse.b3.beeLang.NamedProperties;
+import org.eclipse.b3.beeLang.NativeImporter;
 import org.eclipse.b3.beeLang.NullLiteral;
 import org.eclipse.b3.beeLang.OperationCall;
 import org.eclipse.b3.beeLang.Parameter;
 import org.eclipse.b3.beeLang.ParentSelector;
-import org.eclipse.b3.beeLang.Part;
 import org.eclipse.b3.beeLang.PartInSelf;
 import org.eclipse.b3.beeLang.PathGroup;
 import org.eclipse.b3.beeLang.PathVector;
@@ -84,6 +90,8 @@ import org.eclipse.b3.beeLang.RepositoryConfiguration;
 import org.eclipse.b3.beeLang.RequiredCapability;
 import org.eclipse.b3.beeLang.ReturnStatement;
 import org.eclipse.b3.beeLang.Selector;
+import org.eclipse.b3.beeLang.SetOperationCall;
+import org.eclipse.b3.beeLang.SetOperator;
 import org.eclipse.b3.beeLang.SetPropertyOperation;
 import org.eclipse.b3.beeLang.Statement;
 import org.eclipse.b3.beeLang.Statements;
@@ -134,21 +142,21 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass versionEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass versionRangeEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EClass importEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass javaImporterEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass nativeImporterEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -302,7 +310,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass partEClass = null;
+  private EClass buildMethodEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -617,6 +625,20 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass versionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass versionRangeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass varExpressionEClass = null;
 
   /**
@@ -653,6 +675,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass relationalOperationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass setOperationCallEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -785,20 +814,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EEnum visibilityEEnum = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EEnum executionModeEEnum = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EEnum assignmentOperatorEEnum = null;
 
   /**
@@ -807,6 +822,27 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EEnum relationalOperatorEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum setOperatorEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum visibilityEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum executionModeEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -856,11 +892,16 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     isInited = true;
 
+    // Obtain or create and register interdependencies
+    BeelangtypesPackageImpl theBeelangtypesPackage = (BeelangtypesPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(BeelangtypesPackage.eNS_URI) instanceof BeelangtypesPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(BeelangtypesPackage.eNS_URI) : BeelangtypesPackage.eINSTANCE);
+
     // Create package meta-data objects
     theBeeLangPackage.createPackageContents();
+    theBeelangtypesPackage.createPackageContents();
 
     // Initialize created meta-data
     theBeeLangPackage.initializePackageContents();
+    theBeelangtypesPackage.initializePackageContents();
 
     // Mark meta-data to indicate it can't be changed
     theBeeLangPackage.freeze();
@@ -906,76 +947,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getVersion()
-  {
-    return versionEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getVersion_Original()
-  {
-    return (EAttribute)versionEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getVersionRange()
-  {
-    return versionRangeEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getVersionRange_MinLimit()
-  {
-    return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getVersionRange_Min()
-  {
-    return (EReference)versionRangeEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getVersionRange_Max()
-  {
-    return (EReference)versionRangeEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getVersionRange_MaxLimit()
-  {
-    return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getImport()
   {
     return importEClass;
@@ -986,9 +957,79 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getImport_ImportClass()
+  public EAttribute getImport_Reexport()
   {
     return (EAttribute)importEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getImport_Importer()
+  {
+    return (EReference)importEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getImport_NameSpace()
+  {
+    return (EAttribute)importEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getJavaImporter()
+  {
+    return javaImporterEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getJavaImporter_Name()
+  {
+    return (EAttribute)javaImporterEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getJavaImporter_Package()
+  {
+    return (EAttribute)javaImporterEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getNativeImporter()
+  {
+    return nativeImporterEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getNativeImporter_UriString()
+  {
+    return (EAttribute)nativeImporterEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1106,7 +1147,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getBuildUnit_Parts()
+  public EReference getBuildUnit_BuildMethods()
   {
     return (EReference)buildUnitEClass.getEStructuralFeatures().get(10);
   }
@@ -1536,19 +1577,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getPrerequisite_Surpressed()
-  {
-    return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getPrerequisite_Filter()
   {
-    return (EReference)prerequisiteEClass.getEStructuralFeatures().get(1);
+    return (EReference)prerequisiteEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1558,7 +1589,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    */
   public EAttribute getPrerequisite_Alias()
   {
-    return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1568,7 +1599,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    */
   public EReference getPrerequisite_PartReference()
   {
-    return (EReference)prerequisiteEClass.getEStructuralFeatures().get(3);
+    return (EReference)prerequisiteEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1578,7 +1609,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    */
   public EReference getPrerequisite_Closure()
   {
-    return (EReference)prerequisiteEClass.getEStructuralFeatures().get(4);
+    return (EReference)prerequisiteEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1716,9 +1747,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getPart()
+  public EClass getBuildMethod()
   {
-    return partEClass;
+    return buildMethodEClass;
   }
 
   /**
@@ -1726,9 +1757,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getPart_Visibility()
+  public EAttribute getBuildMethod_Visibility()
   {
-    return (EAttribute)partEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)buildMethodEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1736,9 +1767,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getPart_ExecutionMode()
+  public EAttribute getBuildMethod_ExecutionMode()
   {
-    return (EAttribute)partEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)buildMethodEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1746,9 +1777,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_ProvidedCapabilities()
+  public EAttribute getBuildMethod_Name()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)buildMethodEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1756,9 +1787,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_PreCondition()
+  public EReference getBuildMethod_ProvidedCapabilities()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(3);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1766,9 +1797,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_PostCondition()
+  public EReference getBuildMethod_PreCondition()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(4);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1776,9 +1807,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_Properties()
+  public EReference getBuildMethod_PostCondition()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(5);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -1786,9 +1817,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_Advice()
+  public EReference getBuildMethod_Properties()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(6);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -1796,9 +1827,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_Group()
+  public EReference getBuildMethod_Advice()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(7);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -1806,9 +1837,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_Layout()
+  public EReference getBuildMethod_Group()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(8);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -1816,9 +1847,19 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPart_Statements()
+  public EReference getBuildMethod_Layout()
   {
-    return (EReference)partEClass.getEStructuralFeatures().get(9);
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuildMethod_Statements()
+  {
+    return (EReference)buildMethodEClass.getEStructuralFeatures().get(10);
   }
 
   /**
@@ -2956,6 +2997,76 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getVersion()
+  {
+    return versionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVersion_Original()
+  {
+    return (EAttribute)versionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getVersionRange()
+  {
+    return versionRangeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVersionRange_MinLimit()
+  {
+    return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getVersionRange_Min()
+  {
+    return (EReference)versionRangeEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getVersionRange_Max()
+  {
+    return (EReference)versionRangeEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVersionRange_MaxLimit()
+  {
+    return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getVarExpression()
   {
     return varExpressionEClass;
@@ -3189,6 +3300,36 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EReference getRelationalOperation_Right()
   {
     return (EReference)relationalOperationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSetOperationCall()
+  {
+    return setOperationCallEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getSetOperationCall_Params()
+  {
+    return (EReference)setOperationCallEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSetOperationCall_Op()
+  {
+    return (EAttribute)setOperationCallEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3626,26 +3767,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EEnum getVisibility()
-  {
-    return visibilityEEnum;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EEnum getExecutionMode()
-  {
-    return executionModeEEnum;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EEnum getAssignmentOperator()
   {
     return assignmentOperatorEEnum;
@@ -3659,6 +3780,36 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EEnum getRelationalOperator()
   {
     return relationalOperatorEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getSetOperator()
+  {
+    return setOperatorEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getVisibility()
+  {
+    return visibilityEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getExecutionMode()
+  {
+    return executionModeEEnum;
   }
 
   /**
@@ -3695,17 +3846,17 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(beeModelEClass, BEE_MODEL__IMPORTS);
     createEReference(beeModelEClass, BEE_MODEL__BODY);
 
-    versionEClass = createEClass(VERSION);
-    createEAttribute(versionEClass, VERSION__ORIGINAL);
-
-    versionRangeEClass = createEClass(VERSION_RANGE);
-    createEAttribute(versionRangeEClass, VERSION_RANGE__MIN_LIMIT);
-    createEReference(versionRangeEClass, VERSION_RANGE__MIN);
-    createEReference(versionRangeEClass, VERSION_RANGE__MAX);
-    createEAttribute(versionRangeEClass, VERSION_RANGE__MAX_LIMIT);
-
     importEClass = createEClass(IMPORT);
-    createEAttribute(importEClass, IMPORT__IMPORT_CLASS);
+    createEAttribute(importEClass, IMPORT__REEXPORT);
+    createEReference(importEClass, IMPORT__IMPORTER);
+    createEAttribute(importEClass, IMPORT__NAME_SPACE);
+
+    javaImporterEClass = createEClass(JAVA_IMPORTER);
+    createEAttribute(javaImporterEClass, JAVA_IMPORTER__NAME);
+    createEAttribute(javaImporterEClass, JAVA_IMPORTER__PACKAGE);
+
+    nativeImporterEClass = createEClass(NATIVE_IMPORTER);
+    createEAttribute(nativeImporterEClass, NATIVE_IMPORTER__URI_STRING);
 
     buildUnitEClass = createEClass(BUILD_UNIT);
     createEAttribute(buildUnitEClass, BUILD_UNIT__EXECUTION_MODE);
@@ -3718,7 +3869,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(buildUnitEClass, BUILD_UNIT__META_REQUIRED_CAPABILITIES);
     createEReference(buildUnitEClass, BUILD_UNIT__ADVICE);
     createEReference(buildUnitEClass, BUILD_UNIT__SYNCHRONIZATIONS);
-    createEReference(buildUnitEClass, BUILD_UNIT__PARTS);
+    createEReference(buildUnitEClass, BUILD_UNIT__BUILD_METHODS);
     createEReference(buildUnitEClass, BUILD_UNIT__REPOSITORY_CONFIGURATIONS);
 
     providedCapabilityEClass = createEClass(PROVIDED_CAPABILITY);
@@ -3776,7 +3927,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(compoundPathVectorEClass, COMPOUND_PATH_VECTOR__BODY);
 
     prerequisiteEClass = createEClass(PREREQUISITE);
-    createEAttribute(prerequisiteEClass, PREREQUISITE__SURPRESSED);
     createEReference(prerequisiteEClass, PREREQUISITE__FILTER);
     createEAttribute(prerequisiteEClass, PREREQUISITE__ALIAS);
     createEReference(prerequisiteEClass, PREREQUISITE__PART_REFERENCE);
@@ -3800,17 +3950,18 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     compoundReferencesEClass = createEClass(COMPOUND_REFERENCES);
     createEReference(compoundReferencesEClass, COMPOUND_REFERENCES__PREREQUISITES);
 
-    partEClass = createEClass(PART);
-    createEAttribute(partEClass, PART__VISIBILITY);
-    createEAttribute(partEClass, PART__EXECUTION_MODE);
-    createEReference(partEClass, PART__PROVIDED_CAPABILITIES);
-    createEReference(partEClass, PART__PRE_CONDITION);
-    createEReference(partEClass, PART__POST_CONDITION);
-    createEReference(partEClass, PART__PROPERTIES);
-    createEReference(partEClass, PART__ADVICE);
-    createEReference(partEClass, PART__GROUP);
-    createEReference(partEClass, PART__LAYOUT);
-    createEReference(partEClass, PART__STATEMENTS);
+    buildMethodEClass = createEClass(BUILD_METHOD);
+    createEAttribute(buildMethodEClass, BUILD_METHOD__VISIBILITY);
+    createEAttribute(buildMethodEClass, BUILD_METHOD__EXECUTION_MODE);
+    createEAttribute(buildMethodEClass, BUILD_METHOD__NAME);
+    createEReference(buildMethodEClass, BUILD_METHOD__PROVIDED_CAPABILITIES);
+    createEReference(buildMethodEClass, BUILD_METHOD__PRE_CONDITION);
+    createEReference(buildMethodEClass, BUILD_METHOD__POST_CONDITION);
+    createEReference(buildMethodEClass, BUILD_METHOD__PROPERTIES);
+    createEReference(buildMethodEClass, BUILD_METHOD__ADVICE);
+    createEReference(buildMethodEClass, BUILD_METHOD__GROUP);
+    createEReference(buildMethodEClass, BUILD_METHOD__LAYOUT);
+    createEReference(buildMethodEClass, BUILD_METHOD__STATEMENTS);
 
     parameterEClass = createEClass(PARAMETER);
     createEReference(parameterEClass, PARAMETER__VAL);
@@ -3969,6 +4120,15 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEAttribute(featureEClass, FEATURE__NAME);
     createEReference(featureEClass, FEATURE__VALUE);
 
+    versionEClass = createEClass(VERSION);
+    createEAttribute(versionEClass, VERSION__ORIGINAL);
+
+    versionRangeEClass = createEClass(VERSION_RANGE);
+    createEAttribute(versionRangeEClass, VERSION_RANGE__MIN_LIMIT);
+    createEReference(versionRangeEClass, VERSION_RANGE__MIN);
+    createEReference(versionRangeEClass, VERSION_RANGE__MAX);
+    createEAttribute(versionRangeEClass, VERSION_RANGE__MAX_LIMIT);
+
     varExpressionEClass = createEClass(VAR_EXPRESSION);
     createEAttribute(varExpressionEClass, VAR_EXPRESSION__NAME);
     createEReference(varExpressionEClass, VAR_EXPRESSION__VALUE);
@@ -3998,6 +4158,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(relationalOperationEClass, RELATIONAL_OPERATION__LEFT);
     createEAttribute(relationalOperationEClass, RELATIONAL_OPERATION__OPERATOR);
     createEReference(relationalOperationEClass, RELATIONAL_OPERATION__RIGHT);
+
+    setOperationCallEClass = createEClass(SET_OPERATION_CALL);
+    createEReference(setOperationCallEClass, SET_OPERATION_CALL__PARAMS);
+    createEAttribute(setOperationCallEClass, SET_OPERATION_CALL__OP);
 
     unaryOperationEClass = createEClass(UNARY_OPERATION);
     createEAttribute(unaryOperationEClass, UNARY_OPERATION__NAME);
@@ -4061,10 +4225,11 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(queryLiteralEClass, QUERY_LITERAL__VAL);
 
     // Create enums
-    visibilityEEnum = createEEnum(VISIBILITY);
-    executionModeEEnum = createEEnum(EXECUTION_MODE);
     assignmentOperatorEEnum = createEEnum(ASSIGNMENT_OPERATOR);
     relationalOperatorEEnum = createEEnum(RELATIONAL_OPERATOR);
+    setOperatorEEnum = createEEnum(SET_OPERATOR);
+    visibilityEEnum = createEEnum(VISIBILITY);
+    executionModeEEnum = createEEnum(EXECUTION_MODE);
   }
 
   /**
@@ -4090,6 +4255,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     setName(eNAME);
     setNsPrefix(eNS_PREFIX);
     setNsURI(eNS_URI);
+
+    // Obtain other dependent packages
+    BeelangtypesPackage theBeelangtypesPackage = (BeelangtypesPackage)EPackage.Registry.INSTANCE.getEPackage(BeelangtypesPackage.eNS_URI);
 
     // Create type parameters
 
@@ -4134,6 +4302,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     booleanOperationEClass.getESuperTypes().add(this.getExpression());
     operationCallEClass.getESuperTypes().add(this.getExpression());
     relationalOperationEClass.getESuperTypes().add(this.getExpression());
+    setOperationCallEClass.getESuperTypes().add(this.getExpression());
     unaryOperationEClass.getESuperTypes().add(this.getUnaryExpression());
     atCallEClass.getESuperTypes().add(this.getExpression());
     featureCallEClass.getESuperTypes().add(this.getExpression());
@@ -4158,17 +4327,17 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBeeModel_Imports(), this.getImport(), null, "imports", null, 0, -1, BeeModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBeeModel_Body(), this.getBuildUnit(), null, "body", null, 0, 1, BeeModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(versionEClass, Version.class, "Version", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getVersion_Original(), ecorePackage.getEString(), "original", null, 0, 1, Version.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(versionRangeEClass, VersionRange.class, "VersionRange", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getVersionRange_MinLimit(), ecorePackage.getEString(), "minLimit", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVersionRange_Min(), this.getVersion(), null, "min", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVersionRange_Max(), this.getVersion(), null, "max", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVersionRange_MaxLimit(), ecorePackage.getEString(), "maxLimit", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getImport_ImportClass(), ecorePackage.getEString(), "importClass", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getImport_Reexport(), ecorePackage.getEBoolean(), "reexport", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getImport_Importer(), ecorePackage.getEObject(), null, "importer", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getImport_NameSpace(), ecorePackage.getEString(), "nameSpace", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(javaImporterEClass, JavaImporter.class, "JavaImporter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getJavaImporter_Name(), ecorePackage.getEString(), "name", null, 0, 1, JavaImporter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getJavaImporter_Package(), ecorePackage.getEBoolean(), "package", null, 0, 1, JavaImporter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(nativeImporterEClass, NativeImporter.class, "NativeImporter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getNativeImporter_UriString(), ecorePackage.getEString(), "uriString", null, 0, 1, NativeImporter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(buildUnitEClass, BuildUnit.class, "BuildUnit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getBuildUnit_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4181,7 +4350,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBuildUnit_MetaRequiredCapabilities(), this.getRequiredCapability(), null, "metaRequiredCapabilities", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Advice(), this.getNamedAdvice(), null, "advice", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Synchronizations(), this.getSynchronization(), null, "synchronizations", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuildUnit_Parts(), this.getPart(), null, "parts", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildUnit_BuildMethods(), this.getBuildMethod(), null, "buildMethods", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_RepositoryConfigurations(), this.getRepositoryConfiguration(), null, "repositoryConfigurations", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(providedCapabilityEClass, ProvidedCapability.class, "ProvidedCapability", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -4239,7 +4408,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getCompoundPathVector_Body(), this.getPathVectorElement(), null, "body", null, 0, -1, CompoundPathVector.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(prerequisiteEClass, Prerequisite.class, "Prerequisite", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getPrerequisite_Surpressed(), ecorePackage.getEBoolean(), "surpressed", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getPrerequisite_Filter(), this.getFilter(), null, "filter", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getPrerequisite_Alias(), ecorePackage.getEString(), "alias", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getPrerequisite_PartReference(), this.getPrerequisiteEntry(), null, "partReference", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4263,17 +4431,18 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(compoundReferencesEClass, CompoundReferences.class, "CompoundReferences", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCompoundReferences_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1, CompoundReferences.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(partEClass, Part.class, "Part", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getPart_Visibility(), this.getVisibility(), "visibility", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getPart_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_PreCondition(), this.getPreCondition(), null, "preCondition", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_PostCondition(), this.getPostCondition(), null, "postCondition", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_Properties(), this.getCompoundPropertyOperation(), null, "properties", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_Advice(), this.getAdvice(), null, "advice", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_Group(), this.getGroup(), null, "group", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_Layout(), this.getLayout(), null, "layout", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPart_Statements(), this.getStatements(), null, "statements", null, 0, 1, Part.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(buildMethodEClass, BuildMethod.class, "BuildMethod", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBuildMethod_Visibility(), this.getVisibility(), "visibility", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuildMethod_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuildMethod_Name(), ecorePackage.getEString(), "name", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_PreCondition(), this.getPreCondition(), null, "preCondition", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_PostCondition(), this.getPostCondition(), null, "postCondition", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_Properties(), this.getCompoundPropertyOperation(), null, "properties", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_Advice(), this.getAdvice(), null, "advice", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_Group(), this.getGroup(), null, "group", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_Layout(), this.getLayout(), null, "layout", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildMethod_Statements(), this.getStatements(), null, "statements", null, 0, 1, BuildMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(parameterEClass, Parameter.class, "Parameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getParameter_Val(), this.getExpression(), null, "val", null, 0, 1, Parameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4327,7 +4496,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(ancestorSelectorEClass, AncestorSelector.class, "AncestorSelector", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(regexpSelectorEClass, RegexpSelector.class, "RegexpSelector", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRegexpSelector_Pattern(), ecorePackage.getEString(), "pattern", null, 0, 1, RegexpSelector.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRegexpSelector_Pattern(), theBeelangtypesPackage.getRegularExpression(), "pattern", null, 0, 1, RegexpSelector.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(filterEClass, Filter.class, "Filter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getFilter_Predicate(), this.getExpression(), null, "predicate", null, 0, 1, Filter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4424,13 +4593,22 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getExpressionList_Expr(), this.getExpression(), null, "expr", null, 0, -1, ExpressionList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(expressionEClass, Expression.class, "Expression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getExpression_Sval(), ecorePackage.getEString(), "sval", null, 0, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getExpression_Sval(), theBeelangtypesPackage.getHexInteger(), "sval", null, 0, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(unaryExpressionEClass, UnaryExpression.class, "UnaryExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(featureEClass, Feature.class, "Feature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFeature_Name(), ecorePackage.getEString(), "name", null, 0, 1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getFeature_Value(), this.getExpression(), null, "value", null, 0, 1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(versionEClass, Version.class, "Version", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVersion_Original(), ecorePackage.getEString(), "original", null, 0, 1, Version.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(versionRangeEClass, VersionRange.class, "VersionRange", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVersionRange_MinLimit(), ecorePackage.getEString(), "minLimit", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getVersionRange_Min(), this.getVersion(), null, "min", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getVersionRange_Max(), this.getVersion(), null, "max", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVersionRange_MaxLimit(), ecorePackage.getEString(), "maxLimit", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(varExpressionEClass, VarExpression.class, "VarExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVarExpression_Name(), ecorePackage.getEString(), "name", null, 0, 1, VarExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4461,6 +4639,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getRelationalOperation_Left(), this.getExpression(), null, "left", null, 0, 1, RelationalOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRelationalOperation_Operator(), this.getRelationalOperator(), "operator", null, 0, 1, RelationalOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getRelationalOperation_Right(), this.getExpression(), null, "right", null, 0, 1, RelationalOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(setOperationCallEClass, SetOperationCall.class, "SetOperationCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getSetOperationCall_Params(), this.getExpression(), null, "params", null, 0, -1, SetOperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSetOperationCall_Op(), this.getSetOperator(), "op", null, 0, 1, SetOperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(unaryOperationEClass, UnaryOperation.class, "UnaryOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUnaryOperation_Name(), ecorePackage.getEString(), "name", null, 0, 1, UnaryOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4515,23 +4697,15 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEAttribute(getStringLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, StringLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(realLiteralEClass, RealLiteral.class, "RealLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRealLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, RealLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRealLiteral_Val(), ecorePackage.getEDouble(), "val", null, 0, 1, RealLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(regexpLiteralEClass, RegexpLiteral.class, "RegexpLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRegexpLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, RegexpLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRegexpLiteral_Val(), theBeelangtypesPackage.getRegularExpression(), "val", null, 0, 1, RegexpLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(queryLiteralEClass, QueryLiteral.class, "QueryLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getQueryLiteral_Val(), this.getAdvicePath(), null, "val", null, 0, 1, QueryLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
-    initEEnum(visibilityEEnum, Visibility.class, "Visibility");
-    addEEnumLiteral(visibilityEEnum, Visibility.PUBLIC);
-    addEEnumLiteral(visibilityEEnum, Visibility.PRIVATE);
-
-    initEEnum(executionModeEEnum, ExecutionMode.class, "ExecutionMode");
-    addEEnumLiteral(executionModeEEnum, ExecutionMode.PARALLEL);
-    addEEnumLiteral(executionModeEEnum, ExecutionMode.SEQUENTIAL);
-
     initEEnum(assignmentOperatorEEnum, AssignmentOperator.class, "AssignmentOperator");
     addEEnumLiteral(assignmentOperatorEEnum, AssignmentOperator.SET);
     addEEnumLiteral(assignmentOperatorEEnum, AssignmentOperator.SET_PLUS);
@@ -4557,6 +4731,22 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     addEEnumLiteral(relationalOperatorEEnum, RelationalOperator.EQ_GT);
     addEEnumLiteral(relationalOperatorEEnum, RelationalOperator.EQ_LT);
     addEEnumLiteral(relationalOperatorEEnum, RelationalOperator.EQ_INSTANCEOF);
+
+    initEEnum(setOperatorEEnum, SetOperator.class, "SetOperator");
+    addEEnumLiteral(setOperatorEEnum, SetOperator.SELECT);
+    addEEnumLiteral(setOperatorEEnum, SetOperator.COLLECT);
+    addEEnumLiteral(setOperatorEEnum, SetOperator.REJECT);
+    addEEnumLiteral(setOperatorEEnum, SetOperator.EXISTS);
+    addEEnumLiteral(setOperatorEEnum, SetOperator.NOTEXISTS);
+    addEEnumLiteral(setOperatorEEnum, SetOperator.FOREACH);
+
+    initEEnum(visibilityEEnum, Visibility.class, "Visibility");
+    addEEnumLiteral(visibilityEEnum, Visibility.PUBLIC);
+    addEEnumLiteral(visibilityEEnum, Visibility.PRIVATE);
+
+    initEEnum(executionModeEEnum, ExecutionMode.class, "ExecutionMode");
+    addEEnumLiteral(executionModeEEnum, ExecutionMode.PARALLEL);
+    addEEnumLiteral(executionModeEEnum, ExecutionMode.SEQUENTIAL);
 
     // Create resource
     createResource(eNS_URI);
