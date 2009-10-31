@@ -10,7 +10,7 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.p2.publisher.eclipse.IBrandingAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.ProductFileAdvice;
-import org.eclipse.pde.internal.build.BrandingIron;
+import org.eclipse.osgi.service.environment.Constants;
 
 @SuppressWarnings( { "restriction", "hiding" })
 public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.eclipse.EquinoxExecutableAction
@@ -89,6 +89,8 @@ public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.ec
 		try
 		{
 			iron.brand();
+			if(Constants.OS_MACOSX.equals(advice.getOS()))
+				descriptor.setExecutableName("Eclipse", true); //$NON-NLS-1$
 			descriptor.setExecutableName(name, true);
 		}
 		catch(RuntimeException e)

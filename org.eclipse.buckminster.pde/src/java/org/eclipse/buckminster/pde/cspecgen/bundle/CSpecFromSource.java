@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
-import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.build.IBuildModel;
@@ -568,7 +567,7 @@ public class CSpecFromSource extends CSpecGenerator
 
 	protected void addImports() throws CoreException
 	{
-		BundleSpecification[] imports = getImports(m_plugin);
+		ImportSpecification[] imports = getImports(m_plugin);
 		if(imports.length == 0)
 			return;
 
@@ -580,10 +579,10 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 
-		for(BundleSpecification pluginImport : imports)
+		for(ImportSpecification pluginImport : imports)
 		{
 			String pluginId = pluginImport.getName();
-			if(pluginId.equals("system.bundle")) //$NON-NLS-1$
+			if(pluginId.equals(Constants.SYSTEM_BUNDLE_SYMBOLICNAME))
 				continue;
 
 			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);

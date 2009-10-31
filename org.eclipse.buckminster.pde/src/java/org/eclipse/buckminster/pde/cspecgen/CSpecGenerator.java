@@ -63,7 +63,6 @@ import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
-import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
@@ -87,6 +86,53 @@ import org.osgi.framework.InvalidSyntaxException;
 @SuppressWarnings("restriction")
 public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEConstants
 {
+	public static class ImportSpecification
+	{
+		private final String m_name;
+
+		private final VersionRange m_range;
+
+		private final boolean m_exported;
+
+		private final boolean m_optional;
+
+		ImportSpecification(BundleSpecification bundleSpec)
+		{
+			m_name = bundleSpec.getName();
+			m_range = VersionRange.fromOSGiVersionRange(bundleSpec.getVersionRange());
+			m_exported = bundleSpec.isExported();
+			m_optional = bundleSpec.isOptional();
+		}
+
+		ImportSpecification(String name, VersionRange range, boolean exported, boolean optional)
+		{
+			m_name = name;
+			m_range = range;
+			m_exported = exported;
+			m_optional = optional;
+		}
+
+		public String getName()
+		{
+			return m_name;
+		}
+
+		public VersionRange getVersionRange()
+		{
+			return m_range;
+		}
+
+		public boolean isExported()
+		{
+			return m_exported;
+		}
+
+		public boolean isOptional()
+		{
+			return m_optional;
+		}
+	}
+
 	public static final IPath OUTPUT_DIR_JAR = OUTPUT_DIR.append("jar"); //$NON-NLS-1$
 
 	public static final IPath OUTPUT_DIR_SOURCE_JAR = OUTPUT_DIR.append("source.jar"); //$NON-NLS-1$
@@ -147,7 +193,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		}
 	}
 
-	private static final BundleSpecification[] s_noRequiredBundles = new BundleSpecification[0];
+	private static final ImportSpecification[] s_noRequiredBundles = new ImportSpecification[0];
 
 	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
 	{
@@ -250,7 +296,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld.toString();
 	}
 
-	protected static BundleSpecification[] getImports(IPluginBase plugin) throws CoreException
+	protected static ImportSpecification[] getImports(IPluginBase plugin) throws CoreException
 	{
 		IPluginModelBase model = plugin.getPluginModel();
 		BundleDescription bundleDesc = model.getBundleDescription();
@@ -258,9 +304,17 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(bundleDesc != null)
 		{
 			imports = bundleDesc.getRequiredBundles();
-			return (imports == null || imports.length == 0)
-					? s_noRequiredBundles
-					: imports;
+			if(imports == null)
+				return s_noRequiredBundles;
+
+			int sz = imports.length;
+			if(sz == 0)
+				return s_noRequiredBundles;
+
+			ImportSpecification[] importSpecs = new ImportSpecification[sz];
+			while(--sz >= 0)
+				importSpecs[sz] = new ImportSpecification(imports[sz]);
+			return importSpecs;
 		}
 
 		if(!(model instanceof IBundlePluginModelBase))
@@ -286,15 +340,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(sz == 0)
 			return s_noRequiredBundles;
 
-		imports = new BundleSpecification[sz];
+		ImportSpecification[] importSpecs = new ImportSpecification[sz];
 		while(--sz >= 0)
 		{
 			RequireBundleObject r = new RequireBundleObject(header, elems[sz]);
-			imports[sz] = StateObjectFactory.defaultFactory.createBundleSpecification(r.getId(),
-					new org.eclipse.osgi.service.resolver.VersionRange(r.getVersion()), r.isReexported(),
+			importSpecs[sz] = new ImportSpecification(r.getId(), new VersionRange(r.getVersion()), r.isReexported(),
 					r.isOptional());
 		}
-		return imports;
+		return importSpecs;
 	}
 
 	private final CSpecBuilder m_cspecBuilder;
@@ -460,14 +513,13 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return copyPlugins;
 	}
 
-	protected ComponentRequestBuilder createDependency(BundleSpecification pluginImport, String category)
+	protected ComponentRequestBuilder createDependency(ImportSpecification pluginImport, String category)
 			throws CoreException
 	{
 		Filter filter = null;
 		if(pluginImport.isOptional())
 			filter = ComponentRequest.P2_OPTIONAL_FILTER;
-		return createDependency(pluginImport.getName(), category,
-				VersionRange.fromOSGiVersionRange(pluginImport.getVersionRange()), filter);
+		return createDependency(pluginImport.getName(), category, pluginImport.getVersionRange(), filter);
 	}
 
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
