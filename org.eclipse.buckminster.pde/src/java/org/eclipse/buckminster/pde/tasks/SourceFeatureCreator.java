@@ -38,6 +38,23 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 
 	private static final String SOURCE_SUFFIX = ".source"; //$NON-NLS-1$
 
+	public static String createSourceFeatureId(String originalId)
+	{
+		StringBuilder sourceIdBld = new StringBuilder();
+		if(originalId.endsWith(FEATURE_SUFFIX))
+		{
+			sourceIdBld.append(originalId, 0, originalId.length() - FEATURE_SUFFIX.length());
+			sourceIdBld.append(SOURCE_SUFFIX);
+			sourceIdBld.append(FEATURE_SUFFIX);
+		}
+		else
+		{
+			sourceIdBld.append(originalId);
+			sourceIdBld.append(SOURCE_SUFFIX);
+		}
+		return sourceIdBld.toString();
+	}
+
 	private final File m_inputFile;
 
 	private final File m_outputFile;
@@ -59,19 +76,7 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 		IFeature sourceFeature = featureModel.getFeature();
 
 		String originalId = originalFeature.getId();
-		StringBuilder sourceIdBld = new StringBuilder();
-		if(originalId.endsWith(FEATURE_SUFFIX))
-		{
-			sourceIdBld.append(originalId, 0, originalId.length() - FEATURE_SUFFIX.length());
-			sourceIdBld.append(SOURCE_SUFFIX);
-			sourceIdBld.append(FEATURE_SUFFIX);
-		}
-		else
-		{
-			sourceIdBld.append(originalId);
-			sourceIdBld.append(SOURCE_SUFFIX);
-		}
-		sourceFeature.setId(sourceIdBld.toString());
+		sourceFeature.setId(createSourceFeatureId(originalId));
 		sourceFeature.setVersion(originalFeature.getVersion());
 		sourceFeature.setLabel("Source bundles for " + originalFeature.getLabel()); //$NON-NLS-1$
 
@@ -86,74 +91,76 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 			InputStream input = null;
 			try
 			{
-				try
+				input = FeatureConsolidator.getInput(featureOrBundle, FEATURE_FILE);
+				IFeatureModel model = FeatureModelReader.readFeatureModel(input);
+				IFeature feature = model.getFeature();
+
+				FeatureChild fc = new FeatureChild();
+				fc.setModel(featureModel);
+				fc.loadFrom(model.getFeature());
+				fc.setArch(feature.getArch());
+				fc.setOS(feature.getOS());
+				fc.setWS(feature.getWS());
+				fc.setNL(feature.getNL());
+				fc.setLabel(feature.getLabel());
+
+				sourceFeature.addIncludedFeatures(new IFeatureChild[] { fc });
+				continue;
+			}
+			catch(FileNotFoundException e)
+			{
+			}
+			finally
+			{
+				IOUtils.close(input);
+				input = null;
+			}
+			try
+			{
+				input = FeatureConsolidator.getInput(featureOrBundle, BUNDLE_FILE);
+				ExternalBundleModel model = new ExternalBundleModel();
+				model.load(input, true);
+				IBundlePluginModelBase bmodel = model.isFragmentModel()
+						? new BundleFragmentModel()
+						: new BundlePluginModel();
+
+				bmodel.setEnabled(true);
+				bmodel.setBundleModel(model);
+				IPluginBase plugin = bmodel.getPluginBase();
+				if(plugin.getId() == null)
+					throw BuckminsterException.fromMessage(
+							"Unable to extract feature.xml or a valid OSGi bundle manifest from %s", //$NON-NLS-1$
+							featureOrBundle.getAbsolutePath());
+
+				FeaturePlugin fp = new FeaturePlugin();
+				fp.loadFrom(plugin);
+				fp.setModel(featureModel);
+				fp.setUnpack(false);
+
+				// Load arch etc. from corresponding original plug-in (if we find it)
+				//
+				String ver = plugin.getVersion();
+				String id = plugin.getId();
+				if(id.endsWith(SOURCE_SUFFIX))
 				{
-					input = FeatureConsolidator.getInput(featureOrBundle, FEATURE_FILE);
-					IFeatureModel model = FeatureModelReader.readFeatureModel(input);
-					IFeature feature = model.getFeature();
-
-					FeatureChild fc = new FeatureChild();
-					fc.setModel(featureModel);
-					fc.loadFrom(model.getFeature());
-					fc.setArch(feature.getArch());
-					fc.setOS(feature.getOS());
-					fc.setWS(feature.getWS());
-					fc.setNL(feature.getNL());
-					fc.setLabel(feature.getLabel());
-
-					sourceFeature.addIncludedFeatures(new IFeatureChild[] { fc });
-					continue;
-				}
-				catch(FileNotFoundException e)
-				{
-				}
-				try
-				{
-					input = FeatureConsolidator.getInput(featureOrBundle, BUNDLE_FILE);
-					ExternalBundleModel model = new ExternalBundleModel();
-					model.load(input, true);
-					IBundlePluginModelBase bmodel = model.isFragmentModel()
-							? new BundleFragmentModel()
-							: new BundlePluginModel();
-
-					bmodel.setEnabled(true);
-					bmodel.setBundleModel(model);
-					IPluginBase plugin = bmodel.getPluginBase();
-					if(plugin.getId() == null)
-						throw BuckminsterException.fromMessage(
-								"Unable to extract feature.xml or a valid OSGi bundle manifest from %s", //$NON-NLS-1$
-								featureOrBundle.getAbsolutePath());
-
-					FeaturePlugin fp = new FeaturePlugin();
-					fp.loadFrom(plugin);
-					fp.setModel(featureModel);
-					fp.setUnpack(false);
-
-					// Load arch etc. from corresponding original plug-in (if we find it)
-					//
-					String ver = plugin.getVersion();
-					String id = plugin.getId();
-					if(id.endsWith(SOURCE_SUFFIX))
+					String origId = id.substring(0, id.length() - SOURCE_SUFFIX.length());
+					for(IFeaturePlugin originalPlugin : originalFeature.getPlugins())
 					{
-						String origId = id.substring(0, id.length() - SOURCE_SUFFIX.length());
-						for(IFeaturePlugin originalPlugin : originalFeature.getPlugins())
+						if(originalPlugin.getId().equals(origId) && originalPlugin.getVersion().equals(ver))
 						{
-							if(originalPlugin.getId().equals(origId) && originalPlugin.getVersion().equals(ver))
-							{
-								fp.setArch(originalPlugin.getArch());
-								fp.setOS(originalPlugin.getOS());
-								fp.setWS(originalPlugin.getWS());
-								fp.setNL(originalPlugin.getNL());
-								break;
-							}
+							fp.setArch(originalPlugin.getArch());
+							fp.setOS(originalPlugin.getOS());
+							fp.setWS(originalPlugin.getWS());
+							fp.setNL(originalPlugin.getNL());
+							break;
 						}
 					}
-					sourceFeature.addPlugins(new IFeaturePlugin[] { fp });
-					continue;
 				}
-				catch(FileNotFoundException e)
-				{
-				}
+				sourceFeature.addPlugins(new IFeaturePlugin[] { fp });
+				continue;
+			}
+			catch(FileNotFoundException e)
+			{
 			}
 			finally
 			{
