@@ -128,6 +128,10 @@
 					use="optional" />
 				<attribute name="generates" type="string"
 					use="required" />
+				<attribute name="generatesType" type="string"
+					use="optional" />
+				<attribute name="generatesVersion" type="string"
+					use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>

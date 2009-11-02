@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -27,7 +28,6 @@ import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
 
@@ -38,7 +38,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 {
 	private final ComponentQuery m_componentQuery;
 
-	private HashMap<String, GeneratorNode> m_generators;
+	private HashMap<IComponentIdentifier, GeneratorNode> m_generators;
 
 	private final ResolutionContext m_parentContext;
 
@@ -56,6 +56,8 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 				: new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), parentContext));
 		m_componentQuery = componentQuery;
 		m_parentContext = parentContext;
+		if(parentContext != null)
+			setSilentStatus(parentContext.isSilentStatus());
 	}
 
 	public ResolutionContext(MaterializationSpec mspec, ComponentQuery componentQuery)
@@ -104,6 +106,25 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		return Utils.createUnmodifiableList(m_decisionLog.get(request));
 	}
 
+	public GeneratorNode getGeneratorNode(ComponentRequest request)
+	{
+		if(m_generators != null)
+		{
+			for(GeneratorNode generator : m_generators.values())
+			{
+				if(request.designates(generator.getGeneratesId()))
+					return generator;
+			}
+		}
+		return (m_parentContext == null)
+				? null
+				: m_parentContext.getGeneratorNode(request);
+	}
+
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public GeneratorNode getGeneratorNode(String name)
 	{
 		if(m_generators != null)
@@ -178,9 +199,8 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 
 		ResolverDecision decision = new ResolverDecision(request, decisionType, args);
 		decisions.add(decision);
-		Logger logger = CorePlugin.getLogger();
-		if(logger.isDebugEnabled())
-			logger.debug("%s: %s", request, decision.toString()); //$NON-NLS-1$
+		if(!isSilentStatus())
+			CorePlugin.getLogger().debug("%s: %s", request, decision); //$NON-NLS-1$
 		return decision;
 	}
 
@@ -203,8 +223,8 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		for(IGenerator generator : generators)
 		{
 			if(m_generators == null)
-				m_generators = new HashMap<String, GeneratorNode>();
-			m_generators.put(generator.getGenerates(), new GeneratorNode(cspec, generator));
+				m_generators = new HashMap<IComponentIdentifier, GeneratorNode>();
+			m_generators.put(generator.getGeneratedIdentifier(), new GeneratorNode(cspec, generator));
 		}
 	}
 }

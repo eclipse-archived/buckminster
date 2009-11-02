@@ -105,21 +105,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return fromPath(productPath, name, null, new NullProgressMonitor());
 	}
 
-	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException
-	{
-		ComponentRequest request = query.getComponentRequest();
-		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(),
-				new NullProgressMonitor());
-
-		// Retain old component info if present. We only wanted the cspec
-		// changes
-		//
-		if(oldInfo != null)
-			resolution = new Resolution(resolution.getCSpec(), resolution.getOPML(), oldInfo);
-		return resolution;
-	}
-
-	private static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor)
+	public static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor)
 			throws CoreException
 	{
 		Set<String> possibleTypes;
@@ -204,6 +190,20 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		if(bestMatch == null)
 			throw new MissingComponentException(rq.toString());
 		return bestMatch;
+	}
+
+	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException
+	{
+		ComponentRequest request = query.getComponentRequest();
+		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(),
+				new NullProgressMonitor());
+
+		// Retain old component info if present. We only wanted the cspec
+		// changes
+		//
+		if(oldInfo != null)
+			resolution = new Resolution(resolution.getCSpec(), resolution.getOPML(), oldInfo);
+		return resolution;
 	}
 
 	private final ResolutionContext m_context;
@@ -295,27 +295,36 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 	protected BOMNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
 	{
+		boolean isSilent = query.getResolutionContext().isSilentStatus();
 		Logger log = Buckminster.getLogger();
 		ComponentRequest request = query.getComponentRequest();
 		IProject existingProject = null;
 		if(query.useMaterialization() || query.useWorkspace())
 		{
-			query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "materialized"); //$NON-NLS-1$
+			if(!isSilent)
+				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "materialized"); //$NON-NLS-1$
+
 			try
 			{
 				Materialization mat = WorkspaceInfo.getMaterialization(request);
 				if(mat == null)
-					log.debug("No materialization found for %s", request); //$NON-NLS-1$
+				{
+					if(!isSilent)
+						log.debug("No materialization found for %s", request); //$NON-NLS-1$
+				}
 				else
 				{
-
-					log.debug("Materialization found for %s", request); //$NON-NLS-1$
+					if(!isSilent)
+						log.debug("Materialization found for %s", request); //$NON-NLS-1$
 					existingProject = WorkspaceInfo.getProject(mat);
 					if(existingProject == null)
 					{
-						log.debug("No workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
+						if(!isSilent)
+							log.debug("No workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
+
 						Resolution res = fromPath(query, mat.getComponentLocation(), null);
-						query.logDecision(ResolverDecisionType.MATCH_FOUND, mat.getComponentIdentifier());
+						if(!isSilent)
+							query.logDecision(ResolverDecisionType.MATCH_FOUND, mat.getComponentIdentifier());
 
 						Filter[] failingFilter = new Filter[1];
 						if(res.isFilterMatchFor(query, failingFilter))
@@ -324,10 +333,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 							MonitorUtils.complete(monitor);
 							return new ResolvedNode(query, res);
 						}
-						query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(), NLS.bind(
-								Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
+						if(!isSilent)
+							query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(),
+									NLS.bind(Messages.Filter_0_does_not_match_the_current_property_set,
+											failingFilter[0]));
 					}
-					else
+					else if(!isSilent)
 						log.debug("Workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
 				}
 			}
@@ -335,7 +346,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			{
 			}
 		}
-		else
+		else if(!isSilent)
 			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "materialized", //$NON-NLS-1$
 					Messages.materializations_disabled_in_query);
 
@@ -348,7 +359,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			//
 			if(existingProject == null)
 			{
-				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "workspace"); //$NON-NLS-1$
+				if(!isSilent)
+					query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "workspace"); //$NON-NLS-1$
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 				try
 				{
@@ -361,12 +373,14 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			}
 			if(existingProject != null && existingProject.isOpen())
 			{
-				log.debug("Found workspace project for %s", request.getProjectName()); //$NON-NLS-1$
+				if(!isSilent)
+					log.debug("Found workspace project for %s", request.getProjectName()); //$NON-NLS-1$
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				ComponentIdentifier ci = resolution.getComponentIdentifier();
 				if(request.designates(ci))
 				{
-					query.logDecision(ResolverDecisionType.MATCH_FOUND, ci);
+					if(!isSilent)
+						query.logDecision(ResolverDecisionType.MATCH_FOUND, ci);
 					Filter[] failingFilter = new Filter[1];
 					if(resolution.isFilterMatchFor(query, failingFilter))
 					{
@@ -380,22 +394,24 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 						MonitorUtils.complete(monitor);
 						return new ResolvedNode(query, resolution);
 					}
-					query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci, NLS.bind(
-							Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
+					if(!isSilent)
+						query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci, NLS.bind(
+								Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
 				}
-				else
+				else if(!isSilent)
 					log.debug("Workspace project for %s is not designated by %s", request.getProjectName(), request); //$NON-NLS-1$
 			}
-			else
+			else if(!isSilent)
 				log.debug("No open workspace project found that corresponds to %s", request); //$NON-NLS-1$
 		}
-		else
+		else if(!isSilent)
 			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "workspace", //$NON-NLS-1$
 					Messages.workspace_disable_in_query);
 
 		if(query.useTargetPlatform())
 		{
-			query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "target"); //$NON-NLS-1$
+			if(!isSilent)
+				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "target"); //$NON-NLS-1$
 			// Generate the resolution from the target platform
 			//
 			Provider provider;
@@ -424,7 +440,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				Resolution res = node.getResolution();
 				if(res.isFilterMatchFor(query))
 				{
-					query.logDecision(ResolverDecisionType.MATCH_FOUND, res.getComponentIdentifier());
+					if(!isSilent)
+						query.logDecision(ResolverDecisionType.MATCH_FOUND, res.getComponentIdentifier());
 					res.store(StorageManager.getDefault());
 					return node;
 				}
@@ -434,7 +451,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				monitor.done();
 			}
 		}
-		else
+		else if(!isSilent)
 			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "target", //$NON-NLS-1$
 					Messages.target_platform_disabled_in_query);
 
@@ -587,7 +604,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		if(query.skipComponent())
 			return node;
 
-		GeneratorNode generatorNode = query.getResolutionContext().getGeneratorNode(qDep.getRequest().getName());
+		GeneratorNode generatorNode = query.getResolutionContext().getGeneratorNode(qDep.getRequest());
 		if(generatorNode != null)
 		{
 			node.setGeneratorNode(generatorNode);

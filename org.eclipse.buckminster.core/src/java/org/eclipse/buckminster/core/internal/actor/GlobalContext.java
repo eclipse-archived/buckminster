@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,11 +21,15 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAction;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
+import org.eclipse.buckminster.core.metadata.model.Materialization;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -52,12 +57,27 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 
 	private IStatus m_status;
 
+	private List<Resolution> m_generatedResolutions;
+
+	private List<Materialization> m_generatedMaterializations;
+
 	public GlobalContext(Map<String, ? extends Object> userProps, boolean forcedExecution, boolean quietExecution)
 	{
 		super(userProps);
 		m_globalProps = RMContext.getGlobalPropertyAdditions();
 		m_forcedExecution = forcedExecution;
 		m_quietExecution = quietExecution;
+	}
+
+	public synchronized void addGeneratedResolution(Resolution resolution, IPath location)
+	{
+		if(m_generatedResolutions == null)
+		{
+			m_generatedResolutions = new ArrayList<Resolution>();
+			m_generatedMaterializations = new ArrayList<Materialization>();
+		}
+		m_generatedResolutions.add(resolution);
+		m_generatedMaterializations.add(new Materialization(location, resolution.getComponentIdentifier()));
 	}
 
 	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException
@@ -72,6 +92,28 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 		allProps.putAll(super.getProperties());
 		attribute.addDynamicProperties(allProps);
 		return allProps;
+	}
+
+	public synchronized Materialization getGeneratedMaterialization(IComponentIdentifier ci)
+	{
+		if(m_generatedMaterializations != null)
+		{
+			for(Materialization mat : m_generatedMaterializations)
+				if(ci.equals(mat.getComponentIdentifier()))
+					return mat;
+		}
+		return null;
+	}
+
+	public synchronized Resolution getGeneratedResolution(IComponentRequest request)
+	{
+		if(m_generatedResolutions != null)
+		{
+			for(Resolution res : m_generatedResolutions)
+				if(request.designates(res.getComponentIdentifier()))
+					return res;
+		}
+		return null;
 	}
 
 	public Map<UUID, Object> getInvocationCache()

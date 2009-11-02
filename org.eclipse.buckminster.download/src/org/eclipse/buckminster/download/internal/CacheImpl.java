@@ -10,7 +10,9 @@ package org.eclipse.buckminster.download.internal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
@@ -20,8 +22,10 @@ import org.eclipse.buckminster.download.Messages;
 import org.eclipse.buckminster.download.policy.ArchivePolicy;
 import org.eclipse.buckminster.download.policy.DigestPolicy;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
@@ -32,6 +36,25 @@ import org.eclipse.osgi.util.NLS;
 public class CacheImpl implements ICache
 {
 	public static final String LAST_MODIFIED_HEADER = "Last-Modified"; //$NON-NLS-1$
+
+	private static File asLocal(URL url)
+	{
+		try
+		{
+			url = FileLocator.resolve(url);
+			return "file".equalsIgnoreCase(url.getProtocol())
+					? new File(url.toURI())
+					: null;
+		}
+		catch(IOException e)
+		{
+			return null;
+		}
+		catch(URISyntaxException e)
+		{
+			return null;
+		}
+	}
 
 	private final File m_location;
 
@@ -54,6 +77,15 @@ public class CacheImpl implements ICache
 
 	public IFileInfo getRemoteInfo(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException
 	{
+		File localFile = asLocal(remoteFile);
+		if(localFile != null)
+		{
+			FileInfoBuilder fib = new FileInfoBuilder();
+			fib.setLastModified(localFile.lastModified());
+			fib.setName(localFile.getAbsolutePath());
+			fib.setSize(localFile.length());
+			return fib;
+		}
 		FileReader reader = new FileReader(cctx);
 		return reader.readInfo(remoteFile);
 	}
@@ -77,7 +109,11 @@ public class CacheImpl implements ICache
 		String urlStr = remoteFile.toString().intern();
 		synchronized(urlStr)
 		{
-			File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
+			File localFile = asLocal(remoteFile);
+			if(localFile != null)
+				return localFile.canRead();
+
+			localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
 			return !policy.update(remoteFile, localFile, true, null, monitor);
 		}
 	}
@@ -98,6 +134,10 @@ public class CacheImpl implements ICache
 	public InputStream open(IFetchPolicy policy, URL remoteFile, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException
 	{
+		File file = asLocal(remoteFile);
+		if(file != null)
+			return new FileInputStream(file);
+
 		String urlStr = remoteFile.toString().intern();
 		synchronized(urlStr)
 		{
@@ -122,6 +162,10 @@ public class CacheImpl implements ICache
 
 	public InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException
 	{
+		File file = asLocal(remoteFile);
+		if(file != null)
+			return new FileInputStream(file);
+
 		FileReader reader = new FileReader(cctx);
 		return reader.read(remoteFile);
 	}

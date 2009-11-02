@@ -182,8 +182,8 @@ public class Group extends TopLevelAttribute implements IGroup
 			}
 			catch(MissingComponentException e)
 			{
-				return CSpec.SELF_ARTIFACT.equals(pq.getAttribute())
-						&& !WorkspaceInfo.getGenerators(pq.getComponentName()).isEmpty();
+				return !WorkspaceInfo.getGenerators(
+						new ComponentRequest(pq.getComponentName(), pq.getComponentType(), null)).isEmpty();
 			}
 		}
 		return false;

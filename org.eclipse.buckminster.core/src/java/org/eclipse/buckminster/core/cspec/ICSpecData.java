@@ -29,6 +29,12 @@ public interface ICSpecData extends IAdaptable
 
 	Filter getFilter();
 
+	Collection<? extends IGenerator> getGeneratorList();
+
+	/**
+	 * @deprecated use getGeneratorList()
+	 */
+	@Deprecated
 	Map<String, ? extends IGenerator> getGenerators();
 
 	String getName();

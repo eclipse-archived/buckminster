@@ -156,6 +156,11 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		return getPrerequisitesBuilder().getPrerequisites();
 	}
 
+	public String getPrerequisitesAlias()
+	{
+		return m_prerequisitesBuilder.getName();
+	}
+
 	public PrerequisitesBuilder getPrerequisitesBuilder()
 	{
 		return m_prerequisitesBuilder;

@@ -11,15 +11,18 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
@@ -83,6 +86,8 @@ public class WorkspaceInfo
 	private static final IResource[] s_noResources = new IResource[0];
 
 	private static final HashMap<ComponentIdentifier, Resolution> s_resolutionCache = new HashMap<ComponentIdentifier, Resolution>();
+
+	private static Stack<IGlobalContext> s_performContextStack;
 
 	public static void clearCachedLocation(IComponentIdentifier cid)
 	{
@@ -257,7 +262,17 @@ public class WorkspaceInfo
 				Resolution resolution = getResolution(componentIdentifier);
 				location = resolution.getProvider().getReaderType().getFixedLocation(resolution);
 				if(location == null)
+				{
+					if(s_performContextStack != null)
+					{
+						mat = s_performContextStack.peek().getGeneratedMaterialization(componentIdentifier);
+						if(mat != null)
+							// We deliberately skip the cache here since generated
+							// material doesn't belong there.
+							return mat.getComponentLocation();
+					}
 					throw new MissingComponentException(componentIdentifier.toString());
+				}
 			}
 			else
 				location = mat.getComponentLocation();
@@ -294,17 +309,43 @@ public class WorkspaceInfo
 				: getResolution(id).getCSpec();
 	}
 
+	public static List<Generator> getGenerators(IComponentRequest request) throws CoreException
+	{
+		List<Generator> generators = null;
+		for(Resolution res : getAllResolutions())
+		{
+			for(Generator generator : res.getCSpec().getGeneratorList())
+			{
+				if(request.designates(generator.getGeneratedIdentifier()))
+				{
+					if(generators == null)
+						generators = new ArrayList<Generator>();
+					generators.add(generator);
+				}
+			}
+		}
+		if(generators == null)
+			generators = Collections.emptyList();
+		return generators;
+	}
+
+	/**
+	 * @deprecated use {@link #getGenerators(ComponentRequest)}
+	 */
+	@Deprecated
 	public static List<Generator> getGenerators(String componentName) throws CoreException
 	{
 		List<Generator> generators = null;
 		for(Resolution res : getAllResolutions())
 		{
-			Generator generator = res.getCSpec().getGenerators().get(componentName);
-			if(generator != null)
+			for(Generator generator : res.getCSpec().getGeneratorList())
 			{
-				if(generators == null)
-					generators = new ArrayList<Generator>();
-				generators.add(generator);
+				if(componentName.equals(generator.getGeneratedIdentifier().getName()))
+				{
+					if(generators == null)
+						generators = new ArrayList<Generator>();
+					generators.add(generator);
+				}
 			}
 		}
 		if(generators == null)
@@ -601,9 +642,33 @@ public class WorkspaceInfo
 		return s_hasBeenFullyInitialized;
 	}
 
+	public static void popPerformContext()
+	{
+		if(s_performContextStack == null)
+			throw new EmptyStackException();
+
+		s_performContextStack.pop();
+		if(s_performContextStack.isEmpty())
+			s_performContextStack = null;
+	}
+
+	public static void pushPerformContext(IGlobalContext context)
+	{
+		if(s_performContextStack == null)
+			s_performContextStack = new Stack<IGlobalContext>();
+		s_performContextStack.push(context);
+	}
+
 	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException
 	{
 		checkFirstUse();
+
+		if(s_performContextStack != null)
+		{
+			Resolution res = s_performContextStack.peek().getGeneratedResolution(request);
+			if(res != null)
+				return res;
+		}
 
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
 		qbld.setRootRequest(request);
@@ -630,7 +695,9 @@ public class WorkspaceInfo
 		nodeBld.setUseMaterialization(useWorkspace);
 		nodeBld.setUseRemoteResolution(false);
 
-		IResolver main = new MainResolver(new ResolutionContext(qbld.createComponentQuery()));
+		ResolutionContext ctx = new ResolutionContext(qbld.createComponentQuery());
+		ctx.setSilentStatus(true);
+		IResolver main = new MainResolver(ctx);
 		Resolution res = main.resolve(new NullProgressMonitor()).getResolution();
 		if(res == null)
 			throw new MissingComponentException(request.toString());

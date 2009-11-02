@@ -96,8 +96,7 @@ public class CSpecExtension
 		for(IComponentRequest addedDep : addedDeps)
 			cspecBuilder.addDependency(addedDep);
 
-		Map<String, ? extends IGenerator> addedGenerators = m_base.getGenerators();
-		for(IGenerator addedGenerator : addedGenerators.values())
+		for(IGenerator addedGenerator : m_base.getGeneratorList())
 		{
 			GeneratorBuilder bld = cspecBuilder.createGeneratorBuilder();
 			bld.initFrom(addedGenerator);

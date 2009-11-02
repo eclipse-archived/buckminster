@@ -149,6 +149,13 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 				: null;
 	}
 
+	public CSpec getReferencedCSpec(CSpec ownerCSpec, IModelCache ctx) throws CoreException
+	{
+		return (m_filter == null || m_filter.match(ctx.getProperties()))
+				? ownerCSpec.getReferencedCSpec(m_componentName, m_componentType, ctx)
+				: null;
+	}
+
 	public boolean isContributor()
 	{
 		return m_contributor;

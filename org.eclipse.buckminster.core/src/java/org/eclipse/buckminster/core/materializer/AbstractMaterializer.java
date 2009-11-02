@@ -156,7 +156,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		if(node instanceof GeneratorNode)
 		{
 			GeneratorNode generatorNode = (GeneratorNode)node;
-			String generates = generatorNode.getGenerates();
+			String generates = generatorNode.getGeneratesId().toString();
 			if(!generated.contains(generates))
 			{
 				if(generateResolution(generatorNode, context, MonitorUtils.subMonitor(monitor, 100)))

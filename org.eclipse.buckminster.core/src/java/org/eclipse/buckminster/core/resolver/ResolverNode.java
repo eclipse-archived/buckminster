@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.core.resolver;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +18,13 @@ import java.util.Stack;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.IAttribute;
-import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.CircularDependencyException;
+import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
@@ -230,12 +231,12 @@ public class ResolverNode
 			context = new ResolutionContext(cquery, context);
 
 		CSpec cspec = resolution.getCSpec();
-		Map<String, ? extends IGenerator> generators = cspec.getGenerators();
+		Collection<Generator> generators = cspec.getGeneratorList();
 		if(generators.size() > 0)
 		{
 			if(context == originalContext)
 				context = new ResolutionContext(originalContext.getComponentQuery(), originalContext);
-			context.setGenerators(cspec, generators.values());
+			context.setGenerators(cspec, generators);
 		}
 
 		if(context != originalContext)

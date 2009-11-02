@@ -158,7 +158,7 @@ class ResolverNodeWithJob extends ResolverNode
 			return false;
 
 		ResolutionContext context = getQuery().getResolutionContext();
-		GeneratorNode generatorNode = context.getGeneratorNode(node.getRequest().getName());
+		GeneratorNode generatorNode = context.getGeneratorNode(node.getRequest());
 		if(generatorNode != null)
 		{
 			setGeneratorNode(generatorNode);

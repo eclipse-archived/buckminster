@@ -14,6 +14,7 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IActor;
 import org.eclipse.buckminster.core.actor.NoSuchActorException;
+import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.core.runtime.CoreException;
@@ -47,7 +48,7 @@ public class ActorFactory
 
 	private final Map<String, String> m_fixedActionActorMappings;
 
-	private final Map<Action, IActor> m_liveActors = new HashMap<Action, IActor>();
+	private final Map<IAction, IActor> m_liveActors = new HashMap<IAction, IActor>();
 
 	// only the one instance created inside the class
 	//
@@ -83,7 +84,7 @@ public class ActorFactory
 		return null;
 	}
 
-	public synchronized IActor getActor(Action action) throws CoreException
+	public synchronized IActor getActor(IAction action) throws CoreException
 	{
 		// try to find an existing actor for the component/action...
 		//
@@ -104,7 +105,7 @@ public class ActorFactory
 
 		// ensure the new actor is done right after creation
 		//
-		actor.init(action);
+		actor.init((Action)action);
 
 		// now we can stuff the actor into the map(s)
 		//

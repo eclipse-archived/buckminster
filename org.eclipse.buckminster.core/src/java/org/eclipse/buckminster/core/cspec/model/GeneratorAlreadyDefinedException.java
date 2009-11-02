@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.cspec.model;
 
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.osgi.util.NLS;
 
@@ -18,12 +19,9 @@ public class GeneratorAlreadyDefinedException extends LocalizedException
 {
 	private static final long serialVersionUID = 6814925010076371632L;
 
-	public GeneratorAlreadyDefinedException(String componentName, String generates)
+	public GeneratorAlreadyDefinedException(String componentName, IComponentIdentifier generates)
 	{
-		super(
-				NLS
-						.bind(
-								Messages.A_generator_that_generates_0_is_defined_more_then_once_in_component_1,
-								generates, componentName));
+		super(NLS.bind(Messages.A_generator_that_generates_0_is_defined_more_then_once_in_component_1, generates,
+				componentName));
 	}
 }

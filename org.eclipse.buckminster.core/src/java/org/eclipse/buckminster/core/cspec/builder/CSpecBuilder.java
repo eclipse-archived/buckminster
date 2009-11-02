@@ -17,6 +17,7 @@ import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
@@ -61,7 +62,7 @@ public class CSpecBuilder implements ICSpecData
 
 	private Documentation m_documentation;
 
-	private HashMap<String, GeneratorBuilder> m_generators;
+	private HashMap<IComponentIdentifier, GeneratorBuilder> m_generators;
 
 	private String m_name;
 
@@ -310,15 +311,15 @@ public class CSpecBuilder implements ICSpecData
 
 	public void addGenerator(IGenerator generator) throws GeneratorAlreadyDefinedException
 	{
-		String name = generator.getGenerates();
+		IComponentIdentifier ci = generator.getGeneratedIdentifier();
 		if(m_generators == null)
-			m_generators = new HashMap<String, GeneratorBuilder>();
-		else if(m_generators.containsKey(name))
-			throw new GeneratorAlreadyDefinedException(m_name, name);
+			m_generators = new HashMap<IComponentIdentifier, GeneratorBuilder>();
+		else if(m_generators.containsKey(ci))
+			throw new GeneratorAlreadyDefinedException(m_name, ci);
 
 		GeneratorBuilder bld = createGeneratorBuilder();
 		bld.initFrom(generator);
-		m_generators.put(name, bld);
+		m_generators.put(ci, bld);
 	}
 
 	public GroupBuilder addGroup(String name, boolean publ) throws AttributeAlreadyDefinedException
@@ -491,16 +492,26 @@ public class CSpecBuilder implements ICSpecData
 		return m_filter;
 	}
 
-	public GeneratorBuilder getGenerator(String generatorName)
+	public Collection<GeneratorBuilder> getGeneratorList()
 	{
 		return m_generators == null
-				? null
-				: m_generators.get(generatorName);
+				? Collections.<GeneratorBuilder> emptySet()
+				: m_generators.values();
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public Map<String, GeneratorBuilder> getGenerators()
 	{
-		return m_generators;
+		if(m_generators == null)
+			return Collections.emptyMap();
+
+		HashMap<String, GeneratorBuilder> map = new HashMap<String, GeneratorBuilder>(m_generators.size());
+		for(GeneratorBuilder bld : m_generators.values())
+			map.put(bld.getGenerates(), bld);
+		return map;
 	}
 
 	public GroupBuilder getGroup(String name)
@@ -613,15 +624,15 @@ public class CSpecBuilder implements ICSpecData
 		else
 			m_dependencies = null;
 
-		Map<String, ? extends IGenerator> gens = cspec.getGenerators();
+		Collection<? extends IGenerator> gens = cspec.getGeneratorList();
 		if(gens.size() > 0)
 		{
-			m_generators = new HashMap<String, GeneratorBuilder>(gens.size());
-			for(IGenerator gen : gens.values())
+			m_generators = new HashMap<IComponentIdentifier, GeneratorBuilder>(gens.size());
+			for(IGenerator gen : gens)
 			{
 				GeneratorBuilder gb = createGeneratorBuilder();
 				gb.initFrom(gen);
-				m_generators.put(gen.getGenerates(), gb);
+				m_generators.put(gen.getGeneratedIdentifier(), gb);
 			}
 		}
 		else
