@@ -131,7 +131,7 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//MapRule"/>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//InstallableUnitReference">
-      <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//InstallableUnitReference/installableUnit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//InstallableUnitReference/installableUnit"/>
       <genOperations ecoreOperation="Aggregator.ecore#//InstallableUnitReference/getInstallableUnit">
         <genParameters ecoreParameter="Aggregator.ecore#//InstallableUnitReference/getInstallableUnit/forceResolve"/>
       </genOperations>

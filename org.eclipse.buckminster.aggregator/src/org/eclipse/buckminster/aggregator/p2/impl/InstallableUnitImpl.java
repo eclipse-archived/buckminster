@@ -8,6 +8,7 @@ package org.eclipse.buckminster.aggregator.p2.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -92,6 +93,60 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
  */
 public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements InstallableUnit
 {
+	// Compares IU by id (ascending) and version (descending)
+	public static class IUSelectionComparator implements Comparator<IInstallableUnit>
+	{
+
+		public int compare(IInstallableUnit iu1, IInstallableUnit iu2)
+		{
+			if(iu1 != null)
+				if(iu2 == null)
+					return 1;
+				else
+				{
+					String id1 = iu1.getId();
+					String id2 = iu2.getId();
+
+					if(id1 != null)
+						if(id2 == null)
+							return 1;
+						else
+						{
+							int result = id1.toLowerCase().compareTo(id2.toLowerCase());
+
+							if(result == 0)
+							{
+								// Order by version in descending order
+								Version version1 = iu1.getVersion();
+								Version version2 = iu2.getVersion();
+
+								if(version1 != null)
+									if(version2 == null)
+										return -1;
+									else
+										return -version1.compareTo(version2);
+								else if(version2 != null)
+									return 1;
+								else
+									return 0;
+							}
+
+							return result;
+						}
+					else if(id2 != null)
+						return -1;
+					else
+						return 0;
+				}
+			else if(iu2 != null)
+				return -1;
+			else
+				return 0;
+		}
+	}
+
+	public static Comparator<IInstallableUnit> SELECTION_COMPARATOR = new IUSelectionComparator();
+
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

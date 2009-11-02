@@ -12,7 +12,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 
 /**
  * @author Karel Brezina
- *
+ * 
  */
 public class GeneralUtils
 {

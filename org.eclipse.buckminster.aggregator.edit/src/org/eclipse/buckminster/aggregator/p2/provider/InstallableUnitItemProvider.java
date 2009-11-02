@@ -182,7 +182,9 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 			if(name != null && name.startsWith("%"))
 				name = null;
 
-			label += " / " + iu.getVersion().toString()	+ (name != null && name.length() > 0 ? " (" + name + ")" : "");
+			label += " / " + iu.getVersion().toString() + (name != null && name.length() > 0
+					? " (" + name + ")"
+					: "");
 		}
 
 		return label == null || label.length() == 0

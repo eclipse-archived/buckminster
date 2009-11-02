@@ -13,9 +13,11 @@ import java.util.Comparator;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>IU Presentation</b></em>'. <!-- end-user-doc -->
@@ -43,51 +45,16 @@ public interface IUPresentation extends EObject
 	static class IUPresentationComparator implements Comparator<IUPresentation>
 	{
 
-		public int compare(IUPresentation iu1, IUPresentation iu2)
+		public int compare(IUPresentation iup1, IUPresentation iup2)
 		{
-			if(iu1 != null)
-				if(iu2 == null)
-					return 1;
-				else
-				{
-					String id1 = iu1.getId();
-					String id2 = iu2.getId();
+			IInstallableUnit iu1 = iup1 != null
+					? iup1.getInstallableUnit()
+					: null;
+			IInstallableUnit iu2 = iup2 != null
+					? iup2.getInstallableUnit()
+					: null;
 
-					if(id1 != null)
-						if(id2 == null)
-							return 1;
-						else
-						{
-							int result = id1.toLowerCase().compareTo(id2.toLowerCase());
-
-							if(result == 0)
-							{
-								// Order by version in descending order
-								Version version1 = iu1.getVersion();
-								Version version2 = iu2.getVersion();
-
-								if(version1 != null)
-									if(version2 == null)
-										return -1;
-									else
-										return -version1.compareTo(version2);
-								else if(version2 != null)
-									return 1;
-								else
-									return 0;
-							}
-
-							return result;
-						}
-					else if(id2 != null)
-						return -1;
-					else
-						return 0;
-				}
-			else if(iu2 != null)
-				return -1;
-			else
-				return 0;
+			return InstallableUnitImpl.SELECTION_COMPARATOR.compare(iu1, iu2);
 		}
 	}
 

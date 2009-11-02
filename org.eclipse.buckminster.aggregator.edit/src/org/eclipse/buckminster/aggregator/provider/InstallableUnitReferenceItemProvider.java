@@ -20,6 +20,7 @@ import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -148,7 +149,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 				getString("_UI_InstallableUnitReference_installableUnit_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnitReference_installableUnit_feature",
 						"_UI_InstallableUnitReference_type"),
-				AggregatorPackage.Literals.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, true, false, true, null, null,
+				AggregatorPackage.Literals.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, true, false, false, null, null,
 				null)
 		{
 			@SuppressWarnings("unchecked")
@@ -194,6 +195,8 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 					if(idx >= 0)
 						result.remove(idx);
 				}
+
+				Collections.sort(result, InstallableUnitImpl.SELECTION_COMPARATOR);
 				return result;
 			}
 		});
@@ -216,13 +219,13 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 					id = vn.getId();
 					version = vn.getVersion();
 				}
-				
+
 				name = "missing";
 			}
 			else
 			{
 				version = iu.getVersion();
-				
+
 				name = GeneralUtils.getLocalizedProperty(iu, IInstallableUnit.PROP_NAME);
 				if(name != null && name.startsWith("%"))
 					name = null;
