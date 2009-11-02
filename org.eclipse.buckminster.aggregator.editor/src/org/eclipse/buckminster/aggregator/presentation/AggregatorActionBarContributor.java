@@ -17,17 +17,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.buckminster.aggregator.Aggregator;
-import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
-import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
 import org.eclipse.buckminster.aggregator.util.AddToParentRepositoryCommand;
@@ -37,8 +40,6 @@ import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
-import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
-import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -394,7 +395,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	class ReloadRepoAction extends Action
 	{
-		private MappedRepository m_mappedRepository;
+		private MetadataRepositoryReference m_metadataRepositoryReference;
 
 		public ReloadRepoAction()
 		{
@@ -408,14 +409,14 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		@Override
 		public void run()
 		{
-			if(m_mappedRepository != null && m_mappedRepository.isBranchEnabled())
-				MetadataRepositoryResourceImpl.loadRepository(m_mappedRepository.getResolvedLocation(), m_aggregator,
+			if(m_metadataRepositoryReference != null && m_metadataRepositoryReference.isBranchEnabled())
+				MetadataRepositoryResourceImpl.loadRepository(m_metadataRepositoryReference.getResolvedLocation(), m_aggregator,
 						true);
 		}
 
-		public void setMappedRepository(MappedRepository mappedRepository)
+		public void setMetadataRepositoryReference(MetadataRepositoryReference metadataRepositoryReference)
 		{
-			m_mappedRepository = mappedRepository;
+			m_metadataRepositoryReference = metadataRepositoryReference;
 		}
 	}
 
@@ -828,11 +829,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				m_enabledStatusMenuItem.setVisible(true);
 			}
 
-			if(object instanceof MappedRepository)
+			if(object instanceof MetadataRepositoryReference)
 			{
-				MappedRepository mappedRepository = (MappedRepository)object;
-				m_reloadRepoMenuItem.getAction().setEnabled(mappedRepository.isBranchEnabled());
-				((ReloadRepoAction)m_reloadRepoMenuItem.getAction()).setMappedRepository(mappedRepository);
+				MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
+				m_reloadRepoMenuItem.getAction().setEnabled(metadataRepositoryReference.isBranchEnabled());
+				((ReloadRepoAction)m_reloadRepoMenuItem.getAction()).setMetadataRepositoryReference(metadataRepositoryReference);
 				m_reloadRepoMenuItem.update();
 				m_reloadRepoMenuItem.setVisible(true);
 			}

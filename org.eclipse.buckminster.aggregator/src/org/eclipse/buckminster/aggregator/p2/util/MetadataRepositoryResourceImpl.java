@@ -39,6 +39,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -66,17 +67,20 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		private final MetadataRepositoryImpl repository;
 
 		private final java.net.URI location;
+		
+		private boolean forceReload;
 
 		private final MetadataRepositoryStructuredView repoView;
 
 		private Exception exception;
 
 		public RepositoryLoaderJob(MetadataRepositoryImpl repository, java.net.URI location,
-				MetadataRepositoryStructuredView repoView)
+				boolean forceReload, MetadataRepositoryStructuredView repoView)
 		{
 			super("Repository Loader");
 			this.repository = repository;
 			this.location = location;
+			this.forceReload = forceReload;
 			this.repoView = repoView;
 			setUser(false);
 			setSystem(true);
@@ -105,16 +109,33 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				subMon.setTaskName(msg);
 				long start = TimeUtils.getNow();
 				IMetadataRepository repo;
-				try
+
+				if(forceReload)
 				{
+					//This is a workaround - we need to clear the NotFound cahce to force
+					//the MDR manager to fetch the repo again.
+					if(mdrMgr.contains(location))
+						//if the repo is known to MDR manager, it should be simply refreshed
+						repo = mdrMgr.refreshRepository(location, subMon.newChild(80));
+					else
+					{
+						//if the repo is not known to MDR manager, we call the refresh in order
+						//to clear the NotFound cache only and we expect an exception to be thrown
+						//due to unknown repository
+						try
+						{
+							mdrMgr.refreshRepository(location, new NullProgressMonitor());
+						}
+						catch(ProvisionException e)
+						{
+							//this is expected - but the NotFound cache has been cleared
+						}
+						repo = mdrMgr.loadRepository(location, subMon.newChild(80));
+					}
+				}
+				else
 					repo = mdrMgr.loadRepository(location, subMon.newChild(80));
-				}
-				catch(ProvisionException e)
-				{
-					if(!mdrMgr.contains(location))
-						throw e;
-					repo = mdrMgr.refreshRepository(location, subMon.newChild(80));
-				}
+
 				repository.setName(repo.getName());
 				repository.setLocation(repo.getLocation());
 				repository.setDescription(repo.getDescription());
@@ -413,6 +434,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	}
 
 	private Exception m_lastException = null;
+	
+	private boolean m_forceReload = false;
 
 	public static final Query QUERY_ALL_IUS = new MatchQuery()
 	{
@@ -470,7 +493,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 		MetadataRepositoryImpl repository = (MetadataRepositoryImpl)P2Factory.eINSTANCE.createMetadataRepository();
 		MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView(repository);
-		RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, repoView);
+		RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, m_forceReload, repoView);
 		try
 		{
 			boolean jobManagerReadyBeforeJobScheduled = !Job.getJobManager().isSuspended();
@@ -498,6 +521,13 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				eNotify(notification);
 			setModified(false);
 		}
+	}
+
+	@Override
+	protected void doUnload()
+	{
+		super.doUnload();
+		m_forceReload = true;
 	}
 
 	public void save(Map<?, ?> options) throws IOException
