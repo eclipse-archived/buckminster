@@ -20,9 +20,9 @@ public class OptionDescriptor
 
 	public OptionDescriptor(char shortName, String longName, int type)
 	{
-		m_shortName = new Character(shortName);
-		m_longName = longName;
-		m_type = type;
+		this(shortName == 0
+				? null
+				: Character.valueOf(shortName), longName, type);
 	}
 
 	public OptionDescriptor(Character shortName, String longName, int type)
@@ -30,6 +30,11 @@ public class OptionDescriptor
 		m_shortName = shortName;
 		m_longName = longName;
 		m_type = type;
+	}
+
+	public OptionDescriptor(String longName, int type)
+	{
+		this(null, longName, type);
 	}
 
 	public String getLongName()
