@@ -8,7 +8,6 @@
   <rm:locator pattern="^com\.ibm\.icu\.base$" searchPathRef="orbit"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release" failOnError="false"/>
-  <rm:locator pattern="^org\.eclipse\.pde\.launching$" searchPathRef="pde.cvs"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tmatesoft\.svnkit(\..+)?" searchPathRef="svnkit"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
@@ -119,13 +118,6 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
       <rm:uri format="{0}/tools/gef/updates/milestones">
         <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
-    </rm:provider>
-  </rm:searchPath>
-  <rm:searchPath name="pde.cvs">
-    <rm:provider componentTypes="osgi.bundle" readerType="cvs">
-      <rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,pde/ui/{0}">
-        <bc:propertyRef key="buckminster.component"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
