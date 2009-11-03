@@ -24,7 +24,6 @@ import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -341,10 +340,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		});
 	}
 
-	protected void afterLocationChange(MetadataRepositoryReference repoRef, MetadataRepository repo)
-	{
-	}
-
 	/**
 	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
 	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -364,16 +359,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 
 	private void onLocationChange(MetadataRepositoryReference repository)
 	{
-		MetadataRepository repo = null;
-		try
-		{
-			repo = MetadataRepositoryResourceImpl.loadRepository(repository.getResolvedLocation(),
-					repository.getAggregator());
-		}
-		finally
-		{
-			repository.setMetadataRepository(repo);
-			afterLocationChange(repository, repo);
-		}
+		repository.startRepositoryLoad(false);
 	}
 }

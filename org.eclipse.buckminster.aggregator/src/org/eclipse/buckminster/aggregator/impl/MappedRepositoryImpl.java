@@ -7,6 +7,8 @@
 package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
@@ -15,11 +17,15 @@ import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
@@ -615,6 +621,29 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	public boolean isMirrorArtifacts()
 	{
 		return (eFlags & MIRROR_ARTIFACTS_EFLAG) != 0;
+	}
+
+	@Override
+	synchronized public void onRepositoryLoad()
+	{
+		Set<InstallableUnitReference> iuRefs = new HashSet<InstallableUnitReference>();
+		iuRefs.addAll(getUnits(false));
+		iuRefs.addAll(getMapRules());
+
+		MetadataRepository repo = getMetadataRepository();
+
+		for(InstallableUnitReference iuRef : iuRefs)
+		{
+			InstallableUnit oldIU = iuRef.getInstallableUnit();
+			InstallableUnit newIU = null;
+
+			if(oldIU != null)
+				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(repo != null
+						? repo.getLocation().toString()
+						: "", oldIU.getVersionedName());
+
+			iuRef.setInstallableUnit(newIU);
+		}
 	}
 
 	public void removeUnit(MappedUnit unit)

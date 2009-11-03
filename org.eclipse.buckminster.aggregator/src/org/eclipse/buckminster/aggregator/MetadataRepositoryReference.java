@@ -95,6 +95,14 @@ public interface MetadataRepositoryReference extends EnabledStatusProvider
 	boolean isBranchEnabled();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	void onRepositoryLoad();
+
+	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getLocation
 	 * <em>Location</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -116,5 +124,13 @@ public interface MetadataRepositoryReference extends EnabledStatusProvider
 	 * @generated
 	 */
 	void setMetadataRepository(MetadataRepository value);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	void startRepositoryLoad(boolean forceReload);
 
 } // MetadataRepositoryReference

@@ -144,10 +144,6 @@ public class ResourceUtils
 	 */
 	public static void loadResourceForMappedRepository(MetadataRepositoryReference repoRef)
 	{
-		if(repoRef.getLocation() == null)
-			return;
-		Aggregator aggregator = repoRef.getAggregator();
-		repoRef.setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(repoRef.getResolvedLocation(),
-				aggregator));
+		repoRef.startRepositoryLoad(false);
 	}
 }

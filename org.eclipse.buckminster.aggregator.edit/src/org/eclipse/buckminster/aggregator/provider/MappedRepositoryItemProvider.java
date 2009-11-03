@@ -9,20 +9,13 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
@@ -224,29 +217,6 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 						"_UI_PropertyDescriptor_description", "_UI_MappedRepository_mirrorArtifacts_feature",
 						"_UI_MappedRepository_type"), AggregatorPackage.Literals.MAPPED_REPOSITORY__MIRROR_ARTIFACTS,
 				true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
-	}
-
-	@Override
-	protected void afterLocationChange(MetadataRepositoryReference repoRef, MetadataRepository repo)
-	{
-		MappedRepository mappedRepo = (MappedRepository)repoRef;
-
-		Set<InstallableUnitReference> iuRefs = new HashSet<InstallableUnitReference>();
-		iuRefs.addAll(mappedRepo.getUnits(false));
-		iuRefs.addAll(mappedRepo.getMapRules());
-
-		for(InstallableUnitReference iuRef : iuRefs)
-		{
-			InstallableUnit oldIU = iuRef.getInstallableUnit();
-			InstallableUnit newIU = null;
-
-			if(oldIU != null)
-				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(repo != null
-						? repo.getLocation().toString()
-						: "", oldIU.getVersionedName());
-
-			iuRef.setInstallableUnit(newIU);
-		}
 	}
 
 	/**

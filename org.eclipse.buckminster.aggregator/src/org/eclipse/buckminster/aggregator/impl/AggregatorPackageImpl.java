@@ -1591,6 +1591,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEOperation(metadataRepositoryReferenceEClass, ecorePackage.getEString(), "getResolvedLocation", 0, 1,
 				IS_UNIQUE, IS_ORDERED);
 
+		op = addEOperation(metadataRepositoryReferenceEClass, null, "startRepositoryLoad", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEBoolean(), "forceReload", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(metadataRepositoryReferenceEClass, null, "onRepositoryLoad", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(statusProviderEClass, StatusProvider.class, "StatusProvider", IS_ABSTRACT, IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
 

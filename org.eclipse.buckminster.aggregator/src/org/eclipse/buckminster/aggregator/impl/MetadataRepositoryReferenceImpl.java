@@ -13,6 +13,7 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
@@ -352,6 +353,16 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public void onRepositoryLoad()
+	{
+		// do nothing by default
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setEnabled(boolean newEnabled)
@@ -380,12 +391,17 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 					AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION, oldLocation, location));
 	}
 
+	synchronized public void setMetadataRepository(MetadataRepository newMetadataRepository)
+	{
+		setMetadataRepositoryGen(newMetadataRepository);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void setMetadataRepository(MetadataRepository newMetadataRepository)
+	public void setMetadataRepositoryGen(MetadataRepository newMetadataRepository)
 	{
 		MetadataRepository oldMetadataRepository = metadataRepository;
 		metadataRepository = newMetadataRepository;
@@ -393,6 +409,26 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			eNotify(new ENotificationImpl(this, Notification.SET,
 					AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY, oldMetadataRepository,
 					metadataRepository));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public void startRepositoryLoad(boolean forceReload)
+	{
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+
+		if(getLocation() == null)
+			return;
+		Aggregator aggregator = getAggregator();
+
+		// TODO Call asynchronous load
+		setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(getResolvedLocation(), aggregator,
+				forceReload));
+		onRepositoryLoad();
 	}
 
 	/**
