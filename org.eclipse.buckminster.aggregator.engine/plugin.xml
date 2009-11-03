@@ -14,5 +14,14 @@
          </run>
       </application>
    </extension>
+   <extension
+         point="org.eclipse.buckminster.cmdline.commands">
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.aggregator.engine.Builder"
+            name="aggregate"
+            status="NORMAL">
+      </command>
+   </extension>
 
 </plugin>

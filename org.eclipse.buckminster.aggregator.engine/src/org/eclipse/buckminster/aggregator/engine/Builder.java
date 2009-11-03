@@ -33,6 +33,12 @@ import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.cmdline.AbstractCommand;
+import org.eclipse.buckminster.cmdline.Headless;
+import org.eclipse.buckminster.cmdline.Option;
+import org.eclipse.buckminster.cmdline.OptionDescriptor;
+import org.eclipse.buckminster.cmdline.OptionValueType;
+import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -45,7 +51,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.EList;
@@ -78,7 +83,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXParseException;
 
-public class Builder implements IApplication
+public class Builder extends AbstractCommand implements IApplication
 {
 	public enum ActionType
 	{
@@ -175,6 +180,34 @@ public class Builder implements IApplication
 		TIME_FORMAT.setTimeZone(utc);
 		TIMESTAMP_FORMAT.setTimeZone(utc);
 	}
+
+	static private final OptionDescriptor optAction = new OptionDescriptor("action", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optBuildModel = new OptionDescriptor("buildModel", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optBuildId = new OptionDescriptor("buildId", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optBuildRoot = new OptionDescriptor("buildRoot", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optProduction = new OptionDescriptor("production", OptionValueType.NONE); //$NON-NLS-1$
+
+	static private final OptionDescriptor optMockEmailCc = new OptionDescriptor("mockEmailCc", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optEmailFrom = new OptionDescriptor("emailFrom", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optEmailFromName = new OptionDescriptor(
+			"emailFromName", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optMockEmailTo = new OptionDescriptor("mockEmailTo", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optLogURL = new OptionDescriptor("logURL", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optSmtpHost = new OptionDescriptor("smtpHost", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optSmtpPort = new OptionDescriptor("smtpPort", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	static private final OptionDescriptor optSubjectPrefix = new OptionDescriptor(
+			"subjectPrefix", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	/**
 	 * Creates a repository location without the trailing slash that will be added if the standard
@@ -286,11 +319,6 @@ public class Builder implements IApplication
 		}
 	}
 
-	private static void requiresArgument(String opt)
-	{
-		throw new IllegalArgumentException("Option " + opt + " requires an argument");
-	}
-
 	private static void send(String host, int port, EmailAddress from, List<EmailAddress> toList, EmailAddress cc,
 			String subject, String message) throws IOException
 	{
@@ -374,7 +402,7 @@ public class Builder implements IApplication
 
 	private Set<IInstallableUnit> unverifiedUnits;
 
-	private HashMap<MappedRepository, List<VersionedId>> exclusions;;
+	private HashMap<MappedRepository, List<VersionedId>> exclusions;
 
 	ActionType action = ActionType.BUILD;
 
@@ -553,7 +581,7 @@ public class Builder implements IApplication
 	 * 
 	 * @param monitor
 	 */
-	public Object run(boolean fromIDE, IProgressMonitor monitor)
+	public int run(boolean fromIDE, IProgressMonitor monitor)
 	{
 		int ticks;
 		switch(action)
@@ -603,7 +631,7 @@ public class Builder implements IApplication
 			}
 
 			if(action == ActionType.CLEAN)
-				return IApplication.EXIT_OK;
+				return 0;
 
 			buildRoot.mkdirs();
 			if(!buildRoot.exists())
@@ -650,7 +678,7 @@ public class Builder implements IApplication
 				runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 100));
 				if(action != ActionType.VERIFY)
 					runMirroring(MonitorUtils.subMonitor(monitor, 2000));
-				return IApplication.EXIT_OK;
+				return 0;
 			}
 			finally
 			{
@@ -662,7 +690,7 @@ public class Builder implements IApplication
 			Buckminster.getLogger().error(e, "Build failed! Exception was %s", getExceptionMessages(e));
 			if(e instanceof Error)
 				throw (Error)e;
-			return Integer.valueOf(1);
+			return 1;
 		}
 		finally
 		{
@@ -894,40 +922,112 @@ public class Builder implements IApplication
 		this.subjectPrefix = subjectPrefix;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object start(IApplicationContext context) throws Exception
 	{
-
-		String[] args = (String[])context.getArguments().get("application.args");
-		Logger.setEclipseLoggerLevelThreshold(Logger.SILENT);
-		Logger log = Buckminster.getLogger();
-		StringBuilder msgBld = new StringBuilder();
-		msgBld.append("Running with arguments:");
-		for(String arg : args)
+		String[] args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+		String[] allArgs = new String[args.length + 1];
+		allArgs[0] = "aggregate";
+		System.arraycopy(args, 0, allArgs, 1, args.length);
+		List<OptionDescriptor> opts = new ArrayList<OptionDescriptor>();
+		getOptionDescriptors(opts);
+		for(int idx = 1; idx < allArgs.length; ++idx)
 		{
-			msgBld.append(LINE_SEPARATOR);
-			msgBld.append("  '");
-			msgBld.append(arg);
-			msgBld.append('\'');
+			String arg = allArgs[idx];
+			if(arg.length() > 2 && arg.charAt(0) == '-' && arg.charAt(1) != '-')
+			{
+				// It's likely that this is an old style option, i.e. -buildModel
+				// instead of --buildModel
+				//
+				arg = arg.substring(1);
+				for(OptionDescriptor opt : opts)
+					if(opt.getLongName().equalsIgnoreCase(arg))
+					{
+						// Yepp. There it was. So let's replace it
+						allArgs[idx] = "--" + arg;
+						break;
+					}
+			}
 		}
-		String msg = msgBld.toString();
-		try
-		{
-			parseCommandLineArgs(args);
-			log.debug(msg);
-		}
-		catch(Exception e)
-		{
-			// We use error level when the arguments are corrupt since the user
-			// didn't
-			// have a chance to set the debug level
-			log.info(msg);
-			return Integer.valueOf(1);
-		}
-		return run(false, new NullProgressMonitor());
+		context.getArguments().put(IApplicationContext.APPLICATION_ARGS, allArgs);
+		Headless headless = new Headless();
+		return headless.start(context);
 	}
 
 	public void stop()
 	{
+	}
+
+	@Override
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
+	{
+		super.getOptionDescriptors(appendHere);
+		appendHere.add(optAction);
+		appendHere.add(optBuildId);
+		appendHere.add(optBuildModel);
+		appendHere.add(optBuildRoot);
+		appendHere.add(optProduction);
+		appendHere.add(optMockEmailCc);
+		appendHere.add(optEmailFrom);
+		appendHere.add(optEmailFromName);
+		appendHere.add(optMockEmailTo);
+		appendHere.add(optLogURL);
+		appendHere.add(optSmtpHost);
+		appendHere.add(optSmtpPort);
+		appendHere.add(optSubjectPrefix);
+	}
+
+	@Override
+	protected void handleOption(Option option) throws Exception
+	{
+		if(option.is(optAction))
+			action = ActionType.valueOf(option.getValue().toUpperCase());
+		else if(option.is(optBuildId))
+			setBuildID(option.getValue());
+		else if(option.is(optBuildModel))
+		{
+			File buildModel = new File(option.getValue());
+			if(!buildModel.canRead())
+				throw new IllegalArgumentException(format("Unable to read %s", buildModel));
+			setBuildModelLocation(buildModel);
+		}
+		else if(option.is(optBuildRoot))
+			setBuildRoot(new File(option.getValue()));
+		else if(option.is(optEmailFrom))
+			setEmailFrom(option.getValue());
+		else if(option.is(optEmailFromName))
+			setEmailFromName(option.getValue());
+		else if(option.is(optLogURL))
+			setLogURL(option.getValue());
+		else if(option.is(optMockEmailCc))
+			setMockEmailCC(option.getValue());
+		else if(option.is(optMockEmailTo))
+			setMockEmailTo(option.getValue());
+		else if(option.is(optProduction))
+			setProduction(true);
+		else if(option.is(optSmtpHost))
+			setSmtpHost(option.getValue());
+		else if(option.is(optSmtpPort))
+			setSmtpPort(Integer.parseInt(option.getValue()));
+		else if(option.is(optSubjectPrefix))
+			setSubjectPrefix(option.getValue());
+		else
+			super.handleOption(option);
+	}
+
+	@Override
+	protected void handleUnparsed(String[] unparsed) throws Exception
+	{
+		if(unparsed.length > 0)
+			throw new UsageException("too many arguments");
+	}
+
+	@Override
+	protected int run(IProgressMonitor monitor) throws Exception
+	{
+		if(buildModelLocation == null)
+			throw new UsageException("Missing required argument --buildModel <path to model>");
+		return run(false, monitor);
 	}
 
 	private void cleanAll() throws CoreException
@@ -987,159 +1087,6 @@ public class Builder implements IApplication
 		if(mockEmailTo != null)
 			return Collections.singletonList(new EmailAddress(mockEmailTo, null));
 		return Collections.emptyList();
-	}
-
-	private void parseCommandLineArgs(String[] args)
-	{
-		int top = args.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
-			String arg = args[idx];
-			if("-action".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				action = ActionType.valueOf(args[idx].toUpperCase());
-				continue;
-			}
-			if("-production".equalsIgnoreCase(arg))
-			{
-				setProduction(true);
-				continue;
-			}
-			if("-logLevel".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				String levelStr = args[idx];
-				int level;
-				if("debug".equalsIgnoreCase(levelStr))
-					level = Logger.DEBUG;
-				else if("info".equalsIgnoreCase(levelStr))
-					level = Logger.INFO;
-				else if("warning".equalsIgnoreCase(levelStr))
-					level = Logger.WARNING;
-				else if("error".equalsIgnoreCase(levelStr))
-					level = Logger.WARNING;
-				else
-					throw new IllegalArgumentException(format("%s is not a valid logLevel", levelStr));
-
-				setLogLevel(level);
-				continue;
-			}
-			if("-logURL".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setLogURL(args[idx]);
-				continue;
-			}
-			if("-mockEmailTo".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setMockEmailTo(args[idx]);
-				continue;
-			}
-			if("-subjectPrefix".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setSubjectPrefix(args[idx]);
-				continue;
-			}
-			if("-emailFrom".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setEmailFrom(args[idx]);
-				continue;
-			}
-			if("-emailFromName".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setEmailFromName(args[idx]);
-				continue;
-			}
-			if("-smtpHost".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setSmtpHost(args[idx]);
-				continue;
-			}
-			if("-smtpPort".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				int portNumber = 0;
-				try
-				{
-					portNumber = Integer.parseInt(args[idx]);
-				}
-				catch(NumberFormatException e)
-				{
-				}
-				if(portNumber <= 0)
-					requiresArgument(arg);
-				setSmtpPort(portNumber);
-				continue;
-			}
-			if("-mockEmailCC".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setMockEmailCC(args[idx]);
-				continue;
-			}
-			if("-buildModel".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				File buildModel = new File(args[idx]);
-				if(!buildModel.canRead())
-					throw new IllegalArgumentException(format("Unable to read %s", buildModel));
-				setBuildModelLocation(buildModel);
-				continue;
-			}
-			if("-buildRoot".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setBuildRoot(new File(args[idx]));
-				continue;
-			}
-			if("-buildId".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setBuildID(args[idx]);
-				continue;
-			}
-			if("-mirrorReferences".equalsIgnoreCase(arg))
-			{
-				setMirrorReferences(true);
-				continue;
-			}
-			if("-referenceIncludePattern".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setReferenceIncludePattern(args[idx]);
-				continue;
-			}
-			if("-referenceExcludePattern".equalsIgnoreCase(arg))
-			{
-				if(++idx >= top)
-					requiresArgument(arg);
-				setReferenceExcludePattern(args[idx]);
-				continue;
-			}
-			String msg = format("Unknown option %s", arg);
-			Buckminster.getLogger().error(msg);
-			throw new IllegalArgumentException(msg);
-		}
 	}
 
 	private void restartP2Bundles() throws CoreException

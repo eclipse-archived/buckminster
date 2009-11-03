@@ -281,6 +281,93 @@ public class RepositoryVerifier extends BuilderPhase
 		}
 	}
 
+	InstallableUnit resolvePartialIU(IInstallableUnit iu, SubMonitor subMon) throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
+		Logger log = Buckminster.getLogger();
+		String info = "Converting partial IU for " + iu.getId() + "...";
+		subMon.beginTask(info, IProgressMonitor.UNKNOWN);
+		log.debug(info);
+
+		// Scan all mapped repositories for this IU
+		//
+		InstallableUnit miu = null;
+		MetadataRepository mdr = null;
+		contribs: for(Contribution contrib : getBuilder().getAggregator().getContributions(true))
+
+			for(MappedRepository repo : contrib.getRepositories(true))
+			{
+				MetadataRepository candidate = repo.getMetadataRepository();
+				for(InstallableUnit candidateIU : candidate.getInstallableUnits())
+					if(iu.getId().equals(candidateIU.getId()) && iu.getVersion().equals(candidateIU.getVersion()))
+					{
+						mdr = candidate;
+						miu = candidateIU;
+						break contribs;
+					}
+			}
+
+		if(mdr == null)
+			throw BuckminsterException.fromMessage("Unable to locate mapped repository for IU %s/%s", iu.getId(),
+					iu.getVersion());
+
+		try
+		{
+			IArtifactRepository sourceAr = arMgr.loadRepository(mdr.getLocation(), subMon.newChild(10));
+			File tempRepositoryFolder = getBuilder().getTempRepositoryFolder();
+			tempRepositoryFolder.mkdirs();
+
+			URI tempRepositoryURI = Builder.createURI(tempRepositoryFolder);
+			IFileArtifactRepository tempAr;
+			try
+			{
+				tempAr = (IFileArtifactRepository)arMgr.loadRepository(tempRepositoryURI, subMon.newChild(1));
+			}
+			catch(ProvisionException e)
+			{
+				tempAr = (IFileArtifactRepository)arMgr.createRepository(tempRepositoryURI, "temporary artifacts"
+						+ " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, Collections.emptyMap()); //$NON-NLS-1$
+			}
+
+			List<ArtifactKey> artifacts = miu.getArtifactList();
+			ArrayList<String> errors = new ArrayList<String>();
+			MirrorGenerator.mirror(artifacts, null, sourceAr, tempAr, PackedStrategy.UNPACK_AS_SIBLING, errors,
+					subMon.newChild(1));
+			int numErrors = errors.size();
+			if(numErrors > 0)
+			{
+				IStatus[] children = new IStatus[numErrors];
+				for(int idx = 0; idx < numErrors; ++idx)
+					children[idx] = new Status(IStatus.ERROR, Engine.PLUGIN_ID, errors.get(idx));
+				MultiStatus status = new MultiStatus(Engine.PLUGIN_ID, IStatus.ERROR, children, "Unable to mirror",
+						null);
+				throw new CoreException(status);
+			}
+
+			ArtifactKey key = artifacts.get(0);
+			File bundleFile = tempAr.getArtifactFile(artifacts.get(0));
+			if(bundleFile == null)
+				throw BuckminsterException.fromMessage(
+						"Unable to resolve partial IU. Artifact file for %s could not be found", key);
+
+			IInstallableUnit preparedIU = PublisherUtil.createBundleIU(key, bundleFile);
+			if(preparedIU == null)
+				throw BuckminsterException.fromMessage(
+						"Unable to resolve partial IU. Artifact file for %s did not contain a bundle manifest", key);
+			InstallableUnit newIU = InstallableUnitImpl.importToModel(preparedIU);
+
+			List<InstallableUnit> allIUs = mdr.getInstallableUnits();
+			allIUs.remove(miu);
+			allIUs.add(newIU);
+			return newIU;
+		}
+		finally
+		{
+			bucky.ungetService(arMgr);
+		}
+	}
+
 	private boolean addLeafmostContributions(Set<Explanation> explanations, Map<String, Contribution> contributions,
 			IRequiredCapability prq)
 	{
@@ -393,93 +480,6 @@ public class RepositoryVerifier extends BuilderPhase
 					if(componentId.equals(mu.getInstallableUnit().getId()))
 						return contrib;
 		return null;
-	}
-
-	private InstallableUnit resolvePartialIU(IInstallableUnit iu, SubMonitor subMon) throws CoreException
-	{
-		Buckminster bucky = Buckminster.getDefault();
-		IArtifactRepositoryManager arMgr = bucky.getService(IArtifactRepositoryManager.class);
-		Logger log = Buckminster.getLogger();
-		String info = "Converting partial IU for " + iu.getId() + "...";
-		subMon.beginTask(info, IProgressMonitor.UNKNOWN);
-		log.debug(info);
-
-		// Scan all mapped repositories for this IU
-		//
-		InstallableUnit miu = null;
-		MetadataRepository mdr = null;
-		contribs: for(Contribution contrib : getBuilder().getAggregator().getContributions(true))
-
-			for(MappedRepository repo : contrib.getRepositories(true))
-			{
-				MetadataRepository candidate = repo.getMetadataRepository();
-				for(InstallableUnit candidateIU : candidate.getInstallableUnits())
-					if(iu.getId().equals(candidateIU.getId()) && iu.getVersion().equals(candidateIU.getVersion()))
-					{
-						mdr = candidate;
-						miu = candidateIU;
-						break contribs;
-					}
-			}
-
-		if(mdr == null)
-			throw BuckminsterException.fromMessage("Unable to locate mapped repository for IU %s/%s", iu.getId(),
-					iu.getVersion());
-
-		try
-		{
-			IArtifactRepository sourceAr = arMgr.loadRepository(mdr.getLocation(), subMon.newChild(10));
-			File tempRepositoryFolder = getBuilder().getTempRepositoryFolder();
-			tempRepositoryFolder.mkdirs();
-
-			URI tempRepositoryURI = Builder.createURI(tempRepositoryFolder);
-			IFileArtifactRepository tempAr;
-			try
-			{
-				tempAr = (IFileArtifactRepository)arMgr.loadRepository(tempRepositoryURI, subMon.newChild(1));
-			}
-			catch(ProvisionException e)
-			{
-				tempAr = (IFileArtifactRepository)arMgr.createRepository(tempRepositoryURI, "temporary artifacts"
-						+ " artifacts", Builder.SIMPLE_ARTIFACTS_TYPE, Collections.emptyMap()); //$NON-NLS-1$
-			}
-
-			List<ArtifactKey> artifacts = miu.getArtifactList();
-			ArrayList<String> errors = new ArrayList<String>();
-			MirrorGenerator.mirror(artifacts, null, sourceAr, tempAr, PackedStrategy.UNPACK_AS_SIBLING, errors,
-					subMon.newChild(1));
-			int numErrors = errors.size();
-			if(numErrors > 0)
-			{
-				IStatus[] children = new IStatus[numErrors];
-				for(int idx = 0; idx < numErrors; ++idx)
-					children[idx] = new Status(IStatus.ERROR, Engine.PLUGIN_ID, errors.get(idx));
-				MultiStatus status = new MultiStatus(Engine.PLUGIN_ID, IStatus.ERROR, children, "Unable to mirror",
-						null);
-				throw new CoreException(status);
-			}
-
-			ArtifactKey key = artifacts.get(0);
-			File bundleFile = tempAr.getArtifactFile(artifacts.get(0));
-			if(bundleFile == null)
-				throw BuckminsterException.fromMessage(
-						"Unable to resolve partial IU. Artifact file for %s could not be found", key);
-
-			IInstallableUnit preparedIU = PublisherUtil.createBundleIU(key, bundleFile);
-			if(preparedIU == null)
-				throw BuckminsterException.fromMessage(
-						"Unable to resolve partial IU. Artifact file for %s did not contain a bundle manifest", key);
-			InstallableUnit newIU = InstallableUnitImpl.importToModel(preparedIU);
-
-			List<InstallableUnit> allIUs = mdr.getInstallableUnits();
-			allIUs.remove(miu);
-			allIUs.add(newIU);
-			return newIU;
-		}
-		finally
-		{
-			bucky.ungetService(arMgr);
-		}
 	}
 
 	private void sendEmails(RequestStatus requestStatus)
