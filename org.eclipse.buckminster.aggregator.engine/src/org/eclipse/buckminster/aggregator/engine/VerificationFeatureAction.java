@@ -39,12 +39,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
@@ -177,7 +177,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 									{
 										if(rule instanceof ExclusionRule)
 										{
-											builder.addMappingExclusion(repository, new VersionedName(riu.getId(),
+											builder.addMappingExclusion(repository, new VersionedId(riu.getId(),
 													riu.getVersion()));
 											continue allIUs;
 										}
@@ -312,7 +312,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 			if(!isExplicit)
 			{
 				log.debug("%s/%s excluded since version %s is explicitly mapped", id, v, oldVersion);
-				builder.addMappingExclusion(mr, new VersionedName(id, v));
+				builder.addMappingExclusion(mr, new VersionedId(id, v));
 				// Reinstate the old one
 				requirements.put(id, old);
 			}
@@ -332,7 +332,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		if(isExplicit)
 		{
 			log.debug("%s/%s excluded since version %s is explicitly mapped", id, oldVersion, v);
-			builder.addMappingExclusion(old.repository, new VersionedName(id, oldVersion));
+			builder.addMappingExclusion(old.repository, new VersionedId(id, oldVersion));
 			explicit.add(id);
 			return;
 		}
@@ -342,7 +342,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		{
 			// The previous version was higher
 			//
-			builder.addMappingExclusion(mr, new VersionedName(id, v));
+			builder.addMappingExclusion(mr, new VersionedId(id, v));
 			log.debug("%s/%s excluded since a higher version (%s) was found", id, v, oldVersion);
 
 			// Reinstate the old one
@@ -350,7 +350,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		}
 		else
 		{
-			builder.addMappingExclusion(old.repository, new VersionedName(id, oldVersion));
+			builder.addMappingExclusion(old.repository, new VersionedId(id, oldVersion));
 			log.debug("%s/%s excluded since a higher version (%s) was found", id, oldVersion, v);
 		}
 	}

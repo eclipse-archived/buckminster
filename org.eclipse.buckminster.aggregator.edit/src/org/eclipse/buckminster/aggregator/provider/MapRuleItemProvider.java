@@ -29,8 +29,8 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.MatchQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.MapRule} object. <!--

@@ -59,17 +59,17 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -374,7 +374,7 @@ public class Builder implements IApplication
 
 	private Set<IInstallableUnit> unverifiedUnits;
 
-	private HashMap<MappedRepository, List<VersionedName>> exclusions;;
+	private HashMap<MappedRepository, List<VersionedId>> exclusions;;
 
 	ActionType action = ActionType.BUILD;
 
@@ -393,17 +393,17 @@ public class Builder implements IApplication
 	 * @param versionedName
 	 *            Identifies the IInstallableUnit to exclude.
 	 */
-	public void addMappingExclusion(MappedRepository repository, VersionedName versionedName)
+	public void addMappingExclusion(MappedRepository repository, VersionedId versionedName)
 	{
-		List<VersionedName> exclInRepo = null;
+		List<VersionedId> exclInRepo = null;
 		if(exclusions == null)
-			exclusions = new HashMap<MappedRepository, List<VersionedName>>();
+			exclusions = new HashMap<MappedRepository, List<VersionedId>>();
 		else
 			exclInRepo = exclusions.get(repository);
 
 		if(exclInRepo == null)
 		{
-			exclInRepo = new ArrayList<VersionedName>();
+			exclInRepo = new ArrayList<VersionedId>();
 			exclusions.put(repository, exclInRepo);
 		}
 		exclInRepo.add(versionedName);

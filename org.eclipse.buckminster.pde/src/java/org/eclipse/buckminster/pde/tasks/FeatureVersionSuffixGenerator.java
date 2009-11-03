@@ -13,8 +13,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 
 /**
@@ -150,7 +150,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 	 * @return The generated suffix or <code>null</code>
 	 * @throws CoreException
 	 */
-	public String generateSuffix(List<VersionedName> features, List<VersionedName> bundles)
+	public String generateSuffix(List<VersionedId> features, List<VersionedId> bundles)
 	{
 		if(m_maxVersionSuffixLength <= 0)
 			return null; // do nothing
@@ -179,7 +179,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// to the running totals and storing the qualifier suffixes.
 		//
 		int idx = 0;
-		for(VersionedName refFeature : features)
+		for(VersionedId refFeature : features)
 		{
 			Version version = refFeature.getVersion();
 			majorSum += version.getMajor();
@@ -212,7 +212,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// Loop through the included plug-ins and fragments, adding the version
 		// number parts to the running totals and storing the qualifiers.
 		//
-		for(VersionedName refBundle : bundles)
+		for(VersionedId refBundle : bundles)
 		{
 			Version version = refBundle.getVersion();
 			majorSum += version.getMajor();

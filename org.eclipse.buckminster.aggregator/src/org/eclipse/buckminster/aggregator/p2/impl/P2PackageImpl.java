@@ -40,8 +40,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
@@ -53,10 +51,12 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 /**
@@ -517,6 +517,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__NAME);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__NAMESPACE);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__RANGE);
+		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__NEGATION);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__SELECTOR_LIST);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__MULTIPLE);
 		createEAttribute(iRequiredCapabilityEClass, IREQUIRED_CAPABILITY__OPTIONAL);
@@ -1239,7 +1240,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EAttribute getIRequiredCapability_Greedy()
 	{
-		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(7);
+		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -1249,7 +1250,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EAttribute getIRequiredCapability_Multiple()
 	{
-		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(5);
+		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -1277,9 +1278,19 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 * 
 	 * @generated
 	 */
+	public EAttribute getIRequiredCapability_Negation()
+	{
+		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EAttribute getIRequiredCapability_Optional()
 	{
-		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(6);
+		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -1299,7 +1310,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 	 */
 	public EAttribute getIRequiredCapability_SelectorList()
 	{
-		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)iRequiredCapabilityEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -1871,6 +1882,9 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		initEAttribute(getIRequiredCapability_Range(), this.getVersionRange(), "range", null, 0, 1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIRequiredCapability_Negation(), ecorePackage.getEBoolean(), "negation", null, 0, 1,
+				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIRequiredCapability_SelectorList(), ecorePackage.getEString(), "selectorList", null, 0, -1,
 				IRequiredCapability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1888,6 +1902,10 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 
 		op = addEOperation(iRequiredCapabilityEClass, null, "setSelectors", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getStringArray(), "selectors", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(iRequiredCapabilityEClass, ecorePackage.getEBoolean(), "satisfiedBy", 0, 1, IS_UNIQUE,
+				IS_ORDERED);
+		addEParameter(op, this.getIProvidedCapability(), "capability", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(iTouchpointDataEClass, ITouchpointData.class, "ITouchpointData", IS_ABSTRACT, IS_INTERFACE,
 				!IS_GENERATED_INSTANCE_CLASS);

@@ -51,12 +51,12 @@ import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processin
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.MatchQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
-import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 import org.eclipse.equinox.p2.publisher.Publisher;
 
@@ -771,7 +771,7 @@ public class MirrorGenerator extends BuilderPhase
 				String name = builder.getAggregator().getLabel();
 				mdrMgr.removeRepository(finalURI);
 				CompositeMetadataRepository compositeMdr = (CompositeMetadataRepository)mdrMgr.createRepository(
-						finalURI, name, Builder.COMPOSITE_METADATA_TYPE, properties); 
+						finalURI, name, Builder.COMPOSITE_METADATA_TYPE, properties);
 
 				for(MappedRepository referenced : reposWithReferencedArtifacts)
 					compositeMdr.addChild(referenced.getMetadataRepository().getLocation());

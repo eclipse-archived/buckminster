@@ -50,15 +50,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.MatchQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 
 public class MetadataRepositoryResourceImpl extends ResourceImpl
 {
@@ -67,15 +67,15 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		private final MetadataRepositoryImpl repository;
 
 		private final java.net.URI location;
-		
+
 		private boolean forceReload;
 
 		private final MetadataRepositoryStructuredView repoView;
 
 		private Exception exception;
 
-		public RepositoryLoaderJob(MetadataRepositoryImpl repository, java.net.URI location,
-				boolean forceReload, MetadataRepositoryStructuredView repoView)
+		public RepositoryLoaderJob(MetadataRepositoryImpl repository, java.net.URI location, boolean forceReload,
+				MetadataRepositoryStructuredView repoView)
 		{
 			super("Repository Loader");
 			this.repository = repository;
@@ -112,23 +112,23 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 				if(forceReload)
 				{
-					//This is a workaround - we need to clear the NotFound cahce to force
-					//the MDR manager to fetch the repo again.
+					// This is a workaround - we need to clear the NotFound cahce to force
+					// the MDR manager to fetch the repo again.
 					if(mdrMgr.contains(location))
-						//if the repo is known to MDR manager, it should be simply refreshed
+						// if the repo is known to MDR manager, it should be simply refreshed
 						repo = mdrMgr.refreshRepository(location, subMon.newChild(80));
 					else
 					{
-						//if the repo is not known to MDR manager, we call the refresh in order
-						//to clear the NotFound cache only and we expect an exception to be thrown
-						//due to unknown repository
+						// if the repo is not known to MDR manager, we call the refresh in order
+						// to clear the NotFound cache only and we expect an exception to be thrown
+						// due to unknown repository
 						try
 						{
 							mdrMgr.refreshRepository(location, new NullProgressMonitor());
 						}
 						catch(ProvisionException e)
 						{
-							//this is expected - but the NotFound cache has been cleared
+							// this is expected - but the NotFound cache has been cleared
 						}
 						repo = mdrMgr.loadRepository(location, subMon.newChild(80));
 					}
@@ -434,7 +434,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	}
 
 	private Exception m_lastException = null;
-	
+
 	private boolean m_forceReload = false;
 
 	public static final Query QUERY_ALL_IUS = new MatchQuery()
@@ -523,15 +523,15 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 	}
 
+	public void save(Map<?, ?> options) throws IOException
+	{
+		// Let this be a no-op.
+	}
+
 	@Override
 	protected void doUnload()
 	{
 		super.doUnload();
 		m_forceReload = true;
-	}
-
-	public void save(Map<?, ?> options) throws IOException
-	{
-		// Let this be a no-op.
 	}
 }

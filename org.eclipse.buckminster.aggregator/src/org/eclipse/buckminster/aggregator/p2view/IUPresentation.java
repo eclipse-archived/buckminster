@@ -16,7 +16,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.emf.ecore.EObject;
 
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
 /**

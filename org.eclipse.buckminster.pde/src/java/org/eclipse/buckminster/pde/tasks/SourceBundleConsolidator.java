@@ -6,7 +6,7 @@ import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")

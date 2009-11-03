@@ -82,6 +82,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 			addNamePropertyDescriptor(object);
 			addNamespacePropertyDescriptor(object);
 			addRangePropertyDescriptor(object);
+			addNegationPropertyDescriptor(object);
 			addSelectorListPropertyDescriptor(object);
 			addMultiplePropertyDescriptor(object);
 			addOptionalPropertyDescriptor(object);
@@ -131,6 +132,7 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 		case P2Package.REQUIRED_CAPABILITY__NAME:
 		case P2Package.REQUIRED_CAPABILITY__NAMESPACE:
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
+		case P2Package.REQUIRED_CAPABILITY__NEGATION:
 		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
 		case P2Package.REQUIRED_CAPABILITY__OPTIONAL:
@@ -230,6 +232,21 @@ public class RequiredCapabilityItemProvider extends AggregatorItemProviderAdapte
 						"_UI_IRequiredCapability_namespace_feature", "_UI_IRequiredCapability_type"),
 				P2Package.Literals.IREQUIRED_CAPABILITY__NAMESPACE, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Negation feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addNegationPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IRequiredCapability_negation_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IRequiredCapability_negation_feature", "_UI_IRequiredCapability_type"),
+				P2Package.Literals.IREQUIRED_CAPABILITY__NEGATION, true, false, false,
+				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

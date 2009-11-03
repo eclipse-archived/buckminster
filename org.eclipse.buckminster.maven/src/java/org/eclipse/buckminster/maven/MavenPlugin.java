@@ -22,7 +22,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.osgi.framework.BundleContext;
 import org.w3c.dom.Document;
 
@@ -54,8 +54,8 @@ public class MavenPlugin extends LogAwarePlugin
 	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx,
 			IProgressMonitor monitor) throws CoreException, FileNotFoundException
 	{
-		return Maven2ReaderType.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder
-				.getDefaultLocalRepoPath()), cctx, monitor);
+		return Maven2ReaderType.getMetadataDocument(docBld, url, new LocalCache(
+				Maven2VersionFinder.getDefaultLocalRepoPath()), cctx, monitor);
 	}
 
 	public static String getSnapshotVersion(Document doc, String version) throws CoreException

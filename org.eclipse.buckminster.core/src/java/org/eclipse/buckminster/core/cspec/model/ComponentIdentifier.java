@@ -15,7 +15,7 @@ import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 /**
  * A Component Identifier is something that uniquely identifies a component.

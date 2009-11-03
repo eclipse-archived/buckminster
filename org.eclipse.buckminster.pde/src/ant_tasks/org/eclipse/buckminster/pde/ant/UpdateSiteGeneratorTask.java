@@ -12,7 +12,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
 import org.eclipse.buckminster.pde.ant.VersionConsolidatorTask;
 import org.eclipse.buckminster.pde.tasks.UpdateSiteGenerator;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 public class UpdateSiteGeneratorTask extends VersionConsolidatorTask
 {

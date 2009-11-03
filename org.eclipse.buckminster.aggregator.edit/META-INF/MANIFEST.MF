@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Aggregator Edit
 Bundle-SymbolicName: org.eclipse.buckminster.aggregator.edit;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.360.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin$Implementation
 Bundle-Vendor: Eclipse Buckminster Project

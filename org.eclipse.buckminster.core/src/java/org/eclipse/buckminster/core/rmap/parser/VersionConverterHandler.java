@@ -20,8 +20,8 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.FormatException;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.metadata.FormatException;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -66,8 +66,8 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 
 	public VersionConverterDesc getVersionConverter()
 	{
-		return new VersionConverterDesc(m_type, m_versionFormat, m_transformers
-				.toArray(new BidirectionalTransformer[m_transformers.size()]));
+		return new VersionConverterDesc(m_type, m_versionFormat,
+				m_transformers.toArray(new BidirectionalTransformer[m_transformers.size()]));
 	}
 
 	@Override

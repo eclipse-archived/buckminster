@@ -12,11 +12,11 @@ import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
 import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
@@ -41,8 +41,8 @@ public class Uninstall extends AbstractCommand
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw new SimpleErrorExitException(NLS
-						.bind("Unable to parse version: {0}", unparsed[1], e.getMessage()));
+				throw new SimpleErrorExitException(
+						NLS.bind("Unable to parse version: {0}", unparsed[1], e.getMessage()));
 			}
 	}
 
@@ -59,8 +59,8 @@ public class Uninstall extends AbstractCommand
 		// Add as root IU's to a request
 		ProfileChangeRequest request = new ProfileChangeRequest(profile);
 		for(IInstallableUnit rootIU : rootArr)
-			request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU, Boolean.TRUE
-					.toString());
+			request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU,
+					Boolean.TRUE.toString());
 		request.removeInstallableUnits(rootArr);
 		return Install.planAndExecute(profile, request, null, monitor);
 	}

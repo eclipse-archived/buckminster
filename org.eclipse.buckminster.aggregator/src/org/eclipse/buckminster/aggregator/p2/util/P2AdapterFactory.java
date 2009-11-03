@@ -26,8 +26,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 /**
@@ -482,12 +482,12 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.equinox.internal.provisional.p2.query.IQueryable <em>IQueryable</em>}'. <!-- begin-user-doc
-	 * --> This default implementation returns null so that we can easily ignore cases; it's useful to ignore a case
-	 * when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable <em>IQueryable</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
+	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.IQueryable
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable
 	 * @generated
 	 */
 	public Adapter createIQueryableAdapter()

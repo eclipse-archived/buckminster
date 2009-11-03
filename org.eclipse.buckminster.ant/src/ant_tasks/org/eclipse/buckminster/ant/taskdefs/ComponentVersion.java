@@ -13,7 +13,7 @@ import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 /**
  * Finds the version of a component known to Buckminster.

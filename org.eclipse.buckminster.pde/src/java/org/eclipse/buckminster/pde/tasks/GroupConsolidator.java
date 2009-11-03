@@ -32,8 +32,8 @@ import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
@@ -278,7 +278,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	 * @return The generated suffix or <code>null</code>
 	 * @throws CoreException
 	 */
-	String generateFeatureVersionSuffix(List<VersionedName> features, List<VersionedName> bundles) throws CoreException
+	String generateFeatureVersionSuffix(List<VersionedId> features, List<VersionedId> bundles) throws CoreException
 	{
 		return m_suffixGenerator == null
 				? null
@@ -322,7 +322,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		return m_pluginVersions;
 	}
 
-	ComponentIdentifier replaceFeatureReferenceVersion(String id, VersionedName ref) throws CoreException
+	ComponentIdentifier replaceFeatureReferenceVersion(String id, VersionedId ref) throws CoreException
 	{
 		Version version = findBestVersion(m_featureVersions, id, "feature", ref.getId(), ref.getVersion()); //$NON-NLS-1$
 		if(version != null)
@@ -330,7 +330,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		return null;
 	}
 
-	ComponentIdentifier replacePluginReferenceVersion(String id, VersionedName ref) throws CoreException
+	ComponentIdentifier replacePluginReferenceVersion(String id, VersionedId ref) throws CoreException
 	{
 		Version version = findBestVersion(m_pluginVersions, id, "plugin", ref.getId(), ref.getVersion()); //$NON-NLS-1$
 		if(version != null)

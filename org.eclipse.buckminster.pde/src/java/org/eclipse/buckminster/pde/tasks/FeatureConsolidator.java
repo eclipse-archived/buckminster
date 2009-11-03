@@ -19,8 +19,8 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.pde.core.IModelChangedEvent;
 import org.eclipse.pde.core.IModelChangedListener;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -57,7 +57,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		for(IFeatureChild ref : feature.getIncludedFeatures())
 		{
 			String vstr = ref.getVersion();
-			ComponentIdentifier cid = replaceFeatureReferenceVersion(id, new VersionedName(ref.getId(), vstr));
+			ComponentIdentifier cid = replaceFeatureReferenceVersion(id, new VersionedId(ref.getId(), vstr));
 			if(cid != null)
 			{
 				deps.add(cid);
@@ -70,7 +70,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		for(IFeaturePlugin ref : feature.getPlugins())
 		{
 			String vstr = ref.getVersion();
-			ComponentIdentifier cid = replacePluginReferenceVersion(id, new VersionedName(ref.getId(), vstr));
+			ComponentIdentifier cid = replacePluginReferenceVersion(id, new VersionedId(ref.getId(), vstr));
 			if(cid != null)
 			{
 				deps.add(cid);
@@ -123,25 +123,25 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			return;
 
 		IFeatureChild[] features = feature.getIncludedFeatures();
-		List<VersionedName> featureList;
+		List<VersionedId> featureList;
 		if(features.length == 0)
 			featureList = Collections.emptyList();
 		else
 		{
-			featureList = new ArrayList<VersionedName>(features.length);
+			featureList = new ArrayList<VersionedId>(features.length);
 			for(IFeatureChild f : features)
-				featureList.add(new VersionedName(f.getId(), f.getVersion()));
+				featureList.add(new VersionedId(f.getId(), f.getVersion()));
 		}
 
 		IFeatureImport[] bundles = feature.getImports();
-		List<VersionedName> bundleList;
+		List<VersionedId> bundleList;
 		if(features.length == 0)
 			bundleList = Collections.emptyList();
 		else
 		{
-			bundleList = new ArrayList<VersionedName>(bundles.length);
+			bundleList = new ArrayList<VersionedId>(bundles.length);
 			for(IFeatureImport f : bundles)
-				bundleList.add(new VersionedName(f.getId(), f.getVersion()));
+				bundleList.add(new VersionedId(f.getId(), f.getVersion()));
 		}
 
 		String suffix = generateFeatureVersionSuffix(featureList, bundleList);

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.editor;
 
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Widget;
 

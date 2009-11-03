@@ -12,7 +12,7 @@ package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 /**
  * Converts a <code>VersionSelector</code> of type <code>PLAIN</code> to something that can be understood by a source

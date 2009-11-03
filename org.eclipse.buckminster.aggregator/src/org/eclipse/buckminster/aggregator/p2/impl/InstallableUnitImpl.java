@@ -44,8 +44,6 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.equinox.internal.p2.core.helpers.OrderedProperties;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
@@ -57,6 +55,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Installable Unit</b></em>'. <!-- end-user-doc
@@ -796,8 +796,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 			if(other instanceof InstallableUnitImpl)
 			{
-				VersionedName thisVn = getVersionedNameFromProxy();
-				VersionedName otherVn = ((InstallableUnit)other).getVersionedNameFromProxy();
+				VersionedId thisVn = getVersionedNameFromProxy();
+				VersionedId otherVn = ((InstallableUnit)other).getVersionedNameFromProxy();
 
 				if(thisVn == null)
 				{
@@ -1233,15 +1233,15 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return version;
 	}
 
-	public VersionedName getVersionedName()
+	public VersionedId getVersionedName()
 	{
 		if(eIsProxy())
 			return getVersionedNameFromProxy();
 		else
-			return new VersionedName(getId(), getVersion());
+			return new VersionedId(getId(), getVersion());
 	}
 
-	public VersionedName getVersionedNameFromProxy()
+	public VersionedId getVersionedNameFromProxy()
 	{
 		URI uri = eProxyURI();
 		if(uri == null)
@@ -1253,7 +1253,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 		Matcher m = proxyFragmentPattern.matcher(frag);
 		return m.matches()
-				? new VersionedName(m.group(1), m.group(2))
+				? new VersionedId(m.group(1), m.group(2))
 				: null;
 	}
 

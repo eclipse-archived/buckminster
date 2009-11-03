@@ -10,8 +10,8 @@ import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit</b></em>'.
@@ -166,11 +166,11 @@ public interface InstallableUnit extends EObject, IInstallableUnit, StatusProvid
 	 * Obtains the name and version information either from the proxy URI fragment or from attributes. So, it works for
 	 * both genuine instance or proxy.
 	 */
-	VersionedName getVersionedName();
+	VersionedId getVersionedName();
 
 	/**
 	 * Obtains the name and version information from the proxy URI fragment
 	 */
-	VersionedName getVersionedNameFromProxy();
+	VersionedId getVersionedNameFromProxy();
 
 } // InstallableUnit

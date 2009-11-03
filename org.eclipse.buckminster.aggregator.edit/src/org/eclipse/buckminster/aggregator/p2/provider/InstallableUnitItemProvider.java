@@ -39,8 +39,8 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2.InstallableUnit} object. <!--
@@ -164,7 +164,7 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 
 		if(label == null)
 		{
-			VersionedName vn = iu.getVersionedNameFromProxy();
+			VersionedId vn = iu.getVersionedNameFromProxy();
 			if(vn != null)
 				label = vn.getId() + " / " + vn.getVersion() + " (missing)";
 		}

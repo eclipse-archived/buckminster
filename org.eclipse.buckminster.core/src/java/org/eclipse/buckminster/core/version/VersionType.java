@@ -1,7 +1,7 @@
 package org.eclipse.buckminster.core.version;
 
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
 
 @SuppressWarnings("restriction")
 public class VersionType

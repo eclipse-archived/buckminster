@@ -35,11 +35,10 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.InstallableUnitReference} object.
@@ -149,8 +148,8 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 				getString("_UI_InstallableUnitReference_installableUnit_feature"), getString(
 						"_UI_PropertyDescriptor_description", "_UI_InstallableUnitReference_installableUnit_feature",
 						"_UI_InstallableUnitReference_type"),
-				AggregatorPackage.Literals.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, true, false, false, null, null,
-				null)
+				AggregatorPackage.Literals.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, true, false, false, null,
+				null, null)
 		{
 			@SuppressWarnings("unchecked")
 			public Collection<?> getChoiceOfValues(Object object)
@@ -213,7 +212,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 			id = Trivial.trim(iu.getId());
 			if(id == null)
 			{
-				VersionedName vn = iu.getVersionedNameFromProxy();
+				VersionedId vn = iu.getVersionedNameFromProxy();
 				if(vn != null)
 				{
 					id = vn.getId();
@@ -271,7 +270,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	}
 
 	// Must be implemented by subclass.
-	protected Query getInstallableUnitQuery()
+	protected org.eclipse.equinox.internal.provisional.p2.metadata.query.Query getInstallableUnitQuery()
 	{
 		throw new UnsupportedOperationException();
 	}

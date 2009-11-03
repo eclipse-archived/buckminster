@@ -10,13 +10,13 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
 
 @SuppressWarnings("restriction")
 public class ProductVersionPatcher implements IProductDescriptor
@@ -63,7 +63,7 @@ public class ProductVersionPatcher implements IProductDescriptor
 
 	public List<?> getBundles(boolean includeFragments)
 	{
-		return adjustVersionedNameList(TypedCollections.getProductBundles(m_product, includeFragments), false);
+		return adjustVersionedIdList(TypedCollections.getProductBundles(m_product, includeFragments), false);
 	}
 
 	public String getConfigIniPath(String os)
@@ -78,12 +78,12 @@ public class ProductVersionPatcher implements IProductDescriptor
 
 	public List<?> getFeatures()
 	{
-		return adjustVersionedNameList(TypedCollections.getProductFeatures(m_product), true);
+		return adjustVersionedIdList(TypedCollections.getProductFeatures(m_product), true);
 	}
 
 	public List<?> getFragments()
 	{
-		return adjustVersionedNameList(TypedCollections.getProductFragments(m_product), false);
+		return adjustVersionedIdList(TypedCollections.getProductFragments(m_product), false);
 	}
 
 	public String[] getIcons(String os)
@@ -153,13 +153,13 @@ public class ProductVersionPatcher implements IProductDescriptor
 		}
 
 		boolean features = m_product.useFeatures();
-		List<VersionedName> deps = features
+		List<VersionedId> deps = features
 				? TypedCollections.getProductFeatures(m_product)
 				: TypedCollections.getProductBundles(m_product, false);
 
 		if(deps.size() == 1)
 		{
-			VersionedName dep = deps.get(0);
+			VersionedId dep = deps.get(0);
 			version = adjustVersion(dep.getId(), dep.getVersion(), features);
 			if(version != null)
 				vstr = version.toString();
@@ -237,17 +237,17 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return candidate;
 	}
 
-	private List<?> adjustVersionedNameList(List<VersionedName> vns, boolean features)
+	private List<?> adjustVersionedIdList(List<VersionedId> vns, boolean features)
 	{
 		int top = vns.size();
 		if(top == 0)
 			return vns;
 
-		ArrayList<VersionedName> pvns = new ArrayList<VersionedName>(top);
-		for(VersionedName vn : vns)
+		ArrayList<VersionedId> pvns = new ArrayList<VersionedId>(top);
+		for(VersionedId vn : vns)
 		{
 			String id = vn.getId();
-			pvns.add(new VersionedName(id, adjustVersion(id, vn.getVersion(), features)));
+			pvns.add(new VersionedId(id, adjustVersion(id, vn.getVersion(), features)));
 		}
 		return pvns;
 	}

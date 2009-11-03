@@ -16,9 +16,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Update Descriptor</b></em>'. <!-- end-user-doc

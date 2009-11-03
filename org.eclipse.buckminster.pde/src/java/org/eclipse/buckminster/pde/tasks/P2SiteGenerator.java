@@ -51,7 +51,7 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 import org.eclipse.equinox.internal.provisional.spi.p2.artifact.repository.SimpleArtifactRepositoryFactory;
@@ -182,7 +182,7 @@ public class P2SiteGenerator extends AbstractActor
 
 		if(product.useFeatures())
 		{
-			List<VersionedName> features = TypedCollections.getProductFeatures(product);
+			List<VersionedId> features = TypedCollections.getProductFeatures(product);
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, features));
 		}
 		actions.add(new ProductAction(null, product, flavor, exeFeature));
@@ -443,11 +443,10 @@ public class P2SiteGenerator extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private void collectFeatures(CSpec cspec, Map<VersionedName, CSpec> cspecs, IActionContext ctx)
-			throws CoreException
+	private void collectFeatures(CSpec cspec, Map<VersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException
 	{
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
-		if(cspecs.put(new VersionedName(ci.getName(), ci.getVersion()), cspec) != null)
+		if(cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
 			return;
 
 		Attribute refs = cspec.getAttribute(IPDEConstants.ATTRIBUTE_FEATURE_REFS);
@@ -459,10 +458,10 @@ public class P2SiteGenerator extends AbstractActor
 		}
 	}
 
-	private Map<VersionedName, CSpec> collectFeatures(IActionContext ctx) throws CoreException
+	private Map<VersionedId, CSpec> collectFeatures(IActionContext ctx) throws CoreException
 	{
 		CSpec cspec = ctx.getAction().getCSpec();
-		Map<VersionedName, CSpec> cspecs = new HashMap<VersionedName, CSpec>();
+		Map<VersionedId, CSpec> cspecs = new HashMap<VersionedId, CSpec>();
 		collectFeatures(cspec, cspecs, ctx);
 		return cspecs;
 	}
@@ -486,13 +485,13 @@ public class P2SiteGenerator extends AbstractActor
 			if(mirrorsSite != null && mirrorsSite.getURL() != null)
 				actions.add(new MirrorsSiteAction(mirrorsSite.getURL()));
 
-			ArrayList<VersionedName> featureList = new ArrayList<VersionedName>();
+			ArrayList<VersionedId> featureList = new ArrayList<VersionedId>();
 			for(FeatureEntry fe : topFeature.getEntries())
 			{
 				if(fe.isPatch() || fe.isPlugin() || fe.isRequires())
 					continue;
 
-				featureList.add(new VersionedName(fe.getId(), fe.getVersion()));
+				featureList.add(new VersionedId(fe.getId(), fe.getVersion()));
 			}
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, featureList));
 		}

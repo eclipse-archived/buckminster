@@ -14,7 +14,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.buckminster.ui.Messages;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.ui.INewWizard;
 import org.xml.sax.SAXException;
 

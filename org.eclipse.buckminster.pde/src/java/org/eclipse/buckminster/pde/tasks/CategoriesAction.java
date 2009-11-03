@@ -33,20 +33,20 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.CompositeQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.query.CompositeQuery;
-import org.eclipse.equinox.internal.provisional.p2.query.Query;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -178,11 +178,11 @@ public class CategoriesAction extends AbstractPublisherAction
 
 	private final Map<String, String> m_buildProperties;
 
-	private final List<VersionedName> m_featureEntries;
+	private final List<VersionedId> m_featureEntries;
 
 	private final File m_projectRoot;
 
-	public CategoriesAction(File projectRoot, Map<String, String> buildProperties, List<VersionedName> featureEntries)
+	public CategoriesAction(File projectRoot, Map<String, String> buildProperties, List<VersionedId> featureEntries)
 			throws CoreException
 	{
 		m_buildProperties = buildProperties;
@@ -212,12 +212,12 @@ public class CategoriesAction extends AbstractPublisherAction
 		cat.setProperty(IInstallableUnit.PROP_NAME, category.getLabel());
 		cat.setProperty(IInstallableUnit.PROP_DESCRIPTION, category.getDescription());
 
-		ArrayList<VersionedName> fts = new ArrayList<VersionedName>(featureIUs.size());
-		ArrayList<VersionedName> bds = new ArrayList<VersionedName>(featureIUs.size());
+		ArrayList<VersionedId> fts = new ArrayList<VersionedId>(featureIUs.size());
+		ArrayList<VersionedId> bds = new ArrayList<VersionedId>(featureIUs.size());
 		ArrayList<IRequiredCapability> reqsConfigurationUnits = new ArrayList<IRequiredCapability>(featureIUs.size());
 		for(IInstallableUnit iu : featureIUs)
 		{
-			VersionedName vn = new VersionedName(iu.getId(), iu.getVersion());
+			VersionedId vn = new VersionedId(iu.getId(), iu.getVersion());
 			if(iu.getId().endsWith(IPDEConstants.FEATURE_GROUP))
 				fts.add(vn);
 			else
@@ -479,7 +479,7 @@ public class CategoriesAction extends AbstractPublisherAction
 			// This is expected. Just ignore
 		}
 
-		for(VersionedName fe : m_featureEntries)
+		for(VersionedId fe : m_featureEntries)
 		{
 			IInstallableUnit iu = getFeatureIU(fe.getId(), fe.getVersion(), publisherInfo, results, monitor);
 			if(iu == null || mappings.containsKey(iu))

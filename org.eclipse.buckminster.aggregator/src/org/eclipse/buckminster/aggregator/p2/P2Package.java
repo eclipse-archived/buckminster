@@ -310,6 +310,14 @@ public interface P2Package extends EPackage
 		EAttribute IREQUIRED_CAPABILITY__RANGE = eINSTANCE.getIRequiredCapability_Range();
 
 		/**
+		 * The meta object literal for the '<em><b>Negation</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute IREQUIRED_CAPABILITY__NEGATION = eINSTANCE.getIRequiredCapability_Negation();
+
+		/**
 		 * The meta object literal for the '<em><b>Selector List</b></em>' attribute list feature. <!-- begin-user-doc
 		 * --> <!-- end-user-doc -->
 		 * 
@@ -717,10 +725,11 @@ public interface P2Package extends EPackage
 		EReference INSTRUCTION_MAP__VALUE = eINSTANCE.getInstructionMap_Value();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.equinox.internal.provisional.p2.query.IQueryable
-		 * <em>IQueryable</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable <em>IQueryable</em>}' class.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
-		 * @see org.eclipse.equinox.internal.provisional.p2.query.IQueryable
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable
 		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIQueryable()
 		 * @generated
 		 */
@@ -868,7 +877,7 @@ public interface P2Package extends EPackage
 		/**
 		 * The meta object literal for the '<em>Version</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
-		 * @see org.eclipse.equinox.internal.provisional.p2.core.Version
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
 		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersion()
 		 * @generated
 		 */
@@ -960,7 +969,7 @@ public interface P2Package extends EPackage
 		/**
 		 * The meta object literal for the '<em>Query</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
-		 * @see org.eclipse.equinox.internal.provisional.p2.query.Query
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.Query
 		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getQuery()
 		 * @generated
 		 */
@@ -969,7 +978,7 @@ public interface P2Package extends EPackage
 		/**
 		 * The meta object literal for the '<em>Collector</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
-		 * @see org.eclipse.equinox.internal.provisional.p2.query.Collector
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector
 		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getCollector()
 		 * @generated
 		 */
@@ -1411,13 +1420,21 @@ public interface P2Package extends EPackage
 	int IREQUIRED_CAPABILITY__RANGE = 3;
 
 	/**
+	 * The feature id for the '<em><b>Negation</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IREQUIRED_CAPABILITY__NEGATION = 4;
+
+	/**
 	 * The feature id for the '<em><b>Selector List</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IREQUIRED_CAPABILITY__SELECTOR_LIST = 4;
+	int IREQUIRED_CAPABILITY__SELECTOR_LIST = 5;
 
 	/**
 	 * The feature id for the '<em><b>Multiple</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1425,7 +1442,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IREQUIRED_CAPABILITY__MULTIPLE = 5;
+	int IREQUIRED_CAPABILITY__MULTIPLE = 6;
 
 	/**
 	 * The feature id for the '<em><b>Optional</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1433,7 +1450,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IREQUIRED_CAPABILITY__OPTIONAL = 6;
+	int IREQUIRED_CAPABILITY__OPTIONAL = 7;
 
 	/**
 	 * The feature id for the '<em><b>Greedy</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1441,7 +1458,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IREQUIRED_CAPABILITY__GREEDY = 7;
+	int IREQUIRED_CAPABILITY__GREEDY = 8;
 
 	/**
 	 * The number of structural features of the '<em>IRequired Capability</em>' class. <!-- begin-user-doc --> <!--
@@ -1450,7 +1467,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int IREQUIRED_CAPABILITY_FEATURE_COUNT = 8;
+	int IREQUIRED_CAPABILITY_FEATURE_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData
@@ -1672,10 +1689,10 @@ public interface P2Package extends EPackage
 	int COPYRIGHT_FEATURE_COUNT = ICOPYRIGHT_FEATURE_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.query.IQueryable
+	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable
 	 * <em>IQueryable</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.IQueryable
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIQueryable()
 	 * @generated
 	 */
@@ -2325,6 +2342,14 @@ public interface P2Package extends EPackage
 	int REQUIRED_CAPABILITY__RANGE = IREQUIRED_CAPABILITY__RANGE;
 
 	/**
+	 * The feature id for the '<em><b>Negation</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY__NEGATION = IREQUIRED_CAPABILITY__NEGATION;
+
+	/**
 	 * The feature id for the '<em><b>Selector List</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -2751,7 +2776,7 @@ public interface P2Package extends EPackage
 	/**
 	 * The meta object id for the '<em>Version</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.equinox.internal.provisional.p2.core.Version
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersion()
 	 * @generated
 	 */
@@ -2760,7 +2785,7 @@ public interface P2Package extends EPackage
 	/**
 	 * The meta object id for the '<em>Version Range</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.equinox.internal.provisional.p2.core.VersionRange
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersionRange()
 	 * @generated
 	 */
@@ -2840,7 +2865,7 @@ public interface P2Package extends EPackage
 	/**
 	 * The meta object id for the '<em>Query</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.Query
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.Query
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getQuery()
 	 * @generated
 	 */
@@ -2849,7 +2874,7 @@ public interface P2Package extends EPackage
 	/**
 	 * The meta object id for the '<em>Collector</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.Collector
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getCollector()
 	 * @generated
 	 */
@@ -2875,12 +2900,13 @@ public interface P2Package extends EPackage
 	EClass getArtifactKey();
 
 	/**
-	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.query.Collector
-	 * <em>Collector</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for data type '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector <em>Collector</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for data type '<em>Collector</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.Collector
-	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.query.Collector" serializeable="false"
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector" serializeable="false"
 	 * @generated
 	 */
 	EDataType getCollector();
@@ -3440,12 +3466,12 @@ public interface P2Package extends EPackage
 	EDataType getIProvidedCapabilityArray();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.equinox.internal.provisional.p2.query.IQueryable
+	 * Returns the meta object for class '{@link org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable
 	 * <em>IQueryable</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>IQueryable</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.IQueryable
-	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.query.IQueryable"
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable"
 	 * @generated
 	 */
 	EClass getIQueryable();
@@ -3617,6 +3643,18 @@ public interface P2Package extends EPackage
 	 * @generated
 	 */
 	EAttribute getIRequiredCapability_Namespace();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability#isNegation <em>Negation</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Negation</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability#isNegation()
+	 * @see #getIRequiredCapability()
+	 * @generated
+	 */
+	EAttribute getIRequiredCapability_Negation();
 
 	/**
 	 * Returns the meta object for the attribute '
@@ -3924,12 +3962,12 @@ public interface P2Package extends EPackage
 	EClass getProvidedCapability();
 
 	/**
-	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.query.Query
+	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.metadata.query.Query
 	 * <em>Query</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for data type '<em>Query</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.query.Query
-	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.query.Query" serializeable="false"
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.query.Query
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.query.Query" serializeable="false"
 	 * @generated
 	 */
 	EDataType getQuery();
@@ -4075,23 +4113,23 @@ public interface P2Package extends EPackage
 	EClass getUpdateDescriptor();
 
 	/**
-	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.core.Version
+	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.metadata.Version
 	 * <em>Version</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for data type '<em>Version</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.core.Version
-	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.core.Version"
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.Version"
 	 * @generated
 	 */
 	EDataType getVersion();
 
 	/**
-	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.core.VersionRange
+	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
 	 * <em>Version Range</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for data type '<em>Version Range</em>'.
-	 * @see org.eclipse.equinox.internal.provisional.p2.core.VersionRange
-	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.core.VersionRange"
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange"
 	 * @generated
 	 */
 	EDataType getVersionRange();

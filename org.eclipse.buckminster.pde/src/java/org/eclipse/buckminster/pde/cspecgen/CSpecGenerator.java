@@ -57,10 +57,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.util.ManifestElement;
@@ -430,7 +430,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(productDescriptor.useFeatures())
 			return;
 
-		List<VersionedName> bundles = TypedCollections.getProductBundles(productDescriptor, true);
+		List<VersionedId> bundles = TypedCollections.getProductBundles(productDescriptor, true);
 		if(bundles.size() == 0)
 			return;
 
@@ -444,7 +444,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(IComponentType.OSGI_BUNDLE.equals(cspec.getComponentTypeID()))
 			self = cspec.getName();
 
-		for(VersionedName bundle : bundles)
+		for(VersionedId bundle : bundles)
 		{
 			String pluginId = bundle.getId();
 			if(self != null && self.equals(pluginId))
@@ -549,7 +549,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld;
 	}
 
-	protected ComponentRequestBuilder createDependency(VersionedName versionedName, String componentType)
+	protected ComponentRequestBuilder createDependency(VersionedId versionedName, String componentType)
 			throws CoreException
 	{
 		String versionRange = null;

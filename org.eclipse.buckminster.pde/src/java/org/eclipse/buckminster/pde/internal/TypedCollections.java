@@ -9,10 +9,10 @@ import java.util.Properties;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
 import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.pde.internal.build.Utils;
@@ -40,19 +40,19 @@ public abstract class TypedCollections
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<VersionedName> getProductBundles(IProductDescriptor productDescriptor, boolean includeFragments)
+	public static List<VersionedId> getProductBundles(IProductDescriptor productDescriptor, boolean includeFragments)
 	{
 		return productDescriptor.getBundles(includeFragments);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<VersionedName> getProductFeatures(IProductDescriptor productDescriptor)
+	public static List<VersionedId> getProductFeatures(IProductDescriptor productDescriptor)
 	{
 		return productDescriptor.getFeatures();
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<VersionedName> getProductFragments(IProductDescriptor productDescriptor)
+	public static List<VersionedId> getProductFragments(IProductDescriptor productDescriptor)
 	{
 		return productDescriptor.getFragments();
 	}

@@ -28,7 +28,7 @@ import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
 import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
 import org.eclipse.buckminster.ui.general.editor.simple.WidgetWrapper;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

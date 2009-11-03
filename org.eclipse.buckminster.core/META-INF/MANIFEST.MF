@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Core
 Bundle-SymbolicName: org.eclipse.buckminster.core; singleton:=true
-Bundle-Version: 1.1.350.qualifier
+Bundle-Version: 1.1.360.qualifier
 Bundle-Activator: org.eclipse.buckminster.core.CorePlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
@@ -61,5 +61,4 @@ Import-Package: org.eclipse.equinox.internal.p2.core.helpers,
  org.eclipse.equinox.internal.provisional.p2.metadata,
  org.eclipse.equinox.internal.provisional.p2.metadata.query,
  org.eclipse.equinox.internal.provisional.p2.metadata.repository,
- org.eclipse.equinox.internal.provisional.p2.query,
  org.eclipse.equinox.internal.provisional.p2.repository

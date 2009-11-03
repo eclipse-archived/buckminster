@@ -9,7 +9,7 @@
 package org.eclipse.buckminster.installer;
 
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.query.MatchQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.MatchQuery;
 
 /**
  * Queries for IUs which IDs end with ".feature.group"

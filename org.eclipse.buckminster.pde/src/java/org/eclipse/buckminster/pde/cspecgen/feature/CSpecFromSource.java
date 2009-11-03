@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.core.PDECore;
@@ -165,7 +165,7 @@ public class CSpecFromSource extends CSpecGenerator
 		if(!productDescriptor.useFeatures())
 			return;
 
-		List<VersionedName> features = TypedCollections.getProductFeatures(productDescriptor);
+		List<VersionedId> features = TypedCollections.getProductFeatures(productDescriptor);
 		if(features.size() == 0)
 			return;
 
@@ -178,7 +178,7 @@ public class CSpecFromSource extends CSpecGenerator
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 
 		String self = cspec.getName();
-		for(VersionedName feature : features)
+		for(VersionedId feature : features)
 		{
 			if(feature.getId().equals(self))
 				continue;

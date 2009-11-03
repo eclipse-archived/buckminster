@@ -1,7 +1,7 @@
 package org.eclipse.buckminster.core.cspec;
 
 import org.eclipse.buckminster.osgi.filter.Filter;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 
 @SuppressWarnings("restriction")
 public interface IComponentRequest extends IComponentName

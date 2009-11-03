@@ -8,22 +8,7 @@ package org.eclipse.buckminster.aggregator.p2.impl;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
-import org.eclipse.buckminster.aggregator.p2.Copyright;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
-import org.eclipse.buckminster.aggregator.p2.License;
-import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
-import org.eclipse.buckminster.aggregator.p2.P2Package;
-import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
-import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
-import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
-import org.eclipse.buckminster.aggregator.p2.TouchpointData;
-import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
-import org.eclipse.buckminster.aggregator.p2.TouchpointType;
-import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
+import org.eclipse.buckminster.aggregator.p2.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -31,15 +16,15 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitFragment;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
@@ -405,7 +390,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	 * 
 	 * @generated NOT
 	 */
-	public InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedName iuVN)
+	public InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedId iuVN)
 	{
 		InstallableUnitImpl installableUnit = new InstallableUnitImpl();
 		URI proxyURI = URI.createURI(String.format(PROXY_URI_FORMATTER, repoLocation, iuVN.getId(), iuVN.getVersion()));

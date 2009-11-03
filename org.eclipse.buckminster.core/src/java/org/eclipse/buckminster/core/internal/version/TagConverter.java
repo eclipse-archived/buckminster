@@ -12,8 +12,8 @@ package org.eclipse.buckminster.core.internal.version;
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionFormat;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
 
 /**
  * @author Thomas Hallgren

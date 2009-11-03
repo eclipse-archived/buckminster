@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.xml.sax.SAXException;

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Installer Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.installer;singleton:=true
-Bundle-Version: 1.0.350.qualifier
+Bundle-Version: 1.0.360.qualifier
 Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="1.0.350",
  org.eclipse.buckminster.runtime;bundle-version="1.1.0",
  org.eclipse.core.runtime;bundle-version="3.5.0"
@@ -14,5 +14,4 @@ Import-Package: org.eclipse.equinox.internal.p2.console,
  org.eclipse.equinox.internal.provisional.p2.director,
  org.eclipse.equinox.internal.provisional.p2.engine,
  org.eclipse.equinox.internal.provisional.p2.metadata,
- org.eclipse.equinox.internal.provisional.p2.metadata.query,
- org.eclipse.equinox.internal.provisional.p2.query
+ org.eclipse.equinox.internal.provisional.p2.metadata.query

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.equinox.p2.publisher.eclipse.IBrandingAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.ProductFileAdvice;
 import org.eclipse.osgi.service.environment.Constants;

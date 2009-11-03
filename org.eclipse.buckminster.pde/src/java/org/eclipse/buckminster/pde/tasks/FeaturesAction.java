@@ -32,10 +32,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -220,9 +220,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		return parsed[1] + '.' + parsed[0] + '.' + parsed[2];
 	}
 
-	private final Map<VersionedName, CSpec> m_cspecs;
+	private final Map<VersionedId, CSpec> m_cspecs;
 
-	public FeaturesAction(File[] featureBinaries, Map<VersionedName, CSpec> cspecs)
+	public FeaturesAction(File[] featureBinaries, Map<VersionedId, CSpec> cspecs)
 	{
 		super(featureBinaries);
 		m_cspecs = cspecs;

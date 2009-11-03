@@ -280,10 +280,14 @@
       <eOperations name="setSelectors">
         <eParameters name="selectors" eType="#//p2/StringArray"/>
       </eOperations>
+      <eOperations name="satisfiedBy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eParameters name="capability" eType="#//p2/IProvidedCapability"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="namespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="#//p2/VersionRange"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="negation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="selectorList" upperBound="-1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -364,13 +368,13 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EDataType" name="Version" instanceClassName="org.eclipse.equinox.internal.provisional.p2.core.Version"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="Version" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.Version"/>
     <eClassifiers xsi:type="ecore:EClass" name="InstructionMap" instanceClassName="java.util.Map$Entry">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//p2/TouchpointInstruction"
           containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EDataType" name="VersionRange" instanceClassName="org.eclipse.equinox.internal.provisional.p2.core.VersionRange"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="VersionRange" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange"/>
     <eClassifiers xsi:type="ecore:EDataType" name="IInstallableUnitArray" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit[]"/>
     <eClassifiers xsi:type="ecore:EDataType" name="IRequiredCapabilityArray" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability[]"/>
     <eClassifiers xsi:type="ecore:EDataType" name="IProvidedCapabilityArray" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability[]"/>
@@ -380,7 +384,7 @@
     <eClassifiers xsi:type="ecore:EDataType" name="ITouchpointDataArray" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData[]"/>
     <eClassifiers xsi:type="ecore:EDataType" name="StringArray" instanceClassName="java.lang.String[]"/>
     <eClassifiers xsi:type="ecore:EDataType" name="UntypedMap" instanceClassName="java.util.Map"/>
-    <eClassifiers xsi:type="ecore:EClass" name="IQueryable" instanceClassName="org.eclipse.equinox.internal.provisional.p2.query.IQueryable"
+    <eClassifiers xsi:type="ecore:EClass" name="IQueryable" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable"
         abstract="true" interface="true">
       <eOperations name="query" eType="#//p2/Collector">
         <eParameters name="query" eType="#//p2/Query"/>
@@ -388,9 +392,9 @@
         <eParameters name="progress" eType="#//p2/IProgressMonitor"/>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EDataType" name="Query" instanceClassName="org.eclipse.equinox.internal.provisional.p2.query.Query"
+    <eClassifiers xsi:type="ecore:EDataType" name="Query" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.query.Query"
         serializable="false"/>
-    <eClassifiers xsi:type="ecore:EDataType" name="Collector" instanceClassName="org.eclipse.equinox.internal.provisional.p2.query.Collector"
+    <eClassifiers xsi:type="ecore:EDataType" name="Collector" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector"
         serializable="false"/>
     <eClassifiers xsi:type="ecore:EDataType" name="IProgressMonitor" instanceClassName="org.eclipse.core.runtime.IProgressMonitor"
         serializable="false"/>

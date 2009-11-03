@@ -21,7 +21,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
@@ -35,6 +36,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getName <em>Name</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getNamespace <em>Namespace</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getRange <em>Range</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isNegation <em>Negation</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#getSelectorList <em>Selector List</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isMultiple <em>Multiple</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl#isOptional <em>Optional</em>}</li>
@@ -137,6 +139,26 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected VersionRange range = RANGE_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #isNegation() <em>Negation</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #isNegation()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean NEGATION_EDEFAULT = false;
+
+	/**
+	 * The flag representing the value of the '{@link #isNegation() <em>Negation</em>}' attribute. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @see #isNegation()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int NEGATION_EFLAG = 1 << 0;
+
+	/**
 	 * The cached value of the '{@link #getSelectorList() <em>Selector List</em>}' attribute list. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -164,7 +186,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int MULTIPLE_EFLAG = 1 << 0;
+	protected static final int MULTIPLE_EFLAG = 1 << 1;
 
 	/**
 	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -184,7 +206,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int OPTIONAL_EFLAG = 1 << 1;
+	protected static final int OPTIONAL_EFLAG = 1 << 2;
 
 	/**
 	 * The default value of the '{@link #isGreedy() <em>Greedy</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -204,7 +226,7 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int GREEDY_EFLAG = 1 << 2;
+	protected static final int GREEDY_EFLAG = 1 << 3;
 
 	/**
 	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -296,6 +318,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return getNamespace();
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
 			return getRange();
+		case P2Package.REQUIRED_CAPABILITY__NEGATION:
+			return isNegation();
 		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
 			return getSelectorList();
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
@@ -336,6 +360,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return RANGE_EDEFAULT == null
 					? range != null
 					: !RANGE_EDEFAULT.equals(range);
+		case P2Package.REQUIRED_CAPABILITY__NEGATION:
+			return ((eFlags & NEGATION_EFLAG) != 0) != NEGATION_EDEFAULT;
 		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
 			return selectorList != null && !selectorList.isEmpty();
 		case P2Package.REQUIRED_CAPABILITY__MULTIPLE:
@@ -404,6 +430,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
 			setRange((VersionRange)newValue);
 			return;
+		case P2Package.REQUIRED_CAPABILITY__NEGATION:
+			setNegation((Boolean)newValue);
+			return;
 		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
 			getSelectorList().clear();
 			getSelectorList().addAll((Collection<? extends String>)newValue);
@@ -445,6 +474,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return;
 		case P2Package.REQUIRED_CAPABILITY__RANGE:
 			setRange(RANGE_EDEFAULT);
+			return;
+		case P2Package.REQUIRED_CAPABILITY__NEGATION:
+			setNegation(NEGATION_EDEFAULT);
 			return;
 		case P2Package.REQUIRED_CAPABILITY__SELECTOR_LIST:
 			getSelectorList().clear();
@@ -584,9 +616,36 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 * @generated
 	 */
+	public boolean isNegation()
+	{
+		return (eFlags & NEGATION_EFLAG) != 0;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean isOptional()
 	{
 		return (eFlags & OPTIONAL_EFLAG) != 0;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+
+	public boolean satisfiedBy(IProvidedCapability cap)
+	{
+		String name = getName();
+		if(name == null || !name.equals(cap.getName()))
+			return false;
+		String nameSpace = getNamespace();
+		if(nameSpace == null || !nameSpace.equals(cap.getNamespace()))
+			return false;
+		return getRange().isIncluded(cap.getVersion());
 	}
 
 	/**
@@ -675,6 +734,23 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__NAMESPACE,
 					oldNamespace, namespace));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setNegation(boolean newNegation)
+	{
+		boolean oldNegation = (eFlags & NEGATION_EFLAG) != 0;
+		if(newNegation)
+			eFlags |= NEGATION_EFLAG;
+		else
+			eFlags &= ~NEGATION_EFLAG;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.REQUIRED_CAPABILITY__NEGATION, oldNegation,
+					newNegation));
 	}
 
 	/**
