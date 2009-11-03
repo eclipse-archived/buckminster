@@ -80,16 +80,21 @@ public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.ec
 		if(icons != null)
 			iron.setIcons(icons);
 
+		boolean isMacOS = Constants.OS_MACOSX.equals(advice.getOS());
 		String name = advice.getExecutableName();
 		if(name == null)
-			name = "eclipse"; //$NON-NLS-1$
+		{
+			name = isMacOS
+					? "Eclipse" //$NON-NLS-1$
+					: "eclipse"; //$NON-NLS-1$
+		}
 		iron.setName(name);
 		iron.setOS(advice.getOS());
 		iron.setRoot(descriptor.getLocation().getAbsolutePath());
 		try
 		{
 			iron.brand();
-			if(Constants.OS_MACOSX.equals(advice.getOS()))
+			if(isMacOS && !name.equals("Eclipse")) //$NON-NLS-1$
 				descriptor.setExecutableName("Eclipse", true); //$NON-NLS-1$
 			descriptor.setExecutableName(name, true);
 		}

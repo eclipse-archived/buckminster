@@ -329,7 +329,7 @@ public class BrandingIron implements IXMLConstants
 		// Eclipse.app/Contents/MacOs/eclipse.ini (ini)
 		File targetFile = getCanonicalFile(new File(target, "/MacOS/" + name + ".ini")); //$NON-NLS-1$//$NON-NLS-2$
 		File brandedIni = getCanonicalFile(new File(initialRoot, "/MacOS/" + name + ".ini")); //$NON-NLS-1$ //$NON-NLS-2$
-		File ini = getCanonicalFile(new File(initialRoot, "/MacOS/eclipse.ini")); //$NON-NLS-1$
+		File ini = getCanonicalFile(new File(initialRoot, "/MacOS/Eclipse.ini")); //$NON-NLS-1$
 
 		if(targetFile.exists())
 		{
@@ -437,8 +437,10 @@ public class BrandingIron implements IXMLConstants
 		{
 			// ignore
 		}
+		File launcherParent = launcher.getParentFile();
 		launcher.delete();
-		launcher.getParentFile().delete();
+		if(!launcherParent.equals(targetFile.getParentFile()))
+			launcherParent.delete();
 	}
 
 	private File getCanonicalFile(File file)
