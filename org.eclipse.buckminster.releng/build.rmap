@@ -88,17 +88,17 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="subclipse">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="http://subclipse.tigris.org/update_1.6.x"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="svnkit">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="http://eclipse.svnkit.com/1.3.x"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="polarion">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site"/>
     </rm:provider>
   </rm:searchPath>
