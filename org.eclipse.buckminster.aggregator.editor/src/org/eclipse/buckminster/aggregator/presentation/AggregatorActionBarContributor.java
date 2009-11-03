@@ -15,7 +15,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
@@ -29,7 +28,6 @@ import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
@@ -321,42 +319,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 					Boolean.valueOf(!m_ref.isEnabled()));
 			command.setLabel(getText());
 			domain.getCommandStack().execute(command);
-			updateContextMenu(new IStructuredSelection()
-			{
-
-				public Object getFirstElement()
-				{
-					return m_ref;
-				}
-
-				public boolean isEmpty()
-				{
-					return false;
-				}
-
-				@SuppressWarnings("unchecked")
-				public Iterator iterator()
-				{
-					return Collections.singleton(m_ref).iterator();
-				}
-
-				public int size()
-				{
-					return 1;
-				}
-
-				public Object[] toArray()
-				{
-					return new Object[] { m_ref };
-				}
-
-				@SuppressWarnings("unchecked")
-				public List toList()
-				{
-					return Collections.singletonList(m_ref);
-				}
-
-			});
 		}
 
 		public void setReference(EnabledStatusProvider ref)
@@ -410,32 +372,13 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		public void run()
 		{
 			if(m_metadataRepositoryReference != null && m_metadataRepositoryReference.isBranchEnabled())
-				MetadataRepositoryResourceImpl.loadRepository(m_metadataRepositoryReference.getResolvedLocation(), m_aggregator,
-						true);
+				m_metadataRepositoryReference.startRepositoryLoad(true);
 		}
 
 		public void setMetadataRepositoryReference(MetadataRepositoryReference metadataRepositoryReference)
 		{
 			m_metadataRepositoryReference = metadataRepositoryReference;
 		}
-	}
-
-	private static Aggregator getAggregator(IEditingDomainProvider edProvider)
-	{
-		if(edProvider == null)
-			return null;
-
-		EList<Resource> resources = edProvider.getEditingDomain().getResourceSet().getResources();
-		Resource aggregatorResource = null;
-		for(Resource resource : resources)
-			if(resource instanceof AggregatorResourceImpl)
-			{
-				aggregatorResource = resource;
-				break;
-			}
-		return aggregatorResource == null
-				? null
-				: (Aggregator)aggregatorResource.getContents().get(0);
 	}
 
 	/**
@@ -535,9 +478,13 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 */
 	protected IMenuManager createSiblingMenuManager;
 
-	protected ActionContributionItem m_enabledStatusMenuItem;
+	protected boolean m_enabledStatusActionVisible;
 
-	protected ActionContributionItem m_reloadRepoMenuItem;
+	protected EnabledStatusAction m_enabledStatusAction;
+
+	protected boolean m_reloadRepoActionVisible;
+
+	protected ReloadRepoAction m_reloadRepoAction;
 
 	protected BuildRepoAction m_cleanRepoAction;
 
@@ -553,6 +500,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	private Aggregator m_aggregator;
 
+	private IEditorPart m_lastActiveEditorPart;
+
 	/**
 	 * This creates an instance of the contributor. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -564,9 +513,10 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();
 		controlAction = new ControlAction();
-		m_enabledStatusMenuItem = new ActionContributionItem(new EnabledStatusAction());
-		m_enabledStatusMenuItem.setVisible(false);
-		m_reloadRepoMenuItem = new ActionContributionItem(new ReloadRepoAction());
+		m_enabledStatusAction = new EnabledStatusAction();
+		m_enabledStatusActionVisible = false;
+		m_reloadRepoAction = new ReloadRepoAction();
+		m_reloadRepoActionVisible = false;
 		m_cleanRepoAction = new BuildRepoAction(ActionType.CLEAN);
 		m_verifyRepoAction = new BuildRepoAction(ActionType.VERIFY);
 		m_buildRepoAction = new BuildRepoAction(ActionType.BUILD);
@@ -645,8 +595,23 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			menuManager.insertBefore("edit", submenuManager);
 		}
 
-		menuManager.insertBefore("edit", m_enabledStatusMenuItem);
-		menuManager.insertBefore("edit", m_reloadRepoMenuItem);
+		if(m_enabledStatusActionVisible)
+		{
+			depopulateManager(menuManager, Collections.singleton(m_enabledStatusAction));
+			IContributionItem item = new ActionContributionItem(m_enabledStatusAction)
+			{
+
+				// force updating the text immediately
+				public boolean isDynamic()
+				{
+					return true;
+				}
+			};
+			menuManager.insertBefore("edit", item);
+		}
+
+		if(m_reloadRepoActionVisible)
+			menuManager.insertBefore("edit", m_reloadRepoAction);
 	}
 
 	/**
@@ -733,20 +698,14 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
-	@Override
-	public void setActiveEditor(IEditorPart part)
-	{
-		setActiveEditorGen(part);
-		m_aggregator = getAggregator((IEditingDomainProvider)part);
-	}
-
 	/**
 	 * When the active editor changes, this remembers the change and registers with it as a selection provider. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void setActiveEditorGen(IEditorPart part)
+	@Override
+	public void setActiveEditor(IEditorPart part)
 	{
 		super.setActiveEditor(part);
 		activeEditorPart = part;
@@ -793,8 +752,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		Collection<?> newChildDescriptors = null;
 		Collection<?> newSiblingDescriptors = null;
 
-		m_enabledStatusMenuItem.setVisible(false);
-		m_reloadRepoMenuItem.setVisible(false);
+		m_enabledStatusActionVisible = false;
+		m_reloadRepoActionVisible = false;
 
 		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
 		{
@@ -807,9 +766,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 			if(object instanceof EnabledStatusProvider)
 			{
-				EnabledStatusAction action = (EnabledStatusAction)m_enabledStatusMenuItem.getAction();
 				EnabledStatusProvider item = (EnabledStatusProvider)object;
-				action.setReference(item);
+				m_enabledStatusAction.setReference(item);
 
 				// Check if the Enabled property can be set at the moment
 				//
@@ -820,22 +778,20 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 					ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter)itemProvider;
 					IItemPropertyDescriptor itemPropertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object,
 							AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName());
-					action.setEnabled(itemPropertyDescriptor.canSetProperty(object));
+					m_enabledStatusAction.setEnabled(itemPropertyDescriptor.canSetProperty(object));
 				}
 				else
-					action.setEnabled(false);
+					m_enabledStatusAction.setEnabled(false);
 
-				m_enabledStatusMenuItem.update();
-				m_enabledStatusMenuItem.setVisible(true);
+				m_enabledStatusActionVisible = true;
 			}
 
 			if(object instanceof MetadataRepositoryReference)
 			{
 				MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
-				m_reloadRepoMenuItem.getAction().setEnabled(metadataRepositoryReference.isBranchEnabled());
-				((ReloadRepoAction)m_reloadRepoMenuItem.getAction()).setMetadataRepositoryReference(metadataRepositoryReference);
-				m_reloadRepoMenuItem.update();
-				m_reloadRepoMenuItem.setVisible(true);
+				m_reloadRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
+				m_reloadRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
+				m_reloadRepoActionVisible = true;
 			}
 		}
 
@@ -1018,7 +974,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				features.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.FEATURE));
 				features.addAll(ItemUtils.getIUs((List<org.eclipse.buckminster.aggregator.p2view.Feature>)itemSorter.getGroupItems(ItemGroup.FEATURE_STRUCTURED)));
 
-				for(CustomCategory customCategory : m_aggregator.getCustomCategories())
+				for(CustomCategory customCategory : getAggregator().getCustomCategories())
 					addToActions.add(new AddToCustomCategoryAction(
 							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), customCategory, features));
 			}
@@ -1055,5 +1011,30 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 
 		return action;
+	}
+
+	private Aggregator getAggregator()
+	{
+		if(activeEditorPart == null || !(activeEditorPart instanceof IEditingDomainProvider))
+			return null;
+
+		if(m_lastActiveEditorPart == activeEditorPart)
+			return m_aggregator;
+
+		m_lastActiveEditorPart = activeEditorPart;
+
+		IEditingDomainProvider edProvider = (IEditingDomainProvider)activeEditorPart;
+
+		EList<Resource> resources = edProvider.getEditingDomain().getResourceSet().getResources();
+		Resource aggregatorResource = null;
+		for(Resource resource : resources)
+			if(resource instanceof AggregatorResourceImpl)
+			{
+				aggregatorResource = resource;
+				break;
+			}
+		return m_aggregator = (aggregatorResource == null
+				? null
+				: (Aggregator)aggregatorResource.getContents().get(0));
 	}
 }
