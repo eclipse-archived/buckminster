@@ -104,7 +104,6 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 			addNamePropertyDescriptor(object);
 			addInstallableUnitListPropertyDescriptor(object);
 			addPropertiesPropertyDescriptor(object);
-			addMetadataRepositoryPropertyDescriptor(object);
 			addLoadedPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -218,24 +217,6 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 						"_UI_MetadataRepositoryStructuredView_type"),
 				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED, false, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Metadata Repository feature. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 */
-	protected void addMetadataRepositoryPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MetadataRepositoryStructuredView_metadataRepository_feature"), getString(
-						"_UI_PropertyDescriptor_description",
-						"_UI_MetadataRepositoryStructuredView_metadataRepository_feature",
-						"_UI_MetadataRepositoryStructuredView_type"),
-				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY, false, false, false,
-				null, null, null));
 	}
 
 	/**

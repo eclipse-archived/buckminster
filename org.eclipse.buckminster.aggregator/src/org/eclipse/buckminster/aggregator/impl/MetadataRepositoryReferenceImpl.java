@@ -300,6 +300,9 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return null;
 
 		location = location.replaceAll("\\s", "%20").replace('\\', '/');
+		if(location.charAt(location.length()-1) == '/')
+			location = location.substring(0, location.length()-1);
+
 		if(location.length() > 1 && location.charAt(1) == ':' && Character.isLetter(location.charAt(0)))
 			// Path starting with a Windows drive letter
 			return "file:/" + location;

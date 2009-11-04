@@ -43,54 +43,58 @@ public class ResourceUtils
 	{
 		Resource topResource = aggregator.eResource();
 		ResourceSet topSet = topResource.getResourceSet();
-		Set<Resource> referencedResources = new HashSet<Resource>();
-		referencedResources.add(topResource);
-		for(Contribution contribution : aggregator.getContributions())
+
+		synchronized(topSet)
 		{
-			for(MappedRepository mappedRepository : contribution.getRepositories())
+			Set<Resource> referencedResources = new HashSet<Resource>();
+			referencedResources.add(topResource);
+			for(Contribution contribution : aggregator.getContributions())
 			{
-				if(mappedRepository.isBranchEnabled())
+				for(MappedRepository mappedRepository : contribution.getRepositories())
+				{
+					if(mappedRepository.isBranchEnabled())
+					{
+						org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI(
+								"p2", mappedRepository.getResolvedLocation(), null);
+						referencedResources.add(topSet.getResource(repoURI, false));
+					}
+					else
+					{
+						for(MappedUnit unit : mappedRepository.getUnits(false))
+						{
+							InstallableUnit originalIU = unit.getInstallableUnit(false);
+
+							if(!originalIU.eIsProxy())
+								unit.setInstallableUnit(P2Factory.eINSTANCE.createInstallableUnitProxy(
+										mappedRepository.getLocation(), originalIU.getVersionedName()));
+						}
+
+						// avoid notification recursion - set to null only if it not null yet
+						if(mappedRepository.getMetadataRepository(false) != null)
+							mappedRepository.setMetadataRepository(null);
+					}
+				}
+			}
+			for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
+			{
+				if(repoRef.isBranchEnabled())
 				{
 					org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-							mappedRepository.getResolvedLocation(), null);
+							repoRef.getResolvedLocation(), null);
 					referencedResources.add(topSet.getResource(repoURI, false));
 				}
 				else
-				{
-					for(MappedUnit unit : mappedRepository.getUnits(false))
-					{
-						InstallableUnit originalIU = unit.getInstallableUnit(false);
-
-						if(!originalIU.eIsProxy())
-							unit.setInstallableUnit(P2Factory.eINSTANCE.createInstallableUnitProxy(
-									mappedRepository.getLocation(), originalIU.getVersionedName()));
-					}
-					
-					//avoid notification recursion - set to null only if it not null yet
-					if(mappedRepository.getMetadataRepository(false) != null)
-						mappedRepository.setMetadataRepository(null);
-				}
-			}
-		}
-		for(MetadataRepositoryReference repoRef : aggregator.getValidationRepositories())
-		{
-			if(repoRef.isBranchEnabled())
-			{
-				org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-						repoRef.getResolvedLocation(), null);
-				referencedResources.add(topSet.getResource(repoURI, false));
-			}
-			else
-				//avoid notification recursion - set to null only if it not null yet
+				// avoid notification recursion - set to null only if it not null yet
 				if(repoRef.getMetadataRepository(false) != null)
 					repoRef.setMetadataRepository(null);
-		}
-		Iterator<Resource> allResources = topSet.getResources().iterator();
+			}
+			Iterator<Resource> allResources = topSet.getResources().iterator();
 
-		while(allResources.hasNext())
-		{
-			if(!referencedResources.contains(allResources.next()))
-				allResources.remove();
+			while(allResources.hasNext())
+			{
+				if(!referencedResources.contains(allResources.next()))
+					allResources.remove();
+			}
 		}
 	}
 

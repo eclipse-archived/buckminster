@@ -98,7 +98,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			super.getPropertyDescriptors(object);
 
 			addEnabledPropertyDescriptor(object);
-			addMetadataRepositoryPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -190,9 +189,9 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 					&& !notification.getOldStringValue().equals(notification.getNewStringValue()))
 			{
 				onLocationChange(repoRef);
-				//we have started repository load in the background - that's all for now
-				//once the repository is loaded (or fails to load), we'll return again
-				//by setting a MDR reference (which may be null if the load fails)
+				// we have started repository load in the background - that's all for now
+				// once the repository is loaded (or fails to load), we'll return again
+				// by setting a MDR reference (which may be null if the load fails)
 				return;
 			}
 
