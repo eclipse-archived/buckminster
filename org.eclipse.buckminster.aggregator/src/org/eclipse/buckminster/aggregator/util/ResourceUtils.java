@@ -65,7 +65,10 @@ public class ResourceUtils
 							unit.setInstallableUnit(P2Factory.eINSTANCE.createInstallableUnitProxy(
 									mappedRepository.getLocation(), originalIU.getVersionedName()));
 					}
-					mappedRepository.setMetadataRepository(null);
+					
+					//avoid notification recursion - set to null only if it not null yet
+					if(mappedRepository.getMetadataRepository(false) != null)
+						mappedRepository.setMetadataRepository(null);
 				}
 			}
 		}
@@ -78,7 +81,9 @@ public class ResourceUtils
 				referencedResources.add(topSet.getResource(repoURI, false));
 			}
 			else
-				repoRef.setMetadataRepository(null);
+				//avoid notification recursion - set to null only if it not null yet
+				if(repoRef.getMetadataRepository(false) != null)
+					repoRef.setMetadataRepository(null);
 		}
 		Iterator<Resource> allResources = topSet.getResources().iterator();
 

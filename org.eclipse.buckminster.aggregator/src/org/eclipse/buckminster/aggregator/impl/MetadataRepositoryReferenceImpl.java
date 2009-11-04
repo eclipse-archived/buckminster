@@ -9,12 +9,19 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -99,6 +106,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * @ordered
 	 */
 	protected String location = LOCATION_EDEFAULT;
+
+	private Set<Job> m_currentLoaderJobs = new HashSet<Job>();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -416,19 +425,48 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated NOT
 	 */
-	public void startRepositoryLoad(boolean forceReload)
+	public void startRepositoryLoad(final boolean forceReload)
 	{
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
+		setMetadataRepository(null);
 
 		if(getLocation() == null)
 			return;
-		Aggregator aggregator = getAggregator();
+		final Aggregator aggregator = getAggregator();
+		cancelCurrentLoaderJobs();
 
-		// TODO Call asynchronous load
-		setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(getResolvedLocation(), aggregator,
-				forceReload));
-		onRepositoryLoad();
+		Job asynchronousLoader = new Job("Loading " + getResolvedLocation())
+		{
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor)
+			{
+				try
+				{
+					MetadataRepository mdr = MetadataRepositoryResourceImpl.loadRepository(getResolvedLocation(),
+							aggregator, forceReload);
+
+					if(monitor.isCanceled())
+						return Status.CANCEL_STATUS;
+
+					synchronized(MetadataRepositoryReferenceImpl.this)
+					{
+						setMetadataRepository(mdr);
+						onRepositoryLoad();
+					}
+
+					return Status.OK_STATUS;
+				}
+				finally
+				{
+					removeCurrentLoaderJob(this);
+				}
+			}
+
+		};
+		asynchronousLoader.setUser(false);
+
+		addCurrentLoaderJob(asynchronousLoader);
+		asynchronousLoader.schedule();
 	}
 
 	/**
@@ -460,6 +498,22 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	protected EClass eStaticClass()
 	{
 		return AggregatorPackage.Literals.METADATA_REPOSITORY_REFERENCE;
+	}
+
+	synchronized private void addCurrentLoaderJob(Job job)
+	{
+		m_currentLoaderJobs.add(job);
+	}
+
+	synchronized private void cancelCurrentLoaderJobs()
+	{
+		for(Job job : m_currentLoaderJobs)
+			job.cancel();
+	}
+
+	synchronized private void removeCurrentLoaderJob(Job job)
+	{
+		m_currentLoaderJobs.remove(job);
 	}
 
 } // MetadataRepositoryReferenceImpl

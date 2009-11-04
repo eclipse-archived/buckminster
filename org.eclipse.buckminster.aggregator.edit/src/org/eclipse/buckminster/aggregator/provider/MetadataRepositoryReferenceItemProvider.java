@@ -188,13 +188,20 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 					&& !notification.getNewStringValue().equals(notification.getOldStringValue())
 					|| notification.getOldStringValue() != null
 					&& !notification.getOldStringValue().equals(notification.getNewStringValue()))
+			{
 				onLocationChange(repoRef);
-			// no 'break' here is an intention - refresh nodes that may have been affected
+				//we have started repository load in the background - that's all for now
+				//once the repository is loaded (or fails to load), we'll return again
+				//by setting a MDR reference (which may be null if the load fails)
+				return;
+			}
 
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, repoRef, true, false));
 
 			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
+			affectedNodeLabels.add(repoRef);
 
 			// Go through all direct ancestors first
 			EObject container = repoRef.eContainer();
