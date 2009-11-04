@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
-import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 
@@ -282,10 +281,6 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
 	{
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add(createChildParameter(
-				P2viewPackage.Literals.METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY,
-				P2Factory.eINSTANCE.createMetadataRepository()));
 	}
 
 	/**

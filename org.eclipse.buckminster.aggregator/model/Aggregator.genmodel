@@ -151,6 +151,10 @@
       </genOperations>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/isBranchEnabled"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/getResolvedLocation"/>
+      <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/startRepositoryLoad">
+        <genParameters ecoreParameter="Aggregator.ecore#//MetadataRepositoryReference/startRepositoryLoad/forceReload"/>
+      </genOperations>
+      <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/onRepositoryLoad"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//StatusProvider">
       <genOperations ecoreOperation="Aggregator.ecore#//StatusProvider/getStatus"/>
@@ -256,6 +260,7 @@
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/name"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/namespace"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/range"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/negation"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/selectorList"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/multiple"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/optional"/>
@@ -263,6 +268,9 @@
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IRequiredCapability/getSelectors"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IRequiredCapability/setSelectors">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IRequiredCapability/setSelectors/selectors"/>
+        </genOperations>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IRequiredCapability/satisfiedBy">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IRequiredCapability/satisfiedBy/capability"/>
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ITouchpointData">
@@ -387,7 +395,7 @@
             ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/installableUnitList"/>
         <genFeatures property="Readonly" children="true" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/properties"/>
-        <genFeatures property="Readonly" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/metadataRepository"/>
+        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/metadataRepository"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2view/MetadataRepositoryStructuredView/loaded"/>
       </genClasses>
       <genClasses ecoreClass="Aggregator.ecore#//p2view/InstallableUnits">
