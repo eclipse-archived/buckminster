@@ -18,13 +18,17 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.provider.P2viewItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
+import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
+import org.eclipse.buckminster.aggregator.util.OverlaidImage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -67,6 +71,7 @@ import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProvider;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
@@ -677,7 +682,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 								// initialize all resources in alphabetical order
 								for(MetadataRepositoryReference repo : repositoriesToLoad)
-									MetadataRepositoryResourceImpl.getResourceForURI(repo.getResolvedLocation(),
+									MetadataRepositoryResourceImpl.getResourceForLocation(repo.getResolvedLocation(),
 											repo.getAggregator());
 
 								for(final MetadataRepositoryReference repo : repositoriesToLoad)
@@ -693,8 +698,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 											monitor.beginTask("Loading " + repo.getLocation(), 1);
 											try
 											{
-												MetadataRepositoryResourceImpl.loadRepository(
-														repo.getResolvedLocation(), repo.getAggregator());
+												repo.setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(
+														repo.getResolvedLocation(), repo.getAggregator()));
 											}
 											finally
 											{
@@ -1658,10 +1663,51 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					@Override
 					public Object getImage(Object object)
 					{
-						if(object instanceof MetadataRepositoryResourceImpl)
+						Object baseImage = null;
+						Object overlayImage = null;
+
+						if(object instanceof AggregatorResourceImpl)
 						{
-							// TODO Add overlays depending on status: loading, ok, error
-							return AggregatorEditPlugin.INSTANCE.getImage("full/obj16/MetadataRepository");
+							baseImage = super.getImage(object);
+
+							// avoid querying proxies before loading jobs are scheduled/running
+							if(!Job.getJobManager().isSuspended())
+							{
+								AggregatorResourceImpl res = (AggregatorResourceImpl)object;
+
+								if(((Aggregator)res.getContents().get(0)).getStatus() != StatusProvider.OK)
+									overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
+							}
+						}
+						else if(object instanceof MetadataRepositoryResourceImpl)
+						{
+							baseImage = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/MetadataRepository");
+
+							MetadataRepositoryResourceImpl mdr = (MetadataRepositoryResourceImpl)object;
+
+							if(mdr.getLastException() != null)
+								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
+							else if(!mdr.isLoaded() || mdr.isLoading())
+								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Loading");
+						}
+
+						if(baseImage != null)
+						{
+							if(overlayImage != null)
+							{
+								Object[] images = new Object[2];
+								int[] positions = new int[2];
+
+								images[0] = baseImage;
+								positions[0] = OverlaidImage.BASIC;
+
+								images[1] = overlayImage;
+								positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
+
+								return new OverlaidImage(images, positions);
+							}
+
+							return baseImage;
 						}
 
 						return super.getImage(object);
@@ -1672,10 +1718,18 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					{
 						super.notifyChanged(notification);
 
-						// TODO Refresh label if status changes (suggestion below, commented out)
-						// if(notification.getEventType() == Notification.ADD)
-						// fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false,
-						// true));
+						if(notification.getEventType() == Notification.SET
+								&& notification.getFeatureID(Resource.class) == Resource.RESOURCE__IS_LOADED)
+						{
+							fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false,
+									true));
+
+							Aggregator aggregator = (Aggregator)((Resource)notification.getNotifier()).getResourceSet().getResources().get(
+									0).getContents().get(0);
+
+							for(MetadataRepositoryReference mdr : aggregator.getAllMetadataRepositoryReferences(true))
+								fireNotifyChanged(new ViewerNotification(notification, mdr, false, true));
+						}
 					}
 				};
 			}
