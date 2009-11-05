@@ -196,7 +196,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * 
 	 * @generated NOT
 	 */
-	public int getStatus()
+	synchronized public int getStatus()
 	{
 		if(isMappedRepositoryBroken())
 			return StatusProvider.BROKEN_CHILD;

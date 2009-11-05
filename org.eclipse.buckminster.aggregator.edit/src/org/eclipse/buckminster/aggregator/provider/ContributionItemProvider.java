@@ -255,11 +255,12 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 
-			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
-			Set<EObject> affectedNodes = new HashSet<EObject>();
+			Set<Object> affectedNodeLabels = new HashSet<Object>();
+			Set<Object> affectedNodes = new HashSet<Object>();
 
-			// Go through all direct ancestors first
+			// Go through all direct ancestors first, and add also the top resource
 			EObject container = ((EObject)notification.getNotifier());
+			affectedNodeLabels.add(container.eResource());
 			while(container != null)
 			{
 				affectedNodeLabels.add(container);
@@ -286,9 +287,9 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				}
 			}
 
-			for(EObject affectedNode : affectedNodes)
+			for(Object affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
-			for(EObject affectedNode : affectedNodeLabels)
+			for(Object affectedNode : affectedNodeLabels)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
 			if(!newValue)
@@ -298,10 +299,11 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		else if(notification.getEventType() == Notification.REMOVE
 				&& (notification.getOldValue() instanceof MappedRepository || notification.getOldValue() instanceof MavenMapping))
 		{
-			Set<EObject> affectedNodes = new HashSet<EObject>();
+			Set<Object> affectedNodes = new HashSet<Object>();
 
-			// Go through all direct ancestors first
+			// Go through all direct ancestors first, and add also the top resource
 			EObject container = ((EObject)notification.getNotifier());
+			affectedNodes.add(container.eResource());
 			while(container != null)
 			{
 				affectedNodes.add(container);
@@ -318,7 +320,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
 			}
 
-			for(EObject affectedNode : affectedNodes)
+			for(Object affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 		}
 		// If a repository is added (e.g. Undo Delete), reload MDR
@@ -327,16 +329,17 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 			if(notification.getNewValue() instanceof MappedRepository)
 				ResourceUtils.loadResourceForMappedRepository((MappedRepository)notification.getNewValue());
-			
-			Set<EObject> affectedNodes = new HashSet<EObject>();
+
+			Set<Object> affectedNodes = new HashSet<Object>();
 			// Go through all ancestors to mark warnings
 			EObject container = ((EObject)notification.getNotifier());
+			affectedNodes.add(container.eResource());
 			while(container != null)
 			{
 				affectedNodes.add(container);
 				container = container.eContainer();
 			}
-			for(EObject affectedNode : affectedNodes)
+			for(Object affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 		}
 	}

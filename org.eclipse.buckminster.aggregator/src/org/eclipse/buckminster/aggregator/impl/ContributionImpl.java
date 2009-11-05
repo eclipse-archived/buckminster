@@ -476,16 +476,18 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		return repos;
 	}
 
-	public int getStatus()
+	synchronized public int getStatus()
 	{
+		int status;
+
 		for(MappedRepository repo : getRepositories())
 		{
-			if(repo.getStatus() != StatusProvider.OK)
+			if((status = repo.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		for(MavenMapping mapping : getMavenMappings())
 		{
-			if(mapping.getStatus() != StatusProvider.OK)
+			if((status = mapping.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;

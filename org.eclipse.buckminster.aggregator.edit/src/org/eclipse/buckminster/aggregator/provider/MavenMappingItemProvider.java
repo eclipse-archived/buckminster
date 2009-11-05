@@ -124,7 +124,8 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 		notifyChangedGen(notification);
 
 		// Go through all ancestors and update labels
-		MavenMapping mapping = (MavenMapping)notification.getNotifier(); 
+		MavenMapping mapping = (MavenMapping)notification.getNotifier();
+		fireNotifyChanged(new ViewerNotification(notification, mapping.eResource(), false, true));
 		EObject container = mapping.eContainer();
 		while(container != null)
 		{

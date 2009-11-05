@@ -147,6 +147,77 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 	public static Comparator<IInstallableUnit> SELECTION_COMPARATOR = new IUSelectionComparator();
 
+	private static Copyright importToModel(ICopyright cr)
+	{
+		if(cr == null)
+			return null;
+		CopyrightImpl mcr = (CopyrightImpl)P2Factory.eINSTANCE.createCopyright();
+		mcr.setBody(cr.getBody());
+		mcr.setLocation(cr.getLocation());
+		return mcr;
+	}
+
+	private static License importToModel(ILicense lc)
+	{
+		if(lc == null)
+			return null;
+		LicenseImpl mlc = (LicenseImpl)P2Factory.eINSTANCE.createLicense();
+		mlc.setBody(lc.getBody());
+		mlc.setDigest(lc.getDigest());
+		mlc.setLocation(lc.getLocation());
+		return mlc;
+	}
+
+	private static ProvidedCapability importToModel(IProvidedCapability pc)
+	{
+		if(pc == null)
+			return null;
+		ProvidedCapabilityImpl mrq = (ProvidedCapabilityImpl)P2Factory.eINSTANCE.createProvidedCapability();
+		mrq.setName(pc.getName());
+		mrq.setNamespace(pc.getNamespace());
+		mrq.setVersion(pc.getVersion());
+		return mrq;
+	}
+
+	private static RequiredCapability importToModel(IRequiredCapability rc)
+	{
+		if(rc == null)
+			return null;
+		RequiredCapabilityImpl mrc = (RequiredCapabilityImpl)P2Factory.eINSTANCE.createRequiredCapability();
+		mrc.setFilter(rc.getFilter());
+		mrc.setGreedy(rc.isGreedy());
+		mrc.setMultiple(rc.isMultiple());
+		mrc.setName(rc.getName());
+		mrc.setNamespace(rc.getNamespace());
+		mrc.setOptional(rc.isOptional());
+		mrc.setRange(rc.getRange());
+		mrc.setSelectors(rc.getSelectors());
+		return mrc;
+	}
+
+	private static TouchpointData importToModel(ITouchpointData ptd)
+	{
+		if(ptd == null)
+			return null;
+		TouchpointData mtpd = P2Factory.eINSTANCE.createTouchpointData();
+		EMap<String, TouchpointInstruction> minstrMap = mtpd.getInstructionMap();
+		@SuppressWarnings("unchecked")
+		Map<String, ITouchpointInstruction> instrMap = ptd.getInstructions();
+		for(Map.Entry<String, ITouchpointInstruction> instr : instrMap.entrySet())
+			minstrMap.put(instr.getKey(), importToModel(instr.getValue()));
+		return mtpd;
+	}
+
+	private static TouchpointInstruction importToModel(ITouchpointInstruction ti)
+	{
+		if(ti == null)
+			return null;
+		TouchpointInstructionImpl mti = (TouchpointInstructionImpl)P2Factory.eINSTANCE.createTouchpointInstruction();
+		mti.setBody(ti.getBody());
+		mti.setImportAttribute(ti.getImportAttribute());
+		return mti;
+	}
+
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -431,77 +502,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		mkey.setId(key.getId());
 		mkey.setVersion(key.getVersion());
 		return mkey;
-	}
-
-	private static Copyright importToModel(ICopyright cr)
-	{
-		if(cr == null)
-			return null;
-		CopyrightImpl mcr = (CopyrightImpl)P2Factory.eINSTANCE.createCopyright();
-		mcr.setBody(cr.getBody());
-		mcr.setLocation(cr.getLocation());
-		return mcr;
-	}
-
-	private static License importToModel(ILicense lc)
-	{
-		if(lc == null)
-			return null;
-		LicenseImpl mlc = (LicenseImpl)P2Factory.eINSTANCE.createLicense();
-		mlc.setBody(lc.getBody());
-		mlc.setDigest(lc.getDigest());
-		mlc.setLocation(lc.getLocation());
-		return mlc;
-	}
-
-	private static ProvidedCapability importToModel(IProvidedCapability pc)
-	{
-		if(pc == null)
-			return null;
-		ProvidedCapabilityImpl mrq = (ProvidedCapabilityImpl)P2Factory.eINSTANCE.createProvidedCapability();
-		mrq.setName(pc.getName());
-		mrq.setNamespace(pc.getNamespace());
-		mrq.setVersion(pc.getVersion());
-		return mrq;
-	}
-
-	private static RequiredCapability importToModel(IRequiredCapability rc)
-	{
-		if(rc == null)
-			return null;
-		RequiredCapabilityImpl mrc = (RequiredCapabilityImpl)P2Factory.eINSTANCE.createRequiredCapability();
-		mrc.setFilter(rc.getFilter());
-		mrc.setGreedy(rc.isGreedy());
-		mrc.setMultiple(rc.isMultiple());
-		mrc.setName(rc.getName());
-		mrc.setNamespace(rc.getNamespace());
-		mrc.setOptional(rc.isOptional());
-		mrc.setRange(rc.getRange());
-		mrc.setSelectors(rc.getSelectors());
-		return mrc;
-	}
-
-	private static TouchpointData importToModel(ITouchpointData ptd)
-	{
-		if(ptd == null)
-			return null;
-		TouchpointData mtpd = P2Factory.eINSTANCE.createTouchpointData();
-		EMap<String, TouchpointInstruction> minstrMap = mtpd.getInstructionMap();
-		@SuppressWarnings("unchecked")
-		Map<String, ITouchpointInstruction> instrMap = ptd.getInstructions();
-		for(Map.Entry<String, ITouchpointInstruction> instr : instrMap.entrySet())
-			minstrMap.put(instr.getKey(), importToModel(instr.getValue()));
-		return mtpd;
-	}
-
-	private static TouchpointInstruction importToModel(ITouchpointInstruction ti)
-	{
-		if(ti == null)
-			return null;
-		TouchpointInstructionImpl mti = (TouchpointInstructionImpl)P2Factory.eINSTANCE.createTouchpointInstruction();
-		mti.setBody(ti.getBody());
-		mti.setImportAttribute(ti.getImportAttribute());
-		return mti;
 	}
 
 	private static TouchpointType importToModel(ITouchpointType tpt)
@@ -1146,7 +1146,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return requiredCapabilityList;
 	}
 
-	public int getStatus()
+	synchronized public int getStatus()
 	{
 		return Trivial.trim(getId()) != null
 				? StatusProvider.OK

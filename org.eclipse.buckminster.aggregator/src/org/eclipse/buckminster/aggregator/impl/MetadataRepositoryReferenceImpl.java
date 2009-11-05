@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 
 /**
@@ -109,6 +110,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	protected String location = LOCATION_EDEFAULT;
 
 	private Set<Job> m_currentLoaderJobs = new HashSet<Job>();
+
+	private Set<Job> m_cancelledLoaderJobs = new HashSet<Job>();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -449,11 +452,29 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	public void startRepositoryLoad(final boolean forceReload)
 	{
-		setMetadataRepository(null);
-
 		if(getLocation() == null)
 			return;
+
+		final String resolvedLocation = getResolvedLocation();
 		final Aggregator aggregator = getAggregator();
+		Resource res = MetadataRepositoryResourceImpl.getResourceForLocation(resolvedLocation, aggregator);
+		if(res.isLoaded())
+		{
+			if(forceReload || ((MetadataRepositoryResourceImpl)res).getLastException() != null)
+				res.unload();
+			else
+			{
+				synchronized(this)
+				{
+					setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(resolvedLocation, aggregator));
+					onRepositoryLoad();
+					return;
+				}
+			}
+		}
+
+		setMetadataRepository(null);
+
 		cancelCurrentLoaderJobs();
 
 		Job asynchronousLoader = new Job("Loading " + getResolvedLocation())
@@ -464,11 +485,20 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			{
 				try
 				{
-					MetadataRepository mdr = MetadataRepositoryResourceImpl.loadRepository(getResolvedLocation(),
+					MetadataRepository mdr = MetadataRepositoryResourceImpl.loadRepository(resolvedLocation,
 							aggregator, forceReload);
 
-					if(monitor.isCanceled())
+					if(m_cancelledLoaderJobs.contains(this))
 						return Status.CANCEL_STATUS;
+
+					IStatus status = Status.OK_STATUS;
+
+					if(monitor.isCanceled())
+					{
+						// cancelled by user
+						status = Status.CANCEL_STATUS;
+						mdr = null;
+					}
 
 					synchronized(MetadataRepositoryReferenceImpl.this)
 					{
@@ -476,7 +506,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 						onRepositoryLoad();
 					}
 
-					return Status.OK_STATUS;
+					return status;
 				}
 				finally
 				{
@@ -530,12 +560,16 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	synchronized private void cancelCurrentLoaderJobs()
 	{
 		for(Job job : m_currentLoaderJobs)
+		{
 			job.cancel();
+			m_cancelledLoaderJobs.add(job);
+		}
 	}
 
 	synchronized private void removeCurrentLoaderJob(Job job)
 	{
 		m_currentLoaderJobs.remove(job);
+		m_cancelledLoaderJobs.remove(job);
 	}
 
 } // MetadataRepositoryReferenceImpl

@@ -262,7 +262,8 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 		try
 		{
 			String pattern = GeneralUtils.trimmedOrNull(getNamePattern());
-			if(pattern == null || GeneralUtils.trimmedOrNull(getGroupId()) == null || GeneralUtils.trimmedOrNull(getArtifactId()) == null)
+			if(pattern == null || GeneralUtils.trimmedOrNull(getGroupId()) == null
+					|| GeneralUtils.trimmedOrNull(getArtifactId()) == null)
 				return StatusProvider.BROKEN_CHILD;
 
 			compiledPattern = Pattern.compile(pattern);
@@ -354,7 +355,7 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 				}
 				catch(PatternSyntaxException e)
 				{
-					//ignore
+					// ignore
 				}
 		}
 		else

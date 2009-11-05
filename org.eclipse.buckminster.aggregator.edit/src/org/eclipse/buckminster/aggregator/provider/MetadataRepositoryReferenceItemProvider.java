@@ -199,11 +199,12 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			fireNotifyChanged(new ViewerNotification(notification, repoRef, true, false));
 
-			Set<EObject> affectedNodeLabels = new HashSet<EObject>();
+			Set<Object> affectedNodeLabels = new HashSet<Object>();
 			affectedNodeLabels.add(repoRef);
 
 			// Go through all direct ancestors first
 			EObject container = repoRef.eContainer();
+			affectedNodeLabels.add(repoRef.eResource());
 			while(container != null)
 			{
 				affectedNodeLabels.add(container);
@@ -226,7 +227,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 					fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));
 			}
 
-			for(EObject affectedNode : affectedNodeLabels)
+			for(Object affectedNode : affectedNodeLabels)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
 			Aggregator aggregator = repoRef.getAggregator();

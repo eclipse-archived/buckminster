@@ -385,14 +385,14 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 	}
 
-	public static Resource getResourceForURI(String repositoryURI, Aggregator aggregator)
+	public static Resource getResourceForLocation(String repositoryLocation, Aggregator aggregator)
 	{
 		ResourceSet topSet = aggregator.eResource().getResourceSet();
 		char c;
-		if((c = repositoryURI.charAt(repositoryURI.length() - 1)) == '/' || c == '\\')
-			repositoryURI = repositoryURI.substring(0, repositoryURI.length() - 1);
+		if((c = repositoryLocation.charAt(repositoryLocation.length() - 1)) == '/' || c == '\\')
+			repositoryLocation = repositoryLocation.substring(0, repositoryLocation.length() - 1);
 
-		URI repoURI = URI.createGenericURI("p2", repositoryURI, null);
+		URI repoURI = getResourceUriForLocation(repositoryLocation);
 		Resource mdr = null;
 
 		synchronized(topSet)
@@ -407,7 +407,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator, boolean force)
 	{
-		Resource mdr = getResourceForURI(repositoryURI, aggregator);
+		Resource mdr = getResourceForLocation(repositoryURI, aggregator);
 
 		try
 		{
@@ -449,6 +449,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			return candidate instanceof IInstallableUnit;
 		}
 	};
+
+	public static URI getResourceUriForLocation(String location)
+	{
+		return URI.createGenericURI("p2", location, null);
+	}
 
 	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator)
 	{

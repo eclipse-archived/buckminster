@@ -27,6 +27,8 @@ public interface StatusProvider extends EObject
 
 	public static final int BROKEN_CHILD = 2;
 
+	public static final int WAITING = 3;
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

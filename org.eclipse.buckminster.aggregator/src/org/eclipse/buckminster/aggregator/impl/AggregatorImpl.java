@@ -742,21 +742,22 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		return PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET];
 	}
 
-	public int getStatus()
+	synchronized public int getStatus()
 	{
+		int status;
 		for(Contribution contribution : getContributions())
 		{
-			if(contribution.getStatus() != StatusProvider.OK)
+			if((status = contribution.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		for(MetadataRepositoryReference repo : getValidationRepositories(true))
 		{
-			if(repo.getStatus() != StatusProvider.OK)
+			if((status = repo.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		for(MavenMapping mapping : getMavenMappings())
 		{
-			if(mapping.getStatus() != StatusProvider.OK)
+			if((status = mapping.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;

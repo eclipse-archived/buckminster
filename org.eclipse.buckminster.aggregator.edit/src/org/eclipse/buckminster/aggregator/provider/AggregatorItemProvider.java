@@ -149,7 +149,7 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 			{
 				ResourceUtils.loadResourceForMappedRepository((MetadataRepositoryReference)newV);
 			}
-			
+
 			if(newV instanceof MetadataRepositoryReference || newV instanceof MavenMapping)
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 		}

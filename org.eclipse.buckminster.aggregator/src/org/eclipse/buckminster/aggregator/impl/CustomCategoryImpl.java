@@ -314,11 +314,13 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 		return label;
 	}
 
-	public int getStatus()
+	synchronized public int getStatus()
 	{
+		int status;
 		for(Feature feature : getFeatures())
 		{
-			if(feature.isEnabled() && feature.getStatus() != StatusProvider.OK)
+			if(feature.isEnabled() && (status = feature.getStatus()) != StatusProvider.OK
+					&& status != StatusProvider.WAITING)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;
