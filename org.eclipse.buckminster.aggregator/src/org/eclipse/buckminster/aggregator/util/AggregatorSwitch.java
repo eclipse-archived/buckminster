@@ -504,6 +504,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseDescriptionProvider(aggregator);
 			if(result == null)
+				result = caseStatusProvider(aggregator);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -517,6 +519,8 @@ public class AggregatorSwitch<T1>
 				result = caseDescriptionProvider(mappedRepository);
 			if(result == null)
 				result = caseEnabledStatusProvider(mappedRepository);
+			if(result == null)
+				result = caseStatusProvider(mappedRepository);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -537,6 +541,8 @@ public class AggregatorSwitch<T1>
 				result = caseEnabledStatusProvider(contribution);
 			if(result == null)
 				result = caseDescriptionProvider(contribution);
+			if(result == null)
+				result = caseStatusProvider(contribution);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -642,6 +648,8 @@ public class AggregatorSwitch<T1>
 			CustomCategory customCategory = (CustomCategory)theEObject;
 			T1 result = caseCustomCategory(customCategory);
 			if(result == null)
+				result = caseStatusProvider(customCategory);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -716,6 +724,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseEnabledStatusProvider(metadataRepositoryReference);
 			if(result == null)
+				result = caseStatusProvider(metadataRepositoryReference);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -747,6 +757,8 @@ public class AggregatorSwitch<T1>
 		{
 			MavenMapping mavenMapping = (MavenMapping)theEObject;
 			T1 result = caseMavenMapping(mavenMapping);
+			if(result == null)
+				result = caseStatusProvider(mavenMapping);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

@@ -1744,6 +1744,7 @@ public class P2PackageImpl extends EPackageImpl implements P2Package
 		copyrightEClass.getESuperTypes().add(this.getICopyright());
 		metadataRepositoryEClass.getESuperTypes().add(this.getIMetadataRepository());
 		installableUnitEClass.getESuperTypes().add(this.getIInstallableUnit());
+		installableUnitEClass.getESuperTypes().add(theAggregatorPackage.getStatusProvider());
 		installableUnitFragmentEClass.getESuperTypes().add(this.getInstallableUnit());
 		installableUnitFragmentEClass.getESuperTypes().add(this.getIInstallableUnitFragment());
 		licenseEClass.getESuperTypes().add(this.getILicense());

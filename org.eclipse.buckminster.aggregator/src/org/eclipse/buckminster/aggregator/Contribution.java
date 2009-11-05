@@ -11,17 +11,16 @@ import org.eclipse.emf.common.util.EList;
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Contribution</b></em>'.
  * 
- * @extends StatusProvider <!-- end-user-doc -->
  * 
- *          <p>
- *          The following features are supported:
- *          <ul>
- *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getRepositories <em>Repositories</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getContacts <em>Contacts</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Contribution#getMavenMappings <em>Maven Mappings</em>}</li>
- *          </ul>
- *          </p>
+ * <p>
+ * The following features are supported:
+ * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getLabel <em>Label</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getRepositories <em>Repositories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getContacts <em>Contacts</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Contribution#getMavenMappings <em>Maven Mappings</em>}</li>
+ * </ul>
+ * </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getContribution()
  * @model

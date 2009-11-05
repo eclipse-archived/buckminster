@@ -1338,10 +1338,12 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		// Add supertypes to classes
 		aggregatorEClass.getESuperTypes().add(this.getDescriptionProvider());
+		aggregatorEClass.getESuperTypes().add(this.getStatusProvider());
 		mappedRepositoryEClass.getESuperTypes().add(this.getMetadataRepositoryReference());
 		mappedRepositoryEClass.getESuperTypes().add(this.getDescriptionProvider());
 		contributionEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		contributionEClass.getESuperTypes().add(this.getDescriptionProvider());
+		contributionEClass.getESuperTypes().add(this.getStatusProvider());
 		featureEClass.getESuperTypes().add(this.getMappedUnit());
 		bundleEClass.getESuperTypes().add(this.getMappedUnit());
 		mappedUnitEClass.getESuperTypes().add(this.getInstallableUnitReference());
@@ -1352,12 +1354,15 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		g1.getETypeArguments().add(g2);
 		propertyEClass.getEGenericSuperTypes().add(g1);
 		categoryEClass.getESuperTypes().add(this.getMappedUnit());
+		customCategoryEClass.getESuperTypes().add(this.getStatusProvider());
 		mapRuleEClass.getESuperTypes().add(this.getInstallableUnitReference());
 		mapRuleEClass.getESuperTypes().add(this.getDescriptionProvider());
 		installableUnitReferenceEClass.getESuperTypes().add(this.getStatusProvider());
 		exclusionRuleEClass.getESuperTypes().add(this.getMapRule());
 		validConfigurationsRuleEClass.getESuperTypes().add(this.getMapRule());
 		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getEnabledStatusProvider());
+		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getStatusProvider());
+		mavenMappingEClass.getESuperTypes().add(this.getStatusProvider());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(aggregatorEClass, Aggregator.class, "Aggregator", !IS_ABSTRACT, !IS_INTERFACE,

@@ -11,11 +11,14 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MavenItem;
 import org.eclipse.buckminster.aggregator.MavenMapping;
+import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -254,6 +257,35 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * 
 	 * @generated NOT
 	 */
+	public int getStatus()
+	{
+		try
+		{
+			String pattern = GeneralUtils.trimmedOrNull(getNamePattern());
+			if(pattern == null || GeneralUtils.trimmedOrNull(getGroupId()) == null || GeneralUtils.trimmedOrNull(getArtifactId()) == null)
+				return StatusProvider.BROKEN_CHILD;
+
+			compiledPattern = Pattern.compile(pattern);
+			Matcher m = compiledPattern.matcher("");
+			m.replaceAll(getGroupId());
+			m.replaceAll(getArtifactId());
+			return StatusProvider.OK;
+		}
+		catch(PatternSyntaxException e)
+		{
+			return StatusProvider.BROKEN_CHILD;
+		}
+		catch(IndexOutOfBoundsException e)
+		{
+			return StatusProvider.BROKEN_CHILD;
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public MavenItem map(String installableUnitID)
 	{
 		if(compiledPattern != null)
@@ -269,7 +301,7 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 			}
 		}
 
-		return null;
+		throw new RuntimeException("Mapping pattern is null");
 	}
 
 	/**
@@ -316,7 +348,14 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 		if(newNamePattern != null)
 		{
 			if(!newNamePattern.equals(oldNamePattern))
-				compiledPattern = Pattern.compile(newNamePattern);
+				try
+				{
+					compiledPattern = Pattern.compile(GeneralUtils.trimmedOrNull(newNamePattern));
+				}
+				catch(PatternSyntaxException e)
+				{
+					//ignore
+				}
 		}
 		else
 			compiledPattern = null;

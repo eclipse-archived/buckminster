@@ -179,6 +179,14 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 				return -1;
 			}
 		}
+		if(baseClass == StatusProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			default:
+				return -1;
+			}
+		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
 	}
 
@@ -196,6 +204,14 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			{
 			case AggregatorPackage.DESCRIPTION_PROVIDER__DESCRIPTION:
 				return AggregatorPackage.CONTRIBUTION__DESCRIPTION;
+			default:
+				return -1;
+			}
+		}
+		if(baseClass == StatusProvider.class)
+		{
+			switch(baseFeatureID)
+			{
 			default:
 				return -1;
 			}
@@ -465,6 +481,11 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		for(MappedRepository repo : getRepositories())
 		{
 			if(repo.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
+		for(MavenMapping mapping : getMavenMappings())
+		{
+			if(mapping.getStatus() != StatusProvider.OK)
 				return StatusProvider.BROKEN_CHILD;
 		}
 		return StatusProvider.OK;

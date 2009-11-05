@@ -11,26 +11,25 @@ import org.eclipse.emf.common.util.EList;
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Mapped Repository</b></em>'.
  * 
- * @extends StatusProvider <!-- end-user-doc -->
  * 
- *          <p>
- *          The following features are supported:
- *          <ul>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getProducts <em>Products</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getBundles <em>Bundles</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getFeatures <em>Features</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMapRules <em>Map Rules</em>}</li>
- *          </ul>
- *          </p>
+ * <p>
+ * The following features are supported:
+ * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getProducts <em>Products</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getBundles <em>Bundles</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getFeatures <em>Features</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategories <em>Categories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#isMirrorArtifacts <em>Mirror Artifacts</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getCategoryPrefix <em>Category Prefix</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.MappedRepository#getMapRules <em>Map Rules</em>}</li>
+ * </ul>
+ * </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getMappedRepository()
  * @model
  * @generated
  */
-public interface MappedRepository extends MetadataRepositoryReference, DescriptionProvider, StatusProvider
+public interface MappedRepository extends MetadataRepositoryReference, DescriptionProvider
 {
 	/**
 	 * Adds MappedUnit to the collection of either features, categories, bundles or products

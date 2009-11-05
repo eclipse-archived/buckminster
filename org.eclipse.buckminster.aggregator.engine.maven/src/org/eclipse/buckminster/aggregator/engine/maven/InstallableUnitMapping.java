@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.MavenItem;
 import org.eclipse.buckminster.aggregator.MavenMapping;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.DependenciesType;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.Dependency;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.License;
@@ -114,6 +115,10 @@ public class InstallableUnitMapping implements IInstallableUnit
 		m_mappings = new ArrayList<MavenMapping>(mappings.size() + 1);
 		m_mappings.addAll(mappings);
 		m_mappings.add(MavenMapping.DEFAULT_MAPPING);
+
+		for(MavenMapping mapping : m_mappings)
+			if(mapping.getStatus() != StatusProvider.OK)
+				throw new RuntimeException("Invalid maven mapping: " + mapping.toString());
 
 		switch(iu.getArtifacts().length)
 		{

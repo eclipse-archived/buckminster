@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.LabelProvider;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.*;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EClass;
@@ -483,6 +484,22 @@ public class P2Switch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Status Provider</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Status Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseStatusProvider(StatusProvider object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Touchpoint Data</em>'. <!-- begin-user-doc
 	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
 	 * -->
@@ -650,6 +667,8 @@ public class P2Switch<T>
 			if(result == null)
 				result = caseIInstallableUnit(installableUnit);
 			if(result == null)
+				result = caseStatusProvider(installableUnit);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -663,6 +682,8 @@ public class P2Switch<T>
 				result = caseIInstallableUnitFragment(installableUnitFragment);
 			if(result == null)
 				result = caseIInstallableUnit(installableUnitFragment);
+			if(result == null)
+				result = caseStatusProvider(installableUnitFragment);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

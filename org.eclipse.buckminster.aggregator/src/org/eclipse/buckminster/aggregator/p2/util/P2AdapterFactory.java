@@ -9,6 +9,7 @@ package org.eclipse.buckminster.aggregator.p2.util;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.LabelProvider;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.*;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.notify.Adapter;
@@ -213,6 +214,12 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 		public Adapter caseRequiredCapability(RequiredCapability object)
 		{
 			return createRequiredCapabilityAdapter();
+		}
+
+		@Override
+		public Adapter caseStatusProvider(StatusProvider object)
+		{
+			return createStatusProviderAdapter();
 		}
 
 		@Override
@@ -685,6 +692,21 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createRequiredCapabilityAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.StatusProvider
+	 * <em>Status Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.StatusProvider
+	 * @generated
+	 */
+	public Adapter createStatusProviderAdapter()
 	{
 		return null;
 	}

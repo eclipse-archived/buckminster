@@ -22,6 +22,7 @@ import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
@@ -295,7 +296,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		}
 		// If a repository is removed, update possible warning overlays
 		else if(notification.getEventType() == Notification.REMOVE
-				&& notification.getOldValue() instanceof MappedRepository)
+				&& (notification.getOldValue() instanceof MappedRepository || notification.getOldValue() instanceof MavenMapping))
 		{
 			Set<EObject> affectedNodes = new HashSet<EObject>();
 
@@ -307,22 +308,26 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				container = container.eContainer();
 			}
 
-			for(Feature mappedFeature : ((MappedRepository)notification.getOldValue()).getFeatures())
-				// And now, find all categories which may contain the feature or the repository just being removed
-				for(CustomCategory category : mappedFeature.getCategories())
-					affectedNodes.add(category);
+			if(notification.getOldValue() instanceof MappedRepository)
+			{
+				for(Feature mappedFeature : ((MappedRepository)notification.getOldValue()).getFeatures())
+					// And now, find all categories which may contain the feature or the repository just being removed
+					for(CustomCategory category : mappedFeature.getCategories())
+						affectedNodes.add(category);
+
+				ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
+			}
 
 			for(EObject affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
-
-			ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
 		}
 		// If a repository is added (e.g. Undo Delete), reload MDR
 		else if(notification.getEventType() == Notification.ADD
-				&& notification.getNewValue() instanceof MappedRepository)
+				&& (notification.getNewValue() instanceof MappedRepository || notification.getNewValue() instanceof MavenMapping))
 		{
-			ResourceUtils.loadResourceForMappedRepository((MappedRepository)notification.getNewValue());
-
+			if(notification.getNewValue() instanceof MappedRepository)
+				ResourceUtils.loadResourceForMappedRepository((MappedRepository)notification.getNewValue());
+			
 			Set<EObject> affectedNodes = new HashSet<EObject>();
 			// Go through all ancestors to mark warnings
 			EObject container = ((EObject)notification.getNotifier());

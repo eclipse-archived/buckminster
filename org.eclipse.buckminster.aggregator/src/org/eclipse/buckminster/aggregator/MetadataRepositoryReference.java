@@ -28,7 +28,7 @@ import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
  * @model
  * @generated
  */
-public interface MetadataRepositoryReference extends EnabledStatusProvider
+public interface MetadataRepositoryReference extends EnabledStatusProvider, StatusProvider
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

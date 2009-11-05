@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -133,6 +134,8 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 			Object oldV = notification.getOldValue();
 			if(oldV instanceof Contribution || oldV instanceof MetadataRepositoryReference)
 				ResourceUtils.cleanUpResources((Aggregator)notification.getNotifier());
+			if(oldV instanceof MetadataRepositoryReference || oldV instanceof MavenMapping)
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 		}
 		else if(notification.getEventType() == Notification.ADD)
 		{
@@ -146,6 +149,9 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 			{
 				ResourceUtils.loadResourceForMappedRepository((MetadataRepositoryReference)newV);
 			}
+			
+			if(newV instanceof MetadataRepositoryReference || newV instanceof MavenMapping)
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 		}
 	}
 

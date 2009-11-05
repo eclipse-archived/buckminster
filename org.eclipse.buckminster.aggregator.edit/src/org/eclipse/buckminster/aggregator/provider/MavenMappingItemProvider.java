@@ -20,6 +20,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -117,6 +118,21 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 		return label + " ['" + namePattern + "' => '" + groupId + "/" + artifactId + "']";
 	}
 
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		notifyChangedGen(notification);
+
+		// Go through all ancestors and update labels
+		MavenMapping mapping = (MavenMapping)notification.getNotifier(); 
+		EObject container = mapping.eContainer();
+		while(container != null)
+		{
+			fireNotifyChanged(new ViewerNotification(notification, container, false, true));
+			container = container.eContainer();
+		}
+	}
+
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
@@ -124,8 +140,7 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void notifyChanged(Notification notification)
+	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
 

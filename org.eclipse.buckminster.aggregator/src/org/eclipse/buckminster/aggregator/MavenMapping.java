@@ -10,7 +10,6 @@
 package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.buckminster.aggregator.impl.MavenMappingImpl;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Maven Mapping</b></em>'. <!-- end-user-doc -->
@@ -28,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface MavenMapping extends EObject
+public interface MavenMapping extends StatusProvider
 {
 	MavenMapping DEFAULT_MAPPING = new MavenMappingImpl("^([^.]+(?:\\.[^.]+(?:\\.[^.]+)?)?)(?:\\.[^.]+)*$", "$1", "$0");
 

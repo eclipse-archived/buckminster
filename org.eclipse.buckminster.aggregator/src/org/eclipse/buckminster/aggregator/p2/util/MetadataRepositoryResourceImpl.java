@@ -389,8 +389,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	{
 		ResourceSet topSet = aggregator.eResource().getResourceSet();
 		char c;
-		if((c = repositoryURI.charAt(repositoryURI.length()-1)) == '/' || c == '\\')
-			repositoryURI = repositoryURI.substring(0, repositoryURI.length()-1);
+		if((c = repositoryURI.charAt(repositoryURI.length() - 1)) == '/' || c == '\\')
+			repositoryURI = repositoryURI.substring(0, repositoryURI.length() - 1);
 
 		URI repoURI = URI.createGenericURI("p2", repositoryURI, null);
 		Resource mdr = null;

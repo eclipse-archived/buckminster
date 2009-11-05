@@ -533,6 +533,12 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 		return products;
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	@Override
 	public int getStatus()
 	{
 		if(isBranchEnabled())

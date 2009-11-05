@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -300,8 +301,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return null;
 
 		location = location.replaceAll("\\s", "%20").replace('\\', '/');
-		if(location.charAt(location.length()-1) == '/')
-			location = location.substring(0, location.length()-1);
+		if(location.charAt(location.length() - 1) == '/')
+			location = location.substring(0, location.length() - 1);
 
 		if(location.length() > 1 && location.charAt(1) == ':' && Character.isLetter(location.charAt(0)))
 			// Path starting with a Windows drive letter
@@ -340,6 +341,24 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		}
 
 		return location;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public int getStatus()
+	{
+		if(isBranchEnabled())
+		{
+			// status is ok only if MDR is not null and is resolvable
+			if(getMetadataRepository() != null && !getMetadataRepository().eIsProxy())
+				return StatusProvider.OK;
+			else
+				return StatusProvider.BROKEN_CHILD;
+		}
+		return StatusProvider.OK;
 	}
 
 	/**

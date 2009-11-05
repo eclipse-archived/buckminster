@@ -33,4 +33,15 @@ public class GeneralUtils
 		return value;
 	}
 
+	public static String trimmedOrNull(String str)
+	{
+		if(str == null)
+			return null;
+		
+		str = str.trim();
+		if(str.length() == 0)
+			return null;
+
+		return str;
+	}
 }

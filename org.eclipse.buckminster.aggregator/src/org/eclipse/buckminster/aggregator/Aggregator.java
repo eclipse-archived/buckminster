@@ -11,27 +11,24 @@ import org.eclipse.emf.common.util.EList;
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Aggregator</b></em>'.
  * 
- * @extends StatusProvider <!-- end-user-doc -->
- * 
- *          <p>
- *          The following features are supported:
- *          <ul>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getConfigurations <em>Configurations</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContributions <em>Contributions</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getLabel <em>Label</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildRoot <em>Build Root</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isMavenResult <em>Maven Result</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getValidationRepositories <em>Validation
- *          Repositories</em>}</li>
- *          <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getMavenMappings <em>Maven Mappings</em>}</li>
- *          </ul>
- *          </p>
+ * <p>
+ * The following features are supported:
+ * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getConfigurations <em>Configurations</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContributions <em>Contributions</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildmaster <em>Buildmaster</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getContacts <em>Contacts</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getCustomCategories <em>Custom Categories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getLabel <em>Label</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getBuildRoot <em>Build Root</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getPackedStrategy <em>Packed Strategy</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isSendmail <em>Sendmail</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#isMavenResult <em>Maven Result</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getValidationRepositories <em>Validation Repositories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.Aggregator#getMavenMappings <em>Maven Mappings</em>}</li>
+ * </ul>
+ * </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getAggregator()
  * @model

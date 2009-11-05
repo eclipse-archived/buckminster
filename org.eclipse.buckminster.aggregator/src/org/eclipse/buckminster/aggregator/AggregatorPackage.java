@@ -1639,7 +1639,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CUSTOM_CATEGORY__IDENTIFIER = 0;
+	int CUSTOM_CATEGORY__IDENTIFIER = STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1647,7 +1647,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CUSTOM_CATEGORY__LABEL = 1;
+	int CUSTOM_CATEGORY__LABEL = STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1655,7 +1655,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CUSTOM_CATEGORY__DESCRIPTION = 2;
+	int CUSTOM_CATEGORY__DESCRIPTION = STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Features</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1663,7 +1663,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CUSTOM_CATEGORY__FEATURES = 3;
+	int CUSTOM_CATEGORY__FEATURES = STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Custom Category</em>' class. <!-- begin-user-doc --> <!--
@@ -1672,7 +1672,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CUSTOM_CATEGORY_FEATURE_COUNT = 4;
+	int CUSTOM_CATEGORY_FEATURE_COUNT = STATUS_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MapRuleImpl <em>Map Rule</em>}' class.
@@ -1833,7 +1833,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_MAPPING__NAME_PATTERN = 0;
+	int MAVEN_MAPPING__NAME_PATTERN = STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Group Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1841,7 +1841,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_MAPPING__GROUP_ID = 1;
+	int MAVEN_MAPPING__GROUP_ID = STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Artifact Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1849,7 +1849,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_MAPPING__ARTIFACT_ID = 2;
+	int MAVEN_MAPPING__ARTIFACT_ID = STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Maven Mapping</em>' class. <!-- begin-user-doc --> <!--
@@ -1858,7 +1858,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_MAPPING_FEATURE_COUNT = 3;
+	int MAVEN_MAPPING_FEATURE_COUNT = STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MavenItemImpl <em>Maven Item</em>}'

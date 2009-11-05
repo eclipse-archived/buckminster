@@ -749,6 +749,16 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 			if(contribution.getStatus() != StatusProvider.OK)
 				return StatusProvider.BROKEN_CHILD;
 		}
+		for(MetadataRepositoryReference repo : getValidationRepositories(true))
+		{
+			if(repo.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
+		for(MavenMapping mapping : getMavenMappings())
+		{
+			if(mapping.getStatus() != StatusProvider.OK)
+				return StatusProvider.BROKEN_CHILD;
+		}
 		return StatusProvider.OK;
 	}
 
