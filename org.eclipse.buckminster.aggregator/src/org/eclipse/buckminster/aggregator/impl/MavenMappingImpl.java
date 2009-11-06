@@ -267,9 +267,7 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 				return StatusProvider.BROKEN_CHILD;
 
 			compiledPattern = Pattern.compile(pattern);
-			Matcher m = compiledPattern.matcher("");
-			m.replaceAll(getGroupId());
-			m.replaceAll(getArtifactId());
+			checkReplacements(compiledPattern, getGroupId(), getArtifactId());
 			return StatusProvider.OK;
 		}
 		catch(PatternSyntaxException e)
@@ -393,6 +391,21 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	protected EClass eStaticClass()
 	{
 		return AggregatorPackage.Literals.MAVEN_MAPPING;
+	}
+
+	private void checkReplacements(Pattern pattern, String... replacements)
+	{
+		String emptyString = "";
+		String auxGroup = "(.*)";
+		Matcher matcher = compiledPattern.matcher(emptyString);
+		StringBuilder auxPatternBuilder = new StringBuilder();
+		for(int i = matcher.groupCount(); i > 0; i--)
+			auxPatternBuilder.append(auxGroup);
+
+		Pattern auxPattern = Pattern.compile(auxPatternBuilder.toString());
+		Matcher auxMatcher = auxPattern.matcher(emptyString);
+		auxMatcher.replaceAll(getGroupId());
+		auxMatcher.replaceAll(getArtifactId());
 	}
 
 } // MavenMappingImpl
