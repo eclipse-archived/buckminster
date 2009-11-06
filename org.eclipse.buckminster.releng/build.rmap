@@ -129,7 +129,9 @@
   </rm:searchPath>
   <rm:searchPath name="modeling">
     <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
-      <rm:uri format="{0}/modeling/emf/updates/milestones"/>
+      <rm:uri format="{0}/modeling/emf/updates/milestones">
+        <bc:propertyRef key="eclipse.download.prefix"/>
+      </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
