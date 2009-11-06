@@ -404,8 +404,8 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 
 		Pattern auxPattern = Pattern.compile(auxPatternBuilder.toString());
 		Matcher auxMatcher = auxPattern.matcher(emptyString);
-		auxMatcher.replaceAll(getGroupId());
-		auxMatcher.replaceAll(getArtifactId());
+		for(String replacement : replacements)
+			auxMatcher.replaceAll(replacement);
 	}
 
 } // MavenMappingImpl
