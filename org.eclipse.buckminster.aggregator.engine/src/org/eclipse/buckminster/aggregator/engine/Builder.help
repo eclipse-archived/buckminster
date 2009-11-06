@@ -9,7 +9,6 @@ usage: aggregate
        [--production]
        [--logURL <URL>]
        [--emailFrom <email>]
-       [--mockEmailFrom <email>]
        [--mockEmailTo <email>]
        [--mockEmailCc <email>]
        [--smtpHost <host name>]
@@ -39,10 +38,8 @@ usage: aggregate
   sent. Instead, the contacts listed for each contribution will get emails when things go wrong.
 
 --emailFrom <email>
-  Becomes the sender of the emails sent from the aggregator
-
---mockEmailFrom <email>
-  Becomes the sender of the mock-emails sent from the aggregator
+  Becomes the sender of the emails sent from the aggregator. Defaults to the build master defined
+  in the aggregator definition.
 
 --mockEmailTo <email>
   Becomes the receiver of the mock-emails sent from the aggregator
