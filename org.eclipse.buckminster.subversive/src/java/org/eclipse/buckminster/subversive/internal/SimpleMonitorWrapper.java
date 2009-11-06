@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.subversive.internal;
 
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
 import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
@@ -50,5 +51,10 @@ public class SimpleMonitorWrapper implements ISVNProgressMonitor
 		}
 		else
 			m_monitor.unknownProgress(current);
+	}
+
+	public void reportError(String msg)
+	{
+		Buckminster.getLogger().info("SVN error: " + msg);
 	}
 }
