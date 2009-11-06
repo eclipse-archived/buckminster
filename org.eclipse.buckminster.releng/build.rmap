@@ -7,6 +7,7 @@
   <rm:locator pattern="^org\.eclipse\.draw2d(\..+)?$" searchPathRef="gef"/>
   <rm:locator pattern="^com\.ibm\.icu\.base$" searchPathRef="orbit"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
+  <rm:locator searchPathRef="modeling" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release" failOnError="false"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tmatesoft\.svnkit(\..+)?" searchPathRef="svnkit"/>
@@ -124,6 +125,11 @@
   <rm:searchPath name="emma">
     <rm:provider componentTypes="osgi.bundle" readerType="url" source="false" mutable="false">
       <rm:uri format="http://download.eclipselab.org/eclemma/release/1.4.2/com.mountainminds.eclemma.core_1.4.2.jar"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="modeling">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
+      <rm:uri format="{0}/modeling/emf/updates/milestones"/>
     </rm:provider>
   </rm:searchPath>
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
