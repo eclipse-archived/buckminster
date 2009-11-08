@@ -355,6 +355,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
+	// TODO start here with Bug 293174
+
 	class ReloadRepoAction extends Action
 	{
 		private MetadataRepositoryReference m_metadataRepositoryReference;

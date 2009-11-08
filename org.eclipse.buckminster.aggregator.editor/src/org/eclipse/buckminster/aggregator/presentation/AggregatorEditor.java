@@ -69,6 +69,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IItemFontProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.ViewerNotification;
@@ -826,7 +827,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			setCurrentViewer(selectionViewer);
 
 			selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-			selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider.ColorProvider(adapterFactory,
+			selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider.FontAndColorProvider(adapterFactory,
 					selectionViewer));
 			selectionViewer.setInput(editingDomain.getResourceSet());
 			selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)),
@@ -1084,8 +1085,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					// Set up the tree viewer.
 					//
 					contentOutlineViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-					contentOutlineViewer.setLabelProvider(new AdapterFactoryLabelProvider.ColorProvider(adapterFactory,
-							contentOutlineViewer));
+					contentOutlineViewer.setLabelProvider(new AdapterFactoryLabelProvider.FontAndColorProvider(
+							adapterFactory, contentOutlineViewer));
 					contentOutlineViewer.setInput(editingDomain.getResourceSet());
 
 					// Make sure our popups work.
@@ -1655,83 +1656,106 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		// Assign specific images to resources
 		adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory()
 		{
+			class ResourceItemProviderWithFontSupport extends ResourceItemProvider implements IItemFontProvider
+			{
+				ResourceItemProviderWithFontSupport(AdapterFactory adapterFactory)
+				{
+					super(adapterFactory);
+				}
+
+				@Override
+				public Object getFont(Object object)
+				{
+					if(object instanceof MetadataRepositoryResourceImpl)
+					{
+						MetadataRepositoryResourceImpl mdr = (MetadataRepositoryResourceImpl)object;
+
+						if(!mdr.isLoaded() || mdr.isLoading())
+							return IItemFontProvider.ITALIC_FONT;
+					}
+					return null;
+				}
+
+				@Override
+				public Object getImage(Object object)
+				{
+					Object baseImage = null;
+					Object overlayImage = null;
+
+					if(object instanceof AggregatorResourceImpl)
+					{
+						baseImage = super.getImage(object);
+
+						// avoid querying proxies before loading jobs are scheduled/running
+						if(!Job.getJobManager().isSuspended())
+						{
+							AggregatorResourceImpl res = (AggregatorResourceImpl)object;
+
+							if(((Aggregator)res.getContents().get(0)).getStatus() != StatusProvider.OK)
+								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
+						}
+					}
+					else if(object instanceof MetadataRepositoryResourceImpl)
+					{
+						baseImage = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/MetadataRepository");
+
+						MetadataRepositoryResourceImpl mdr = (MetadataRepositoryResourceImpl)object;
+
+						if(mdr.getLastException() != null)
+							overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
+						else if(!mdr.isLoaded() || mdr.isLoading())
+							overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Loading");
+					}
+
+					if(baseImage != null)
+					{
+						if(overlayImage != null)
+						{
+							Object[] images = new Object[2];
+							int[] positions = new int[2];
+
+							images[0] = baseImage;
+							positions[0] = OverlaidImage.BASIC;
+
+							images[1] = overlayImage;
+							positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
+
+							return new OverlaidImage(images, positions);
+						}
+
+						return baseImage;
+					}
+
+					return super.getImage(object);
+				}
+
+				@Override
+				public void notifyChanged(Notification notification)
+				{
+					super.notifyChanged(notification);
+
+					if(notification.getEventType() == Notification.SET
+							&& notification.getFeatureID(Resource.class) == Resource.RESOURCE__IS_LOADED)
+					{
+						fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+
+						Aggregator aggregator = (Aggregator)((Resource)notification.getNotifier()).getResourceSet().getResources().get(
+								0).getContents().get(0);
+
+						for(MetadataRepositoryReference mdr : aggregator.getAllMetadataRepositoryReferences(true))
+							fireNotifyChanged(new ViewerNotification(notification, mdr, false, true));
+					}
+				}
+			}
+
+			{
+				supportedTypes.add(IItemFontProvider.class);
+			}
+
 			@Override
 			public Adapter createResourceAdapter()
 			{
-				return new ResourceItemProvider(this)
-				{
-					@Override
-					public Object getImage(Object object)
-					{
-						Object baseImage = null;
-						Object overlayImage = null;
-
-						if(object instanceof AggregatorResourceImpl)
-						{
-							baseImage = super.getImage(object);
-
-							// avoid querying proxies before loading jobs are scheduled/running
-							if(!Job.getJobManager().isSuspended())
-							{
-								AggregatorResourceImpl res = (AggregatorResourceImpl)object;
-
-								if(((Aggregator)res.getContents().get(0)).getStatus() != StatusProvider.OK)
-									overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
-							}
-						}
-						else if(object instanceof MetadataRepositoryResourceImpl)
-						{
-							baseImage = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/MetadataRepository");
-
-							MetadataRepositoryResourceImpl mdr = (MetadataRepositoryResourceImpl)object;
-
-							if(mdr.getLastException() != null)
-								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
-							else if(!mdr.isLoaded() || mdr.isLoading())
-								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Loading");
-						}
-
-						if(baseImage != null)
-						{
-							if(overlayImage != null)
-							{
-								Object[] images = new Object[2];
-								int[] positions = new int[2];
-
-								images[0] = baseImage;
-								positions[0] = OverlaidImage.BASIC;
-
-								images[1] = overlayImage;
-								positions[1] = OverlaidImage.OVERLAY_BOTTOM_RIGHT;
-
-								return new OverlaidImage(images, positions);
-							}
-
-							return baseImage;
-						}
-
-						return super.getImage(object);
-					}
-
-					@Override
-					public void notifyChanged(Notification notification)
-					{
-						super.notifyChanged(notification);
-
-						if(notification.getEventType() == Notification.SET
-								&& notification.getFeatureID(Resource.class) == Resource.RESOURCE__IS_LOADED)
-						{
-							fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false,
-									true));
-
-							Aggregator aggregator = (Aggregator)((Resource)notification.getNotifier()).getResourceSet().getResources().get(
-									0).getContents().get(0);
-
-							for(MetadataRepositoryReference mdr : aggregator.getAllMetadataRepositoryReferences(true))
-								fireNotifyChanged(new ViewerNotification(notification, mdr, false, true));
-						}
-					}
-				};
+				return new ResourceItemProviderWithFontSupport(this);
 			}
 		});
 		adapterFactory.addAdapterFactory(new AggregatorItemProviderAdapterFactory());
