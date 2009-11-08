@@ -23,6 +23,7 @@ import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 
@@ -35,6 +36,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
+import org.eclipse.emf.edit.provider.IItemFontProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
@@ -51,7 +53,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  */
 public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProviderAdapter implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
-		IItemPropertySource, IItemColorProvider
+		IItemPropertySource, IItemColorProvider, IItemFontProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -61,6 +63,14 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	public MetadataRepositoryReferenceItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
+	}
+
+	@Override
+	public Object getFont(Object object)
+	{
+		return ((MetadataRepositoryReference)object).getStatus() == StatusProvider.WAITING
+				? IItemFontProvider.ITALIC_FONT
+				: null;
 	}
 
 	/**

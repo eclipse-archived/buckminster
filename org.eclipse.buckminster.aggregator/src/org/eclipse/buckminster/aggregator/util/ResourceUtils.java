@@ -54,9 +54,12 @@ public class ResourceUtils
 				{
 					if(mappedRepository.isBranchEnabled())
 					{
-						org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI(
-								"p2", mappedRepository.getResolvedLocation(), null);
-						referencedResources.add(topSet.getResource(repoURI, false));
+						if(mappedRepository.getResolvedLocation() != null)
+						{
+							org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI(
+									"p2", mappedRepository.getResolvedLocation(), null);
+							referencedResources.add(topSet.getResource(repoURI, false));
+						}
 					}
 					else
 					{
@@ -79,9 +82,12 @@ public class ResourceUtils
 			{
 				if(repoRef.isBranchEnabled())
 				{
-					org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI("p2",
-							repoRef.getResolvedLocation(), null);
-					referencedResources.add(topSet.getResource(repoURI, false));
+					if(repoRef.getResolvedLocation() != null)
+					{
+						org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI(
+								"p2", repoRef.getResolvedLocation(), null);
+						referencedResources.add(topSet.getResource(repoURI, false));
+					}
 				}
 				else
 				// avoid notification recursion - set to null only if it not null yet

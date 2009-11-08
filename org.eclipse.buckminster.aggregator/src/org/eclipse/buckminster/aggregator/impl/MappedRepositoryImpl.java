@@ -26,7 +26,6 @@ import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
-import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
@@ -34,7 +33,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -556,16 +554,7 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 						return StatusProvider.BROKEN_CHILD;
 			}
 			else
-			{
-				ResourceImpl res = (ResourceImpl)MetadataRepositoryResourceImpl.getResourceForLocation(
-						getResolvedLocation(), getAggregator());
-				if(res.isLoading() || !res.isLoaded())
-				{
-					return StatusProvider.WAITING;
-				}
-
-				return StatusProvider.BROKEN_CHILD;
-			}
+				return super.getStatus();
 		}
 
 		return StatusProvider.OK;

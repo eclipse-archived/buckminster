@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 
 /**
@@ -359,7 +360,21 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			if(getMetadataRepository() != null && !getMetadataRepository().eIsProxy())
 				return StatusProvider.OK;
 			else
+			{
+				String location = getResolvedLocation();
+				if(location == null)
+					// Node is incomplete and doesn't appoint a repository just yet.
+					return StatusProvider.BROKEN_CHILD;
+
+				ResourceImpl res = (ResourceImpl)MetadataRepositoryResourceImpl.getResourceForLocation(location,
+						getAggregator());
+				if(res.isLoading() || !res.isLoaded())
+				{
+					return StatusProvider.WAITING;
+				}
+
 				return StatusProvider.BROKEN_CHILD;
+			}
 		}
 		return StatusProvider.OK;
 	}

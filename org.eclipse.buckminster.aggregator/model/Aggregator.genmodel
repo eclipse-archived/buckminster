@@ -7,7 +7,7 @@
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" booleanFlagsField="eFlags"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
     providerRootExtendsClass="org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter"
-    colorProviders="true" language="" packedEnums="true" classNamePattern="">
+    colorProviders="true" fontProviders="true" language="" packedEnums="true" classNamePattern="">
   <foreignModel>Aggregator.ecore</foreignModel>
   <genPackages prefix="Aggregator" basePackage="org.eclipse.buckminster" resource="XMI"
       disposableProviderFactory="true" multipleEditorPages="false" contentTypeIdentifier=""
