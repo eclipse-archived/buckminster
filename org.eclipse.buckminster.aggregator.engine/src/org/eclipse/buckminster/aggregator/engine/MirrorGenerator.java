@@ -504,11 +504,17 @@ public class MirrorGenerator extends BuilderPhase
 			if(!isCleanBuild)
 			{
 				arMgr.removeRepository(finalURI);
+				arMgr.removeRepository(aggregateURI);
 				aggregateDestination.mkdirs();
 				for(File oldLocation : destination.listFiles())
 				{
 					if(oldLocation.equals(aggregateDestination))
 						continue;
+					if(oldLocation.equals(new File(destination, "compositeArtifacts.jar")))
+					{
+						oldLocation.delete();
+						continue;
+					}
 					oldLocation.renameTo(new File(aggregateDestination, oldLocation.getName()));
 				}
 				try
