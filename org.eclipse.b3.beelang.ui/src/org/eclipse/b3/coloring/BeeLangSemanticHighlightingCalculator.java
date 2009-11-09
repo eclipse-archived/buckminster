@@ -5,6 +5,7 @@ import org.eclipse.b3.beeLang.PathVector;
 import org.eclipse.b3.beeLang.RealLiteral;
 import org.eclipse.b3.beeLang.Version;
 import org.eclipse.b3.beeLang.VersionRange;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.parsetree.AbstractNode;
@@ -24,8 +25,10 @@ ISemanticHighlightingCalculator {
 			return;
 //		Iterable<AbstractNode> allNodes = NodeUtil.getAllContents(
 //				resource.getParseResult().getRootNode());
-		
-		BeeModel model = (BeeModel) resource.getContents().get(0);
+		EList<EObject> contents = resource.getContents();
+		if(contents == null || contents.size() == 0)
+			return; // nothing there at all - probably an empty file
+		BeeModel model = (BeeModel) contents.get(0);
 //		BuildUnit bu = model.getBody();
 		TreeIterator<EObject> all = model.eAllContents();
 		while(all.hasNext())
